@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<pytrainer-plugin 
+	name="Garmin 301" 
+	description="Import yor records direclty from your garmin 301" 
+	plugincode="garmin301"
+	pluginbutton="Import from garmin301" 
+	executable="main.py" 
+>
+<conf-values variable="device" value="/dev/ttyUSB0"/>
+</pytrainer-plugin>

@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:v="urn:schemas-microsoft-com:vml">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title>Google Maps JavaScript API Example</title>
+
+    <script type="text/javascript">
+	var googleimport = getElementeById(googleapiimport);
+	googleimport.src.value = "http://maps.google.com/maps?file=api&amp;v=2";
+    </script>
+
+    <script id="googleapiimport" src="http://maps.google.com/maps?file=api&amp;v=2"
+            type="text/javascript"></script>
+    <script type="text/javascript">
+
+	cadVariables = location.search.substring(1,location.search.length);
+	arrVariables = cadVariables.split("&");
+	for (i=0; i<arrVariables.length; i++) {
+		arrVariableActual = arrVariables[i].split("=");
+		if (isNaN(parseFloat(arrVariableActual[1])))
+			eval(arrVariableActual[0]+"='"+unescape(arrVariableActual[1])+"';");
+		else
+			eval(arrVariableActual[0]+"="+arrVariableActual[1]+";");
+		}
+
+    //<![CDATA[
+	function load() {
+		if (GBrowserIsCompatible()) {
+			var map = new GMap2(document.getElementById("map"));
+        		map.addControl(new GLargeMapControl());
+        		map.addControl(new GMapTypeControl());
+        		map.setCenter(new GLatLng(43.319664616, -3.015837260), 13);
+
+			// Add a polyline with five random points. Sort the points by
+			// longitude so that the line does not intersect itself.
+			var points = [];
+        		GDownloadUrl(gpxfile, function(data) {
+          			var xml = GXml.parse(data);
+          			var markers = xml.documentElement.getElementsByTagName("trkpt");
+				var block = "False";
+				alert(markers.length);
+  				for (var i = 0; i < markers.length; i++) {
+					if (parseFloat(markers[i].getAttribute("lat")) > -0.00000001 &&
+					    parseFloat(markers[i].getAttribute("lat")) < 0.000000001) {
+						car=1;
+						}
+					else {
+            					var point = new GLatLng(parseFloat(markers[i].getAttribute("lat")),
+                                    			parseFloat(markers[i].getAttribute("lon")));
+						if (block = "False") {
+        						map.setCenter(point, 13);
+							block = "True";
+							}
+    						points.push(point);
+						}
+  					}
+				map.addOverlay(new GPolyline(points));
+				});
+    			}
+		}
+
+    //]]>
+    </script>
+  </head>
+  <body onload="load()" onunload="GUnload()">
+    <div id="map" style="width: 820px; height: 540px"></div>
+  </body>
+</html>

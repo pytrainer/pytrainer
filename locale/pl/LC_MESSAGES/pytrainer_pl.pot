@@ -1,0 +1,533 @@
+# Polish translations for vud package.
+# Copyright (C) 2006 THE vud'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the vud package.
+# Fiz Vazquez <vud1@sindominio.net>, 2006.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: vud 1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2006-10-21 12:11+0200\n"
+"PO-Revision-Date: 2006-10-21 12:52+0200\n"
+"Last-Translator: Fiz Vazquez <vud1@sindominio.net>\n"
+"Language-Team: Polish <translation-team-pl@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 "
+"|| n%100>=20) ? 1 : 2);\n"
+
+#: glade/pytrainer.glade:10
+msgid "window1"
+msgstr ""
+
+#: glade/pytrainer.glade:40
+msgid "_File"
+msgstr ""
+
+#: glade/pytrainer.glade:64
+msgid "_Export as text separated by commas"
+msgstr ""
+
+#: glade/pytrainer.glade:104
+msgid "_Edit"
+msgstr ""
+
+#: glade/pytrainer.glade:126
+msgid "_View"
+msgstr ""
+
+#: glade/pytrainer.glade:135
+msgid "_Classic View"
+msgstr ""
+
+#: glade/pytrainer.glade:145
+msgid "_List View"
+msgstr ""
+
+#: glade/pytrainer.glade:160
+msgid "_Help"
+msgstr ""
+
+#: glade/pytrainer.glade:283 glade/pytrainer.glade:3262 pytrainer/main.py:69
+#: pytrainer/main.py:72
+msgid "Sport"
+msgstr ""
+
+#: glade/pytrainer.glade:309
+msgid "All Sports"
+msgstr ""
+
+#: glade/pytrainer.glade:404 glade/pytrainer.glade:1061
+#: glade/pytrainer.glade:1322 glade/pytrainer.glade:2045
+#: glade/pytrainer.glade:2306
+msgid "<b>Distance:</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:432 glade/pytrainer.glade:1140
+#: glade/pytrainer.glade:1350 glade/pytrainer.glade:2124
+#: glade/pytrainer.glade:2334
+msgid "<b>Time:</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:460
+msgid "<b>Beats avg:</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:488 glade/pytrainer.glade:1406
+#: glade/pytrainer.glade:2390
+msgid "<b>Average:</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:516 glade/pytrainer.glade:1434
+#: glade/pytrainer.glade:2418
+msgid "<b>Calories: </b>"
+msgstr ""
+
+#: glade/pytrainer.glade:544 glade/pytrainer.glade:1089
+#: glade/pytrainer.glade:2073
+msgid "Km"
+msgstr ""
+
+#: glade/pytrainer.glade:572
+msgid "bpm"
+msgstr ""
+
+#: glade/pytrainer.glade:600
+msgid "km/h"
+msgstr ""
+
+#: glade/pytrainer.glade:628
+msgid "Cal"
+msgstr ""
+
+#: glade/pytrainer.glade:705 glade/pytrainer.glade:750
+#: glade/pytrainer.glade:1194 glade/pytrainer.glade:1239
+#: glade/pytrainer.glade:1623 glade/pytrainer.glade:1668
+#: glade/pytrainer.glade:2178 glade/pytrainer.glade:2223
+#: glade/pytrainer.glade:2607 glade/pytrainer.glade:2652
+#: glade/pytrainer.glade:3538 glade/pytrainer.glade:3583
+msgid ":"
+msgstr ""
+
+#: glade/pytrainer.glade:912
+msgid "<b>Date:</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:997
+msgid "Day"
+msgstr ""
+
+#: glade/pytrainer.glade:1378 glade/pytrainer.glade:2362
+msgid "<b>Beats:</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:1462 glade/pytrainer.glade:2446
+msgid "Km/day"
+msgstr ""
+
+#: glade/pytrainer.glade:1490 glade/pytrainer.glade:2474
+msgid "bpm/day"
+msgstr ""
+
+#: glade/pytrainer.glade:1518 glade/pytrainer.glade:2502
+msgid "km/h/day"
+msgstr ""
+
+#: glade/pytrainer.glade:1546 glade/pytrainer.glade:2530
+msgid "cal/day"
+msgstr ""
+
+#: glade/pytrainer.glade:1723 glade/pytrainer.glade:2707
+msgid "time/day"
+msgstr ""
+
+#: glade/pytrainer.glade:1837
+msgid "<b>Month:</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:1912 glade/pytrainer.glade:2896
+msgid "Value"
+msgstr ""
+
+#: glade/pytrainer.glade:1937 glade/pytrainer.glade:2921
+msgid ""
+"Kilometers\n"
+"Time\n"
+"Beats\n"
+"Average\n"
+"Calories"
+msgstr ""
+
+#: glade/pytrainer.glade:1981
+msgid "Month"
+msgstr ""
+
+#: glade/pytrainer.glade:2821
+msgid "<b>Year:</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:2965
+msgid "Year"
+msgstr ""
+
+#: glade/pytrainer.glade:3008
+msgid "label154"
+msgstr ""
+
+#: glade/pytrainer.glade:3061
+msgid "label155"
+msgstr ""
+
+#: glade/pytrainer.glade:3105 glade/pytrainer.glade:3894
+msgid "New Entry"
+msgstr ""
+
+#: glade/pytrainer.glade:3152 pytrainer/main.py:72
+msgid "Date"
+msgstr ""
+
+#: glade/pytrainer.glade:3203
+msgid " "
+msgstr ""
+
+#: glade/pytrainer.glade:3317 pytrainer/main.py:72
+msgid "Title"
+msgstr ""
+
+#: glade/pytrainer.glade:3378
+msgid "Beats avg (bpm)"
+msgstr ""
+
+#: glade/pytrainer.glade:3434
+msgid "Distance (Km)"
+msgstr ""
+
+#: glade/pytrainer.glade:3484
+msgid "Time"
+msgstr ""
+
+#: glade/pytrainer.glade:3638
+msgid "Average (km/h)"
+msgstr ""
+
+#: glade/pytrainer.glade:3688
+msgid "Calculate Distance"
+msgstr ""
+
+#: glade/pytrainer.glade:3708
+msgid "Calculate Time"
+msgstr ""
+
+#: glade/pytrainer.glade:3728
+msgid "Calculate Average"
+msgstr ""
+
+#: glade/pytrainer.glade:3769
+msgid "Calories"
+msgstr ""
+
+#: glade/pytrainer.glade:3825
+msgid "<b>Comments</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:3999 glade/pytrainer.glade:5586
+msgid "window2"
+msgstr ""
+
+#: glade/pytrainer.glade:4044
+msgid "Name"
+msgstr ""
+
+#: glade/pytrainer.glade:4072
+msgid "Gender"
+msgstr ""
+
+#: glade/pytrainer.glade:4100
+msgid "Weight"
+msgstr ""
+
+#: glade/pytrainer.glade:4128
+msgid "Height"
+msgstr ""
+
+#: glade/pytrainer.glade:4219
+msgid "Age"
+msgstr ""
+
+#: glade/pytrainer.glade:4292
+msgid "Profile"
+msgstr ""
+
+#: glade/pytrainer.glade:4322
+msgid "<b>Database</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:4356
+msgid "Database Type"
+msgstr ""
+
+#: glade/pytrainer.glade:4384
+msgid "Database Host"
+msgstr ""
+
+#: glade/pytrainer.glade:4433
+msgid "Database Pass"
+msgstr ""
+
+#: glade/pytrainer.glade:4482
+msgid "Database User "
+msgstr ""
+
+#: glade/pytrainer.glade:4531
+msgid "Database Name"
+msgstr ""
+
+#: glade/pytrainer.glade:4612
+msgid "Database"
+msgstr ""
+
+#: glade/pytrainer.glade:4650
+msgid "<b>Sport list</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:4801
+msgid "llist"
+msgstr ""
+
+#: glade/pytrainer.glade:4830
+msgid "<b>Add new Sport</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:4990
+msgid "new"
+msgstr ""
+
+#: glade/pytrainer.glade:5025
+msgid "<b>Delete sport</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:5088
+msgid ""
+"You are going to remove a sport. When you delete a \n"
+"sport you delete the records asociated. Are you sure \n"
+"that you want do it?"
+msgstr ""
+
+#: glade/pytrainer.glade:5225
+msgid "delete"
+msgstr ""
+
+#: glade/pytrainer.glade:5260
+msgid "<b>Edit sport</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:5323
+msgid "New name"
+msgstr ""
+
+#: glade/pytrainer.glade:5452
+msgid "edit"
+msgstr ""
+
+#: glade/pytrainer.glade:5481
+msgid "Sports"
+msgstr ""
+
+#: glade/pytrainer.glade:5710
+msgid "pytrainer"
+msgstr ""
+
+#: glade/pytrainer.glade:5711
+msgid "(c) Fiz Vazquez <vud1@sindominio.net>"
+msgstr ""
+
+#: glade/pytrainer.glade:5712
+msgid "The training tool for the gnu people"
+msgstr ""
+
+#: glade/pytrainer.glade:5713
+msgid ""
+"(C) Fiz Vazquez\n"
+"\n"
+"  This program is free software; you can redistribute \n"
+"  it and/or modify it under the terms of the GNU \n"
+"  General Public License as published by the Free \n"
+"  Software Foundation; either version 2 of the License, \n"
+"  or (at your option) any later version.\n"
+"\n"
+"  This program is distributed in the hope that it will be \n"
+"  useful, but WITHOUT ANY WARRANTY; without even the\n"
+"  implied warranty of MERCHANTABILITY or FITNESS FOR \n"
+"  A PARTICULAR PURPOSE.  See the GNU General Public \n"
+"  License <http://www.opensource.org/gpl-license.html>\n"
+"  for more details.\n"
+"\n"
+"  You can found the license on Debian systems in the file\n"
+"  /usr/share/common-licenses/GPL\n"
+msgstr ""
+
+#: glade/pytrainer.glade:5733
+msgid "pytrainer.e-oss.net"
+msgstr ""
+
+#: glade/pytrainer.glade:5735
+msgid ""
+"Catalan: Eloi Crespillo Itchart <eloi@ikuszen.com>\n"
+"French: Dj <dj@djremixtheblog.be>\n"
+"Polish: Seweryn Kokot <skokot@po.opole.pl>\n"
+"german: Aleks <aleks@schnecklecker.de>\n"
+"Spanish: Fiz vazquez <vud1@sindominio.net>"
+msgstr ""
+
+#: glade/pytrainer.glade:5750
+msgid "Export "
+msgstr ""
+
+#: glade/pytrainer.glade:5821
+msgid "Edit Record"
+msgstr ""
+
+#: glade/pytrainer.glade:5842
+msgid "Show in classic view"
+msgstr ""
+
+#: glade/pytrainer.glade:5878
+msgid "dialog1"
+msgstr ""
+
+#: pytrainer/main.py:69 pytrainer/main.py:72
+msgid "id"
+msgstr ""
+
+#: pytrainer/main.py:69
+msgid "Kilometer"
+msgstr ""
+
+#: pytrainer/main.py:72
+msgid "Distance"
+msgstr ""
+
+#: pytrainer/main.py:196
+msgid "January"
+msgstr ""
+
+#: pytrainer/main.py:197
+msgid "Febrary"
+msgstr ""
+
+#: pytrainer/main.py:198
+msgid "March"
+msgstr ""
+
+#: pytrainer/main.py:199
+msgid "April"
+msgstr ""
+
+#: pytrainer/main.py:200
+msgid "May"
+msgstr ""
+
+#: pytrainer/main.py:201
+msgid "June"
+msgstr ""
+
+#: pytrainer/main.py:202
+msgid "July"
+msgstr ""
+
+#: pytrainer/main.py:203
+msgid "August"
+msgstr ""
+
+#: pytrainer/main.py:204
+msgid "September"
+msgstr ""
+
+#: pytrainer/main.py:205
+msgid "October"
+msgstr ""
+
+#: pytrainer/main.py:206
+msgid "November"
+msgstr ""
+
+#: pytrainer/main.py:207
+msgid "December"
+msgstr ""
+
+#: pytrainer/main.py:317
+msgid "You are going to remove one database entry. Are you sure yo want do it?"
+msgstr ""
+
+#: pytrainer/monthgraph.py:37 pytrainer/monthgraph.py:39
+#: pytrainer/monthgraph.py:41 pytrainer/monthgraph.py:43
+#: pytrainer/monthgraph.py:45
+msgid "day"
+msgstr ""
+
+#: pytrainer/monthgraph.py:37 pytrainer/yeargraph.py:37
+msgid "kilometers"
+msgstr ""
+
+#: pytrainer/monthgraph.py:37
+msgid "daily kilometers"
+msgstr ""
+
+#: pytrainer/monthgraph.py:39 pytrainer/yeargraph.py:39
+msgid "time in hours"
+msgstr ""
+
+#: pytrainer/monthgraph.py:39
+msgid "daily time"
+msgstr ""
+
+#: pytrainer/monthgraph.py:41 pytrainer/yeargraph.py:41
+msgid "beats per minute"
+msgstr ""
+
+#: pytrainer/monthgraph.py:41
+msgid "daily beats"
+msgstr ""
+
+#: pytrainer/monthgraph.py:43 pytrainer/yeargraph.py:43
+msgid "average (hm/h)"
+msgstr ""
+
+#: pytrainer/monthgraph.py:43
+msgid "daily averages"
+msgstr ""
+
+#: pytrainer/monthgraph.py:45 pytrainer/yeargraph.py:45
+msgid "calories"
+msgstr ""
+
+#: pytrainer/monthgraph.py:45
+msgid "daily calories"
+msgstr ""
+
+#: pytrainer/yeargraph.py:37 pytrainer/yeargraph.py:39
+#: pytrainer/yeargraph.py:41 pytrainer/yeargraph.py:43
+#: pytrainer/yeargraph.py:45
+msgid "month"
+msgstr ""
+
+#: pytrainer/yeargraph.py:37
+msgid "monthly kilometers"
+msgstr ""
+
+#: pytrainer/yeargraph.py:39
+msgid "monthly time"
+msgstr ""
+
+#: pytrainer/yeargraph.py:41
+msgid "monthly beats"
+msgstr ""
+
+#: pytrainer/yeargraph.py:43
+msgid "monthly averages"
+msgstr ""
+
+#: pytrainer/yeargraph.py:45
+msgid "monthly calories"
+msgstr ""
