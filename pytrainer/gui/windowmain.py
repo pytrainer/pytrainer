@@ -17,7 +17,6 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import gobject
-import os
 
 from SimpleGladeApp import *
 from popupmenu import PopupMenu
@@ -36,6 +35,7 @@ class Main(SimpleGladeApp):
 		root = "window1"
 		domain = None
 		SimpleGladeApp.__init__(self, self.data_path+glade_path, root, domain)
+
 		self.popup = PopupMenu(data_path,self)
 		self.block = False
 
@@ -58,54 +58,9 @@ class Main(SimpleGladeApp):
 		self.showAllRecordTreeViewColumns()
 		self.allRecordTreeView.set_search_column(1)
 
-	def _createXmlListView(self,file):
-		menufile = XMLParser(file)
-		savedOptions = []
-		savedOptions.append(("date","True"))
-		savedOptions.append(("distance","True"))
-		savedOptions.append(("average","False"))
-		savedOptions.append(("title","True"))
-		savedOptions.append(("sport","True"))
-		savedOptions.append(("id_record","False"))
-		savedOptions.append(("time","False"))
-		savedOptions.append(("beats","False"))
-		savedOptions.append(("calories","False"))
-		menufile.createXMLFile("listviewmenu",savedOptions)	
-
-	def showAllRecordTreeViewColumns(self):
-		menufile = XMLParser(self.fileconf)
-		listMenus = {
-			"id_record":0,
-			"title":1,
-			"date":2,
-			"distance":3,
-			"sport":4,
-			"time":5,
-			"beats":6,
-			"average":7,
-			"calories":8 }
-		columns = self.allRecordTreeView.get_columns()
-		menuItems = self.menulistviewOptions.get_children()
-		for column in listMenus:
-			visible = menufile.getValue("listviewmenu",column)
-			if visible == "True":
-				visible = True
-			else:
-				visible = False
-			numcolumn = listMenus[column]
-			#show the selected columns
-			columns[numcolumn].set_visible(visible)
-			#select the choice in the menu
-			if numcolumn != 0 and self.menublocking != 1:
-				menuItems[numcolumn-1].set_active(visible)
-		self.menublocking = 1
-
 	def addImportPlugin(self,plugin):
-		button = gtk.ImageMenuItem(plugin[0])
+		button = gtk.MenuItem(plugin[0])
 		button.connect("activate", self.parent.runPlugin, plugin[1])
-		image = gtk.Image()
-		image.set_from_stock("gtk_go_down",16)
-		button.set_image(image)	
 		self.menuitem1_menu.insert(button,2)
 		self.menuitem1_menu.show_all()
 
@@ -139,37 +94,7 @@ class Main(SimpleGladeApp):
 				column.set_visible(False)
 			column.set_sort_column_id(i)
 			treeview.append_column(column)
-
-	def create_menulist(self,column_names):
-		i=0
-		for name in column_names:
-			if i!=0:
-				item = gtk.CheckMenuItem(name)
-				self.lsa_searchoption.append_text(name)
-				item.connect("button_press_event", self.on_menulistview_activate, i)
-				self.menulistviewOptions.append(item)
 			i+=1
-		self.menulistviewOptions.show_all()
-
-	def on_menulistview_activate(self,widget,widget2,widget_position):
-		listMenus = {
-			0:"title",
-			1:"date",
-			2:"distance",
-			3:"sport",
-			4:"time",
-			5:"beats",
-			6:"average",
-			7:"calories" }
-		
-		items = self.menulistviewOptions.get_children()
-		if items[widget_position-1].get_active():
-			newValue = "False"
-		else:
-			newValue = "True"
-		menufile = XMLParser(self.fileconf)
-		menufile.setValue("listviewmenu",listMenus[widget_position-1],newValue)
-		self.showAllRecordTreeViewColumns()
 
 	def actualize_dayview(self,record_list):
 		if len(record_list)>0:
@@ -286,6 +211,7 @@ class Main(SimpleGladeApp):
 			gobject.TYPE_STRING,
 			gobject.TYPE_STRING,
 			object)
+		print record_list
 		for i in record_list:
 			hour,min,sec = date.second2time(int(i[6]))
 			time = "%d:%d:%d" %(hour,min,sec)
@@ -304,6 +230,68 @@ class Main(SimpleGladeApp):
 				)
 		#self.allRecordTreeView.set_headers_clickable(True)
 		self.allRecordTreeView.set_model(store)
+	
+	def create_menulist(self,column_names):
+		i=0
+		for name in column_names:
+			if i!=0:
+				item = gtk.CheckMenuItem(name)
+				self.lsa_searchoption.append_text(name)
+				item.connect("button_press_event", self.on_menulistview_activate, i)
+				self.menulistviewOptions.append(item)
+			i+=1
+		self.menulistviewOptions.show_all()
+	
+	def on_menulistview_activate(self,widget,widget2,widget_position):
+		listMenus = {
+			0:"title",
+			1:"date",
+			2:"distance",
+			3:"sport",
+			4:"time",
+			5:"beats",
+			6:"average",
+			7:"calories" }
+		
+		items = self.menulistviewOptions.get_children()
+		if items[widget_position-1].get_active():
+			newValue = "False"
+		else:
+			newValue = "True"
+		menufile = XMLParser(self.fileconf)
+		menufile.setValue("listviewmenu",listMenus[widget_position-1],newValue)
+		self.showAllRecordTreeViewColumns()
+	
+	def showAllRecordTreeViewColumns(self):
+		menufile = XMLParser(self.fileconf)
+		listMenus = {
+			"id_record":0,
+			"title":1,
+			"date":2,
+			"distance":3,
+			"sport":4,
+			"time":5,
+			"beats":6,
+			"average":7,
+			"calories":8 }
+		columns = self.allRecordTreeView.get_columns()
+		menuItems = self.menulistviewOptions.get_children()
+		for column in listMenus:
+			visible = menufile.getValue("listviewmenu",column)
+			if visible == "True":
+				visible = True
+			else:
+				visible = False
+			numcolumn = listMenus[column]
+			#show the selected columns
+			columns[numcolumn].set_visible(visible)
+			#select the choice in the menu
+			if numcolumn != 0 and self.menublocking != 1:
+				menuItems[numcolumn-1].set_active(visible)
+		self.menublocking = 1
+
+
+
 	
 	######################
 	## Lista de eventos ##
@@ -415,7 +403,6 @@ class Main(SimpleGladeApp):
 			gobject.TYPE_STRING,
 			gobject.TYPE_STRING,
 			object)
-		print record_list
 		for i in record_list:
 			iter = store.append()
 			if not iterOne:
@@ -427,7 +414,6 @@ class Main(SimpleGladeApp):
 				2, i[2]
 				)
 		self.recordTreeView.set_model(store)
-		print self.recordTreeView
 		if iterOne:
 			self.recordTreeView.get_selection().select_iter(iterOne)
 		#if len(record_list)>0:
@@ -465,19 +451,4 @@ class Main(SimpleGladeApp):
 	def on_recordTree_clicked(self,widget,num,num2):
     		selected,iter = self.recordTreeView.get_selection().get_selected()
 		self.parent.editRecord(selected.get_value(iter,0))
-
-	def on_listareasearch_clicked(self,widget):
-		lisOpt = {
-			_("Title"):"title",
-			_("Date"):"date",
-			_("Distance"):"distance",
-			_("Sport"):"sport",
-			_("Time"):"time",
-			_("Beats"):"beats",
-			_("Average"):"average",
-			_("Calories"):"calories" 
-			}
-		search_string = self.lsa_searchvalue.get_text()
-		ddbb_field = lisOpt[self.lsa_searchoption.get_active_text()]
-		print search_string
-		print ddbb_field
+	
