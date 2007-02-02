@@ -114,3 +114,14 @@ class SimpleGladeApp(dict):
 			self.main()
 		except KeyboardInterrupt:
 			self.on_keyboard_interrupt()
+
+	def create_treeview(self,treeview,column_names):
+		i=0
+		for column_index, column_name in enumerate(column_names):
+			column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
+			column.set_resizable(True)
+			if i==0:
+				column.set_visible(False)
+			column.set_sort_column_id(i)
+			treeview.append_column(column)
+
