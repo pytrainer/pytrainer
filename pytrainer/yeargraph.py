@@ -62,7 +62,8 @@ class YearGraph:
 			i += 1
 			
 		value_sel = conv[value_selected]
-		
+
+		log = []		
 		for value in values:
 			date = value[0]
 			year,month,day = date.split("-")

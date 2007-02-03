@@ -211,7 +211,6 @@ class Main(SimpleGladeApp):
 			gobject.TYPE_STRING,
 			gobject.TYPE_STRING,
 			object)
-		print record_list
 		for i in record_list:
 			hour,min,sec = date.second2time(int(i[6]))
 			time = "%d:%d:%d" %(hour,min,sec)
@@ -230,6 +229,21 @@ class Main(SimpleGladeApp):
 				)
 		#self.allRecordTreeView.set_headers_clickable(True)
 		self.allRecordTreeView.set_model(store)
+	def on_listareasearch_clicked(self,widget):
+		lisOpt = {
+			_("Title"):"title",
+			_("Date"):"date",
+			_("Distance"):"distance",
+			_("Sport"):"sport",
+			_("Time"):"time",
+			_("Beats"):"beats",
+			_("Average"):"average",
+			_("Calories"):"calories" 
+			}
+		search_string = self.lsa_searchvalue.get_text()
+		ddbb_field = lisOpt[self.lsa_searchoption.get_active_text()]
+		print search_string
+		print ddbb_field
 	
 	def create_menulist(self,column_names):
 		i=0

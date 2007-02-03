@@ -52,10 +52,11 @@ class Date:
 	def getMonthInterval(self,date):
 		year,month,day = date.split("-")
 		date_ini = "%0.4d-%0.2d-00" %(int(year),int(month))
-		if (int(month)<11):
+		if (int(month)<12):
 			month = int(month)+1
 		else:
 			year = int(year)+1
+			month = 1
 		date_end = "%0.4d-%0.2d-01" %(int(year),int(month))
 		return date_ini, date_end
 
