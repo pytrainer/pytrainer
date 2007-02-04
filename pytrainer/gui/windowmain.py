@@ -57,6 +57,20 @@ class Main(SimpleGladeApp):
 			self._createXmlListView(self.fileconf)
 		self.showAllRecordTreeViewColumns()
 		self.allRecordTreeView.set_search_column(1)
+	
+	def _createXmlListView(self,file):
+		menufile = XMLParser(file)
+		savedOptions = []
+		savedOptions.append(("date","True"))
+		savedOptions.append(("distance","True"))
+		savedOptions.append(("average","False"))
+		savedOptions.append(("title","True"))
+		savedOptions.append(("sport","True"))
+		savedOptions.append(("id_record","False"))
+		savedOptions.append(("time","False"))
+		savedOptions.append(("beats","False"))
+		savedOptions.append(("calories","False"))
+		menufile.createXMLFile("listviewmenu",savedOptions)	
 
 	def addImportPlugin(self,plugin):
 		button = gtk.MenuItem(plugin[0])
