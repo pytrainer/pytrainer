@@ -141,6 +141,11 @@ class Record:
 		return self.ddbb.select("records,sports", 
 			"date,distance,average,title,sports.name,id_record,time,beats,calories",
 			"sports.id_sports = records.sport")
+	
+	def getRecordListByCondition(self,condition):
+		return self.ddbb.select("records,sports", 
+			"date,distance,average,title,sports.name,id_record,time,beats,calories",
+			"sports.id_sports = records.sport and %s" %condition)
 
 	def getRecordDayList(self,date):
 		year,month,day = date.split("-")

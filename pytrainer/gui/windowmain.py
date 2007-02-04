@@ -241,16 +241,15 @@ class Main(SimpleGladeApp):
 			_("Calories"):"calories" 
 			}
 		search_string = self.lsa_searchvalue.get_text()
-		ddbb_field = lisOpt[self.lsa_searchoption.get_active_text()]
-		print search_string
-		print ddbb_field
+		#ddbb_field = lisOpt[self.lsa_searchoption.get_active_text()]
+		self.parent.searchListView("title like '%"+search_string+"%'")	
 	
 	def create_menulist(self,column_names):
 		i=0
 		for name in column_names:
 			if i!=0:
 				item = gtk.CheckMenuItem(name)
-				self.lsa_searchoption.append_text(name)
+				#self.lsa_searchoption.append_text(name)
 				item.connect("button_press_event", self.on_menulistview_activate, i)
 				self.menulistviewOptions.append(item)
 			i+=1

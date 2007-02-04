@@ -137,6 +137,10 @@ class pyTrainer:
 	def refreshListView(self):
 		record_list = self.record.getAllRecordList()
 		self.windowmain.actualize_listview(record_list)
+	
+	def searchListView(self,condition):
+		record_list = self.record.getRecordListByCondition(condition)
+		self.windowmain.actualize_listview(record_list)
 		
 	def editExtensions(self):
                 self.extension.manageExtensions()
