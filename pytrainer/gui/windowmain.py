@@ -370,21 +370,21 @@ class Main(SimpleGladeApp):
 		if self.block:
 			self.block = False
 		else:
-			self.notebook.set_current_page(0)
+			self.notebook.set_current_page(1)
 			self.selected_view="day"
 			self.parent.refreshListRecords()
 			self.parent.refreshGraphView(self.selected_view)
 
 	def on_calendar_changemonth(self,widget):
 		self.block = True
-		self.notebook.set_current_page(1)
+		self.notebook.set_current_page(2)
 		self.selected_view="month"
 		self.parent.refreshListRecords()
 		self.parent.refreshGraphView(self.selected_view)
 	
 	def on_calendar_next_year(self,widget):
 		self.block = True
-		self.notebook.set_current_page(2)
+		self.notebook.set_current_page(3)
 		self.selected_view="year"
 		self.parent.refreshListRecords()
 		self.parent.refreshGraphView(self.selected_view)
