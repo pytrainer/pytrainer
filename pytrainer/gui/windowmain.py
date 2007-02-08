@@ -81,7 +81,8 @@ class Main(SimpleGladeApp):
 	def window_sensitive(self, value):
 		self.window1.set_sensitive(value)
 	
-	def createGraphs(self,DayGraph,MonthGraph,YearGraph):
+	def createGraphs(self,RecordGraph,DayGraph,MonthGraph,YearGraph):
+		self.drawarerecord = RecordGraph(self.record_vbox, self.record_combovalue)
 		self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
 		self.drawareamonth = MonthGraph(self.month_vbox, self.month_combovalue)
 		self.drawareayear = YearGraph(self.year_vbox, self.year_combovalue)

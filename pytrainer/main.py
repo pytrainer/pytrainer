@@ -29,6 +29,7 @@ from record import Record
 #from extension import Extension
 from plugins import Plugins
 from profile import Profile
+from recordgraph import RecordGraph
 from daygraph import DayGraph
 from monthgraph import MonthGraph
 from yeargraph import YearGraph
@@ -64,7 +65,7 @@ class pyTrainer:
 		#self.extension = Extension(data_path)
 		self.plugins = Plugins(data_path)
 		self.loadPlugins()
-		self.windowmain.createGraphs(DayGraph,MonthGraph,YearGraph)
+		self.windowmain.createGraphs(RecordGraph,DayGraph,MonthGraph,YearGraph)
 		#self.windowmain.createMap(Googlemaps)
 		self.refreshListRecords()
 		self.refreshGraphView(0)
@@ -96,16 +97,16 @@ class pyTrainer:
 			record_list = self.record.getrecordList(date_selected)
 			self.windowmain.actualize_dayview(record_list)
 			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
-			try:
-				id_record = selected.get_value(iter,0)
-				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
-				if os.path.isfile(gpxfile):
-					gpx = Gpx(self.data_path,gpxfile)
-					record_list = gpx.getTrackList()
-				else: record_list = []
-			except:
-				record_list=[]
-			self.windowmain.actualize_daygraph(record_list)
+			#try:
+			#	id_record = selected.get_value(iter,0)
+			#	gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
+			#	if os.path.isfile(gpxfile):
+			#		gpx = Gpx(self.data_path,gpxfile)
+			#		record_list = gpx.getTrackList()
+			#	else: record_list = []
+			#except:
+			#	record_list=[]
+			#self.windowmain.actualize_daygraph(record_list)
 				
 		elif view=="month":
 			date_ini, date_end = self.date.getMonthInterval(date_selected)
