@@ -82,7 +82,7 @@ class Main(SimpleGladeApp):
 		self.window1.set_sensitive(value)
 	
 	def createGraphs(self,RecordGraph,DayGraph,MonthGraph,YearGraph):
-		self.drawarerecord = RecordGraph(self.record_vbox, self.record_combovalue)
+		self.drawarearecord = RecordGraph(self.record_vbox, self.record_combovalue)
 		self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
 		self.drawareamonth = MonthGraph(self.month_vbox, self.month_combovalue)
 		self.drawareayear = YearGraph(self.year_vbox, self.year_combovalue)
@@ -110,6 +110,32 @@ class Main(SimpleGladeApp):
 			column.set_sort_column_id(i)
 			treeview.append_column(column)
 			i+=1
+	
+	def actualize_recordview(self,record_list):
+		if len(record_list)>0:
+			record_list=record_list[0]
+			
+			self.recordview.set_sensitive(1)
+			distance = self.parseFloat(record_list[2])
+			beats = self.parseFloat(record_list[4])
+			average = self.parseFloat(record_list[6])
+			calories = self.parseFloat(record_list[7])
+			
+			self.record_distance.set_text("%0.2f" %distance)
+			hour,min,sec=self.parent.date.second2time(int(record_list[3]))
+			self.record_hour.set_text("%d" %hour)
+			self.record_minute.set_text("%d" %min)
+			self.record_second.set_text("%d" %sec)
+
+		else:
+			self.recordview.set_sensitive(0)
+	
+	def actualize_recordgraph(self,record_list):
+		if len(record_list)>0:
+			self.record_vbox.set_sensitive(1)
+		else:
+			self.record_vbox.set_sensitive(0)
+		self.drawarearecord.drawgraph(record_list)
 
 	def actualize_dayview(self,record_list):
 		if len(record_list)>0:
@@ -342,10 +368,12 @@ class Main(SimpleGladeApp):
 	
 	def on_page_change(self,widget,gpointer,page):
 		if page == 0:
-			self.selected_view="day"
+			self.selected_view="record"
 		elif page == 1:
-			self.selected_view="month"
+			self.selected_view="day"
 		elif page == 2:
+			self.selected_view="month"
+		elif page == 3:
 			self.selected_view="year"
 		self.parent.refreshGraphView(self.selected_view)
 	

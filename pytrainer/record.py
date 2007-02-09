@@ -116,6 +116,11 @@ class Record:
 				return float(string)
 		else:
 			return 0
+				
+	def getrecordInfo(self,id_record):
+		return self.ddbb.select("records,sports",
+					"sports.name,date,distance,time,beats,comments,average,calories,id_record",
+					"id_record=\"%s\" and records.sport=sports.id_sports" %id_record)
 	
 	def getrecordList(self,date):
 		return self.ddbb.select("records,sports",

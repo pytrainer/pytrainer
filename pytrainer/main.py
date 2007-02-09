@@ -93,20 +93,26 @@ class pyTrainer:
 		
 	def refreshGraphView(self, view, sport=None):
 		date_selected = self.date.getDate()
-		if view=="day":
+		if view=="record":
+			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+			if iter:
+				id_record = selected.get_value(iter,0)
+				record_list = self.record.getrecordInfo(id_record)
+				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
+				if os.path.isfile(gpxfile):
+					gpx = Gpx(self.data_path,gpxfile)
+					gpx_tracklist = gpx.getTrackList()
+				else: gpx_tracklist = []
+			else:
+				record_list=[]
+				gpx_tracklist = []
+			self.windowmain.actualize_recordview(record_list)
+			self.windowmain.actualize_recordgraph(gpx_tracklist)
+			 
+		elif view=="day":
 			record_list = self.record.getrecordList(date_selected)
 			self.windowmain.actualize_dayview(record_list)
 			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
-			#try:
-			#	id_record = selected.get_value(iter,0)
-			#	gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
-			#	if os.path.isfile(gpxfile):
-			#		gpx = Gpx(self.data_path,gpxfile)
-			#		record_list = gpx.getTrackList()
-			#	else: record_list = []
-			#except:
-			#	record_list=[]
-			#self.windowmain.actualize_daygraph(record_list)
 				
 		elif view=="month":
 			date_ini, date_end = self.date.getMonthInterval(date_selected)

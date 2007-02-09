@@ -405,7 +405,7 @@
 			  <signal name="switch_page" handler="on_page_change" last_modification_time="Thu, 13 Apr 2006 11:55:38 GMT"/>
 
 			  <child>
-			    <widget class="GtkNotebook" id="notebook8">
+			    <widget class="GtkNotebook" id="recordview">
 			      <property name="border_width">6</property>
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
