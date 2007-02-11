@@ -66,7 +66,7 @@ class Record:
 	def _formatRecord (self, list_options):
 		time = self.date.time2second(list_options["rcd_time"])
 		average = self.parseFloatRecord(list_options["rcd_average"])
-		cells= "date,sport,distance,time,beats,comments,average,calories,title,comments"
+		cells= "date,sport,distance,time,beats,comments,average,calories,title"
 		if (list_options["rcd_beats"] == ""):
 			list_options["rcd_beats"] = 0
 		

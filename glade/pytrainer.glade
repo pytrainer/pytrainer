@@ -1846,7 +1846,7 @@ Stage Profile/velocity</property>
 					      <property name="width_request">89</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
-					      <property name="editable">True</property>
+					      <property name="editable">False</property>
 					      <property name="visibility">True</property>
 					      <property name="max_length">10</property>
 					      <property name="text" translatable="yes"></property>
@@ -1875,7 +1875,7 @@ Stage Profile/velocity</property>
 						  <property name="width_request">27</property>
 						  <property name="visible">True</property>
 						  <property name="can_focus">True</property>
-						  <property name="editable">True</property>
+						  <property name="editable">False</property>
 						  <property name="visibility">True</property>
 						  <property name="max_length">2</property>
 						  <property name="text" translatable="yes"></property>
@@ -1920,7 +1920,7 @@ Stage Profile/velocity</property>
 						  <property name="width_request">27</property>
 						  <property name="visible">True</property>
 						  <property name="can_focus">True</property>
-						  <property name="editable">True</property>
+						  <property name="editable">False</property>
 						  <property name="visibility">True</property>
 						  <property name="max_length">2</property>
 						  <property name="text" translatable="yes"></property>
@@ -1965,7 +1965,7 @@ Stage Profile/velocity</property>
 						  <property name="width_request">27</property>
 						  <property name="visible">True</property>
 						  <property name="can_focus">True</property>
-						  <property name="editable">True</property>
+						  <property name="editable">False</property>
 						  <property name="visibility">True</property>
 						  <property name="max_length">2</property>
 						  <property name="text" translatable="yes"></property>
@@ -2023,7 +2023,7 @@ Stage Profile/velocity</property>
 					      <property name="width_request">89</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
-					      <property name="editable">True</property>
+					      <property name="editable">False</property>
 					      <property name="visibility">True</property>
 					      <property name="max_length">0</property>
 					      <property name="text" translatable="yes"></property>
@@ -2046,7 +2046,7 @@ Stage Profile/velocity</property>
 					      <property name="width_request">89</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
-					      <property name="editable">True</property>
+					      <property name="editable">False</property>
 					      <property name="visibility">True</property>
 					      <property name="max_length">0</property>
 					      <property name="text" translatable="yes"></property>
@@ -2069,7 +2069,7 @@ Stage Profile/velocity</property>
 					      <property name="width_request">89</property>
 					      <property name="visible">True</property>
 					      <property name="can_focus">True</property>
-					      <property name="editable">True</property>
+					      <property name="editable">False</property>
 					      <property name="visibility">True</property>
 					      <property name="max_length">0</property>
 					      <property name="text" translatable="yes"></property>
@@ -2412,7 +2412,7 @@ Stage Profile/velocity</property>
 						  <property name="width_request">89</property>
 						  <property name="visible">True</property>
 						  <property name="can_focus">True</property>
-						  <property name="editable">True</property>
+						  <property name="editable">False</property>
 						  <property name="visibility">True</property>
 						  <property name="max_length">10</property>
 						  <property name="text" translatable="yes"></property>
@@ -2469,7 +2469,7 @@ Stage Profile/velocity</property>
 						      <property name="width_request">27</property>
 						      <property name="visible">True</property>
 						      <property name="can_focus">True</property>
-						      <property name="editable">True</property>
+						      <property name="editable">False</property>
 						      <property name="visibility">True</property>
 						      <property name="max_length">2</property>
 						      <property name="text" translatable="yes"></property>
@@ -2514,7 +2514,7 @@ Stage Profile/velocity</property>
 						      <property name="width_request">27</property>
 						      <property name="visible">True</property>
 						      <property name="can_focus">True</property>
-						      <property name="editable">True</property>
+						      <property name="editable">False</property>
 						      <property name="visibility">True</property>
 						      <property name="max_length">2</property>
 						      <property name="text" translatable="yes"></property>
@@ -2559,7 +2559,7 @@ Stage Profile/velocity</property>
 						      <property name="width_request">27</property>
 						      <property name="visible">True</property>
 						      <property name="can_focus">True</property>
-						      <property name="editable">True</property>
+						      <property name="editable">False</property>
 						      <property name="visibility">True</property>
 						      <property name="max_length">2</property>
 						      <property name="text" translatable="yes"></property>
@@ -2869,7 +2869,7 @@ Stage Profile/velocity</property>
 						  <property name="width_request">89</property>
 						  <property name="visible">True</property>
 						  <property name="can_focus">True</property>
-						  <property name="editable">True</property>
+						  <property name="editable">False</property>
 						  <property name="visibility">True</property>
 						  <property name="max_length">10</property>
 						  <property name="text" translatable="yes"></property>
@@ -2898,7 +2898,7 @@ Stage Profile/velocity</property>
 						      <property name="width_request">27</property>
 						      <property name="visible">True</property>
 						      <property name="can_focus">True</property>
-						      <property name="editable">True</property>
+						      <property name="editable">False</property>
 						      <property name="visibility">True</property>
 						      <property name="max_length">2</property>
 						      <property name="text" translatable="yes"></property>
@@ -2943,7 +2943,7 @@ Stage Profile/velocity</property>
 						      <property name="width_request">27</property>
 						      <property name="visible">True</property>
 						      <property name="can_focus">True</property>
-						      <property name="editable">True</property>
+						      <property name="editable">False</property>
 						      <property name="visibility">True</property>
 						      <property name="max_length">2</property>
 						      <property name="text" translatable="yes"></property>
@@ -2988,7 +2988,7 @@ Stage Profile/velocity</property>
 						      <property name="width_request">27</property>
 						      <property name="visible">True</property>
 						      <property name="can_focus">True</property>
-						      <property name="editable">True</property>
+						      <property name="editable">False</property>
 						      <property name="visibility">True</property>
 						      <property name="max_length">2</property>
 						      <property name="text" translatable="yes"></property>
@@ -3046,7 +3046,7 @@ Stage Profile/velocity</property>
 						  <property name="width_request">89</property>
 						  <property name="visible">True</property>
 						  <property name="can_focus">True</property>
-						  <property name="editable">True</property>
+						  <property name="editable">False</property>
 						  <property name="visibility">True</property>
 						  <property name="max_length">0</property>
 						  <property name="text" translatable="yes"></property>
@@ -3069,7 +3069,7 @@ Stage Profile/velocity</property>
 						  <property name="width_request">89</property>
 						  <property name="visible">True</property>
 						  <property name="can_focus">True</property>
-						  <property name="editable">True</property>
+						  <property name="editable">False</property>
 						  <property name="visibility">True</property>
 						  <property name="max_length">0</property>
 						  <property name="text" translatable="yes"></property>
@@ -3092,7 +3092,7 @@ Stage Profile/velocity</property>
 						  <property name="width_request">89</property>
 						  <property name="visible">True</property>
 						  <property name="can_focus">True</property>
-						  <property name="editable">True</property>
+						  <property name="editable">False</property>
 						  <property name="visibility">True</property>
 						  <property name="max_length">0</property>
 						  <property name="text" translatable="yes"></property>
@@ -3397,7 +3397,7 @@ Calories</property>
 						  <property name="width_request">89</property>
 						  <property name="visible">True</property>
 						  <property name="can_focus">True</property>
-						  <property name="editable">True</property>
+						  <property name="editable">False</property>
 						  <property name="visibility">True</property>
 						  <property name="max_length">10</property>
 						  <property name="text" translatable="yes"></property>
@@ -3454,7 +3454,7 @@ Calories</property>
 						      <property name="width_request">34</property>
 						      <property name="visible">True</property>
 						      <property name="can_focus">True</property>
-						      <property name="editable">True</property>
+						      <property name="editable">False</property>
 						      <property name="visibility">True</property>
 						      <property name="max_length">3</property>
 						      <property name="text" translatable="yes"></property>
@@ -3499,7 +3499,7 @@ Calories</property>
 						      <property name="width_request">27</property>
 						      <property name="visible">True</property>
 						      <property name="can_focus">True</property>
-						      <property name="editable">True</property>
+						      <property name="editable">False</property>
 						      <property name="visibility">True</property>
 						      <property name="max_length">2</property>
 						      <property name="text" translatable="yes"></property>
@@ -3544,7 +3544,7 @@ Calories</property>
 						      <property name="width_request">27</property>
 						      <property name="visible">True</property>
 						      <property name="can_focus">True</property>
-						      <property name="editable">True</property>
+						      <property name="editable">False</property>
 						      <property name="visibility">True</property>
 						      <property name="max_length">2</property>
 						      <property name="text" translatable="yes"></property>
@@ -3854,7 +3854,7 @@ Calories</property>
 						  <property name="width_request">89</property>
 						  <property name="visible">True</property>
 						  <property name="can_focus">True</property>
-						  <property name="editable">True</property>
+						  <property name="editable">False</property>
 						  <property name="visibility">True</property>
 						  <property name="max_length">10</property>
 						  <property name="text" translatable="yes"></property>
@@ -3883,7 +3883,7 @@ Calories</property>
 						      <property name="width_request">27</property>
 						      <property name="visible">True</property>
 						      <property name="can_focus">True</property>
-						      <property name="editable">True</property>
+						      <property name="editable">False</property>
 						      <property name="visibility">True</property>
 						      <property name="max_length">2</property>
 						      <property name="text" translatable="yes"></property>
@@ -3928,7 +3928,7 @@ Calories</property>
 						      <property name="width_request">27</property>
 						      <property name="visible">True</property>
 						      <property name="can_focus">True</property>
-						      <property name="editable">True</property>
+						      <property name="editable">False</property>
 						      <property name="visibility">True</property>
 						      <property name="max_length">2</property>
 						      <property name="text" translatable="yes"></property>
@@ -3973,7 +3973,7 @@ Calories</property>
 						      <property name="width_request">27</property>
 						      <property name="visible">True</property>
 						      <property name="can_focus">True</property>
-						      <property name="editable">True</property>
+						      <property name="editable">False</property>
 						      <property name="visibility">True</property>
 						      <property name="max_length">2</property>
 						      <property name="text" translatable="yes"></property>
@@ -4031,7 +4031,7 @@ Calories</property>
 						  <property name="width_request">89</property>
 						  <property name="visible">True</property>
 						  <property name="can_focus">True</property>
-						  <property name="editable">True</property>
+						  <property name="editable">False</property>
 						  <property name="visibility">True</property>
 						  <property name="max_length">0</property>
 						  <property name="text" translatable="yes"></property>
@@ -4054,7 +4054,7 @@ Calories</property>
 						  <property name="width_request">89</property>
 						  <property name="visible">True</property>
 						  <property name="can_focus">True</property>
-						  <property name="editable">True</property>
+						  <property name="editable">False</property>
 						  <property name="visibility">True</property>
 						  <property name="max_length">0</property>
 						  <property name="text" translatable="yes"></property>
@@ -4077,7 +4077,7 @@ Calories</property>
 						  <property name="width_request">89</property>
 						  <property name="visible">True</property>
 						  <property name="can_focus">True</property>
-						  <property name="editable">True</property>
+						  <property name="editable">False</property>
 						  <property name="visibility">True</property>
 						  <property name="max_length">0</property>
 						  <property name="text" translatable="yes"></property>
