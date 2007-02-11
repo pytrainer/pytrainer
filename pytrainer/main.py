@@ -67,8 +67,9 @@ class pyTrainer:
 		self.loadPlugins()
 		self.windowmain.createGraphs(RecordGraph,DayGraph,MonthGraph,YearGraph)
 		#self.windowmain.createMap(Googlemaps)
-		self.refreshListRecords()
-		self.refreshGraphView(0)
+		self.windowmain.on_calendar_selected(None)
+		#self.refreshListRecords()
+		#self.refreshGraphView("day")
 	
 		self.refreshMainSportList()	
 		self.windowmain.run()

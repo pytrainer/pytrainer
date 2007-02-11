@@ -350,13 +350,20 @@ class Main(SimpleGladeApp):
 				menuItems[numcolumn-1].set_active(visible)
 		self.menublocking = 1
 
-
-
-	
 	######################
 	## Lista de eventos ##
 	######################
 
+	def on_edit_clicked(self,widget):
+    		selected,iter = self.recordTreeView.get_selection().get_selected()
+		id_record = selected.get_value(iter,0)
+		self.parent.editRecord(id_record)
+
+	def on_remove_clicked(self,widget):
+    		selected,iter = self.recordTreeView.get_selection().get_selected()
+		id_record = selected.get_value(iter,0)
+		self.parent.removeRecord(id_record)
+	
 	def on_export_csv_activate(self,widget):
 		self.parent.exportCsv()
 	
@@ -456,6 +463,9 @@ class Main(SimpleGladeApp):
 				except:
 					pass
 				self.popup.show(selected.get_value(iter,0), event.button, time)
+			elif event.button == 1:
+				self.notebook.set_current_page(0)
+				self.parent.refreshGraphView("record")
 		return False
 	
 	def actualize_recordTreeView(self, record_list):
