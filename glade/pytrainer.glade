@@ -411,7 +411,7 @@
 			      <property name="can_focus">True</property>
 			      <property name="show_tabs">True</property>
 			      <property name="show_border">True</property>
-			      <property name="tab_pos">GTK_POS_TOP</property>
+			      <property name="tab_pos">GTK_POS_RIGHT</property>
 			      <property name="scrollable">False</property>
 			      <property name="enable_popup">False</property>
 
@@ -818,7 +818,7 @@
 					      </child>
 
 					      <child>
-						<widget class="GtkEntry" id="entry340">
+						<widget class="GtkEntry" id="record_calories">
 						  <property name="width_request">70</property>
 						  <property name="visible">True</property>
 						  <property name="can_focus">True</property>
@@ -1336,22 +1336,14 @@
 			      </child>
 
 			      <child>
-				<widget class="GtkLabel" id="label-2147483648">
+				<widget class="GtkImage" id="image24">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">Info</property>
-				  <property name="use_underline">False</property>
-				  <property name="use_markup">False</property>
-				  <property name="justify">GTK_JUSTIFY_LEFT</property>
-				  <property name="wrap">False</property>
-				  <property name="selectable">False</property>
+				  <property name="stock">gtk-info</property>
+				  <property name="icon_size">4</property>
 				  <property name="xalign">0.5</property>
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
-				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-				  <property name="width_chars">-1</property>
-				  <property name="single_line_mode">False</property>
-				  <property name="angle">0</property>
 				</widget>
 				<packing>
 				  <property name="type">tab</property>
@@ -1479,22 +1471,13 @@ Stage Profile/velocity</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkLabel" id="label-2147483647">
+				<widget class="GtkImage" id="image25">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">Graphs</property>
-				  <property name="use_underline">False</property>
-				  <property name="use_markup">False</property>
-				  <property name="justify">GTK_JUSTIFY_LEFT</property>
-				  <property name="wrap">False</property>
-				  <property name="selectable">False</property>
+				  <property name="pixbuf">path2766.png</property>
 				  <property name="xalign">0.5</property>
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
-				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-				  <property name="width_chars">-1</property>
-				  <property name="single_line_mode">False</property>
-				  <property name="angle">0</property>
 				</widget>
 				<packing>
 				  <property name="type">tab</property>
@@ -1526,22 +1509,13 @@ Stage Profile/velocity</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkLabel" id="label-2147483648">
+				<widget class="GtkImage" id="image26">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">map</property>
-				  <property name="use_underline">False</property>
-				  <property name="use_markup">False</property>
-				  <property name="justify">GTK_JUSTIFY_LEFT</property>
-				  <property name="wrap">False</property>
-				  <property name="selectable">False</property>
+				  <property name="pixbuf">path2772.png</property>
 				  <property name="xalign">0.5</property>
 				  <property name="yalign">0.5</property>
 				  <property name="xpad">0</property>
 				  <property name="ypad">0</property>
-				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-				  <property name="width_chars">-1</property>
-				  <property name="single_line_mode">False</property>
-				  <property name="angle">0</property>
 				</widget>
 				<packing>
 				  <property name="type">tab</property>

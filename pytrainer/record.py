@@ -66,7 +66,7 @@ class Record:
 	def _formatRecord (self, list_options):
 		time = self.date.time2second(list_options["rcd_time"])
 		average = self.parseFloatRecord(list_options["rcd_average"])
-		cells= "date,sport,distance,time,beats,comments,average,calories,title"
+		cells= "date,sport,distance,time,beats,comments,average,calories,title,comments"
 		if (list_options["rcd_beats"] == ""):
 			list_options["rcd_beats"] = 0
 		
@@ -119,7 +119,7 @@ class Record:
 				
 	def getrecordInfo(self,id_record):
 		return self.ddbb.select("records,sports",
-					"sports.name,date,distance,time,beats,comments,average,calories,id_record",
+					"sports.name,date,distance,time,beats,comments,average,calories,id_record,title",
 					"id_record=\"%s\" and records.sport=sports.id_sports" %id_record)
 	
 	def getrecordList(self,date):

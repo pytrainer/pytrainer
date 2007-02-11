@@ -120,12 +120,18 @@ class Main(SimpleGladeApp):
 			beats = self.parseFloat(record_list[4])
 			average = self.parseFloat(record_list[6])
 			calories = self.parseFloat(record_list[7])
+			title = record_list[9]
+			comments = record_list[5]
 			
 			self.record_distance.set_text("%0.2f" %distance)
 			hour,min,sec=self.parent.date.second2time(int(record_list[3]))
 			self.record_hour.set_text("%d" %hour)
 			self.record_minute.set_text("%d" %min)
 			self.record_second.set_text("%d" %sec)
+			self.record_beats.set_text("%0.2f" %beats)
+			self.record_average.set_text("%0.2f" %average)
+			self.record_calories.set_text("%0.2f" %calories)
+			self.record_title.set_text(title)
 
 		else:
 			self.recordview.set_sensitive(0)
