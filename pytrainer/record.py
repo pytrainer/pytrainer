@@ -34,7 +34,7 @@ class Record:
 		self.filename = self.conf.getValue("conffile")
 		self.configuration = XMLParser(self.filename)
 		self.ddbb = DDBB(self.configuration)
-		self.ddbb.connect()
+		print self.ddbb.connect()
 		#hack for pytrainer 0.9.5 and previous
 		if self.configuration.getOption("version")=="1.0":
 			self.ddbb.updatemonth()

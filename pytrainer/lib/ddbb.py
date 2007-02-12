@@ -38,6 +38,11 @@ class DDBB:
 		#con 0 es que no estaba la bbdd creada
 		#con 1 imposible conectar a la maquina.
 		var = self.ddbbObject.connect()
+		if var == 0:
+			self.ddbbObject.createDDBB()
+			self.ddbbObject.connect()
+			self.ddbbObject.createTables()
+			var = 1
 		return var
 
 	def build_ddbb(self):
