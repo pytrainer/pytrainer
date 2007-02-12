@@ -83,7 +83,8 @@ class Main(SimpleGladeApp):
 	
 	def createGraphs(self,RecordGraph,DayGraph,MonthGraph,YearGraph):
 		self.drawarearecord = RecordGraph(self.record_vbox, self.record_combovalue)
-		self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
+		#self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
+		self.day_vbox.hide()
 		self.drawareamonth = MonthGraph(self.month_vbox, self.month_combovalue)
 		self.drawareayear = YearGraph(self.year_vbox, self.year_combovalue)
 	
@@ -481,9 +482,9 @@ class Main(SimpleGladeApp):
 				iterOne = iter
 			store.set (
 				iter,
-				0, i[8],
-				1, i[0],
-				2, i[2]
+				0, int(i[8]),
+				1, str(i[0]),
+				2, str(i[2])
 				)
 		self.recordTreeView.set_model(store)
 		if iterOne:
