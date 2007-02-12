@@ -5706,7 +5706,7 @@ Calories</property>
 
 <widget class="GtkWindow" id="newprofile">
   <property name="visible">True</property>
-  <property name="title" translatable="yes">window2</property>
+  <property name="title" translatable="yes">Profile</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
@@ -7294,7 +7294,7 @@ that you want do it?</property>
 
 <widget class="GtkWindow" id="calendardialog">
   <property name="visible">True</property>
-  <property name="title" translatable="yes">window2</property>
+  <property name="title" translatable="yes">Calendar</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
@@ -7421,7 +7421,7 @@ that you want do it?</property>
   <property name="destroy_with_parent">False</property>
   <property name="name" translatable="yes">pytrainer</property>
   <property name="copyright" translatable="yes">(c) Fiz Vazquez &lt;vud1@sindominio.net&gt;</property>
-  <property name="comments" translatable="yes">The training tool for the gnu people</property>
+  <property name="comments" translatable="yes">The free sport trainning center</property>
   <property name="license" translatable="yes">(C) Fiz Vazquez
 
   This program is free software; you can redistribute 
@@ -7449,7 +7449,7 @@ French: Dj &lt;dj@djremixtheblog.be&gt;
 Polish: Seweryn Kokot &lt;skokot@po.opole.pl&gt;
 german: Aleks &lt;aleks@schnecklecker.de&gt;
 Spanish: Fiz vazquez &lt;vud1@sindominio.net&gt;</property>
-  <property name="logo">logo.png</property>
+  <property name="logo">pytrainer_mini.png</property>
   <signal name="close" handler="gtk_widget_destroy" last_modification_time="Thu, 09 Nov 2006 20:25:31 GMT"/>
 </widget>
 
@@ -7589,7 +7589,7 @@ Spanish: Fiz vazquez &lt;vud1@sindominio.net&gt;</property>
 
 <widget class="GtkDialog" id="warning">
   <property name="visible">True</property>
-  <property name="title" translatable="yes">dialog1</property>
+  <property name="title" translatable="yes">warning</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
@@ -8066,7 +8066,7 @@ Spanish: Fiz vazquez &lt;vud1@sindominio.net&gt;</property>
   <property name="width_request">650</property>
   <property name="height_request">230</property>
   <property name="visible">True</property>
-  <property name="title" translatable="yes">window2</property>
+  <property name="title" translatable="yes">Plugins</property>
   <property name="type">GTK_WINDOW_TOPLEVEL</property>
   <property name="window_position">GTK_WIN_POS_NONE</property>
   <property name="modal">False</property>
