@@ -34,7 +34,7 @@ class Record:
 		self.filename = self.conf.getValue("conffile")
 		self.configuration = XMLParser(self.filename)
 		self.ddbb = DDBB(self.configuration)
-		print self.ddbb.connect()
+		self.ddbb.connect()
 		#hack for pytrainer 0.9.5 and previous
 		if self.configuration.getOption("version")=="1.0":
 			self.ddbb.updatemonth()
@@ -42,6 +42,8 @@ class Record:
 			self.ddbb.updateDateFormat()
 		if self.configuration.getOption("version")<="0.9.8.2":
 			self.ddbb.addTitle2ddbb()
+		if self.configuration.getOption("version")<="1.3.1":
+			self.ddbb.addUnevenness2ddbb()
 		self.configuration.setVersion(version)
 
 	def newRecord(self, list_sport, date):

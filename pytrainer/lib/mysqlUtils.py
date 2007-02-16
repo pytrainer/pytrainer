@@ -73,6 +73,8 @@ class Sql:
 			`comments` TEXT NOT NULL ,
 			`gpslog` VARCHAR( 200 ) NOT NULL ,
 			`title` VARCHAR( 200 ) NOT NULL ,
+			`upositive` FLOAT NOT NULL ,
+			`unegative` FLOAT NOT NULL ,
 			INDEX ( `id_record` )
 			) ENGINE = MYISAM ;""")
 	

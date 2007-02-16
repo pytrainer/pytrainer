@@ -75,6 +75,14 @@ class DDBB:
 		sql = "alter table records add title varchar(200)"
 		self.ddbbObject.freeExec(sql)
 	
+	def addUnevenness2ddbb(self):
+		#this function add accumulated unevennes columns in
+		#the record ddbb. New in 1.3.2 version
+		sql = "alter table records add upositive float"
+		self.ddbbObject.freeExec(sql)
+		sql = "alter table records add unegative float"
+		self.ddbbObject.freeExec(sql)
+	
 	def updatemonth(self):
 		#this is a function to repair a bug from
 		#pytrainer 0.9.5 and previus
