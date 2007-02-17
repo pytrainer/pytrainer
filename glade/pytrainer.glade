@@ -1064,7 +1064,7 @@
 							  </child>
 
 							  <child>
-							    <widget class="GtkEntry" id="record_unevennes_positive">
+							    <widget class="GtkEntry" id="record_upositive">
 							      <property name="visible">True</property>
 							      <property name="can_focus">True</property>
 							      <property name="editable">False</property>
@@ -1108,7 +1108,7 @@
 							  </child>
 
 							  <child>
-							    <widget class="GtkEntry" id="record_unevennes_negative">
+							    <widget class="GtkEntry" id="record_unegative">
 							      <property name="visible">True</property>
 							      <property name="can_focus">True</property>
 							      <property name="editable">False</property>

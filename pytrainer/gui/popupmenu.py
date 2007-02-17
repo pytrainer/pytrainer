@@ -35,8 +35,9 @@ class PopupMenu(SimpleGladeApp):
 
 	def on_showclassic_activate(self,widget):
 		self.parent.classicview_item.set_active(True)
-		self.parent.on_calendar_selected(None)
-		#self.parent.parent.refreshGraphDayRecord(self.id_record)
+		#self.parent.on_calendar_selected(None)
+		self.parent.notebook.set_current_page(0)
+		self.parent.parent.refreshGraphView("record")
 
 	def on_remove_activate(self,widget):
 		self.parent.parent.removeRecord(self.id_record)
