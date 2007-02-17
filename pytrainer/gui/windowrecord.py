@@ -39,7 +39,9 @@ class WindowRecord(SimpleGladeApp):
 			"rcd_average",
 			"rcd_calories",
 			"rcd_title",
-			"rcd_gpxfile"
+			"rcd_gpxfile",
+			"rcd_upositive",
+			"rcd_unegative"
 			]
 		count = 0
 		self.listSport = {}
@@ -96,7 +98,7 @@ class WindowRecord(SimpleGladeApp):
 			pass	
 	
 	def setValues(self,values):
-		#(50, u'2006-10-13', 1, 25.0, u'5625', 0.0, 16.0, 0, u'', gpsfile, title )
+		#(50, u'2006-10-13', 1, 25.0, u'5625', 0.0, 16.0, 0, u'', gpsfile, title,upositive,unegative )
 		self.id_record = values[0]
 		time_in_hour = int(values[4])/3600.0
 		hour = int(time_in_hour)
@@ -110,6 +112,8 @@ class WindowRecord(SimpleGladeApp):
 		self.setValue("rcd_average",values[6])
 		self.setValue("rcd_calories",values[7])
 		self.setValue("rcd_beats",values[5])
+		self.setValue("rcd_upositive",values[11])
+		self.setValue("rcd_unegative",values[12])
 		self.rcd_title.set_text("%s"%values[10])
 		self.rcd_sport.set_active(values[2]-1)
 		buffer = self.rcd_comments.get_buffer()
