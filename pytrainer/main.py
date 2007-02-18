@@ -34,7 +34,7 @@ from daygraph import DayGraph
 from monthgraph import MonthGraph
 from yeargraph import YearGraph
 
-#from extensions.googlemaps import Googlemaps
+from extensions.googlemaps import Googlemaps
 
 #from gui.windowextensions import WindowExtensions
 from gui.windowmain import Main
@@ -66,7 +66,7 @@ class pyTrainer:
 		self.plugins = Plugins(data_path)
 		self.loadPlugins()
 		self.windowmain.createGraphs(RecordGraph,DayGraph,MonthGraph,YearGraph)
-		#self.windowmain.createMap(Googlemaps)
+		self.windowmain.createMap(Googlemaps)
 		self.windowmain.on_calendar_selected(None)
 		#self.refreshListRecords()
 		#self.refreshGraphView("day")
@@ -103,6 +103,7 @@ class pyTrainer:
 				if os.path.isfile(gpxfile):
 					gpx = Gpx(self.data_path,gpxfile)
 					gpx_tracklist = gpx.getTrackList()
+					self.refreshMapView()
 				else: gpx_tracklist = []
 			else:
 				record_list=[]

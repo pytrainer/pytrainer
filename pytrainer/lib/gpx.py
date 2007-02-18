@@ -106,7 +106,7 @@ class Gpx:
 						else:
 							vel = (his_vel[0]+his_vel[1]+his_vel[2])/3
 						if vel<80:
-							retorno.append((total_dist,tmp_alt, total_time,vel))
+							retorno.append((total_dist,tmp_alt, total_time,vel,line_arr.group(1),line_arr.group(2)))
 					except:
 						print tempnum
 				

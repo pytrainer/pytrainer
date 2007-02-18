@@ -21,6 +21,8 @@ import os
 
 from pytrainer.lib.system import checkConf
 from pytrainer.extension import Extension
+from pytrainer.lib.gpx import Gpx
+import pytrainer.lib.points as Points 
 
 class Googlemaps:
 	def __init__(self, data_path = None, vbox = None):
@@ -42,7 +44,17 @@ class Googlemaps:
 			os.system("gpsbabel -t -i gpx -f %s -x position,distance=%sm -o gpx -F %s" %(gpxfile,trackdistance,cachefile))
 
 		key = self.extension.getCodeConfValue(code,"googlekey")
-		htmlfile = self.data_path+"/maps/index.html?gpxfile="+cachefile+"&key="+key
+		gpx = Gpx(self.data_path,cachefile)
+		list_values = gpx.getTrackList()
+		pointlist = []
+		for i in list_values:
+			pointlist.append((i[4],i[5]))
+		points,levels = Points.encodePoints(pointlist)
+		os.system("echo \"\" > /tmp/lala")
+		os.system("echo 'points = %s' >> /tmp/lala" %points)
+		os.system("echo 'levels = %s' >> /tmp/lala" %levels)
+		
+		htmlfile = self.data_path+"/maps/index.html?points="+points+"&levels="+levels+"&key="+key
 		htmlfile = os.path.abspath(htmlfile)
 		if htmlfile != self.htmlfile:
         		self.moz.load_url("file://"+htmlfile)

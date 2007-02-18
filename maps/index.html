@@ -5,11 +5,6 @@
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <title>Google Maps JavaScript API Example</title>
 
-    <script type="text/javascript">
-	var googleimport = getElementeById(googleapiimport);
-	googleimport.src.value = "http://maps.google.com/maps?file=api&amp;v=2";
-    </script>
-
     <script id="googleapiimport" src="http://maps.google.com/maps?file=api&amp;v=2"
             type="text/javascript"></script>
     <script type="text/javascript">
@@ -24,41 +19,33 @@
 			eval(arrVariableActual[0]+"="+arrVariableActual[1]+";");
 		}
 
+
     //<![CDATA[
 	function load() {
 		if (GBrowserIsCompatible()) {
-			var map = new GMap2(document.getElementById("map"));
+        		var map = new GMap2(document.getElementById("map"));
         		map.addControl(new GLargeMapControl());
         		map.addControl(new GMapTypeControl());
-        		map.setCenter(new GLatLng(43.319664616, -3.015837260), 13);
+        		map.setCenter(new GLatLng(40.71213418976525, -73.96785736083984), 11);
 
-			// Add a polyline with five random points. Sort the points by
-			// longitude so that the line does not intersect itself.
-			var points = [];
-        		GDownloadUrl(gpxfile, function(data) {
-          			var xml = GXml.parse(data);
-          			var markers = xml.documentElement.getElementsByTagName("trkpt");
-				var block = "False";
-				alert(markers.length);
-  				for (var i = 0; i < markers.length; i++) {
-					if (parseFloat(markers[i].getAttribute("lat")) > -0.00000001 &&
-					    parseFloat(markers[i].getAttribute("lat")) < 0.000000001) {
-						car=1;
-						}
-					else {
-            					var point = new GLatLng(parseFloat(markers[i].getAttribute("lat")),
-                                    			parseFloat(markers[i].getAttribute("lon")));
-						if (block = "False") {
-        						map.setCenter(point, 13);
-							block = "True";
-							}
-    						points.push(point);
-						}
-  					}
-				map.addOverlay(new GPolyline(points));
+        		// Add an encoded polyline.
+			var encodedPoints = points
+			var encodedPoints = levels
+			
+			alert (points);	
+			alert (levels);
+ 
+        		var encodedPolyline = new GPolyline.fromEncoded({
+				color: "#3333cc",
+				weight: 10,
+				points: encodedPoints,
+				levels: encodedLevels,
+				zoomFactor: 32,
+				numLevels: 4
 				});
-    			}
-		}
+			map.addOverlay(encodedPolyline);
+      			}
+    		}	
 
     //]]>
     </script>

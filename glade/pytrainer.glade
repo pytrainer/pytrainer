@@ -1487,22 +1487,14 @@ Stage Profile/velocity</property>
 			      </child>
 
 			      <child>
-				<widget class="GtkLabel" id="label11147">
+				<widget class="GtkVBox" id="map_vbox">
 				  <property name="visible">True</property>
-				  <property name="label" translatable="yes">label11147</property>
-				  <property name="use_underline">False</property>
-				  <property name="use_markup">False</property>
-				  <property name="justify">GTK_JUSTIFY_LEFT</property>
-				  <property name="wrap">False</property>
-				  <property name="selectable">False</property>
-				  <property name="xalign">0.5</property>
-				  <property name="yalign">0.5</property>
-				  <property name="xpad">0</property>
-				  <property name="ypad">0</property>
-				  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
-				  <property name="width_chars">-1</property>
-				  <property name="single_line_mode">False</property>
-				  <property name="angle">0</property>
+				  <property name="homogeneous">False</property>
+				  <property name="spacing">0</property>
+
+				  <child>
+				    <placeholder/>
+				  </child>
 				</widget>
 				<packing>
 				  <property name="tab_expand">False</property>
@@ -4657,7 +4649,7 @@ Calories</property>
 	  </child>
 
 	  <child>
-	    <widget class="GtkVBox" id="map_vbox">
+	    <widget class="GtkVBox" id="map_vbox_old">
 	      <property name="visible">True</property>
 	      <property name="homogeneous">False</property>
 	      <property name="spacing">0</property>

@@ -50,17 +50,11 @@ def encodePoints(locations):
     """Encodes lat/lon locations into a Gmap polyline encoding.
     Accepts an array of lat/lon pairs [lat1,lon1,lat2,lon2,...] and
     returns 2 strings, the encoded points and the corresponding levels"""
-
-    if not locations or len(locations) < 2:
-        return "", ""
-    
-    numLocations = len(locations)/2
-    locations = map( lambda x: int(x/1.0E-5), locations )
     points = []
     levels = []
     xo = yo = 0
-    for i in range(numLocations):
-        y = locations[i<<1]
+    for i in locations:
+        y = int(float(i[0])*100000)
         yd = y - yo
         yo = y
         f = (abs(yd) << 1) - (yd<0)
@@ -72,7 +66,7 @@ def encodePoints(locations):
             points.append(chr(e+63))
             if f == 0: break
 
-        x = locations[(i<<1)+1]
+        x = int(float(i[1])*100000)
         xd = x - xo
         xo = x
         f = (abs(xd) << 1) - (xd<0)
@@ -90,6 +84,7 @@ def encodePoints(locations):
     return "".join(points), "".join(levels)
 
 def nextLevel():
+    return 'B'
     r = random.random()
     if r < 0.65: return '?'
     if r < 0.92: return '@'
@@ -97,11 +92,13 @@ def nextLevel():
     return 'B'
 
 if __name__ == '__main__':
-    print "Testing...",
-    locs = [33.823,-84.151,33.822,-84.149,33.823,-84.147]
+    locs = [(38.5, -120.2), (40.7, -120.95), (43.252, -126.453)]
+    locs = [(37.4419, -122.1419),(37.4519, -122.1519),( 37.4619, -122.1819)]
     points, levels = encodePoints(locs)
+    print points
+    print levels
     decodedLocs = decodePoints(points)
-
+    print decodePoints(points)
     def _cmpFloat(x,y):
         if abs(x-y) > 0.0001: return 0
         return 1
@@ -111,5 +108,4 @@ if __name__ == '__main__':
     for i in range(len(locs)):
         assert(_cmpFloat(locs[i], decodedLocs[i]))
 
-    print "OK"
     
