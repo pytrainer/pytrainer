@@ -115,7 +115,7 @@ class WindowRecord(SimpleGladeApp):
 		self.setValue("rcd_upositive",values[11])
 		self.setValue("rcd_unegative",values[12])
 		self.rcd_title.set_text("%s"%values[10])
-		self.rcd_sport.set_active(values[2]-1)
+		self.rcd_sport.set_active(int(values[2])-1)
 		buffer = self.rcd_comments.get_buffer()
 		start,end = buffer.get_bounds()
 		buffer.set_text(values[8])
