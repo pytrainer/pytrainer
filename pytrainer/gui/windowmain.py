@@ -269,15 +269,15 @@ class Main(SimpleGladeApp):
 			iter = store.append()
 			store.set (
 				iter,
-				0, i[5],
-				1, i[3],
-				2, i[0],
-				3, i[1],
-				4, i[4],
+				0, int(i[5]),
+				1, str(i[3]),
+				2, str(i[0]),
+				3, float(i[1]),
+				4, str(i[4]),
 				5, time,
-				6, i[7],
-				7, i[2],
-				8, i[8]
+				6, str(i[7]),
+				7, str(i[2]),
+				8, str(i[8])
 				)
 		#self.allRecordTreeView.set_headers_clickable(True)
 		self.allRecordTreeView.set_model(store)
