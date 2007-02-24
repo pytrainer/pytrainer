@@ -41,14 +41,34 @@ class Gpx:
 		fh = open(pytrainerfile)
 		line = fh.readline()
 		init_time = ""
+		i=0
 		while line:
 			line_arr = re.match("([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*)$",line)
 			tmp_time = int(line_arr.group(4))
-			if init_time == "":
+			if i == 1:
 				init_time = tmp_time
 			line = fh.readline()
+			i = i+1
 		end_time = tmp_time
 		return init_time, end_time
+		
+	def getUnevenness(self):
+		pytrainerfile = self.gpx2pytrainer()
+		val = self._getValues(pytrainerfile)
+		upositive = 0
+		unegative = 0
+		tmp_alt = 0
+		count = 0
+		for i in val:
+			if count > 0:
+				alt = i[1] - tmp_alt
+				if alt > 0:
+					upositive = upositive + alt
+				if alt < 0:
+					unegative = unegative - alt
+			tmp_alt = i[1]	
+			count = count +1	
+		return upositive,unegative 
 	
 	def getTrackList(self):
 		pytrainerfile = self.gpx2pytrainer()
