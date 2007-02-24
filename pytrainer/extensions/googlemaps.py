@@ -18,11 +18,13 @@
 
 import gtkmozembed
 import os
+import re
 
 from pytrainer.lib.system import checkConf
 from pytrainer.extension import Extension
 from pytrainer.lib.gpx import Gpx
 import pytrainer.lib.points as Points 
+from pytrainer.lib.fileUtils import fileUtils
 
 class Googlemaps:
 	def __init__(self, data_path = None, vbox = None):
@@ -50,15 +52,58 @@ class Googlemaps:
 		for i in list_values:
 			pointlist.append((i[4],i[5]))
 		points,levels = Points.encodePoints(pointlist)
-		os.system("echo \"\" > /tmp/lala")
-		os.system("echo 'points = %s' >> /tmp/lala" %points)
-		os.system("echo 'levels = %s' >> /tmp/lala" %levels)
-		
-		htmlfile = self.data_path+"/maps/index.html?points="+points+"&levels="+levels+"&key="+key
+		points = points.replace("\\","\\\\")
+		print "mierda"
+	
+		htmlfile = self.conf.getValue("tmpdir")+"/index.html"
+		#htmlfile = self.data_path+"/maps/index.html?points="+points+"&levels="+levels+"&key="+key
+		self.createHtml(points,levels,pointlist[0])
 		htmlfile = os.path.abspath(htmlfile)
-		if htmlfile != self.htmlfile:
-        		self.moz.load_url("file://"+htmlfile)
-			self.htmlfile = htmlfile
-		else:
-			pass
+		#if htmlfile != self.htmlfile:
+        	self.moz.load_url("file://"+htmlfile)
+		#	self.htmlfile = htmlfile
+		#else:
+		#	pass
+	
+	def createHtml(self,points,levels,init_point):
+		tmpdir = self.conf.getValue("tmpdir")
+		content = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \n"
+    		content += "		\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
+		content += "	<html xmlns=\"http://www.w3.org/1999/xhtml\"  xmlns:v=\"urn:schemas-microsoft-com:vml\">\n"
+  		content += "	<head>\n"
+    		content += "		<meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>\n"
+    		content += "		<title>Google Maps JavaScript API Example</title>\n"
+    		content += "		<script id=\"googleapiimport\" src=\"http://maps.google.com/maps?file=api&amp;v=2\"\n"
+            	content += "			type=\"text/javascript\"></script>\n"
+    		content += "		<script type=\"text/javascript\">\n"
+    		content += "		//<![CDATA[\n"
+		content += "		function load() {\n"
+		content += "			if (GBrowserIsCompatible()) {\n"
+        	content += "				var map = new GMap2(document.getElementById(\"map\"));\n"
+        	content += "				map.addControl(new GLargeMapControl());\n"
+        	content += "				map.addControl(new GMapTypeControl());\n"
+        	content += "				map.setCenter(new GLatLng(%s,%s), 11);\n" %(init_point[0],init_point[1])
+        	content += "				// Add an encoded polyline.\n"
+        	content += "				var encodedPolyline = new GPolyline.fromEncoded({\n"
+		content += "					color: \"#3333cc\",\n"
+		content += "					weight: 10,\n"
+		content += "					points: \"%s\",\n" %points
+		content += "					levels: \"%s\",\n" %levels
+		content += "					zoomFactor: 32,\n"
+		content += "					numLevels: 4\n"
+		content += "					});\n"
+		content += "				map.addOverlay(encodedPolyline);\n"
+      		content += "				}\n"
+    		content += "			}\n	"
+    		content += "		//]]>\n"
+    		content += "	</script>\n"
+  		content += "	</head>\n"
+  		content += "	<body onload=\"load()\" onunload=\"GUnload()\">\n"
+    		content += "		<div id=\"map\" style=\"width: 520px; height: 480px\"></div>\n"
+  		content += "	</body>\n"
+		content += "</html>\n" 
+		filename = tmpdir+"/index.html"
+		file = fileUtils(filename,content)
+		file.run()
+		
 

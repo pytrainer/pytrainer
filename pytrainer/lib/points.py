@@ -84,7 +84,6 @@ def encodePoints(locations):
     return "".join(points), "".join(levels)
 
 def nextLevel():
-    return 'B'
     r = random.random()
     if r < 0.65: return '?'
     if r < 0.92: return '@'
