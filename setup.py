@@ -19,6 +19,7 @@ setup( 	name="pytrainer",
 	license="GNU General Public License(GPL)",
 	packages=[	'pytrainer',
 			'pytrainer.gui',
+			'pytrainer.extensions',
 			'pytrainer.lib'
 			],
 
