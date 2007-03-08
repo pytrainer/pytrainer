@@ -66,7 +66,7 @@ class Sql:
 			gpslog varchar(200),
 			title varchar(200),
 			upositive float,
-			unegatice float
+			unegative float
 			) ;"""
 		cur.execute(sql)
 
