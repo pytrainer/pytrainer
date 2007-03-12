@@ -28,13 +28,15 @@ class Gpx:
 		self.data_path = data_path
 		self.filename = filename
 		self.conf = checkConf()
+		self.total_dist = 0
+		self.total_time = 0
+		self.upositive = 0
+		self.unegative = 0
+		pytrainerfile = self.gpx2pytrainer()
+		self._getValues(pytrainerfile)
 
 	def getMaxValues(self):
-		pytrainerfile = self.gpx2pytrainer()
-		val = self._getValues(pytrainerfile)
-		total_dist = val[-1][0]
-		total_time = val[-1][2]
-		return total_dist, total_time
+		return self.total_dist, self.total_time
 
 	def getDatevalues(self):	
 		pytrainerfile = self.gpx2pytrainer()
@@ -53,22 +55,7 @@ class Gpx:
 		return init_time, end_time
 		
 	def getUnevenness(self):
-		pytrainerfile = self.gpx2pytrainer()
-		val = self._getValues(pytrainerfile)
-		upositive = 0
-		unegative = 0
-		tmp_alt = 0
-		count = 0
-		for i in val:
-			if count > 0:
-				alt = i[1] - tmp_alt
-				if alt > 0:
-					upositive = upositive + alt
-				if alt < 0:
-					unegative = unegative - alt
-			tmp_alt = i[1]	
-			count = count +1	
-		return upositive,unegative 
+		return self.upositive,self.unegative 
 	
 	def getTrackList(self):
 		pytrainerfile = self.gpx2pytrainer()
@@ -81,9 +68,7 @@ class Gpx:
 		return tmpfile
 
 	def _getValues(self,pytrainerfile):
-		numline=0
 		fh = open(pytrainerfile)
-		#fh2 = open("/tmp/medicion.txt","w")
 		retorno = []
 
 		last_lat = "False"
@@ -93,49 +78,59 @@ class Gpx:
 		total_dist = 0
 
 		line = fh.readline()
-		total_time = 0
-		tmp_total_time = 0
+		
+		tmp_alt = 0
 
 		while line:
-			#line_arr = re.match("([^ ]*)[^\d-]*([^ ]*)[^\d-]*([^ ]*) ([^\n]*) ",line)
 			line_arr = re.match("([^ ]*) ([^ ]*) ([^ ]*) ([^ ]*)$",line)
 			if len(line_arr.group(3)) < 15:
 				tmp_alt = int(line_arr.group(3))
-	
 	
 			#evitamos los puntos blancos
 			if (float(line_arr.group(1)) < -0.001) or (float(line_arr.group(1)) > 0.0000001):
 				tmp_lat = float(line_arr.group(1))*0.01745329252
 				tmp_lon = float(line_arr.group(2))*0.01745329252
 				tmp_time = int(line_arr.group(4))
-
+		
+				#Para las vueltas diferentes a la primera	
 				if last_lat != "False":
 					time = tmp_time - last_time
-					total_time += time
 					tempnum=(math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon))
 					try:
+						#Obtenemos el punto respecto al punto anterior
 						dist=math.acos(tempnum)*111.302*57.29577951
 						total_dist += dist
 						#dividimos kilometros por hora (no por segundo)
 						tmp_vel = dist/((time)/3600.0)
-						his_vel.append(tmp_vel)
-						if len(his_vel)>3:
-							his_vel.pop(0)
-						if len(his_vel)<3:
-							vel=0
-						else:
-							vel = (his_vel[0]+his_vel[1]+his_vel[2])/3
-						if vel<80:
-							retorno.append((total_dist,tmp_alt, total_time,vel,line_arr.group(1),line_arr.group(2)))
+						vel,his_vel = self._calculate_velocity(tmp_vel,his_vel)
+						#si la velocidad es menor de 90 lo damos por bueno
+						if vel<90 and time <100:
+							self.total_time += time
+							retorno.append((total_dist,tmp_alt, self.total_time,vel,line_arr.group(1),line_arr.group(2)))
+							rel_alt = tmp_alt - last_alt
+							if rel_alt > 0:
+								self.upositive += rel_alt
+							elif rel_alt < 0:
+								self.unegative -= rel_alt
 					except:
 						print tempnum
 				
 				last_lat = tmp_lat
 				last_lon = tmp_lon
+				last_alt = tmp_alt
 				last_time = tmp_time
-				tmp_total_time = total_time
 			line = fh.readline()
 
 		fh.close
+		self.total_dist = total_dist 
 		return retorno
 	
+	def _calculate_velocity(self,velocity, arr_velocity):
+		arr_velocity.append(velocity)
+		if len(arr_velocity)>3:
+			arr_velocity.pop(0)
+		if len(arr_velocity)<3:
+			vel=0
+		else:
+			vel = (arr_velocity[0]+arr_velocity[1]+arr_velocity[2])/3
+		return vel,arr_velocity

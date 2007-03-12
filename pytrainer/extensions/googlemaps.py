@@ -53,7 +53,6 @@ class Googlemaps:
 			pointlist.append((i[4],i[5]))
 		points,levels = Points.encodePoints(pointlist)
 		points = points.replace("\\","\\\\")
-		print "mierda"
 	
 		htmlfile = self.conf.getValue("tmpdir")+"/index.html"
 		#htmlfile = self.data_path+"/maps/index.html?points="+points+"&levels="+levels+"&key="+key
