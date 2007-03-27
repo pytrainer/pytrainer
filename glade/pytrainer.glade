@@ -8257,7 +8257,7 @@ Spanish: Fiz vazquez &lt;vud1@sindominio.net&gt;</property>
 	      <property name="fixed_height_mode">False</property>
 	      <property name="hover_selection">False</property>
 	      <property name="hover_expand">False</property>
-	      <signal name="button_release_event" handler="on_extensionsTree_clicked" last_modification_time="Tue, 31 Oct 2006 09:45:28 GMT"/>
+	      <signal name="button_release_event" handler="on_pluginsTree_clicked" last_modification_time="Tue, 27 Mar 2007 11:56:15 GMT"/>
 	    </widget>
 	  </child>
 	</widget>

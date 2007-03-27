@@ -28,7 +28,6 @@ class WindowPlugins(SimpleGladeApp):
 		domain = None
 		self.parent = parent
 		SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
-
 	def new(self):
 		column_names=["id","name"]
 		self.create_treeview(self.pluginsTreeview,column_names)
@@ -62,6 +61,7 @@ class WindowPlugins(SimpleGladeApp):
 			i+=1
 
 	def on_pluginsTree_clicked(self,widget,widget2):
+		print "clicked"
 		selected,iter = self.pluginsTreeview.get_selection().get_selected()
 		print iter
 		print selected.get_value(iter,0)
