@@ -29,7 +29,7 @@ cat /tmp/reg.gpx | while read line; do
 	fi
 	if [ "$notrkptline" != "" ]; then
 		if [ "$lasttime" != "$oldtime" ]; then
-			echo $gpxend > $file
+			echo $gpxend >> $file
 			let count=$count+1
 			file="/tmp/reg$count.gpx"
 			echo "creamos nuevo file $file"
@@ -52,5 +52,5 @@ cat /tmp/reg.gpx | while read line; do
 	notrkptline=""
 done
 
-echo $gpxend > $file
+echo $gpxend >> $file
 
