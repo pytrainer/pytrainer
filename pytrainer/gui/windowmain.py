@@ -185,7 +185,7 @@ class Main(SimpleGladeApp):
 		self.month_date.set_text(nameMonth)
 		km = calories = time = average = beats = 0
 		num_records = len(record_list)
-		
+	
 		if num_records>0:
 			for record in record_list:
 				km += self.parseFloat(record[1])

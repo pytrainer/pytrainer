@@ -175,7 +175,7 @@ class Record:
 		end_time = self.date.unixtime2date(end_time)
 		if init_time == end_time:
 			self.recordwindow.rcd_date.set_text(end_time)
-			self.actualize_fromgpx(self, gpx)
+			self._actualize_fromgpx(gpx)
 		else:
 			msg = _("The gpx file seems to be a several days records. Perhaps you will need to edit your gpx file")
 			from gui.warning import Warning

@@ -34,15 +34,15 @@ class MonthGraph:
 
 	def get_value_params(self,value):
 		if value == 0:
-			return 31,_("day"),_("kilometers"),_("daily kilometers"),"y"
+			return 32,_("day"),_("kilometers"),_("daily kilometers"),"y"
 		elif value == 1:
-			return 31,_("day"),_("time in hours"), _("daily time"),"b"
+			return 32,_("day"),_("time in hours"), _("daily time"),"b"
 		elif value == 2:
-			return 31,_("day"),_("beats per minute"), _("daily beats"),"r"
+			return 32,_("day"),_("beats per minute"), _("daily beats"),"r"
 		elif value == 3:
-			return 31,_("day"),_("average (hm/h)"), _("daily averages"),"g"
+			return 32,_("day"),_("average (hm/h)"), _("daily averages"),"g"
 		elif value == 4:
-			return 31,_("day"),_("calories"), _("daily calories"),"b"
+			return 32,_("day"),_("calories"), _("daily calories"),"b"
 
 	def get_values(self,values,value_selected,daysmonth):
 		#hacemos una relacion entre el value_selected y los values
