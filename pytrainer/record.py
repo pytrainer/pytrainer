@@ -170,19 +170,22 @@ class Record:
 	def actualize_fromgpx(self,gpxfile):
 		from lib.gpx import Gpx
 		gpx = Gpx(self.data_path,gpxfile)
-		distance, time = gpx.getMaxValues()
 		init_time,end_time = gpx.getDatevalues()
 		init_time = self.date.unixtime2date(init_time)	
 		end_time = self.date.unixtime2date(end_time)
-		upositive,unegative = gpx.getUnevenness()
 		if init_time == end_time:
 			self.recordwindow.rcd_date.set_text(end_time)
+			self.actualize_fromgpx(self, gpx)
 		else:
 			msg = _("The gpx file seems to be a several days records. Perhaps you will need to edit your gpx file")
 			from gui.warning import Warning
-			warning = Warning(self.data_path,self.removeRecord,None)
+			warning = Warning(self.data_path,self._actualize_fromgpx,[gpx])
                         warning.set_text(msg)
                         warning.run()
+
+	def _actualize_fromgpx(self, gpx):
+		distance, time = gpx.getMaxValues()
+		upositive,unegative = gpx.getUnevenness()
 		self.recordwindow.rcd_upositive.set_text(str(upositive))
 		self.recordwindow.rcd_unegative.set_text(str(unegative))
 		self.recordwindow.set_distance(distance)
