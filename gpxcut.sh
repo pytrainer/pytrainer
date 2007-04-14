@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 #get the origin gpx
 echo $1
@@ -28,7 +28,6 @@ cat /tmp/reg.gpx | while read line; do
 		lasttime=$(echo $time | cut -d ">" -f 2 | cut -d "T" -f 1)
 	fi
 	if [ "$notrkptline" != "" ]; then
-		echo "aa"
 		if [ "$lasttime" != "$oldtime" ]; then
 			echo $gpxend > $file
 			let count=$count+1
