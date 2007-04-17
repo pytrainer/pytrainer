@@ -80,7 +80,7 @@ class MonthGraph:
 
 		xunits = []
 		yunits = []
-		for i in range (1,daysmonth+1):
+		for i in range (0,daysmonth):
                         xunits.append(i)
 			yunits.append(float(0))
 		
