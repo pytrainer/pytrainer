@@ -151,7 +151,7 @@ class Record:
 	def getAllRecordList(self):
 		return self.ddbb.select("records,sports", 
 			"date,distance,average,title,sports.name,id_record,time,beats,calories",
-			"sports.id_sports = records.sport")
+			"sports.id_sports = records.sport order by date desc")
 	
 	def getRecordListByCondition(self,condition):
 		return self.ddbb.select("records,sports", 
