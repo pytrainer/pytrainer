@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<pytrainer-plugin 
+	name="Google Earth" 
+	description="Import yor Google Earth files (*.kml)" 
+	plugincode="googleearth"
+	pluginbutton="Import *.kml file" 
+	executable="main.sh" 
+>
+</pytrainer-plugin>
