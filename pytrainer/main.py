@@ -47,7 +47,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
 		self.data_path = data_path
 		#configuration
-		self.version ="1.3.3"
+		self.version ="1.3.4"
 		self.conf = checkConf()
 		#preparamos la ventana principal
 		self.windowmain = Main(data_path,self,self.version)
@@ -58,8 +58,10 @@ class pyTrainer:
 		self.profile.setVersion(self.version)
 		if self.profile.isProfileConfigured():
 			self.windowmain.window_sensitive(1)
-		else:
-			self.windowmain.window_sensitive(0)
+		#if self.profile.isProfileConfigured():
+		#	self.windowmain.window_sensitive(1)
+		#else:
+		#	self.windowmain.window_sensitive(0)
 
 		self.record = Record(data_path,self,self.version)
 		#self.extension = Extension(data_path)

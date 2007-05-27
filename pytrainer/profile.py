@@ -37,9 +37,25 @@ class Profile:
 			return True
 
 		else:
-			from gui.windowprofile import WindowProfile
-			profilewindow = WindowProfile(self.data_path, self)
-			profilewindow.run()
+			#from gui.windowprofile import WindowProfile
+			#profilewindow = WindowProfile(self.data_path, self)
+			#profilewindow.run()
+			self.createDefaultConf()
+			return True
+
+	def createDefaultConf(self):
+		conf_options = [
+			("prf_name","annon"),
+			("prf_gender",""),
+			("prf_weight",""),
+			("prf_height",""),
+			("prf_age",""),
+			("prf_ddbb","sqlite"),
+			("prf_ddbbhost",""),
+			("prf_ddbbname",""),
+			("prf_ddbbuser",""),
+			("prf_ddbbpass",""),]
+		self.setProfile(conf_options)
 
 	def setVersion(self,version):
 		self.version = version
