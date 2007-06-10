@@ -61,12 +61,13 @@ class Extension:
 		code = info.getValue("pytrainer-extension","extensioncode")
 		extensiondir = self.conf.getValue("extensiondir")
 		helpfile = pathExtension+"/"+info.getValue("pytrainer-extension","helpfile")
+		type = info.getValue("pytrainer-extension","type")
 		if not os.path.isfile(extensiondir+"/"+code+"/conf.xml"):
 			status = 0
 		else:
 			info = XMLParser(extensiondir+"/"+code+"/conf.xml")
 			status = info.getValue("pytrainer-extension","status")
-		return name,description,status,helpfile
+		return name,description,status,helpfile,type
 
 	def getExtensionConfParams(self,pathExtension):
 		info = XMLParser(pathExtension+"/conf.xml")

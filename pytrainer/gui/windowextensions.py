@@ -63,7 +63,7 @@ class WindowExtensions(SimpleGladeApp):
 
 	def on_extensionsTree_clicked(self,widget,widget2):
 		selected,iter = self.extensionsTree.get_selection().get_selected()
-		name,description,status,helpfile = self.parent.getExtensionInfo(selected.get_value(iter,0))
+		name,description,status,helpfile,type = self.parent.getExtensionInfo(selected.get_value(iter,0))
 		self.nameEntry.set_text(name)
 		self.descriptionEntry.set_text(description)
 		if int(status) > 0:
@@ -73,7 +73,7 @@ class WindowExtensions(SimpleGladeApp):
 
 	def on_preferences_clicked(self,widget):
 		selected,iter = self.extensionsTree.get_selection().get_selected()
-		name,description,status,helpfile = self.parent.getExtensionInfo(selected.get_value(iter,0))
+		name,description,status,helpfile,type = self.parent.getExtensionInfo(selected.get_value(iter,0))
 		prefs = self.parent.getExtensionConfParams(selected.get_value(iter,0))
 		
 		self.prefwindow = gtk.Window()

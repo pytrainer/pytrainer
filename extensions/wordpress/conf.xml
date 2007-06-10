@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<pytrainer-extension 
+	name="Pytrainer wordpress extension" 
+	description="Publish your record as post in your weblog" 
+	extensioncode="wordpress"
+	type="record" 
+	helpfile="README.txt"
+>
+<conf-values variable="googlekey" value=""/>
+<conf-values variable="wordpressuser" value=""/>
+<conf-values variable="wordpresspass" value=""/>
+<conf-values variable="wordpressurl" value=""/>
+<conf-values variable="wordpresscategory" value=""/>
+</pytrainer-extension>

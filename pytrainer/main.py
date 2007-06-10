@@ -26,7 +26,7 @@ import gtk
 import gtk.glade
 
 from record import Record
-#from extension import Extension
+from extension import Extension
 from plugins import Plugins
 from profile import Profile
 from recordgraph import RecordGraph
@@ -64,14 +64,13 @@ class pyTrainer:
 		#	self.windowmain.window_sensitive(0)
 
 		self.record = Record(data_path,self,self.version)
-		#self.extension = Extension(data_path)
+		self.extension = Extension(data_path)
 		self.plugins = Plugins(data_path)
 		self.loadPlugins()
+		self.loadExtensions()
 		self.windowmain.createGraphs(RecordGraph,DayGraph,MonthGraph,YearGraph)
 		self.windowmain.createMap(Googlemaps)
 		self.windowmain.on_calendar_selected(None)
-		#self.refreshListRecords()
-		#self.refreshGraphView("day")
 	
 		self.refreshMainSportList()	
 		self.windowmain.run()
@@ -84,6 +83,14 @@ class pyTrainer:
 			for plugin in activeplugins:
 				txtbutton = self.plugins.loadPlugin(plugin)
 				self.windowmain.addImportPlugin(txtbutton)
+	
+	def loadExtensions(self):	
+		activeextensions = self.extension.getActiveExtensions()
+		if (len(activeextensions)<1):
+			print _("No Active Plugins")
+		else:
+			for extension in activeextensions:
+				print extension
 	
 	def runPlugin(self,widget,pathPlugin):
 		gpxfile = self.plugins.runPlugin(pathPlugin)
