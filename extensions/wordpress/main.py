@@ -2,38 +2,39 @@
 import wordpresslib
 
 def main():
-	user="admin"
-	password="MhNe13dD"
-	server="www.kernet.es"
-	wordpress="http://www.e-oss.net/wordpress/xmlrpc.php"
 	profile_image = ""
 	googlemaps_html = ""
 
+	wordpress = "http://www.e-oss.net/wordpress/xmlrpc.php"
+	user = "admin"
+	password = "MhNe13dD"
+
 	# prepare client object
-	wp = wordpresslib.WordPressClient(wordpress, user, password)
+	try: 
+		wp = wordpresslib.WordPressClient(wordpress, user, password)
+	except:
+		return "Url, user or pass are incorrect. Check your configuration"
 
 	# select blog id
 	wp.selectBlog(0)
 	
 	# upload image for post
-	imageSrc = wp.newMediaObject('img.jpg')
+	#imageSrc = wp.newMediaObject('python.jpg')
+	htmlfile = wp.newMediaObject('/tmp/virtual_dir/index.html')
+	print htmlfile
 
-	if imageSrc:
-		# create post object
-		post = wordpresslib.WordPressPost()
-		post.title = 'Test post'
-		post.description = '''
-		Python is the best programming language in the earth !
+	# create post object
+	post = wordpresslib.WordPressPost()
+	post.title = 'Test post'
+	post.description = '''
+	Python is the best programming language in the earth !
 	
-		<img src="%s" />
+	<iframe width="520" height="480" src="%s"> Se necesitan frames para ver esta pagina </iframe>
 	
-		''' % imageSrc
-		post.categories = (wp.getCategoryIdFromName('Python'),)
+	''' % htmlfile
+	post.categories = (['Blogging'])
 	
-		# pubblish post
-		idNewPost = wp.newPost(post, True)
-	
-		print
-		print 'posting successfull!'
+	#pubblish post
+	idNewPost = wp.newPost(post, False)
 	
 print main()

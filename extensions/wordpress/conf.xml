@@ -5,14 +5,11 @@
 	extensioncode="wordpress"
 	type="record" 
 	helpfile="README.txt"
+	executable="main.py"
 >
 <conf-values variable="googlekey" value=""/>
 <conf-values variable="wordpressuser" value=""/>
 <conf-values variable="wordpresspass" value=""/>
 <conf-values variable="wordpressurl" value=""/>
 <conf-values variable="wordpresscategory" value=""/>
-<conf-values variable="ftpuser" value=""/>
-<conf-values variable="ftppass" value=""/>
-<conf-values variable="ftpurl" value=""/>
-<conf-values variable="ftppath" value=""/>
 </pytrainer-extension>
