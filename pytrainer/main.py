@@ -87,15 +87,19 @@ class pyTrainer:
 	def loadExtensions(self):	
 		activeextensions = self.extension.getActiveExtensions()
 		if (len(activeextensions)<1):
-			print _("No Active Plugins")
+			print _("No Active Extensions")
 		else:
 			for extension in activeextensions:
-				print extension
+				txtbutton = self.extension.loadExtension(extension)
+				self.windowmain.addExtension(txtbutton)
 	
 	def runPlugin(self,widget,pathPlugin):
 		gpxfile = self.plugins.runPlugin(pathPlugin)
 		list_sport = self.profile.getSportList()
 		self.record.newGpxRecord(gpxfile,list_sport)
+	
+	def runExtension(self,widget,pathExtension):
+		alert = self.extension.runExtension(pathExtension)
 	
 	def refreshMainSportList(self):
 		listSport = self.profile.getSportList()

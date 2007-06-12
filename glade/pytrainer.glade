@@ -1199,7 +1199,7 @@
 					  </child>
 
 					  <child>
-					    <widget class="GtkHBox" id="hbox40">
+					    <widget class="GtkHBox" id="recordbuttons_hbox">
 					      <property name="visible">True</property>
 					      <property name="homogeneous">False</property>
 					      <property name="spacing">0</property>

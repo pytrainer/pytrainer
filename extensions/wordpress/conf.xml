@@ -1,7 +1,8 @@
 <?xml version="1.0" ?>
 <pytrainer-extension 
 	name="Pytrainer wordpress extension" 
-	description="Publish your record as post in your weblog" 
+	description="Publish your record as post in your weblog"
+	extensionbutton="Post it in wordpress" 
 	extensioncode="wordpress"
 	type="record" 
 	helpfile="README.txt"

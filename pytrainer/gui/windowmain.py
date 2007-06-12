@@ -78,6 +78,13 @@ class Main(SimpleGladeApp):
 		self.menuitem1_menu.insert(button,2)
 		self.menuitem1_menu.show_all()
 
+	def addExtension(self,extension):
+		txtbutton,extension,type = extension
+		button = gtk.Button(txtbutton)
+		button.connect("activate", self.parent.runExtension, extension)
+		self.recordbuttons_hbox.pack_start(button,False,False,0)
+		self.recordbuttons_hbox.show_all()
+
 	def window_sensitive(self, value):
 		self.window1.set_sensitive(value)
 	

@@ -114,13 +114,6 @@ class Plugins:
 		info = XMLParser(plugindir+"/conf.xml")
 		info.createXMLFile("pytrainer-plugin",savedOptions)
 
-	def loadExtension(self,pathPlugin):
-		print "Loading extension: %s" %pathPlugin
-		confParams = self.getExtensionConfParams(pathPlugin)
-		extension = __init__(pathPlugin+"/main.py")
-		object = extension.main(confParams)
-		object.run()
-
 	def getCodeConfValue(self,code,value):
 		plugindir = self.conf.getValue("plugindir")
 		info = XMLParser(plugindir+"/"+code+"/conf.xml")

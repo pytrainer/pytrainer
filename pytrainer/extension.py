@@ -51,7 +51,7 @@ class Extension:
 				name = extensioninfo.getValue("pytrainer-extension","name")
 				description = extensioninfo.getValue("pytrainer-extension","description")
 				extensionList.append((extensiondir+"/"+extension,name,description))
-	
+
 		return extensionList
 	
 	def getExtensionInfo(self,pathExtension):
@@ -97,13 +97,27 @@ class Extension:
 		info.createXMLFile("pytrainer-extension",savedOptions)
 
 	def loadExtension(self,pathExtension):
-		print "Loading extension: %s" %pathExtension
-		confParams = self.getExtensionConfParams(pathExtension)
-		extension = __init__(pathExtension+"/main.py")
-		object = extension.main(confParams)
-		object.run()
+		info = XMLParser(pathExtension+"/conf.xml")
+		txtbutton = info.getValue("pytrainer-extension","extensionbutton")
+		name = info.getValue("pytrainer-extension","name")
+		type = info.getValue("pytrainer-extension","type")
+		print "Loading Extension %s" %name
+		return txtbutton,pathExtension,type
+	
 
 	def getCodeConfValue(self,code,value):
 		extensiondir = self.conf.getValue("extensiondir")
 		info = XMLParser(extensiondir+"/"+code+"/conf.xml")
 		return info.getValue("pytrainer-extension",value)
+	
+	def runExtension(self,pathExtension):
+		info = XMLParser(pathExtension+"/conf.xml")
+		bin = info.getValue("pytrainer-extension","executable")
+		binnary = pathPlugin+"/"+bin
+		params = ""
+		for opt in self.getExtensionConfParams(pathExtension)
+			if opt[0]!="status":
+				params += "--%s %s" %(opt[0],opt[1])
+		alert = os.popen("%s %s" %(binnary,params)).read()
+		return alert
+

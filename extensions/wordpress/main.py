@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 import wordpresslib
+from optparse import OptionParser
+import os
+
 
 def main():
 	profile_image = ""
@@ -37,4 +40,12 @@ def main():
 	#pubblish post
 	idNewPost = wp.newPost(post, False)
 	
+parser = OptionParser()
+parser.add_option("-d", "--device", dest="device")
+(options,args) =  parser.parse_args()
+
+tmpgpx = "/tmp/reg.gpx"
+os.system("gpsbabel -t -i garmin -f %s -o gpx -F %s" %(options.device,tmpgpx))
+
+print tmpgpx
 print main()
