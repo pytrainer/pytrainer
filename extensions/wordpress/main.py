@@ -1,29 +1,39 @@
 #!/usr/bin/env python
-from ftplib import FTP
+import wordpresslib
 
 def main():
-	user="vud1"
-	password=""
+	user="admin"
+	password="MhNe13dD"
 	server="www.kernet.es"
-	path = ""
+	wordpress="http://www.e-oss.net/wordpress/xmlrpc.php"
 	profile_image = ""
 	googlemaps_html = ""
 
-	#probamos la conexion ftp con el servidor
-	try: 
-		ftp = FTP(server)
-	except:
-		return "Cant established server connection"
+	# prepare client object
+	wp = wordpresslib.WordPressClient(wordpress, user, password)
+
+	# select blog id
+	wp.selectBlog(0)
 	
-	try:
-		ftp.login(user,password)
-	except:
-		return "User or password incorrect"
+	# upload image for post
+	imageSrc = wp.newMediaObject('img.jpg')
 
-	ftp.cwd(path)
-	fimage = open(profile_image, 'wb')
-	fhtml = open(googlemaps_html, "w")
-
-	ftp.quit()
-
+	if imageSrc:
+		# create post object
+		post = wordpresslib.WordPressPost()
+		post.title = 'Test post'
+		post.description = '''
+		Python is the best programming language in the earth !
+	
+		<img src="%s" />
+	
+		''' % imageSrc
+		post.categories = (wp.getCategoryIdFromName('Python'),)
+	
+		# pubblish post
+		idNewPost = wp.newPost(post, True)
+	
+		print
+		print 'posting successfull!'
+	
 print main()
