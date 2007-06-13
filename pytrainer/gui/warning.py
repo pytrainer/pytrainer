@@ -27,6 +27,8 @@ class Warning(SimpleGladeApp):
 		root = "warning"
 		domain = None
 		SimpleGladeApp.__init__(self, self.path, root, domain)
+		if method == None:
+			self.cancelbutton1.hide()
 
 	def set_text(self, msg):
 		self.warningText.set_text(msg)

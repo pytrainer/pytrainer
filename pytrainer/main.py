@@ -98,8 +98,11 @@ class pyTrainer:
 		list_sport = self.profile.getSportList()
 		self.record.newGpxRecord(gpxfile,list_sport)
 	
-	def runExtension(self,widget,pathExtension):
-		alert = self.extension.runExtension(pathExtension)
+	def runExtension(self,extension,id):
+		txtbutton,pathExtension,type = extension
+		if type == "record":
+			#Si es record le tenemos que crear el googlemaps, el gpx y darle el id de la bbdd
+			alert = self.extension.runExtension(pathExtension,id)
 	
 	def refreshMainSportList(self):
 		listSport = self.profile.getSportList()

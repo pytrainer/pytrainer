@@ -79,11 +79,18 @@ class Main(SimpleGladeApp):
 		self.menuitem1_menu.show_all()
 
 	def addExtension(self,extension):
-		txtbutton,extension,type = extension
+		txtbutton,extensioncode,extensiontype = extension
 		button = gtk.Button(txtbutton)
-		button.connect("activate", self.parent.runExtension, extension)
+		button.connect("button_press_event", self.runExtension, extension)
 		self.recordbuttons_hbox.pack_start(button,False,False,0)
 		self.recordbuttons_hbox.show_all()
+
+	def runExtension(self,widget,widget2,extension):
+		txtbutton,extensioncode,extensiontype = extension
+		if extensiontype=="record":
+    			selected,iter = self.recordTreeView.get_selection().get_selected()
+			id = selected.get_value(iter,0)
+		self.parent.runExtension(extension,id)
 
 	def window_sensitive(self, value):
 		self.window1.set_sensitive(value)

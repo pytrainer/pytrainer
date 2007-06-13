@@ -110,14 +110,25 @@ class Extension:
 		info = XMLParser(extensiondir+"/"+code+"/conf.xml")
 		return info.getValue("pytrainer-extension",value)
 	
-	def runExtension(self,pathExtension):
+	def runExtension(self,pathExtension,id):
 		info = XMLParser(pathExtension+"/conf.xml")
 		bin = info.getValue("pytrainer-extension","executable")
-		binnary = pathPlugin+"/"+bin
+		extensiontype = info.getValue("pytrainer-extension","type")
+		binnary = pathExtension+"/"+bin
 		params = ""
-		for opt in self.getExtensionConfParams(pathExtension)
+		for opt in self.getExtensionConfParams(pathExtension):
 			if opt[0]!="status":
-				params += "--%s %s" %(opt[0],opt[1])
+				params += "--%s %s " %(opt[0],opt[1])
+		if extensiontype=="record":
+			params += "--gpxfile %s/gpx/%s.gpx " %(self.conf.getValue("confdir"),id)
+			params += "--conffile %s/conf.xml " %self.conf.getValue("confdir")
+			params += "--idrecord %s " %id
+		bin = info.getValue("pytrainer-extension","executable")
+		print params
 		alert = os.popen("%s %s" %(binnary,params)).read()
-		return alert
+		
+		from gui.warning import Warning
+		warning = Warning(self.data_path)
+                warning.set_text(alert)
+                warning.run()
 
