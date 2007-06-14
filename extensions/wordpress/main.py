@@ -18,7 +18,7 @@ class Main:
 		self.idrecord = options.idrecord
 		self.wordpresscategory = options.wordpresscategory
 		try: 
-			self.wp = wordpresslib.WordPressClient(wordpress, user, password)
+			self.wp = wordpresslib.WordPressClient(self.wordpressurl, self.user, self.password)
 			self.error = False
 		except:
 			self.error = True
@@ -28,7 +28,7 @@ class Main:
 		htmlpath = "/tmp/index.html"
 		kmlpath = "/tmp/gps.kml"
 		description_route = ''
-		if os.path.isfile(gpxfile):
+		if os.path.isfile(self.gpxfile):
 			#create the html file
 			googlemaps.drawMap(self.gpxfile,self.googlekey,htmlpath)
 			#create the kml file
@@ -63,6 +63,10 @@ class Main:
 		self.upositive = recordinfo[10]
 		self.unegative = recordinfo[11]
 
+	def createBody(self):
+		return '''<b> Descripcion: <b/><br/>
+%s<br/>''' %self.comments
+	
 	def createTable(self):
 		description_table = '''
 			<br/>
@@ -112,11 +116,11 @@ class Main:
 			return ([self.wordpresscategory])
         					
 	def run(self):
+		self.loadRecordInfo()
 		blog_title = self.createTitle()
 		blog_category = self.createCategory()
 
 		if self.error == False:
-			self.loadRecordInfo()
 			blog_route = self.createRoute()
 			blog_body = self.createBody()
 			blog_table = self.createTable()
@@ -128,7 +132,7 @@ class Main:
 			post.title = blog_title
 			post.description = blog_body+blog_table+blog_route+blog_foot
 			post.categories = blog_category
-			idNewPost = wp.newPost(post, False)
+			idNewPost = self.wp.newPost(post, False)
 			return "The post has been submited" 
         				
 		else:
