@@ -117,7 +117,7 @@ class Extension:
 		binnary = pathExtension+"/"+bin
 		params = ""
 		for opt in self.getExtensionConfParams(pathExtension):
-			if opt[0]!="status":
+			if opt[0]!="status" and opt[1]!="":
 				params += "--%s %s " %(opt[0],opt[1])
 		if extensiontype=="record":
 			params += "--gpxfile %s/gpx/%s.gpx " %(self.conf.getValue("confdir"),id)

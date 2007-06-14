@@ -11,6 +11,9 @@ def install_locale(lang):
 def install_plugin(plugin_name):
 	return "share/pytrainer/plugins/%s"%plugin_name, glob("plugins/%s/*"%plugin_name) 
 
+def install_extension(extension_name):
+	return "share/pytrainer/extensions/%s"%extension_name, glob("extensions/%s/*"%extension_name) 
+
 setup( 	name="pytrainer",
 	version="1.2.0",
 	author="Fiz Vazquez",
