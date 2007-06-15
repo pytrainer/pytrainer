@@ -109,7 +109,7 @@ class WindowExtensions(SimpleGladeApp):
 	
 	def on_help_clicked(self,widget):
 		selected,iter = self.extensionsTree.get_selection().get_selected()
-		name,description,status,helpfile = self.parent.getExtensionInfo(selected.get_value(iter,0))
+		name,description,status,helpfile,type = self.parent.getExtensionInfo(selected.get_value(iter,0))
 		file = os.open(helpfile,0)
 		text = os.read(file,2000)
 		os.close(file)
