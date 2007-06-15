@@ -91,7 +91,7 @@ class Sql:
 
 	def freeExec(self,sql):
 		cur = self.db.cursor()
-		self.log.run(sql)	
+		self.log.run(sql)
 		cur.execute(sql)
 		retorno = []
 		for row in cur:

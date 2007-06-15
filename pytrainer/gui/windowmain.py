@@ -151,6 +151,9 @@ class Main(SimpleGladeApp):
 			self.record_upositive.set_text("%0.2f" %upositive)
 			self.record_unegative.set_text("%0.2f" %unegative)
 			self.record_title.set_text(title)
+			buffer = self.record_comments.get_buffer()
+                	start,end = buffer.get_bounds()
+                	buffer.set_text(comments)
 
 		else:
 			self.recordview.set_sensitive(0)
