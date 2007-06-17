@@ -4,8 +4,8 @@ import points as Points
 from optparse import OptionParser
 import os
 import googlemaps
-from pytrainer.lib.ddbb import DDBB
-from pytrainer.lib.xmlUtils import XMLParser
+
+import SOAPpy
 
 class Main:
 	def __init__(self,options):
@@ -14,9 +14,9 @@ class Main:
 		self.password = options.wordpresspass
 		self.gpxfile = options.gpxfile
 		self.googlekey = options.googlekey
-		self.conffile = options.conffile
 		self.idrecord = options.idrecord
 		self.wordpresscategory = options.wordpresscategory
+      		self.webserviceserver = SOAPpy.SOAPProxy("http://localhost:8081/")
 		try: 
 			self.wp = wordpresslib.WordPressClient(self.wordpressurl, self.user, self.password)
 			self.error = False
@@ -44,24 +44,18 @@ class Main:
 		return description_route
 
 	def loadRecordInfo(self):
-		configuration = XMLParser(self.conffile)
-		ddbb = DDBB(configuration)
-		ddbb.connect()
-		recordinfo = ddbb.select("records,sports",
-			"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative",
-			"id_record=\"%s\" and records.sport=sports.id_sports" %self.idrecord)
-		recordinfo = recordinfo[0]
-		self.title = recordinfo[9]
-		self.sport = recordinfo[0]
-		self.date = recordinfo[1]
-		self.distance = recordinfo[2]
-		self.time = recordinfo[3]
-		self.beats = recordinfo[4]
-		self.comments = recordinfo[5]
-		self.average = recordinfo[6]
-		self.calories = recordinfo[7]
-		self.upositive = recordinfo[10]
-		self.unegative = recordinfo[11]
+      		record = self.webserviceserver.getRecordInfo(self.idrecord)
+		self.sport = record["sport"]
+                self.date = record["date"]
+                self.distance = record["distance"]
+                self.time = record["time"]
+                self.beats = record["beats"]
+                self.comments = record["comments"]
+                self.average = record["average"]
+                self.calories = record["calories"]
+                self.title = record["title"]
+                self.upositive = record["upositive"]
+                self.unegative = record["unegative"]
 
 	def createBody(self):
 		return '''<b> Descripcion: <b/><br/>
@@ -147,7 +141,6 @@ parser.add_option("-l", "--wordpressurl", dest="wordpressurl")
 parser.add_option("-c", "--wordpresscategory", dest="wordpresscategory")
 parser.add_option("-g", "--gpxfile", dest="gpxfile")
 parser.add_option("-i", "--idrecord", dest="idrecord")
-parser.add_option("-f", "--conffile", dest="conffile")
 (options,args) =  parser.parse_args()
 
 main = Main(options)

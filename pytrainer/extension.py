@@ -121,7 +121,6 @@ class Extension:
 				params += "--%s %s " %(opt[0],opt[1])
 		if extensiontype=="record":
 			params += "--gpxfile %s/gpx/%s.gpx " %(self.conf.getValue("confdir"),id)
-			params += "--conffile %s/conf.xml " %self.conf.getValue("confdir")
 			params += "--idrecord %s " %id
 		bin = info.getValue("pytrainer-extension","executable")
 		print params

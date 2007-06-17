@@ -235,7 +235,6 @@ class WordPressClient:
 				if i["categoryName"]==cat:
 					categories.append(i)
 	
-		print categories	
 		# insert new post
 		idNewPost = int(self._server.metaWeblog.newPost(self.blogId, self.user, self.password, blogContent, 0))
 		

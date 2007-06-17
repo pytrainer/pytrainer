@@ -27,7 +27,7 @@ from threading import Thread
 #class webService():
 class webService(Thread):
 	def __init__(self,system):
-		self.conffile = "%s/conf.xml " %system.getValue("confdir")
+		self.conffile = "%s/conf.xml" %system.getValue("confdir")
 		self.server = SOAPpy.ThreadingSOAPServer(("localhost", 8081))
 		#self.server = SOAPpy.server.InsecureServer(("localhost", 8081))
 		self.server.registerFunction(self.getRecordInfo)
@@ -41,18 +41,19 @@ class webService(Thread):
                         "sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative",
                         "id_record=\"%s\" and records.sport=sports.id_sports" %id_record)
 		record = recordinfo[0]
-		record["sport"] = record[0]
-		record["date"] = record[1]
-		record["distance"] = record[2]
-		record["time"] = record[3]
-		record["beats"] = record[4]
-		record["comments"] = record[5]
-		record["average"] = record[6]
-		record["calories"] = record[7]
-		record["title"] = record[9]
-		record["upositive"] = record[10]
-		record["unegative"] = record[11]
-		return record
+		info = {}
+		info["sport"] = record[0]
+		info["date"] = record[1]
+		info["distance"] = record[2]
+		info["time"] = record[3]
+		info["beats"] = record[4]
+		info["comments"] = record[5]
+		info["average"] = record[6]
+		info["calories"] = record[7]
+		info["title"] = record[9]
+		info["upositive"] = record[10]
+		info["unegative"] = record[11]
+		return info
 
 	def run(self):
 		self.server.serve_forever()
