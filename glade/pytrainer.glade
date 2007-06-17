@@ -22,7 +22,7 @@
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
-  <signal name="destroy" handler="gtk_main_quit" last_modification_time="Sun, 26 Mar 2006 18:26:31 GMT"/>
+  <signal name="destroy" handler="quit" last_modification_time="Sun, 17 Jun 2007 20:02:27 GMT"/>
 
   <child>
     <widget class="GtkNotebook" id="notebook7">
@@ -143,7 +143,7 @@
 		      <child>
 			<widget class="GtkRadioMenuItem" id="classicview_item">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">_Classic View</property>
+			  <property name="label" translatable="yes"> _Classic View</property>
 			  <property name="use_underline">True</property>
 			  <property name="active">True</property>
 			  <signal name="activate" handler="on_classicview_activate" last_modification_time="Thu, 19 Oct 2006 15:37:58 GMT"/>
@@ -154,12 +154,24 @@
 		      <child>
 			<widget class="GtkRadioMenuItem" id="listview_item">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">_List View</property>
+			  <property name="label" translatable="yes"> _List View</property>
 			  <property name="use_underline">True</property>
 			  <property name="active">False</property>
 			  <property name="group">classicview_item</property>
 			  <signal name="activate" handler="on_listview_activate" last_modification_time="Thu, 19 Oct 2006 15:37:47 GMT"/>
 			  <accelerator key="l" modifiers="GDK_CONTROL_MASK" signal="activate"/>
+			</widget>
+		      </child>
+
+		      <child>
+			<widget class="GtkRadioMenuItem" id="waipointsview_item">
+			  <property name="visible">True</property>
+			  <property name="label" translatable="yes"> _Waipoints Editor View</property>
+			  <property name="use_underline">True</property>
+			  <property name="active">False</property>
+			  <property name="group">classicview_item</property>
+			  <signal name="activate" handler="on_waipointsview_activate" last_modification_time="Fri, 15 Jun 2007 20:13:38 GMT"/>
+			  <accelerator key="w" modifiers="GDK_CONTROL_MASK" signal="activate"/>
 			</widget>
 		      </child>
 		    </widget>
@@ -4503,6 +4515,33 @@ Calories</property>
 		<widget class="GtkLabel" id="llllll">
 		  <property name="visible">True</property>
 		  <property name="label" translatable="yes">label155</property>
+		  <property name="use_underline">False</property>
+		  <property name="use_markup">False</property>
+		  <property name="justify">GTK_JUSTIFY_LEFT</property>
+		  <property name="wrap">False</property>
+		  <property name="selectable">False</property>
+		  <property name="xalign">0.5</property>
+		  <property name="yalign">0.5</property>
+		  <property name="xpad">0</property>
+		  <property name="ypad">0</property>
+		  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+		  <property name="width_chars">-1</property>
+		  <property name="single_line_mode">False</property>
+		  <property name="angle">0</property>
+		</widget>
+		<packing>
+		  <property name="type">tab</property>
+		</packing>
+	      </child>
+
+	      <child>
+		<placeholder/>
+	      </child>
+
+	      <child>
+		<widget class="GtkLabel" id="label-2147483648">
+		  <property name="visible">True</property>
+		  <property name="label" translatable="yes">label-2147483648</property>
 		  <property name="use_underline">False</property>
 		  <property name="use_markup">False</property>
 		  <property name="justify">GTK_JUSTIFY_LEFT</property>

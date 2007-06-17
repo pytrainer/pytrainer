@@ -42,13 +42,18 @@ from gui.warning import Warning
 from lib.system import checkConf
 from lib.date import Date
 from lib.gpx import Gpx
+from lib.soapUtils import webService
 
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
 		self.data_path = data_path
 		#configuration
-		self.version ="1.4.1"
+		self.version ="1.4.1.1"
 		self.conf = checkConf()
+		#Lanzamos el webservice para las extensiones
+		self.webservice = webService(self.conf)
+		self.webservice.start()
+		#self.webservice.run()
 		#preparamos la ventana principal
 		self.windowmain = Main(data_path,self,self.version)
 		self.date = Date(self.windowmain.calendar)

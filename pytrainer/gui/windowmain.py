@@ -17,6 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import gobject
+import sys
 
 from SimpleGladeApp import *
 from popupmenu import PopupMenu
@@ -535,6 +536,8 @@ class Main(SimpleGladeApp):
 			return -1
 
 	def quit(self, *args):
+		sys.exit("Exit!")
+		self.parent.webservice.stop()
 		self.gtk_main_quit()
 
 	def on_yearview_clicked(self,widget):
