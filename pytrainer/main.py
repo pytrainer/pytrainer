@@ -48,7 +48,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
 		self.data_path = data_path
 		#configuration
-		self.version ="1.4.1.1"
+		self.version ="1.4.2"
 		self.conf = checkConf()
 		#Lanzamos el webservice para las extensiones
 		self.webservice = webService(self.conf)

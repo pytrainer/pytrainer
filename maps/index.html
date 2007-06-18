@@ -9,41 +9,57 @@
             type="text/javascript"></script>
     <script type="text/javascript">
 
-	cadVariables = location.search.substring(1,location.search.length);
-	arrVariables = cadVariables.split("&");
-	for (i=0; i<arrVariables.length; i++) {
-		arrVariableActual = arrVariables[i].split("=");
-		if (isNaN(parseFloat(arrVariableActual[1])))
-			eval(arrVariableActual[0]+"='"+unescape(arrVariableActual[1])+"';");
-		else
-			eval(arrVariableActual[0]+"="+arrVariableActual[1]+";");
-		}
 
+	lon = "40.71213418976525";
+	lat = "-73.96785736083984";
+	name = "waipoint";
+	description = "Una descripcion mas a ver que hace";
+	sym = "City";  
+
+waypoint1 = Array (lon,lat,name,description,sym);
+	lon = "12.71213418976525";
+	lat = "-7.96785736083984";
+	name = "waipoint2";
+	description = "Una descripcion cualquiera";
+	sym = "City";  
+waypoint2 = Array (lon,lat,name,description,sym);
+waypointList = Array (waypoint1,waypoint2);
+ 
 
     //<![CDATA[
+	function createMarker(point, text) {
+  		var marker = new GMarker(point);
+  		GEvent.addListener(marker, "click", function() {
+    			marker.openInfoWindowHtml(text);
+  			});
+  		return marker;
+		}
+
+	function changeWaypoint(waypointslist) {
+		w = waypointList[waypointslist.selectedIndex];
+		lon = w[0];
+		lat = w[1];
+		map.panTo(new GLatLng(lon, lat));
+		}
+			
+
 	function load() {
 		if (GBrowserIsCompatible()) {
-        		var map = new GMap2(document.getElementById("map"));
+			map = new GMap2(document.getElementById("map"));
         		map.addControl(new GLargeMapControl());
         		map.addControl(new GMapTypeControl());
-        		map.setCenter(new GLatLng(40.71213418976525, -73.96785736083984), 11);
-
-        		// Add an encoded polyline.
-			var encodedPoints = points
-			var encodedPoints = levels
-			
-			alert (points);	
-			alert (levels);
- 
-        		var encodedPolyline = new GPolyline.fromEncoded({
-				color: "#3333cc",
-				weight: 10,
-				points: encodedPoints,
-				levels: encodedLevels,
-				zoomFactor: 32,
-				numLevels: 4
-				});
-			map.addOverlay(encodedPolyline);
+        		map.setCenter(new GLatLng(lon, lat), 11);
+  		
+			for (i=0; i<2; i++){
+				lon = waypointList[i][0];
+				lat = waypointList[i][1];
+				name = waypointList[i][2];
+				tag = "<b>"+waypointList[i][2]+"</b><br/>"+waypointList[i][3];
+				point = new GLatLng(lon,lat);
+  				map.addOverlay(createMarker(point, tag));
+				myNewOption = new Option(name,i);
+				document.theForm.waypointslist.options[i] = myNewOption;
+				}	
       			}
     		}	
 
@@ -51,6 +67,18 @@
     </script>
   </head>
   <body onload="load()" onunload="GUnload()">
-    <div id="map" style="width: 820px; height: 540px"></div>
+	<table >
+	<tr><td width="100">
+		<form name="theForm">
+		<select size="27" style="width:150px" id="waypointslist" name="waypointslist" onchange="changeWaypoint(this.form.waypointslist)">
+		</select>
+		<input type="submit" value="New Waipoint" style="width:150px"/><br/>
+		<input type="submit" value="Del Waipoint" style="width:150px"/><br/>
+		<input type="submit" value="Edit Waipoint" style="width:150px"/><br/>
+		</form>
+	</td><td>
+    		<div id="map" style="width: 620px; height: 535px"></div>
+	</td></tr>
+	</table >
   </body>
 </html>

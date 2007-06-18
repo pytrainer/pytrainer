@@ -82,6 +82,10 @@ class DDBB:
 		self.ddbbObject.freeExec(sql)
 		sql = "alter table records add unegative float"
 		self.ddbbObject.freeExec(sql)
+			
+	def addWaypoints2ddbb(self):
+		#adds waipoints table to database
+		self.ddbbObject.addWaipoints2ddbb()
 	
 	def updatemonth(self):
 		#this is a function to repair a bug from

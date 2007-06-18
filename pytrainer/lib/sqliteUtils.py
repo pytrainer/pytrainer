@@ -74,6 +74,20 @@ class Sql:
 		self.insert("sports","name",["Bike"]);
 		self.insert("sports","name",["Run"]);
 		
+	def addWaipoints2ddbb(self):
+		cur = self.db.cursor()	
+		sql = """CREATE TABLE waypoints (
+			id_waypoint integer primary key autoincrement ,
+			lat float,
+			lon float,
+			ele float,
+			comment varchar (240),
+			time date,
+			name varchar (200),
+			sym varchar (200)
+			) ;"""
+		cur.execute(sql)
+		
 	def insert(self,table, cells, values):
 		cur = self.db.cursor()	
 		val = values

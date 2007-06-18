@@ -44,7 +44,10 @@ class Record:
 			self.ddbb.addTitle2ddbb()
 		if self.configuration.getOption("version")<="1.3.1":
 			self.ddbb.addUnevenness2ddbb()
-		self.configuration.setVersion(version)
+		if self.configuration.getOption("version")<="1.4.1.1":
+			self.ddbb.addWaypoints2ddbb()
+		if self.configuration.getOption("version")<version:
+			self.configuration.setVersion(version)
 
 	def newRecord(self, list_sport, date):
 		self.recordwindow = WindowRecord(self.data_path, list_sport,self, date)

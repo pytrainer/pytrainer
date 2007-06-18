@@ -81,6 +81,19 @@ class Sql:
 		self.insert("sports","name",["Mountain Bike"])
 		self.insert("sports","name",["Bike"])
 		self.insert("sports","name",["Run"])
+	def addWaipoints2ddbb(self):
+		sql = """CREATE TABLE 'waypoints' (
+			'id_waypoint' INT(11) NOT NULL AUTO_INCREMENT ,
+			'lat float' NOT NULL,
+			'lon' float NOT NULL,
+			'ele' float NOT NULL,
+			'time' date NOT NULL,
+			'name' varchar (200) NOT NULL,
+			'sym' varchar (200) NOT NULL,
+			'comment' varchar (240) NOT NULL,
+			INDEX ('id_waypoint')
+			) ENGINE = MYISAM ;"""
+		self.db.query(sql)
 
 	def insert(self,table, cells, values):
 		val = values
