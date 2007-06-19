@@ -55,6 +55,20 @@ class webService(Thread):
 		info["unegative"] = record[11]
 		return info
 
+	def addWaypoint(self,point):
+		lat = point[0]
+		lon = point[1]
+		comment = point[2]
+		name = point[3]
+		sym = point[4]
+		
+		configuration = XMLParser(self.conffile)
+		ddbb = DDBB(configuration)
+		ddbb.connect()
+		cells = "lat,lon,comment,name,sym"
+		values = (lat,lon,comment,name,sym)
+		ddbb.insert("waypoints",cells,values)
+
 	def run(self):
 		self.server.serve_forever()
 			

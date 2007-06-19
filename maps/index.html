@@ -16,24 +16,54 @@
 	description = "Una descripcion mas a ver que hace";
 	sym = "City";  
 
-waypoint1 = Array (lon,lat,name,description,sym);
+	waypoint1 = Array (lon,lat,name,description,sym);
 	lon = "12.71213418976525";
 	lat = "-7.96785736083984";
 	name = "waipoint2";
 	description = "Una descripcion cualquiera";
 	sym = "City";  
-waypoint2 = Array (lon,lat,name,description,sym);
-waypointList = Array (waypoint1,waypoint2);
+	waypoint2 = Array (lon,lat,name,description,sym);
+	waypointList = Array (waypoint1,waypoint2);
  
 
+	is_addmode = 0;
     //<![CDATA[
 	function createMarker(point, text) {
+		//var icon = new GIcon();
+		//icon.image = "./img.png";
+		//icon.iconSize = new GSize(20, 34);
+  		//var marker = new GMarker(point,icon);
   		var marker = new GMarker(point);
   		GEvent.addListener(marker, "click", function() {
     			marker.openInfoWindowHtml(text);
   			});
   		return marker;
 		}
+
+	function addWaypoint() {
+		/*def getRecordInfo(self,id_record):*/
+		var pytrainerAPI = new SOAPCall();
+    		pytrainerAPI.transportURI = "http://localhost:8081";
+
+
+		var parameters = new Array();
+		pytrainerAPI.encode(pytrainerAPI.VERSION_1_1,
+                	"getRecordInfo", "namespaceURI",
+                  	0, null,
+                  	parameters.length, parameters);
+
+		var response = pytrainerAPI.invoke();
+    		
+    		if(response.fault){
+    			  // error returned from the web service
+      			alert(response.fault.faultString);
+    			} 
+		else {
+      			// we expect only one return SOAPParameter - the translated string.
+      			alert("Chachi: ");  
+    			}
+  		}  	
+
 
 	function changeWaypoint(waypointslist) {
 		w = waypointList[waypointslist.selectedIndex];
@@ -49,6 +79,7 @@ waypointList = Array (waypoint1,waypoint2);
         		map.addControl(new GLargeMapControl());
         		map.addControl(new GMapTypeControl());
         		map.setCenter(new GLatLng(lon, lat), 11);
+
   		
 			for (i=0; i<2; i++){
 				lon = waypointList[i][0];
@@ -59,22 +90,41 @@ waypointList = Array (waypoint1,waypoint2);
   				map.addOverlay(createMarker(point, tag));
 				myNewOption = new Option(name,i);
 				document.theForm.waypointslist.options[i] = myNewOption;
-				}	
+				}
+			GEvent.addListener(map, "click", function(marker, point) {
+  				/*if (marker) {
+    					map.removeOverlay(marker);
+  				} else {*/
+    				if (is_addmode==1){
+					map.addOverlay(new GMarker(point));
+					alert ("1");
+					alert(point.lat());
+					alert ("2");
+					alert(point.lng());
+					alert ("3");
+					is_addmode = 0;
+					addWaypoint();
+					}
+				});
       			}
     		}	
+
+	function addmode(){
+		is_addmode = 1;
+		}
 
     //]]>
     </script>
   </head>
-  <body onload="load()" onunload="GUnload()">
+  <body onload="load()" onunload="GUnload()" style="cursor:crosshair">
 	<table >
 	<tr><td width="100">
 		<form name="theForm">
 		<select size="27" style="width:150px" id="waypointslist" name="waypointslist" onchange="changeWaypoint(this.form.waypointslist)">
 		</select>
-		<input type="submit" value="New Waipoint" style="width:150px"/><br/>
-		<input type="submit" value="Del Waipoint" style="width:150px"/><br/>
-		<input type="submit" value="Edit Waipoint" style="width:150px"/><br/>
+		<input type="button" value="New Waipoint" style="width:150px" onclick="addmode();"/><br/>
+		<input type="button" value="Del Waipoint" style="width:150px"/><br/>
+		<input type="button" value="Edit Waipoint" style="width:150px" onclick=""/><br/>
 		</form>
 	</td><td>
     		<div id="map" style="width: 620px; height: 535px"></div>
