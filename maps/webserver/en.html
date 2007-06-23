@@ -1,0 +1,1632 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head id="ctl00_Head1"><title>JavaScript SOAP Client - DEMOS (EN) | GURU4.net</title>
+
+
+
+
+
+
+
+
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta http-equiv="Content-Language" content="en">
+<meta name="script" http-equiv="Content-Script-Type" content="text/javascript">
+<meta name="script" http-equiv="Content-Style-Type" content="text/css">
+<meta name="default-style" http-equiv="Default-Style" content="light">
+<meta name="distribution" content="global">
+<meta name="revisit-after" content="1 days">
+<meta name="resource-type" content="document">
+<meta name="robots" content="index,follow">
+<script src="en_files/urchin.js" type="text/javascript"></script>
+<script type="text/javascript">
+	if(window.urchinTracker)
+	{
+		_uacct = "UA-121278-1";
+		urchinTracker();
+	}
+</script>
+<meta name="location" http-equiv="Content-Location" content="http://www.guru4.net/" scheme="URI">
+<meta name="keywords" content="demo, ajax, xml, xmlhttp, javascript, webservice, soap, remote, async">
+<meta name="description" content="How to use JavaScript SOAP Client">
+<meta name="author" content="GURU4.net Content Editors">
+<link rel="shortcut icon" type="images/x-icon" href="http://www.guru4.net/favicon.ico">
+<link rel="icon" type="image/png" href="http://www.guru4.net/img/favicon16x16.png">
+<link rel="alternate" type="application/rss+xml" title="GURU4.net - Latest articles posted (RSS 2.0)" href="http://www.guru4.net/articoli/rss.xml">
+<link rel="stylesheet" type="text/css" title="light" media="all" href="en_files/style.css">
+<script type="text/javascript" src="en_files/library.js"></script>
+	<style type="text/css">
+		div.h { display: none; }
+		div.s { display: block; margin: 10px; }
+	</style>
+	<script type="text/javascript" src="http://localhost:834/en_files/soapclient.js"></script>
+	<script type="text/javascript">
+	
+
+
+
+
+/*****************************************************************************\
+
+ Javascript "SOAP Client" library
+ 
+ @version: 2.1 - 2006.09.08
+ @author: Matteo Casati - http://www.guru4.net/
+ 
+\*****************************************************************************/
+
+function SOAPClientParameters()
+{
+	var _pl = new Array();
+	this.add = function(name, value) 
+	{
+		_pl[name] = value; 
+		return this; 
+	}
+	this.toXml = function()
+	{
+		var xml = "";
+		for(var p in _pl)
+			xml += "<" + p + ">" + SOAPClientParameters._serialize(_pl[p]) + "</" + p + ">";
+		return xml;	
+	}
+}
+SOAPClientParameters._serialize = function(o)
+{
+    var s = "";
+    switch(typeof(o))
+    {
+        case "string":
+            s += o.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); break;
+        case "number":
+        case "boolean":
+            s += o.toString(); break;
+        case "object":
+            // Date
+            if(o.constructor.toString().indexOf("function Date()") > -1)
+            {
+        
+                var year = o.getFullYear().toString();
+                var month = (o.getMonth() + 1).toString(); month = (month.length == 1) ? "0" + month : month;
+                var date = o.getDate().toString(); date = (date.length == 1) ? "0" + date : date;
+                var hours = o.getHours().toString(); hours = (hours.length == 1) ? "0" + hours : hours;
+                var minutes = o.getMinutes().toString(); minutes = (minutes.length == 1) ? "0" + minutes : minutes;
+                var seconds = o.getSeconds().toString(); seconds = (seconds.length == 1) ? "0" + seconds : seconds;
+                var milliseconds = o.getMilliseconds().toString();
+                var tzminutes = Math.abs(o.getTimezoneOffset());
+                var tzhours = 0;
+                while(tzminutes >= 60)
+                {
+                    tzhours++;
+                    tzminutes -= 60;
+                }
+                tzminutes = (tzminutes.toString().length == 1) ? "0" + tzminutes.toString() : tzminutes.toString();
+                tzhours = (tzhours.toString().length == 1) ? "0" + tzhours.toString() : tzhours.toString();
+                var timezone = ((o.getTimezoneOffset() < 0) ? "+" : "-") + tzhours + ":" + tzminutes;
+                s += year + "-" + month + "-" + date + "T" + hours + ":" + minutes + ":" + seconds + "." + milliseconds + timezone;
+            }
+            // Array
+            else if(o.constructor.toString().indexOf("function Array()") > -1)
+            {
+                for(var p in o)
+                {
+                    if(!isNaN(p))   // linear array
+                    {
+                        (/function\s+(\w*)\s*\(/ig).exec(o[p].constructor.toString());
+                        var type = RegExp.$1;
+                        switch(type)
+                        {
+                            case "":
+                                type = typeof(o[p]);
+                            case "String":
+                                type = "string"; break;
+                            case "Number":
+                                type = "int"; break;
+                            case "Boolean":
+                                type = "bool"; break;
+                            case "Date":
+                                type = "DateTime"; break;
+                        }
+                        s += "<" + type + ">" + SOAPClientParameters._serialize(o[p]) + "</" + type + ">"
+                    }
+                    else    // associative array
+                        s += "<" + p + ">" + SOAPClientParameters._serialize(o[p]) + "</" + p + ">"
+                }
+            }
+            // Object or custom function
+            else
+                for(var p in o)
+                    s += "<" + p + ">" + SOAPClientParameters._serialize(o[p]) + "</" + p + ">";
+            break;
+        default:
+            throw new Error(500, "SOAPClientParameters: type '" + typeof(o) + "' is not supported");
+    }
+    return s;
+}
+
+function SOAPClient() {}
+
+SOAPClient.invoke = function(url, method, parameters, async, callback)
+{
+	if(async)
+		SOAPClient._loadWsdl(url, method, parameters, async, callback);
+	else
+		return SOAPClient._loadWsdl(url, method, parameters, async, callback);
+}
+
+// private: wsdl cache
+SOAPClient_cacheWsdl = new Array();
+
+// private: invoke async
+SOAPClient._loadWsdl = function(url, method, parameters, async, callback)
+{
+	// load from cache?
+	var wsdl = SOAPClient_cacheWsdl[url];
+	if(wsdl + "" != "" && wsdl + "" != "undefined")
+		return SOAPClient._sendSoapRequest(url, method, parameters, async, callback, wsdl);
+	// get wsdl
+	var xmlHttp = SOAPClient._getXmlHttp();
+	xmlHttp.open("GET", url + "?wsdl", async);
+	if(async) 
+	{
+		xmlHttp.onreadystatechange = function() 
+		{
+			if(xmlHttp.readyState == 4)
+				SOAPClient._onLoadWsdl(url, method, parameters, async, callback, xmlHttp);
+		}
+	}
+	xmlHttp.send(null);
+	if (!async)
+		return SOAPClient._onLoadWsdl(url, method, parameters, async, callback, xmlHttp);
+}
+SOAPClient._onLoadWsdl = function(url, method, parameters, async, callback, req)
+{
+	var wsdl = req.responseXML;
+	SOAPClient_cacheWsdl[url] = wsdl;	// save a copy in cache
+	return SOAPClient._sendSoapRequest(url, method, parameters, async, callback, wsdl);
+}
+SOAPClient._sendSoapRequest = function(url, method, parameters, async, callback, wsdl)
+{
+	// get namespace
+	var ns = (wsdl.documentElement.attributes["targetNamespace"] + "" == "undefined") ? wsdl.documentElement.attributes.getNamedItem("targetNamespace").nodeValue : wsdl.documentElement.attributes["targetNamespace"].value;
+	// build SOAP request
+	var sr = 
+				"<?xml version=\"1.0\" encoding=\"utf-8\"?>" +
+				"<soap:Envelope " +
+				"xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" " +
+				"xmlns:xsd=\"http://www.w3.org/2001/XMLSchema\" " +
+				"xmlns:soap=\"http://schemas.xmlsoap.org/soap/envelope/\">" +
+				"<soap:Body>" +
+				"<" + method + " xmlns=\"" + ns + "\">" +
+				parameters.toXml() +
+				"</" + method + "></soap:Body></soap:Envelope>";
+	// send request
+	var xmlHttp = SOAPClient._getXmlHttp();
+	xmlHttp.open("POST", url, async);
+	var soapaction = ((ns.lastIndexOf("/") != ns.length - 1) ? ns + "/" : ns) + method;
+	xmlHttp.setRequestHeader("SOAPAction", soapaction);
+	xmlHttp.setRequestHeader("Content-Type", "text/xml; charset=utf-8");
+	if(async) 
+	{
+		xmlHttp.onreadystatechange = function() 
+		{
+			if(xmlHttp.readyState == 4)
+				SOAPClient._onSendSoapRequest(method, async, callback, wsdl, xmlHttp);
+		}
+	}
+	xmlHttp.send(sr);
+	if (!async)
+		return SOAPClient._onSendSoapRequest(method, async, callback, wsdl, xmlHttp);
+}
+
+SOAPClient._onSendSoapRequest = function(method, async, callback, wsdl, req) 
+{
+	var o = null;
+	var nd = SOAPClient._getElementsByTagName(req.responseXML, method + "Result");
+	if(nd.length == 0)
+	{
+		if(req.responseXML.getElementsByTagName("faultcode").length > 0)
+		{
+		    if(async || callback)
+		        o = new Error(500, req.responseXML.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue);
+			else
+			    throw new Error(500, req.responseXML.getElementsByTagName("faultstring")[0].childNodes[0].nodeValue);			
+		}
+	}
+	else
+		o = SOAPClient._soapresult2object(nd[0], wsdl);
+	if(callback)
+		callback(o, req.responseXML);
+	if(!async)
+		return o;
+}
+SOAPClient._soapresult2object = function(node, wsdl)
+{
+    var wsdlTypes = SOAPClient._getTypesFromWsdl(wsdl);
+    return SOAPClient._node2object(node, wsdlTypes);
+}
+SOAPClient._node2object = function(node, wsdlTypes)
+{
+	// null node
+	if(node == null)
+		return null;
+	// text node
+	if(node.nodeType == 3 || node.nodeType == 4)
+		return SOAPClient._extractValue(node, wsdlTypes);
+	// leaf node
+	if (node.childNodes.length == 1 && (node.childNodes[0].nodeType == 3 || node.childNodes[0].nodeType == 4))
+		return SOAPClient._node2object(node.childNodes[0], wsdlTypes);
+	var isarray = SOAPClient._getTypeFromWsdl(node.nodeName, wsdlTypes).toLowerCase().indexOf("arrayof") != -1;
+	// object node
+	if(!isarray)
+	{
+		var obj = null;
+		if(node.hasChildNodes())
+			obj = new Object();
+		for(var i = 0; i < node.childNodes.length; i++)
+		{
+			var p = SOAPClient._node2object(node.childNodes[i], wsdlTypes);
+			obj[node.childNodes[i].nodeName] = p;
+		}
+		return obj;
+	}
+	// list node
+	else
+	{
+		// create node ref
+		var l = new Array();
+		for(var i = 0; i < node.childNodes.length; i++)
+			l[l.length] = SOAPClient._node2object(node.childNodes[i], wsdlTypes);
+		return l;
+	}
+	return null;
+}
+SOAPClient._extractValue = function(node, wsdlTypes)
+{
+	var value = node.nodeValue;
+	switch(SOAPClient._getTypeFromWsdl(node.parentNode.nodeName, wsdlTypes).toLowerCase())
+	{
+		default:
+		case "s:string":			
+			return (value != null) ? value + "" : "";
+		case "s:boolean":
+			return value + "" == "true";
+		case "s:int":
+		case "s:long":
+			return (value != null) ? parseInt(value + "", 10) : 0;
+		case "s:double":
+			return (value != null) ? parseFloat(value + "") : 0;
+		case "s:datetime":
+			if(value == null)
+				return null;
+			else
+			{
+				value = value + "";
+				value = value.substring(0, (value.lastIndexOf(".") == -1 ? value.length : value.lastIndexOf(".")));
+				value = value.replace(/T/gi," ");
+				value = value.replace(/-/gi,"/");
+				var d = new Date();
+				d.setTime(Date.parse(value));										
+				return d;				
+			}
+	}
+}
+SOAPClient._getTypesFromWsdl = function(wsdl)
+{
+	var wsdlTypes = new Array();
+	// IE
+	var ell = wsdl.getElementsByTagName("s:element");	
+	var useNamedItem = true;
+	// MOZ
+	if(ell.length == 0)
+	{
+		ell = wsdl.getElementsByTagName("element");	     
+		useNamedItem = false;
+	}
+	for(var i = 0; i < ell.length; i++)
+	{
+		if(useNamedItem)
+		{
+			if(ell[i].attributes.getNamedItem("name") != null && ell[i].attributes.getNamedItem("type") != null) 
+				wsdlTypes[ell[i].attributes.getNamedItem("name").nodeValue] = ell[i].attributes.getNamedItem("type").nodeValue;
+		}	
+		else
+		{
+			if(ell[i].attributes["name"] != null && ell[i].attributes["type"] != null)
+				wsdlTypes[ell[i].attributes["name"].value] = ell[i].attributes["type"].value;
+		}
+	}
+	return wsdlTypes;
+}
+SOAPClient._getTypeFromWsdl = function(elementname, wsdlTypes)
+{
+    var type = wsdlTypes[elementname] + "";
+    return (type == "undefined") ? "" : type;
+}
+// private: utils
+SOAPClient._getElementsByTagName = function(document, tagName)
+{
+	try
+	{
+		// trying to get node omitting any namespaces (latest versions of MSXML.XMLDocument)
+		return document.selectNodes(".//*[local-name()=\""+ tagName +"\"]");
+	}
+	catch (ex) {}
+	// old XML parser support
+	return document.getElementsByTagName(tagName);
+}
+// private: xmlhttp factory
+SOAPClient._getXmlHttp = function() 
+{
+	try
+	{
+		if(window.XMLHttpRequest) 
+		{
+			var req = new XMLHttpRequest();
+			// some versions of Moz do not support the readyState property and the onreadystate event so we patch it!
+			if(req.readyState == null) 
+			{
+				req.readyState = 1;
+				req.addEventListener("load", 
+									function() 
+									{
+										req.readyState = 4;
+										if(typeof req.onreadystatechange == "function")
+											req.onreadystatechange();
+									},
+									false);
+			}
+			return req;
+		}
+		if(window.ActiveXObject) 
+			return new ActiveXObject(SOAPClient._getXmlHttpProgID());
+	}
+	catch (ex) {}
+	throw new Error("Your browser does not support XmlHttp objects");
+}
+SOAPClient._getXmlHttpProgID = function()
+{
+	if(SOAPClient._getXmlHttpProgID.progid)
+		return SOAPClient._getXmlHttpProgID.progid;
+	var progids = ["Msxml2.XMLHTTP.5.0", "Msxml2.XMLHTTP.4.0", "MSXML2.XMLHTTP.3.0", "MSXML2.XMLHTTP", "Microsoft.XMLHTTP"];
+	var o;
+	for(var i = 0; i < progids.length; i++)
+	{
+		try
+		{
+			o = new ActiveXObject(progids[i]);
+			return SOAPClient._getXmlHttpProgID.progid = progids[i];
+		}
+		catch (ex) {};
+	}
+	throw new Error("Could not find an installed XML parser");
+}
+
+
+
+
+
+
+
+
+
+
+	var url = "http://www.guru4.net/articoli/javascript-soap-client/demo/webservicedemo.asmx";
+	
+	// DEMO 1
+	function HelloWorld()
+	{
+		var pl = new SOAPClientParameters();
+		SOAPClient.invoke(url, "HelloWorld", pl, true, HelloWorld_callBack);
+	}
+	function HelloWorld_callBack(r)
+	{
+		alert(r);
+	}
+	
+	// DEMO 2
+	function HelloTo()
+	{
+		var pl = new SOAPClientParameters();
+		pl.add("name", document.frmDemo.txtName.value);
+		SOAPClient.invoke(url, "HelloTo", pl, true, HelloTo_callBack);
+	}
+	function HelloTo_callBack(r)
+	{
+		alert(r);
+	}
+	
+	// DEMO 3
+	function ServerTime()
+	{
+		var pl = new SOAPClientParameters();
+		SOAPClient.invoke(url, "ServerTime", pl, true, ServerTime_callBack);
+	}
+	function ServerTime_callBack(st)
+	{
+		var ct = new Date();
+		alert("Server: " + st.toLocaleString() + "\r\n[Client: " + ct.toLocaleString() + "]");
+	}
+	
+	// DEMO 4
+	function Wait()
+	{
+		var duration = parseInt(document.frmDemo.ddSleepDuration[document.frmDemo.ddSleepDuration.selectedIndex].value, 10);
+		var pl = new SOAPClientParameters();
+		pl.add("seconds", duration);
+		var ph = document.getElementById("phWait");
+		ph.style.display = "block";
+		SOAPClient.invoke(url, "Wait", pl, true, Wait_callBack);
+	}
+	function Wait_callBack(r)
+	{
+		var img = document.getElementById("phWait");
+		img.style.display = "none";
+		alert("Call to \"Wait\" method completed");
+	}
+	
+	// DEMO 5
+	function ThrowException()
+	{
+		try
+		{
+			var pl = new SOAPClientParameters();
+			SOAPClient.invoke(url, "ThrowException", pl, false);
+		}
+		catch(e)
+		{
+			alert("An error has occured!");
+		}
+	}
+	function ThrowExceptionAsync()
+	{
+	    var pl = new SOAPClientParameters();
+		SOAPClient.invoke(url, "ThrowException", pl, true, ThrowExceptionAsync_callBack);
+	}
+	function ThrowExceptionAsync_callBack(e)
+	{
+	    if(e.constructor.toString().indexOf("function Error()") != -1);
+	        alert("An error has occured!\r\n\r\n" + e.description + "\r\n\r\n[Error code: " + e.number + "]");
+	}
+	
+	// DEMO 6
+	function SyncSample()
+	{
+		var pl = new SOAPClientParameters();
+		pl.add("seconds", 5);
+		var starttime = (new Date).toLocaleTimeString();
+		var r = SOAPClient.invoke(url, "Wait", pl, false);
+		alert("Operation start time: " + starttime + "\r\nOperation end time: " + (new Date).toLocaleTimeString());
+	}
+	
+	// DEMO 7
+	function GetUser()
+	{
+		var username = document.frmDemo.txtUsername.value;
+		var pl = new SOAPClientParameters();
+		pl.add("username", username);
+		SOAPClient.invoke(url, "GetUser", pl, true, GetUser_callBack);
+	}
+	function GetUser_callBack(u)
+	{
+		if(u == null)
+			alert("No user found.\r\n\r\nEnter a username and repeat search.");
+		else
+			alert(
+				"ID: " + u.Id + "\r\n" +
+				"USERNAME: " + u.Username + "\r\n" +
+				"PASSWORD: " + u.Password + "\r\n" +
+				"EXPIRATION: " + u.ExpirationDate.toLocaleString());
+	}
+	
+	// DEMO 8
+	function GetUsers()
+	{
+		var pl = new SOAPClientParameters();
+		SOAPClient.invoke(url, "GetUsers", pl, true, GetUsers_callBack);
+	}
+	function GetUsers_callBack(ul)
+	{
+		alert(ul.length + " user(s) found:");
+		for(var i = 0; i < ul.length; i++)		
+			alert(
+				"User No. " + (i + 1) + "\r\n\r\n" +
+				"ID: " + ul[i].Id + "\r\n" +
+				"USERNAME: " + ul[i].Username + "\r\n" +
+				"PASSWORD: " + ul[i].Password + "\r\n" +
+				"EXPIRATION: " + ul[i].ExpirationDate.toLocaleString());
+	}
+	
+	// DEMO 9
+	function GetUserList()
+	{
+		var pl = new SOAPClientParameters();
+		SOAPClient.invoke(url, "GetUserList", pl, true, GetUserList_callBack);
+	}
+	function GetUserList_callBack(ul)
+	{
+		alert(ul.length + " user(s) found:");
+		for(var i = 0; i < ul.length; i++)		
+			alert(
+				"User No. " + (i + 1) + "\r\n\r\n" +
+				"ID: " + ul[i].Id + "\r\n" +
+				"USERNAME: " + ul[i].Username + "\r\n" +
+				"PASSWORD: " + ul[i].Password + "\r\n" +
+				"EXPIRATION: " + ul[i].ExpirationDate.toLocaleString());
+	}
+	
+	// DEMO 10
+	function GetCars()
+	{
+		var cid = document.frmDemo.ddCompany[document.frmDemo.ddCompany.selectedIndex].value;
+		if(cid != "")
+		{
+			// clear car list
+			while(document.frmDemo.ddCar.options.length > 0)
+				document.frmDemo.ddCar.remove(0);
+			// add waiting element
+			var o = document.createElement("OPTION");
+			document.frmDemo.ddCar.options.add(o);
+			o.value = "";
+			o.innerHTML = "Loading...";
+			// disable dropdown
+			document.frmDemo.ddCar.disabled = true;
+			// invoke
+			var pl = new SOAPClientParameters();
+			pl.add("companyid", cid);
+			SOAPClient.invoke(url, "GetCars", pl, true, GetCars_callBack);
+		}
+	}
+	function GetCars_callBack(cl)
+	{
+		// clear car list
+		var c = document.frmDemo.ddCar.options.length;
+		while(document.frmDemo.ddCar.options.length > 0)
+			document.frmDemo.ddCar.remove(0);
+		// add first (empty) element
+		var o = document.createElement("OPTION");
+		document.frmDemo.ddCar.options.add(o);
+		o.value = "";
+		o.innerHTML = "Please, select a model";					
+		// fill car list
+		for(var i = 0; i < cl.length; i++)
+		{
+			var o = document.createElement("OPTION");
+			document.frmDemo.ddCar.options.add(o);
+			o.value = cl[i].Id.toString();
+			o.innerHTML = cl[i].Label;
+		}
+		// enable dropdown
+		document.frmDemo.ddCar.disabled = false;
+	}
+	
+	// DEMO 11
+	function GetSoapResponse()
+	{
+		var pl = new SOAPClientParameters();
+		SOAPClient.invoke(url, "HelloWorld", pl, true, GetSoapResponse_callBack);
+	}
+    function GetSoapResponse_callBack(r, soapResponse)
+    {
+	    if(soapResponse.xml)    // IE
+	        alert(soapResponse.xml);
+	    else                    // MOZ
+	        alert((new XMLSerializer()).serializeToString(soapResponse));
+    }
+	
+	// DEMO 12
+	function User(id, username, password, expirationdate)
+	{
+        this.Id = id;
+	    this.Username = username;
+	    this.Password = password;
+	    this.ExpirationDate = expirationdate;
+	}
+	function SendSamples_callBack(r)
+	{
+		if(r.constructor.toString().indexOf("function Error()") != -1)
+	        alert("ERROR\r\n\r\n" + r.description + "\r\n\r\n[" + r.number + "]");
+		else
+		    alert(r);
+	}
+	function SendSample1()
+	{
+	    var p1 = "This is a string";
+	    var p2 = 34654;
+	    var p3 = 3.14159;
+	    var p4 = true;
+	    var p5 = new Date();
+	    var pl = new SOAPClientParameters();
+		pl.add("p1", p1);
+		pl.add("p2", p2);
+		pl.add("p3", p3);
+		pl.add("p4", p4);
+		pl.add("p5", p5);
+	    SOAPClient.invoke(url, "SendSample1", pl, true, SendSamples_callBack);
+	}
+	function SendSample2()
+	{
+	    var list = new Array();
+	    list[0] = "element 1";
+	    list[1] = "element 2";
+	    list[2] = "element 3";
+	    list[3] = "element 4";
+	    var pl = new SOAPClientParameters();
+		pl.add("list", list);
+		SOAPClient.invoke(url, "SendSample2", pl, true, SendSamples_callBack);
+	}
+	function SendSample3()
+	{
+	    var list = new Array();
+	    list[0] = 235;
+	    list[1] = 9876;
+	    list[2] = 124;
+	    list[3] = 79865;
+	    list[4] = 53;
+	    var pl = new SOAPClientParameters();
+		pl.add("list", list);
+		SOAPClient.invoke(url, "SendSample3", pl, true, SendSamples_callBack);
+	}
+	function SendSample4a()
+	{
+        var u = new User(34, "Administrator", "p@ss01!", new Date());        	      
+	    var pl = new SOAPClientParameters();
+		pl.add("user", u);
+	    SOAPClient.invoke(url, "SendSample4", pl, true, SendSamples_callBack);
+	}
+	function SendSample4b()
+	{
+        var u = new Object();
+        u.Id = 5271;
+	    u.Username = "Guest1";
+	    u.Password = "GuestP@ss!";
+	    u.ExpirationDate = new Date();
+	    u.ExpirationDate.setMonth(u.ExpirationDate.getMonth() + 1);
+	    var pl = new SOAPClientParameters();
+		pl.add("user", u);
+	    SOAPClient.invoke(url, "SendSample4", pl, true, SendSamples_callBack);
+	}
+	function SendSample4c()
+	{  
+        var u = new Array();
+        u["Id"] = 654;
+	    u["Username"] = "Guest2";
+	    u["Password"] = "GuestP@ss!";
+	    u["ExpirationDate"] = new Date();
+	    u["ExpirationDate"].setMonth(u["ExpirationDate"].getMonth() + 1);
+	    var pl = new SOAPClientParameters();
+		pl.add("user", u);
+	    SOAPClient.invoke(url, "SendSample4", pl, true, SendSamples_callBack);
+	}
+	function SendSample5()
+	{  
+	    var ul = new Array();
+	    ul[0] = new User(52342, "User1", "User1P@ss!", new Date());
+	    ul[1] = new User(453, "User2", "User2P@ss!", new Date());
+	    ul[2] = new User(5756, "User3", "User3P@ss!", new Date());
+	    ul[3] = new User(5431, "User4", "User4P@ss!", new Date());
+	    var pl = new SOAPClientParameters();
+		pl.add("userlist", ul);
+	    SOAPClient.invoke(url, "SendSample5", pl, true, SendSamples_callBack);
+	}
+	
+	// utils
+	function toggle(id) 
+	{
+		var d = document.getElementById(id);
+		if(d != null)
+			d.className = (d.className == "h") ? "s" : "h"; 
+	} 
+
+	</script></head><body>
+    
+
+<div class="header">
+    <div class="logo">
+        <img src="en_files/logo.gif" alt="GURU4.net - Resources and solutions for Web developers" title="GURU4.net - Resources and solutions for Web developers" height="35" width="230">
+        <h1><a href="http://www.guru4.net/" title="Home Page"><span>GURU4.net</span></a></h1>
+        <h2>Resources and solutions for Web developers</h2>
+    </div>
+    <div class="adv">   
+        <script type="text/javascript">
+        <!--
+            google_ad_client = "pub-7676408393509233";
+            google_ad_width = 468;
+            google_ad_height = 60;
+            google_ad_format = "468x60_as";
+            google_ad_type = "text_image";
+            google_ad_channel ="";
+            google_color_border = "dddddd";
+            google_color_bg = "ffffff";
+            google_color_link = "333a88";
+            google_color_url = "cc0000";
+            google_color_text = "555555";
+        //-->
+        </script>
+        <script type="text/javascript" src="en_files/show_ads.js"></script><iframe name="google_ads_frame" src="en_files/ads." marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" frameborder="0" height="60" scrolling="no" width="468"></iframe>        
+    </div>
+    <div class="toolbar">
+        <div class="menu">
+        <ul>
+            <li><a href="http://www.guru4.net/">Home Page</a></li>
+            <li><a href="http://www.guru4.net/articoli/">Articles</a></li>
+			<li><a href="http://www.guru4.net/directory/">Directory</a></li>
+            <li><a href="http://www.guru4.net/contatti/">Contacts</a></li>
+            <li><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=system%40guru4%2enet&amp;item_name=Support%20GURU4%2enet&amp;item_number=JavaScript+SOAP+Client+-+DEMOS+%28EN%29+%7c+GURU4.net&amp;no_shipping=0&amp;cn=Note&amp;tax=0&amp;currency_code=EUR&amp;lc=US&amp;bn=PP%2dDonationsBF&amp;charset=UTF%2d8" id="ctl00_PageHeader_lnkPP">Donate!</a></li>
+            <li><a href="http://www.guru4.net/backoffice/">Login</a></li>
+        </ul>
+        </div>
+        <div class="search">
+            <form action="http://www.guru4.net/cerca/" method="get" id="frmSearch" onsubmit="return doLocalSearch(this, 'en');" title="GURU4.net Search">
+                <fieldset>
+                    <legend>Search</legend>
+                    <label for="txtSearch">Search:</label>
+                    <input id="txtSearch" name="query" type="text">
+                    <input class="btn" value="Go" type="submit">
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+    <div class="page">
+        <div class="content">
+            <div class="adv">
+                <script type="text/javascript">
+                <!--
+                    google_ad_client = "pub-7676408393509233";
+                    google_ad_width = 468;
+                    google_ad_height = 15;
+                    google_ad_format = "468x15_0ads_al_s";
+                    google_ad_channel ="";
+                    google_color_border = "e1e1e1";
+                    google_color_bg = "e1e1e1";
+                    google_color_link = "000000";
+                    google_color_url = "000000";
+                    google_color_text = "000000";
+                //-->
+                </script>
+                <script type="text/javascript" src="en_files/show_ads.js"></script><iframe name="google_ads_frame" src="en_files/ads_002." marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" frameborder="0" height="15" scrolling="no" width="468"></iframe>            
+            </div>            
+            <div class="main">
+                
+                <h1><span id="ctl00_lblTitle">JavaScript SOAP Client - DEMOS (EN)</span></h1>
+                
+                    <div class="messageTip">If you use this code and feel it is a useful tool, consider making a <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=system%40guru4%2enet&amp;item_name=Support%20GURU4%2enet&amp;item_number=JavaScript+SOAP+Client+-+DEMOS+%28EN%29&amp;no_shipping=0&amp;cn=Note&amp;tax=0&amp;currency_code=EUR&amp;lc=US&amp;bn=PP%2dDonationsBF&amp;charset=UTF%2d8" id="ctl00_lnkPP1">donation</a> (through <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=system%40guru4%2enet&amp;item_name=Support%20GURU4%2enet&amp;item_number=JavaScript+SOAP+Client+-+DEMOS+%28EN%29&amp;no_shipping=0&amp;cn=Note&amp;tax=0&amp;currency_code=EUR&amp;lc=US&amp;bn=PP%2dDonationsBF&amp;charset=UTF%2d8" id="ctl00_lnkPP2">PayPal</a>) to help support the project. You can donate as little or as much as you wish, any amount is greatly appreciated!</div>
+                
+                
+    <form id="frmDemo" name="frmDemo" action="" method="post">
+    <div>
+        <a name="d1"></a>
+        <h2>DEMO 1: "Hello World!"</h2>
+        <p>The simplest example you can imagine (but maybe not the most fanciful...):</p>
+        <input value="Say &quot;Hello world&quot;" onclick="HelloWorld();" type="button">
+        <p><b>&nbsp;»&nbsp;</b><a href="javascript:toggle('demo1');">Show / hide sample source code</a></p>
+        <div id="demo1" class="h">
+			<fieldset>
+				<legend>Client (javascript)</legend>
+				<kbd>
+					function HelloWorld()<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "HelloWorld", pl, true, HelloWorld_callBack);<br>
+					}<br>
+					function HelloWorld_callBack(r)<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;alert(r);<br>
+					}            
+				</kbd>
+			</fieldset>
+			<fieldset>			
+					<legend>Server (WebMethod - C#)</legend>
+					<kbd>
+						public string HelloWorld()<br>
+						{<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;return "Hello World!";<br>
+						}
+					</kbd>
+			</fieldset>
+        </div>
+        <hr><a name="d2"></a>
+		<h2>DEMO 2: Using parameters (base)</h2>
+        <p>Passing parameters to the Web Service (see also <a href="#d12" title="DEMO 12">DEMO 12</a>):</p> 
+		<label>Your name: </label><input name="txtName" id="txtName" value="Matteo" type="text">
+		<input value="Say hello to me" onclick="HelloTo();" type="button">
+        <p><b>&nbsp;»&nbsp;</b><a href="javascript:toggle('demo2');">Show / hide sample source code</a></p>
+        <div id="demo2" class="h">
+			<fieldset>
+				<legend>Client (javascript)</legend>
+				<kbd>
+					function HelloTo()<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;pl.add("name", document.frmDemo.txtName.value);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "HelloTo", pl, true, HelloTo_callBack);<br>
+					}<br>
+					function HelloTo_callBack(r)<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;alert(r);<br>
+					}      
+				</kbd>
+			</fieldset>
+			<fieldset>			
+					<legend>Server (WebMethod - C#)</legend>
+					<kbd>
+						public string HelloTo(string name)<br>
+						{<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;return "Hello " + name + "!";<br>
+						}
+					</kbd>
+			</fieldset>
+        </div>
+        <hr><a name="d3"></a>
+        <h2>DEMO 3: Using .NET framework core classes</h2>
+        <p>Using a date as return type (.NET "DateTime" automatically converted to JavaScript "Date")</p> 
+		<input value="Server date and time" onclick="ServerTime();" type="button">
+        <p><b>&nbsp;»&nbsp;</b><a href="javascript:toggle('demo3');">Show / hide sample source code</a></p>
+        <div id="demo3" class="h">
+			<fieldset>
+				<legend>Client (javascript)</legend>
+				<kbd>
+					function ServerTime()<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "ServerTime", pl, true, ServerTime_callBack);<br>
+					}<br>
+					function ServerTime_callBack(st)<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var ct = new Date();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;alert("Server: " + st.toLocaleString() + "\r\n[Client: " + ct.toLocaleString() + "]");<br>
+					}					
+				</kbd>
+			</fieldset>
+			<fieldset>			
+					<legend>Server (WebMethod - C#)</legend>
+					<kbd>
+						public DateTime ServerTime()<br>
+						{<br>
+						&nbsp;&nbsp;&nbsp;&nbsp;return DateTime.Now;<br>
+						}
+					</kbd>
+			</fieldset>
+        </div>      
+        <hr><a name="d4"></a>
+        <h2>DEMO 4: Void methods</h2>
+        <p>Calling a void method with a long response-time (while waiting for the response an orange box is displayed):</p> 
+		<select name="ddSleepDuration" id="ddSleepDuration">
+			<option value="0">Immediate (0 seconds)</option>
+			<option value="5">5-second delay</option>
+			<option value="10">10-second delay</option>
+			<option value="30">30-second delay</option>
+		</select>
+		<input value="Start" onclick="Wait();" type="button">
+		<div id="phWait" style="border: 3px solid rgb(255, 163, 0); margin: 10px 10px 10px 0px; padding: 10px; display: none; width: 200px; text-align: center;">Please wait... <img src="en_files/loading.gif" height="6" width="123"></div>
+        <p><b>&nbsp;»&nbsp;</b><a href="javascript:toggle('demo4');">Show / hide sample source code</a></p>
+        <div id="demo4" class="h">
+			<fieldset>
+				<legend>Client (javascript)</legend>
+				<kbd>
+					function Wait()<br>
+					{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;var duration =
+parseInt(document.frmDemo.ddSleepDuration[document.frmDemo.ddSleepDuration.selectedIndex].value,
+10);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;pl.add("seconds", duration);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var ph = document.getElementById("phWait");<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;ph.style.display = "block";<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "Wait", pl, true, Wait_callBack);<br>
+					}<br>
+					function Wait_callBack(r)<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var img = document.getElementById("phWait");<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;img.style.display = "none";<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;alert("Call to \"Wait\" method completed");<br>
+					}								
+				</kbd>
+			</fieldset>
+			<fieldset>			
+				<legend>Server (WebMethod - C#)</legend>
+				<kbd>
+					public void Wait(int seconds)<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;System.Threading.Thread.Sleep(seconds * 1000);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;return;<br>
+					}
+				</kbd>
+			</fieldset>
+        </div>
+        <hr><a name="d5"></a>
+        <h2>DEMO 5: Exceptions</h2>
+        <p>Handling exceptions:</p> 
+		<input value="Throw exception" onclick="ThrowException();" type="button">
+		<input value="Throw exception (async)" onclick="ThrowExceptionAsync();" type="button">
+		<p><b>&nbsp;»&nbsp;</b><a href="javascript:toggle('demo5');">Show / hide sample source code</a></p>
+        <div id="demo5" class="h">
+			<fieldset>
+				<legend>Client (javascript)</legend>
+				<kbd>
+					function ThrowException()<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;try<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "ThrowException", pl, false);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;catch(e)<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert("An error has occured!");<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					}<br>
+					<br>
+                    function ThrowExceptionAsync()<br>
+                    {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "ThrowException", pl, true, ThrowExceptionAsync_callBack);<br>
+                    }<br>
+                    function ThrowExceptionAsync_callBack(e)<br>
+                    {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;if(e.constructor.toString().indexOf("function Error()") != -1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert("An error has
+occured!\r\n\r\n" + e.description + "\r\n\r\n[Error code: " + e.number
++ "]");<br>
+                    }					
+				</kbd>
+			</fieldset>
+			<fieldset>			
+				<legend>Server (WebMethod - C#)</legend>
+				<kbd>
+					public void ThrowException(int seconds)<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;throw new Exception();<br>
+					}
+				</kbd>
+			</fieldset>
+        </div>              
+        <hr><a name="d6"></a>
+        <h2>DEMO 6: Sync calls</h2>
+        <p>Syncronous
+call example: server response is delayed 5 seconds using "Wait" method
+(see demo No. 4). Please note that browser is stuck until response is
+received:</p> 
+		<input value="Start" onclick="SyncSample();" type="button">
+		<p><b>&nbsp;»&nbsp;</b><a href="javascript:toggle('demo6');">Show / hide sample source code</a></p>
+        <div id="demo6" class="h">
+			<fieldset>
+				<legend>Client (javascript)</legend>
+				<kbd>
+					function SyncSample()<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;pl.add("seconds", 5);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var starttime = (new Date).toLocaleTimeString();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var r = SOAPClient.invoke(url, "Wait", pl, false);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;alert("Operation start time: " + starttime +
+"\r\nOperation end time: " + (new Date).toLocaleTimeString());<br>
+					}										
+				</kbd>
+			</fieldset>
+			<fieldset>			
+				<legend>Server (WebMethod - C#)</legend>
+				<kbd>
+					public void Wait(int seconds)<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;System.Threading.Thread.Sleep(seconds * 1000);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;return;<br>
+					}
+				</kbd>
+			</fieldset>
+        </div> 
+        <hr><a name="d7"></a>
+        <h2>DEMO 7: Using custom entities (classes)</h2>
+        <p>Leaving the textbox empty, the web method will return a <kbd>null</kbd>; entering any value a <kbd>User</kbd> object with random property values will be returned:</p> 
+		<label for="txtUsername">Username: </label><input name="txtUsername" id="txtUsername" value="" type="text"><input value="Find user..." onclick="GetUser();" type="button">
+		<p><b>&nbsp;»&nbsp;</b><a href="javascript:toggle('demo7');">Show / hide sample source code</a></p>
+        <div id="demo7" class="h">
+			<fieldset>
+				<legend>Client (javascript)</legend>
+				<kbd>
+					function GetUser()<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var username = document.frmDemo.txtUsername.value;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;pl.add("username", username);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "GetUser", pl, true, GetUser_callBack);<br>
+					}<br>
+					function GetUser_callBack(u)<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;if(u == null)<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert("No user found.\r\n\r\nEnter a username and repeat search.");<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;else<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert(<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"ID: " + u.Id + "\r\n" +<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"USERNAME: " + u.Username + "\r\n" +<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"PASSWORD: " + u.Password + "\r\n" +<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"EXPIRATION:
+" + u.ExpirationDate.toLocaleString());<br>
+					}															
+				</kbd>
+			</fieldset>
+			<fieldset>			
+				<legend>Server (WebMethod - C#)</legend>
+				<kbd>
+					public User GetUser(string username)<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;if (username.Trim().Length == 0)<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return null;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;int id = DateTime.Now.Millisecond;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;string password = "PWD_" + DateTime.Now.Ticks.ToString();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;DateTime expirationdate = DateTime.Now.Add(new TimeSpan(1, 0, 0, 0));<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;return new User(id, username, password, expirationdate);<br>
+					}					
+				</kbd>
+				<p><b>User class:</b></p>
+				<kbd>
+					[Serializable]<br>
+					public class User<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;private int _id = -1;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;private string _username = "";<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;private string _password = "";<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;private DateTime _expirationdate = DateTime.MinValue;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;public User() { }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;public User(int id, string username, string password, DateTime expirationdate)<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.Id = id;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.Username = username;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.Password = password;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.ExpirationDate = expirationdate;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;public int Id<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get { return _id; }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set { _id = value; }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;public string Username<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get { return _username; }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set { _username = value; }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;public string Password<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get { return _password; }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set { _password = value; }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;public DateTime ExpirationDate<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get { return _expirationdate; }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set { _expirationdate = value; }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					}				
+				</kbd>
+			</fieldset>
+        </div> 
+        <hr><a name="d8"></a>
+        <h2>DEMO 8: Arrays</h2>
+        <p>Using custom entity arrays. The web method returns an array with 4 <kbd>User</kbd> objects (see demo No. 7)</p> 
+		<input value="Get users" onclick="GetUsers();" type="button">
+		<p><b>&nbsp;»&nbsp;</b><a href="javascript:toggle('demo8');">Show / hide sample source code</a></p>
+        <div id="demo8" class="h">
+			<fieldset>
+				<legend>Client (javascript)</legend>
+				<kbd>
+					function GetUsers()<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "GetUsers", pl, true, GetUsers_callBack);<br>
+					}<br>
+					function GetUsers_callBack(ul)<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;alert(ul.length + " user(s) found:");<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;for(var i = 0; i &lt; ul.length; i++)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert(<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"User No. " + (i + 1) + "\r\n\r\n" +<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"ID: " + ul[i].Id + "\r\n" +<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"USERNAME: " + ul[i].Username + "\r\n" +<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"PASSWORD: " + ul[i].Password + "\r\n" +<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"EXPIRATION:
+" + ul[i].ExpirationDate.toLocaleString());<br>
+					}										
+				</kbd>
+			</fieldset>
+			<fieldset>			
+				<legend>Server (WebMethod - C#)</legend>
+				<kbd>
+					public User[] GetUsers()<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;User[] ul = new User[4];<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;Random r = new Random();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;for (int i = 0; i &lt; ul.Length; i++)<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int id = r.Next(100);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string username = "USR_" + id.ToString();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string password = "PWD_" + id.ToString();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DateTime expirationdate = DateTime.Now.Add(new TimeSpan((i + 1), 0, 0, 0));<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ul[i] = new User(id, username, password, expirationdate);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;return ul;<br>
+					}					
+				</kbd>
+			</fieldset>
+        </div>
+        <hr><a name="d9"></a>
+        <h2>DEMO 9: ICollection</h2>
+        <p>Custom entity collection (System.Collections.ICollection). The web method returns a <kbd>UserList</kbd> object, typed collection of <kbd>User</kbd> (see demo No. 7) with 3 elements.</p> 
+		<input value="Get users" onclick="GetUserList();" type="button">
+		<p><b>&nbsp;»&nbsp;</b><a href="javascript:toggle('demo9');">Show / hide sample source code</a></p>
+        <div id="demo9" class="h">
+			<fieldset>
+				<legend>Client (javascript)</legend>
+				<kbd>
+					function GetUserList()<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "GetUserList", pl, true, GetUserList_callBack);<br>
+					}<br>
+					function GetUserList_callBack(ul)<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;alert(ul.length + " user(s) found:");<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;for(var i = 0; i &lt; ul.length; i++)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert(<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"User No. " + (i + 1) + "\r\n\r\n" +<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"ID: " + ul[i].Id + "\r\n" +<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"USERNAME: " + ul[i].Username + "\r\n" +<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"PASSWORD: " + ul[i].Password + "\r\n" +<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"EXPIRATION:
+" + ul[i].ExpirationDate.toLocaleString());<br>
+					}										
+				</kbd>
+			</fieldset>
+			<fieldset>			
+				<legend>Server (WebMethod - C#)</legend>
+				<kbd>
+					public UserList GetUserList()<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;UserList ul = new UserList();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;Random r = new Random();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;for (int i = 0; i &lt; 3; i++)<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;int id = r.Next(100);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string username = "USR_" + id.ToString();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string password = "PWD_" + id.ToString();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DateTime expirationdate = DateTime.Now.Add(new TimeSpan((i + 1), 0, 0, 0));<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ul.Add(new User(id, username, password, expirationdate));<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;return ul;<br>
+					}					
+				</kbd>
+				<p><b>UserList class:</b></p>
+				<kbd>
+					[Serializable]<br>
+					public class UserList : System.Collections.CollectionBase<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;public UserList() { }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;public int Add(User value)<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return base.List.Add(value as object);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;public User this[int index]<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get { return (base.List[index] as User); }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;public void Remove(User value)<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;base.List.Remove(value as object);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					}				
+				</kbd>
+			</fieldset>
+        </div>  
+        <hr><a name="d10"></a>
+		<h2>DEMO 10: Practical usage</h2>
+        <p>Fill options with AJAX:</p> 
+		<select name="ddCompany" id="ddCompany" onchange="GetCars();">
+			<option value="">Please, select a company...</option>
+			<option value="vw">Volkswagen</option>
+			<option value="f">FIAT</option>
+			<option value="bmw">BMW</option>
+		</select>
+		<select name="ddCar" id="ddCar" style="width: 200px;"></select>
+		<p><b>&nbsp;»&nbsp;</b><a href="javascript:toggle('demo10');">Show / hide sample source code</a></p>
+        <div id="demo10" class="h">
+			<fieldset>
+				<legend>Client (javascript)</legend>
+				<kbd>
+					function GetCars()<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var cid = document.frmDemo.ddCompany[document.frmDemo.ddCompany.selectedIndex].value;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;if(cid != "")<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// clear car list<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while(document.frmDemo.ddCar.options.length &gt; 0)<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.frmDemo.ddCar.remove(0);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// add waiting element<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var o = document.createElement("OPTION");<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.frmDemo.ddCar.options.add(o);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o.value = "";<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o.innerHTML = "Loading...";<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// disable dropdown<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.frmDemo.ddCar.disabled = true;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// invoke<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pl.add("companyid", cid);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "GetCars", pl, true, GetCars_callBack);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					}<br>
+					function GetCars_callBack(cl)<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;// clear car list<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var c = document.frmDemo.ddCar.options.length;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;while(document.frmDemo.ddCar.options.length &gt; 0)<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.frmDemo.ddCar.remove(0);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;// add first (empty) element<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var o = document.createElement("OPTION");<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;document.frmDemo.ddCar.options.add(o);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;o.value = "";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;o.innerHTML = "Please, select a
+model...";&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;// fill car list<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;for(var i = 0; i &lt; cl.length; i++)<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var o = document.createElement("OPTION");<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;document.frmDemo.ddCar.options.add(o);<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o.value = cl[i].Id.toString();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;o.innerHTML = cl[i].Label;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;// enable dropdown<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;document.frmDemo.ddCar.disabled = false;<br>
+					}																								
+				</kbd>
+			</fieldset>
+			<fieldset>			
+				<legend>Server (WebMethod - C#)</legend>
+				<kbd>
+					public Car[] GetCars(string companyid)<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;Car[] cl;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;switch (companyid.Trim().ToLower())<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case "vw":<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cl = new Car[] <br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new Car(1, "Passat"),<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new Car(2, "Golf"),<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new Car(3, "Polo"),<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new Car(4, "Lupo")<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case "f":<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cl = new Car[] <br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new Car(1, "Stilo"),<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new Car(2, "Punto"),<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new Car(3, "500")<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case "bmw":<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cl = new Car[] <br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new Car(1, "X5"),<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;new Car(2, "520")<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;default:<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cl = new Car[0];<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;return cl;<br>
+					}								
+				</kbd>
+				<p><b>Car class:</b></p>
+				<kbd>
+					[Serializable]<br>
+					public class Car<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;private int _id = -1;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;private string _label = "";<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;public Car() { }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;public Car(int id, string label)<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.Id = id;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.Label = label;<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;public int Id<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get { return _id; }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set { _id = value; }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;public string Label<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get { return _label; }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;set { _label = value; }<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+					}				
+				</kbd>
+			</fieldset>
+        </div>  
+		<hr><a name="d11"></a>
+        <h2>DEMO 11: Using the SOAP response (xml)</h2>
+        <p>
+How to use the SOAP response (XmlDocument) in callback method. In this
+example we show only the Xml in an alertbox, but you can - for example
+- transform the SOAP response using a stylesheet (XSL). </p>
+        <input value="Show SOAP response" onclick="GetSoapResponse();" type="button">
+        <p><b>&nbsp;»&nbsp;</b><a href="javascript:toggle('demo11');">Show / hide sample source code</a></p>        
+        <div id="demo11" class="s">
+			<fieldset>
+				<legend>Client (javascript)</legend>
+				<kbd>
+					function GetSoapResponse()<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "HelloWorld", pl, true, GetSoapResponse_callBack);<br>
+					}<br>
+                    function GetSoapResponse_callBack(r, soapResponse)<br>
+                    {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;if(soapResponse.xml)&nbsp;&nbsp;&nbsp;&nbsp;// IE<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert(soapResponse.xml);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;&nbsp;&nbsp;&nbsp;// MOZ<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert((new
+XMLSerializer()).serializeToString(soapResponse));<br>
+                    }
+				</kbd>
+			</fieldset>
+			<fieldset>			
+				<legend>Server (WebMethod - C#)</legend>
+				<kbd>
+					public string HelloWorld()<br>
+					{<br>
+					&nbsp;&nbsp;&nbsp;&nbsp;return "Hello World!";<br>
+					}
+				</kbd>
+			</fieldset>
+        </div>
+        <hr><a name="d12"></a>
+        <h2>DEMO 12: Using parameters (advanced)</h2>
+        <p>Passing complex parameters to the Web Service</p>
+        <p><b>Example #1:</b> string, int, float, bool, Date</p><input value="Send - 1" onclick="SendSample1();" type="button">
+        <p><b>Example #2:</b> string[]</p><input value="Send - 2" onclick="SendSample2();" type="button">
+        <p><b>Example #3:</b> int[]</p><input value="Send - 3" onclick="SendSample3();" type="button">
+        <p><b>Example #4:</b> User (custom object)</p>
+        <input value="Send - 4a" onclick="SendSample4a();" type="button">
+        <input value="Send - 4b" onclick="SendSample4b();" type="button">
+        <input value="Send - 4c" onclick="SendSample4c();" type="button">
+        <p><b>Example #5:</b> User[] (custom object list)</p><input value="Send - 5" onclick="SendSample5();" type="button">
+        <p><b>&nbsp;»&nbsp;</b><a href="javascript:toggle('demo12');">Show / hide sample source code</a></p>        
+        <div id="demo12" class="h">
+			<fieldset>
+				<legend>Client (javascript)</legend>
+				<kbd>
+                    function User(id, username, password, expirationdate)<br>
+                    {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;this.Id = id;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;this.Username = username;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;this.Password = password;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;this.ExpirationDate = expirationdate;<br>
+                    }<br>
+                    function SendSamples_callBack(r)<br>
+                    {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;if(r.constructor.toString().indexOf("function Error()") != -1)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert("ERROR\r\n\r\n" +
+r.description + "\r\n\r\n[" + r.number + "]");<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;else<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;alert(r);<br>
+                    }<br>
+                    function SendSample1()<br>
+                    {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var p1 = "This is a string";<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var p2 = 34654;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var p3 = 3.14159;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var p4 = true;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var p5 = new Date();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;pl.add("p1", p1);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;pl.add("p2", p2);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;pl.add("p3", p3);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;pl.add("p4", p4);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;pl.add("p5", p5);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "SendSample1", pl, true, SendSamples_callBack);<br>
+                    }<br>
+                    function SendSample2()<br>
+                    {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var list = new Array();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;list[0] = "element 1";<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;list[1] = "element 2";<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;list[2] = "element 3";<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;list[3] = "element 4";<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;pl.add("list", list);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "SendSample2", pl, true, SendSamples_callBack);<br>
+                    }<br>
+                    function SendSample3()<br>
+                    {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var list = new Array();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;list[0] = 235;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;list[1] = 9876;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;list[2] = 124;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;list[3] = 79865;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;list[4] = 53;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;pl.add("list", list);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "SendSample3", pl, true, SendSamples_callBack);<br>
+                    }<br>
+                    function SendSample4a()<br>
+                    {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;var u = new User(34, "Administrator",
+"p@ss01!", new Date()); &nbsp;&nbsp;&nbsp;&nbsp; <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;pl.add("user", u);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "SendSample4", pl, true, SendSamples_callBack);<br>
+                    }<br>
+                    function SendSample4b()<br>
+                    {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var u = new Object();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;u.Id = 5271;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;u.Username = "Guest1";<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;u.Password = "GuestP@ss!";<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;u.ExpirationDate = new Date();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;u.ExpirationDate.setMonth(u.ExpirationDate.getMonth() + 1);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;pl.add("user", u);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "SendSample4", pl, true, SendSamples_callBack);<br>
+                    }<br>
+                    function SendSample4c()<br>
+                    {  <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var u = new Array();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;u["Id"] = 654;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;u["Username"] = "Guest2";<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;u["Password"] = "GuestP@ss!";<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;u["ExpirationDate"] = new Date();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;u["ExpirationDate"].setMonth(u["ExpirationDate"].getMonth() + 1);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;pl.add("user", u);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "SendSample4", pl, true, SendSamples_callBack);<br>
+                    }<br>
+                    function SendSample5()<br>
+                    {  <br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var ul = new Array();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;ul[0] = new User(52342, "User1", "User1P@ss!", new Date());<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;ul[1] = new User(453, "User2", "User2P@ss!", new Date());<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;ul[2] = new User(5756, "User3", "User3P@ss!", new Date());<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;ul[3] = new User(5431, "User4", "User4P@ss!", new Date());<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;var pl = new SOAPClientParameters();<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;pl.add("userlist", ul);<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;SOAPClient.invoke(url, "SendSample5", pl, true, SendSamples_callBack);<br>
+                    }					       
+				</kbd>
+			</fieldset>
+			<fieldset>			
+				<legend>Server (WebMethod - C#)</legend>
+				<kbd>
+                    public string SendSample1(string p1, int p2, double p3, bool p4, DateTime p5)<br>
+                    {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;return<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"P1 - string = " + p1 + "\r\n" +<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"P2 - int = " + p2.ToString() + "\r\n" +<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"P3 - double = " + p3.ToString() + "\r\n" +<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"P4 - bool = " + p4.ToString() + "\r\n" +<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"P5 - DateTime = " + p5.ToString() + "";<br>
+                    }<br>
+                    public string SendSample2(string[] list)<br>
+                    {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;return<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Length = " + list.Length.ToString() + "\r\n" +<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"First element = " + list[0] + "\r\n" +<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Last element = " + list[list.Length - 1] + "";<br>
+                    }<br>
+                    public string SendSample3(int[] list)<br>
+                    {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;return<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Length = " + list.Length.ToString() + "\r\n" +<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"First element = " + list[0].ToString() + "\r\n" +<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Last element = " + list[list.Length - 1].ToString() + "";<br>
+                    }<br>
+                    public string SendSample4(User user)<br>
+                    {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;return<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Id = " + user.Id.ToString() + "\r\n" +<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Username = " + user.Username + "\r\n" +<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Password = " + user.Password + "\r\n" +<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"ExpirationDate = " + user.ExpirationDate.ToString() + "";<br>
+                    }<br>
+                    public string SendSample5(User[] userlist)<br>
+                    {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;string s = "Length = " + userlist.Length.ToString() + "\r\n\r\n";<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;for (int i = 0; i &lt; userlist.Length; i++)<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;s +=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Id
+= " + userlist[i].Id.ToString() + "\r\n" +<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Username
+= " + userlist[i].Username + "\r\n" +<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"Password
+= " + userlist[i].Password + "\r\n" +<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"ExpirationDate
+= " + userlist[i].ExpirationDate.ToString() + "\r\n\r\n";<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;return s;<br>
+                    }					
+				</kbd>
+			</fieldset>
+        </div>
+        
+    </div>
+    </form>
+
+            </div>
+        </div>
+        <div class="sidebar">
+            
+      
+<div class="options">
+    <ul>
+        <li class="favorites"><a href="javascript:void(0);" onclick="javascript:AddToFavorites();">Add to favorites</a></li>
+        <li class="donate"><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=system%40guru4%2enet&amp;item_name=Support%20GURU4%2enet&amp;item_number=JavaScript+SOAP+Client+-+DEMOS+%28EN%29+%7c+GURU4.net&amp;no_shipping=0&amp;cn=Note&amp;tax=0&amp;currency_code=EUR&amp;lc=US&amp;bn=PP%2dDonationsBF&amp;charset=UTF%2d8" id="ctl00_MainSideBar_lnkPP">Support GURU4.net</a> by donating</li>
+        <li class="print"><a href="javascript:void(0);" onclick="javascript:PrintPage();">Print this page</a></li>
+        <li class="send"><a href="javascript:void(0);" onclick="javascript:SendThisPage();">Send this page</a> by email</li>
+        <li class="search"><a href="javascript:void(0);" onclick="AddToSearchProviders();">Add to browser search engines</a> (Internet Explorer 7 and FireFox only)</li>
+        <li class="windowslivealerts"><a href="http://signup.alerts.live.com/alerts/login.do?PINID=20303644&amp;returnURL=http://www.guru4.net">Add to Windows Live Alerts</a> to receive updates via desktop alert, email, PDA, and/or cell phone</li>
+    </ul>
+</div>
+<div class="adv">
+    <script type="text/javascript">
+    <!--
+        google_ad_client = "pub-7676408393509233";
+        google_ad_width = 250;
+        google_ad_height = 250;
+        google_ad_format = "250x250_as";
+        google_ad_type = "text_image";
+        google_ad_channel ="";
+        google_color_border = "f7f7f7";
+        google_color_bg = "f7f7f7";
+        google_color_link = "333a88";
+        google_color_url = "999999";
+        google_color_text = "333333";
+    //-->
+    </script>
+    <script type="text/javascript" src="en_files/show_ads.js"></script><iframe name="google_ads_frame" src="en_files/ads_003." marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" frameborder="0" height="250" scrolling="no" width="250"></iframe>
+</div> 
+            
+    <div class="box">
+        <h4>Note</h4>
+        <p>The following examples of <a href="http://www.guru4.net/articoli/javascript-soap-client/en/">JavaScript SOAP Client</a> usage are based on a <a href="http://www.guru4.net/articoli/javascript-soap-client/demo/webservicedemo.asmx">webservice demo</a> that does not have any real scope.</p>
+    </div>
+
+            
+
+ <div class="box" id="pagefeedback">
+    <h4>Feedback</h4>
+    <p>Help us improve the quality of GURU4.net contents by sending us your impressions or pointing out any imprecision.</p>
+    <form action="" method="post" onsubmit="return SubmitFeedback(this, 'en');">
+        <fieldset id="pagerate">
+            <label><b>How would you rate the quality of this content?</b></label>
+            <p><label for="pageFeedbackRate1">1</label><br><input name="rate" id="pageFeedbackRate1" value="1" type="radio"></p>
+            <p><label for="pageFeedbackRate2">2</label><br><input name="rate" id="pageFeedbackRate2" value="2" type="radio"></p>
+            <p><label for="pageFeedbackRate3">3</label><br><input name="rate" id="pageFeedbackRate3" value="3" type="radio"></p>
+            <p><label for="pageFeedbackRate4">4</label><br><input name="rate" id="pageFeedbackRate4" value="4" type="radio"></p>
+            <p><label for="pageFeedbackRate5">5</label><br><input name="rate" id="pageFeedbackRate5" value="5" type="radio"></p>
+            <p><label for="pageFeedbackRate6">6</label><br><input name="rate" id="pageFeedbackRate6" value="6" type="radio"></p>
+            <p><label for="pageFeedbackRate7">7</label><br><input name="rate" id="pageFeedbackRate7" value="7" type="radio"></p>
+            <p><label for="pageFeedbackRate8">8</label><br><input name="rate" id="pageFeedbackRate8" value="8" type="radio"></p>
+            <p><label for="pageFeedbackRate9">9</label><br><input name="rate" id="pageFeedbackRate9" value="9" type="radio"></p>    
+        </fieldset>
+        <fieldset id="pagecomment">
+			<label for="pageFeedbackEmail"><b>Your email address:</b> (optional)</label><br>
+			<input id="pageFeedbackEmail" name="email" size="50" class="text" type="text">
+		</fieldset>
+		<fieldset>
+		    <label for="pageFeedbackAnnotations"><b>Why did you rate the content this way?</b> (optional)</label><br>
+            <textarea id="pageFeedbackAnnotations" name="annotations" rows="5" cols="30" class="text"></textarea><br>
+            <input name="url" value="" type="hidden">
+        </fieldset>
+        <fieldset>
+            <input name="btnSend" class="btn" value="Send" type="submit">
+        </fieldset>
+    </form>
+</div>
+        </div>
+    </div>
+    
+ 
+<div class="footer">
+    <p>Except where otherwise specified, all the contents of <b>GURU4.net</b> website are release under <a href="http://creativecommons.org/licenses/by-sa/2.5/" title="Creative Commons License">Creative Commons</a> license.</p>
+    <p>All trademarks are property of their respective owners.</p>
+    <p><strong>Want to help us?</strong> <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=system%40guru4%2enet&amp;item_name=Support%20GURU4%2enet&amp;item_number=JavaScript+SOAP+Client+-+DEMOS+%28EN%29+%7c+GURU4.net&amp;no_shipping=0&amp;cn=Note&amp;tax=0&amp;currency_code=EUR&amp;lc=US&amp;bn=PP%2dDonationsBF&amp;charset=UTF%2d8" id="ctl00_PageFooter_lnkPP1">Support this project</a> making a donation via <a href="https://www.paypal.com/cgi-bin/webscr?cmd=_xclick&amp;business=system%40guru4%2enet&amp;item_name=Support%20GURU4%2enet&amp;item_number=JavaScript+SOAP+Client+-+DEMOS+%28EN%29+%7c+GURU4.net&amp;no_shipping=0&amp;cn=Note&amp;tax=0&amp;currency_code=EUR&amp;lc=US&amp;bn=PP%2dDonationsBF&amp;charset=UTF%2d8" id="ctl00_PageFooter_lnkPP2"><img src="en_files/btn-paypal.gif" alt="PayPal" height="20" width="57"></a></p>
+</div>
+</body></html>
