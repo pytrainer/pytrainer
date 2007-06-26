@@ -105,6 +105,11 @@ class Main(SimpleGladeApp):
 	
 	def createMap(self,Googlemaps):
 		self.googlemaps = Googlemaps(self.data_path, self.map_vbox)
+	
+	def createWaypointEditor(self,WaypointEditor):
+		waypointeditor = WaypointEditor(self.data_path, self.waypointarea)
+		waypointeditor.createHtml()
+		waypointeditor.drawMap()
 
 	def updateSportList(self,listSport):
 		self.sportlist.set_active(1)
@@ -455,13 +460,21 @@ class Main(SimpleGladeApp):
 		self.parent.refreshGraphView(self.selected_view)
 	
 	def on_classicview_activate(self,widget):
+		self.waypointarea.hide()
 		self.listarea.hide()
 		self.classicarea.show()
 	
 	def on_listview_activate(self,widget):
+		self.waypointarea.hide()
 		self.classicarea.hide()
 		self.parent.refreshListView()
 		self.listarea.show()
+	
+	def on_waypointsview_activate(self,widget):
+		self.waypointarea.hide()
+		self.listarea.hide()
+		self.classicarea.hide()
+		self.waypointarea.show()
 	
 	def on_extensions_activate(self,widget):
 		self.parent.editExtensions()

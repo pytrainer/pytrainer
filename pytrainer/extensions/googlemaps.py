@@ -58,8 +58,8 @@ class Googlemaps:
 		#htmlfile = self.data_path+"/maps/index.html?points="+points+"&levels="+levels+"&key="+key
 		self.createHtml(points,levels,pointlist[0])
 		htmlfile = os.path.abspath(htmlfile)
-		#if htmlfile != self.htmlfile:
-        	self.moz.load_url("file://"+htmlfile)
+		if htmlfile != self.htmlfile:
+        		self.moz.load_url("file://"+htmlfile)
 		#	self.htmlfile = htmlfile
 		#else:
 		#	pass

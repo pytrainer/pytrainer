@@ -35,6 +35,7 @@ from monthgraph import MonthGraph
 from yeargraph import YearGraph
 
 from extensions.googlemaps import Googlemaps
+from extensions.waypointeditor import WaypointEditor
 
 #from gui.windowextensions import WindowExtensions
 from gui.windowmain import Main
@@ -75,6 +76,7 @@ class pyTrainer:
 		self.loadExtensions()
 		self.windowmain.createGraphs(RecordGraph,DayGraph,MonthGraph,YearGraph)
 		self.windowmain.createMap(Googlemaps)
+		self.windowmain.createWaypointEditor(WaypointEditor)
 		self.windowmain.on_calendar_selected(None)
 	
 		self.refreshMainSportList()	

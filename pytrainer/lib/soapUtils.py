@@ -31,6 +31,8 @@ class webService(Thread):
 		self.server = SOAPpy.ThreadingSOAPServer(("localhost", 8081))
 		#self.server = SOAPpy.server.InsecureServer(("localhost", 8081))
 		self.server.registerFunction(self.getRecordInfo)
+		self.server.registerFunction(self.addWaypoint)
+		self.server.registerFunction(self.test)
 		Thread.__init__ ( self )
 
 	def getRecordInfo(self,id_record):
@@ -68,6 +70,9 @@ class webService(Thread):
 		cells = "lat,lon,comment,name,sym"
 		values = (lat,lon,comment,name,sym)
 		ddbb.insert("waypoints",cells,values)
+
+	def test(self):
+		return "Hello world!"
 
 	def run(self):
 		self.server.serve_forever()
