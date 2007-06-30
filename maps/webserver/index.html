@@ -40,25 +40,27 @@
   		return marker;
 		}
 
-	function addWaypoint() {
+	function addWaypoint(lat,lon) {
 		/*def getRecordInfo(self,id_record):*/
 		var pytrainerAPI = new SOAPCall();
-    		pytrainerAPI.transportURI = "http://localhost:8081";
+    		pytrainerAPI.transportURI = "http://localhost:7987/";
 
 
-		var parameters = new Array();
+		var param1 = new SOAPParameter();
+  		param1.name = "lat";
+  		param1.value = lat;
+ 
+		var param2 = new SOAPParameter();
+  		param2.name = "lon";
+  		param2.value = lon;
+ 
+  		var parameters = [param1,param2];
 		pytrainerAPI.encode(0,
                 	"test", "namespaceURI",
                   	0, null,
                   	parameters.length, parameters);
 
-		//var response = pytrainerAPI.invoke();
-    		pytrainerAPI.asyncInvoke(
-    			function (response, soapcall, error) {
-        			var r = handleSOAPResponse(response,soapcall,error);
-        			callback(r);
-      				}		
-  			);	
+		var response = pytrainerAPI.invoke();
     		if(response.fault){
     			  // error returned from the web service
       			//alert(response.fault.faultString);
@@ -66,7 +68,8 @@
     			} 
 		else {
       			// we expect only one return SOAPParameter - the translated string.
-      			alert("Chachi: ");  
+			msg = response.getParameters(false, {});
+  			alert("Return value: " + msg[0].value);
     			}
   		}  	
 
@@ -103,13 +106,8 @@
   				} else {*/
     				if (is_addmode==1){
 					map.addOverlay(new GMarker(point));
-					alert ("1");
-					alert(point.lat());
-					alert ("2");
-					alert(point.lng());
-					alert ("3");
 					is_addmode = 0;
-					addWaypoint();
+					addWaypoint(point.lat(),point.lng());
 					}
 				});
       			}
@@ -121,6 +119,15 @@
 
     //]]>
     </script>
+<style>
+.form {
+	position: absolute;
+	top: 200px;
+	left: 300px;
+	background: #ffffff;
+	}
+</style>
+
   </head>
   <body onload="load()" onunload="GUnload()" style="cursor:crosshair">
 	<table >
@@ -134,6 +141,17 @@
 		</form>
 	</td><td>
     		<div id="map" style="width: 620px; height: 535px"></div>
+		<div class="form"> 
+			<form name="addWaypoint">
+			<table>
+			<tr><td>Latitude: </td><td></td></tr> 
+			<tr><td>Longitude: </td><td></td></tr> 
+			<tr><td>Name: </td><td><input type="text" name="name"> </td></tr>
+			<tr><td>Description: </td><td><textarea name="description"> </textarea></td></tr>
+			
+			</table>
+			</form>
+		</div>
 	</td></tr>
 	</table >
   </body>

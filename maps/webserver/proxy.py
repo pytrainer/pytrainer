@@ -22,10 +22,29 @@ class WebProxyRequestHandler(BaseHTTPRequestHandler):
         
 	def get_post_impl(self, data=None):
 		if self.path=="/maps/":
+			print "Open maps"
 			self.path="/index.html"
-			server = self.server
-			url = "%s:%d" % server.proxy_addr
+	        	self.server.proxy_addr = ('localhost', 7988)
+			url = "%s:%d" % self.server.proxy_addr
 			self.retrieve_request(data, {'http':url})
+		else:
+			print "Open webservice"
+			#self.path="/"
+			print data
+			self.send_response(200)
+			self.wfile.write("""<html>
+			<head>
+	    		<title>Error</title>
+			</head>
+			<body>
+	    		An error occured connecting to the address given.
+	    		<br/>
+	</body>
+	</html>""") 
+        		self.wfile.close()
+	        	#self.server.proxy_addr = ('localhost', 8081)
+			#url = "%s:%d" % self.server.proxy_addr
+			#self.retrieve_request(data, {'http':url})
 
 	def retrieve_request(self, data, proxies={}):
 		request = urllib2.Request(self.path)
@@ -74,15 +93,12 @@ class WebProxyRequestHandler(BaseHTTPRequestHandler):
 class WebProxy(HTTPServer):
 	def __init__(self, server_addr, proxy_addr=None):
 	        HTTPServer.__init__(self, server_addr, WebProxyRequestHandler)
-	        self.proxy_addr = proxy_addr
 
 if __name__ == "__main__":
 	import sys
 	host = "localhost"
 	port = 7987
-	proxy_addr = "localhost"
-	proxy_port = 7988
 
-	proxy = WebProxy((host, port), (proxy_addr, proxy_port))
-	print "Listening on %s:%d\nForwarding to %s:%d" % (host,port, proxy_addr, proxy_port)
+	proxy = WebProxy((host, port))
+	print "Listening on %s:%d" % (host,port)
 	proxy.serve_forever()

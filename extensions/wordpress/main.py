@@ -39,7 +39,7 @@ class Main:
 			kfile = self.wp.newMediaObject(kmlpath)
 
 			description_route = '''<strong>Route: <strong> <br/>
-			<iframe width='520' height='480' src='%s'> Need frame support </iframe><br/>
+			<iframe width='540' height='500' src='%s'> Need frame support </iframe><br/>
 			<a href='%s'>Gpx file</a> <a href='%s'>Kml file (GoogleEarth)</a><br/><br/>''' %(hfile,gfile,kfile)
 		return description_route
 

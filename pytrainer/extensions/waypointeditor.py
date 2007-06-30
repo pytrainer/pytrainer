@@ -33,6 +33,7 @@ from threading import Thread
 
 class MyHandler(BaseHTTPRequestHandler):
     	def do_GET(self):
+		print "un GET"
 		self.conf = checkConf()
 		tmpdir = self.conf.getValue("tmpdir")
 		f = open(tmpdir+"/waypointeditor.html")
@@ -41,12 +42,19 @@ class MyHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(f.read())
                 f.close()
+		print "un GET"
                 return
 
 class newthread(Thread):
+	def __init__(self):
+        	self.server = HTTPServer(('localhost', 7988), MyHandler)
+		Thread.__init__ ( self )
+
 	def run(self):
-        	server = HTTPServer(('localhost', 7988), MyHandler)
-        	server.serve_forever()
+		while 1==1:
+        		#server.serve_forever()
+			print "molaaaaa"
+		print "Iniciamos3"
 
 class WaypointEditor:
 	def __init__(self, data_path = None, vbox = None):
