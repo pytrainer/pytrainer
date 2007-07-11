@@ -1,5 +1,6 @@
 #! /bin/bash
 
+
 #get the origin gpx
 echo $1
 
