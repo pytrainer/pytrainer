@@ -21,7 +21,6 @@ import os
 import re
 
 from pytrainer.lib.system import checkConf
-from pytrainer.extension import Extension
 from pytrainer.lib.gpx import Gpx
 import pytrainer.lib.points as Points 
 from pytrainer.lib.fileUtils import fileUtils
@@ -30,7 +29,6 @@ class Googlemaps:
 	def __init__(self, data_path = None, vbox = None):
 		self.data_path = data_path
 		self.conf = checkConf()
-		self.extension = Extension()
 		self.moz = gtkmozembed.MozEmbed()
                 vbox.pack_start(self.moz, True, True)
 		vbox.show_all()
@@ -38,14 +36,15 @@ class Googlemaps:
 	
 	def drawMap(self,id_record):
 		code = "googlemapsviewer"
-		extensiondir = self.conf.getValue("extensiondir")
-		cachefile = extensiondir+"/"+code+"/%d.gpx" %id_record
+		extensiondir = self.conf.getValue("extensiondir")+"/"+code
+		if not os.path.isdir(extensiondir):
+            		os.mkdir(extensiondir)
+		cachefile = extensiondir+"/%d.gpx" %id_record
 		if not os.path.isfile(cachefile):
-			trackdistance = self.extension.getCodeConfValue(code,"Trackdistance")
+			trackdistance = "100"
 			gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
 			os.system("gpsbabel -t -i gpx -f %s -x position,distance=%sm -o gpx -F %s" %(gpxfile,trackdistance,cachefile))
 
-		key = self.extension.getCodeConfValue(code,"googlekey")
 		gpx = Gpx(self.data_path,cachefile)
 		list_values = gpx.getTrackList()
 		pointlist = []
@@ -55,7 +54,6 @@ class Googlemaps:
 		points = points.replace("\\","\\\\")
 	
 		htmlfile = self.conf.getValue("tmpdir")+"/index.html"
-		#htmlfile = self.data_path+"/maps/index.html?points="+points+"&levels="+levels+"&key="+key
 		self.createHtml(points,levels,pointlist[0])
 		htmlfile = os.path.abspath(htmlfile)
 		if htmlfile != self.htmlfile:
