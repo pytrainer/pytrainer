@@ -93,9 +93,6 @@ class Main(SimpleGladeApp):
 			id = selected.get_value(iter,0)
 		self.parent.runExtension(extension,id)
 
-	def window_sensitive(self, value):
-		self.window1.set_sensitive(value)
-	
 	def createGraphs(self,RecordGraph,DayGraph,MonthGraph,YearGraph):
 		self.drawarearecord = RecordGraph(self.record_vbox, self.record_combovalue)
 		#self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)

@@ -27,34 +27,8 @@ import pytrainer.lib.points as Points
 from pytrainer.lib.fileUtils import fileUtils
 
 import string,cgi,time
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+import time
 
-from threading import Thread
-
-class MyHandler(BaseHTTPRequestHandler):
-    	def do_GET(self):
-		print "un GET"
-		self.conf = checkConf()
-		tmpdir = self.conf.getValue("tmpdir")
-		f = open(tmpdir+"/waypointeditor.html")
-        	self.send_response(200)
-                self.send_header('Content-type','text/html')
-                self.end_headers()
-                self.wfile.write(f.read())
-                f.close()
-		print "un GET"
-                return
-
-class newthread(Thread):
-	def __init__(self):
-        	self.server = HTTPServer(('localhost', 7988), MyHandler)
-		Thread.__init__ ( self )
-
-	def run(self):
-		while 1==1:
-        		#server.serve_forever()
-			print "molaaaaa"
-		print "Iniciamos3"
 
 class WaypointEditor:
 	def __init__(self, data_path = None, vbox = None):
@@ -65,9 +39,6 @@ class WaypointEditor:
                 vbox.pack_start(self.moz, True, True)
 		vbox.show_all()
 		self.htmlfile = ""
-		thread = newthread()
-		thread.start()
-		# server.socket.close()
 	
 	def drawMap(self):
 		#points,levels = Points.encodePoints(pointlist)
@@ -132,7 +103,8 @@ class WaypointEditor:
 	function addWaypoint(lat,lon) {
 		/*def getRecordInfo(self,id_record):*/
 		var pytrainerAPI = new SOAPCall();
-    		pytrainerAPI.transportURI = "http://localhost:7987/";
+    		//pytrainerAPI.transportURI = "http://localhost:7987/";
+    		pytrainerAPI.transportURI = "http://localhost:8081/";
 
 
 		var param1 = new SOAPParameter();
@@ -148,8 +120,10 @@ class WaypointEditor:
                 	"test", "namespaceURI",
                   	0, null,
                   	parameters.length, parameters);
-
+		
+		alert("uno");
 		var response = pytrainerAPI.invoke();
+		alert("dos");
     		if(response.fault){
     			  // error returned from the web service
       			//alert(response.fault.faultString);

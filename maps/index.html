@@ -1,3 +1,4 @@
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"  xmlns:v="urn:schemas-microsoft-com:vml">
@@ -40,34 +41,49 @@
   		return marker;
 		}
 
-	function addWaypoint() {
+	function var_dump(obj) {
+   		if(typeof obj == "object") {
+      			return "Type: "+typeof(obj)+((obj.constructor) ? "\nConstructor: "+obj.constructor : "")+"\nValue: " + obj;
+   			} 
+		else {
+      			return "Type: "+typeof(obj)+"\nValue: "+obj;
+   			}
+		}
+
+
+
+	function addWaypoint(lat,lon) {
 		/*def getRecordInfo(self,id_record):*/
 		var pytrainerAPI = new SOAPCall();
-    		pytrainerAPI.transportURI = "http://localhost:8081";
+    		//pytrainerAPI.transportURI = "http://localhost:7987/";
+		netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
+    		pytrainerAPI.transportURI = "http://localhost:8081/";
 
-
-		var parameters = new Array();
+		var param1 = new SOAPParameter();
+  		param1.name = "lat";
+  		param1.value = lat;
+ 
+		var param2 = new SOAPParameter();
+  		param2.name = "lon";
+  		param2.value = lon;
+ 
+  		var parameters = [param1,param2];
 		pytrainerAPI.encode(0,
-                	"test", "namespaceURI",
+                	"test", null,
                   	0, null,
                   	parameters.length, parameters);
+		
+		var response = pytrainerAPI.invoke();
+		alert(var_dump(response));		
 
-		//var response = pytrainerAPI.invoke();
-    		pytrainerAPI.asyncInvoke(
-    			function (response, soapcall, error) {
-        			var r = handleSOAPResponse(response,soapcall,error);
-        			callback(r);
-      				}		
-  			);	
-    		if(response.fault){
-    			  // error returned from the web service
-      			//alert(response.fault.faultString);
-			alert("mal");
-    			} 
+		if(response.fault){
+  			alert("An error occured: " + response.fault.faultString);
+			} 
 		else {
-      			// we expect only one return SOAPParameter - the translated string.
-      			alert("Chachi: ");  
-    			}
+  			var re = new Array();
+  			re = response.getParameters(false, {});
+  			alert("Return value: " + re[0].value);
+			}
   		}  	
 
 
@@ -103,13 +119,8 @@
   				} else {*/
     				if (is_addmode==1){
 					map.addOverlay(new GMarker(point));
-					alert ("1");
-					alert(point.lat());
-					alert ("2");
-					alert(point.lng());
-					alert ("3");
 					is_addmode = 0;
-					addWaypoint();
+					addWaypoint(point.lat(),point.lng());
 					}
 				});
       			}
@@ -121,19 +132,26 @@
 
     //]]>
     </script>
+<style>
+.form {
+	position: absolute;
+	top: 200px;
+	left: 300px;
+	background: #ffffff;
+	}
+</style>
+
   </head>
-  <body onload="load()" onunload="GUnload()" style="cursor:crosshair">
+  <body onload="load()" onunload="GUnload()" style="cursor:crosshair" border=0>
 	<table >
 	<tr><td width="100">
 		<form name="theForm">
-		<select size="27" style="width:150px" id="waypointslist" name="waypointslist" onchange="changeWaypoint(this.form.waypointslist)">
+		<select size="25" style="width:150px" id="waypointslist" name="waypointslist" onchange="changeWaypoint(this.form.waypointslist)">
 		</select>
 		<input type="button" value="New Waipoint" style="width:150px" onclick="addmode();"/><br/>
-		<input type="button" value="Del Waipoint" style="width:150px"/><br/>
-		<input type="button" value="Edit Waipoint" style="width:150px" onclick=""/><br/>
 		</form>
 	</td><td>
-    		<div id="map" style="width: 620px; height: 535px"></div>
+    		<div id="map" style="width: 630px; height: 460px"></div>
 	</td></tr>
 	</table >
   </body>

@@ -28,7 +28,7 @@ except ImportError:
 	sys.exit(1)
 
 class SimpleGladeApp(dict):
-	def __init__(self, glade_filename, main_widget_name=None, domain=None):
+	def __init__(self, glade_filename, main_widget_name="", domain=""):
 		gtk.glade.set_custom_handler(self.custom_handler)
 		if os.path.isfile(glade_filename):
 			self.glade_path = glade_filename

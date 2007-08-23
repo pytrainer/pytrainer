@@ -21,12 +21,14 @@
 import SOAPpy
 from pytrainer.lib.ddbb import DDBB
 from pytrainer.lib.xmlUtils import XMLParser
+from pytrainer.lib.system import checkConf
 
 from threading import Thread
 
 #class webService():
 class webService(Thread):
-	def __init__(self,system):
+	def __init__(self):
+		system = checkConf()
 		self.conffile = "%s/conf.xml" %system.getValue("confdir")
 		self.server = SOAPpy.ThreadingSOAPServer(("localhost", 8081))
 		#self.server = SOAPpy.server.InsecureServer(("localhost", 8081))
@@ -71,7 +73,8 @@ class webService(Thread):
 		values = (lat,lon,comment,name,sym)
 		ddbb.insert("waypoints",cells,values)
 
-	def test(self):
+	def test(self,lon=None,lat=None):
+		print "Llamando al soap"
 		return "Hello world!"
 
 	def run(self):

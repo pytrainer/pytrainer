@@ -1,4 +1,3 @@
-#!/usr/bin/python
 # -*- coding: iso-8859-1 -*-
 
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
@@ -17,41 +16,32 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import locale
-import gettext
-import sys
-import pygtk
-pygtk.require('2.0')
-import gtk
-import gtk.glade
-
-data_path = "/usr/share/pytrainer/"
-
-DIR = "/usr/share/locale"
-
-gettext.bindtextdomain("pytrainer", DIR)
-gtk.glade.bindtextdomain("pytrainer", DIR)
-gtk.glade.textdomain("pytrainer")
-gettext.textdomain("pytrainer")
-gettext.install("pytrainer",DIR,unicode=1)
-
-from pytrainer.main import pyTrainer
-from pytrainer.lib.soapUtils import webService
+from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from threading import Thread
 from pytrainer.lib.system import checkConf
 
-def launchSoapserver():
-	webService().start()
+class MyHandler(BaseHTTPRequestHandler):
+    	def do_GET(self):
+		self.conf = checkConf()
+		tmpdir = self.conf.getValue("tmpdir")
+		f = open(tmpdir+"/waypointeditor.html")
+        	self.send_response(200)
+                self.send_header('Content-type','text/html')
+                self.end_headers()
+                self.wfile.write(f.read())
+                f.close()
+		print "un GET"
+                return
 
-def launchProxy():
-	webServer().start()
+class webServer(Thread):
+	def __init__(self):
+        	self.server = HTTPServer(('localhost', 7988), MyHandler)
+		Thread.__init__ ( self )
 
-def main():
-	gtk.gdk.threads_init()
-	launchSoapserver()
-	launchProxy()
-
-	pytrainer = pyTrainer(None, data_path)
-		
-if __name__ == "__main__":
-        main()
+	def run(self):
+		#while 1==1:
+        	self.server.serve_forever()
+		#	print "molaaaaa"
+		#	time.sleep(1)
+		#print "Iniciamos3"
 

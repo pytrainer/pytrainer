@@ -43,7 +43,6 @@ from gui.warning import Warning
 from lib.system import checkConf
 from lib.date import Date
 from lib.gpx import Gpx
-from lib.soapUtils import webService
 
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
@@ -51,10 +50,6 @@ class pyTrainer:
 		#configuration
 		self.version ="1.4.2"
 		self.conf = checkConf()
-		#Lanzamos el webservice para las extensiones
-		self.webservice = webService(self.conf)
-		self.webservice.start()
-		#self.webservice.run()
 		#preparamos la ventana principal
 		self.windowmain = Main(data_path,self,self.version)
 		self.date = Date(self.windowmain.calendar)
@@ -62,12 +57,7 @@ class pyTrainer:
 		#comprobamos que el profile esta configurado
 		self.profile = Profile(self.data_path,self)
 		self.profile.setVersion(self.version)
-		if self.profile.isProfileConfigured():
-			self.windowmain.window_sensitive(1)
-		#if self.profile.isProfileConfigured():
-		#	self.windowmain.window_sensitive(1)
-		#else:
-		#	self.windowmain.window_sensitive(0)
+		self.profile.isProfileConfigured()
 
 		self.record = Record(data_path,self,self.version)
 		self.extension = Extension(data_path)
@@ -76,7 +66,7 @@ class pyTrainer:
 		self.loadExtensions()
 		self.windowmain.createGraphs(RecordGraph,DayGraph,MonthGraph,YearGraph)
 		self.windowmain.createMap(Googlemaps)
-		#self.windowmain.createWaypointEditor(WaypointEditor)
+		self.windowmain.createWaypointEditor(WaypointEditor)
 		self.windowmain.on_calendar_selected(None)
 	
 		self.refreshMainSportList()	
