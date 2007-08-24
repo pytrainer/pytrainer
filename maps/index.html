@@ -69,12 +69,11 @@
  
   		var parameters = [param1,param2];
 		pytrainerAPI.encode(0,
-                	"test", null,
+                	"addWaypoint", null,
                   	0, null,
                   	parameters.length, parameters);
 		
 		var response = pytrainerAPI.invoke();
-		alert(var_dump(response));		
 
 		if(response.fault){
   			alert("An error occured: " + response.fault.faultString);
@@ -86,23 +85,35 @@
 			}
   		}  	
 
-
+/*
 	function changeWaypoint(waypointslist) {
 		w = waypointList[waypointslist.selectedIndex];
 		lon = w[0];
 		lat = w[1];
 		map.panTo(new GLatLng(lon, lat));
 		}
-			
+*/			
 
 	function load() {
 		if (GBrowserIsCompatible()) {
+			//Dibujamos el mapa
 			map = new GMap2(document.getElementById("map"));
         		map.addControl(new GLargeMapControl());
         		map.addControl(new GMapTypeControl());
+			map.addControl(new GScaleControl());
         		map.setCenter(new GLatLng(lon, lat), 11);
 
-  		
+			//Dibujamos el minimapa
+			ovMap=new GOverviewMapControl();
+			map.addControl(ovMap);
+			mini=ovMap.getOverviewMap();
+
+
+			//Redimensionamos automaticamente
+			document.getElementById("map").style.top="0px";
+			document.getElementById("map").style.left="0px";
+			document.getElementById("map").style.width="100%";
+		
 			for (i=0; i<2; i++){
 				lon = waypointList[i][0];
 				lat = waypointList[i][1];
@@ -110,8 +121,8 @@
 				tag = "<b>"+waypointList[i][2]+"</b><br/>"+waypointList[i][3];
 				point = new GLatLng(lon,lat);
   				map.addOverlay(createMarker(point, tag));
-				myNewOption = new Option(name,i);
-				document.theForm.waypointslist.options[i] = myNewOption;
+				//myNewOption = new Option(name,i);
+				//document.theForm.waypointslist.options[i] = myNewOption;
 				}
 			GEvent.addListener(map, "click", function(marker, point) {
   				/*if (marker) {
@@ -143,6 +154,7 @@
 
   </head>
   <body onload="load()" onunload="GUnload()" style="cursor:crosshair" border=0>
+	<!--
 	<table >
 	<tr><td width="100">
 		<form name="theForm">
@@ -151,8 +163,13 @@
 		<input type="button" value="New Waipoint" style="width:150px" onclick="addmode();"/><br/>
 		</form>
 	</td><td>
+	-->
     		<div id="map" style="width: 630px; height: 460px"></div>
+<!--
 	</td></tr>
 	</table >
+-->
+
+
   </body>
 </html>

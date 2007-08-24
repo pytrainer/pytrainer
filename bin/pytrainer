@@ -48,7 +48,7 @@ def launchProxy():
 def main():
 	gtk.gdk.threads_init()
 	launchSoapserver()
-	launchProxy()
+	#launchProxy()
 
 	pytrainer = pyTrainer(None, data_path)
 		

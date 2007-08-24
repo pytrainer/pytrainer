@@ -51,7 +51,7 @@ def main():
 	#Lanzamos el webservice para las extensiones
 	gtk.gdk.threads_init()
 	launchSoapserver()
-	launchProxy()
+	#launchProxy()
 
 	#Lanzamos el pytrainer
 	pytrainer = pyTrainer(None, data_path)
