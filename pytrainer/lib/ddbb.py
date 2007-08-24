@@ -64,7 +64,13 @@ class DDBB:
 		self.ddbbObject.update(table,cells,value,condition)
 	
 	def lastRecord(self,table):
-		sql = "select id_record from records order by id_record Desc limit 0,1";
+		if table=="records":
+			id = "id_records"
+		if table=="sports":
+			id = "id_sport"
+		if table=="waypoints":
+			id = "id_waypoint" 
+		sql = "select %s from %s order by %s Desc limit 0,1" %(id,table,id)
 		ret_val = self.ddbbObject.freeExec(sql)
 		return ret_val[0][0]
 

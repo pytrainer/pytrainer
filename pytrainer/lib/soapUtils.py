@@ -66,6 +66,16 @@ class webService(Thread):
 		cells = "lat,lon,comment,name,sym"
 		values = (lat,lon,comment,name,sym)
 		ddbb.insert("waypoints",cells,values)
+		return ddbb.lastRecord("waypoints")
+
+	def updateWaypoint(self,lon=None,lat=None,name=None,comment=None,sym=None,id_waypoint=None):
+		configuration = XMLParser(self.conffile)
+		ddbb = DDBB(configuration)
+		ddbb.connect()
+		cells = "lat,lon,comment,name,sym"
+		values = (lat,lon,comment,name,sym)
+		ddbb.insert("waypoints",cells,values)
+		self.ddbb.update("records",cells,values," id_record=%d" %id_waypoint)
 		return "ACK"
 
 	def test(self,lon=None,lat=None):

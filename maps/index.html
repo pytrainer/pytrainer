@@ -4,7 +4,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml"  xmlns:v="urn:schemas-microsoft-com:vml">
   <head>
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-    <title>Google Maps JavaScript API Example</title>
+    <title>edit waypoints</title>
 
     <script id="googleapiimport" src="http://maps.google.com/maps?file=api&amp;v=2"
             type="text/javascript"></script>
@@ -29,17 +29,6 @@
 
 	is_addmode = 0;
     //<![CDATA[
-	function createMarker(point, text) {
-		//var icon = new GIcon();
-		//icon.image = "./img.png";
-		//icon.iconSize = new GSize(20, 34);
-  		//var marker = new GMarker(point,icon);
-  		var marker = new GMarker(point);
-  		GEvent.addListener(marker, "click", function() {
-    			marker.openInfoWindowHtml(text);
-  			});
-  		return marker;
-		}
 
 	function var_dump(obj) {
    		if(typeof obj == "object") {
@@ -52,20 +41,18 @@
 
 
 
-	function addWaypoint(lat,lon) {
-		/*def getRecordInfo(self,id_record):*/
+	function addWaypoint(lon,lat) {
 		var pytrainerAPI = new SOAPCall();
-    		//pytrainerAPI.transportURI = "http://localhost:7987/";
 		netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
     		pytrainerAPI.transportURI = "http://localhost:8081/";
 
 		var param1 = new SOAPParameter();
-  		param1.name = "lat";
-  		param1.value = lat;
+  		param1.name = "lon";
+  		param1.value = lon;
  
 		var param2 = new SOAPParameter();
-  		param2.name = "lon";
-  		param2.value = lon;
+  		param2.name = "lat";
+  		param2.value = lat;
  
   		var parameters = [param1,param2];
 		pytrainerAPI.encode(0,
@@ -84,24 +71,88 @@
   			alert("Return value: " + re[0].value);
 			}
   		}  	
+	
+	function updateWaypoint(lon,lat,id) {
+		var pytrainerAPI = new SOAPCall();
+		netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
+    		pytrainerAPI.transportURI = "http://localhost:8081/";
 
-/*
-	function changeWaypoint(waypointslist) {
-		w = waypointList[waypointslist.selectedIndex];
-		lon = w[0];
-		lat = w[1];
-		map.panTo(new GLatLng(lon, lat));
+		var param1 = new SOAPParameter();
+  		param1.name = "lon";
+  		param1.value = lon;
+ 
+		var param2 = new SOAPParameter();
+  		param2.name = "lat";
+  		param2.value = lat;
+		
+		var param3 = new SOAPParameter();
+  		param3.name = "id_waypoint";
+  		param3.value = id;
+ 
+  		var parameters = [param1,param2];
+		pytrainerAPI.encode(0,
+                	"updateWaypoint", null,
+                  	0, null,
+                  	parameters.length, parameters);
+		
+		var response = pytrainerAPI.invoke();
+
+		if(response.fault){
+  			alert("An error occured: " + response.fault.faultString);
+			} 
+		else {
+  			var re = new Array();
+  			re = response.getParameters(false, {});
+  			alert("Return value: " + re[0].value);
+			}
+  		}  	
+
+	function createMarker(point, text) {
+		//var icon = new GIcon();
+		//icon.image = "./img.png";
+		//icon.iconSize = new GSize(20, 34);
+  		//var marker = new GMarker(point,icon);
+
+		var icon = new GIcon();
+		icon.image = "http://labs.google.com/ridefinder/images/mm_20_red.png";
+		icon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
+		icon.iconSize = new GSize(12, 20);
+		icon.shadowSize = new GSize(22, 20);
+		icon.iconAnchor = new GPoint(6, 20);
+		icon.infoWindowAnchor = new GPoint(5, 1);
+		
+		var markerD = new GMarker(point, {icon:icon, draggable: true}); 
+		map.addOverlay(markerD);
+
+		markerD.enableDragging();
+
+		GEvent.addListener(markerD, "mouseup", function(){
+			position = markerD.getPoint();
+			alert (position.lng()+" "+position.lat());
+		});
+
+		/*
+  		var marker = new GMarker(point);
+  		GEvent.addListener(marker, "click", function() {
+    			marker.openInfoWindowHtml(text);
+  			});
+  		return marker;
+		*/
+  		return markerD;
 		}
-*/			
 
 	function load() {
 		if (GBrowserIsCompatible()) {
 			//Dibujamos el mapa
+			//map = new GMap2(document.getElementById("map"), {draggableCursor: 'crosshair'});
 			map = new GMap2(document.getElementById("map"));
         		map.addControl(new GLargeMapControl());
         		map.addControl(new GMapTypeControl());
 			map.addControl(new GScaleControl());
         		map.setCenter(new GLatLng(lon, lat), 11);
+
+			//alert (GMapOptions);
+			//map.GMapOptions = {draggableCursor:'crosshair'};
 
 			//Dibujamos el minimapa
 			ovMap=new GOverviewMapControl();
@@ -113,25 +164,27 @@
 			document.getElementById("map").style.top="0px";
 			document.getElementById("map").style.left="0px";
 			document.getElementById("map").style.width="100%";
-		
+
 			for (i=0; i<2; i++){
 				lon = waypointList[i][0];
 				lat = waypointList[i][1];
 				name = waypointList[i][2];
 				tag = "<b>"+waypointList[i][2]+"</b><br/>"+waypointList[i][3];
 				point = new GLatLng(lon,lat);
-  				map.addOverlay(createMarker(point, tag));
+  				//map.addOverlay(createMarker(point, tag));
+  				createMarker(point, tag);
+				map.enableDragging();
 				//myNewOption = new Option(name,i);
 				//document.theForm.waypointslist.options[i] = myNewOption;
 				}
+
 			GEvent.addListener(map, "click", function(marker, point) {
-  				/*if (marker) {
-    					map.removeOverlay(marker);
-  				} else {*/
     				if (is_addmode==1){
-					map.addOverlay(new GMarker(point));
+					map.enableDragging();
+					//map.addOverlay(new GMarker(point));
+  					createMarker(point, "");
 					is_addmode = 0;
-					addWaypoint(point.lat(),point.lng());
+					addWaypoint(point.lng(),point.lat());
 					}
 				});
       			}
@@ -139,6 +192,7 @@
 
 	function addmode(){
 		is_addmode = 1;
+		map.disableDragging();
 		}
 
     //]]>
@@ -165,6 +219,9 @@
 	</td><td>
 	-->
     		<div id="map" style="width: 630px; height: 460px"></div>
+    		<div id="addButton" style="position: absolute; top: 32px;left: 86px;">
+			<input type="button" value="New Waypoint" onclick="javascript:addmode();">
+		</div>
 <!--
 	</td></tr>
 	</table >
