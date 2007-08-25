@@ -25,7 +25,6 @@ from pytrainer.lib.system import checkConf
 
 from threading import Thread
 
-#class webService():
 class webService(Thread):
 	def __init__(self):
 		system = checkConf()
@@ -34,6 +33,7 @@ class webService(Thread):
 		#self.server = SOAPpy.server.InsecureServer(("localhost", 8081))
 		self.server.registerFunction(self.getRecordInfo)
 		self.server.registerFunction(self.addWaypoint)
+		self.server.registerFunction(self.updateWaypoint)
 		self.server.registerFunction(self.test)
 		Thread.__init__ ( self )
 
@@ -69,13 +69,21 @@ class webService(Thread):
 		return ddbb.lastRecord("waypoints")
 
 	def updateWaypoint(self,lon=None,lat=None,name=None,comment=None,sym=None,id_waypoint=None):
+		if id_waypoint==None:
+			print "Valores pasados:"
+			print "lon = %s"%lon
+			print "lat = %s"%lat
+			print "name = %s"%name
+			print "comment = %s"%comment
+			print "sym = %s"%sym
+			print "id_waypoint = %s"%id_waypoint
+			return "NACK"
 		configuration = XMLParser(self.conffile)
 		ddbb = DDBB(configuration)
 		ddbb.connect()
 		cells = "lat,lon,comment,name,sym"
 		values = (lat,lon,comment,name,sym)
-		ddbb.insert("waypoints",cells,values)
-		self.ddbb.update("records",cells,values," id_record=%d" %id_waypoint)
+		ddbb.update("waypoints",cells,values," id_waypoint=%d" %int(id_waypoint))
 		return "ACK"
 
 	def test(self,lon=None,lat=None):
@@ -84,4 +92,5 @@ class webService(Thread):
 
 	def run(self):
 		self.server.serve_forever()
+	
 			

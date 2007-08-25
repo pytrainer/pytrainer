@@ -26,6 +26,7 @@ import gtk
 import gtk.glade
 
 from record import Record
+from waypoint import Waypoint
 from extension import Extension
 from plugins import Plugins
 from profile import Profile
@@ -60,6 +61,7 @@ class pyTrainer:
 		self.profile.isProfileConfigured()
 
 		self.record = Record(data_path,self,self.version)
+		self.waypoint = Waypoint(data_path,self)
 		self.extension = Extension(data_path)
 		self.plugins = Plugins(data_path)
 		self.loadPlugins()
@@ -160,6 +162,10 @@ class pyTrainer:
 		record_list = self.record.getAllRecordList()
 		self.windowmain.actualize_listview(record_list)
 	
+	def refreshWaypointView(self,default_waypoint=False):
+		waypoint_list = self.waypoint.getAllWaypoints()
+		self.windowmain.actualize_waypointview(waypoint_list,default_waypoint)
+	
 	def searchListView(self,condition):
 		record_list = self.record.getRecordListByCondition(condition)
 		self.windowmain.actualize_listview(record_list)
@@ -188,6 +194,21 @@ class pyTrainer:
 			warning = Warning(self.data_path,self.removeRecord,params)
 			warning.set_text(msg)
 			warning.run()
+	
+	def removeWaypoint(self,id_waypoint, confirm = False):
+		if confirm:
+			self.waypoint.removeWaypoint(id_waypoint)
+			self.refreshWaypointView()
+		else:
+			msg = _("You are going to remove one waypoint. Are you sure yo want do it?")
+			params = [id_waypoint,True]
+			warning = Warning(self.data_path,self.removeWaypoint,params)
+			warning.set_text(msg)
+			warning.run()
+
+	def updateWaypoint(self,id_waypoint,lat,lon,name,desc):
+		self.waypoint.updateWaypoint(id_waypoint,lat,lon,name,desc)
+		self.refreshWaypointView(id_waypoint)
 	
 	def exportCsv(self):
 		from save import Save

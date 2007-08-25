@@ -16,30 +16,21 @@
 	name = "waipoint";
 	description = "Una descripcion mas a ver que hace";
 	sym = "City";  
+	id = "1";
 
-	waypoint1 = Array (lon,lat,name,description,sym);
+	waypoint1 = Array (lon,lat,name,description,sym,id);
 	lon = "12.71213418976525";
 	lat = "-7.96785736083984";
 	name = "waipoint2";
 	description = "Una descripcion cualquiera";
-	sym = "City";  
-	waypoint2 = Array (lon,lat,name,description,sym);
+	sym = "City"; 
+	id = "2"; 
+	waypoint2 = Array (lon,lat,name,description,sym,id);
 	waypointList = Array (waypoint1,waypoint2);
  
 
 	is_addmode = 0;
     //<![CDATA[
-
-	function var_dump(obj) {
-   		if(typeof obj == "object") {
-      			return "Type: "+typeof(obj)+((obj.constructor) ? "\nConstructor: "+obj.constructor : "")+"\nValue: " + obj;
-   			} 
-		else {
-      			return "Type: "+typeof(obj)+"\nValue: "+obj;
-   			}
-		}
-
-
 
 	function addWaypoint(lon,lat) {
 		var pytrainerAPI = new SOAPCall();
@@ -64,12 +55,13 @@
 
 		if(response.fault){
   			alert("An error occured: " + response.fault.faultString);
+			return 0;
 			} 
 		else {
   			var re = new Array();
   			re = response.getParameters(false, {});
-  			alert("Return value: " + re[0].value);
 			}
+		return re[0].value;
   		}  	
 	
 	function updateWaypoint(lon,lat,id) {
@@ -89,7 +81,7 @@
   		param3.name = "id_waypoint";
   		param3.value = id;
  
-  		var parameters = [param1,param2];
+  		var parameters = [param1,param2,param3];
 		pytrainerAPI.encode(0,
                 	"updateWaypoint", null,
                   	0, null,
@@ -103,15 +95,17 @@
 		else {
   			var re = new Array();
   			re = response.getParameters(false, {});
-  			alert("Return value: " + re[0].value);
+  			//alert("Return value: " + re[0].value);
 			}
   		}  	
 
-	function createMarker(point, text) {
-		//var icon = new GIcon();
-		//icon.image = "./img.png";
-		//icon.iconSize = new GSize(20, 34);
-  		//var marker = new GMarker(point,icon);
+	function createMarker(waypoint) {
+		var lon = waypoint[0];
+		var lat = waypoint[1];
+		var id = waypoint[5];
+		
+		var point = new GLatLng(lat,lon);
+		var text = "<b>"+waypoint[2]+"</b><br/>"+waypoint[3];
 
 		var icon = new GIcon();
 		icon.image = "http://labs.google.com/ridefinder/images/mm_20_red.png";
@@ -128,63 +122,43 @@
 
 		GEvent.addListener(markerD, "mouseup", function(){
 			position = markerD.getPoint();
-			alert (position.lng()+" "+position.lat());
+			updateWaypoint(position.lng(),position.lat(),id);
 		});
-
-		/*
-  		var marker = new GMarker(point);
-  		GEvent.addListener(marker, "click", function() {
-    			marker.openInfoWindowHtml(text);
-  			});
-  		return marker;
-		*/
   		return markerD;
 		}
 
 	function load() {
 		if (GBrowserIsCompatible()) {
 			//Dibujamos el mapa
-			//map = new GMap2(document.getElementById("map"), {draggableCursor: 'crosshair'});
 			map = new GMap2(document.getElementById("map"));
         		map.addControl(new GLargeMapControl());
         		map.addControl(new GMapTypeControl());
 			map.addControl(new GScaleControl());
-        		map.setCenter(new GLatLng(lon, lat), 11);
-
-			//alert (GMapOptions);
-			//map.GMapOptions = {draggableCursor:'crosshair'};
+        		map.setCenter(new GLatLng(lat, lon), 11);
 
 			//Dibujamos el minimapa
 			ovMap=new GOverviewMapControl();
 			map.addControl(ovMap);
 			mini=ovMap.getOverviewMap();
 
-
-			//Redimensionamos automaticamente
-			document.getElementById("map").style.top="0px";
-			document.getElementById("map").style.left="0px";
-			document.getElementById("map").style.width="100%";
-
+			//Dibujamos los waypoints
 			for (i=0; i<2; i++){
-				lon = waypointList[i][0];
-				lat = waypointList[i][1];
-				name = waypointList[i][2];
-				tag = "<b>"+waypointList[i][2]+"</b><br/>"+waypointList[i][3];
-				point = new GLatLng(lon,lat);
-  				//map.addOverlay(createMarker(point, tag));
-  				createMarker(point, tag);
+  				createMarker(waypointList[i]);
 				map.enableDragging();
-				//myNewOption = new Option(name,i);
-				//document.theForm.waypointslist.options[i] = myNewOption;
 				}
 
+			//Preparamos los eventos para anadir nuevos waypoints
 			GEvent.addListener(map, "click", function(marker, point) {
     				if (is_addmode==1){
 					map.enableDragging();
 					//map.addOverlay(new GMarker(point));
-  					createMarker(point, "");
+					var lon = point.lng();
+					var lat = point.lat();
+				
+					var waypoint_id = addWaypoint(lon,lat);
+					var waypoint = Array (lon,lat,"","","",waypoint_id);
+  					createMarker(waypoint);
 					is_addmode = 0;
-					addWaypoint(point.lng(),point.lat());
 					}
 				});
       			}
@@ -208,24 +182,10 @@
 
   </head>
   <body onload="load()" onunload="GUnload()" style="cursor:crosshair" border=0>
-	<!--
-	<table >
-	<tr><td width="100">
-		<form name="theForm">
-		<select size="25" style="width:150px" id="waypointslist" name="waypointslist" onchange="changeWaypoint(this.form.waypointslist)">
-		</select>
-		<input type="button" value="New Waipoint" style="width:150px" onclick="addmode();"/><br/>
-		</form>
-	</td><td>
-	-->
-    		<div id="map" style="width: 630px; height: 460px"></div>
+    		<div id="map" style="width: 100%; height: 460px; top: 0px; left: 0px"></div>
     		<div id="addButton" style="position: absolute; top: 32px;left: 86px;">
 			<input type="button" value="New Waypoint" onclick="javascript:addmode();">
 		</div>
-<!--
-	</td></tr>
-	</table >
--->
 
 
   </body>

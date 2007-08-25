@@ -52,6 +52,9 @@ class Main(SimpleGladeApp):
 		column_names=[_("id"),_("Title"),_("Date"),_("Distance"),_("Sport"),_("Time"),_("Beats"),_("Average"),("Calories")]
 		self.create_treeview(self.allRecordTreeView,column_names)
 		self.create_menulist(column_names)
+		#create the columns for the waypoints treeview
+		column_names=[_("id"),_("Waypoint")]
+		self.create_treeview(self.waypointTreeView,column_names)
 		conf = checkConf()
                 self.fileconf = conf.getValue("confdir")+"/listviewmenu.xml"
 		if not os.path.isfile(self.fileconf):
@@ -102,11 +105,6 @@ class Main(SimpleGladeApp):
 	
 	def createMap(self,Googlemaps):
 		self.googlemaps = Googlemaps(self.data_path, self.map_vbox)
-	
-	def createWaypointEditor(self,WaypointEditor):
-		waypointeditor = WaypointEditor(self.data_path, self.waypointarea)
-		waypointeditor.createHtml()
-		waypointeditor.drawMap()
 
 	def updateSportList(self,listSport):
 		self.sportlist.set_active(1)
@@ -301,6 +299,62 @@ class Main(SimpleGladeApp):
 				)
 		#self.allRecordTreeView.set_headers_clickable(True)
 		self.allRecordTreeView.set_model(store)
+
+	def actualize_waypointview(self,record_list,default_waypoint):
+		#waypoint list tiene:
+		#id_waypoint,lat,lon,ele,comment,time,name,sym
+		#Laas columnas son:
+		#column_names=[_("id"),_("Waypoint")]
+
+		store = gtk.ListStore(
+			gobject.TYPE_INT,
+			gobject.TYPE_STRING,
+			object)
+		iterOne = False
+		iterDefault = False
+		counter = 0
+		default_id = 0
+		for i in record_list:
+			iter = store.append()
+			if not iterOne:
+				iterOne = iter
+			if int(i[0])==default_waypoint:
+				iterDefault = iter
+				default_id = counter
+			store.set (
+				iter,
+				0, int(i[0]),
+				1, str(i[6])
+				)
+			counter+=1
+
+		self.waypointTreeView.set_model(store)
+		if iterDefault:
+			self.waypointTreeView.get_selection().select_iter(iterDefault)
+		elif iterOne:
+			self.waypointTreeView.get_selection().select_iter(iterOne)
+		self.waypoint_latitude.set_text(str(record_list[default_id][1]))
+		self.waypoint_longitude.set_text(str(record_list[default_id][2]))
+		self.waypoint_name.set_text(str(record_list[default_id][6]))
+		self.waypoint_description.set_text(str(record_list[default_id][4]))
+		self.waypointeditor.createHtml()
+		self.waypointeditor.drawMap()
+	
+	def on_waypointTreeView_button_press(self, treeview, event):
+		x = int(event.x)
+		y = int(event.y)
+		time = event.time
+		pthinfo = treeview.get_path_at_pos(x, y)
+		if pthinfo is not None:
+			path, col, cellx, celly = pthinfo
+			treeview.grab_focus()
+			treeview.set_cursor(path, col, 0)
+			if event.button == 1:
+    				selected,iter = treeview.get_selection().get_selected()
+				id_waypoint=selected.get_value(iter,0)
+				self.parent.refreshWaypointView(id_waypoint)
+		return False
+
 	def on_listareasearch_clicked(self,widget):
 		lisOpt = {
 			_("Title"):"title",
@@ -374,6 +428,9 @@ class Main(SimpleGladeApp):
 			if numcolumn != 0 and self.menublocking != 1:
 				menuItems[numcolumn-1].set_active(visible)
 		self.menublocking = 1
+	
+	def createWaypointEditor(self,WaypointEditor):
+		self.waypointeditor = WaypointEditor(self.data_path, self.waypointarea)
 
 	######################
 	## Lista de eventos ##
@@ -468,9 +525,9 @@ class Main(SimpleGladeApp):
 		self.listarea.show()
 	
 	def on_waypointsview_activate(self,widget):
-		self.waypointarea.hide()
 		self.listarea.hide()
 		self.classicarea.hide()
+		self.parent.refreshWaypointView()
 		self.waypointarea.show()
 	
 	def on_extensions_activate(self,widget):
@@ -558,4 +615,19 @@ class Main(SimpleGladeApp):
 	def on_recordTree_clicked(self,widget,num,num2):
     		selected,iter = self.recordTreeView.get_selection().get_selected()
 		self.parent.editRecord(selected.get_value(iter,0))
+
+	######## waypoints events ##########
+	def on_savewaypoint_clicked(self,widget):
+    		selected,iter = self.waypointTreeView.get_selection().get_selected()
+		id_waypoint = selected.get_value(iter,0)
+		lat = self.waypoint_latitude.get_text()
+		lon = self.waypoint_longitude.get_text()
+		name = self.waypoint_name.get_text()
+		desc = self.waypoint_description.get_text()
+		self.parent.updateWaypoint(id_waypoint,lat,lon,name,desc)
+	
+	def on_removewaypoint_clicked(self,widget):
+    		selected,iter = self.waypointTreeView.get_selection().get_selected()
+		id_waypoint = selected.get_value(iter,0)
+		self.parent.removeWaypoint(id_waypoint)
 	
