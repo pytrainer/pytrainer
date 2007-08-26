@@ -430,7 +430,7 @@ class Main(SimpleGladeApp):
 		self.menublocking = 1
 	
 	def createWaypointEditor(self,WaypointEditor):
-		self.waypointeditor = WaypointEditor(self.data_path, self.waypointarea)
+		self.waypointeditor = WaypointEditor(self.data_path, self.waypointvbox)
 
 	######################
 	## Lista de eventos ##

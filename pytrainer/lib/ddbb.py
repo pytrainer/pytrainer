@@ -65,7 +65,7 @@ class DDBB:
 	
 	def lastRecord(self,table):
 		if table=="records":
-			id = "id_records"
+			id = "id_record"
 		if table=="sports":
 			id = "id_sport"
 		if table=="waypoints":
