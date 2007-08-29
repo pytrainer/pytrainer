@@ -429,8 +429,8 @@ class Main(SimpleGladeApp):
 				menuItems[numcolumn-1].set_active(visible)
 		self.menublocking = 1
 	
-	def createWaypointEditor(self,WaypointEditor):
-		self.waypointeditor = WaypointEditor(self.data_path, self.waypointvbox)
+	def createWaypointEditor(self,WaypointEditor,waypoint):
+		self.waypointeditor = WaypointEditor(self.data_path, self.waypointvbox,waypoint)
 
 	######################
 	## Lista de eventos ##

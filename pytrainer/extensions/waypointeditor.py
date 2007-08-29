@@ -22,8 +22,6 @@ import re
 
 from pytrainer.lib.system import checkConf
 from pytrainer.extension import Extension
-from pytrainer.lib.gpx import Gpx
-import pytrainer.lib.points as Points 
 from pytrainer.lib.fileUtils import fileUtils
 
 import string,cgi,time
@@ -31,7 +29,7 @@ import time
 
 
 class WaypointEditor:
-	def __init__(self, data_path = None, vbox = None):
+	def __init__(self, data_path = None, vbox = None, waypoint=None):
 		self.data_path = data_path
 		self.conf = checkConf()
 		self.extension = Extension()
@@ -39,24 +37,19 @@ class WaypointEditor:
                 vbox.pack_start(self.moz, True, True)
 		vbox.show_all()
 		self.htmlfile = ""
+		self.waypoint=waypoint
 	
 	def drawMap(self):
-		#points,levels = Points.encodePoints(pointlist)
-		#points = points.replace("\\","\\\\")
-	
-		#htmlfile = self.conf.getValue("tmpdir")+"/index.html"
 		self.createHtml()
 		tmpdir = self.conf.getValue("tmpdir")
 		htmlfile = tmpdir+"/waypointeditor.html"
         	self.moz.load_url("file://"+htmlfile)
-		#	self.htmlfile = htmlfile
-		#else:
-		#	pass
 	
 	def createHtml(self):
 		tmpdir = self.conf.getValue("tmpdir")
 		filename = tmpdir+"/waypointeditor.html"
-		
+	
+		points = self.waypoint.getAllWaypoints()
 		content = """
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -69,26 +62,23 @@ class WaypointEditor:
     <script id="googleapiimport" src="http://maps.google.com/maps?file=api&amp;v=2"
             type="text/javascript"></script>
     <script type="text/javascript">
-
-
-	lon = "40.71213418976525";
-	lat = "-73.96785736083984";
-	name = "waipoint";
-	description = "Una descripcion mas a ver que hace";
-	sym = "City";  
-	id = "1";
-
-	waypoint1 = Array (lon,lat,name,description,sym,id);
-	lon = "12.71213418976525";
-	lat = "-7.96785736083984";
-	name = "waipoint2";
-	description = "Una descripcion cualquiera";
-	sym = "City"; 
-	id = "2"; 
-	waypoint2 = Array (lon,lat,name,description,sym,id);
-	waypointList = Array (waypoint1,waypoint2);
- 
-
+"""
+		i = 0
+		arrayjs = ""
+		for point in points:
+			content += "lon = '%f';\n"%point[2]
+			content += "lat = '%f';\n"%point[1]
+			content += "name = '%s';\n"%point[6]
+			content += "description = '%s';\n"%point[4]
+			content += "sym = '%s';\n"%point[7]
+			content += "id = '%d';\n"%point[0]
+			content += """waypoint%d = Array (lon,lat,name,description,sym,id);\n"""%i
+			if i>0:
+				arrayjs+=","
+			arrayjs +="waypoint%d"%i
+			i = i+1
+		content += """waypointList = Array (%s);\n""" %arrayjs
+		content += """ 
 	is_addmode = 0;
     //<![CDATA[
 
@@ -202,7 +192,7 @@ class WaypointEditor:
 			mini=ovMap.getOverviewMap();
 
 			//Dibujamos los waypoints
-			for (i=0; i<2; i++){
+			for (i=0; i<waypointList.length; i++){
   				createMarker(waypointList[i]);
 				map.enableDragging();
 				}
