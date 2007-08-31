@@ -70,19 +70,33 @@ class webService(Thread):
 
 	def updateWaypoint(self,lon=None,lat=None,name=None,comment=None,sym=None,id_waypoint=None):
 		if id_waypoint==None:
-			print "Valores pasados:"
-			print "lon = %s"%lon
-			print "lat = %s"%lat
-			print "name = %s"%name
-			print "comment = %s"%comment
-			print "sym = %s"%sym
-			print "id_waypoint = %s"%id_waypoint
 			return "NACK"
+		c = []
+		v = []
+		values = []
+		if lat:
+			c.append("lat")
+			values.append(lat)
+		if lon:
+			c.append("lon")
+			values.append(lon)
+		if comment:
+			c.append("comment")
+			values.append(comment)
+		if sym:
+			c.append("sym")
+			values.append("sym")
+		cells = ""
+		count=0
+		for i in c:
+			if count==1:
+				cells +=","
+			cells += "%s"%i
+			count=1
+		
 		configuration = XMLParser(self.conffile)
 		ddbb = DDBB(configuration)
 		ddbb.connect()
-		cells = "lat,lon,comment,name,sym"
-		values = (lat,lon,comment,name,sym)
 		ddbb.update("waypoints",cells,values," id_waypoint=%d" %int(id_waypoint))
 		return "ACK"
 

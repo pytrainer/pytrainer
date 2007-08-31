@@ -337,7 +337,7 @@ class Main(SimpleGladeApp):
 		self.waypoint_longitude.set_text(str(record_list[default_id][2]))
 		self.waypoint_name.set_text(str(record_list[default_id][6]))
 		self.waypoint_description.set_text(str(record_list[default_id][4]))
-		self.waypointeditor.createHtml()
+		self.waypointeditor.createHtml(default_waypoint)
 		self.waypointeditor.drawMap()
 	
 	def on_waypointTreeView_button_press(self, treeview, event):

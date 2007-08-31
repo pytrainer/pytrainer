@@ -40,16 +40,18 @@ class WaypointEditor:
 		self.waypoint=waypoint
 	
 	def drawMap(self):
-		self.createHtml()
+		#self.createHtml()
 		tmpdir = self.conf.getValue("tmpdir")
 		htmlfile = tmpdir+"/waypointeditor.html"
         	self.moz.load_url("file://"+htmlfile)
 	
-	def createHtml(self):
+	def createHtml(self,default_waypoint=None):
 		tmpdir = self.conf.getValue("tmpdir")
 		filename = tmpdir+"/waypointeditor.html"
 	
 		points = self.waypoint.getAllWaypoints()
+		londef = 0
+		latdef = 0
 		content = """
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
@@ -66,6 +68,9 @@ class WaypointEditor:
 		i = 0
 		arrayjs = ""
 		for point in points:
+			if point[0] == default_waypoint:
+				londef = point[2]
+				latdef = point[1]
 			content += "lon = '%f';\n"%point[2]
 			content += "lat = '%f';\n"%point[1]
 			content += "name = '%s';\n"%point[6]
@@ -184,7 +189,14 @@ class WaypointEditor:
         		map.addControl(new GLargeMapControl());
         		map.addControl(new GMapTypeControl());
 			map.addControl(new GScaleControl());
-        		map.setCenter(new GLatLng(lat, lon), 11);
+	"""
+		if londef != 0:
+        		content +="""
+				lon = %s;
+				lat = %s;
+				""" %(londef,latdef)
+		content +="""
+			map.setCenter(new GLatLng(lat, lon), 11);
 
 			//Dibujamos el minimapa
 			ovMap=new GOverviewMapControl();
