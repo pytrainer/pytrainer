@@ -26,13 +26,14 @@ import pytrainer.lib.points as Points
 from pytrainer.lib.fileUtils import fileUtils
 
 class Googlemaps:
-	def __init__(self, data_path = None, vbox = None):
+	def __init__(self, data_path = None, vbox = None, waypoint = None):
 		self.data_path = data_path
 		self.conf = checkConf()
 		self.moz = gtkmozembed.MozEmbed()
                 vbox.pack_start(self.moz, True, True)
 		vbox.show_all()
 		self.htmlfile = ""
+		self.waypoint=waypoint
 	
 	def drawMap(self,id_record):
 		code = "googlemapsviewer"
@@ -63,6 +64,7 @@ class Googlemaps:
 		#	pass
 	
 	def createHtml(self,points,levels,init_point):
+		waypoints = self.waypoint.getAllWaypoints()
 		tmpdir = self.conf.getValue("tmpdir")
 		content = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \n"
     		content += "		\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
@@ -74,6 +76,48 @@ class Googlemaps:
             	content += "			type=\"text/javascript\"></script>\n"
     		content += "		<script type=\"text/javascript\">\n"
     		content += "		//<![CDATA[\n"
+		i = 0
+		arrayjs = ""
+		for point in waypoints:
+			content += "lon = '%f';\n"%point[2]
+			content += "lat = '%f';\n"%point[1]
+			content += "name = '%s';\n"%point[6]
+			content += "description = '%s';\n"%point[4]
+			content += "sym = '%s';\n"%point[7]
+			content += "id = '%d';\n"%point[0]
+			content += """waypoint%d = Array (lon,lat,name,description,sym,id);\n"""%i
+			if i>0:
+				arrayjs+=","
+			arrayjs +="waypoint%d"%i
+			i = i+1
+		content += """waypointList = Array (%s);\n""" %arrayjs
+		content += """
+	function createMarker(waypoint,map) {
+		var lon = waypoint[0];
+		var lat = waypoint[1];
+		var id = waypoint[5];
+		var name = waypoint[2];
+		var description = waypoint[3];
+		
+		var point = new GLatLng(lat,lon);
+		var text = "<b>"+waypoint[2]+"</b><br/>"+waypoint[3];
+
+		var icon = new GIcon();
+		icon.image = "http://labs.google.com/ridefinder/images/mm_20_red.png";
+		icon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
+		icon.iconSize = new GSize(12, 20);
+		icon.shadowSize = new GSize(22, 20);
+		icon.iconAnchor = new GPoint(6, 20);
+		icon.infoWindowAnchor = new GPoint(5, 1);
+		
+		var markerD = new GMarker(point, {icon:icon, draggable: false}); 
+		GEvent.addListener(markerD, "click", function() {
+            		markerD.openInfoWindowHtml("<b>" + name + "</b><br/>"+description);
+          		});
+		map.addOverlay(markerD);
+
+		}"""
+
 		content += "		function load() {\n"
 		content += "			if (GBrowserIsCompatible()) {\n"
         	content += "				var map = new GMap2(document.getElementById(\"map\"));\n"
@@ -84,6 +128,11 @@ class Googlemaps:
 		content += "				ovMap=new GOverviewMapControl();\n"
 		content += " 				map.addControl(ovMap);\n"
 		content += "				mini=ovMap.getOverviewMap();\n"
+		content += "				//Dibujamos los waypoints\n"
+		content += "				for (i=0; i<waypointList.length; i++){\n"
+ 		content += " 					createMarker(waypointList[i],map);\n"
+		content += "					map.enableDragging();\n"
+		content += "					}\n"
 		content += "				document.getElementById('map').style.top='0px';\n"
 		content += "				document.getElementById('map').style.left='0px';\n"
 		content += "				document.getElementById('map').style.width='100%';\n"

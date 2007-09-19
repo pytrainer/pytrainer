@@ -103,8 +103,8 @@ class Main(SimpleGladeApp):
 		self.drawareamonth = MonthGraph(self.month_vbox, self.month_combovalue)
 		self.drawareayear = YearGraph(self.year_vbox, self.year_combovalue)
 	
-	def createMap(self,Googlemaps):
-		self.googlemaps = Googlemaps(self.data_path, self.map_vbox)
+	def createMap(self,Googlemaps,waypoint):
+		self.googlemaps = Googlemaps(self.data_path, self.map_vbox,waypoint)
 
 	def updateSportList(self,listSport):
 		self.sportlist.set_active(1)

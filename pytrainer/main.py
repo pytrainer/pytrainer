@@ -67,7 +67,7 @@ class pyTrainer:
 		self.loadPlugins()
 		self.loadExtensions()
 		self.windowmain.createGraphs(RecordGraph,DayGraph,MonthGraph,YearGraph)
-		self.windowmain.createMap(Googlemaps)
+		self.windowmain.createMap(Googlemaps,self.waypoint)
 		self.windowmain.createWaypointEditor(WaypointEditor,self.waypoint)
 		self.windowmain.on_calendar_selected(None)
 	
