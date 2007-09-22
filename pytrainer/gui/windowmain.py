@@ -300,7 +300,8 @@ class Main(SimpleGladeApp):
 		#self.allRecordTreeView.set_headers_clickable(True)
 		self.allRecordTreeView.set_model(store)
 
-	def actualize_waypointview(self,record_list,default_waypoint):
+	def actualize_waypointview(self,record_list,default_waypoint,redrawmap = 1):
+		#redrawmap: indica si tenemos que refrescar tb el mapa. 1 si 0 no
 		#waypoint list tiene:
 		#id_waypoint,lat,lon,ele,comment,time,name,sym
 		#Laas columnas son:
@@ -337,8 +338,9 @@ class Main(SimpleGladeApp):
 		self.waypoint_longitude.set_text(str(record_list[default_id][2]))
 		self.waypoint_name.set_text(str(record_list[default_id][6]))
 		self.waypoint_description.set_text(str(record_list[default_id][4]))
-		self.waypointeditor.createHtml(default_waypoint)
-		self.waypointeditor.drawMap()
+		if redrawmap == 1:
+			self.waypointeditor.createHtml(default_waypoint)
+			self.waypointeditor.drawMap()
 	
 	def on_waypointTreeView_button_press(self, treeview, event):
 		x = int(event.x)
@@ -353,6 +355,23 @@ class Main(SimpleGladeApp):
     				selected,iter = treeview.get_selection().get_selected()
 				id_waypoint=selected.get_value(iter,0)
 				self.parent.refreshWaypointView(id_waypoint)
+		return False
+	
+	def on_waypointEditor_button_press(self, w , event):
+		print "holai1"
+		#x = int(event.x)
+		#y = int(event.y)
+		#time = event.time
+		#pthinfo = treeview.get_path_at_pos(x, y)
+		#if pthinfo is not None:
+		#	path, col, cellx, celly = pthinfo
+		#	treeview.grab_focus()
+		#	treeview.set_cursor(path, col, 0)
+		#	if event.button == 1:
+		#		print "hola"
+    		#		#selected,iter = treeview.get_selection().get_selected()
+		#		#id_waypoint=selected.get_value(iter,0)
+		#		#self.parent.refreshWaypointView(id_waypoint)
 		return False
 
 	def on_listareasearch_clicked(self,widget):
@@ -431,6 +450,7 @@ class Main(SimpleGladeApp):
 	
 	def createWaypointEditor(self,WaypointEditor,waypoint):
 		self.waypointeditor = WaypointEditor(self.data_path, self.waypointvbox,waypoint)
+		self.waypointvbox.connect("button_release_event", self.on_waypointEditor_button_press)
 
 	######################
 	## Lista de eventos ##

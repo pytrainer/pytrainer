@@ -99,8 +99,12 @@ class WaypointEditor:
 		var param2 = new SOAPParameter();
   		param2.name = "lat";
   		param2.value = lat;
+		
+		var param3 = new SOAPParameter();
+  		param3.name = "name";
+  		param3.value = "NEW WAYPOINT";
  
-  		var parameters = [param1,param2];
+  		var parameters = [param1,param2,param3];
 		pytrainerAPI.encode(0,
                 	"addWaypoint", null,
                   	0, null,

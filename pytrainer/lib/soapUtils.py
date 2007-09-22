@@ -26,7 +26,7 @@ from pytrainer.lib.system import checkConf
 from threading import Thread
 
 class webService(Thread):
-	def __init__(self):
+	def __init__(self,onchangeAction = None):
 		system = checkConf()
 		self.conffile = "%s/conf.xml" %system.getValue("confdir")
 		self.server = SOAPpy.ThreadingSOAPServer(("localhost", 8081))
@@ -35,6 +35,7 @@ class webService(Thread):
 		self.server.registerFunction(self.addWaypoint)
 		self.server.registerFunction(self.updateWaypoint)
 		self.server.registerFunction(self.test)
+		self.onchangeAction = onchangeAction
 		Thread.__init__ ( self )
 
 	def getRecordInfo(self,id_record):
@@ -66,6 +67,7 @@ class webService(Thread):
 		cells = "lat,lon,comment,name,sym"
 		values = (lat,lon,comment,name,sym)
 		ddbb.insert("waypoints",cells,values)
+		self.onchangeAction(False,0)
 		return ddbb.lastRecord("waypoints")
 
 	def updateWaypoint(self,lon=None,lat=None,name=None,comment=None,sym=None,id_waypoint=None):
@@ -98,6 +100,7 @@ class webService(Thread):
 		ddbb = DDBB(configuration)
 		ddbb.connect()
 		ddbb.update("waypoints",cells,values," id_waypoint=%d" %int(id_waypoint))
+		self.onchangeAction(False,0)
 		return "ACK"
 
 	def test(self,lon=None,lat=None):

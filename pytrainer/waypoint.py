@@ -28,23 +28,33 @@ class Waypoint:
 		self.filename = self.conf.getValue("conffile")
 		self.configuration = XMLParser(self.filename)
 		self.ddbb = DDBB(self.configuration)
-		self.ddbb.connect()
 	
 	def removeWaypoint(self,id_waypoint):
+		self.ddbb.connect()
 		self.ddbb.delete("waypoints", "id_waypoint=\"%s\"" %id_waypoint)
+		self.ddbb.disconnect()
 
 	def updateWaypoint(self,id_waypoint,lat,lon,name,desc):
+		self.ddbb.connect()
 		self.ddbb.update("waypoints","lat,lon,comment,name",[lat,lon,desc,name]," id_waypoint=%d" %id_waypoint)
+		self.ddbb.disconnect()
 
 	def getwaypointInfo(self,id_waypoint):
-		return self.ddbb.select("waypoint",
+		self.ddbb.connect()
+		retorno = self.ddbb.select("waypoint",
 					"lat,lon,ele,comment,time,name,sym"
 					"id_waypoint=\"%s\"" %id_waypoint)
+		self.ddbb.disconnect()
+		return retorno
 	
 	def getAllWaypoints(self):
-		return self.ddbb.select("waypoints","id_waypoint,lat,lon,ele,comment,time,name,sym","1=1 order by name")
+		self.ddbb.connect()
+		retorno = self.ddbb.select("waypoints","id_waypoint,lat,lon,ele,comment,time,name,sym","1=1 order by name")
+		self.ddbb.disconnect()
+		return retorno
 	
 	def actualize_fromgpx(self,gpxfile):
+		self.ddbb.connect()
 		from lib.gpx import Gpx
 		gpx = Gpx(self.data_path,gpxfile)
 		init_time,end_time = gpx.getDatevalues()
@@ -59,6 +69,7 @@ class Waypoint:
 			warning = Warning(self.data_path,self._actualize_fromgpx,[gpx])
                         warning.set_text(msg)
                         warning.run()
+		self.ddbb.disconnect()
 
 	def _actualize_fromgpx(self, gpx):
 		distance, time = gpx.getMaxValues()

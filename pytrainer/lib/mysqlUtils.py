@@ -49,6 +49,9 @@ class Sql:
 			except:
 				return -1
 	
+	def disconnect(self):
+		self.db.close()
+	
 	def createDDBB(self):
 		self.db.query("create database %s" %self.ddbb)
 

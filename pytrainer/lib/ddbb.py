@@ -45,6 +45,9 @@ class DDBB:
 			var = 1
 		return var
 
+	def disconnect(self):
+		self.ddbbObject.disconnect()
+
 	def build_ddbb(self):
 		self.ddbbObject.createDDBB()
 		self.ddbbObject.connect()

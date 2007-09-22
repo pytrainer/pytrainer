@@ -39,6 +39,9 @@ class Sql:
 		except:
 			self.createTables()
 		return 1
+
+	def disconnect(self):
+		self.db.close()
 	
 	def createDDBB(self):
 		pass

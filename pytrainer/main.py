@@ -44,6 +44,7 @@ from gui.warning import Warning
 from lib.system import checkConf
 from lib.date import Date
 from lib.gpx import Gpx
+from lib.soapUtils import webService
 
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
@@ -54,6 +55,10 @@ class pyTrainer:
 		#preparamos la ventana principal
 		self.windowmain = Main(data_path,self,self.version)
 		self.date = Date(self.windowmain.calendar)
+
+		#Preparamos el webservice	
+		gtk.gdk.threads_init()
+		webService(self.refreshWaypointView).start()
 
 		#comprobamos que el profile esta configurado
 		self.profile = Profile(self.data_path,self)
@@ -162,9 +167,9 @@ class pyTrainer:
 		record_list = self.record.getAllRecordList()
 		self.windowmain.actualize_listview(record_list)
 	
-	def refreshWaypointView(self,default_waypoint=False):
+	def refreshWaypointView(self,default_waypoint=False,redrawmap=1):
 		waypoint_list = self.waypoint.getAllWaypoints()
-		self.windowmain.actualize_waypointview(waypoint_list,default_waypoint)
+		self.windowmain.actualize_waypointview(waypoint_list,default_waypoint,redrawmap)
 	
 	def searchListView(self,condition):
 		record_list = self.record.getRecordListByCondition(condition)

@@ -36,23 +36,8 @@ gettext.textdomain("pytrainer")
 gettext.install("pytrainer",DIR,unicode=1)
 
 from pytrainer.main import pyTrainer
-from pytrainer.lib.soapUtils import webService
-from pytrainer.lib.webUtils import webServer
-
-#import thread
-
-def launchSoapserver():
-	webService().start()
-
-def launchProxy():
-	webServer().start()
 
 def main():
-	#Lanzamos el webservice para las extensiones
-	gtk.gdk.threads_init()
-	launchSoapserver()
-	#launchProxy()
-
 	#Lanzamos el pytrainer
 	pytrainer = pyTrainer(None, data_path)
 	#pytrainer.run()
