@@ -34,9 +34,9 @@ class Waypoint:
 		self.ddbb.delete("waypoints", "id_waypoint=\"%s\"" %id_waypoint)
 		self.ddbb.disconnect()
 
-	def updateWaypoint(self,id_waypoint,lat,lon,name,desc):
+	def updateWaypoint(self,id_waypoint,lat,lon,name,desc,sym):
 		self.ddbb.connect()
-		self.ddbb.update("waypoints","lat,lon,comment,name",[lat,lon,desc,name]," id_waypoint=%d" %id_waypoint)
+		self.ddbb.update("waypoints","lat,lon,comment,name,sym",[lat,lon,desc,name,sym]," id_waypoint=%d" %id_waypoint)
 		self.ddbb.disconnect()
 
 	def getwaypointInfo(self,id_waypoint):

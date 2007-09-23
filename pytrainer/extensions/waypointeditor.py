@@ -162,16 +162,20 @@ class WaypointEditor:
 		var lon = waypoint[0];
 		var lat = waypoint[1];
 		var id = waypoint[5];
+		var sym = waypoint[4];
 		
 		var point = new GLatLng(lat,lon);
 		var text = "<b>"+waypoint[2]+"</b><br/>"+waypoint[3];
 
 		var icon = new GIcon();
-		icon.image = "http://labs.google.com/ridefinder/images/mm_20_red.png";
-		icon.shadow = "http://labs.google.com/ridefinder/images/mm_20_shadow.png";
-		icon.iconSize = new GSize(12, 20);
-		icon.shadowSize = new GSize(22, 20);
-		icon.iconAnchor = new GPoint(6, 20);
+		if (sym=="Summit") {
+			icon.image = \""""+os.path.abspath(self.data_path)+"""/glade/summit.png\";
+			}
+		else {
+			icon.image = \""""+os.path.abspath(self.data_path)+"""/glade/waypoint.png\";
+			}
+		icon.iconSize = new GSize(32, 32);
+		icon.iconAnchor = new GPoint(16, 16);
 		icon.infoWindowAnchor = new GPoint(5, 1);
 		
 		var markerD = new GMarker(point, {icon:icon, draggable: true}); 

@@ -338,6 +338,8 @@ class Main(SimpleGladeApp):
 		self.waypoint_longitude.set_text(str(record_list[default_id][2]))
 		self.waypoint_name.set_text(str(record_list[default_id][6]))
 		self.waypoint_description.set_text(str(record_list[default_id][4]))
+		self.waypoint_type.insert_text(0,str(record_list[default_id][7]))
+		self.waypoint_type.set_active(0)
 		if redrawmap == 1:
 			self.waypointeditor.createHtml(default_waypoint)
 			self.waypointeditor.drawMap()
@@ -357,23 +359,6 @@ class Main(SimpleGladeApp):
 				self.parent.refreshWaypointView(id_waypoint)
 		return False
 	
-	def on_waypointEditor_button_press(self, w , event):
-		print "holai1"
-		#x = int(event.x)
-		#y = int(event.y)
-		#time = event.time
-		#pthinfo = treeview.get_path_at_pos(x, y)
-		#if pthinfo is not None:
-		#	path, col, cellx, celly = pthinfo
-		#	treeview.grab_focus()
-		#	treeview.set_cursor(path, col, 0)
-		#	if event.button == 1:
-		#		print "hola"
-    		#		#selected,iter = treeview.get_selection().get_selected()
-		#		#id_waypoint=selected.get_value(iter,0)
-		#		#self.parent.refreshWaypointView(id_waypoint)
-		return False
-
 	def on_listareasearch_clicked(self,widget):
 		lisOpt = {
 			_("Title"):"title",
@@ -450,7 +435,6 @@ class Main(SimpleGladeApp):
 	
 	def createWaypointEditor(self,WaypointEditor,waypoint):
 		self.waypointeditor = WaypointEditor(self.data_path, self.waypointvbox,waypoint)
-		self.waypointvbox.connect("button_release_event", self.on_waypointEditor_button_press)
 
 	######################
 	## Lista de eventos ##
@@ -644,7 +628,9 @@ class Main(SimpleGladeApp):
 		lon = self.waypoint_longitude.get_text()
 		name = self.waypoint_name.get_text()
 		desc = self.waypoint_description.get_text()
-		self.parent.updateWaypoint(id_waypoint,lat,lon,name,desc)
+		sym = self.waypoint_type.get_active_text()
+		print sym
+		self.parent.updateWaypoint(id_waypoint,lat,lon,name,desc,sym)
 	
 	def on_removewaypoint_clicked(self,widget):
     		selected,iter = self.waypointTreeView.get_selection().get_selected()

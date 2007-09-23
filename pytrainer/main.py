@@ -211,8 +211,8 @@ class pyTrainer:
 			warning.set_text(msg)
 			warning.run()
 
-	def updateWaypoint(self,id_waypoint,lat,lon,name,desc):
-		self.waypoint.updateWaypoint(id_waypoint,lat,lon,name,desc)
+	def updateWaypoint(self,id_waypoint,lat,lon,name,desc,sym):
+		self.waypoint.updateWaypoint(id_waypoint,lat,lon,name,desc,sym)
 		self.refreshWaypointView(id_waypoint)
 	
 	def exportCsv(self):

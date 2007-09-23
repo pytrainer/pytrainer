@@ -4874,6 +4874,10 @@ Calories</property>
 			      <child>
 				<widget class="GtkComboBoxEntry" id="waypoint_type">
 				  <property name="visible">True</property>
+				  <property name="items" translatable="yes">Font
+Restaurant
+Scenic Area
+Summit</property>
 				  <property name="add_tearoffs">False</property>
 				  <property name="has_frame">True</property>
 				  <property name="focus_on_click">True</property>
