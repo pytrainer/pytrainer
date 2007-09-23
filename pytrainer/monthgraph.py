@@ -83,9 +83,13 @@ class MonthGraph:
 		for i in range (0,daysmonth):
                         xunits.append(i)
 			yunits.append(float(0))
-		
+	
 		for value in list_values:
-			yunits[value-1] = list_values[value]	
+                        if ((value_selected == 0) or (value_selected==1)):
+				yunits[value-1] = list_values[value]
+			else:
+				if list_average[value]>0:
+					yunits[value-1] = list_values[value]/list_average[value]
 
 		return xunits,yunits
 	
