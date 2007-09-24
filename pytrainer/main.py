@@ -58,7 +58,7 @@ class pyTrainer:
 
 		#Preparamos el webservice	
 		gtk.gdk.threads_init()
-		webService(self.refreshWaypointView).start()
+		webService(data_path,self.refreshWaypointView,self.newRecord).start()
 
 		#comprobamos que el profile esta configurado
 		self.profile = Profile(self.data_path,self)
@@ -100,8 +100,11 @@ class pyTrainer:
 	def runPlugin(self,widget,pathPlugin):
 		gpxfile = self.plugins.runPlugin(pathPlugin)
 		list_sport = self.profile.getSportList()
-		self.record.newGpxRecord(gpxfile,list_sport)
-	
+		if os.path.isfile(gpxfile):
+			self.record.newGpxRecord(gpxfile,list_sport)
+		else:
+			self.record.editRecord(gpxfile,list_sport)	
+
 	def runExtension(self,extension,id):
 		txtbutton,pathExtension,type = extension
 		if type == "record":
@@ -181,10 +184,11 @@ class pyTrainer:
 	def editGpsPlugins(self):
 		self.plugins.managePlugins()
 
-	def newRecord(self):
+	def newRecord(self,title=None,distance=None,time=None,upositive=None,unegative=None,bpm=None,calories=None,date=None,comment=None):
 		list_sport = self.profile.getSportList()
-		date = self.date.getDate()
-                self.record.newRecord(list_sport, date)
+		if date == None:
+			date = self.date.getDate()
+                self.record.newRecord(list_sport, date, title, distance, time, upositive, unegative, bpm, calories, comment)
 
 	def editRecord(self, id_record):
 		list_sport = self.profile.getSportList()

@@ -26,8 +26,9 @@ from pytrainer.lib.system import checkConf
 from threading import Thread
 
 class webService(Thread):
-	def __init__(self,onchangeAction = None):
+	def __init__(self,data_path=None,onchangeAction = None,insertNewRecord=None):
 		system = checkConf()
+		self.data_path = data_path
 		self.conffile = "%s/conf.xml" %system.getValue("confdir")
 		self.server = SOAPpy.ThreadingSOAPServer(("localhost", 8081))
 		#self.server = SOAPpy.server.InsecureServer(("localhost", 8081))
@@ -35,7 +36,9 @@ class webService(Thread):
 		self.server.registerFunction(self.addWaypoint)
 		self.server.registerFunction(self.updateWaypoint)
 		self.server.registerFunction(self.test)
+		self.server.registerFunction(self.newRecord)
 		self.onchangeAction = onchangeAction
+		self.insertNewRecord = insertNewRecord
 		Thread.__init__ ( self )
 
 	def getRecordInfo(self,id_record):
@@ -59,6 +62,23 @@ class webService(Thread):
 		info["upositive"] = record[10]
 		info["unegative"] = record[11]
 		return info
+
+	def newRecord(self,title=None,distance=None,time=None,upositive=None, unegative=None, bpm=None,calories=None, date=None, comment=None):
+		#self.insertNewRecord(title,distance,time,upositive,unegative,bpm,calories,date,comment)
+		#Pasar de la ventana. 
+		#meter el registro en la bbdd y reiniciar la interfaz
+		from pytrainer.lib.ddbb import DDBB
+		from pytrainer.lib.xmlUtils import XMLParser
+		from pytrainer.lib.system import checkConf
+		conf = checkConf()
+		filename = conf.getValue("conffile")
+		configuration = XMLParser(filename)
+		ddbb = DDBB(configuration)
+		ddbb.connect()
+                cells= "date,sport,distance,time,beats,comments,average,calories,title,upositive,unegative"
+		values=[date,1,distance,time,bpm,comment,float(distance)/(float(time)/3600),calories,title,upositive,unegative]
+		ddbb.insert("records",cells,values)
+		return ddbb.lastRecord("records")
 
 	def addWaypoint(self,lon=None,lat=None,name=None,comment=None,sym=None):
 		configuration = XMLParser(self.conffile)

@@ -5211,7 +5211,7 @@ Summit</property>
   <property name="gravity">GDK_GRAVITY_NORTH_WEST</property>
   <property name="focus_on_map">True</property>
   <property name="urgency_hint">False</property>
-  <signal name="destroy" handler="gtk_main_quit" last_modification_time="Sun, 26 Mar 2006 21:05:42 GMT"/>
+  <signal name="destroy" handler="quit" last_modification_time="Sun, 23 Sep 2007 20:55:46 GMT"/>
 
   <child>
     <widget class="GtkVBox" id="vbox2">

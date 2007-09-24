@@ -49,8 +49,8 @@ class Record:
 		if self.configuration.getOption("version")<version:
 			self.configuration.setVersion(version)
 
-	def newRecord(self, list_sport, date):
-		self.recordwindow = WindowRecord(self.data_path, list_sport,self, date)
+        def newRecord(self, list_sport, date, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None):
+		self.recordwindow = WindowRecord(self.data_path, list_sport,self, date, title, distance, time, upositive, unegative, bpm, calories, comment)
 		self.recordwindow.run()
 
 	def editRecord(self,id_record,list_sport):
@@ -103,6 +103,7 @@ class Record:
 			id_record = self.ddbb.lastRecord("records")
 			shutil.copy2(gpxOrig, gpxDest+"/%d.gpx"%id_record)
 		self.parent.refreshListRecords()
+		return self.ddbb.lastRecord("records")
 
 	def updateRecord(self, list_options, id_record):
 		gpxfile = self.conf.getValue("gpxdir")+"/%d.gpx"%int(id_record)

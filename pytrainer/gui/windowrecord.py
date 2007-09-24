@@ -21,7 +21,7 @@ from windowcalendar import WindowCalendar
 from filechooser import FileChooser
 
 class WindowRecord(SimpleGladeApp):
-	def __init__(self, data_path = None, listSport = None, parent = None, date = None):
+	def __init__(self, data_path = None, listSport = None, parent = None, date = None, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None):
 		self.parent = parent
 		self.data_path = data_path
 		glade_path="glade/pytrainer.glade"
@@ -54,6 +54,20 @@ class WindowRecord(SimpleGladeApp):
 
 		if date != None:
 			self.setDate(date)
+		if title != None:
+			self.rcd_title.set_text(title)
+		if distance != None:
+			self.rcd_distance.set_text(distance)
+		if time != None:
+			self.setTime(time)
+		if distance!=None and time!=None:
+			self.on_calcaverage_clicked(None)
+		if upositive != None:
+			self.rcd_upositive.set_text(upositive)
+		if unegative != None:
+			self.rcd_unegative.set_text(unegative)
+		if calories != None:
+			self.rcd_calories.set_text(calories)
 		
 	def on_accept_clicked(self,widget):
 		list_options = {}
@@ -77,9 +91,9 @@ class WindowRecord(SimpleGladeApp):
 	def on_cancel_clicked(self,widget):
 		self.close_window()
 
-	def close_window(self):
+	def close_window(self, widget=None):
 		self.newrecord.hide()
-		self.newrecord = None
+		#self.newrecord = None
 		self.quit()
 
 	def on_calendar_clicked(self,widget):
@@ -88,6 +102,15 @@ class WindowRecord(SimpleGladeApp):
 
 	def setDate(self,date):
 		self.rcd_date.set_text(date)
+
+	def setTime(self,timeInSeconds):
+		time_in_hour = int(timeInSeconds)/3600.0
+		hour = int(time_in_hour)
+		min = int((time_in_hour-hour)*60)
+		sec = (((time_in_hour-hour)*60)-min)*60
+		self.rcd_hour.set_value(hour)
+		self.rcd_min.set_value(min)
+		self.rcd_second.set_value(sec)
 
 	def setValue(self,var,value):
 		try:
@@ -100,13 +123,7 @@ class WindowRecord(SimpleGladeApp):
 	def setValues(self,values):
 		#(50, u'2006-10-13', 1, 25.0, u'5625', 0.0, 16.0, 0, u'', gpsfile, title,upositive,unegative )
 		self.id_record = values[0]
-		time_in_hour = int(values[4])/3600.0
-		hour = int(time_in_hour)
-		min = int((time_in_hour-hour)*60)
-		sec = (((time_in_hour-hour)*60)-min)*60
-		self.rcd_hour.set_value(hour)
-		self.rcd_min.set_value(min)
-		self.rcd_second.set_value(sec)
+		self.setTime(values[4])
 		self.rcd_date.set_text(values[1])
 		self.setValue("rcd_distance",values[3])
 		self.setValue("rcd_average",values[6])

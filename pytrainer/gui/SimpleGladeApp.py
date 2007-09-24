@@ -106,7 +106,7 @@ class SimpleGladeApp(dict):
 	def main(self):
 		gtk.main()
 
-	def quit(self):
+	def quit(self, widget=None):
 		gtk.main_quit()
 
 	def run(self):
