@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<pytrainer-plugin 
+	name="Ipod + nike" 
+	description="Import yor records direclty from your Ipod+Nike" 
+	plugincode="ipodnike"
+	pluginbutton="Import from Ipod+Nike" 
+	executable="main.py" 
+>
+<conf-values variable="nikeid" value="55555"/>
+</pytrainer-plugin>
