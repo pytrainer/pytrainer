@@ -203,6 +203,11 @@ class WaypointEditor:
 				lon = %s;
 				lat = %s;
 				""" %(londef,latdef)
+		else:
+			 content += """
+				lon = 0;
+				lat = 0;
+				"""
 		content +="""
 			map.setCenter(new GLatLng(lat, lon), 11);
 

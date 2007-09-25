@@ -46,6 +46,11 @@ class Record:
 			self.ddbb.addUnevenness2ddbb()
 		if self.configuration.getOption("version")<="1.4.1.1":
 			self.ddbb.addWaypoints2ddbb()
+		if self.configuration.getOption("version")<="1.4.2":
+			try:
+				self.ddbb.addWaypoints2ddbb()
+			except:
+				pass
 		if self.configuration.getOption("version")<version:
 			self.configuration.setVersion(version)
 

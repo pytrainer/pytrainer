@@ -73,6 +73,19 @@ class Sql:
 			) ;"""
 		cur.execute(sql)
 
+		#creamos la tabla waypoints
+		sql = """CREATE TABLE waypoints (
+			id_waypoint integer primary key autoincrement ,
+			lat float,
+			lon float,
+			ele float,
+			comment varchar (240),
+			time date,
+			name varchar (200),
+			sym varchar (200)
+			) ;"""
+		cur.execute(sql)
+
 		self.insert("sports","name",["Mountain Bike"]);
 		self.insert("sports","name",["Bike"]);
 		self.insert("sports","name",["Run"]);

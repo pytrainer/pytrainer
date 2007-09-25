@@ -334,12 +334,13 @@ class Main(SimpleGladeApp):
 			self.waypointTreeView.get_selection().select_iter(iterDefault)
 		elif iterOne:
 			self.waypointTreeView.get_selection().select_iter(iterOne)
-		self.waypoint_latitude.set_text(str(record_list[default_id][1]))
-		self.waypoint_longitude.set_text(str(record_list[default_id][2]))
-		self.waypoint_name.set_text(str(record_list[default_id][6]))
-		self.waypoint_description.set_text(str(record_list[default_id][4]))
-		self.waypoint_type.insert_text(0,str(record_list[default_id][7]))
-		self.waypoint_type.set_active(0)
+		if len(record_list) > 0:
+			self.waypoint_latitude.set_text(str(record_list[default_id][1]))
+			self.waypoint_longitude.set_text(str(record_list[default_id][2]))
+			self.waypoint_name.set_text(str(record_list[default_id][6]))
+			self.waypoint_description.set_text(str(record_list[default_id][4]))
+			self.waypoint_type.insert_text(0,str(record_list[default_id][7]))
+			self.waypoint_type.set_active(0)
 		if redrawmap == 1:
 			self.waypointeditor.createHtml(default_waypoint)
 			self.waypointeditor.drawMap()
