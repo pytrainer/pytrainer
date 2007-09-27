@@ -49,10 +49,13 @@ class Plugins:
 		params = ""
 		for opt in self.getPluginConfParams(pathPlugin):
 			if opt[0]!="status":
-				params += "--%s %s" %(opt[0],opt[1])
+				params += " --%s %s" %(opt[0],opt[1])
+		print "%s %s" %(binnary,params)
 		gpxfile = os.popen("%s %s" %(binnary,params)).read()
 		gpxfile = gpxfile.replace("\n","")
 		gpxfile = gpxfile.replace("\r","")
+		if gpxfile == "0":
+			return False
 		return gpxfile
 	
 	def managePlugins(self):

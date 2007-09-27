@@ -2,9 +2,10 @@
 <pytrainer-plugin 
 	name="Ipod + nike" 
 	description="Import yor records direclty from your Ipod+Nike" 
-	plugincode="ipodnike"
+	plugincode="ipod"
 	pluginbutton="Import from Ipod+Nike" 
 	executable="main.py" 
 >
-<conf-values variable="nikeid" value="55555"/>
+<conf-values variable="nikeid" value="4H73421AVSX"/>
+<conf-values variable="mountpoint" value="/media/ipod/"/>
 </pytrainer-plugin>

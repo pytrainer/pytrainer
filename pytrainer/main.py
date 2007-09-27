@@ -50,7 +50,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
 		self.data_path = data_path
 		#configuration
-		self.version ="1.4.3"
+		self.version ="1.4.4"
 		self.conf = checkConf()
 		#preparamos la ventana principal
 		self.windowmain = Main(data_path,self,self.version)
@@ -100,7 +100,9 @@ class pyTrainer:
 	def runPlugin(self,widget,pathPlugin):
 		gpxfile = self.plugins.runPlugin(pathPlugin)
 		list_sport = self.profile.getSportList()
-		if os.path.isfile(gpxfile):
+		if gpxfile == False:
+			pass
+		elif os.path.isfile(gpxfile):
 			self.record.newGpxRecord(gpxfile,list_sport)
 		else:
 			self.record.editRecord(gpxfile,list_sport)	
