@@ -42,32 +42,65 @@ parser.add_option("-m", "--mountpoint", dest="mountpoint")
 nikeid = options.nikeid
 mountpoint = options.mountpoint
 
+#Path a los directorios del dispositivo nike
+empedsdir="iPod_Control/Device/Trainer/Workouts/Empeds"
+
+#Comprobamos que el iPod está montado
+if not os.path.exists(mountpoint):
+	f = os.popen("zenity --error --text='No iPod found. Check mountpoint in the configuration.'");
+	print 0
+	sys.exit()
+
+#Obtenemos el dir donde estan los ficheros del ipod
+ipoddir = os.path.join(str(mountpoint),empedsdir+"/"+str(nikeid))
+
+#Comprobación de que el nikeid is correcto
+if not os.path.exists(ipoddir):
+	msg = ""
+	#Si el nikeid no existe, mostramos un mensaje con los nikeid encontrados
+	ipoddir=os.path.join(str(mountpoint),empedsdir)
+	for f in os.listdir(ipoddir):
+		if os.path.isdir(os.path.join(ipoddir,f)):
+			msg = msg + f + ", "
+	f = os.popen("zenity --error --text='Incorrect nikeid. Try %s or look into %s'" % (msg, empedsdir));
+	print 0
+	sys.exit()
+
 #Sacamos el dir de los plugins
 conf=checkConf()
 plugindir=conf.plugindir + "/ipod/"
 
-#sacamos el dir donde estan los ficheros del ipod
-ipoddir = str(mountpoint)+"/iPod_Control/Device/Trainer/Workouts/Empeds/"+str(nikeid)+"/" 
-
 ipodfiles = []
 
 # Recorro el directorio synched (archivos subidos a nikeplus.com)
-syncheddir = ipoddir + "/synched"
+# Aqui tambien usamos os.path.join
+syncheddir = os.path.join(ipoddir,"synched")
 for f in os.listdir(syncheddir):
 	files = (f,"/synched")
-	ipodfiles.append(files)
+	# Lo añadimos a la lista sólo si no está copiado en plugindir
+	if not os.path.isfile(os.path.join(plugindir,f)):
+		ipodfiles.append(files)
 
 # Recorro el directorio latest (archivos no subidos a nikeplus.com)
-latestdir = ipoddir + "/latest"
+# Aqui tambien usamos os.path.join
+latestdir = os.path.join(ipoddir,"latest")
 for f in os.listdir(latestdir):
-	files = (f,"/latest")
-	ipodfiles.append(files)
+	# Lo añadimos a la lista sólo si no está copiado
+	if not os.path.isfile(os.path.join(plugindir,f)):
+		files = (f,"/latest")
+		ipodfiles.append(files)
 
 #Mostramos el dialogo con la lista de XMLs disponibles:
 ifiles = ""
 for i in ipodfiles:
 	ifiles = ifiles + " false '"+i[0]+"'"
 
+#Si no hay ninguno, mostramos un mensaje de error
+if len(ifiles) == 0:
+	f = os.popen("zenity --error --text='There is no new workouts!'");
+	print 0
+	sys.exit()
+	
 #Mostramos la lista de ficheros disponibles y recogemos la opcion seleccionada
 selected_file = os.popen("zenity --list --text='Select a record' --column='' --radiolist --column='record' %s" % ifiles).read()
 
