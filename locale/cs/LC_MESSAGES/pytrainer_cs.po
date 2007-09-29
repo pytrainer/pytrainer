@@ -1,0 +1,830 @@
+# Czech translations for vud package.
+# Copyright (C) 2007 THE vud'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the vud package.
+# Fiz Vazquez <havard.davidsen@gmail.com>, 2007.
+# Fiz Vazquez <havard.davidsen@gmail.com>, 2007.
+#
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: vud 1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2007-08-22 17:15+0200\n"
+"PO-Revision-Date: 2007-09-29 06:30+0100\n"
+"Last-Translator: ZOiD <sp.pok@seznam.cz>\n"
+"Language-Team: Czech <sp.pok@seznam.cz>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-2\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: glade/pytrainer.glade:11
+msgid "window1"
+msgstr ""
+
+#: glade/pytrainer.glade:51
+msgid "_File"
+msgstr "_Soubor"
+
+#: glade/pytrainer.glade:75
+msgid "_Export as text separated by commas"
+msgstr "_Exportovat jako text oddìlený èárkami (csv)"
+
+#: glade/pytrainer.glade:115
+msgid "_Edit"
+msgstr "_Upravit"
+
+#: glade/pytrainer.glade:137
+msgid "_View"
+msgstr "_Zobrazit"
+
+#: glade/pytrainer.glade:146
+msgid " _Classic View"
+msgstr " _Klasické zobrazení"
+
+#: glade/pytrainer.glade:157
+msgid " _List View"
+msgstr " Jako _seznam"
+
+#: glade/pytrainer.glade:169
+msgid " _Waypoints Editor View"
+msgstr " Editor _waitpointù"
+
+#: glade/pytrainer.glade:185
+msgid "Tools"
+msgstr "Nás_troje"
+
+#: glade/pytrainer.glade:195
+msgid "Extensions"
+msgstr "Roz¹íøení"
+
+#: glade/pytrainer.glade:205
+msgid "Gps Device Plugins"
+msgstr "Pøídavné moduly pro zaøízení GPS"
+
+#: glade/pytrainer.glade:219
+msgid "_Help"
+msgstr "_Nápovìda"
+
+#: glade/pytrainer.glade:339
+#: glade/pytrainer.glade:5249
+#: pytrainer/gui/windowmain.py:49
+#: pytrainer/gui/windowmain.py:52
+#: pytrainer/gui/windowmain.py:312
+msgid "Sport"
+msgstr "Sport"
+
+#: glade/pytrainer.glade:365
+msgid "All Sports"
+msgstr "V¹echny sporty"
+
+#: glade/pytrainer.glade:473
+#: glade/pytrainer.glade:1659
+msgid "<b>Beats avg:</b>"
+msgstr "<b>Prùmìrný puls:</b>"
+
+#: glade/pytrainer.glade:523
+msgid " bpm"
+msgstr " bpm"
+
+#: glade/pytrainer.glade:551
+#: glade/pytrainer.glade:1631
+#: glade/pytrainer.glade:2444
+#: glade/pytrainer.glade:2654
+#: glade/pytrainer.glade:3429
+#: glade/pytrainer.glade:3639
+msgid "<b>Time:</b>"
+msgstr "<b>Èas:</b>"
+
+#: glade/pytrainer.glade:579
+#: glade/pytrainer.glade:1603
+#: glade/pytrainer.glade:2365
+#: glade/pytrainer.glade:2626
+#: glade/pytrainer.glade:3350
+#: glade/pytrainer.glade:3611
+msgid "<b>Distance:</b>"
+msgstr "<b>Vzdálenost:</b>"
+
+#: glade/pytrainer.glade:633
+#: glade/pytrainer.glade:678
+#: glade/pytrainer.glade:1904
+#: glade/pytrainer.glade:1949
+#: glade/pytrainer.glade:2498
+#: glade/pytrainer.glade:2543
+#: glade/pytrainer.glade:2927
+#: glade/pytrainer.glade:2972
+#: glade/pytrainer.glade:3483
+#: glade/pytrainer.glade:3528
+#: glade/pytrainer.glade:3912
+#: glade/pytrainer.glade:3957
+#: glade/pytrainer.glade:5617
+#: glade/pytrainer.glade:5662
+msgid ":"
+msgstr ":"
+
+#: glade/pytrainer.glade:783
+msgid " Km"
+msgstr " km"
+
+#: glade/pytrainer.glade:811
+#: glade/pytrainer.glade:1715
+#: glade/pytrainer.glade:2738
+#: glade/pytrainer.glade:3723
+msgid "<b>Calories: </b>"
+msgstr "<b>Kalorie: </b>"
+
+#: glade/pytrainer.glade:861
+msgid " Cal"
+msgstr " cal"
+
+#: glade/pytrainer.glade:889
+#: glade/pytrainer.glade:1687
+#: glade/pytrainer.glade:2710
+#: glade/pytrainer.glade:3695
+msgid "<b>Average:</b>"
+msgstr "<b>Prùmìrná rychlost:</b>"
+
+#: glade/pytrainer.glade:939
+msgid " km/h"
+msgstr " km/h"
+
+#: glade/pytrainer.glade:1006
+msgid "<b>Comments:</b>"
+msgstr "<b>Komentáøe:</b>"
+
+#: glade/pytrainer.glade:1060
+#: glade/pytrainer.glade:5923
+msgid "<b>Positive:</b>"
+msgstr "<b>Kladné:</b>"
+
+#: glade/pytrainer.glade:1104
+#: glade/pytrainer.glade:5967
+msgid "<b>Negative:</b>"
+msgstr "<b>Záporné:</b>"
+
+#: glade/pytrainer.glade:1152
+#: glade/pytrainer.glade:6015
+msgid " <b>Accumulated Unevenness:</b> "
+msgstr " <b>Souhrnné pøevý¹ní:</b> "
+
+#: glade/pytrainer.glade:1298
+msgid " <b>Title:</b>"
+msgstr " <b>Název:</b>"
+
+#: glade/pytrainer.glade:1387
+#: glade/pytrainer.glade:2186
+#: glade/pytrainer.glade:3216
+#: glade/pytrainer.glade:4201
+msgid "Value"
+msgstr "Hodnota"
+
+#: glade/pytrainer.glade:1412
+#: glade/pytrainer.glade:2211
+msgid ""
+"Stage Profile\n"
+"Stage Velocity\n"
+"Stage Profile/velocity"
+msgstr ""
+"Profil etapy\n"
+"Rychlost v etapì\n"
+"Profil/rychlost v etapì"
+
+#: glade/pytrainer.glade:1544
+msgid "Record"
+msgstr "Záznam"
+
+#: glade/pytrainer.glade:1743
+#: glade/pytrainer.glade:2393
+#: glade/pytrainer.glade:3378
+msgid "Km"
+msgstr "km"
+
+#: glade/pytrainer.glade:1771
+msgid "bpm"
+msgstr "bpm"
+
+#: glade/pytrainer.glade:1799
+msgid "km/h"
+msgstr "km/h"
+
+#: glade/pytrainer.glade:1827
+msgid "Cal"
+msgstr "cal"
+
+#: glade/pytrainer.glade:2111
+msgid " <b>Date:</b>"
+msgstr " <b>Datum:</b>"
+
+#: glade/pytrainer.glade:2300
+msgid "Day"
+msgstr "Den"
+
+#: glade/pytrainer.glade:2682
+#: glade/pytrainer.glade:3667
+msgid "<b>Beats:</b>"
+msgstr "<b>Puls:</b>"
+
+#: glade/pytrainer.glade:2766
+#: glade/pytrainer.glade:3751
+msgid "Km/day"
+msgstr "km/den"
+
+#: glade/pytrainer.glade:2794
+#: glade/pytrainer.glade:3779
+msgid "bpm/day"
+msgstr "bpm/den"
+
+#: glade/pytrainer.glade:2822
+#: glade/pytrainer.glade:3807
+msgid "km/h/day"
+msgstr "km/h/den"
+
+#: glade/pytrainer.glade:2850
+#: glade/pytrainer.glade:3835
+msgid "cal/day"
+msgstr "cal/den"
+
+#: glade/pytrainer.glade:3027
+#: glade/pytrainer.glade:4012
+msgid "time/day"
+msgstr "èas/den"
+
+#: glade/pytrainer.glade:3141
+msgid " <b>Month:</b>"
+msgstr " <b>Mìsíc:</b>"
+
+#: glade/pytrainer.glade:3241
+#: glade/pytrainer.glade:4226
+msgid ""
+"Kilometers\n"
+"Time\n"
+"Beats\n"
+"Average\n"
+"Calories"
+msgstr ""
+"Kilometry\n"
+"Èas\n"
+"Puls\n"
+"Prùmìrná rychlost\n"
+"Kalorie"
+
+#: glade/pytrainer.glade:3285
+msgid "Month"
+msgstr "Mìsíc"
+
+#: glade/pytrainer.glade:4126
+msgid " <b>Year:</b>"
+msgstr " <b>Rok:</b>"
+
+#: glade/pytrainer.glade:4270
+msgid "Year"
+msgstr "Rok"
+
+#: glade/pytrainer.glade:4313
+msgid "label154"
+msgstr ""
+
+#: glade/pytrainer.glade:4350
+msgid "<b>Title:</b>"
+msgstr "<b>Název:</b>"
+
+#: glade/pytrainer.glade:4395
+msgid "Search"
+msgstr "Hledat"
+
+#: glade/pytrainer.glade:4442
+msgid "Columns"
+msgstr "Sloupce"
+
+#: glade/pytrainer.glade:4517
+msgid "label155"
+msgstr ""
+
+#: glade/pytrainer.glade:4575
+msgid " <b>Latitude: </b>"
+msgstr " <b>©íøka: </b>"
+
+#: glade/pytrainer.glade:4603
+msgid " <b>Longitude:</b>"
+msgstr " <b>Vý¹ka:</b>"
+
+#: glade/pytrainer.glade:4631
+msgid " <b>Name:</b>"
+msgstr " <b>Jméno:</b>"
+
+#: glade/pytrainer.glade:4659
+msgid " <b>Description:</b>"
+msgstr " <b>Popis:</b>"
+
+#: glade/pytrainer.glade:4687
+msgid " <b>Type:</b>"
+msgstr " <b>Druh:</b>"
+
+#: glade/pytrainer.glade:4838
+msgid "<b> Waypoint: </b>"
+msgstr "<b> Waypoint: </b>"
+
+#: glade/pytrainer.glade:4878
+msgid "label-2147483648"
+msgstr ""
+
+#: glade/pytrainer.glade:4926
+msgid "label162"
+msgstr ""
+
+#: glade/pytrainer.glade:5066
+msgid "label163"
+msgstr ""
+
+#: glade/pytrainer.glade:5091
+#: glade/pytrainer.glade:6123
+msgid "New Entry"
+msgstr "Nový údaj"
+
+#: glade/pytrainer.glade:5139
+#: pytrainer/gui/windowmain.py:52
+#: pytrainer/gui/windowmain.py:310
+msgid "Date"
+msgstr "Datum"
+
+#: glade/pytrainer.glade:5190
+msgid " "
+msgstr " "
+
+#: glade/pytrainer.glade:5304
+#: pytrainer/gui/windowmain.py:52
+#: pytrainer/gui/windowmain.py:309
+msgid "Title"
+msgstr "Název"
+
+#: glade/pytrainer.glade:5362
+msgid "GPX file"
+msgstr "Soubor GPX"
+
+#: glade/pytrainer.glade:5424
+msgid "Calculate Values"
+msgstr "Spoèítat hodnoty"
+
+#: glade/pytrainer.glade:5457
+msgid "Beats avg (bpm)"
+msgstr "Prùmìrný puls (bpm)"
+
+#: glade/pytrainer.glade:5513
+msgid "Distance (Km)"
+msgstr "Vzdálenost (km)"
+
+#: glade/pytrainer.glade:5563
+#: pytrainer/gui/windowmain.py:52
+#: pytrainer/gui/windowmain.py:313
+msgid "Time"
+msgstr "Èas"
+
+#: glade/pytrainer.glade:5717
+msgid "Average (km/h)"
+msgstr "Prùmìrná rychlost (km/h)"
+
+#: glade/pytrainer.glade:5767
+msgid "Calculate Distance"
+msgstr "Spoèítat vzdálenost"
+
+#: glade/pytrainer.glade:5787
+msgid "Calculate Time"
+msgstr "Spoèítat èas"
+
+#: glade/pytrainer.glade:5807
+msgid "Calculate Average"
+msgstr "Spoèítat prùmìr"
+
+#: glade/pytrainer.glade:5848
+#: pytrainer/gui/windowmain.py:316
+msgid "Calories"
+msgstr "Kalorie"
+
+#: glade/pytrainer.glade:6054
+msgid "<b>Comments</b>"
+msgstr "<b>Komentáøe</b>"
+
+#: glade/pytrainer.glade:6228
+#: glade/pytrainer.glade:6522
+msgid "Profile"
+msgstr "Profil"
+
+#: glade/pytrainer.glade:6274
+msgid "Name"
+msgstr "Jméno"
+
+#: glade/pytrainer.glade:6302
+msgid "Gender"
+msgstr "Pohlaví"
+
+#: glade/pytrainer.glade:6330
+msgid "Weight"
+msgstr "Váha"
+
+#: glade/pytrainer.glade:6358
+msgid "Height"
+msgstr "Vý¹ka"
+
+#: glade/pytrainer.glade:6449
+msgid "Age"
+msgstr "Vìk"
+
+#: glade/pytrainer.glade:6552
+msgid "<b>Database</b>"
+msgstr "<b>Databáze</b>"
+
+#: glade/pytrainer.glade:6586
+msgid "Database Type"
+msgstr "Druh databáze"
+
+#: glade/pytrainer.glade:6614
+msgid "Database Host"
+msgstr "Hostitel databáze"
+
+#: glade/pytrainer.glade:6663
+msgid "Database Pass"
+msgstr "Heslo databáze"
+
+#: glade/pytrainer.glade:6712
+msgid "Database User "
+msgstr "U¾ivatel databáze"
+
+#: glade/pytrainer.glade:6761
+msgid "Database Name"
+msgstr "Jméno databáze"
+
+#: glade/pytrainer.glade:6842
+msgid "Database"
+msgstr "Databáze"
+
+#: glade/pytrainer.glade:6880
+msgid "<b>Sport list</b>"
+msgstr "<b>Seznam sportù</b>"
+
+#: glade/pytrainer.glade:7031
+msgid "llist"
+msgstr ""
+
+#: glade/pytrainer.glade:7060
+msgid "<b>Add new Sport</b>"
+msgstr "<b>Pøidat nový sport</b>"
+
+#: glade/pytrainer.glade:7220
+msgid "new"
+msgstr "nový"
+
+#: glade/pytrainer.glade:7255
+msgid "<b>Delete sport</b>"
+msgstr "<b>Odstranit sport</b>"
+
+#: glade/pytrainer.glade:7318
+msgid ""
+"You are going to remove a sport. When you delete a \n"
+"sport you delete the records asociated. Are you sure \n"
+"that you want do it?"
+msgstr ""
+"Chystáte se odstranit sport. Jestli¾e sport odstraníte, \n"
+"sma¾ete tak i pøiøazné záznamy. \n"
+"Jste si jistý, ¾e to chcete udìlat?"
+
+#: glade/pytrainer.glade:7455
+msgid "delete"
+msgstr "smazar"
+
+#: glade/pytrainer.glade:7490
+msgid "<b>Edit sport</b>"
+msgstr "<b>Upravitt sport</b>"
+
+#: glade/pytrainer.glade:7553
+msgid "New name"
+msgstr "Nové jméno"
+
+#: glade/pytrainer.glade:7682
+msgid "edit"
+msgstr "upravit"
+
+#: glade/pytrainer.glade:7711
+msgid "Sports"
+msgstr "Sporty"
+
+#: glade/pytrainer.glade:7816
+msgid "Calendar"
+msgstr "Kalendáø"
+
+#: glade/pytrainer.glade:7941
+msgid "pytrainer"
+msgstr "pytrainer"
+
+#: glade/pytrainer.glade:7942
+msgid "(c) Fiz Vazquez <vud1@sindominio.net>"
+msgstr ""
+
+#: glade/pytrainer.glade:7943
+msgid "The free sport trainning center"
+msgstr ""
+
+#: glade/pytrainer.glade:7944
+msgid ""
+"(C) Fiz Vazquez\n"
+"\n"
+"  This program is free software; you can redistribute \n"
+"  it and/or modify it under the terms of the GNU \n"
+"  General Public License as published by the Free \n"
+"  Software Foundation; either version 2 of the License, \n"
+"  or (at your option) any later version.\n"
+"\n"
+"  This program is distributed in the hope that it will be \n"
+"  useful, but WITHOUT ANY WARRANTY; without even the\n"
+"  implied warranty of MERCHANTABILITY or FITNESS FOR \n"
+"  A PARTICULAR PURPOSE.  See the GNU General Public \n"
+"  License <http://www.opensource.org/gpl-license.html>\n"
+"  for more details.\n"
+"\n"
+"  You can found the license on Debian systems in the file\n"
+"  /usr/share/common-licenses/GPL\n"
+msgstr ""
+
+#: glade/pytrainer.glade:7964
+msgid "pytrainer.e-oss.net"
+msgstr ""
+
+#: glade/pytrainer.glade:7966
+msgid ""
+"Catalan: Eloi Crespillo Itchart <eloi@ikuszen.com>\n"
+"French: Dj <dj@djremixtheblog.be>\n"
+"Polish: Seweryn Kokot <skokot@po.opole.pl>\n"
+"german: Aleks <aleks@schnecklecker.de>\n"
+"Spanish: Fiz vazquez <vud1@sindominio.net>"
+msgstr ""
+
+#: glade/pytrainer.glade:8054
+msgid "Edit Record"
+msgstr "Upravit záznam"
+
+#: glade/pytrainer.glade:8075
+msgid "Show graph in classic view"
+msgstr "Zobrazit graf v klasickém zobrazení"
+
+#: glade/pytrainer.glade:8111
+msgid "warning"
+msgstr "varování"
+
+#: glade/pytrainer.glade:8237
+msgid "window2"
+msgstr ""
+
+#: glade/pytrainer.glade:8313
+#: glade/pytrainer.glade:8663
+msgid "<b>Name:</b>"
+msgstr "<b>Jméno:</b>"
+
+#: glade/pytrainer.glade:8341
+#: glade/pytrainer.glade:8691
+msgid "<b>Description:</b>"
+msgstr "<b>Popis:</b>"
+
+#: glade/pytrainer.glade:8369
+#: glade/pytrainer.glade:8719
+msgid "<b>Status:</b>"
+msgstr "<b>Stav:</b>"
+
+#: glade/pytrainer.glade:8397
+msgid "name-entry"
+msgstr ""
+
+#: glade/pytrainer.glade:8425
+#: glade/pytrainer.glade:8775
+msgid "description-entry"
+msgstr ""
+
+#: glade/pytrainer.glade:8453
+#: glade/pytrainer.glade:8803
+msgid "status-entry"
+msgstr ""
+
+#: glade/pytrainer.glade:8588
+msgid "Plugins"
+msgstr "Pøídavné moduly"
+
+#: glade/pytrainer.glade:8747
+msgid "nameEntry"
+msgstr ""
+
+#: pytrainer/main.py:88
+msgid "No Active Plugins"
+msgstr "®ádné aktivní pøídavné moduly"
+
+#: pytrainer/main.py:97
+msgid "No Active Extensions"
+msgstr "®ádná aktivní roz¹íøení"
+
+#: pytrainer/main.py:196
+msgid "You are going to remove one database entry. Are you sure yo want do it?"
+msgstr "Chystáte ze odstranit jeden záznam v databázi. Urèitì to chcete udìlat?"
+
+#: pytrainer/lib/date.py:72
+msgid "January"
+msgstr "Leden"
+
+#: pytrainer/lib/date.py:73
+msgid "Febrary"
+msgstr "Únor"
+
+#: pytrainer/lib/date.py:74
+msgid "March"
+msgstr "Bøezen"
+
+#: pytrainer/lib/date.py:75
+msgid "April"
+msgstr "Duben"
+
+#: pytrainer/lib/date.py:76
+msgid "May"
+msgstr "Kvìten"
+
+#: pytrainer/lib/date.py:77
+msgid "June"
+msgstr "Èerven"
+
+#: pytrainer/lib/date.py:78
+msgid "July"
+msgstr "Èervenec"
+
+#: pytrainer/lib/date.py:79
+msgid "August"
+msgstr "Srpen"
+
+#: pytrainer/lib/date.py:80
+msgid "September"
+msgstr "Záøí"
+
+#: pytrainer/lib/date.py:81
+msgid "October"
+msgstr "Øíjen"
+
+#: pytrainer/lib/date.py:82
+msgid "November"
+msgstr "Listopad"
+
+#: pytrainer/lib/date.py:83
+msgid "December"
+msgstr "Prosinec"
+
+#: pytrainer/yeargraph.py:37
+#: pytrainer/yeargraph.py:39
+#: pytrainer/yeargraph.py:41
+#: pytrainer/yeargraph.py:43
+#: pytrainer/yeargraph.py:45
+msgid "month"
+msgstr "mìsíc"
+
+#: pytrainer/yeargraph.py:37
+#: pytrainer/monthgraph.py:37
+msgid "kilometers"
+msgstr "kilometry"
+
+#: pytrainer/yeargraph.py:37
+msgid "monthly kilometers"
+msgstr "Kilometry v jednotlivých mìsících"
+
+#: pytrainer/yeargraph.py:39
+#: pytrainer/monthgraph.py:39
+msgid "time in hours"
+msgstr "èas v hodinách"
+
+#: pytrainer/yeargraph.py:39
+msgid "monthly time"
+msgstr "Èas v jednotlivých mìsících"
+
+#: pytrainer/yeargraph.py:41
+#: pytrainer/monthgraph.py:41
+msgid "beats per minute"
+msgstr "údery za minutu"
+
+#: pytrainer/yeargraph.py:41
+msgid "monthly beats"
+msgstr "Puls v jednotlivých mìsících"
+
+#: pytrainer/yeargraph.py:43
+#: pytrainer/monthgraph.py:43
+msgid "average (hm/h)"
+msgstr "prùmìrná rychlost (km/h)"
+
+#: pytrainer/yeargraph.py:43
+msgid "monthly averages"
+msgstr "Prùmìrné rychlosti v jednotlivých mìsících"
+
+#: pytrainer/yeargraph.py:45
+#: pytrainer/monthgraph.py:45
+msgid "calories"
+msgstr "kalorie"
+
+#: pytrainer/yeargraph.py:45
+msgid "monthly calories"
+msgstr "Kalorie v jednotlivých mìsících"
+
+#: pytrainer/gui/windowmain.py:49
+#: pytrainer/gui/windowmain.py:52
+msgid "id"
+msgstr ""
+
+#: pytrainer/gui/windowmain.py:49
+msgid "Kilometer"
+msgstr "Kilometry"
+
+#: pytrainer/gui/windowmain.py:52
+#: pytrainer/gui/windowmain.py:311
+msgid "Distance"
+msgstr "Vzdálenost"
+
+#: pytrainer/gui/windowmain.py:52
+#: pytrainer/gui/windowmain.py:314
+msgid "Beats"
+msgstr "Puls"
+
+#: pytrainer/gui/windowmain.py:52
+#: pytrainer/gui/windowmain.py:315
+msgid "Average"
+msgstr "Prùmìrná rychlost"
+
+#: pytrainer/gui/windowplugins.py:72
+#: pytrainer/gui/windowextensions.py:70
+msgid "Active"
+msgstr "Aktivní"
+
+#: pytrainer/gui/windowplugins.py:74
+#: pytrainer/gui/windowextensions.py:72
+msgid "unActive"
+msgstr "neaktivní"
+
+#: pytrainer/gui/windowplugins.py:83
+#: pytrainer/gui/windowextensions.py:81
+#, python-format
+msgid "%s settings"
+msgstr "nastavení %s"
+
+#: pytrainer/gui/windowplugins.py:106
+#: pytrainer/gui/windowextensions.py:104
+#: pytrainer/gui/windowextensions.py:117
+msgid "Ok"
+msgstr "Ok"
+
+#: pytrainer/daygraph.py:48
+#: pytrainer/daygraph.py:50
+#: pytrainer/recordgraph.py:48
+#: pytrainer/recordgraph.py:50
+msgid "Distance (km)"
+msgstr "Vzdálenost (km)"
+
+#: pytrainer/daygraph.py:48
+#: pytrainer/recordgraph.py:48
+msgid "Height (m)"
+msgstr "Vý¹ka (m)"
+
+#: pytrainer/daygraph.py:48
+#: pytrainer/recordgraph.py:48
+msgid "Stage Profile"
+msgstr "Profil etapy"
+
+#: pytrainer/daygraph.py:50
+#: pytrainer/recordgraph.py:50
+msgid "Velocity (Km/h)"
+msgstr "Rychlost (km/h)"
+
+#: pytrainer/daygraph.py:50
+#: pytrainer/recordgraph.py:50
+msgid "velocity"
+msgstr "rychlost"
+
+#: pytrainer/monthgraph.py:37
+#: pytrainer/monthgraph.py:39
+#: pytrainer/monthgraph.py:41
+#: pytrainer/monthgraph.py:43
+#: pytrainer/monthgraph.py:45
+msgid "day"
+msgstr "den"
+
+#: pytrainer/monthgraph.py:37
+msgid "daily kilometers"
+msgstr "Kilometry v jednotlivých dnech"
+
+#: pytrainer/monthgraph.py:39
+msgid "daily time"
+msgstr "Èas v jednotlivých dnech"
+
+#: pytrainer/monthgraph.py:41
+msgid "daily beats"
+msgstr "Puls v jednotlivých dnech"
+
+#: pytrainer/monthgraph.py:43
+msgid "daily averages"
+msgstr "Prùmìrné rychlosti v jednotlivých dnech"
+
+#: pytrainer/monthgraph.py:45
+msgid "daily calories"
+msgstr "Kalorie v jednotlivých dnech"
+
+#: pytrainer/record.py:183
+msgid "The gpx file seems to be a several days records. Perhaps you will need to edit your gpx file"
+msgstr "Soubor gpx vypadá na záznam z nìkolika dnù. Mo¾ná bude potøeba jej upravit."
+
