@@ -24,7 +24,11 @@ parser = OptionParser()
 parser.add_option("-d", "--device", dest="device")
 (options,args) =  parser.parse_args()
 
-tmpgpx = "/tmp/reg.gpx"
-os.system("gpsbabel -t -i garmin -f %s -o gpx -F %s" %(options.device,tmpgpx))
+try:
+	tmpgpx = "/tmp/reg.gpx"
+	os.system("gpsbabel -t -i garmin -f %s -o gpx -F %s" %(options.device,tmpgpx))
+	print tmpgpx
+except:
+	f = os.popen("zenity --error --text='Cant open garmin device. Check your configuration or connect the device correctly.'");
+	print 0
 
-print tmpgpx
