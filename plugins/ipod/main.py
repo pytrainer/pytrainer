@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-1 -*-
 
-#Copyright (C) Fiz Vazquez vud1@sindominio.net
+#Copyright (C) Miguel Angel Otero <maoterodapena@gmail.com>
 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
