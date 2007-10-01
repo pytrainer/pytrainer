@@ -7,6 +7,7 @@ install:
 	make locale_fr
 	make locale_de
 	make locale_no
+	make locale_cs
 
 locale_es:
 	msginit -i ./messages.pot -l es -o ./locale/es/LC_MESSAGES/pytrainer_es.pot
@@ -22,3 +23,5 @@ locale_pl:
 	msginit -i ./messages.pot -l pl -o ./locale/pl/LC_MESSAGES/pytrainer_pl.pot
 locale_no:
 	msginit -i ./messages.pot -l no -o ./locale/no/LC_MESSAGES/pytrainer_no.pot
+locale_cs:
+	msginit -i ./messages.pot -l cs -o ./locale/cs/LC_MESSAGES/pytrainer_cs.pot
