@@ -64,7 +64,7 @@ class Gpx:
 	def gpx2pytrainer(self):
 		stylefile = self.data_path+"pytrainer.style"
 		tmpfile = self.conf.getValue("tmpdir")+"/gps.txt"
-		os.system("gpsbabel -t -i gpx -f %s -x position,distance=1m -o xcsv,style=%s -F %s" %(self.filename, stylefile,tmpfile))
+		os.system("gpsbabel -t -i gpx -f '%s' -x position,distance=1m -o xcsv,style=%s -F %s" %(self.filename, stylefile,tmpfile))
 		return tmpfile
 
 	def _getValues(self,pytrainerfile):
