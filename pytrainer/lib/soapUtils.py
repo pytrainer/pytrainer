@@ -129,5 +129,9 @@ class webService(Thread):
 
 	def run(self):
 		self.server.serve_forever()
+
+	def stop(self):
+		self._Thread__stop()
+		self.server.server_close()
 	
 			

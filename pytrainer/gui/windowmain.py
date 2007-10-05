@@ -608,9 +608,10 @@ class Main(SimpleGladeApp):
 			return -1
 
 	def quit(self, *args):
-		sys.exit("Exit!")
-		self.parent.webservice.stop()
-		self.gtk_main_quit()
+		self.parent.quit()
+		#sys.exit("Exit!")
+		#self.parent.webservice.stop()
+		#self.gtk_main_quit()
 
 	def on_yearview_clicked(self,widget):
 		self.notebook.set_current_page(2)

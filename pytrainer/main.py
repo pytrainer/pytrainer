@@ -58,7 +58,8 @@ class pyTrainer:
 
 		#Preparamos el webservice	
 		gtk.gdk.threads_init()
-		webService(data_path,self.refreshWaypointView,self.newRecord).start()
+		self.webservice = webService(data_path,self.refreshWaypointView,self.newRecord)
+		self.webservice.start()
 
 		#comprobamos que el profile esta configurado
 		self.profile = Profile(self.data_path,self)
@@ -78,6 +79,10 @@ class pyTrainer:
 	
 		self.refreshMainSportList()	
 		self.windowmain.run()
+
+	def quit(self): 
+		self.webservice.stop()
+		self.windowmain.gtk_main_quit()
 
 	def loadPlugins(self):	
 		activeplugins = self.plugins.getActivePlugins()
