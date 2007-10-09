@@ -35,6 +35,7 @@ class webService(Thread):
 		self.server.registerFunction(self.getRecordInfo)
 		self.server.registerFunction(self.addWaypoint)
 		self.server.registerFunction(self.updateWaypoint)
+		self.server.registerFunction(self.getWaypoints)
 		self.server.registerFunction(self.test)
 		self.server.registerFunction(self.newRecord)
 		self.onchangeAction = onchangeAction
@@ -90,6 +91,13 @@ class webService(Thread):
 		self.onchangeAction(False,0)
 		return ddbb.lastRecord("waypoints")
 
+	def getWaypoints(self):
+		configuration = XMLParser(self.conffile)
+		ddbb = DDBB(configuration)
+		ddbb.connect()
+		cells = "lat,lon,comment,name,sym"
+		return ddbb.select("waypoints","lat,lon,ele,comment,time,name,sym","1=1 order by name")
+		
 	def updateWaypoint(self,lon=None,lat=None,name=None,comment=None,sym=None,id_waypoint=None):
 		if id_waypoint==None:
 			return "NACK"

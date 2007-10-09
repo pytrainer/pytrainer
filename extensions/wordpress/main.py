@@ -5,6 +5,8 @@ from optparse import OptionParser
 import os
 import googlemaps
 
+from pytrainer.lib.date import Date
+
 import SOAPpy
 
 class Main:
@@ -44,11 +46,12 @@ class Main:
 		return description_route
 
 	def loadRecordInfo(self):
+		date = Date()
       		record = self.webserviceserver.getRecordInfo(self.idrecord)
 		self.sport = record["sport"]
                 self.date = record["date"]
                 self.distance = record["distance"]
-                self.time = record["time"]
+                self.time = date.second2time(float(record["time"]))
                 self.beats = record["beats"]
                 self.comments = record["comments"]
                 self.average = record["average"]

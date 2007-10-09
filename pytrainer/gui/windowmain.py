@@ -203,6 +203,8 @@ class Main(SimpleGladeApp):
 		self.month_date.set_text(nameMonth)
 		km = calories = time = average = beats = 0
 		num_records = len(record_list)
+		time_in_min = 0
+		tbeats = 0
 	
 		if num_records>0:
 			for record in record_list:
@@ -211,19 +213,20 @@ class Main(SimpleGladeApp):
 				average += self.parseFloat(record[5])
 				calories += self.parseFloat(record[6])
 				beats += self.parseFloat(record[3])
-			self.montht_distance.set_text("%0.3f" %km)
-			self.montha_distance.set_text("%0.3f" %(km/num_records))
+				if float(beats) > 0:
+					time_in_min += time/60
+					tbeats += beats*(time/60)
+		
+			tbeats = tbeats/time_in_min			
+			self.montha_distance.set_text("%0.2f" %km)
 			hour,min,sec = self.parent.date.second2time(time)
-			self.montht_hour.set_text("%d" %hour)
-			self.montht_minute.set_text("%d" %min)
-			self.montht_second.set_text("%d" %sec)
-			hour,min,sec = self.parent.date.second2time(time/num_records)
 			self.montha_hour.set_text("%d" %hour)
 			self.montha_minute.set_text("%d" %min)
 			self.montha_second.set_text("%d" %sec)
-			self.montha_beats.set_text("%0.3f" %(beats/num_records))
-			self.montha_average.set_text("%0.3f" %(average/num_records))
-			self.montha_calories.set_text("%0.3f" %(calories/num_records))
+			self.montha_beats.set_text("%0.2f" %(tbeats))
+			time_in_hour = time/3600
+			self.montha_average.set_text("%0.2f" %(km/(time/3600)))
+			self.montha_calories.set_text("%0.2f" %calories)
 			self.monthview.set_sensitive(1)
 		else:
 			self.monthview.set_sensitive(0)
