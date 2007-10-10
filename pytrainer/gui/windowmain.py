@@ -238,6 +238,8 @@ class Main(SimpleGladeApp):
 		self.year_date.set_text("%d" %int(year))
 		km = calories = time = average = beats = 0
 		num_records = len(record_list)
+		time_in_min = 0
+		tbeats = 0
 		if num_records>0:
 			for record in record_list:
 				km += self.parseFloat(record[1])
@@ -245,19 +247,18 @@ class Main(SimpleGladeApp):
 				average += self.parseFloat(record[5])
 				calories += self.parseFloat(record[6])
 				beats += self.parseFloat(record[3])
-			self.yeart_distance.set_text("%0.3f" %km)
-			self.yeara_distance.set_text("%0.3f" %(km/num_records))
+				if float(beats) > 0:
+					time_in_min += time/60
+					tbeats += beats*(time/60)
+			tbeats = tbeats/time_in_min			
+			self.yeara_distance.set_text("%0.2f" %km)
 			hour,min,sec = self.parent.date.second2time(time)
-			self.yeart_hour.set_text("%d" %hour)
-			self.yeart_minute.set_text("%d" %min)
-			self.yeart_second.set_text("%d" %sec)
-			hour,min,sec = self.parent.date.second2time(time/num_records)
 			self.yeara_hour.set_text("%d" %hour)
 			self.yeara_minute.set_text("%d" %min)
 			self.yeara_second.set_text("%d" %sec)
-			self.yeara_beats.set_text("%0.3f" %(beats/num_records))
-			self.yeara_average.set_text("%0.3f" %(average/num_records))
-			self.yeara_calories.set_text("%0.3f" %(calories/num_records))
+			self.yeara_beats.set_text("%0.2f" %tbeats)
+			self.yeara_average.set_text("%0.2f" %(km/(time/3600)))
+			self.yeara_calories.set_text("%0.2f" %calories)
 			self.yearview.set_sensitive(1)
 		else:
 			self.yearview.set_sensitive(0)
