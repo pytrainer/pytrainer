@@ -148,7 +148,7 @@ class Main(SimpleGladeApp):
 			self.record_second.set_text("%d" %sec)
 			self.record_beats.set_text("%0.2f" %beats)
 			self.record_average.set_text("%0.2f" %average)
-			self.record_calories.set_text("%0.2f" %calories)
+			self.record_calories.set_text("%0.0f" %calories)
 			self.record_upositive.set_text("%0.2f" %upositive)
 			self.record_unegative.set_text("%0.2f" %unegative)
 			self.record_title.set_text(title)
@@ -183,7 +183,7 @@ class Main(SimpleGladeApp):
 			self.day_second.set_text("%d" %sec)
 			self.day_beats.set_text("%0.2f" %beats)
 			self.day_average.set_text("%0.2f" %average)
-			self.day_calories.set_text("%0.2f" %calories)
+			self.day_calories.set_text("%0.0f" %calories)
 			self.day_topic.set_text(record_list[1])
 			
 		else:
@@ -212,12 +212,15 @@ class Main(SimpleGladeApp):
 				time += self.parseFloat(record[2])
 				average += self.parseFloat(record[5])
 				calories += self.parseFloat(record[6])
-				beats += self.parseFloat(record[3])
+				beats = self.parseFloat(record[3])
 				if float(beats) > 0:
 					time_in_min += time/60
 					tbeats += beats*(time/60)
+			if time_in_min > 0:
+				tbeats = tbeats/time_in_min		
+			else:
+				tbeats = 0
 		
-			tbeats = tbeats/time_in_min			
 			self.montha_distance.set_text("%0.2f" %km)
 			hour,min,sec = self.parent.date.second2time(time)
 			self.montha_hour.set_text("%d" %hour)
@@ -226,7 +229,7 @@ class Main(SimpleGladeApp):
 			self.montha_beats.set_text("%0.2f" %(tbeats))
 			time_in_hour = time/3600
 			self.montha_average.set_text("%0.2f" %(km/(time/3600)))
-			self.montha_calories.set_text("%0.2f" %calories)
+			self.montha_calories.set_text("%0.0f" %calories)
 			self.monthview.set_sensitive(1)
 		else:
 			self.monthview.set_sensitive(0)
@@ -246,11 +249,14 @@ class Main(SimpleGladeApp):
 				time += self.parseFloat(record[2])
 				average += self.parseFloat(record[5])
 				calories += self.parseFloat(record[6])
-				beats += self.parseFloat(record[3])
+				beats = self.parseFloat(record[3])
 				if float(beats) > 0:
 					time_in_min += time/60
 					tbeats += beats*(time/60)
-			tbeats = tbeats/time_in_min			
+			if time_in_min > 0:
+				tbeats = tbeats/time_in_min		
+			else:
+				tbeats = 0
 			self.yeara_distance.set_text("%0.2f" %km)
 			hour,min,sec = self.parent.date.second2time(time)
 			self.yeara_hour.set_text("%d" %hour)
@@ -258,7 +264,7 @@ class Main(SimpleGladeApp):
 			self.yeara_second.set_text("%d" %sec)
 			self.yeara_beats.set_text("%0.2f" %tbeats)
 			self.yeara_average.set_text("%0.2f" %(km/(time/3600)))
-			self.yeara_calories.set_text("%0.2f" %calories)
+			self.yeara_calories.set_text("%0.0f" %calories)
 			self.yearview.set_sensitive(1)
 		else:
 			self.yearview.set_sensitive(0)
