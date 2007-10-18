@@ -73,7 +73,9 @@ class WindowRecord(SimpleGladeApp):
 		list_options = {}
 		for i in self.conf_options:
 			var = getattr(self,i)
-			if i != "rcd_sport" and i != "rcd_comments":
+			if i == "rcd_title":
+				list_options[i] = var.get_text().replace("\"","'")
+			elif i != "rcd_sport" and i != "rcd_comments":
 				list_options[i] = var.get_text()
 			elif i == "rcd_sport":
 				list_options[i] = var.get_active_text()
@@ -81,6 +83,7 @@ class WindowRecord(SimpleGladeApp):
 				buffer = var.get_buffer()
 				start,end = buffer.get_bounds()
 				list_options[i] = buffer.get_text(start,end, True)
+				list_options[i] = list_options[i].replace("\"","'")
 			list_options["rcd_time"] = [self.rcd_hour.get_value_as_int(),self.rcd_min.get_value_as_int(),self.rcd_second.get_value_as_int()]
 		if self.mode == "newrecord": 
 			self.parent.insertRecord(list_options)
