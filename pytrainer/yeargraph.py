@@ -54,16 +54,19 @@ class YearGraph:
 			4: 6 #value 4 es calorias(6)
 			}
 		list_values = {}
+		km_total = {}
+		tm_total = {}
 		list_average = {}
 		i = 1
 		while i < 13:
 			list_values[i] = 0
 			list_average[i] = 0
+			tm_total[i] = 0
 			i += 1
 			
 		value_sel = conv[value_selected]
 
-		log = []		
+		log = []	
 		for value in values:
 			date = value[0]
 			year,month,day = date.split("-")
@@ -71,16 +74,26 @@ class YearGraph:
 			#si la opcion es tiempo lo pasamos a horas
 			if (value_sel == 2):
 				graph_value = self.getFloatValue(value[value_sel])/3600
+			#Si la opcion es la media tenemos que recalcular km y tiempo total
+			elif (value_sel == 5):
+				graph_value = self.getFloatValue(value[1])
 			else:
 				graph_value = self.getFloatValue(value[value_sel])
+
 			#si es una opcion de suma de absolutos:
 			if ((value_selected == 0) or (value_selected==1)): 
 				list_values[int(month)] += graph_value
+
+			#Si es pa la media de velocidad
+			elif (value_selected == 3):
+				list_values[int(month)] += graph_value
+				tm_total[int(month)] += self.getFloatValue(value[2])
+				
 			#si se trata de calcular medias:
 			else:
 				list_values[int(month)] += graph_value
 				list_average[int(month)] += 1
-			
+	
 		xunits = []
 		yunits = []
 		for i in range (0,monthsnumber):
@@ -89,6 +102,8 @@ class YearGraph:
 		for i in list_values:
 			if list_average[i] > 0:
 				val = list_values[i]/list_average[i]
+			if tm_total[i] > 0:
+				val = list_values[i]/(tm_total[i]/3600)
 			else:
 				val = list_values[i]
 			yunits[i-1] = val
