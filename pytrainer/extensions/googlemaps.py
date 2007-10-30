@@ -42,7 +42,7 @@ class Googlemaps:
             		os.mkdir(extensiondir)
 		cachefile = extensiondir+"/%d.gpx" %id_record
 		if not os.path.isfile(cachefile):
-			trackdistance = "10"
+			trackdistance = "100"
 			gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
 			os.system("gpsbabel -t -i gpx -f '%s' -x position,distance=%sm -o gpx -F %s" %(gpxfile,trackdistance,cachefile))
 			print "gpsbabel -t -i gpx -f '%s' -x position,distance=%sm -o gpx -F %s" %(gpxfile,trackdistance,cachefile)
