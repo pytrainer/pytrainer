@@ -129,7 +129,7 @@ class Googlemaps:
         	content += "				map.addControl(new GLargeMapControl());\n"
         	content += "				map.addControl(new GMapTypeControl());\n"
 		content += "				map.addControl(new GScaleControl());\n"
-        	content += "				map.setCenter(new GLatLng(%s,%s), 11);\n" %(init_point[0],init_point[1])
+        	content += "				map.setCenter(new GLatLng(%f,%f), 11);\n" %(float(init_point[0]),float(init_point[1]))
 		content += "				ovMap=new GOverviewMapControl();\n"
 		content += " 				map.addControl(ovMap);\n"
 		content += "				mini=ovMap.getOverviewMap();\n"
