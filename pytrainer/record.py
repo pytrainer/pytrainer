@@ -179,14 +179,14 @@ class Record:
 	def actualize_fromgpx(self,gpxfile):
 		from lib.gpx import Gpx
 		gpx = Gpx(self.data_path,gpxfile)
-		init_time,end_time = gpx.getDatevalues()
-		init_time = self.date.unixtime2date(init_time)	
-		end_time = self.date.unixtime2date(end_time)
-		if init_time == end_time:
-			self.recordwindow.rcd_date.set_text(end_time)
+		tracks = gpx.getTrackRoutes()
+
+		if len(tracks) < 2:
+			time = self.date.unixtime2date(tracks[0][1])
+			self.recordwindow.rcd_date.set_text(time)
 			self._actualize_fromgpx(gpx)
 		else:
-			msg = _("The gpx file seems to be a several days records. Perhaps you will need to edit your gpx file")
+			msg = _("The gpx file seems to be a several track records. Press cancel to select one track record. Press Continue to load all as only one track record.")
 			from gui.warning import Warning
 			warning = Warning(self.data_path,self._actualize_fromgpx,[gpx])
                         warning.set_text(msg)

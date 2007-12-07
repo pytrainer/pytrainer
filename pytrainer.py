@@ -24,6 +24,7 @@ import pygtk
 pygtk.require('2.0')
 import gtk
 import gtk.glade
+import os
 
 data_path = "./"
 
@@ -36,6 +37,9 @@ gettext.textdomain("pytrainer")
 gettext.install("pytrainer",DIR,unicode=1)
 
 from pytrainer.main import pyTrainer
+
+
+os.popen("MOZILLA_FIVE_HOME=/usr/lib/firefox")
 
 def main():
 	#Lanzamos el pytrainer

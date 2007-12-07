@@ -90,6 +90,7 @@ class Date:
 		return year
 
 	def unixtime2date(self,unixtime):
+		print unixtime
 		tm = time.gmtime(unixtime)
 		year = tm[0]				
 		month = tm[1]				
