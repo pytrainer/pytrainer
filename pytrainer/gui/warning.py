@@ -60,6 +60,6 @@ class Warning(SimpleGladeApp):
 
 	def close_window(self):
 		self.warning.hide()
-		self.warning = None
+		#self.warning = None
 		self.quit()
 		

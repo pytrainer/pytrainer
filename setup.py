@@ -15,7 +15,7 @@ def install_extension(extension_name):
 	return "share/pytrainer/extensions/%s"%extension_name, glob("extensions/%s/*"%extension_name) 
 
 setup( 	name="pytrainer",
-	version="1.4.7.1",
+	version="1.4.7.2",
 	author="Fiz Vazquez",
 	author_email="vud1@sindominio.net",
 	url="http://pytrainer.e-oss.net",
