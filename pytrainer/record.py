@@ -20,10 +20,12 @@ import os
 import shutil
 
 from gui.windowrecord import WindowRecord
+from gui.dialogselecttrack import DialogSelectTrack
 from lib.ddbb import DDBB
 from lib.xmlUtils import XMLParser
 from lib.system import checkConf
 from lib.date import Date
+from lib.gpx import Gpx
 
 class Record:
 	def __init__(self, data_path = None, parent = None, version=None):
@@ -102,7 +104,7 @@ class Record:
 	def insertRecord(self, list_options):
 		cells,values = self._formatRecord(list_options)
 		self.ddbb.insert("records",cells,values)
-		gpxOrig = list_options["rcd_gpxfile"]
+		gpxOrig = self.conf.tmpdir+"/newgpx.gpx"
 		if os.path.isfile(gpxOrig):
 			gpxDest = self.conf.getValue("gpxdir")
 			id_record = self.ddbb.lastRecord("records")
@@ -114,7 +116,8 @@ class Record:
 		gpxfile = self.conf.getValue("gpxdir")+"/%d.gpx"%int(id_record)
 		if os.path.isfile(list_options["rcd_gpxfile"]):
 			if gpxfile != list_options["rcd_gpxfile"]:
-				shutil.copy2(list_options["rcd_gpxfile"],gpxfile)
+				gpxOrig = self.conf.tmpdir+"/newgpx.gpx"
+				shutil.copy2(gpxOrig, gpxfile)
 		else:
 			if (list_options["rcd_gpxfile"]==""):
 				print "borrar el gpxfile"
@@ -177,29 +180,37 @@ class Record:
 		return day_list
 		
 	def actualize_fromgpx(self,gpxfile):
-		from lib.gpx import Gpx
 		gpx = Gpx(self.data_path,gpxfile)
 		tracks = gpx.getTrackRoutes()
+		#print self.date.unixtime2date(tracks[0][1])
 
 		if len(tracks) < 2:
-			time = self.date.unixtime2date(tracks[0][1])
-			self.recordwindow.rcd_date.set_text(time)
-			self._actualize_fromgpx(gpx)
+			self._actualize_fromgpx(gpxfile)
 		else:
-			msg = _("The gpx file seems to be a several track records. Press cancel to select one track record. Press Continue to load all as only one track record.")
+			msg = _("The gpx file seems to have several track records. Press cancel to select a track record. Press Ok to load all of them as a single track record.")
 			from gui.warning import Warning
-			warning = Warning(self.data_path,self._actualize_fromgpx,[gpx])
+			warning = Warning(self.data_path,self._actualize_fromgpx,[gpxfile],self._select_trkfromgpx,[gpxfile,tracks])
                         warning.set_text(msg)
                         warning.run()
 
-	def _actualize_fromgpx(self, gpx):
+	def _actualize_fromgpx(self, gpxfile, trkname = None):
+		gpx = Gpx(self.data_path,gpxfile,trkname)
 		distance, time = gpx.getMaxValues()
 		upositive,unegative = gpx.getUnevenness()
+		print gpx.getTrackRoutes() 
+		date = gpx.getTrackRoutes()[0][1]
+		
+		self.recordwindow.rcd_date.set_text(date)
 		self.recordwindow.rcd_upositive.set_text(str(upositive))
 		self.recordwindow.rcd_unegative.set_text(str(unegative))
 		self.recordwindow.set_distance(distance)
 		self.recordwindow.set_recordtime(time/60.0/60.0)
 		self.recordwindow.on_calcaverage_clicked(None)
+
+	def _select_trkfromgpx(self,gpxfile,tracks):
+		print "seleccionamos el trk"
+		selectrckdialog = DialogSelectTrack(self.data_path, tracks,self._actualize_fromgpx, gpxfile)
+		selectrckdialog.run()
 		
 	def newGpxRecord(self,gpxfile,list_sport):
 		self.recordwindow = WindowRecord(self.data_path, list_sport,self, None)

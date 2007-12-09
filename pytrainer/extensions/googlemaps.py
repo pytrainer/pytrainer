@@ -40,15 +40,9 @@ class Googlemaps:
 		extensiondir = self.conf.getValue("extensiondir")+"/"+code
 		if not os.path.isdir(extensiondir):
             		os.mkdir(extensiondir)
-		cachefile = extensiondir+"/%d.gpx" %id_record
-		if not os.path.isfile(cachefile):
-			trackdistance = "1"
-			gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
-			#os.system("gpsbabel -t -i gpx -f '%s' -x position,distance=%sm -o gpx -F %s" %(gpxfile,trackdistance,cachefile))
-			os.system("gpsbabel -t -i gpx -f '%s' -o gpx -F %s" %(gpxfile,cachefile))
-			print "gpsbabel -t -i gpx -f '%s' -x position,distance=%sm -o gpx -F %s" %(gpxfile,trackdistance,cachefile)
 
-		gpx = Gpx(self.data_path,cachefile)
+		gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
+		gpx = Gpx(self.data_path,gpxfile)
 		list_values = gpx.getTrackList()
 		pointlist = []
 		for i in list_values:

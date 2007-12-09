@@ -19,32 +19,43 @@
 from SimpleGladeApp import SimpleGladeApp
 
 class Warning(SimpleGladeApp):
-	def __init__(self, data_path = None, method = None, params = None):
-		self.method = method
-		self.params = params
+	def __init__(self, data_path = None, okmethod = None, okparams = None, cancelmethod = None, cancelparams = None):
+		self.okmethod = okmethod
+		self.cancelmethod = cancelmethod
+		self.okparams = okparams
+		self.cancelparams = cancelparams
 		glade_path="glade/pytrainer.glade"
 		self.path = data_path+glade_path
 		root = "warning"
 		domain = None
 		SimpleGladeApp.__init__(self, self.path, root, domain)
-		if method == None:
+		if okmethod == None:
 			self.cancelbutton1.hide()
 
 	def set_text(self, msg):
 		self.warningText.set_text(msg)
 	
 	def on_accept_clicked(self,widget):
-		if self.params != None:
-			num = len(self.params)
+		if self.okparams != None:
+			num = len(self.okparams)
 			if num==0:
-				self.method()
+				self.okmethod()
 			if num==1:
-				self.method(self.params[0])
+				self.okmethod(self.okparams[0])
 			if num==2:
-				self.method(self.params[0],self.params[1])
+				self.okmethod(self.okparams[0],self.okparams[1])
 		self.close_window()
 	
 	def on_cancel_clicked(self,widget):
+		self.warning.hide()
+		if self.cancelparams != None:
+			num = len(self.cancelparams)
+			if num==0:
+				self.cancelmethod()
+			if num==1:
+				self.cancelmethod(self.cancelparams[0])
+			if num==2:
+				self.cancelmethod(self.cancelparams[0], self.cancelparams[1])
 		self.close_window()
 
 	def close_window(self):

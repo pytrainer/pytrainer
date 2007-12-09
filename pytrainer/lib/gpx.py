@@ -26,9 +26,10 @@ import xml.dom.minidom
 import time
 
 class Gpx:
-	def __init__(self, data_path = None, filename = None):
+	def __init__(self, data_path = None, filename = None, trkname = None):
 		self.data_path = data_path
 		self.filename = filename
+		self.trkname = trkname
 		self.conf = checkConf()
 		self.total_dist = 0
 		self.total_time = 0
@@ -40,14 +41,17 @@ class Gpx:
 		return self.total_dist, self.total_time
 
 	def getTrackRoutes(self):	
-		dom = xml.dom.minidom.parse(self.filename)
+		newfilename = self.conf.tmpdir+"/newgpx.gpx"
+		print newfilename
+		dom = xml.dom.minidom.parse(newfilename)
 		trks = dom.getElementsByTagName("trk")
 		retorno = []
 		for trk in trks:
 			name = trk.getElementsByTagName("name")[0].firstChild.data
 			time_ = trk.getElementsByTagName("time")[0].firstChild.data
 			mk_time = time.strptime(time_, "%Y-%m-%dT%H:%M:%SZ")
-			time_ = time.mktime(mk_time)
+			#time_ = time.mktime(mk_time)
+			time_ = time.strftime("%Y-%m-%d", mk_time)
 			retorno.append((name,time_))
 		return retorno
 		
@@ -59,8 +63,35 @@ class Gpx:
 		
 	def _getValues(self):
 		dom = xml.dom.minidom.parse(self.filename)
-		trkpoints = dom.getElementsByTagName("trkpt")
+		content = dom.toxml()
+		
+		if self.trkname != None:
+			trks = dom.getElementsByTagName("trk")
+			retorno = []
+			for trk in trks:
+				name = trk.getElementsByTagName("name")[0].firstChild.data
+				if name == self.trkname:
+					dom = trk
+					content = """<?xml version="1.0" encoding="UTF-8"?>
+<gpx
+ version="1.0"
+creator="pytrainer http://pytrainer.e-oss.net"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xmlns="http://www.topografix.com/GPX/1/0"
+xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd">
+"""
+					content += dom.toxml()
+					content += "</gpx>"
+					break
+					
+		newfilename = self.conf.tmpdir+"/newgpx.gpx"
+		if os.path.isfile(newfilename):
+			os.remove(newfilename)
+		fp = open(newfilename,"a+")
+		fp.write(content)
+		fp.close()
 
+		trkpoints = dom.getElementsByTagName("trkpt")
 		retorno = []
 		his_vel = []
 		last_lat = "False"
