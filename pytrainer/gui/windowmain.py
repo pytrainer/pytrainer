@@ -552,6 +552,7 @@ class Main(SimpleGladeApp):
 		self.parent.editGpsPlugins()
 	#hasta aqui revisado
 	def on_allRecordTreeView_button_press(self, treeview, event):
+		print "on_allRecordTreeView_"
 		x = int(event.x)
 		y = int(event.y)
 		time = event.time
@@ -569,8 +570,8 @@ class Main(SimpleGladeApp):
 					pass
 				self.popup.show(selected.get_value(iter,0), event.button, time)
 			elif event.button == 1:
+				print "lala"
 				self.notebook.set_current_page(0)
-				self.parent.refreshGraphView("record")
 		return False
 	
 	def actualize_recordTreeView(self, record_list):

@@ -35,7 +35,7 @@ class Gpx:
 		self.total_time = 0
 		self.upositive = 0
 		self.unegative = 0
-		self._getValues()
+		self.Values = self._getValues()
 
 	def getMaxValues(self):
 		return self.total_dist, self.total_time
@@ -59,7 +59,7 @@ class Gpx:
 		return self.upositive,self.unegative 
 	
 	def getTrackList(self):
-		return self._getValues()
+		return self.Values
 		
 	def _getValues(self):
 		dom = xml.dom.minidom.parse(self.filename)
