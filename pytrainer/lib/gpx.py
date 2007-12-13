@@ -42,16 +42,17 @@ class Gpx:
 
 	def getTrackRoutes(self):	
 		newfilename = self.conf.tmpdir+"/newgpx.gpx"
-		print newfilename
 		dom = xml.dom.minidom.parse(newfilename)
 		trks = dom.getElementsByTagName("trk")
 		retorno = []
 		for trk in trks:
 			name = trk.getElementsByTagName("name")[0].firstChild.data
-			time_ = trk.getElementsByTagName("time")[0].firstChild.data
-			mk_time = time.strptime(time_, "%Y-%m-%dT%H:%M:%SZ")
-			#time_ = time.mktime(mk_time)
-			time_ = time.strftime("%Y-%m-%d", mk_time)
+			if len(trk.getElementsByTagName("time")) > 0:
+				time_ = trk.getElementsByTagName("time")[0].firstChild.data
+				mk_time = time.strptime(time_, "%Y-%m-%dT%H:%M:%SZ")
+				time_ = time.strftime("%Y-%m-%d", mk_time)
+			else:
+				time_ = _("No Data");	
 			retorno.append((name,time_))
 		return retorno
 		

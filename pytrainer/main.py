@@ -83,6 +83,7 @@ class pyTrainer:
 	def quit(self): 
 		self.webservice.stop()
 		self.windowmain.gtk_main_quit()
+		sys.exit("Exit!")
 
 	def loadPlugins(self):	
 		activeplugins = self.plugins.getActivePlugins()
