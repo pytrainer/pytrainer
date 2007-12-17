@@ -46,13 +46,16 @@ class Gpx:
 		trks = dom.getElementsByTagName("trk")
 		retorno = []
 		for trk in trks:
-			name = trk.getElementsByTagName("name")[0].firstChild.data
+			if len(trk.getElementsByTagName("name")) > 0:
+				name = trk.getElementsByTagName("name")[0].firstChild.data
+			else:
+				name = _("No Name")
 			if len(trk.getElementsByTagName("time")) > 0:
 				time_ = trk.getElementsByTagName("time")[0].firstChild.data
 				mk_time = time.strptime(time_, "%Y-%m-%dT%H:%M:%SZ")
 				time_ = time.strftime("%Y-%m-%d", mk_time)
 			else:
-				time_ = _("No Data");	
+				time_ = _("No Data")	
 			retorno.append((name,time_))
 		return retorno
 		
@@ -104,9 +107,12 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/
 		for trkpoint in trkpoints:
 			lat = trkpoint.attributes["lat"].value
 			lon = trkpoint.attributes["lon"].value
-			time_ = trkpoint.getElementsByTagName("time")[0].firstChild.data
-			mk_time = time.strptime(time_, "%Y-%m-%dT%H:%M:%SZ")
-			time_ = time.mktime(mk_time)
+			if len(trkpoint.getElementsByTagName("time")) > 0:
+				time_ = trkpoint.getElementsByTagName("time")[0].firstChild.data
+				mk_time = time.strptime(time_, "%Y-%m-%dT%H:%M:%SZ")
+				time_ = time.mktime(mk_time)
+			else:
+				time_ = 1
 			ele = trkpoint.getElementsByTagName("ele")[0].firstChild.data
 			#chequeamos que la altura sea correcta
 			if len(ele)<15:

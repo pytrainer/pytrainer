@@ -133,23 +133,19 @@ class pyTrainer:
 				record_list = self.record.getrecordInfo(id_record)
 				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
 				if os.path.isfile(gpxfile):
-					print "a"
 					gpx = Gpx(self.data_path,gpxfile)
-					print "aa"
 					gpx_tracklist = gpx.getTrackList()
-					print "aaa"
+					#if self.windowmain.recordview.get_current_page()==2:
+					print "redibujamos el mapa"
 					#El mapa se deberia refrescar al pinchar en ver map, no en ver record
 					self.refreshMapView()
-					print "aaaa"
+					print "fin de redibujar el mapa"
 				else: gpx_tracklist = []
 			else:
 				record_list=[]
 				gpx_tracklist = []
-			print "B"
 			self.windowmain.actualize_recordview(record_list)
-			print "c"
 			self.windowmain.actualize_recordgraph(gpx_tracklist)
-			print "d"
 			 
 		elif view=="day":
 			record_list = self.record.getrecordList(date_selected)
