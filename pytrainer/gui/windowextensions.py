@@ -67,9 +67,9 @@ class WindowExtensions(SimpleGladeApp):
 		self.nameEntry.set_text(name)
 		self.descriptionEntry.set_text(description)
 		if int(status) > 0:
-			self.statusEntry.set_text(_("Active"))
+			self.statusEntry.set_text(_("Enable"))
 		else:
-			self.statusEntry.set_text(_("unActive"))
+			self.statusEntry.set_text(_("Disable"))
 
 	def on_preferences_clicked(self,widget):
 		selected,iter = self.extensionsTree.get_selection().get_selected()
@@ -93,8 +93,8 @@ class WindowExtensions(SimpleGladeApp):
 				table.attach(entry,1,2,i,i+1)
 			else:
 				combobox = gtk.combo_box_new_text()
-				combobox.append_text("unActive")	
-				combobox.append_text("Active")	
+				combobox.append_text("Disable")	
+				combobox.append_text("Enable")	
 				combobox.set_active(int(pref[1]))
 				table.attach(combobox,1,2,i,i+1)
 				self.entryList.append(combobox)	
