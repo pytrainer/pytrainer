@@ -1410,6 +1410,7 @@
 					  <property name="visible">True</property>
 					  <property name="items" translatable="yes">Stage Profile
 Stage Velocity
+Stage Heart Rate
 Stage Profile/velocity</property>
 					  <property name="add_tearoffs">False</property>
 					  <property name="has_frame">True</property>

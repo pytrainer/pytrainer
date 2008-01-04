@@ -64,6 +64,9 @@ class Gpx:
 	
 	def getTrackList(self):
 		return self.Values
+
+	def getHeartRateAverage(self):
+		return self.hr_average
 		
 	def _getValues(self):
 		dom = xml.dom.minidom.parse(self.filename)
@@ -77,12 +80,17 @@ class Gpx:
 				if name == self.trkname:
 					dom = trk
 					content = """<?xml version="1.0" encoding="UTF-8"?>
-<gpx
- version="1.0"
+
+<gpx 
 creator="pytrainer http://pytrainer.e-oss.net"
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-xmlns="http://www.topografix.com/GPX/1/0"
-xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/GPX/1/0/gpx.xsd">
+version="1.1" 
+xmlns="http://www.topografix.com/GPX/1/1" 
+xmlns:geocache="http://www.groundspeak.com/cache/1/0" 
+xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" 
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.cluetrust.com/XML/GPXDATA/1/0 http://www.cluetrust.com/Schemas/gpxdata10.xsd">
+
+
 """
 					content += dom.toxml()
 					content += "</gpx>"
@@ -102,11 +110,17 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/
 		last_lon = "False"
 		last_time = "False"
 		total_dist = 0
+		total_hr = 0
 		tmp_alt = 0
 
 		for trkpoint in trkpoints:
 			lat = trkpoint.attributes["lat"].value
 			lon = trkpoint.attributes["lon"].value
+			#get the heart rate value from the gpx extended format file
+			if len(trkpoint.getElementsByTagName("gpxdata:hr")) > 0:
+				hr = int(trkpoint.getElementsByTagName("gpxdata:hr")[0].firstChild.data)
+			else: 
+				hr = 0
 			if len(trkpoint.getElementsByTagName("time")) > 0:
 				time_ = trkpoint.getElementsByTagName("time")[0].firstChild.data
 				mk_time = time.strptime(time_, "%Y-%m-%dT%H:%M:%SZ")
@@ -128,30 +142,32 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/0 http://www.topografix.com/
 				if last_lat != "False":
 					time_ = tmp_time - last_time
 					tempnum=(math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon))
-					try:
-						#Obtenemos el punto respecto al punto anterior
-						dist=math.acos(tempnum)*111.302*57.29577951
-						total_dist += dist
-						#dividimos kilometros por hora (no por segundo)
-						tmp_vel = dist/((time_)/3600.0)
-						vel,his_vel = self._calculate_velocity(tmp_vel,his_vel)
-						#si la velocidad es menor de 90 lo damos por bueno
-						if vel<90 and time_ <100:
-							self.total_time += time_
-							retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon))
-							rel_alt = tmp_alt - last_alt
-							if rel_alt > 0:
-								self.upositive += rel_alt
-							elif rel_alt < 0:
-								self.unegative -= rel_alt
-					except:
-						print tempnum
+					#try:
+					#Obtenemos el punto respecto al punto anterior
+					dist=math.acos(tempnum)*111.302*57.29577951
+					total_dist += dist
+					total_hr += hr
+					#dividimos kilometros por hora (no por segundo)
+					tmp_vel = dist/((time_)/3600.0)
+					vel,his_vel = self._calculate_velocity(tmp_vel,his_vel)
+					#si la velocidad es menor de 90 lo damos por bueno
+					if vel<90 and time_ <100:
+						self.total_time += time_
+						retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr))
+						rel_alt = tmp_alt - last_alt
+						if rel_alt > 0:
+							self.upositive += rel_alt
+						elif rel_alt < 0:
+							self.unegative -= rel_alt
+					#except:
+					#	print tempnum
 				
 				last_lat = tmp_lat
 				last_lon = tmp_lon
 				last_alt = tmp_alt
 				last_time = tmp_time
 
+		self.hr_average = total_hr/len(trkpoints)
 		self.total_dist = total_dist 
 		return retorno
 	

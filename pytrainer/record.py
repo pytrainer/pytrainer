@@ -197,12 +197,13 @@ class Record:
 		gpx = Gpx(self.data_path,gpxfile,trkname)
 		distance, time = gpx.getMaxValues()
 		upositive,unegative = gpx.getUnevenness()
-		print gpx.getTrackRoutes() 
+		heartrate = gpx.getHeartRateAverage()
 		date = gpx.getTrackRoutes()[0][1]
 		
 		self.recordwindow.rcd_date.set_text(date)
 		self.recordwindow.rcd_upositive.set_text(str(upositive))
 		self.recordwindow.rcd_unegative.set_text(str(unegative))
+		self.recordwindow.rcd_beats.set_text(str(heartrate))
 		self.recordwindow.set_distance(distance)
 		self.recordwindow.set_recordtime(time/60.0/60.0)
 		self.recordwindow.on_calcaverage_clicked(None)

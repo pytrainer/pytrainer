@@ -36,7 +36,11 @@ class RecordGraph:
 			xvalues, yvalues = self.get_values(values,value_selected)
 			xlabel,ylabel,title,color = self.get_value_params(value_selected)
 			self.drawarea.stadistics("plot",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color])
-		if value_selected == 2:
+                if value_selected == 2:
+                        xvalues, yvalues = self.get_values(values,value_selected)
+                        xlabel,ylabel,title,color = self.get_value_params(value_selected)
+                        self.drawarea.stadistics("plot",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color])
+		if value_selected == 3:
 			xvalues, yvalues = self.get_values(values,0)
 			xvalues1, yvalues1 = self.get_values(values,1)
 			xlabel,ylabel,title,color = self.get_value_params(0)
@@ -48,6 +52,9 @@ class RecordGraph:
 			return _("Distance (km)"),_("Height (m)"),_("Stage Profile"),"#747400"
 		if value == 1:
 			return _("Distance (km)"),_("Velocity (Km/h)"),_("velocity"),"#007474"
+                if value == 2:
+                        return _("Distance (km)"),_("Beats (bpm)"),_("Heart Rate"),"#740074"
+
 
 	def get_values(self,values, value_selected):
 		xvalue = []
@@ -58,6 +65,8 @@ class RecordGraph:
 				yvalue.append(value[1])
 			if value_selected==1:
 				yvalue.append(value[3])
+			if value_selected==2:
+                                yvalue.append(value[6])
 		return xvalue,yvalue
 	
 	def getFloatValue(self, value):
