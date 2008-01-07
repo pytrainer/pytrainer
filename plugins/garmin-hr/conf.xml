@@ -4,7 +4,7 @@
 	description="Import yor records direclty from your garmin gps device with heart rate support" 
 	plugincode="garmin-hr"
 	pluginbutton="Import from Garmin (HR support)" 
-	executable="main.sh" 
+	executable="main.py" 
 >
 <conf-values variable="device" value="/dev/ttyUSB0"/>
 </pytrainer-plugin>

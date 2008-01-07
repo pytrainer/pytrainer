@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/python
 # -*- coding: iso-8859-1 -*-
 
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
@@ -18,11 +18,26 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 
-#gpsbabel -t -i garmin -f /dev/ttyUSB0 -o xcsv,style=./pytrainer.style -F /tmp/file.xcsv
-#gpsbabel -t -i garmin -f /dev/ttyUSB0 -o garmin301 -F /tmp/file.xcsv
+from optparse import OptionParser
+from gtrnctr2gpx import gtrnctr2gpx
+import os
 
+parser = OptionParser()
+parser.add_option("-d", "--device", dest="device")
+(options,args) =  parser.parse_args()
 
-gpsbabel -t -i garmin -f $2 -o gtrnctr -F /tmp/file.gtrnctr
-./gtrnctr2gpx /tmp/file.xcsv /tmp/file.gpx
+tmpgpx = "/tmp/reg.gpx"
+dummy = 0
+try:
+	os.system("gpsbabel -t -i garmin -f %s -o gtrnctr -F /tmp/file.gtrnctr" %options.device)
+	dummy = 1
+except:
+	f = os.popen("zenity --error --text='Cant open garmin device. Check your configuration or connect the device correctly.'");
+	dummy = 0
 
-echo /tmp/file.gpx
+if dummy == 1:
+	gtrnctr2gpx("/tmp/file.gtrnctr","/tmp/file.gpx")
+	print "/tmp/file.gpx"
+else:
+	print 0
+
