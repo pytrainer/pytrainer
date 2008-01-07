@@ -45,5 +45,5 @@ setup( 	name="pytrainer",
 		('share/pixmaps/',['pytrainer.png']),
 		('share/applications/',['pytrainer.desktop'])
 		],
-	scripts=['bin/pytrainer'] 
+	scripts=['bin/pytrainer','bin/gtrnctr2gpx'] 
 )	
