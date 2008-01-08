@@ -168,23 +168,34 @@ class Main(SimpleGladeApp):
 
 	def actualize_dayview(self,record_list):
 		if len(record_list)>0:
-			record_list=record_list[0]
+			tbeats = 0
+			distance = 0
+			calories = 0
+			timeinseconds = 0
+			beats = 0
+			for record in record_list:
+				distance += self.parseFloat(record[2])
+				calories += self.parseFloat(record[7])
+				timeinseconds += self.parseFloat(record[3])
+				beats = self.parseFloat(record[4])
+				if float(beats)>0:
+					tbeats += beats*(self.parseFloat(record[3])/60/60)
 			
-			distance = self.parseFloat(record_list[2])
-			beats = self.parseFloat(record_list[4])
-			average = self.parseFloat(record_list[6])
-			calories = self.parseFloat(record_list[7])
+			if tbeats > 0:		
+				tbeats = tbeats/(timeinseconds/60/60)
+
+			average = distance/(timeinseconds/60/60)
 			
 			self.dayview.set_sensitive(1)
 			self.day_distance.set_text("%0.2f" %distance)
-			hour,min,sec=self.parent.date.second2time(int(record_list[3]))
+			hour,min,sec=self.parent.date.second2time(timeinseconds)
 			self.day_hour.set_text("%d" %hour)
 			self.day_minute.set_text("%d" %min)
 			self.day_second.set_text("%d" %sec)
-			self.day_beats.set_text("%0.2f" %beats)
+			self.day_beats.set_text("%0.2f" %tbeats)
 			self.day_average.set_text("%0.2f" %average)
 			self.day_calories.set_text("%0.0f" %calories)
-			self.day_topic.set_text(record_list[1])
+			self.day_topic.set_text(record[1])
 			
 		else:
 			self.dayview.set_sensitive(0)
@@ -570,8 +581,8 @@ class Main(SimpleGladeApp):
 					pass
 				self.popup.show(selected.get_value(iter,0), event.button, time)
 			elif event.button == 1:
-				print "lala"
 				self.notebook.set_current_page(0)
+				self.parent.refreshGraphView("record")
 		return False
 	
 	def actualize_recordTreeView(self, record_list):
