@@ -183,6 +183,7 @@ class Record:
 		gpx = Gpx(self.data_path,gpxfile)
 		tracks = gpx.getTrackRoutes()
 		#print self.date.unixtime2date(tracks[0][1])
+		print tracks
 
 		if len(tracks) < 2:
 			self._actualize_fromgpx(gpxfile)

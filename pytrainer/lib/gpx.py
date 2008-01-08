@@ -144,7 +144,10 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 					tempnum=(math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon))
 					#try:
 					#Obtenemos el punto respecto al punto anterior
-					dist=math.acos(tempnum)*111.302*57.29577951
+					try:
+						dist=math.acos(tempnum)*111.302*57.29577951
+					except:
+						dist=0
 					total_dist += dist
 					total_hr += hr
 					#dividimos kilometros por hora (no por segundo)

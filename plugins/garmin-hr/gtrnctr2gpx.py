@@ -51,7 +51,10 @@ def gtrnctr2gpx(gtrnctrfile,gpxfile):
 			_trkpt = _dom.createElement("trkpt")
 			time = trkpoint.getElementsByTagName("Time")[0].firstChild.data
 			alt = trkpoint.getElementsByTagName("AltitudeMeters")[0].firstChild.data
-			hr = trkpoint.getElementsByTagName("HeartRateBpm")[0].firstChild.data
+			if len(trkpoint.getElementsByTagName("HeartRateBpm"))>0:
+				hr = trkpoint.getElementsByTagName("HeartRateBpm")[0].firstChild.data
+			else:
+				hr = "0"
 			lat = trkpoint.getElementsByTagName("LatitudeDegrees")[0].firstChild.data
 			lon = trkpoint.getElementsByTagName("LongitudeDegrees")[0].firstChild.data
 	
@@ -72,6 +75,8 @@ def gtrnctr2gpx(gtrnctrfile,gpxfile):
 		_gpx_element.appendChild(_trk)
 
 	f = open(gpxfile, 'w')		
-	_dom.writexml(f)
+	#_dom.writexml(f)
+	#f.write(_dom.toprettyxml())
+	f.write(_dom.toxml())
 	f.close()
 
