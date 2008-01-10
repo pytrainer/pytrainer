@@ -15,7 +15,7 @@ def install_extension(extension_name):
 	return "share/pytrainer/extensions/%s"%extension_name, glob("extensions/%s/*"%extension_name) 
 
 setup( 	name="pytrainer",
-	version="1.4.7.2",
+	version="1.5",
 	author="Fiz Vazquez",
 	author_email="vud1@sindominio.net",
 	url="http://pytrainer.e-oss.net",
@@ -31,6 +31,7 @@ setup( 	name="pytrainer",
 		('share/pytrainer/glade/',glob("glade/*.png")),
 		('share/pytrainer/',glob("*.style")),
 		install_plugin("garmin301"),
+		install_plugin("garmin-hr"),
 		install_plugin("googleearth"),
 		install_plugin("ipod"),
 		install_extension("wordpress"),

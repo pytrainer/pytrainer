@@ -50,7 +50,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
 		self.data_path = data_path
 		#configuration
-		self.version ="1.4.7.2"
+		self.version ="1.5.0"
 		self.conf = checkConf()
 		#preparamos la ventana principal
 		self.windowmain = Main(data_path,self,self.version)

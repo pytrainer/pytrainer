@@ -7527,7 +7527,8 @@ that you want do it?</property>
   <property name="website">http://pytrainer.e-oss.net</property>
   <property name="website_label" translatable="yes">pytrainer.e-oss.net</property>
   <property name="authors">Fiz vazquez &lt;vud1@sindominio.net&gt;</property>
-  <property name="translator_credits" translatable="yes" comments="TRANSLATORS: Replace this string with your names, one name per line.">Catalan: Eloi Crespillo Itchart &lt;eloi@ikuszen.com&gt;
+  <property name="translator_credits" translatable="yes" comments="TRANSLATORS: Replace this string with your names, one name per line.">Basque: Jabier Santamaria &lt;mendikote@gmail.com&gt;
+Catalan: Eloi Crespillo Itchart &lt;eloi@ikuszen.com&gt;
 Czech: Lobus Pokorny &lt;sp.pok@seznam.cz&gt;
 French: Dj &lt;dj@djremixtheblog.be&gt;
 French: Pierre Gaigé &lt;pgaige@free.fr&gt;
