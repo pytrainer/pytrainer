@@ -429,6 +429,7 @@
 			      <property name="tab_pos">GTK_POS_LEFT</property>
 			      <property name="scrollable">False</property>
 			      <property name="enable_popup">False</property>
+			      <signal name="switch_page" handler="on_recordpage_change" last_modification_time="Thu, 10 Jan 2008 18:45:08 GMT"/>
 
 			      <child>
 				<widget class="GtkFrame" id="frame8">

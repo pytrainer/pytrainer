@@ -112,6 +112,7 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 		total_dist = 0
 		total_hr = 0
 		tmp_alt = 0
+		len_validhrpoints = 0
 
 		for trkpoint in trkpoints:
 			lat = trkpoint.attributes["lat"].value
@@ -119,6 +120,7 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 			#get the heart rate value from the gpx extended format file
 			if len(trkpoint.getElementsByTagName("gpxdata:hr")) > 0:
 				hr = int(trkpoint.getElementsByTagName("gpxdata:hr")[0].firstChild.data)
+				len_validhrpoints += 1
 			else: 
 				hr = 0
 			if len(trkpoint.getElementsByTagName("time")) > 0:
@@ -162,15 +164,15 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 							self.upositive += rel_alt
 						elif rel_alt < 0:
 							self.unegative -= rel_alt
-					#except:
-					#	print tempnum
 				
 				last_lat = tmp_lat
 				last_lon = tmp_lon
 				last_alt = tmp_alt
 				last_time = tmp_time
 
-		self.hr_average = total_hr/len(trkpoints)
+		self.hr_average = 0
+		if len_validhrpoints > 0:
+			self.hr_average = total_hr/len_validhrpoints
 		self.total_dist = total_dist 
 		return retorno
 	

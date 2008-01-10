@@ -124,29 +124,16 @@ class pyTrainer:
 		self.windowmain.updateSportList(listSport)
 		
 	def refreshGraphView(self, view, sport=None):
-		print "refreshGraphView"
 		date_selected = self.date.getDate()
 		if view=="record":
-			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
-			if iter:
-				id_record = selected.get_value(iter,0)
-				record_list = self.record.getrecordInfo(id_record)
-				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
-				if os.path.isfile(gpxfile):
-					gpx = Gpx(self.data_path,gpxfile)
-					gpx_tracklist = gpx.getTrackList()
-					#if self.windowmain.recordview.get_current_page()==2:
-					print "redibujamos el mapa"
-					#El mapa se deberia refrescar al pinchar en ver map, no en ver record
-					self.refreshMapView()
-					print "fin de redibujar el mapa"
-				else: gpx_tracklist = []
-			else:
-				record_list=[]
-				gpx_tracklist = []
-			self.windowmain.actualize_recordview(record_list)
-			self.windowmain.actualize_recordgraph(gpx_tracklist)
-			 
+			if self.windowmain.recordview.get_current_page()==0:
+				self.refreshRecordGraphView("info")
+			elif self.windowmain.recordview.get_current_page()==1:
+				self.refreshRecordGraphView("graphs")
+			elif self.windowmain.recordview.get_current_page()==2:
+				self.refreshRecordGraphView("map")
+			elif self.windowmain.recordview.get_current_page()==3:
+				self.refreshRecordGraphView("heartrate")
 		elif view=="day":
 			record_list = self.record.getrecordList(date_selected)
 			self.windowmain.actualize_dayview(record_list)
@@ -166,6 +153,31 @@ class pyTrainer:
                 	record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport)
 			self.windowmain.actualize_yearview(record_list, year)
 			self.windowmain.actualize_yeargraph(record_list)
+	
+	def refreshRecordGraphView(self, view):
+		if view=="info":
+			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+			if iter:
+				id_record = selected.get_value(iter,0)
+				record_list = self.record.getrecordInfo(id_record)
+			else:
+				record_list=[]
+			self.windowmain.actualize_recordview(record_list)
+		if view=="graphs":
+			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+			if iter:
+				id_record = selected.get_value(iter,0)
+				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
+				if os.path.isfile(gpxfile):
+					gpx = Gpx(self.data_path,gpxfile)
+					gpx_tracklist = gpx.getTrackList()
+			else:
+				gpx_tracklist = []
+			self.windowmain.actualize_recordgraph(gpx_tracklist)
+		if view=="map":
+			self.refreshMapView()
+		if view=="heartrate":
+			pass
 			
 	def refreshMapView(self):
 		selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()

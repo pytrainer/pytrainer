@@ -498,6 +498,17 @@ class Main(SimpleGladeApp):
 			self.selected_view="year"
 		self.parent.refreshGraphView(self.selected_view)
 	
+	def on_recordpage_change(self,widget,gpointer,page):
+		if page == 0:
+			selected_view="info"
+		elif page == 1:
+			selected_view="graphs"
+		elif page == 2:
+			selected_view="map"
+		elif page == 3:
+			selected_view="heartrate"
+		self.parent.refreshRecordGraphView(selected_view)
+	
 	def on_showmap_clicked(self,widget):
 		self.infoarea.hide()
 		self.maparea.show()
