@@ -71,7 +71,7 @@
 		      <child>
 			<widget class="GtkImageMenuItem" id="export_csv">
 			  <property name="visible">True</property>
-			  <property name="label" translatable="yes">_Export as text separated by commas</property>
+			  <property name="label" translatable="yes">_Export as Text Separated by Commas</property>
 			  <property name="use_underline">True</property>
 			  <signal name="activate" handler="on_export_csv_activate" last_modification_time="Tue, 22 Aug 2006 18:22:41 GMT"/>
 

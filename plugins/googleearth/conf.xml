@@ -3,7 +3,7 @@
 	name="Google Earth" 
 	description="Import yor Google Earth files (*.kml)" 
 	plugincode="googleearth"
-	pluginbutton="Import *.kml file" 
+	pluginbutton="Import Google Earth File (*.kml)" 
 	executable="main.sh" 
 >
 </pytrainer-plugin>
