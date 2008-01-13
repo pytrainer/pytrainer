@@ -97,7 +97,7 @@ class Main(SimpleGladeApp):
 		self.parent.runExtension(extension,id)
 
 	def createGraphs(self,RecordGraph,DayGraph,MonthGraph,YearGraph,HeartRateGraph):
-		self.drawarearecord = RecordGraph(self.record_vbox, self.record_combovalue)
+		self.drawarearecord = RecordGraph(self.record_vbox, self.record_combovalue, self.record_combovalue2)
 		self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox)
 		#self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
 		self.day_vbox.hide()

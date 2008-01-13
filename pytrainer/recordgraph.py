@@ -19,33 +19,53 @@
 from gui.drawArea import DrawArea
 
 class RecordGraph:
-	def __init__(self, vbox = None, combovalue = None):
+	def __init__(self, vbox = None, combovalue = None, combovalue2 = None):
 		self.drawarea = DrawArea(vbox)
 		self.combovalue = combovalue
+		self.combovalue2 = combovalue2
 
 	def drawgraph(self,values):
+		xval = []
+		yval = []
+		xlab = []
+		ylab = []
+		tit = []
+		col = []
 		value_selected = self.combovalue.get_active()
+		value_selected2 = self.combovalue2.get_active()
 		if value_selected < 0:
 			self.combovalue.set_active(0)
 			value_selected = 0
-		if value_selected == 0:
-			xvalues, yvalues = self.get_values(values,value_selected)
-			xlabel,ylabel,title,color = self.get_value_params(value_selected)
-			self.drawarea.stadistics("plot",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color])
-		if value_selected == 1:
-			xvalues, yvalues = self.get_values(values,value_selected)
-			xlabel,ylabel,title,color = self.get_value_params(value_selected)
-			self.drawarea.stadistics("plot",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color])
-                if value_selected == 2:
-                        xvalues, yvalues = self.get_values(values,value_selected)
-                        xlabel,ylabel,title,color = self.get_value_params(value_selected)
-                        self.drawarea.stadistics("plot",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color])
-		if value_selected == 3:
-			xvalues, yvalues = self.get_values(values,0)
-			xvalues1, yvalues1 = self.get_values(values,1)
-			xlabel,ylabel,title,color = self.get_value_params(0)
-			xlabel1,ylabel1,title1,color1 = self.get_value_params(1)
-			self.drawarea.stadistics("plot",[xvalues,xvalues1],[yvalues,yvalues1],[" ",xlabel1],[ylabel,ylabel1],[title," "],[color,color1])
+		
+		if value_selected2 < 0:
+			self.combovalue2.set_active(0)
+			value_selected2 = 0
+
+		xvalues, yvalues = self.get_values(values,value_selected)
+		xlabel,ylabel,title,color = self.get_value_params(value_selected)
+
+		xval.append(xvalues)
+		yval.append(yvalues)
+		if value_selected2 > 0:
+			xlab.append("")
+		else:
+			xlab.append(xlabel)
+		ylab.append(ylabel)
+		tit.append(title)
+		col.append(color)
+		
+		if value_selected2 > 0:
+			value_selected2 = value_selected2-1
+			xlabel,ylabel,title,color = self.get_value_params(value_selected2)
+			xvalues,yvalues = self.get_values(values,value_selected2)
+			xval.append(xvalues)
+			yval.append(yvalues)
+			xlab.append(xlabel)
+			ylab.append(ylabel)
+			tit.append("")
+			col.append(color)
+		
+		self.drawarea.stadistics("plot",xval,yval,xlab,ylab,tit,col)
 
 	def get_value_params(self,value):
 		if value == 0:
