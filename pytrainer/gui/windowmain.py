@@ -96,11 +96,12 @@ class Main(SimpleGladeApp):
 			id = selected.get_value(iter,0)
 		self.parent.runExtension(extension,id)
 
-	def createGraphs(self,RecordGraph,DayGraph,MonthGraph,YearGraph):
+	def createGraphs(self,RecordGraph,DayGraph,MonthGraph,YearGraph,HeartRateGraph):
 		self.drawarearecord = RecordGraph(self.record_vbox, self.record_combovalue)
+		self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox)
 		#self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
 		self.day_vbox.hide()
-		self.drawareamonth = MonthGraph(self.month_vbox, self.month_combovalue)
+		self.drawareamonth = MonthGraph(self.month_vbox, self.month_combovalue,self.month_combovalue2)
 		self.drawareayear = YearGraph(self.year_vbox, self.year_combovalue)
 	
 	def createMap(self,Googlemaps,waypoint):
@@ -165,6 +166,9 @@ class Main(SimpleGladeApp):
 		else:
 			self.record_vbox.set_sensitive(0)
 		self.drawarearecord.drawgraph(record_list)
+	
+	def actualize_heartrategraph(self,record_list):
+		self.drawareaheartrate.drawgraph(record_list)
 
 	def actualize_dayview(self,record_list):
 		if len(record_list)>0:

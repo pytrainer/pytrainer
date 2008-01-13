@@ -41,16 +41,24 @@ class DrawArea:
 			self.drawPlot(xvalues,yvalues,xlabel,ylabel,title,color)
 
 	def drawBars(self,xvalues,yvalues,xlabel,ylabel,title,color):
-		self.axis.clear()
-		self.axis.set_xlabel(xlabel[0])
-		self.axis.set_ylabel(ylabel[0])
-		self.axis.set_title(title[0])
-		
-		width = 1
-                p1 = self.axis.bar(xvalues[0], yvalues[0], width, color=color[0])
-                self.axis.set_xlim(-width,len(xvalues[0]))
                 self.canvas.destroy()
-                self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
+		self.figure = Figure(figsize=(6,4), dpi=72)
+        	self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
+		self.axis.clear()
+		width = 1
+		for i in range(0,len(xvalues)):
+			if len(xvalues) == 1:
+        			self.axis = self.figure.add_subplot(111)
+			else:
+        			self.axis =self.figure.add_subplot(211 + i)
+                	self.axis.set_xlim(-width,len(xvalues[i]))
+			self.axis.set_xlabel(xlabel[i])
+			self.axis.set_ylabel(ylabel[i])
+			self.axis.set_title(title[i])
+		
+                	p1 = self.axis.bar(xvalues[i], yvalues[i], width, color=color[i])
+                
+		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
                 self.canvas.show()
                 self.vbox.pack_start(self.canvas, True, True)
 

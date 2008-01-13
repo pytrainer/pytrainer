@@ -34,6 +34,7 @@ from recordgraph import RecordGraph
 from daygraph import DayGraph
 from monthgraph import MonthGraph
 from yeargraph import YearGraph
+from heartrategraph import HeartRateGraph
 
 from extensions.googlemaps import Googlemaps
 from extensions.waypointeditor import WaypointEditor
@@ -72,7 +73,7 @@ class pyTrainer:
 		self.plugins = Plugins(data_path)
 		self.loadPlugins()
 		self.loadExtensions()
-		self.windowmain.createGraphs(RecordGraph,DayGraph,MonthGraph,YearGraph)
+		self.windowmain.createGraphs(RecordGraph,DayGraph,MonthGraph,YearGraph,HeartRateGraph)
 		self.windowmain.createMap(Googlemaps,self.waypoint)
 		self.windowmain.createWaypointEditor(WaypointEditor,self.waypoint)
 		self.windowmain.on_calendar_selected(None)
@@ -163,21 +164,31 @@ class pyTrainer:
 			else:
 				record_list=[]
 			self.windowmain.actualize_recordview(record_list)
+
 		if view=="graphs":
 			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+			gpx_tracklist = []
 			if iter:
 				id_record = selected.get_value(iter,0)
 				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
 				if os.path.isfile(gpxfile):
 					gpx = Gpx(self.data_path,gpxfile)
 					gpx_tracklist = gpx.getTrackList()
-			else:
-				gpx_tracklist = []
 			self.windowmain.actualize_recordgraph(gpx_tracklist)
+
 		if view=="map":
 			self.refreshMapView()
+
 		if view=="heartrate":
-			pass
+			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+			gpx_tracklist = []
+			if iter:
+				id_record = selected.get_value(iter,0)
+				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
+				if os.path.isfile(gpxfile):
+					gpx = Gpx(self.data_path,gpxfile)
+					gpx_tracklist = gpx.getTrackList()
+			self.windowmain.actualize_heartrategraph(gpx_tracklist)
 			
 	def refreshMapView(self):
 		selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()

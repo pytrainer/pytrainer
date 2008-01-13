@@ -19,30 +19,62 @@
 from gui.drawArea import DrawArea
 
 class MonthGraph:
-	def __init__(self, vbox = None, combovalue = None):
+	def __init__(self, vbox = None, combovalue = None, combovalue2 = None):
 		self.drawarea = DrawArea(vbox)
 		self.combovalue = combovalue
+		self.combovalue2 = combovalue2
 
 	def drawgraph(self,values):
+		xval = []
+		yval = []
+		xlab = []
+		ylab = []
+		tit = []
+		col = []
 		value_selected = self.combovalue.get_active()
+		value_selected2 = self.combovalue2.get_active()
 		if value_selected < 0:
 			self.combovalue.set_active(0)
 			value_selected = 0
 		daysmonth,xlabel,ylabel,title,color = self.get_value_params(value_selected)
 		xvalues,yvalues = self.get_values(values,value_selected,daysmonth)
-		self.drawarea.stadistics("bars",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color])
+
+		xval.append(xvalues)
+		yval.append(yvalues)
+		if value_selected2 < 0:
+			xlab.append("")
+		else:
+			xlab.append(xlabel)
+		ylab.append(ylabel)
+		tit.append(title)
+		col.append(color)
+		
+		if value_selected2 < 0:
+			self.combovalue2.set_active(0)
+			value_selected2 = 0
+		if value_selected2 > 0:
+			value_selected2 = value_selected2-1
+			daysmonth,xlabel,ylabel,title,color = self.get_value_params(value_selected2)
+			xvalues,yvalues = self.get_values(values,value_selected2,daysmonth)
+			xval.append(xvalues)
+			yval.append(yvalues)
+			xlab.append(xlabel)
+			ylab.append(ylabel)
+			tit.append("")
+			col.append(color)
+		self.drawarea.stadistics("bars",xval,yval,xlab,ylab,tit,col)
 
 	def get_value_params(self,value):
 		if value == 0:
-			return 32,_("day"),_("kilometers"),_("daily kilometers"),"y"
+			return 32,_("day"),_("Kilometers"),_("Daily kilometers"),"y"
 		elif value == 1:
-			return 32,_("day"),_("time in hours"), _("daily time"),"b"
+			return 32,_("day"),_("Time in Hours"), _("Daily Time"),"b"
 		elif value == 2:
-			return 32,_("day"),_("beats per minute"), _("daily beats"),"r"
+			return 32,_("day"),_("Beats per Minute"), _("Daily Beats"),"r"
 		elif value == 3:
-			return 32,_("day"),_("average (hm/h)"), _("daily averages"),"g"
+			return 32,_("day"),_("Average (km/h)"), _("Daily Averages"),"g"
 		elif value == 4:
-			return 32,_("day"),_("calories"), _("daily calories"),"b"
+			return 32,_("day"),_("Calories"), _("Daily Calories"),"b"
 
 	def get_values(self,values,value_selected,daysmonth):
 		#hacemos una relacion entre el value_selected y los values
