@@ -102,7 +102,7 @@ class Main(SimpleGladeApp):
 		#self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
 		self.day_vbox.hide()
 		self.drawareamonth = MonthGraph(self.month_vbox, self.month_combovalue,self.month_combovalue2)
-		self.drawareayear = YearGraph(self.year_vbox, self.year_combovalue)
+		self.drawareayear = YearGraph(self.year_vbox, self.year_combovalue,self.year_combovalue2)
 	
 	def createMap(self,Googlemaps,waypoint):
 		self.googlemaps = Googlemaps(self.data_path, self.map_vbox,waypoint)
