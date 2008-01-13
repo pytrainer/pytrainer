@@ -63,8 +63,6 @@ class WindowPlugins(SimpleGladeApp):
 	def on_pluginsTree_clicked(self,widget,widget2):
 		print "clicked"
 		selected,iter = self.pluginsTreeview.get_selection().get_selected()
-		print iter
-		print selected.get_value(iter,0)
 		name,description,status = self.parent.getPluginInfo(selected.get_value(iter,0))
 		self.nameEntry.set_text(name)
 		self.descriptionEntry.set_text(description)

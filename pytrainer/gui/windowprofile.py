@@ -41,8 +41,8 @@ class WindowProfile(SimpleGladeApp):
 
 	def new(self):
 		self.gender_options = {
-			0:"Male",
-			1:"Female"
+			0:_("Male"),
+			1:_("Female")
 			}
 
 		self.ddbb_type = {
