@@ -117,4 +117,12 @@ class DDBB:
 				self.ddbbObject.update("records","date",[newdate], "id_record = %d" %record[0])
 			except:
 				print record
+			
+	def addweightandmet2ddbb(self):
+		#this function add weight extra and met fields to
+		#the sports database
+		sql = "alter table sports add weight float"
+		self.ddbbObject.freeExec(sql)
+		sql = "alter table sports add met float"
+		self.ddbbObject.freeExec(sql)
 		

@@ -60,6 +60,8 @@ class Sql:
 		self.db.query("""CREATE TABLE `sports` (
 			`id_sports` INT( 11 ) NOT NULL AUTO_INCREMENT ,
 			`name` VARCHAR( 100 ) NOT NULL ,
+			`weight` FLOAT NOT NULL ,
+			`met` FLOAT NOT NULL ,
 			INDEX ( `id_sports` )
 			) ENGINE = MYISAM ;""")
 

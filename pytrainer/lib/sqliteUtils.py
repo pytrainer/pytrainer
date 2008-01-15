@@ -51,7 +51,9 @@ class Sql:
 		#creamos la tabla sports
 		sql = """CREATE TABLE sports (
 			id_sports integer primary key autoincrement, 
-			name varchar (100)
+			name varchar (100),
+			weight float,
+			met float
 			);"""
 		cur.execute(sql)
 

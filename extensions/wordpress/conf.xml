@@ -1,6 +1,6 @@
 <?xml version="1.0" ?>
 <pytrainer-extension 
-	name="Pytrainer wordpress extension" 
+	name="Wordpress Export" 
 	description="Publish your record as post in your weblog"
 	extensionbutton="Post it in wordpress" 
 	extensioncode="wordpress"

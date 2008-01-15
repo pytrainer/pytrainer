@@ -53,6 +53,8 @@ class Record:
 				self.ddbb.addWaypoints2ddbb()
 			except:
 				pass
+		if self.configuration.getOption("version")<="1.5":
+			self.ddbb.addweightandmet2ddbb()
 		if self.configuration.getOption("version")<version:
 			self.configuration.setVersion(version)
 
