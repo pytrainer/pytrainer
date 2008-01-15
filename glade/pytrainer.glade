@@ -7882,7 +7882,7 @@ Summit</property>
 		      </child>
 
 		      <child>
-			<widget class="GtkEntry" id="entry346">
+			<widget class="GtkEntry" id="newmetentry">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="editable">True</property>
@@ -7931,7 +7931,7 @@ Summit</property>
 		      </child>
 
 		      <child>
-			<widget class="GtkEntry" id="entry347">
+			<widget class="GtkEntry" id="newweightentry">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="editable">True</property>
@@ -8451,7 +8451,7 @@ that you want do it?</property>
 		      </child>
 
 		      <child>
-			<widget class="GtkEntry" id="entry345">
+			<widget class="GtkEntry" id="editmetentry">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="editable">True</property>
@@ -8500,7 +8500,7 @@ that you want do it?</property>
 		      </child>
 
 		      <child>
-			<widget class="GtkEntry" id="entry348">
+			<widget class="GtkEntry" id="editweightentry">
 			  <property name="visible">True</property>
 			  <property name="can_focus">True</property>
 			  <property name="editable">True</property>
@@ -8921,8 +8921,8 @@ that you want do it?</property>
 <widget class="GtkAboutDialog" id="aboutdialog1">
   <property name="border_width">5</property>
   <property name="visible">True</property>
-  <property name="destroy_with_parent">False</property>
-  <property name="name" translatable="yes">pytraine</property>
+  <property name="destroy_with_parent">True</property>
+  <property name="name" translatable="yes">pytrainer</property>
   <property name="copyright" translatable="yes">(c) Fiz Vazquez &lt;vud1@sindominio.net&gt;</property>
   <property name="comments" translatable="yes">Track sporting activities and performance</property>
   <property name="license" translatable="yes">(C) Fiz Vazquez

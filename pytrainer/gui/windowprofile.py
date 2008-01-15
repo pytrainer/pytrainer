@@ -161,7 +161,9 @@ class WindowProfile(SimpleGladeApp):
 
 	def on_newsport_accept_clicked(self,widget):
 		sport = self.newsportentry.get_text()
-		self.parent.addNewSport(sport)
+		met = self.newmetentry.get_text()
+		weight = self.newweightentry.get_text()
+		self.parent.addNewSport(sport,met,weight)
 		self.parent.actualize_mainsportlist()
 		self.on_switch_page(None,None,2)
 		self.hidesportsteps()
@@ -194,7 +196,10 @@ class WindowProfile(SimpleGladeApp):
 		try:
 			sport = selected.get_value(iter,0)
 			self.sportnameedit.set_text(sport)
+			name,met,weight = self.parent.getSportInfo(sport)
 			self.editsportentry.set_text(sport)
+			self.editweightentry.set_text(str(weight))
+			self.editmetentry.set_text(str(met))
 			self.hidesportsteps()
 			self.editsport.show()
 		except:
@@ -203,7 +208,9 @@ class WindowProfile(SimpleGladeApp):
 	def on_editsport_accept_clicked(self,widget):
 		oldnamesport = self.sportnameedit.get_text()
 		newnamesport = self.editsportentry.get_text()
-		self.parent.updateSport(oldnamesport,newnamesport)
+		newmetsport = self.editmetentry.get_text()
+		newweightsport = self.editweightentry.get_text()
+		self.parent.updateSport(oldnamesport,newnamesport,newmetsport,newweightsport)
 		self.parent.actualize_mainsportlist()
 		self.on_switch_page(None,None,2)
 		self.hidesportsteps()

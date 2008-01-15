@@ -76,9 +76,9 @@ class Profile:
 		else:
 			return connection
 
-	def addNewSport(self,sport):
-		sport = [sport]
-		self.ddbb.insert("sports","name",sport)
+	def addNewSport(self,sport,weight,met):
+		sport = [sport,met,weight]
+		self.ddbb.insert("sports","name,met,weight",sport)
 		
 	def delSport(self,sport):
 		condition = "name=\"%s\"" %sport
@@ -86,8 +86,11 @@ class Profile:
 		self.ddbb.delete("records","sport=\"%d\""%id_sport)
 		self.ddbb.delete("sports","id_sports=\"%d\""%id_sport)
 		
-	def updateSport(self,oldnamesport,newnamesport):
-		self.ddbb.update("sports","name",[newnamesport],"name=\"%s\""%oldnamesport)
+	def updateSport(self,oldnamesport,newnamesport,newmetsport,newweightsport):
+		self.ddbb.update("sports","name,weight,met",[newnamesport,newmetsport,newweightsport],"name=\"%s\""%oldnamesport)
+	
+	def getSportInfo(self,namesport):
+		return self.ddbb.select("sports","name,weight,met","name=\"%s\""%namesport)[0]
 	
 	def build_ddbb(self):
 		self.ddbb.build_ddbb()
