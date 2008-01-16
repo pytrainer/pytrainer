@@ -59,9 +59,10 @@ class WindowProfile(SimpleGladeApp):
 			self.prf_ddbb.insert_text(i,self.ddbb_type[i])
 
 		#preparamos la lista sports:
-		column_names=["Sport"]
+		column_names=[_("Sport"),_("MET"),_("Extra Weight")]
 		for column_index, column_name in enumerate(column_names):
 			column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
+			column.set_resizable(True)
 			self.sportTreeView.append_column(column)
 					       
 		
@@ -104,12 +105,24 @@ class WindowProfile(SimpleGladeApp):
 			else:
         			store = gtk.ListStore(
             				gobject.TYPE_STRING,
+            				gobject.TYPE_STRING,
+            				gobject.TYPE_STRING,
             				object)
 				for i in sport_list:
+					if not i[1]:
+						met = i[1]
+					else:
+						met = 0
+					if not i[2]:
+						weight = i[2]
+					else:
+						weight = 0
                 			iter = store.append()
                 			store.set (
                     				iter,
-                    				0, i[0]
+                    				0, str(i[0]),
+                    				1, i[1],
+                    				2, i[2]
                     				)
         			self.sportTreeView.set_model(store)
 				#self.sportlistbutton.hide()
@@ -136,12 +149,20 @@ class WindowProfile(SimpleGladeApp):
 		self.quit()
 
 	def _ddbb_value_active(self):
+		self.prf_ddbbhost_label.set_sensitive(1)
+		self.prf_ddbbname_label.set_sensitive(1)
+		self.prf_ddbbuser_label.set_sensitive(1)
+		self.prf_ddbbpass_label.set_sensitive(1)
 		self.prf_ddbbhost.set_sensitive(1)
 		self.prf_ddbbname.set_sensitive(1)
 		self.prf_ddbbuser.set_sensitive(1)
 		self.prf_ddbbpass.set_sensitive(1)
 	
 	def _ddbb_value_deactive(self):
+		self.prf_ddbbhost_label.set_sensitive(0)
+		self.prf_ddbbname_label.set_sensitive(0)
+		self.prf_ddbbuser_label.set_sensitive(0)
+		self.prf_ddbbpass_label.set_sensitive(0)
 		self.prf_ddbbhost.set_sensitive(0)
 		self.prf_ddbbname.set_sensitive(0)
 		self.prf_ddbbuser.set_sensitive(0)

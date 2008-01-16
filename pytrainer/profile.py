@@ -72,7 +72,7 @@ class Profile:
 	def getSportList(self):
 		connection = self.ddbb.connect()
 		if (connection == 1):
-			return self.ddbb.select("sports","name",None)
+			return self.ddbb.select("sports","name,met,weight",None)
 		else:
 			return connection
 
