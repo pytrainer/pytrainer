@@ -1,5 +1,0 @@
-while decimal != 0:
-...     bit = decimal %2
-...     binary = bit + (10 * binary)
-...     decimal = decimal/2
-

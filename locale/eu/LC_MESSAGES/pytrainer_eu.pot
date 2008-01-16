@@ -1,271 +1,296 @@
 # Basque translations for vud package.
-# Copyright (C) 2007 THE vud'S COPYRIGHT HOLDER
+# Copyright (C) 2008 THE vud'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the vud package.
-# Fiz Vazquez <vud1@sindominio.net>, 2007.
+# Fiz Vazquez <vud1@sindominio.net>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: vud 1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-12-09 23:06+0100\n"
-"PO-Revision-Date: 2008-01-04 20:21+0100\n"
-"Last-Translator: Jabier Santamaria <mendikote@gmail.com>\n"
+"POT-Creation-Date: 2008-01-16 20:03+0100\n"
+"PO-Revision-Date: 2008-01-16 20:03+0100\n"
+"Last-Translator: Fiz Vazquez <vud1@sindominio.net>\n"
 "Language-Team: Basque\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=ASCII\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
 
 #: glade/pytrainer.glade:10
 msgid "window1"
-msgstr "leihoa1"
+msgstr ""
 
 #: glade/pytrainer.glade:50
 msgid "_File"
-msgstr "Fitxategia"
+msgstr ""
 
 #: glade/pytrainer.glade:74
-msgid "_Export as text separated by commas"
-msgstr "Komarekin banatutako testu bezala esportatu"
+msgid "_Export as Text Separated by Commas"
+msgstr ""
 
 #: glade/pytrainer.glade:114
 msgid "_Edit"
-msgstr "Editatu"
+msgstr ""
 
 #: glade/pytrainer.glade:136
 msgid "_View"
-msgstr "Ikusi"
+msgstr ""
 
 #: glade/pytrainer.glade:145
 msgid " _Classic View"
-msgstr "Ikuspegi klasikoa"
+msgstr ""
 
 #: glade/pytrainer.glade:156
 msgid " _List View"
-msgstr "Zerrenda ikuspegia"
+msgstr ""
 
 #: glade/pytrainer.glade:168
-msgid " _Waypoints Editor View"
-msgstr "Waypoints editorea"
+msgid " _Waypoints Editor"
+msgstr ""
 
 #: glade/pytrainer.glade:184
 msgid "Tools"
-msgstr "Tresnak"
+msgstr ""
 
-#: glade/pytrainer.glade:194
+#: glade/pytrainer.glade:194 glade/pytrainer.glade:9226
 msgid "Extensions"
-msgstr "Gehigarriak"
+msgstr ""
 
 #: glade/pytrainer.glade:204
-msgid "Gps Device Plugins"
-msgstr "GPS gailu plugin-ak"
+msgid "GPS Device Plugins"
+msgstr ""
 
 #: glade/pytrainer.glade:218
 msgid "_Help"
-msgstr "Laguntza"
+msgstr ""
 
-#: glade/pytrainer.glade:338 glade/pytrainer.glade:4810
+#: glade/pytrainer.glade:338 glade/pytrainer.glade:5695
 #: pytrainer/gui/windowmain.py:49 pytrainer/gui/windowmain.py:52
-#: pytrainer/gui/windowmain.py:378
+#: pytrainer/gui/windowmain.py:393
 msgid "Sport"
-msgstr "Kirola"
+msgstr ""
 
 #: glade/pytrainer.glade:364
 msgid "All Sports"
-msgstr "Kirol guztiak"
+msgstr ""
 
-#: glade/pytrainer.glade:472 glade/pytrainer.glade:1658
-#: glade/pytrainer.glade:2414 glade/pytrainer.glade:3125
+#: glade/pytrainer.glade:473 glade/pytrainer.glade:1677
+#: glade/pytrainer.glade:2400 glade/pytrainer.glade:3156
+#: glade/pytrainer.glade:3938
 msgid "<b>Beats avg:</b>"
-msgstr "<b>Bataz besteko taupadak</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:522
+#: glade/pytrainer.glade:523
 msgid " bpm"
-msgstr "bpm"
+msgstr ""
 
-#: glade/pytrainer.glade:550 glade/pytrainer.glade:1630
-#: glade/pytrainer.glade:2386 glade/pytrainer.glade:3097
+#: glade/pytrainer.glade:551 glade/pytrainer.glade:1649
+#: glade/pytrainer.glade:2372 glade/pytrainer.glade:3128
+#: glade/pytrainer.glade:3910
 msgid "<b>Time:</b>"
-msgstr "<b>Denbora:</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:578 glade/pytrainer.glade:1602
-#: glade/pytrainer.glade:2358 glade/pytrainer.glade:3069
+#: glade/pytrainer.glade:579 glade/pytrainer.glade:2344
+#: glade/pytrainer.glade:3100 glade/pytrainer.glade:3882
 msgid "<b>Distance:</b>"
-msgstr "<b>Distantzia</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:632 glade/pytrainer.glade:677
-#: glade/pytrainer.glade:1903 glade/pytrainer.glade:1948
-#: glade/pytrainer.glade:2659 glade/pytrainer.glade:2704
-#: glade/pytrainer.glade:3370 glade/pytrainer.glade:3415
-#: glade/pytrainer.glade:5178 glade/pytrainer.glade:5223
+#: glade/pytrainer.glade:633 glade/pytrainer.glade:678
+#: glade/pytrainer.glade:1922 glade/pytrainer.glade:1967
+#: glade/pytrainer.glade:2645 glade/pytrainer.glade:2690
+#: glade/pytrainer.glade:3401 glade/pytrainer.glade:3446
+#: glade/pytrainer.glade:4183 glade/pytrainer.glade:4228
+#: glade/pytrainer.glade:6004 glade/pytrainer.glade:6049
 msgid ":"
-msgstr ":"
+msgstr ""
 
-#: glade/pytrainer.glade:782
+#: glade/pytrainer.glade:783
 msgid " Km"
-msgstr "km"
+msgstr ""
 
-#: glade/pytrainer.glade:810 glade/pytrainer.glade:1714
-#: glade/pytrainer.glade:2470 glade/pytrainer.glade:3181
+#: glade/pytrainer.glade:811 glade/pytrainer.glade:1733
+#: glade/pytrainer.glade:2456 glade/pytrainer.glade:3212
+#: glade/pytrainer.glade:3994
 msgid "<b>Calories: </b>"
-msgstr "<b>Kaloriak:</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:860
+#: glade/pytrainer.glade:861
 msgid " Cal"
-msgstr "Kal"
+msgstr ""
 
-#: glade/pytrainer.glade:888 glade/pytrainer.glade:1686
-#: glade/pytrainer.glade:2442 glade/pytrainer.glade:3153
-msgid "<b>Average:</b>"
-msgstr "<b>Bataz bestekoa:</b>"
+#: glade/pytrainer.glade:889 glade/pytrainer.glade:2428
+#: glade/pytrainer.glade:3184 glade/pytrainer.glade:3966
+msgid "<b>Velocity:</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:938
+#: glade/pytrainer.glade:939
 msgid " km/h"
-msgstr "km/h"
+msgstr ""
 
-#: glade/pytrainer.glade:1005
+#: glade/pytrainer.glade:1006
 msgid "<b>Comments:</b>"
-msgstr "<b>Komentarioak:</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:1059 glade/pytrainer.glade:5484
-msgid "<b>Positive:</b>"
-msgstr "<b>Positiboa:</b>"
+#: glade/pytrainer.glade:1060
+msgid "<b>Ascent:</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:1103 glade/pytrainer.glade:5528
-msgid "<b>Negative:</b>"
-msgstr "<b>Negatiboa:</b>"
+#: glade/pytrainer.glade:1104
+msgid "<b>Descent:</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:1151 glade/pytrainer.glade:5576
-msgid " <b>Accumulated Unevenness:</b> "
-msgstr "<b>Metatutako desnibela</b>"
+#: glade/pytrainer.glade:1152
+msgid " <b>Accumulated Altitude Change:</b> "
+msgstr ""
 
-#: glade/pytrainer.glade:1297
+#: glade/pytrainer.glade:1298
 msgid " <b>Title:</b>"
-msgstr "<b>Titulua:</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:1386 glade/pytrainer.glade:2185
-#: glade/pytrainer.glade:2941 glade/pytrainer.glade:3652
+#: glade/pytrainer.glade:1412
+msgid ""
+"Profile\n"
+"Speed\n"
+"Pace\n"
+"Heart Rate"
+msgstr ""
+
+#: glade/pytrainer.glade:1431 glade/pytrainer.glade:3728
+#: glade/pytrainer.glade:4510
+msgid "Versus"
+msgstr ""
+
+#: glade/pytrainer.glade:1456
+msgid ""
+"None\n"
+"Profile\n"
+"Speed\n"
+"Pace\n"
+"Heart Rate\n"
+msgstr ""
+
+#: glade/pytrainer.glade:1621
+msgid "<b>Maximun:</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:1705
+msgid "<b>Average:</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:1761 glade/pytrainer.glade:2484
+#: glade/pytrainer.glade:3240 glade/pytrainer.glade:4022
+msgid "Km"
+msgstr ""
+
+#: glade/pytrainer.glade:1789 glade/pytrainer.glade:2512
+#: glade/pytrainer.glade:3268 glade/pytrainer.glade:4050
+msgid "bpm"
+msgstr ""
+
+#: glade/pytrainer.glade:1817 glade/pytrainer.glade:2540
+#: glade/pytrainer.glade:3296 glade/pytrainer.glade:4078
+msgid "km/h"
+msgstr ""
+
+#: glade/pytrainer.glade:1845 glade/pytrainer.glade:2568
+#: glade/pytrainer.glade:3324 glade/pytrainer.glade:4106
+msgid "Cal"
+msgstr ""
+
+#: glade/pytrainer.glade:1906
+msgid "999"
+msgstr ""
+
+#: glade/pytrainer.glade:2129
+msgid " <b>Heart Rate:</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:2285
+msgid "Record"
+msgstr ""
+
+#: glade/pytrainer.glade:2852
+msgid " <b>Date:</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:2927
 msgid "Value"
-msgstr "Balorea"
+msgstr ""
 
-#: glade/pytrainer.glade:1411 glade/pytrainer.glade:2210
+#: glade/pytrainer.glade:2952
 msgid ""
 "Stage Profile\n"
 "Stage Velocity\n"
 "Stage Profile/velocity"
-msgstr "Etaparen profila\n"
-"Etaparen abiadura\n"
-"Etaparen profila/abiadura"
+msgstr ""
 
-#: glade/pytrainer.glade:1543
-msgid "Record"
-msgstr "Erregistroa"
-
-#: glade/pytrainer.glade:1742 glade/pytrainer.glade:2498
-#: glade/pytrainer.glade:3209
-msgid "Km"
-msgstr "km"
-
-#: glade/pytrainer.glade:1770 glade/pytrainer.glade:2526
-#: glade/pytrainer.glade:3237
-msgid "bpm"
-msgstr "bpm"
-
-#: glade/pytrainer.glade:1798 glade/pytrainer.glade:2554
-#: glade/pytrainer.glade:3265
-msgid "km/h"
-msgstr "km/h"
-
-#: glade/pytrainer.glade:1826 glade/pytrainer.glade:2582
-#: glade/pytrainer.glade:3293
-msgid "Cal"
-msgstr "Kal"
-
-#: glade/pytrainer.glade:2110
-msgid " <b>Date:</b>"
-msgstr "<b>Data:</b>"
-
-#: glade/pytrainer.glade:2299
+#: glade/pytrainer.glade:3041
 msgid "Day"
-msgstr "Eguna"
+msgstr ""
 
-#: glade/pytrainer.glade:2759 glade/pytrainer.glade:4751
+#: glade/pytrainer.glade:3501 glade/pytrainer.glade:5636
 msgid " "
-msgstr "."
+msgstr ""
 
-#: glade/pytrainer.glade:2866
+#: glade/pytrainer.glade:3608
 msgid " <b>Month:</b>"
-msgstr "<b>Hilabetea:</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:2966 glade/pytrainer.glade:3677
+#: glade/pytrainer.glade:3708 glade/pytrainer.glade:4490
 msgid ""
 "Kilometers\n"
 "Time\n"
 "Beats\n"
 "Average\n"
 "Calories"
-msgstr "Kilometroak\n"
-"Denbora\n"
-"Taupadak\n"
-"Bataz bestekoa\n"
-"Kaloriak"
-
-#: glade/pytrainer.glade:3010
-msgid "Month"
-msgstr "Hilabetea"
-
-#: glade/pytrainer.glade:3354
-msgid "999"
 msgstr ""
 
-#: glade/pytrainer.glade:3577
+#: glade/pytrainer.glade:3753 glade/pytrainer.glade:4535
+msgid ""
+"None\n"
+"Kilometers\n"
+"Time\n"
+"Beats\n"
+"Average\n"
+"Calories"
+msgstr ""
+
+#: glade/pytrainer.glade:3823
+msgid "Month"
+msgstr ""
+
+#: glade/pytrainer.glade:4390
 msgid " <b>Year:</b>"
-msgstr "<b>Urtea:</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:3721
+#: glade/pytrainer.glade:4605
 msgid "Year"
-msgstr "Urtea"
+msgstr ""
 
-#: glade/pytrainer.glade:3764
+#: glade/pytrainer.glade:4648
 msgid "label154"
-msgstr "."
+msgstr ""
 
-#: glade/pytrainer.glade:3801
+#: glade/pytrainer.glade:4685
 msgid "<b>Title:</b>"
-msgstr "<b>Titulua:</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:3846
+#: glade/pytrainer.glade:4730
 msgid "Search"
-msgstr "Bilatu"
+msgstr ""
 
-#: glade/pytrainer.glade:3893
+#: glade/pytrainer.glade:4777
 msgid "Columns"
-msgstr "Zutabeak"
+msgstr ""
 
-#: glade/pytrainer.glade:3968
+#: glade/pytrainer.glade:4852
 msgid "label155"
-msgstr "."
+msgstr ""
 
-#: glade/pytrainer.glade:4145
-msgid " <b>Name:</b>"
-msgstr "<b>Izena:</b>"
+#: glade/pytrainer.glade:4986
+msgid "Type:"
+msgstr ""
 
-#: glade/pytrainer.glade:4173
-msgid " <b>Description:</b>"
-msgstr "<b>Deskribapena:</b>"
-
-#: glade/pytrainer.glade:4201
-msgid " <b>Latitude: </b>"
-msgstr "<b>Latitudea:</b>"
-
-#: glade/pytrainer.glade:4229
-msgid " <b>Longitude:</b>"
-msgstr "<b>Longitudea:</b>"
-
-#: glade/pytrainer.glade:4257
-msgid " <b>Type:</b>"
-msgstr "<b>Mota:</b>"
-
-#: glade/pytrainer.glade:4329
+#: glade/pytrainer.glade:5014
 msgid ""
 "Font\n"
 "Restaurant\n"
@@ -273,199 +298,274 @@ msgid ""
 "Summit"
 msgstr ""
 
-#: glade/pytrainer.glade:4354
+#: glade/pytrainer.glade:5035
+msgid "Latitude: "
+msgstr ""
+
+#: glade/pytrainer.glade:5063
+msgid " Name:"
+msgstr ""
+
+#: glade/pytrainer.glade:5091
+msgid "Longitude:"
+msgstr ""
+
+#: glade/pytrainer.glade:5119 glade/pytrainer.glade:9414
+#: glade/pytrainer.glade:9737
+msgid "Description:"
+msgstr ""
+
+#: glade/pytrainer.glade:5239
 msgid "<b> Waypoint: </b>"
-msgstr "<b>.Waypoint:</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:4439
+#: glade/pytrainer.glade:5324
 msgid "label-2147483648"
-msgstr "."
+msgstr ""
 
-#: glade/pytrainer.glade:4487
+#: glade/pytrainer.glade:5372
 msgid "label162"
-msgstr "."
+msgstr ""
 
-#: glade/pytrainer.glade:4627
+#: glade/pytrainer.glade:5512
 msgid "label163"
-msgstr "."
+msgstr ""
 
-#: glade/pytrainer.glade:4652 glade/pytrainer.glade:5684
+#: glade/pytrainer.glade:5537 glade/pytrainer.glade:6837
 msgid "New Entry"
-msgstr "Sarrera berria"
+msgstr ""
 
-#: glade/pytrainer.glade:4700 pytrainer/gui/windowmain.py:52
-#: pytrainer/gui/windowmain.py:376 pytrainer/gui/dialogselecttrack.py:36
+#: glade/pytrainer.glade:5585 pytrainer/gui/windowmain.py:52
+#: pytrainer/gui/windowmain.py:391 pytrainer/gui/dialogselecttrack.py:36
 msgid "Date"
-msgstr "Data"
+msgstr ""
 
-#: glade/pytrainer.glade:4865 pytrainer/gui/windowmain.py:52
-#: pytrainer/gui/windowmain.py:375
+#: glade/pytrainer.glade:5750 pytrainer/gui/windowmain.py:52
+#: pytrainer/gui/windowmain.py:390
 msgid "Title"
-msgstr "Titulua"
+msgstr ""
 
-#: glade/pytrainer.glade:4923
+#: glade/pytrainer.glade:5808
 msgid "GPX file"
-msgstr "GPX fitxategia"
+msgstr ""
 
-#: glade/pytrainer.glade:4985
+#: glade/pytrainer.glade:5870
 msgid "Calculate Values"
-msgstr "Balioak kalkulatu"
+msgstr ""
 
-#: glade/pytrainer.glade:5018
-msgid "Beats avg (bpm)"
-msgstr "Bataz besteko taupadak (bpm)"
-
-#: glade/pytrainer.glade:5074
+#: glade/pytrainer.glade:5902
 msgid "Distance (Km)"
-msgstr "Distantzia (km)"
+msgstr ""
 
-#: glade/pytrainer.glade:5124 pytrainer/gui/windowmain.py:52
-#: pytrainer/gui/windowmain.py:379
+#: glade/pytrainer.glade:5929 pytrainer/gui/windowmain.py:52
+#: pytrainer/gui/windowmain.py:394
 msgid "Time"
-msgstr "Denbora"
+msgstr ""
 
-#: glade/pytrainer.glade:5278
-msgid "Average (km/h)"
-msgstr "Bataz bestekoa (km/h)"
-
-#: glade/pytrainer.glade:5328
-msgid "Calculate Distance"
-msgstr "Distantzia kalkulatu"
-
-#: glade/pytrainer.glade:5348
-msgid "Calculate Time"
-msgstr "Denbora kalkulatu"
-
-#: glade/pytrainer.glade:5368
-msgid "Calculate Average"
-msgstr "Bataz bestekoa kalkulatu"
-
-#: glade/pytrainer.glade:5409 pytrainer/gui/windowmain.py:382
+#: glade/pytrainer.glade:6104 pytrainer/gui/windowmain.py:397
+#: pytrainer/monthgraph.py:77
 msgid "Calories"
-msgstr "Kaloriak"
+msgstr ""
 
-#: glade/pytrainer.glade:5615
+#: glade/pytrainer.glade:6153
+msgid "<b>Pace</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:6224 glade/pytrainer.glade:6512
+msgid "Calculate Average"
+msgstr ""
+
+#: glade/pytrainer.glade:6242 pytrainer/monthgraph.py:75
+msgid "Average (km/h)"
+msgstr ""
+
+#: glade/pytrainer.glade:6270
+msgid "Maxim (km/h)"
+msgstr ""
+
+#: glade/pytrainer.glade:6298
+msgid "<b>Velocity</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:6327
+msgid "Calculate Distance"
+msgstr ""
+
+#: glade/pytrainer.glade:6347
+msgid "Calculate Time"
+msgstr ""
+
+#: glade/pytrainer.glade:6367
+msgid "Calculate Calories"
+msgstr ""
+
+#: glade/pytrainer.glade:6385
+msgid "<b>Accumulated Altitude Change</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:6455
+msgid "Average (min/km)"
+msgstr ""
+
+#: glade/pytrainer.glade:6483
+msgid "Maxim (min/km)"
+msgstr ""
+
+#: glade/pytrainer.glade:6531
+msgid "Ascent"
+msgstr ""
+
+#: glade/pytrainer.glade:6559
+msgid "Descent"
+msgstr ""
+
+#: glade/pytrainer.glade:6629
+msgid "<b>Heart Rate</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:6657
+msgid "Maxim (bpm)"
+msgstr ""
+
+#: glade/pytrainer.glade:6685 pytrainer/gui/windowmain.py:52
+#: pytrainer/gui/windowmain.py:396
+msgid "Average"
+msgstr ""
+
+#: glade/pytrainer.glade:6756
 msgid "<b>Comments</b>"
-msgstr "<b>Komentarioa</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:5789 glade/pytrainer.glade:6083
+#: glade/pytrainer.glade:6942 glade/pytrainer.glade:7237
 msgid "Profile"
-msgstr "Profila"
+msgstr ""
 
-#: glade/pytrainer.glade:5835
+#: glade/pytrainer.glade:6989 glade/pytrainer.glade:7831
+#: glade/pytrainer.glade:8379
 msgid "Name"
-msgstr "Izena"
+msgstr ""
 
-#: glade/pytrainer.glade:5863
+#: glade/pytrainer.glade:7017
 msgid "Gender"
-msgstr "Generoa"
+msgstr ""
 
-#: glade/pytrainer.glade:5891
+#: glade/pytrainer.glade:7045
 msgid "Weight"
-msgstr "Pisua"
+msgstr ""
 
-#: glade/pytrainer.glade:5919
+#: glade/pytrainer.glade:7073
 msgid "Height"
-msgstr "Altuera"
+msgstr ""
 
-#: glade/pytrainer.glade:6010
+#: glade/pytrainer.glade:7164
 msgid "Age"
-msgstr "Edadea"
+msgstr ""
 
-#: glade/pytrainer.glade:6113
+#: glade/pytrainer.glade:7267
 msgid "<b>Database</b>"
-msgstr "<b>Datubasea</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:6147
+#: glade/pytrainer.glade:7301
 msgid "Database Type"
-msgstr "Datubase mota"
+msgstr ""
 
-#: glade/pytrainer.glade:6175
+#: glade/pytrainer.glade:7329
 msgid "Database Host"
-msgstr "Datubase zerbitzaria"
+msgstr ""
 
-#: glade/pytrainer.glade:6224
+#: glade/pytrainer.glade:7378
 msgid "Database Pass"
-msgstr "Datubasearen pasahitza"
+msgstr ""
 
-#: glade/pytrainer.glade:6273
+#: glade/pytrainer.glade:7427
 msgid "Database User "
-msgstr "Datubasearen erabiltzailea"
+msgstr ""
 
-#: glade/pytrainer.glade:6322
+#: glade/pytrainer.glade:7476
 msgid "Database Name"
-msgstr "Datubasearen izena"
+msgstr ""
 
-#: glade/pytrainer.glade:6403
+#: glade/pytrainer.glade:7557
 msgid "Database"
-msgstr "Datubase"
+msgstr ""
 
-#: glade/pytrainer.glade:6441
+#: glade/pytrainer.glade:7595
 msgid "<b>Sport list</b>"
-msgstr "<b>Kirolen zerrenda</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:6592
+#: glade/pytrainer.glade:7746
 msgid "llist"
 msgstr ""
 
-#: glade/pytrainer.glade:6621
+#: glade/pytrainer.glade:7775
 msgid "<b>Add new Sport</b>"
-msgstr "<b>Kirol berria gehitu</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:6781
+#: glade/pytrainer.glade:7859 glade/pytrainer.glade:8428
+msgid "M.E.T."
+msgstr ""
+
+#: glade/pytrainer.glade:7908 glade/pytrainer.glade:8477
+msgid "Extra Weight"
+msgstr ""
+
+#: glade/pytrainer.glade:8042
 msgid "new"
-msgstr "berria"
+msgstr ""
 
-#: glade/pytrainer.glade:6816
+#: glade/pytrainer.glade:8077
 msgid "<b>Delete sport</b>"
-msgstr "<b>Kirola ezabatu</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:6879
+#: glade/pytrainer.glade:8140
 msgid ""
 "You are going to remove a sport. When you delete a \n"
 "sport you delete the records asociated. Are you sure \n"
 "that you want do it?"
-msgstr "Kirol bat ezabatuko duzu. Kirol bat ezabatzen \n"
-"duzunean lotutako erregistroak ezabatuko dituzu.\n"
-"Ziur zaude?"
+msgstr ""
 
-#: glade/pytrainer.glade:7016
+#: glade/pytrainer.glade:8277
 msgid "delete"
-msgstr "ezabatu"
+msgstr ""
 
-#: glade/pytrainer.glade:7051
+#: glade/pytrainer.glade:8312
 msgid "<b>Edit sport</b>"
-msgstr "<b>Kirola editatu</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:7114
-msgid "New name"
-msgstr "Izen berria"
-
-#: glade/pytrainer.glade:7243
+#: glade/pytrainer.glade:8611
 msgid "edit"
-msgstr "editatu"
+msgstr ""
 
-#: glade/pytrainer.glade:7272
+#: glade/pytrainer.glade:8640
 msgid "Sports"
-msgstr "Kirolak"
+msgstr ""
 
-#: glade/pytrainer.glade:7377
+#: glade/pytrainer.glade:8667 pytrainer/daygraph.py:58
+#: pytrainer/heartrategraph.py:36 pytrainer/recordgraph.py:76
+msgid "Heart Rate"
+msgstr ""
+
+#: glade/pytrainer.glade:8694
+msgid "General"
+msgstr ""
+
+#: glade/pytrainer.glade:8799
 msgid "Calendar"
-msgstr "Egutegia"
+msgstr ""
 
-#: glade/pytrainer.glade:7503
+#: glade/pytrainer.glade:8925
 msgid "pytrainer"
-msgstr "pytrainer"
+msgstr ""
 
-#: glade/pytrainer.glade:7504
+#: glade/pytrainer.glade:8926
 msgid "(c) Fiz Vazquez <vud1@sindominio.net>"
-msgstr "."
+msgstr ""
 
-#: glade/pytrainer.glade:7505
-msgid "The free sport trainning center"
-msgstr "Entrenamendu gune librea"
+#: glade/pytrainer.glade:8927
+msgid "Track sporting activities and performance"
+msgstr ""
 
-#: glade/pytrainer.glade:7506
+#: glade/pytrainer.glade:8928
 msgid ""
 "(C) Fiz Vazquez\n"
 "\n"
@@ -484,305 +584,329 @@ msgid ""
 "\n"
 "  You can found the license on Debian systems in the file\n"
 "  /usr/share/common-licenses/GPL\n"
-msgstr "(C) Fiz Vazquez\n"
-"\n"
-"..Programa hau software librea da;Free Software \n"
-"  Foundation-ek publitatuko GNU General Public \n"
-"  lizentziaren terminupean banatu eta aldatu \n"
-"  dezakezu; lizentziaren 2 bertsioa edo (zure \n"
-"..aukeran) ondorengo beste batean."
-"\n"
-"  Programa hau erabilgarri izango delakoan banatu da.\n"
-"  baina INONGO BERME BARIK; ez da ere SALEROSTEKO \n"
-"  EDO SASOIAN EGOTEKO HELBURU BATENTZAT. Informazio \n"
-"..gehiago ikusteko GNU General Public lizentzia \n"
-"..<http://www.opensource.org/gpl-license.html>.\n"
-"\n"
-"  Debian sistemetan lizentzia fitxategi honetan aurki \n"
-"  dezakezu /usr/sahre/common-licenses/GPL\n"
+msgstr ""
 
-#: glade/pytrainer.glade:7526
+#: glade/pytrainer.glade:8948
 msgid "pytrainer.e-oss.net"
-msgstr "."
+msgstr ""
 
-#: glade/pytrainer.glade:7528
+#: glade/pytrainer.glade:8950
 msgid ""
+"Basque: Jabier Santamaria <mendikote@gmail.com>\n"
 "Catalan: Eloi Crespillo Itchart <eloi@ikuszen.com>\n"
 "Czech: Lobus Pokorny <sp.pok@seznam.cz>\n"
 "French: Dj <dj@djremixtheblog.be>\n"
+"French: Pierre Gaigé <pgaige@free.fr>\n"
 "Norwegian: Havard Davidsen <havard.davidsen@gmail.com>\n"
 "Polish: Seweryn Kokot <skokot@po.opole.pl>\n"
 "german: Aleks <aleks@schnecklecker.de>\n"
 "Spanish: Fiz vazquez <vud1@sindominio.net>"
-msgstr "."
+msgstr ""
 
-#: glade/pytrainer.glade:7619
+#: glade/pytrainer.glade:9043
 msgid "Edit Record"
-msgstr "Erregistroa editatu"
+msgstr ""
 
-#: glade/pytrainer.glade:7640
+#: glade/pytrainer.glade:9064
 msgid "Show graph in classic view"
-msgstr "Grafikoa ikuspegi klasikoan ikusi"
+msgstr ""
 
-#: glade/pytrainer.glade:7676
+#: glade/pytrainer.glade:9100
 msgid "warning"
-msgstr "abisua"
+msgstr ""
 
-#: glade/pytrainer.glade:7802
-msgid "window2"
-msgstr "window2"
+#: glade/pytrainer.glade:9302
+msgid "<b>Extension Details</b>"
+msgstr ""
 
-#: glade/pytrainer.glade:7878 glade/pytrainer.glade:8228
-msgid "<b>Name:</b>"
-msgstr "<b>Izena:</b>"
-
-#: glade/pytrainer.glade:7906 glade/pytrainer.glade:8256
-msgid "<b>Description:</b>"
-msgstr "<b>Deskribapena:</b>"
-
-#: glade/pytrainer.glade:7934 glade/pytrainer.glade:8284
-msgid "<b>Status:</b>"
-msgstr "<b>Egoera:</b>"
-
-#: glade/pytrainer.glade:7962
+#: glade/pytrainer.glade:9330
 msgid "name-entry"
 msgstr ""
 
-#: glade/pytrainer.glade:7990 glade/pytrainer.glade:8340
-msgid "description-entry"
+#: glade/pytrainer.glade:9358 glade/pytrainer.glade:9849
+msgid "Name:"
 msgstr ""
 
-#: glade/pytrainer.glade:8018 glade/pytrainer.glade:8368
+#: glade/pytrainer.glade:9386 glade/pytrainer.glade:9793
+msgid "Status:"
+msgstr ""
+
+#: glade/pytrainer.glade:9442 glade/pytrainer.glade:9765
 msgid "status-entry"
 msgstr ""
 
-#: glade/pytrainer.glade:8153
+#: glade/pytrainer.glade:9470
+msgid "description-entry"
+msgstr ""
+
+#: glade/pytrainer.glade:9605
 msgid "Plugins"
-msgstr "Plugin-ak"
+msgstr ""
 
-#: glade/pytrainer.glade:8312
+#: glade/pytrainer.glade:9680
+msgid "<b>Plugin Details</b>"
+msgstr ""
+
+#: glade/pytrainer.glade:9709
+msgid "description-entry "
+msgstr ""
+
+#: glade/pytrainer.glade:9821
 msgid "nameEntry"
-msgstr "Sarrera berria"
+msgstr ""
 
-#: glade/pytrainer.glade:8511
+#: glade/pytrainer.glade:9992
 msgid "Select track record"
-msgstr "Track-a aukeratu"
+msgstr ""
 
-#: pytrainer/main.py:90
+#: pytrainer/main.py:92
 msgid "No Active Plugins"
-msgstr "Ez dago plug aktiborik"
+msgstr ""
 
-#: pytrainer/main.py:99
+#: pytrainer/main.py:101
 msgid "No Active Extensions"
-msgstr "Ez dago gehigarri aktiborik"
+msgstr ""
 
-#: pytrainer/main.py:208
+#: pytrainer/main.py:237
 msgid "You are going to remove one database entry. Are you sure yo want do it?"
-msgstr "Datubasearen sarrera bat ezabatuko duzu? Ziur zaude?"
+msgstr ""
 
-#: pytrainer/main.py:219
+#: pytrainer/main.py:248
 msgid "You are going to remove one waypoint. Are you sure yo want do it?"
-msgstr "Waypoint ezabatuko duzu? Ziur zaude?"
+msgstr ""
+
+#: pytrainer/lib/gpx.py:52
+msgid "No Name"
+msgstr ""
+
+#: pytrainer/lib/gpx.py:58
+msgid "No Data"
+msgstr ""
 
 #: pytrainer/lib/date.py:72
 msgid "January"
-msgstr "Urtarrila"
+msgstr ""
 
 #: pytrainer/lib/date.py:73
 msgid "Febrary"
-msgstr "Otsaila"
+msgstr ""
 
 #: pytrainer/lib/date.py:74
 msgid "March"
-msgstr "Martxoa"
+msgstr ""
 
 #: pytrainer/lib/date.py:75
 msgid "April"
-msgstr "Apirila"
+msgstr ""
 
 #: pytrainer/lib/date.py:76
 msgid "May"
-msgstr "Maiatza"
+msgstr ""
 
 #: pytrainer/lib/date.py:77
 msgid "June"
-msgstr "Ekaina"
+msgstr ""
 
 #: pytrainer/lib/date.py:78
 msgid "July"
-msgstr "Uztaila"
+msgstr ""
 
 #: pytrainer/lib/date.py:79
 msgid "August"
-msgstr "Abuztua"
+msgstr ""
 
 #: pytrainer/lib/date.py:80
 msgid "September"
-msgstr "Iraila"
+msgstr ""
 
 #: pytrainer/lib/date.py:81
 msgid "October"
-msgstr "Urria"
+msgstr ""
 
 #: pytrainer/lib/date.py:82
 msgid "November"
-msgstr "Azaroa"
+msgstr ""
 
 #: pytrainer/lib/date.py:83
 msgid "December"
-msgstr "Abendua"
+msgstr ""
 
-#: pytrainer/yeargraph.py:37 pytrainer/yeargraph.py:39
-#: pytrainer/yeargraph.py:41 pytrainer/yeargraph.py:43
-#: pytrainer/yeargraph.py:45
+#: pytrainer/yeargraph.py:70 pytrainer/yeargraph.py:72
+#: pytrainer/yeargraph.py:74 pytrainer/yeargraph.py:76
+#: pytrainer/yeargraph.py:78
 msgid "month"
-msgstr "hilabete"
+msgstr ""
 
-#: pytrainer/yeargraph.py:37 pytrainer/monthgraph.py:37
+#: pytrainer/yeargraph.py:70
 msgid "kilometers"
-msgstr "kilometroak"
+msgstr ""
 
-#: pytrainer/yeargraph.py:37
+#: pytrainer/yeargraph.py:70
 msgid "monthly kilometers"
-msgstr "hilabeteko kilometroak"
+msgstr ""
 
-#: pytrainer/yeargraph.py:39 pytrainer/monthgraph.py:39
+#: pytrainer/yeargraph.py:72
 msgid "time in hours"
-msgstr "Denbora orduetan"
+msgstr ""
 
-#: pytrainer/yeargraph.py:39
+#: pytrainer/yeargraph.py:72
 msgid "monthly time"
-msgstr "hilabeteko denbora"
+msgstr ""
 
-#: pytrainer/yeargraph.py:41 pytrainer/monthgraph.py:41
+#: pytrainer/yeargraph.py:74
 msgid "beats per minute"
-msgstr "minutuko taupadak"
+msgstr ""
 
-#: pytrainer/yeargraph.py:41
+#: pytrainer/yeargraph.py:74
 msgid "monthly beats"
-msgstr "hilabeteko taupadak"
+msgstr ""
 
-#: pytrainer/yeargraph.py:43 pytrainer/monthgraph.py:43
+#: pytrainer/yeargraph.py:76
 msgid "average (hm/h)"
-msgstr "bataz bestekoa (km/h)"
+msgstr ""
 
-#: pytrainer/yeargraph.py:43
+#: pytrainer/yeargraph.py:76
 msgid "monthly averages"
-msgstr "minutuko bataz bestekoa"
+msgstr ""
 
-#: pytrainer/yeargraph.py:45 pytrainer/monthgraph.py:45
+#: pytrainer/yeargraph.py:78
 msgid "calories"
-msgstr "kaloriak"
+msgstr ""
 
-#: pytrainer/yeargraph.py:45
+#: pytrainer/yeargraph.py:78
 msgid "monthly calories"
-msgstr "hilabteko kaloriak"
+msgstr ""
 
 #: pytrainer/gui/windowmain.py:49 pytrainer/gui/windowmain.py:52
 #: pytrainer/gui/windowmain.py:56
 msgid "id"
-msgstr "id"
+msgstr ""
 
 #: pytrainer/gui/windowmain.py:49
 msgid "Kilometer"
-msgstr "Kilometroak"
+msgstr ""
 
-#: pytrainer/gui/windowmain.py:52 pytrainer/gui/windowmain.py:377
+#: pytrainer/gui/windowmain.py:52 pytrainer/gui/windowmain.py:392
 msgid "Distance"
-msgstr "Distantzia"
+msgstr ""
 
-#: pytrainer/gui/windowmain.py:52 pytrainer/gui/windowmain.py:380
+#: pytrainer/gui/windowmain.py:52 pytrainer/gui/windowmain.py:395
 msgid "Beats"
-msgstr "Taupadak"
-
-#: pytrainer/gui/windowmain.py:52 pytrainer/gui/windowmain.py:381
-msgid "Average"
-msgstr "Bataz bestekoa"
+msgstr ""
 
 #: pytrainer/gui/windowmain.py:56
 msgid "Waypoint"
-msgstr "Waypoint"
+msgstr ""
 
-#: pytrainer/gui/windowplugins.py:72 pytrainer/gui/windowextensions.py:70
-msgid "Active"
-msgstr "Aktiboa"
+#: pytrainer/gui/windowplugins.py:70 pytrainer/gui/windowplugins.py:97
+#: pytrainer/gui/windowextensions.py:70
+msgid "Enable"
+msgstr ""
 
-#: pytrainer/gui/windowplugins.py:74 pytrainer/gui/windowextensions.py:72
-msgid "unActive"
-msgstr "Ez aktiboa"
+#: pytrainer/gui/windowplugins.py:72 pytrainer/gui/windowplugins.py:96
+#: pytrainer/gui/windowextensions.py:72
+msgid "Disable"
+msgstr ""
 
-#: pytrainer/gui/windowplugins.py:83 pytrainer/gui/windowextensions.py:81
+#: pytrainer/gui/windowplugins.py:81 pytrainer/gui/windowextensions.py:81
 #, python-format
 msgid "%s settings"
-msgstr "%s aukerak"
+msgstr ""
 
-#: pytrainer/gui/windowplugins.py:106 pytrainer/gui/windowextensions.py:104
+#: pytrainer/gui/windowplugins.py:104 pytrainer/gui/windowextensions.py:104
 #: pytrainer/gui/windowextensions.py:117
 msgid "Ok"
-msgstr "Ok"
+msgstr ""
+
+#: pytrainer/gui/windowprofile.py:44
+msgid "Male"
+msgstr ""
+
+#: pytrainer/gui/windowprofile.py:45
+msgid "Female"
+msgstr ""
 
 #: pytrainer/gui/dialogselecttrack.py:36
 msgid "Track Name"
-msgstr "Bidearen izena"
+msgstr ""
 
-#: pytrainer/daygraph.py:48 pytrainer/daygraph.py:50
-#: pytrainer/recordgraph.py:48 pytrainer/recordgraph.py:50
+#: pytrainer/daygraph.py:54 pytrainer/daygraph.py:56 pytrainer/daygraph.py:58
+#: pytrainer/heartrategraph.py:36 pytrainer/recordgraph.py:72
+#: pytrainer/recordgraph.py:74 pytrainer/recordgraph.py:76
 msgid "Distance (km)"
-msgstr "Distantzia (km)"
+msgstr ""
 
-#: pytrainer/daygraph.py:48 pytrainer/recordgraph.py:48
+#: pytrainer/daygraph.py:54 pytrainer/recordgraph.py:72
 msgid "Height (m)"
-msgstr "Altuera (m)"
+msgstr ""
 
-#: pytrainer/daygraph.py:48 pytrainer/recordgraph.py:48
+#: pytrainer/daygraph.py:54 pytrainer/recordgraph.py:72
 msgid "Stage Profile"
-msgstr "Etaparen profila"
+msgstr ""
 
-#: pytrainer/daygraph.py:50 pytrainer/recordgraph.py:50
+#: pytrainer/daygraph.py:56 pytrainer/recordgraph.py:74
 msgid "Velocity (Km/h)"
-msgstr "Abiadura (km/h)"
+msgstr ""
 
-#: pytrainer/daygraph.py:50 pytrainer/recordgraph.py:50
-msgid "velocity"
-msgstr "abiadura"
+#: pytrainer/daygraph.py:56
+msgid "Velocity"
+msgstr ""
 
-#: pytrainer/monthgraph.py:37 pytrainer/monthgraph.py:39
-#: pytrainer/monthgraph.py:41 pytrainer/monthgraph.py:43
-#: pytrainer/monthgraph.py:45
+#: pytrainer/daygraph.py:58 pytrainer/heartrategraph.py:36
+#: pytrainer/recordgraph.py:76
+msgid "Beats (bpm)"
+msgstr ""
+
+#: pytrainer/monthgraph.py:69 pytrainer/monthgraph.py:71
+#: pytrainer/monthgraph.py:73 pytrainer/monthgraph.py:75
+#: pytrainer/monthgraph.py:77
 msgid "day"
-msgstr "eguna"
+msgstr ""
 
-#: pytrainer/monthgraph.py:37
-msgid "daily kilometers"
-msgstr "eguneko kilometroak"
+#: pytrainer/monthgraph.py:69
+msgid "Kilometers"
+msgstr ""
 
-#: pytrainer/monthgraph.py:39
-msgid "daily time"
-msgstr "eguneko denbora"
+#: pytrainer/monthgraph.py:69
+msgid "Daily kilometers"
+msgstr ""
 
-#: pytrainer/monthgraph.py:41
-msgid "daily beats"
-msgstr "eguneko taupadak"
+#: pytrainer/monthgraph.py:71
+msgid "Time in Hours"
+msgstr ""
 
-#: pytrainer/monthgraph.py:43
-msgid "daily averages"
-msgstr "eguneko bataz bestekoak"
+#: pytrainer/monthgraph.py:71
+msgid "Daily Time"
+msgstr ""
 
-#: pytrainer/monthgraph.py:45
-msgid "daily calories"
-msgstr "eguneko kaloriak"
+#: pytrainer/monthgraph.py:73
+msgid "Beats per Minute"
+msgstr ""
 
-#: pytrainer/record.py:190
+#: pytrainer/monthgraph.py:73
+msgid "Daily Beats"
+msgstr ""
+
+#: pytrainer/monthgraph.py:75
+msgid "Daily Averages"
+msgstr ""
+
+#: pytrainer/monthgraph.py:77
+msgid "Daily Calories"
+msgstr ""
+
+#: pytrainer/recordgraph.py:74
+msgid "velocity"
+msgstr ""
+
+#: pytrainer/record.py:191
 msgid ""
 "The gpx file seems to have several track records. Press cancel to select a "
 "track record. Press Ok to load all of them as a single track record."
-msgstr "GPX fitxategiak bide erregistro asko ditu. Ezeztatu sakatu bide erregistro "
-"bat aukeratzeko. Ok sakatu guztiak bide erregistro bakar bezala irekitzeko."
+msgstr ""
 
 #: pytrainer/waypoint.py:67
 msgid ""
 "The gpx file seems to be a several days records. Perhaps you will need to "
 "edit your gpx file"
-msgstr "gpx fitxategia egun erregistro asko ditu. Agian zure gpx fitxategia "
-"editatu beharko duzu."
-
+msgstr ""
