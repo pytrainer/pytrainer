@@ -31,7 +31,7 @@ dummy = 0
 
 
 try:
-	os.system("gpsbabel -t -i garmin -f %s -o gtrnctr -F /tmp/file.gtrnctr" %options.device)
+	os.system("gpsbabel -t -i garmin -f %s -o gtrnctr -F /tmp/file.gtrnctr | zenity --progress --pulsate --text='Loading Data' auto-close" %options.device)
 	dummy = 1
 except:
 	f = os.popen("zenity --error --text='Cant open garmin device. Check your configuration or connect the device correctly.'");

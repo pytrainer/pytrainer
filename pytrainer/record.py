@@ -185,12 +185,14 @@ class Record:
 		gpx = Gpx(self.data_path,gpxfile)
 		tracks = gpx.getTrackRoutes()
 
-		if len(tracks) < 2:
+		if len(tracks) == 1:
 			self._actualize_fromgpx(gpxfile)
+		elif len(tracks) > 1:
+			self._select_trkfromgpx(gpxfile,tracks)
 		else:
-			msg = _("The gpx file seems to have several track records. Press cancel to select a track record. Press Ok to load all of them as a single track record.")
+			msg = _("pyTrainer cant import data from your gpx file")
 			from gui.warning import Warning
-			warning = Warning(self.data_path,self._actualize_fromgpx,[gpxfile],self._select_trkfromgpx,[gpxfile,tracks])
+			warning = Warning(self.data_path)
                         warning.set_text(msg)
                         warning.run()
 

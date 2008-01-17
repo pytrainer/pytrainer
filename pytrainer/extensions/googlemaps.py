@@ -42,6 +42,8 @@ class Googlemaps:
             		os.mkdir(extensiondir)
 
 		gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
+		if not os.path.isfile(gpxfile):
+			return None
 		gpx = Gpx(self.data_path,gpxfile)
 		list_values = gpx.getTrackList()
 		pointlist = []

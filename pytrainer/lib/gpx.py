@@ -69,6 +69,8 @@ class Gpx:
 		return self.hr_average
 		
 	def _getValues(self):
+		if not os.path.isfile(self.filename):
+			return None
 		dom = xml.dom.minidom.parse(self.filename)
 		content = dom.toxml()
 		

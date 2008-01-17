@@ -162,6 +162,14 @@ class WindowRecord(SimpleGladeApp):
 			self.rcd_average.set_text("%0.2f" %average)
 		except:
 			pass
+	
+	def on_calccalories_clicked(self,widget):
+		sport = self.rcd_sport.get_active_text()
+		distance = float(self.rcd_distance.get_text())
+		weight = float(self.parent.configuration.getValue("pytraining","prf_weight"))
+		print distance
+		print sport
+		print weight
 
 	def on_calcdistance_clicked(self,widget):
 		try:

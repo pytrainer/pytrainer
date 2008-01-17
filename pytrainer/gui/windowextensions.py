@@ -101,7 +101,7 @@ class WindowExtensions(SimpleGladeApp):
 			table.attach(label,0,1,i,i+1)
 			i+=1
 				
-		button = gtk.Button(_("Ok"))
+		button = gtk.Button(_("OK"))
 		button.connect("clicked", self.on_acceptSettings_clicked, None)
 		table.attach(button,0,2,i,i+1)
           	self.prefwindow.add(table)
@@ -114,7 +114,7 @@ class WindowExtensions(SimpleGladeApp):
 		text = os.read(file,2000)
 		os.close(file)
 		helpwindow = gtk.Window()
-		button = gtk.Button(_("Ok"))
+		button = gtk.Button(_("OK"))
 		button.connect("clicked", self.on_accepthelp_clicked, helpwindow)
 		vbox = gtk.VBox()
 		buffer = gtk.TextBuffer()

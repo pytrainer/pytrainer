@@ -107,7 +107,7 @@ class pyTrainer:
 	def runPlugin(self,widget,pathPlugin):
 		gpxfile = self.plugins.runPlugin(pathPlugin)
 		list_sport = self.profile.getSportList()
-		if gpxfile == False:
+		if gpxfile == False or gpxfile=="":
 			pass
 		elif os.path.isfile(gpxfile):
 			self.record.newGpxRecord(gpxfile,list_sport)
@@ -234,7 +234,7 @@ class pyTrainer:
 		if confirm:
 			self.record.removeRecord(id_record)
 		else:
-			msg = _("You are going to remove one database entry. Are you sure yo want do it?")
+			msg = _("Delete this database entry?")
 			params = [id_record,True]
 			warning = Warning(self.data_path,self.removeRecord,params)
 			warning.set_text(msg)
@@ -245,7 +245,7 @@ class pyTrainer:
 			self.waypoint.removeWaypoint(id_waypoint)
 			self.refreshWaypointView()
 		else:
-			msg = _("You are going to remove one waypoint. Are you sure yo want do it?")
+			msg = _("Delete this waypoint?")
 			params = [id_waypoint,True]
 			warning = Warning(self.data_path,self.removeWaypoint,params)
 			warning.set_text(msg)

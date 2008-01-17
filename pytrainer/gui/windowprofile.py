@@ -192,15 +192,13 @@ class WindowProfile(SimpleGladeApp):
 		self.sportlist.show()
 
 	def on_delsport_clicked(self,widget):
-		self.buttonbox.set_sensitive(0)
 		selected,iter = self.sportTreeView.get_selection().get_selected()
-		try:
+		if iter:
+			self.buttonbox.set_sensitive(0)
 			sport = selected.get_value(iter,0)
 			self.sportnamedel.set_text(sport)
 			self.hidesportsteps()
 			self.deletesport.show()
-		except:
-			pass
 
 	def on_deletesport_clicked(self,widget):
 		sport = self.sportnamedel.get_text()
@@ -214,17 +212,15 @@ class WindowProfile(SimpleGladeApp):
 	def on_editsport_clicked(self,widget):
 		self.buttonbox.set_sensitive(0)
 		selected,iter = self.sportTreeView.get_selection().get_selected()
-		try:
+		if iter:
 			sport = selected.get_value(iter,0)
-			self.sportnameedit.set_text(sport)
 			name,met,weight = self.parent.getSportInfo(sport)
 			self.editsportentry.set_text(sport)
+			self.sportnameedit.set_text(sport)
 			self.editweightentry.set_text(str(weight))
 			self.editmetentry.set_text(str(met))
 			self.hidesportsteps()
 			self.editsport.show()
-		except:
-			pass
 	
 	def on_editsport_accept_clicked(self,widget):
 		oldnamesport = self.sportnameedit.get_text()
