@@ -165,11 +165,15 @@ class WindowRecord(SimpleGladeApp):
 	
 	def on_calccalories_clicked(self,widget):
 		sport = self.rcd_sport.get_active_text()
-		distance = float(self.rcd_distance.get_text())
-		weight = float(self.parent.configuration.getValue("pytraining","prf_weight"))
-		print distance
-		print sport
-		print weight
+		hour = self.rcd_hour.get_value_as_int()
+		min = self.rcd_min.get_value_as_int()
+		sec = self.rcd_second.get_value_as_int()
+		hour += min/60 + sec/60/60
+		weight = float("0%s"%self.parent.configuration.getValue("pytraining","prf_weight"))
+		met = self.parent.getSportMet(sport)
+		if met:
+			calories = met*weight*hour
+			self.rcd_calories.set_text(str(calories))
 
 	def on_calcdistance_clicked(self,widget):
 		try:

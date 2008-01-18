@@ -158,6 +158,9 @@ class Record:
 		return self.ddbb.select(tables,
 					"date,distance,time,beats,comments,average,calories",
 					condition)
+
+	def getSportMet(self,sport):
+		return self.ddbb.select("sports","met","name=\"%s\"" %(sport))[0][0]
 	
 	def getAllrecord(self):
 		return self.ddbb.select("records", "date,distance,time,beats,comments,average,calories")
