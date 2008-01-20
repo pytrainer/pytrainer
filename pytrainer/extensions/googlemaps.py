@@ -40,22 +40,26 @@ class Googlemaps:
 		extensiondir = self.conf.getValue("extensiondir")+"/"+code
 		if not os.path.isdir(extensiondir):
             		os.mkdir(extensiondir)
-
-		gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
-		if not os.path.isfile(gpxfile):
-			return None
-		gpx = Gpx(self.data_path,gpxfile)
-		list_values = gpx.getTrackList()
+		points = []
+		levels = []
 		pointlist = []
-		for i in list_values:
-			pointlist.append((i[4],i[5]))
-		points,levels = Points.encodePoints(pointlist)
-		points = points.replace("\\","\\\\")
-	
 		htmlfile = self.conf.getValue("tmpdir")+"/index.html"
-		self.createHtml(points,levels,pointlist[0])
-		htmlfile = os.path.abspath(htmlfile)
-		if htmlfile != self.htmlfile:
+		
+		gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
+		if os.path.isfile(gpxfile):
+			gpx = Gpx(self.data_path,gpxfile)
+			list_values = gpx.getTrackList()
+			for i in list_values:
+				pointlist.append((i[4],i[5]))
+			points,levels = Points.encodePoints(pointlist)
+			points = points.replace("\\","\\\\")
+	
+			self.createHtml(points,levels,pointlist[0])
+			htmlfile = os.path.abspath(htmlfile)
+			if htmlfile != self.htmlfile:
+        			self.moz.load_url("file://"+htmlfile)
+		else:
+			self.createErrorHtml()
         		self.moz.load_url("file://"+htmlfile)
 		#	self.htmlfile = htmlfile
 		#else:
@@ -160,4 +164,17 @@ class Googlemaps:
 		file = fileUtils(filename,content)
 		file.run()
 		
-
+	def createErrorHtml(self):
+		content = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \n"
+    		content += "		\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
+		content += "	<html xmlns=\"http://www.w3.org/1999/xhtml\"  xmlns:v=\"urn:schemas-microsoft-com:vml\">\n"
+  		content += """	<head>\n
+<body>
+No Gpx Data
+</body>
+</html>
+		"""
+		tmpdir = self.conf.getValue("tmpdir")
+		filename = tmpdir+"/index.html"
+		file = fileUtils(filename,content)
+		file.run()

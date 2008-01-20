@@ -29,4 +29,5 @@ class About:
 		 aboutwindow = gtk.glade.XML(self.data_path+"glade/pytrainer.glade","aboutdialog1")
 		 about_widget = aboutwindow.get_widget("aboutdialog1")
 		 about_widget.set_version(self.version)
+		 about_widget.set_name("pyTrainer")
 		
