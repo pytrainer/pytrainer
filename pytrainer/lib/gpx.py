@@ -145,27 +145,28 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 				#Para las vueltas diferentes a la primera	
 				if last_lat != "False":
 					time_ = tmp_time - last_time
-					tempnum=(math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon))
-					#try:
-					#Obtenemos el punto respecto al punto anterior
-					try:
-						dist=math.acos(tempnum)*111.302*57.29577951
-					except:
-						dist=0
-					total_dist += dist
-					total_hr += hr
-					#dividimos kilometros por hora (no por segundo)
-					tmp_vel = dist/((time_)/3600.0)
-					vel,his_vel = self._calculate_velocity(tmp_vel,his_vel)
-					#si la velocidad es menor de 90 lo damos por bueno
-					if vel<90 and time_ <100:
-						self.total_time += time_
-						retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr))
-						rel_alt = tmp_alt - last_alt
-						if rel_alt > 0:
-							self.upositive += rel_alt
-						elif rel_alt < 0:
-							self.unegative -= rel_alt
+					if time_>0:
+						tempnum=(math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon))
+						#try:
+						#Obtenemos el punto respecto al punto anterior
+						try:
+							dist=math.acos(tempnum)*111.302*57.29577951
+						except:
+							dist=0
+						total_dist += dist
+						total_hr += hr
+						#dividimos kilometros por hora (no por segundo)
+						tmp_vel = dist/((time_)/3600.0)
+						vel,his_vel = self._calculate_velocity(tmp_vel,his_vel)
+						#si la velocidad es menor de 90 lo damos por bueno
+						if vel<90 and time_ <100:
+							self.total_time += time_
+							retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr))
+							rel_alt = tmp_alt - last_alt
+							if rel_alt > 0:
+								self.upositive += rel_alt
+							elif rel_alt < 0:
+								self.unegative -= rel_alt
 				
 				last_lat = tmp_lat
 				last_lon = tmp_lon
