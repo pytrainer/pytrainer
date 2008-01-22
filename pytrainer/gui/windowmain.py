@@ -668,7 +668,6 @@ class Main(SimpleGladeApp):
 		name = self.waypoint_name.get_text()
 		desc = self.waypoint_description.get_text()
 		sym = self.waypoint_type.get_active_text()
-		print sym
 		self.parent.updateWaypoint(id_waypoint,lat,lon,name,desc,sym)
 	
 	def on_removewaypoint_clicked(self,widget):

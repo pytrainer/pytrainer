@@ -19,6 +19,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import time
+import datetime
 
 class Date:
 	def __init__(self, calendar=None):
@@ -96,3 +97,4 @@ class Date:
 		month = tm[1]				
 		day = tm[2]
 		return "%0.4d-%0.2d-%0.2d" %(year,month,day)
+

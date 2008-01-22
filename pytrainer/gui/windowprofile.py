@@ -17,6 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from SimpleGladeApp import SimpleGladeApp
+from windowcalendar import WindowCalendar
 import gtk
 import gobject
 
@@ -26,6 +27,7 @@ class WindowProfile(SimpleGladeApp):
 		root = "newprofile"
 		domain = None
 		self.parent = parent
+		self.data_path = data_path
 		SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
 		self.conf_options = [
 			"prf_name",
@@ -37,7 +39,9 @@ class WindowProfile(SimpleGladeApp):
 			"prf_ddbbhost",
 			"prf_ddbbname",
 			"prf_ddbbuser",
-			"prf_ddbbpass"]
+			"prf_ddbbpass",
+			"prf_maxhr",
+			"prf_minhr"]
 
 	def new(self):
 		self.gender_options = {
@@ -68,6 +72,8 @@ class WindowProfile(SimpleGladeApp):
 		
 	def setValues(self,list_options):
 		for i in self.conf_options:
+			if not list_options.has_key(i):
+				continue
 			var = getattr(self,i)
 			if i != "prf_gender" and i != "prf_ddbb":
 				var.set_text(list_options[i])
@@ -93,6 +99,13 @@ class WindowProfile(SimpleGladeApp):
 			else:
 				list_options.append((i,var.get_active_text()))
 		self.parent.setProfile(list_options)
+	
+	def on_calendar_clicked(self,widget):
+		calendardialog = WindowCalendar(self.data_path,self)
+		calendardialog.run()
+
+	def setDate(self,date):
+		self.prf_age.set_text(date)
 
 	def on_switch_page(self,widget,pointer,frame):
 		if frame==2:
@@ -238,6 +251,14 @@ class WindowProfile(SimpleGladeApp):
 		self.hidesportsteps()
 		self.buttonbox.set_sensitive(1)
 		self.sportlist.show()
+
+	def on_calculatemaxhr_clicked(self,widget=None):
+		import datetime
+		today = "%s"%datetime.date.today()
+		year1,month1,day1 = today.split("-")
+		year2,month2,day2 = self.prf_age.get_text().split("-")
+		diff = datetime.datetime(int(year1), int(month1), int(day1),0,0,0) - datetime.datetime(int(year2), int(month2), int(day2),0,0,0)
+		self.prf_maxhr.set_text("%d" %(220-int(diff.days/365)))
 
 	def hidesportsteps(self):
 		self.sportlist.hide()

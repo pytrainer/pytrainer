@@ -27,6 +27,9 @@ from xml.dom.minidom import getDOMImplementation
 class XMLParser:
 	def __init__(self,filename = None):
 		self.filename = filename
+		self._load()
+
+	def _load(self):
 		try: 
 			self.xmldoc = xml.dom.minidom.parse(self.filename) 
 		except:
@@ -37,6 +40,7 @@ class XMLParser:
 		self.createXMLFile(self,"pytraining",list_item)
 
 	def getOptions(self):
+		self._load()
 		root = self.xmldoc.getElementsByTagName("pytraining")[0]
 		list_options = {}
 		list_keys = root.attributes.keys()
@@ -54,16 +58,21 @@ class XMLParser:
 
 	def setValue(self,tagname,variable,value):
 		root = self.xmldoc.getElementsByTagName(tagname)[0]
-		root.attributes[variable]._set_value(value)
+		if root.attributes.has_key(variable):
+			root.attributes[variable]._set_value(value)
+		else:
+			root.setAttribute(variable,value)
 		content = self.xmldoc.toprettyxml()
 		self._saveFile(content)
 
 	def getValue(self,tagname,variable):
+		self._load()
 		root = self.xmldoc.getElementsByTagName(tagname)[0]
 		value = root.attributes[variable].value
 		return value
 	
 	def getAllValues(self,tagname):	
+		self._load()
 		root = self.xmldoc.getElementsByTagName(tagname)
 		retorno = []
 		for i in root:
