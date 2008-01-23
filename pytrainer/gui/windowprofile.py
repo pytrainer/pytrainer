@@ -41,7 +41,8 @@ class WindowProfile(SimpleGladeApp):
 			"prf_ddbbuser",
 			"prf_ddbbpass",
 			"prf_maxhr",
-			"prf_minhr"]
+			"prf_minhr",
+			"prf_hrzones_karvonen"]
 
 	def new(self):
 		self.gender_options = {
@@ -75,8 +76,11 @@ class WindowProfile(SimpleGladeApp):
 			if not list_options.has_key(i):
 				continue
 			var = getattr(self,i)
-			if i != "prf_gender" and i != "prf_ddbb":
+			if i != "prf_gender" and i != "prf_ddbb" and i !="prf_hrzones_karvonen":
 				var.set_text(list_options[i])
+			elif i == "prf_hrzones_karvonen":
+				if list_options[i]=="True":
+					var.set_active(True)
 			elif i == "prf_gender":
 				for j in self.gender_options:
 					if self.gender_options[j]==list_options[i]:
@@ -94,8 +98,13 @@ class WindowProfile(SimpleGladeApp):
 		list_options = []
 		for i in self.conf_options:
 			var = getattr(self,i)
-			if i != "prf_gender" and i != "prf_ddbb":
+			if i != "prf_gender" and i != "prf_ddbb" and i != "prf_hrzones_karvonen":
 				list_options.append((i,var.get_text()))
+			elif i == "prf_hrzones_karvonen":
+				if var.get_active():
+					list_options.append((i,"True"))
+				else:
+					list_options.append((i,"False"))
 			else:
 				list_options.append((i,var.get_active_text()))
 		self.parent.setProfile(list_options)

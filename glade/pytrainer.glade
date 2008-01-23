@@ -10008,7 +10008,7 @@ Continue?</property>
 			  </child>
 
 			  <child>
-			    <widget class="GtkRadioButton" id="radiobutton4">
+			    <widget class="GtkRadioButton" id="prf_hrzones_karvonen">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
 			      <property name="label" translatable="yes">Karvonen method</property>
