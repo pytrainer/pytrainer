@@ -47,11 +47,11 @@ class HeartRateGraph:
 			targethr5 = maxhr * 0.90
 			targethr6 = maxhr
 		
-		zone1 = (targethr1,targethr2,"#ffff99","Moderate activity")
-		zone2 = (targethr2,targethr3,"#ffcc00","Weight Control")
-		zone3 = (targethr3,targethr4,"#ff9900","Aerobic")
-		zone4 = (targethr4,targethr5,"#ff6600","Anaerobic")
-		zone5 = (targethr5,targethr6,"#ff0000","VO2 MAX")
+		zone1 = (targethr1,targethr2,"#ffff99",_("Moderate activity"))
+		zone2 = (targethr2,targethr3,"#ffcc00",_("Weight Control"))
+		zone3 = (targethr3,targethr4,"#ff9900",_("Aerobic"))
+		zone4 = (targethr4,targethr5,"#ff6600",_("Anaerobic"))
+		zone5 = (targethr5,targethr6,"#ff0000",_("VO2 MAX"))
 		
 		zones = [zone5,zone4,zone3,zone2,zone1]
 	

@@ -83,7 +83,7 @@ class DrawArea:
 		if zones!=None:	
 			for zone in zones:	
                 		p = self.axis.axhspan(zone[0], zone[1], facecolor=zone[2], alpha=0.5, label=zone[3])
-		l = self.axis.legend(loc='lower right')
+			l = self.axis.legend(loc='lower right')
 		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		self.canvas.show()
                 self.vbox.pack_start(self.canvas, True, True)
