@@ -29,6 +29,7 @@ class Profile:
 		self.data_path = data_path
 		self.conf = checkConf()
 		self.filename = self.conf.getValue("conffile")
+		self.configuration = XMLParser(self.filename)
 
 	def isProfileConfigured(self):
 		if self.conf.getConfFile():

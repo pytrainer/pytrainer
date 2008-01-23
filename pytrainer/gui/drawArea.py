@@ -22,6 +22,7 @@ from matplotlib.figure import Figure
 from matplotlib.axes import Subplot
 from matplotlib.backends.backend_gtk import FigureCanvasGTK, NavigationToolbar
 from matplotlib.numerix import *
+from pylab import *
 
 class DrawArea:
 	def __init__(self, vbox = None):
@@ -31,14 +32,14 @@ class DrawArea:
         	self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		self.drawDefault()
 
-	def stadistics(self,type,xvalues,yvalues,xlabel,ylabel,title,color):
+	def stadistics(self,type,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
 		if len(xvalues[0]) < 1:
 			self.drawDefault()
 			return False
 		if type == "bars":
 			self.drawBars(xvalues,yvalues,xlabel,ylabel,title,color)
 		elif type == "plot":
-			self.drawPlot(xvalues,yvalues,xlabel,ylabel,title,color)
+			self.drawPlot(xvalues,yvalues,xlabel,ylabel,title,color,zones)
 
 	def drawBars(self,xvalues,yvalues,xlabel,ylabel,title,color):
                 self.canvas.destroy()
@@ -57,17 +58,18 @@ class DrawArea:
 			self.axis.set_title(title[i])
 		
                 	p1 = self.axis.bar(xvalues[i], yvalues[i], width, color=color[i])
-                
+                p = axvspan(1.25, 100.55, facecolor='g', alpha=0.5)
 		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
                 self.canvas.show()
                 self.vbox.pack_start(self.canvas, True, True)
 
-	def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color):
+	def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
                 self.canvas.destroy()
 		self.figure = Figure(figsize=(6,4), dpi=72)
         	self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		self.axis.clear()
-		for i in range(0,len(xvalues)):
+		i = 0
+		for value in xvalues:
 			if len(xvalues) == 1:
         			self.axis = self.figure.add_subplot(111)
 			else:
@@ -77,7 +79,11 @@ class DrawArea:
 			self.axis.set_title(title[i])
         		self.axis.grid(True)
                 	self.axis.plot(xvalues[i],yvalues[i], color=color[i])
-			
+			i+=1
+		if zones!=None:	
+			for zone in zones:	
+                		p = self.axis.axhspan(zone[0], zone[1], facecolor=zone[2], alpha=0.5, label=zone[3])
+		l = self.axis.legend(loc='lower right')
 		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		self.canvas.show()
                 self.vbox.pack_start(self.canvas, True, True)
