@@ -40,6 +40,8 @@ class DrawArea:
 			self.drawBars(xvalues,yvalues,xlabel,ylabel,title,color)
 		elif type == "plot":
 			self.drawPlot(xvalues,yvalues,xlabel,ylabel,title,color,zones)
+		elif type == "pie":
+			self.drawPie(xvalues,yvalues,xlabel,ylabel,title,color,zones)
 
 	def drawBars(self,xvalues,yvalues,xlabel,ylabel,title,color):
                 self.canvas.destroy()
@@ -47,7 +49,8 @@ class DrawArea:
         	self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		self.axis.clear()
 		width = 1
-		for i in range(0,len(xvalues)):
+		i=0
+		for value in xvalues:
 			if len(xvalues) == 1:
         			self.axis = self.figure.add_subplot(111)
 			else:
@@ -58,7 +61,7 @@ class DrawArea:
 			self.axis.set_title(title[i])
 		
                 	p1 = self.axis.bar(xvalues[i], yvalues[i], width, color=color[i])
-                p = axvspan(1.25, 100.55, facecolor='g', alpha=0.5)
+			i+=1
 		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
                 self.canvas.show()
                 self.vbox.pack_start(self.canvas, True, True)
@@ -66,8 +69,8 @@ class DrawArea:
 	def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
                 self.canvas.destroy()
 		self.figure = Figure(figsize=(6,4), dpi=72)
-        	self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
-		self.axis.clear()
+        	#self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
+		#self.axis.clear()
 		i = 0
 		for value in xvalues:
 			if len(xvalues) == 1:
@@ -88,8 +91,49 @@ class DrawArea:
 		self.canvas.show()
                 self.vbox.pack_start(self.canvas, True, True)
 	
+	def drawPie(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
+                self.canvas.destroy()
+		self.figure = Figure(figsize=(6,4), dpi=72)
+        	#self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
+		#self.axis.clear()
+        	self.axis = self.figure.add_subplot(111)
+
+		labels = ["rest"]
+		colors = ["#ffffff"]
+		frac0 = 0
+		frac1 = 0
+		frac2 = 0
+		frac3 = 0
+		frac4 = 0
+		frac5 = 0
+		for zone in zones:
+			labels.append(zone[3])
+			colors.append(zone[2])
+	
+		for value in yvalues[0]:
+			if value < zones[4][0]:
+				frac0+=1
+			elif value > zones[4][0] and value < zones[4][1]:
+				frac1+=1
+			elif value > zones[3][0] and value < zones[3][1]:
+				frac2+=1
+			elif value > zones[2][0] and value < zones[2][1]:
+				frac3+=1
+			elif value > zones[1][0] and value < zones[1][1]:
+				frac4+=1
+			elif value > zones[0][0] and value < zones[0][1]:
+				frac5+=1
+			
+		fracs = [frac0,frac1,frac2,frac3,frac4, frac5]
+		explode=(0, 0, 0, 0,0,0)
+		self.axis.pie(fracs, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True)
+
+		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
+		self.canvas.show()
+                self.vbox.pack_start(self.canvas, True, True)
+
 	def drawDefault(self):
-		self.axis.clear()
+		#self.axis.clear()
         	self.axis=self.figure.add_subplot(111)
         	self.axis.set_xlabel('Yepper')
         	self.axis.set_ylabel('Flabber')

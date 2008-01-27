@@ -98,7 +98,7 @@ class Main(SimpleGladeApp):
 
 	def createGraphs(self,RecordGraph,DayGraph,MonthGraph,YearGraph,HeartRateGraph):
 		self.drawarearecord = RecordGraph(self.record_vbox, self.record_combovalue, self.record_combovalue2)
-		self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox)
+		self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox,self.heartrate_vbox2)
 		#self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
 		self.day_vbox.hide()
 		self.drawareamonth = MonthGraph(self.month_vbox, self.month_combovalue,self.month_combovalue2)
@@ -674,4 +674,11 @@ class Main(SimpleGladeApp):
     		selected,iter = self.waypointTreeView.get_selection().get_selected()
 		id_waypoint = selected.get_value(iter,0)
 		self.parent.removeWaypoint(id_waypoint)
+
+	def on_hrpiebutton_clicked(self,widget):
+		self.heartrate_vbox2.show()	
+		self.heartrate_vbox.hide()	
 	
+	def on_hrplotbutton_clicked(self,widget):
+		self.heartrate_vbox.show()	
+		self.heartrate_vbox2.hide()	

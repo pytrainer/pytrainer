@@ -21,8 +21,9 @@ from lib.system import checkConf
 from lib.xmlUtils import XMLParser
 
 class HeartRateGraph:
-	def __init__(self, vbox = None):
+	def __init__(self, vbox = None, vbox2 = None):
 		self.drawarea = DrawArea(vbox)
+		self.drawarea2 = DrawArea(vbox2)
 		self.conf = checkConf()
 		self.filename = self.conf.getValue("conffile")
 		self.configuration = XMLParser(self.filename)
@@ -55,26 +56,17 @@ class HeartRateGraph:
 		
 		zones = [zone5,zone4,zone3,zone2,zone1]
 	
-		value_selected = -1
-		if value_selected < 0:
-			value_selected = 0
-                if value_selected == 0:
-                        xvalues, yvalues = self.get_values(values,value_selected)
-                        xlabel,ylabel,title,color = self.get_value_params(value_selected)
-                        self.drawarea.stadistics("plot",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color],zones)
+		xvalues, yvalues = self.get_values(values)
+		xlabel,ylabel,title,color = _("Distance (km)"),_("Beats (bpm)"),_("Heart Rate"),"#740074"
+		self.drawarea.stadistics("plot",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color],zones)
+		self.drawarea2.stadistics("pie",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color],zones)
 
-	def get_value_params(self,value):
-                if value == 0:
-                        return _("Distance (km)"),_("Beats (bpm)"),_("Heart Rate"),"#740074"
-
-
-	def get_values(self,values, value_selected):
+	def get_values(self,values):
 		xvalue = []
 		yvalue = []
 		for value in values:
 			xvalue.append(value[0])
-			if value_selected==0:
-                                yvalue.append(value[6])
+                        yvalue.append(value[6])
 		return xvalue,yvalue
 	
 	def getFloatValue(self, value):
