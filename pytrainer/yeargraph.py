@@ -49,7 +49,6 @@ class YearGraph:
                 tit.append(title)
                 col.append(color)
 
-		print value_selected2
                 if value_selected2 < 0:
                         self.combovalue2.set_active(0)
                         value_selected2 = 0
@@ -114,7 +113,7 @@ class YearGraph:
 				graph_value = self.getFloatValue(value[value_sel])
 
 			#si es una opcion de suma de absolutos:
-			if ((value_selected == 0) or (value_selected==1)): 
+			if ((value_selected == 0) or (value_selected==1) or (value_selected==4)): 
 				list_values[int(month)] += graph_value
 
 			#Si es pa la media de velocidad
