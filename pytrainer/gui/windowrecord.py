@@ -163,6 +163,20 @@ class WindowRecord(SimpleGladeApp):
 		except:
 			pass
 	
+	def on_calcpace_clicked(self,widget):
+		hour = self.rcd_hour.get_value_as_int()
+		min = self.rcd_min.get_value_as_int()
+		sec = self.rcd_second.get_value_as_int()
+		time = sec + (min*60) + (hour*3600)
+		if time<1:
+			return false
+		time_in_min = time/60.0
+		distance = float(self.rcd_distance.get_text())
+		if distance<1:
+			return false
+		average = time_in_min/distance
+		self.rcd_pace.set_text("%0.2f" %average)
+	
 	def on_calccalories_clicked(self,widget):
 		sport = self.rcd_sport.get_active_text()
 		hour = self.rcd_hour.get_value_as_int()
@@ -190,6 +204,12 @@ class WindowRecord(SimpleGladeApp):
 	
 	def set_distance(self,distance):
 		self.rcd_distance.set_text("%0.2f" %distance)
+			
+	def set_maxspeed(self,vel):
+		self.rcd_maxvel.set_text("%0.2f" %vel)
+			
+	def set_maxhr(self,hr):
+		self.rcd_maxbeats.set_text("%0.2f" %hr)
 			
 	def set_recordtime (self,time_in_hour):
 		hour = int(time_in_hour)

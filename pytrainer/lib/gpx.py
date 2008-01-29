@@ -35,10 +35,16 @@ class Gpx:
 		self.total_time = 0
 		self.upositive = 0
 		self.unegative = 0
+		self.maxvel = 0
+		self.maxhr = 0
+		self.date = ""
 		self.Values = self._getValues()
 
 	def getMaxValues(self):
-		return self.total_dist, self.total_time
+		return self.total_dist, self.total_time, self.maxvel, self.maxhr
+	
+	def getDate(self):
+		return self.date
 
 	def getTrackRoutes(self):	
 		newfilename = self.conf.tmpdir+"/newgpx.gpx"
@@ -115,6 +121,10 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 		total_hr = 0
 		tmp_alt = 0
 		len_validhrpoints = 0
+			
+		date_ = trkpoints[0].getElementsByTagName("time")[0].firstChild.data
+		mk_time = time.strptime(date_, "%Y-%m-%dT%H:%M:%SZ")
+		self.date = time.strftime("%Y-%m-%d", mk_time)
 
 		for trkpoint in trkpoints:
 			lat = trkpoint.attributes["lat"].value
@@ -155,11 +165,15 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 							dist=0
 						total_dist += dist
 						total_hr += hr
+						if hr>self.maxhr:
+							self.maxhr = hr
 						#dividimos kilometros por hora (no por segundo)
 						tmp_vel = dist/((time_)/3600.0)
 						vel,his_vel = self._calculate_velocity(tmp_vel,his_vel)
 						#si la velocidad es menor de 90 lo damos por bueno
 						if vel<90 and time_ <100:
+							if vel>self.maxvel:
+								self.maxvel=vel
 							self.total_time += time_
 							retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr))
 							rel_alt = tmp_alt - last_alt

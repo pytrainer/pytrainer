@@ -185,8 +185,11 @@ class Record:
 		return day_list
 		
 	def actualize_fromgpx(self,gpxfile):
+		print "uno"
 		gpx = Gpx(self.data_path,gpxfile)
+		print "uno1"
 		tracks = gpx.getTrackRoutes()
+		print "dos"
 
 		if len(tracks) == 1:
 			self._actualize_fromgpx(gpxfile)
@@ -198,21 +201,25 @@ class Record:
 			warning = Warning(self.data_path)
                         warning.set_text(msg)
                         warning.run()
+		print "tres"
 
 	def _actualize_fromgpx(self, gpxfile, trkname = None):
 		gpx = Gpx(self.data_path,gpxfile,trkname)
-		distance, time = gpx.getMaxValues()
+		distance, time, maxspeed, maxheartrate = gpx.getMaxValues()
 		upositive,unegative = gpx.getUnevenness()
 		heartrate = gpx.getHeartRateAverage()
-		date = gpx.getTrackRoutes()[0][1]
+		date = gpx.getDate()
 		
 		self.recordwindow.rcd_date.set_text(date)
 		self.recordwindow.rcd_upositive.set_text(str(upositive))
 		self.recordwindow.rcd_unegative.set_text(str(unegative))
 		self.recordwindow.rcd_beats.set_text(str(heartrate))
 		self.recordwindow.set_distance(distance)
+		self.recordwindow.set_maxspeed(maxspeed)
+		self.recordwindow.set_maxhr(maxheartrate)
 		self.recordwindow.set_recordtime(time/60.0/60.0)
 		self.recordwindow.on_calcaverage_clicked(None)
+		self.recordwindow.on_calcpace_clicked(None)
 
 	def _select_trkfromgpx(self,gpxfile,tracks):
 		print "seleccionamos el trk"
