@@ -162,6 +162,9 @@ class Record:
 	def getSportMet(self,sport):
 		return self.ddbb.select("sports","met","name=\"%s\"" %(sport))[0][0]
 	
+	def getSportWeight(self,sport):
+		return self.ddbb.select("sports","weight","name=\"%s\"" %(sport))[0][0]
+	
 	def getAllrecord(self):
 		return self.ddbb.select("records", "date,distance,time,beats,comments,average,calories")
 	
@@ -185,14 +188,11 @@ class Record:
 		return day_list
 		
 	def actualize_fromgpx(self,gpxfile):
-		print "uno"
 		gpx = Gpx(self.data_path,gpxfile)
-		print "uno1"
 		tracks = gpx.getTrackRoutes()
-		print "dos"
 
 		if len(tracks) == 1:
-			self._actualize_fromgpx(gpxfile)
+			self._actualize_fromgpx(gpx)
 		elif len(tracks) > 1:
 			self._select_trkfromgpx(gpxfile,tracks)
 		else:
@@ -201,10 +201,8 @@ class Record:
 			warning = Warning(self.data_path)
                         warning.set_text(msg)
                         warning.run()
-		print "tres"
 
-	def _actualize_fromgpx(self, gpxfile, trkname = None):
-		gpx = Gpx(self.data_path,gpxfile,trkname)
+	def _actualize_fromgpx(self, gpx):
 		distance, time, maxspeed, maxheartrate = gpx.getMaxValues()
 		upositive,unegative = gpx.getUnevenness()
 		heartrate = gpx.getHeartRateAverage()
@@ -220,10 +218,15 @@ class Record:
 		self.recordwindow.set_recordtime(time/60.0/60.0)
 		self.recordwindow.on_calcaverage_clicked(None)
 		self.recordwindow.on_calcpace_clicked(None)
+		self.recordwindow.on_calccalories_clicked(None)
+	
+	def __actualize_fromgpx(self, gpxfile, name=None):
+		gpx = Gpx(self.data_path,gpxfile,name)
+		self._actualize_fromgpx(gpx)
 
 	def _select_trkfromgpx(self,gpxfile,tracks):
 		print "seleccionamos el trk"
-		selectrckdialog = DialogSelectTrack(self.data_path, tracks,self._actualize_fromgpx, gpxfile)
+		selectrckdialog = DialogSelectTrack(self.data_path, tracks,self.__actualize_fromgpx, gpxfile)
 		selectrckdialog.run()
 		
 	def newGpxRecord(self,gpxfile,list_sport):

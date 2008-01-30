@@ -185,8 +185,9 @@ class WindowRecord(SimpleGladeApp):
 		hour += min/60 + sec/60/60
 		weight = float("0%s"%self.parent.configuration.getValue("pytraining","prf_weight"))
 		met = self.parent.getSportMet(sport)
+		extraweight = self.parent.getSportWeight(sport)
 		if met:
-			calories = met*weight*hour
+			calories = met*(weight+extraweight)*hour
 			self.rcd_calories.set_text(str(calories))
 
 	def on_calcdistance_clicked(self,widget):

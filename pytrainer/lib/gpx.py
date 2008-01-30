@@ -38,6 +38,10 @@ class Gpx:
 		self.maxvel = 0
 		self.maxhr = 0
 		self.date = ""
+		self.tracks = []
+		if not os.path.isfile(self.filename):
+			return None
+		self.dom = xml.dom.minidom.parse(self.filename)
 		self.Values = self._getValues()
 
 	def getMaxValues(self):
@@ -47,8 +51,21 @@ class Gpx:
 		return self.date
 
 	def getTrackRoutes(self):	
-		newfilename = self.conf.tmpdir+"/newgpx.gpx"
-		dom = xml.dom.minidom.parse(newfilename)
+		return self.tracks
+		
+	def getUnevenness(self):
+		return self.upositive,self.unegative 
+	
+	def getTrackList(self):
+		return self.Values
+
+	def getHeartRateAverage(self):
+		return self.hr_average
+		
+	def _getValues(self):
+		dom = self.dom
+		content = dom.toxml()
+
 		trks = dom.getElementsByTagName("trk")
 		retorno = []
 		for trk in trks:
@@ -62,32 +79,12 @@ class Gpx:
 				time_ = time.strftime("%Y-%m-%d", mk_time)
 			else:
 				time_ = _("No Data")	
-			retorno.append((name,time_))
-		return retorno
-		
-	def getUnevenness(self):
-		return self.upositive,self.unegative 
-	
-	def getTrackList(self):
-		return self.Values
-
-	def getHeartRateAverage(self):
-		return self.hr_average
-		
-	def _getValues(self):
-		if not os.path.isfile(self.filename):
-			return None
-		dom = xml.dom.minidom.parse(self.filename)
-		content = dom.toxml()
-		
-		if self.trkname != None:
-			trks = dom.getElementsByTagName("trk")
-			retorno = []
-			for trk in trks:
-				name = trk.getElementsByTagName("name")[0].firstChild.data
-				if name == self.trkname:
-					dom = trk
-					content = """<?xml version="1.0" encoding="UTF-8"?>
+			self.tracks.append((name,time_))
+			
+			name = trk.getElementsByTagName("name")[0].firstChild.data
+			if name == self.trkname:
+				dom = trk
+				content = """<?xml version="1.0" encoding="UTF-8"?>
 
 <gpx 
 creator="pytrainer http://pytrainer.e-oss.net"
@@ -100,10 +97,10 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 
 
 """
-					content += dom.toxml()
-					content += "</gpx>"
-					break
-					
+				content += dom.toxml()
+				content += "</gpx>"
+
+		#Guardamos el xml en un fichero (por si hay que guardar solo un track)					
 		newfilename = self.conf.tmpdir+"/newgpx.gpx"
 		if os.path.isfile(newfilename):
 			os.remove(newfilename)
