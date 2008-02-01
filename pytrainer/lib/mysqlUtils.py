@@ -80,6 +80,10 @@ class Sql:
 			`title` VARCHAR( 200 ) NOT NULL ,
 			`upositive` FLOAT NOT NULL ,
 			`unegative` FLOAT NOT NULL ,
+			`maxspeed` FLOAT, NOT NULL,
+			maxpace FLOAT NOT NULL,
+			pace FLOAT NOT NULL,
+			maxbeats FLOAT NOT NULL,
 			INDEX ( `id_record` )
 			) ENGINE = MYISAM ;""")
 		

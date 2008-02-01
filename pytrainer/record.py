@@ -55,6 +55,10 @@ class Record:
 				pass
 		if self.configuration.getOption("version")<="1.5.0":
 			self.ddbb.addweightandmet2ddbb()
+		if self.configuration.getOption("version")<="1.5.0.1":
+			self.ddbb.checkmettable()
+		if self.configuration.getOption("version")<="1.5.0.2":
+			self.ddbb.addpaceandmax2ddbb()
 		if self.configuration.getOption("version")<version:
 			self.configuration.setVersion(version)
 
@@ -80,7 +84,7 @@ class Record:
 	def _formatRecord (self, list_options):
 		time = self.date.time2second(list_options["rcd_time"])
 		average = self.parseFloatRecord(list_options["rcd_average"])
-		cells= "date,sport,distance,time,beats,comments,average,calories,title,upositive,unegative"
+		cells= "date,sport,distance,time,beats,comments,average,calories,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats"
 		if (list_options["rcd_beats"] == ""):
 			list_options["rcd_beats"] = 0
 		
@@ -98,7 +102,11 @@ class Record:
 			self.parseFloatRecord(list_options["rcd_calories"]),
 			list_options["rcd_title"],
 			self.parseFloatRecord(list_options["rcd_upositive"]),
-			self.parseFloatRecord(list_options["rcd_unegative"])
+			self.parseFloatRecord(list_options["rcd_unegative"]),
+			self.parseFloatRecord(list_options["rcd_maxvel"]),
+			self.parseFloatRecord(list_options["rcd_maxpace"]),
+			self.parseFloatRecord(list_options["rcd_pace"]),
+			self.parseFloatRecord(list_options["rcd_maxbeats"])
 
 			)
 		return cells,values
@@ -219,6 +227,7 @@ class Record:
 		self.recordwindow.on_calcaverage_clicked(None)
 		self.recordwindow.on_calcpace_clicked(None)
 		self.recordwindow.on_calccalories_clicked(None)
+		self.recordwindow.rcd_maxpace.set_text("%0.2f" %(60/maxspeed))
 	
 	def __actualize_fromgpx(self, gpxfile, name=None):
 		gpx = Gpx(self.data_path,gpxfile,name)

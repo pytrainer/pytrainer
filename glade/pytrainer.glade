@@ -6647,7 +6647,7 @@ Summit</property>
 			  </child>
 
 			  <child>
-			    <widget class="GtkEntry" id="entry335">
+			    <widget class="GtkEntry" id="rcd_maxpace">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
 			      <property name="editable">True</property>

@@ -71,7 +71,11 @@ class Sql:
 			gpslog varchar(200),
 			title varchar(200),
 			upositive float,
-			unegative float
+			unegative float,
+			maxspeed float,
+			maxpace float,
+			pace float,
+			maxbeats float
 			) ;"""
 		cur.execute(sql)
 

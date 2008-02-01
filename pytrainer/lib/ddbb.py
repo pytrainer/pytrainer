@@ -125,4 +125,20 @@ class DDBB:
 		self.ddbbObject.freeExec(sql)
 		sql = "alter table sports add met float"
 		self.ddbbObject.freeExec(sql)
-		
+			
+	def checkmettable(self):
+		try:
+			sql = "alter table sports add met float"
+			self.ddbbObject.freeExec(sql)
+		except:	
+			pass
+	def addpaceandmax2ddbb(self):
+		sql = "alter table records add maxspeed float"
+		self.ddbbObject.freeExec(sql)
+		sql = "alter table records add maxpace float"
+		self.ddbbObject.freeExec(sql)
+		sql = "alter table records add pace float"
+		self.ddbbObject.freeExec(sql)
+		sql = "alter table records add maxbeats float"
+		self.ddbbObject.freeExec(sql)
+
