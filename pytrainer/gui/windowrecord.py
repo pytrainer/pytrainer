@@ -120,12 +120,9 @@ class WindowRecord(SimpleGladeApp):
 		self.rcd_second.set_value(sec)
 
 	def setValue(self,var,value):
-		try:
-			var = getattr(self,var)
-			valueString = "%0.2f" %value
-			var.set_text(valueString)
-		except:
-			pass	
+		var = getattr(self,var)
+		valueString = "%0.2f" %value
+		var.set_text(valueString)
 	
 	def setValues(self,values):
 		#(50, u'2006-10-13', 1, 25.0, u'5625', 0.0, 16.0, 0, u'', gpsfile, title,upositive,unegative,maxspeed|maxpace|pace|maxbeats
@@ -138,7 +135,7 @@ class WindowRecord(SimpleGladeApp):
 		self.setValue("rcd_beats",values[5])
 		self.setValue("rcd_upositive",values[11])
 		self.setValue("rcd_unegative",values[12])
-		self.setValue("rcd_maxspeed",values[13])
+		self.setValue("rcd_maxvel",values[13])
 		self.setValue("rcd_maxpace",values[14])
 		self.setValue("rcd_pace",values[15])
 		self.setValue("rcd_maxbeats",values[16])
