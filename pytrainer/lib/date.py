@@ -71,7 +71,7 @@ class Date:
 	def getNameMonth(self, date):
 		month_name = {
 			"01":_("January"),
-			"02":_("Febraury"),
+			"02":_("Febrary"),
 			"03":_("March"),
 			"04":_("April"),
 			"05":_("May"),
