@@ -147,7 +147,7 @@ class Record:
 				
 	def getrecordInfo(self,id_record):
 		return self.ddbb.select("records,sports",
-					"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative",
+					"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats",
 					"id_record=\"%s\" and records.sport=sports.id_sports" %id_record)
 	
 	def getrecordList(self,date):
