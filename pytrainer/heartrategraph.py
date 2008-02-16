@@ -19,42 +19,15 @@
 from gui.drawArea import DrawArea
 from lib.system import checkConf
 from lib.xmlUtils import XMLParser
+from lib.heartrate import *
 
 class HeartRateGraph:
 	def __init__(self, vbox = None, vbox2 = None):
 		self.drawarea = DrawArea(vbox)
 		self.drawarea2 = DrawArea(vbox2)
-		self.conf = checkConf()
-		self.filename = self.conf.getValue("conffile")
-		self.configuration = XMLParser(self.filename)
 
 	def drawgraph(self,values):
-		maxhr = int(self.configuration.getValue("pytraining","prf_maxhr"))
-		resthr = int(self.configuration.getValue("pytraining","prf_minhr"))
-		if self.configuration.getValue("pytraining","prf_hrzones_karvonen")=="True":
-			#if karvonen method
-			targethr1 = ((maxhr - resthr) * 0.50) + resthr
-			targethr2 = ((maxhr - resthr) * 0.60) + resthr
-			targethr3 = ((maxhr - resthr) * 0.70) + resthr
-			targethr4 = ((maxhr - resthr) * 0.80) + resthr
-			targethr5 = ((maxhr - resthr) * 0.90) + resthr
-			targethr6 = maxhr
-		else:
-			#if not karvonen method
-			targethr1 = maxhr * 0.50
-			targethr2 = maxhr * 0.60
-			targethr3 = maxhr * 0.70
-			targethr4 = maxhr * 0.80
-			targethr5 = maxhr * 0.90
-			targethr6 = maxhr
-		
-		zone1 = (targethr1,targethr2,"#ffff99",_("Moderate activity"))
-		zone2 = (targethr2,targethr3,"#ffcc00",_("Weight Control"))
-		zone3 = (targethr3,targethr4,"#ff9900",_("Aerobic"))
-		zone4 = (targethr4,targethr5,"#ff6600",_("Anaerobic"))
-		zone5 = (targethr5,targethr6,"#ff0000",_("VO2 MAX"))
-		
-		zones = [zone5,zone4,zone3,zone2,zone1]
+		zones = getZones()
 	
 		xvalues, yvalues = self.get_values(values)
 		xlabel,ylabel,title,color = _("Distance (km)"),_("Beats (bpm)"),_("Heart Rate"),"#740074"

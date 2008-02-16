@@ -47,6 +47,8 @@ from lib.date import Date
 from lib.gpx import Gpx
 from lib.soapUtils import webService
 
+from lib.heartrate import *
+
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
 		self.data_path = data_path
@@ -189,6 +191,8 @@ class pyTrainer:
 					gpx = Gpx(self.data_path,gpxfile)
 					gpx_tracklist = gpx.getTrackList()
 			self.windowmain.actualize_heartrategraph(gpx_tracklist)
+			zones = getZones()
+			self.windowmain.actualize_hrview(zones)
 			
 	def refreshMapView(self):
 		selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()

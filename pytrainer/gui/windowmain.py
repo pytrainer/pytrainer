@@ -141,9 +141,9 @@ class Main(SimpleGladeApp):
 			unegative = self.parseFloat(record_list[11])
 			title = str(record_list[9])
 			comments = str(record_list[5])
-			maxpace = self.parseFloat(record_list[13])
+			pace = self.parseFloat(record_list[13])
 			maxspeed = self.parseFloat(record_list[12])
-			pace = self.parseFloat(record_list[14])
+			maxpace = self.parseFloat(record_list[14])
 			
 			self.record_distance.set_text("%0.2f" %distance)
 			hour,min,sec=self.parent.date.second2time(int(record_list[3]))
@@ -175,6 +175,13 @@ class Main(SimpleGladeApp):
 	
 	def actualize_heartrategraph(self,record_list):
 		self.drawareaheartrate.drawgraph(record_list)
+
+	def actualize_hrview(self,zones):
+		self.record_zone1.set_text("%s-%s" %(zones[4][0],zones[4][1]))
+		self.record_zone2.set_text("%s-%s" %(zones[3][0],zones[3][1]))
+		self.record_zone3.set_text("%s-%s" %(zones[2][0],zones[2][1]))
+		self.record_zone4.set_text("%s-%s" %(zones[1][0],zones[1][1]))
+		self.record_zone5.set_text("%s-%s" %(zones[0][0],zones[0][1]))
 
 	def actualize_dayview(self,record_list):
 		if len(record_list)>0:
