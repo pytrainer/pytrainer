@@ -121,8 +121,11 @@ class WindowRecord(SimpleGladeApp):
 
 	def setValue(self,var,value):
 		var = getattr(self,var)
-		valueString = "%0.2f" %value
-		var.set_text(valueString)
+		try:
+			valueString = "%0.2f" %value
+			var.set_text(valueString)
+		except:
+			pass
 	
 	def setValues(self,values):
 		#(50, u'2006-10-13', 1, 25.0, u'5625', 0.0, 16.0, 0, u'', gpsfile, title,upositive,unegative,maxspeed|maxpace|pace|maxbeats
