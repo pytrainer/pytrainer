@@ -160,11 +160,10 @@ class pyTrainer:
 	def refreshRecordGraphView(self, view):
 		if view=="info":
 			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+			record_list=[]
 			if iter:
 				id_record = selected.get_value(iter,0)
 				record_list = self.record.getrecordInfo(id_record)
-			else:
-				record_list=[]
 			self.windowmain.actualize_recordview(record_list)
 
 		if view=="graphs":
@@ -184,15 +183,20 @@ class pyTrainer:
 		if view=="heartrate":
 			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
 			gpx_tracklist = []
+			record_list=[]
 			if iter:
 				id_record = selected.get_value(iter,0)
+				record_list = self.record.getrecordInfo(id_record)
 				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
 				if os.path.isfile(gpxfile):
 					gpx = Gpx(self.data_path,gpxfile)
 					gpx_tracklist = gpx.getTrackList()
 			self.windowmain.actualize_heartrategraph(gpx_tracklist)
 			zones = getZones()
-			self.windowmain.actualize_hrview(zones)
+			filename = self.conf.getValue("conffile")
+        		configuration = XMLParser(filename)
+			karvonen_method = configuration.getValue("pytraining","prf_hrzones_karvonen")
+			self.windowmain.actualize_hrview(record_list,zones,karvonen_method)
 			
 	def refreshMapView(self):
 		selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()

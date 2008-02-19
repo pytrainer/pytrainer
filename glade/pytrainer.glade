@@ -465,7 +465,7 @@
 					      <property name="n_columns">6</property>
 					      <property name="homogeneous">False</property>
 					      <property name="row_spacing">6</property>
-					      <property name="column_spacing">0</property>
+					      <property name="column_spacing">3</property>
 
 					      <child>
 						<widget class="GtkLabel" id="record_sport">
@@ -1837,7 +1837,7 @@ Heart Rate
 					      <property name="n_columns">6</property>
 					      <property name="homogeneous">False</property>
 					      <property name="row_spacing">5</property>
-					      <property name="column_spacing">0</property>
+					      <property name="column_spacing">3</property>
 
 					      <child>
 						<widget class="GtkLabel" id="label11125">
@@ -2537,6 +2537,34 @@ Heart Rate
 						  <property name="y_options"></property>
 						</packing>
 					      </child>
+
+					      <child>
+						<widget class="GtkLabel" id="record_zonesmethod">
+						  <property name="visible">True</property>
+						  <property name="label" translatable="yes">  </property>
+						  <property name="use_underline">False</property>
+						  <property name="use_markup">False</property>
+						  <property name="justify">GTK_JUSTIFY_LEFT</property>
+						  <property name="wrap">False</property>
+						  <property name="selectable">False</property>
+						  <property name="xalign">0</property>
+						  <property name="yalign">0.5</property>
+						  <property name="xpad">0</property>
+						  <property name="ypad">0</property>
+						  <property name="ellipsize">PANGO_ELLIPSIZE_NONE</property>
+						  <property name="width_chars">-1</property>
+						  <property name="single_line_mode">False</property>
+						  <property name="angle">0</property>
+						</widget>
+						<packing>
+						  <property name="left_attach">1</property>
+						  <property name="right_attach">3</property>
+						  <property name="top_attach">3</property>
+						  <property name="bottom_attach">4</property>
+						  <property name="x_options">fill</property>
+						  <property name="y_options"></property>
+						</packing>
+					      </child>
 					    </widget>
 					  </child>
 					</widget>
@@ -2876,7 +2904,7 @@ Heart Rate
 					  <property name="n_columns">6</property>
 					  <property name="homogeneous">False</property>
 					  <property name="row_spacing">6</property>
-					  <property name="column_spacing">0</property>
+					  <property name="column_spacing">3</property>
 
 					  <child>
 					    <widget class="GtkLabel" id="label37">
@@ -3667,7 +3695,7 @@ Stage Profile/velocity</property>
 					  <property name="n_columns">6</property>
 					  <property name="homogeneous">False</property>
 					  <property name="row_spacing">6</property>
-					  <property name="column_spacing">0</property>
+					  <property name="column_spacing">3</property>
 
 					  <child>
 					    <widget class="GtkLabel" id="label99">
@@ -4484,7 +4512,7 @@ Calories</property>
 					  <property name="n_columns">6</property>
 					  <property name="homogeneous">False</property>
 					  <property name="row_spacing">6</property>
-					  <property name="column_spacing">0</property>
+					  <property name="column_spacing">3</property>
 
 					  <child>
 					    <widget class="GtkLabel" id="label117">

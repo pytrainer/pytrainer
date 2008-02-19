@@ -134,7 +134,6 @@ class Main(SimpleGladeApp):
 			
 			self.recordview.set_sensitive(1)
 			distance = self.parseFloat(record_list[2])
-			beats = self.parseFloat(record_list[4])
 			average = self.parseFloat(record_list[6])
 			calories = self.parseFloat(record_list[7])
 			upositive = self.parseFloat(record_list[10])
@@ -150,7 +149,6 @@ class Main(SimpleGladeApp):
 			self.record_hour.set_text("%d" %hour)
 			self.record_minute.set_text("%d" %min)
 			self.record_second.set_text("%d" %sec)
-			self.record_beats.set_text("%0.2f" %beats)
 			self.record_average.set_text("%0.2f" %average)
 			self.record_calories.set_text("%0.0f" %calories)
 			self.record_upositive.set_text("%0.2f" %upositive)
@@ -176,12 +174,23 @@ class Main(SimpleGladeApp):
 	def actualize_heartrategraph(self,record_list):
 		self.drawareaheartrate.drawgraph(record_list)
 
-	def actualize_hrview(self,zones):
-		self.record_zone1.set_text("%s-%s" %(zones[4][0],zones[4][1]))
-		self.record_zone2.set_text("%s-%s" %(zones[3][0],zones[3][1]))
-		self.record_zone3.set_text("%s-%s" %(zones[2][0],zones[2][1]))
-		self.record_zone4.set_text("%s-%s" %(zones[1][0],zones[1][1]))
-		self.record_zone5.set_text("%s-%s" %(zones[0][0],zones[0][1]))
+	def actualize_hrview(self,record_list,zones,is_karvonen_method):
+		if len(record_list)>0:
+			record_list=record_list[0]
+			print record_list
+			self.record_zone1.set_text("%s-%s" %(zones[4][0],zones[4][1]))
+			self.record_zone2.set_text("%s-%s" %(zones[3][0],zones[3][1]))
+			self.record_zone3.set_text("%s-%s" %(zones[2][0],zones[2][1]))
+			self.record_zone4.set_text("%s-%s" %(zones[1][0],zones[1][1]))
+			self.record_zone5.set_text("%s-%s" %(zones[0][0],zones[0][1]))
+			beats = self.parseFloat(record_list[4])
+			self.record_beats.set_text("%0.2f" %beats)
+			if is_karvonen_method=="True":
+				self.record_zonesmethod.set_text(_("Karvonen method"))
+			else:
+				self.record_zonesmethod.set_text(_("Percentages method"))
+		else:
+			self.recordview.set_sensitive(0)
 
 	def actualize_dayview(self,record_list):
 		if len(record_list)>0:
