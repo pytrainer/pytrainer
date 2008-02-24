@@ -71,8 +71,10 @@ class RecordGraph:
 		if value == 0:
 			return _("Distance (km)"),_("Height (m)"),_("Stage Profile"),"#747400"
 		if value == 1:
-			return _("Distance (km)"),_("Velocity (Km/h)"),_("velocity"),"#007474"
+			return _("Distance (km)"),_("Speed (Km/h)"),_("Speed"),"#007474"
                 if value == 2:
+                        return _("Distance (km)"),_("Pace (min/km)"),_("Pace"),"#747400"
+                if value == 3:
                         return _("Distance (km)"),_("Beats (bpm)"),_("Heart Rate"),"#740074"
 
 
@@ -86,6 +88,11 @@ class RecordGraph:
 			if value_selected==1:
 				yvalue.append(value[3])
 			if value_selected==2:
+				try:
+                                	yvalue.append(60/value[3])
+				except:
+                                	yvalue.append(0)
+			if value_selected==3:
                                 yvalue.append(value[6])
 		return xvalue,yvalue
 	
