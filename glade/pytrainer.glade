@@ -2065,7 +2065,7 @@ Heart Rate
 					      </child>
 
 					      <child>
-						<widget class="GtkLabel" id="label11146">
+						<widget class="GtkLabel" id="record_maxbeats">
 						  <property name="visible">True</property>
 						  <property name="label" translatable="yes">     </property>
 						  <property name="use_underline">False</property>

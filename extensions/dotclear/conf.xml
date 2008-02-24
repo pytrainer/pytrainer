@@ -1,0 +1,17 @@
+<?xml version="1.0" ?>
+<pytrainer-extension 
+	name="Pytrainer Dotclear extension" 
+	status="1" 
+	description="Publish your record as post in your weblog"
+	extensionbutton="Post it in Dotclear" 
+	extensioncode="dotclear"
+	type="record" 
+	helpfile="README.txt"
+	executable="main.py"
+>
+<conf-values variable="xmlrpcserver" value=""/>
+<conf-values variable="bloguser" value=""/>
+<conf-values variable="blogpass" value=""/>
+<conf-values variable="blogid" value=""/>
+<conf-values variable="blogcategory" value=""/>
+</pytrainer-extension>
