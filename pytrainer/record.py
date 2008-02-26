@@ -152,7 +152,7 @@ class Record:
 	
 	def getrecordList(self,date):
 		return self.ddbb.select("records,sports",
-					"sports.name,date,distance,time,beats,comments,average,calories,id_record",
+					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats",
 					"date=\"%s\" and records.sport=sports.id_sports" %date)
 	
 	def getrecordPeriodSport(self,date_ini, date_end,sport):

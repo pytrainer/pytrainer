@@ -204,13 +204,20 @@ class Main(SimpleGladeApp):
 			calories = 0
 			timeinseconds = 0
 			beats = 0
+			maxbeats = 0
+			maxspeed = 0
 			for record in record_list:
+				print record
 				distance += self.parseFloat(record[2])
 				calories += self.parseFloat(record[7])
 				timeinseconds += self.parseFloat(record[3])
 				beats = self.parseFloat(record[4])
 				if float(beats)>0:
 					tbeats += beats*(self.parseFloat(record[3])/60/60)
+				if record[9] > maxspeed:
+					maxspeed = self.parseFloat(record[9])
+				if record[10] > maxbeats:
+					maxbeats = self.parseFloat(record[10])
 			
 			if tbeats > 0:		
 				tbeats = tbeats/(timeinseconds/60/60)
@@ -224,7 +231,11 @@ class Main(SimpleGladeApp):
 			self.day_minute.set_text("%d" %min)
 			self.day_second.set_text("%d" %sec)
 			self.day_beats.set_text("%0.2f" %tbeats)
+			self.day_maxbeats.set_text("%0.2f" %maxbeats)
 			self.day_average.set_text("%0.2f" %average)
+			self.day_maxspeed.set_text("%0.2f" %maxspeed)
+			self.day_pace.set_text("%0.2f" %(60/average))
+			self.day_maxpace.set_text("%0.2f" %(60/maxspeed))
 			self.day_calories.set_text("%0.0f" %calories)
 			self.day_topic.set_text(record[1])
 			
