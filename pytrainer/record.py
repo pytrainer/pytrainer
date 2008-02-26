@@ -164,7 +164,7 @@ class Record:
 			condition = "date>\"%s\" and date<\"%s\" and records.sport=sports.id_sports and sports.name=\"%s\"" %(date_ini,date_end,sport)
 		
 		return self.ddbb.select(tables,
-					"date,distance,time,beats,comments,average,calories",
+					"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats",
 					condition)
 
 	def getSportMet(self,sport):
