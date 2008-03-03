@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pytrainer_fr\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-10-01 23:05+0200\n"
-"PO-Revision-Date: 2007-11-30 21:20+0100\n"
+"POT-Creation-Date: 2008-02-27 22:15+0100\n"
+"PO-Revision-Date: 2008-02-27 22:50+0100\n"
 "Last-Translator: Pierre Gaigé <pgaige@free.fr>\n"
 "Language-Team:  <fr@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -30,8 +30,8 @@ msgid "_File"
 msgstr "_Fichier"
 
 #: glade/pytrainer.glade:74
-msgid "_Export as text separated by commas"
-msgstr "_Exporter un fichier texte séparé par des virgules"
+msgid "_Export as Text Separated by Commas"
+msgstr "_Exporter un Fichier Texte séparé par des virgules"
 
 #: glade/pytrainer.glade:114
 msgid "_Edit"
@@ -50,139 +50,372 @@ msgid " _List View"
 msgstr "_Vue en liste"
 
 #: glade/pytrainer.glade:168
-msgid " _Waypoints Editor View"
-msgstr "_Vue d'édition des points de localisation"
+msgid " _Waypoints Editor"
+msgstr "_Vue d'édition des Points de Localisation"
 
 #: glade/pytrainer.glade:184
 msgid "Tools"
 msgstr "Outils"
 
 #: glade/pytrainer.glade:194
+#: glade/pytrainer.glade:12298
 msgid "Extensions"
 msgstr "Extensions"
 
 #: glade/pytrainer.glade:204
-msgid "Gps Device Plugins"
-msgstr "Plugins pour les périphériques GPS"
+msgid "GPS Device Plugins"
+msgstr "Plugins pour les Périphériques GPS"
 
 #: glade/pytrainer.glade:218
 msgid "_Help"
 msgstr "_Aide"
 
 #: glade/pytrainer.glade:338
-#: glade/pytrainer.glade:5358
+#: pytrainer/gui/windowprofile.py:67
 #: pytrainer/gui/windowmain.py:49
 #: pytrainer/gui/windowmain.py:52
-#: pytrainer/gui/windowmain.py:368
+#: pytrainer/gui/windowmain.py:471
 msgid "Sport"
 msgstr "Sport"
 
 #: glade/pytrainer.glade:364
 msgid "All Sports"
-msgstr "Tous les sports"
+msgstr "Tous les Sports"
 
-#: glade/pytrainer.glade:472
-#: glade/pytrainer.glade:1658
-msgid "<b>Beats avg:</b>"
-msgstr "<b>Pulsations moyennes:</b>"
+#: glade/pytrainer.glade:473
+#: glade/pytrainer.glade:838
+#: glade/pytrainer.glade:866
+msgid "      "
+msgstr ""
 
-#: glade/pytrainer.glade:522
-msgid " bpm"
-msgstr " bpm"
+#: glade/pytrainer.glade:501
+#: glade/pytrainer.glade:894
+msgid "         "
+msgstr ""
 
-#: glade/pytrainer.glade:550
-#: glade/pytrainer.glade:1630
-#: glade/pytrainer.glade:2443
-#: glade/pytrainer.glade:2653
-#: glade/pytrainer.glade:3428
-#: glade/pytrainer.glade:3638
+#: glade/pytrainer.glade:529
+msgid "<b>Sport:</b>"
+msgstr "<b>Sport:</b>"
+
+#: glade/pytrainer.glade:557
+#: glade/pytrainer.glade:2996
+#: glade/pytrainer.glade:4124
+#: glade/pytrainer.glade:5419
 msgid "<b>Time:</b>"
 msgstr "<b>Temps:</b>"
 
-#: glade/pytrainer.glade:578
-#: glade/pytrainer.glade:1602
-#: glade/pytrainer.glade:2364
-#: glade/pytrainer.glade:2625
-#: glade/pytrainer.glade:3349
-#: glade/pytrainer.glade:3610
+#: glade/pytrainer.glade:586
+#: glade/pytrainer.glade:3193
+#: glade/pytrainer.glade:4294
+#: glade/pytrainer.glade:5643
+msgid "<b>Speed:</b>"
+msgstr "<b>Vitesse:</b>"
+
+#: glade/pytrainer.glade:614
+#: glade/pytrainer.glade:3502
+#: glade/pytrainer.glade:4658
+#: glade/pytrainer.glade:5813
+msgid "<b>Pace:</b>"
+msgstr "<b>Cadence:</b>"
+
+#: glade/pytrainer.glade:642
+msgid "<b>Ascent:</b>"
+msgstr "<b>Dénivelé Pos.:</b>"
+
+#: glade/pytrainer.glade:670
+msgid "<b>Comments:</b>"
+msgstr "<b>Commentaires:</b>"
+
+#: glade/pytrainer.glade:698
+#: glade/pytrainer.glade:1381
+#: glade/pytrainer.glade:3249
+#: glade/pytrainer.glade:3306
+#: glade/pytrainer.glade:4350
+#: glade/pytrainer.glade:4519
+#: glade/pytrainer.glade:5699
+#: glade/pytrainer.glade:5727
+msgid "km/h"
+msgstr "km/h"
+
+#: glade/pytrainer.glade:726
+#: glade/pytrainer.glade:1091
+#: glade/pytrainer.glade:3530
+#: glade/pytrainer.glade:3586
+#: glade/pytrainer.glade:4714
+#: glade/pytrainer.glade:4742
+#: glade/pytrainer.glade:5870
+#: glade/pytrainer.glade:5898
+msgid "min/km"
+msgstr "min/km"
+
+#: glade/pytrainer.glade:754
+#: glade/pytrainer.glade:1147
+msgid "m"
+msgstr "m"
+
+#: glade/pytrainer.glade:782
+msgid "       "
+msgstr ""
+
+#: glade/pytrainer.glade:810
+#: glade/pytrainer.glade:1119
+#: glade/pytrainer.glade:2042
+#: glade/pytrainer.glade:2070
+#: glade/pytrainer.glade:2098
+#: glade/pytrainer.glade:2266
+#: glade/pytrainer.glade:3698
+#: glade/pytrainer.glade:4854
+msgid "     "
+msgstr ""
+
+#: glade/pytrainer.glade:922
+msgid "<b>Date:</b>"
+msgstr "<b>Date:</b>"
+
+#: glade/pytrainer.glade:950
+#: glade/pytrainer.glade:2968
+#: glade/pytrainer.glade:4096
+#: glade/pytrainer.glade:5391
 msgid "<b>Distance:</b>"
 msgstr "<b>Distance:</b>"
 
-#: glade/pytrainer.glade:632
-#: glade/pytrainer.glade:677
-#: glade/pytrainer.glade:1903
-#: glade/pytrainer.glade:1948
-#: glade/pytrainer.glade:2497
-#: glade/pytrainer.glade:2542
-#: glade/pytrainer.glade:2926
-#: glade/pytrainer.glade:2971
-#: glade/pytrainer.glade:3482
-#: glade/pytrainer.glade:3527
-#: glade/pytrainer.glade:3911
-#: glade/pytrainer.glade:3956
-#: glade/pytrainer.glade:5726
-#: glade/pytrainer.glade:5771
+#: glade/pytrainer.glade:979
+msgid "<b>Max Speed</b>"
+msgstr "<b>Vit. Max:</b>"
+
+#: glade/pytrainer.glade:1007
+#: glade/pytrainer.glade:3558
+#: glade/pytrainer.glade:4686
+#: glade/pytrainer.glade:5842
+msgid "<b>Max Pace:</b>"
+msgstr "<b>Cad. Max:</b>"
+
+#: glade/pytrainer.glade:1035
+msgid "<b>Descent:</b>"
+msgstr "<b>Dénivelé Nég.:</b>"
+
+#: glade/pytrainer.glade:1063
+msgid "        "
+msgstr ""
+
+#: glade/pytrainer.glade:1213
+#: glade/pytrainer.glade:2912
+#: glade/pytrainer.glade:4040
+#: glade/pytrainer.glade:5615
+msgid "Km"
+msgstr "km"
+
+#: glade/pytrainer.glade:1246
+#: glade/pytrainer.glade:1296
+#: glade/pytrainer.glade:1346
+#: glade/pytrainer.glade:3030
+#: glade/pytrainer.glade:3080
+#: glade/pytrainer.glade:3130
+#: glade/pytrainer.glade:4208
+#: glade/pytrainer.glade:4258
+#: glade/pytrainer.glade:5503
+#: glade/pytrainer.glade:5553
+msgid "00"
+msgstr ""
+
+#: glade/pytrainer.glade:1271
+#: glade/pytrainer.glade:1321
+#: glade/pytrainer.glade:3055
+#: glade/pytrainer.glade:3105
+#: glade/pytrainer.glade:4183
+#: glade/pytrainer.glade:4233
+#: glade/pytrainer.glade:5478
+#: glade/pytrainer.glade:5528
+#: glade/pytrainer.glade:7648
+#: glade/pytrainer.glade:7693
 msgid ":"
 msgstr ":"
 
-#: glade/pytrainer.glade:782
-msgid " Km"
-msgstr " Km"
+#: glade/pytrainer.glade:1415
+#: glade/pytrainer.glade:2377
+#: glade/pytrainer.glade:2939
+#: glade/pytrainer.glade:3221
+#: glade/pytrainer.glade:3362
+#: glade/pytrainer.glade:3446
+#: glade/pytrainer.glade:3726
+#: glade/pytrainer.glade:3754
+#: glade/pytrainer.glade:4067
+#: glade/pytrainer.glade:4322
+#: glade/pytrainer.glade:4406
+#: glade/pytrainer.glade:4602
+#: glade/pytrainer.glade:4882
+#: glade/pytrainer.glade:5222
+#: glade/pytrainer.glade:5306
+#: glade/pytrainer.glade:5362
+#: glade/pytrainer.glade:5671
+#: glade/pytrainer.glade:5954
+#: glade/pytrainer.glade:5982
+#: glade/pytrainer.glade:6010
+#: glade/pytrainer.glade:6038
+msgid "   "
+msgstr ""
 
-#: glade/pytrainer.glade:810
-#: glade/pytrainer.glade:1714
-#: glade/pytrainer.glade:2737
-#: glade/pytrainer.glade:3722
-msgid "<b>Calories: </b>"
-msgstr "<b>Calories:</b>"
-
-#: glade/pytrainer.glade:860
-msgid " Cal"
-msgstr " Cal"
-
-#: glade/pytrainer.glade:888
-#: glade/pytrainer.glade:1686
-#: glade/pytrainer.glade:2709
-#: glade/pytrainer.glade:3694
-msgid "<b>Average:</b>"
-msgstr "<b>Moyenne:</b>"
-
-#: glade/pytrainer.glade:938
-msgid " km/h"
-msgstr " km/h"
-
-#: glade/pytrainer.glade:1005
-msgid "<b>Comments:</b>"
-msgstr "<b>Commentaires</b>"
-
-#: glade/pytrainer.glade:1059
-#: glade/pytrainer.glade:6032
-msgid "<b>Positive:</b>"
-msgstr "<b>Positif:</b>"
-
-#: glade/pytrainer.glade:1103
-#: glade/pytrainer.glade:6076
-msgid "<b>Negative:</b>"
-msgstr "<b>Négatif:</b>"
-
-#: glade/pytrainer.glade:1151
-#: glade/pytrainer.glade:6124
-msgid " <b>Accumulated Unevenness:</b> "
-msgstr " <b>Dénivelée Cumulée:</b> "
-
-#: glade/pytrainer.glade:1297
+#: glade/pytrainer.glade:1522
 msgid " <b>Title:</b>"
 msgstr " <b>Titre:</b>"
 
-#: glade/pytrainer.glade:1386
-#: glade/pytrainer.glade:2185
-#: glade/pytrainer.glade:3215
-#: glade/pytrainer.glade:4200
+#: glade/pytrainer.glade:1636
+msgid ""
+"Profile\n"
+"Speed\n"
+"Pace\n"
+"Heart Rate"
+msgstr ""
+"Profil\n"
+"Vitesse\n"
+"Cadence\n"
+"Fréquence Cardiaque"
+
+#: glade/pytrainer.glade:1655
+#: glade/pytrainer.glade:5040
+#: glade/pytrainer.glade:6196
+msgid "Versus"
+msgstr ""
+
+#: glade/pytrainer.glade:1680
+msgid ""
+"None\n"
+"Profile\n"
+"Speed\n"
+"Pace\n"
+"Heart Rate\n"
+msgstr ""
+"Null\n"
+"Profil\n"
+"Vitesse\n"
+"Cadence\n"
+"Fréquence Cardiaque\n"
+
+#: glade/pytrainer.glade:1845
+msgid "<b>Beats:</b>"
+msgstr "<b>Pulsations:</b>"
+
+#: glade/pytrainer.glade:1873
+#: glade/pytrainer.glade:3334
+#: glade/pytrainer.glade:4378
+#: glade/pytrainer.glade:5194
+msgid "<b>Calories: </b>"
+msgstr "<b>Calories:</b>"
+
+#: glade/pytrainer.glade:1901
+#: glade/pytrainer.glade:3614
+#: glade/pytrainer.glade:4798
+#: glade/pytrainer.glade:5926
+msgid "<b>Max Beats:</b>"
+msgstr "<b>FC Max:</b>"
+
+#: glade/pytrainer.glade:1929
+msgid "<b>HR Zones Method:</b>"
+msgstr "<b>Calcul des zones de FC :</b>"
+
+#: glade/pytrainer.glade:1958
+msgid "<b>HR Zone5:</b>"
+msgstr "<b>Zone FC5:</b>"
+
+#: glade/pytrainer.glade:1986
+#: glade/pytrainer.glade:2350
+msgid " bpm"
+msgstr " bpm"
+
+#: glade/pytrainer.glade:2014
+msgid " Cal"
+msgstr " Cal"
+
+#: glade/pytrainer.glade:2126
+msgid "<b>HR Zone4:</b>"
+msgstr "<b>Zone FC4:</b>"
+
+#: glade/pytrainer.glade:2154
+msgid "<b>HR Zone3:</b>"
+msgstr "<b>Zone FC3:</b>"
+
+#: glade/pytrainer.glade:2182
+msgid "<b>HR Zone2:</b>"
+msgstr "<b>Zone FC2:</b>"
+
+#: glade/pytrainer.glade:2210
+msgid "<b>HR Zone1:</b>"
+msgstr "<b>Zone FC1:</b>"
+
+#: glade/pytrainer.glade:2238
+#: glade/pytrainer.glade:2294
+#: glade/pytrainer.glade:2322
+#: glade/pytrainer.glade:3670
+#: glade/pytrainer.glade:4491
+#: glade/pytrainer.glade:4826
+msgid "    "
+msgstr ""
+
+#: glade/pytrainer.glade:2405
+#: glade/pytrainer.glade:2432
+#: glade/pytrainer.glade:2460
+#: glade/pytrainer.glade:2488
+#: glade/pytrainer.glade:2516
+#: glade/pytrainer.glade:3474
+#: glade/pytrainer.glade:3642
+#: glade/pytrainer.glade:4630
+#: glade/pytrainer.glade:4770
+#: glade/pytrainer.glade:5334
+#: glade/pytrainer.glade:5755
+msgid "bpm"
+msgstr "bpm"
+
+#: glade/pytrainer.glade:2544
+#, fuzzy
+msgid "  "
+msgstr " "
+
+#: glade/pytrainer.glade:2582
+msgid " <b>Heart Rate:</b>"
+msgstr " <b>Fréquence Cardiaque:</b>"
+
+#: glade/pytrainer.glade:2759
+#: glade/pytrainer.glade:7010
+#: glade/pytrainer.glade:10877
+msgid "label-2147483648"
+msgstr "label-2147483648"
+
+#: glade/pytrainer.glade:2797
+#, fuzzy
+msgid "label-2147483647"
+msgstr "label-2147483648"
+
+#: glade/pytrainer.glade:2853
+msgid "Record"
+msgstr "Enregistrement"
+
+#: glade/pytrainer.glade:3278
+#: glade/pytrainer.glade:4463
+#: glade/pytrainer.glade:5784
+msgid "<b>Max Speed:</b>"
+msgstr "<b>Vit. Max:</b>"
+
+#: glade/pytrainer.glade:3390
+#: glade/pytrainer.glade:4434
+#: glade/pytrainer.glade:5250
+msgid "Cal"
+msgstr "Cal"
+
+#: glade/pytrainer.glade:3418
+#: glade/pytrainer.glade:4574
+#: glade/pytrainer.glade:5278
+msgid "<b>Beats avg:</b>"
+msgstr "<b>FC Moy:</b>"
+
+#: glade/pytrainer.glade:3792
+msgid " <b>Date:</b>"
+msgstr " <b>Date:</b>"
+
+#: glade/pytrainer.glade:3867
 msgid "Value"
 msgstr "Valeur"
 
-#: glade/pytrainer.glade:1411
-#: glade/pytrainer.glade:2210
+#: glade/pytrainer.glade:3892
 msgid ""
 "Stage Profile\n"
 "Stage Velocity\n"
@@ -190,74 +423,28 @@ msgid ""
 msgstr ""
 "Profil de la sortie\n"
 "Vitesse de la sortie\n"
-"Profil de la sortie/vitesse"
+"Profil de la sortie/Vitesse"
 
-#: glade/pytrainer.glade:1543
-msgid "Record"
-msgstr "Enregistrement"
-
-#: glade/pytrainer.glade:1742
-#: glade/pytrainer.glade:2392
-#: glade/pytrainer.glade:3377
-msgid "Km"
-msgstr "Km"
-
-#: glade/pytrainer.glade:1770
-msgid "bpm"
-msgstr "bpm"
-
-#: glade/pytrainer.glade:1798
-msgid "km/h"
-msgstr "km/h"
-
-#: glade/pytrainer.glade:1826
-msgid "Cal"
-msgstr "Cal"
-
-#: glade/pytrainer.glade:2110
-msgid " <b>Date:</b>"
-msgstr " <b>Date:</b>"
-
-#: glade/pytrainer.glade:2299
+#: glade/pytrainer.glade:3981
 msgid "Day"
 msgstr "Jour"
 
-#: glade/pytrainer.glade:2681
-#: glade/pytrainer.glade:3666
-msgid "<b>Beats:</b>"
-msgstr "<b>Pulsations:</b>"
+#: glade/pytrainer.glade:4158
+#: glade/pytrainer.glade:5453
+msgid "000"
+msgstr ""
 
-#: glade/pytrainer.glade:2765
-#: glade/pytrainer.glade:3750
-msgid "Km/day"
-msgstr "Km/jour"
+#: glade/pytrainer.glade:4547
+#: glade/pytrainer.glade:7846
+msgid " "
+msgstr " "
 
-#: glade/pytrainer.glade:2793
-#: glade/pytrainer.glade:3778
-msgid "bpm/day"
-msgstr "bpm/jour"
-
-#: glade/pytrainer.glade:2821
-#: glade/pytrainer.glade:3806
-msgid "km/h/day"
-msgstr "km/h/jour"
-
-#: glade/pytrainer.glade:2849
-#: glade/pytrainer.glade:3834
-msgid "cal/day"
-msgstr "cal/jour"
-
-#: glade/pytrainer.glade:3026
-#: glade/pytrainer.glade:4011
-msgid "time/day"
-msgstr "temps/jour"
-
-#: glade/pytrainer.glade:3140
+#: glade/pytrainer.glade:4920
 msgid " <b>Month:</b>"
 msgstr " <b>Mois:</b>"
 
-#: glade/pytrainer.glade:3240
-#: glade/pytrainer.glade:4225
+#: glade/pytrainer.glade:5020
+#: glade/pytrainer.glade:6176
 msgid ""
 "Kilometers\n"
 "Time\n"
@@ -266,64 +453,65 @@ msgid ""
 "Calories"
 msgstr ""
 "Kilomètres\n"
-"Temps\n"
+"Durée\n"
 "Pulsations\n"
 "Moyenne\n"
 "Calories"
 
-#: glade/pytrainer.glade:3284
+#: glade/pytrainer.glade:5065
+#: glade/pytrainer.glade:6221
+msgid ""
+"None\n"
+"Kilometers\n"
+"Time\n"
+"Beats\n"
+"Average\n"
+"Calories"
+msgstr ""
+"Null\n"
+"Kilomètres\n"
+"Durée\n"
+"Pulsations\n"
+"Moyenne\n"
+"Calories"
+
+#: glade/pytrainer.glade:5135
 msgid "Month"
 msgstr "Mois"
 
-#: glade/pytrainer.glade:4125
+#: glade/pytrainer.glade:6076
 msgid " <b>Year:</b>"
 msgstr " <b>Année:</b>"
 
-#: glade/pytrainer.glade:4269
+#: glade/pytrainer.glade:6291
 msgid "Year"
 msgstr "Année"
 
-#: glade/pytrainer.glade:4312
+#: glade/pytrainer.glade:6334
 msgid "label154"
 msgstr "label154"
 
-#: glade/pytrainer.glade:4349
+#: glade/pytrainer.glade:6371
 msgid "<b>Title:</b>"
 msgstr "<b>Titre:</b>"
 
-#: glade/pytrainer.glade:4394
+#: glade/pytrainer.glade:6416
 msgid "Search"
 msgstr "Rechercher"
 
-#: glade/pytrainer.glade:4441
+#: glade/pytrainer.glade:6463
 msgid "Columns"
 msgstr "Colonnes"
 
-#: glade/pytrainer.glade:4516
+#: glade/pytrainer.glade:6538
 msgid "label155"
 msgstr "label155"
 
-#: glade/pytrainer.glade:4693
-msgid " <b>Name:</b>"
-msgstr " <b>Nom:</b>"
+#: glade/pytrainer.glade:6672
+msgid "Type:"
+msgstr "Type:"
 
-#: glade/pytrainer.glade:4721
-msgid " <b>Description:</b>"
-msgstr " <b>Description:</b>"
-
-#: glade/pytrainer.glade:4749
-msgid " <b>Latitude: </b>"
-msgstr " <b>Latitude:</b>"
-
-#: glade/pytrainer.glade:4777
-msgid " <b>Longitude:</b>"
-msgstr " <b>Longitude:</b>"
-
-#: glade/pytrainer.glade:4805
-msgid " <b>Type:</b>"
-msgstr " <b>Type:</b>"
-
-#: glade/pytrainer.glade:4877
+#: glade/pytrainer.glade:6700
 msgid ""
 "Font\n"
 "Restaurant\n"
@@ -335,207 +523,382 @@ msgstr ""
 "Vue Panoramique\n"
 "Sommet"
 
-#: glade/pytrainer.glade:4902
+#: glade/pytrainer.glade:6721
+msgid "Latitude: "
+msgstr "Latitude:"
+
+#: glade/pytrainer.glade:6749
+msgid " Name:"
+msgstr "Nom:"
+
+#: glade/pytrainer.glade:6777
+msgid "Longitude:"
+msgstr " Longitude:"
+
+#: glade/pytrainer.glade:6805
+#: glade/pytrainer.glade:12486
+#: glade/pytrainer.glade:12809
+msgid "Description:"
+msgstr "Description:"
+
+#: glade/pytrainer.glade:6925
 msgid "<b> Waypoint: </b>"
 msgstr "<b> Point de localisation:</b>"
 
-#: glade/pytrainer.glade:4987
-msgid "label-2147483648"
-msgstr "label-2147483648"
-
-#: glade/pytrainer.glade:5035
+#: glade/pytrainer.glade:7058
 msgid "label162"
 msgstr "label162"
 
-#: glade/pytrainer.glade:5175
+#: glade/pytrainer.glade:7198
 msgid "label163"
 msgstr "label163"
 
-#: glade/pytrainer.glade:5200
-#: glade/pytrainer.glade:6232
+#: glade/pytrainer.glade:7223
 msgid "New Entry"
 msgstr "Nouvelle entrée"
 
-#: glade/pytrainer.glade:5248
-#: pytrainer/gui/windowmain.py:52
-#: pytrainer/gui/windowmain.py:366
-msgid "Date"
-msgstr "Date"
+#: glade/pytrainer.glade:7296
+msgid "Title:"
+msgstr "Titre:"
 
-#: glade/pytrainer.glade:5299
-msgid " "
-msgstr " "
+#: glade/pytrainer.glade:7345
+msgid "GPX File:"
+msgstr "Fichier GPX:"
 
-#: glade/pytrainer.glade:5413
-#: pytrainer/gui/windowmain.py:52
-#: pytrainer/gui/windowmain.py:365
-msgid "Title"
-msgstr "Titre"
-
-#: glade/pytrainer.glade:5471
-msgid "GPX file"
-msgstr "Fichier GPX"
-
-#: glade/pytrainer.glade:5533
+#: glade/pytrainer.glade:7415
 msgid "Calculate Values"
-msgstr "Calculer les valeurs"
+msgstr "Calculer les Valeurs"
 
-#: glade/pytrainer.glade:5566
-msgid "Beats avg (bpm)"
-msgstr "Pulsations moyennes (bpm)"
+#: glade/pytrainer.glade:7434
+msgid "Sport:"
+msgstr "Sport:"
 
-#: glade/pytrainer.glade:5622
-msgid "Distance (Km)"
-msgstr "Distance (km) "
+#: glade/pytrainer.glade:7485
+msgid "<b>Main</b>"
+msgstr "<b>Principal:</b>"
 
-#: glade/pytrainer.glade:5672
-#: pytrainer/gui/windowmain.py:52
-#: pytrainer/gui/windowmain.py:369
-msgid "Time"
-msgstr "Temps"
+#: glade/pytrainer.glade:7546
+msgid "Distance (Km):"
+msgstr "Distance (km):"
 
-#: glade/pytrainer.glade:5826
-msgid "Average (km/h)"
-msgstr "Moyenne (km/h)"
+#: glade/pytrainer.glade:7575
+#: glade/pytrainer.glade:7772
+#: glade/pytrainer.glade:8053
+#: glade/pytrainer.glade:8299
+#: glade/pytrainer.glade:8767
+#: glade/pytrainer.glade:11515
+msgid "Calculate"
+msgstr "Calculer"
 
-#: glade/pytrainer.glade:5876
-msgid "Calculate Distance"
-msgstr "Calcule la distance"
+#: glade/pytrainer.glade:7594
+msgid "Time:"
+msgstr "Temps:"
 
-#: glade/pytrainer.glade:5896
-msgid "Calculate Time"
-msgstr "Calcule le temps"
+#: glade/pytrainer.glade:7792
+msgid "Date:"
+msgstr "Date:"
 
-#: glade/pytrainer.glade:5916
-msgid "Calculate Average"
-msgstr "Calcule la moyenne"
+#: glade/pytrainer.glade:7912
+#: glade/pytrainer.glade:11565
+msgid "<b>General</b>"
+msgstr "<b>Général:</b>"
 
-#: glade/pytrainer.glade:5957
-#: pytrainer/gui/windowmain.py:372
+#: glade/pytrainer.glade:7973
+msgid "Max (km/h):"
+msgstr "Max (km/h):"
+
+#: glade/pytrainer.glade:8024
+msgid "Velocity (km/h)"
+msgstr "Vitesse (km/h)"
+
+#: glade/pytrainer.glade:8099
+msgid "<b>Velocity</b>"
+msgstr "<b>Vitesse</b>"
+
+#: glade/pytrainer.glade:8135
+msgid "Quick Entry"
+msgstr "Entrée Rapide"
+
+#: glade/pytrainer.glade:8195
+msgid "Max (min/km):"
+msgstr "Max (min/km)"
+
+#: glade/pytrainer.glade:8247
+msgid "Pace (min/km):"
+msgstr "Cadence (min/km)"
+
+#: glade/pytrainer.glade:8322
+msgid "<b>Pace</b>"
+msgstr "<b>Cadence:</b>"
+
+#: glade/pytrainer.glade:8383
+msgid "Ascent:"
+msgstr "Dénivelé Pos.:"
+
+#: glade/pytrainer.glade:8435
+msgid "Descent:"
+msgstr "Dénivelé Nég.:"
+
+#: glade/pytrainer.glade:8490
+msgid "<b>Accumulated Altitude Change</b>"
+msgstr " <b>Dénivelé Cumulé:</b> "
+
+#: glade/pytrainer.glade:8551
+msgid "Max (bpm):"
+msgstr "Max (bpm):"
+
+#: glade/pytrainer.glade:8580
+msgid "Heart rate:"
+msgstr "Fréquence Cardiaque:"
+
+#: glade/pytrainer.glade:8654
+#: pytrainer/gui/windowmain.py:475
+#: pytrainer/monthgraph.py:77
 msgid "Calories"
 msgstr "Calories"
 
-#: glade/pytrainer.glade:6163
+#: glade/pytrainer.glade:8705
+msgid "<small><b>Note:</b> In order to calculate the calories you must set the sport MET (in Preferences->Sport) </small>"
+msgstr "<small><b>Note:</b> Afin de calculer les calories vous devez renseigner le coefficient M.E.T. pour votre sport (menu Préférences->Sport) </small>"
+
+#: glade/pytrainer.glade:8822
+msgid "<b>Heart Rate</b>"
+msgstr "<b>Fréquence Cardiaque:</b>"
+
+#: glade/pytrainer.glade:8858
+msgid "Advanced"
+msgstr "Avancé"
+
+#: glade/pytrainer.glade:8955
 msgid "<b>Comments</b>"
 msgstr "<b>Commentaires</b>"
 
-#: glade/pytrainer.glade:6337
-#: glade/pytrainer.glade:6631
-msgid "Profile"
-msgstr "Profil"
+#: glade/pytrainer.glade:8984
+msgid "Comments"
+msgstr "Commentaires"
 
-#: glade/pytrainer.glade:6383
-msgid "Name"
-msgstr "Nom"
+#: glade/pytrainer.glade:9089
+msgid "Preferences"
+msgstr "Préférences"
 
-#: glade/pytrainer.glade:6411
-msgid "Gender"
-msgstr "Sexe"
+#: glade/pytrainer.glade:9163
+msgid "Metric system"
+msgstr "Système Métrique"
 
-#: glade/pytrainer.glade:6439
-msgid "Weight"
-msgstr "Poids"
+#: glade/pytrainer.glade:9185
+msgid "U.S. customary units"
+msgstr "Unités U.S."
 
-#: glade/pytrainer.glade:6467
-msgid "Height"
-msgstr "Taille"
+#: glade/pytrainer.glade:9211
+msgid "<b>System of Measurement</b>"
+msgstr "<b>Système de Mesure</b>"
 
-#: glade/pytrainer.glade:6558
-msgid "Age"
-msgstr "Age"
+#: glade/pytrainer.glade:9271
+msgid "Database type:"
+msgstr "Type de Base de Données:"
 
-#: glade/pytrainer.glade:6661
+#: glade/pytrainer.glade:9299
+msgid "Database host:"
+msgstr "Hôte de la Base de Données:"
+
+#: glade/pytrainer.glade:9348
+msgid "Database name:"
+msgstr "Nom de la Base de Données:"
+
+#: glade/pytrainer.glade:9416
+msgid "Database user:"
+msgstr "Utilisateur de la Base de Données:"
+
+#: glade/pytrainer.glade:9444
+msgid "Database pass:"
+msgstr "Mot de passe de la Base de Données:"
+
+#: glade/pytrainer.glade:9518
 msgid "<b>Database</b>"
 msgstr "<b>Base de données</b>"
 
-#: glade/pytrainer.glade:6695
-msgid "Database Type"
-msgstr "Type de Base de données"
+#: glade/pytrainer.glade:9578
+msgid "Use this port for internal connections: "
+msgstr "Utiliser ce port pour les connexions internes:"
 
-#: glade/pytrainer.glade:6723
-msgid "Database Host"
-msgstr "Hôte de la base de données"
+#: glade/pytrainer.glade:9629
+msgid "<small><b>Note:</b> Change this only if you know what you are doing</small>"
+msgstr "<small><b>Note:</b> Changez cette valeur uniquement si vous savez ce que vous faites</small>"
 
-#: glade/pytrainer.glade:6772
-msgid "Database Pass"
-msgstr "Mot de passe de la base de données"
+#: glade/pytrainer.glade:9661
+msgid "<b>Port  Connnection</b>"
+msgstr "<b>Port de Connexion:</b>"
 
-#: glade/pytrainer.glade:6821
-msgid "Database User "
-msgstr "Utilisateur de la base de données"
+#: glade/pytrainer.glade:9697
+msgid "General"
+msgstr "Général"
 
-#: glade/pytrainer.glade:6870
-msgid "Database Name"
-msgstr "Nom de la base de données"
+#: glade/pytrainer.glade:9750
+msgid "User name:"
+msgstr "Nom d'Utilisateur:"
 
-#: glade/pytrainer.glade:6951
-msgid "Database"
-msgstr "Base de données"
+#: glade/pytrainer.glade:9778
+msgid "Gender:"
+msgstr "Sexe:"
 
-#: glade/pytrainer.glade:6989
-msgid "<b>Sport list</b>"
+#: glade/pytrainer.glade:9824
+msgid "Height:"
+msgstr "Taille:"
+
+#: glade/pytrainer.glade:9895
+msgid "Date of birth:"
+msgstr "Date de Naissance:"
+
+#: glade/pytrainer.glade:10007
+msgid "Weight:"
+msgstr "Poids:"
+
+#: glade/pytrainer.glade:10039
+msgid "<b>Athlete Details</b>"
+msgstr "<b>Détail de l'Athlète</b>"
+
+#: glade/pytrainer.glade:10068
+msgid "Athlete"
+msgstr "Athlète"
+
+#: glade/pytrainer.glade:10251
+msgid "<b>Sport List</b>"
 msgstr "<b>Liste des Sports</b>"
 
-#: glade/pytrainer.glade:7140
+#: glade/pytrainer.glade:10280
 msgid "llist"
 msgstr ""
 
-#: glade/pytrainer.glade:7169
-msgid "<b>Add new Sport</b>"
+#: glade/pytrainer.glade:10360
+#: glade/pytrainer.glade:12430
+#: glade/pytrainer.glade:12921
+msgid "Name:"
+msgstr "Nom:"
+
+#: glade/pytrainer.glade:10388
+msgid "M.E.T.:"
+msgstr "M.E.T.:"
+
+#: glade/pytrainer.glade:10437
+msgid "Extra Weight:"
+msgstr "Poids Additionnel:"
+
+#: glade/pytrainer.glade:10513
+#: glade/pytrainer.glade:11119
+msgid "<small><b>Note:</b> You can get your M.E.T. sport Coefficient here: http://pytrainer.e-oss.net/met.pdf</small>"
+msgstr "<small><b>Note:</b> Vous pouvez consulter l'indice M.E.T. de votre sport à l'adresse suivante: http://pytrainer.e-oss.net/met.pdf</small>"
+
+#: glade/pytrainer.glade:10624
+msgid "<b>Add New Sport</b>"
 msgstr "<b>Ajouter un Sport</b>"
 
-#: glade/pytrainer.glade:7329
+#: glade/pytrainer.glade:10653
 msgid "new"
 msgstr "nouveau"
 
-#: glade/pytrainer.glade:7364
-msgid "<b>Delete sport</b>"
-msgstr "<b>Supprimer un sport</b>"
-
-#: glade/pytrainer.glade:7427
+#: glade/pytrainer.glade:10713
 msgid ""
-"You are going to remove a sport. When you delete a \n"
-"sport you delete the records asociated. Are you sure \n"
-"that you want do it?"
-msgstr "Vous êtes en train de supprimer un sport. Quand vous supprimez un sport vous supprimez les résultats associés. Êtes vous sûr de vouloir le faire?"
+"Deleting a sport removes associated records.\n"
+"Continue?"
+msgstr ""
+"Détruire un sport supprime les enregistrements associés.\n"
+"Continuer?"
 
-#: glade/pytrainer.glade:7564
+#: glade/pytrainer.glade:10853
+msgid "<b>Delete Sport</b>"
+msgstr "<b>Supprimer un Sport</b>"
+
+#: glade/pytrainer.glade:10913
 msgid "delete"
 msgstr "supprimer"
 
-#: glade/pytrainer.glade:7599
-msgid "<b>Edit sport</b>"
+#: glade/pytrainer.glade:10972
+msgid "Name"
+msgstr "Nom"
+
+#: glade/pytrainer.glade:11021
+msgid "M.E.T."
+msgstr "M.E.T."
+
+#: glade/pytrainer.glade:11070
+#: pytrainer/gui/windowprofile.py:67
+msgid "Extra Weight"
+msgstr "Poids Additionnel"
+
+#: glade/pytrainer.glade:11236
+msgid "<b>Edit Sport</b>"
 msgstr "<b>Éditer un sport</b>"
 
-#: glade/pytrainer.glade:7662
-msgid "New name"
-msgstr "Nouveau nom"
+#: glade/pytrainer.glade:11260
+#, fuzzy
+msgid "<b>lalaal</b>"
+msgstr "<b>Base de données</b>"
 
-#: glade/pytrainer.glade:7791
+#: glade/pytrainer.glade:11296
 msgid "edit"
 msgstr "édition"
 
-#: glade/pytrainer.glade:7820
+#: glade/pytrainer.glade:11325
 msgid "Sports"
 msgstr "Sports"
 
-#: glade/pytrainer.glade:7925
+#: glade/pytrainer.glade:11384
+msgid "Maximun heart rate:"
+msgstr "Fréquence Cardiaque Maximale:"
+
+#: glade/pytrainer.glade:11412
+msgid "Resting heart rate:"
+msgstr "Fréquence Cardiaque au Repos:"
+
+#: glade/pytrainer.glade:11486
+msgid "<small><b>Note:</b> Maximun heart rate is calculated by subtracting the number 220 minus your age. </small>"
+msgstr "<small><b>Note:</b> Le calcul de votre fréquence cardiaque maximale est effectué grâce à la formule 220 moins votre âge. </small>"
+
+#: glade/pytrainer.glade:11625
+msgid "<small><b>NOTE:</b> in order to use the Karvonen method you must cover the Resting hr field.</small>"
+msgstr "<small><b>Note:</b> Afin d'utiliser la méthode de Karvonen vous devez obligatoirement renseigner le champ «Fréquence Cardiaque au Repos».</small>"
+
+#: glade/pytrainer.glade:11654
+msgid "Percentages based method"
+msgstr "Méthode basée sur des pourcentages"
+
+#: glade/pytrainer.glade:11676
+#: pytrainer/gui/windowmain.py:194
+msgid "Karvonen method"
+msgstr "Méthode de Karvonen"
+
+#: glade/pytrainer.glade:11698
+msgid "Select how to calculate your heart rate zones."
+msgstr "Sélectionnez la méthode appropriée pour définir les zones cardiaque."
+
+#: glade/pytrainer.glade:11730
+msgid "<b>Heart Rate Zones</b>"
+msgstr "<b>Zones Cardiaque:</b>"
+
+#: glade/pytrainer.glade:11766
+#: pytrainer/daygraph.py:58
+#: pytrainer/recordgraph.py:78
+#: pytrainer/heartrategraph.py:33
+msgid "Heart Rate"
+msgstr "Fréquence Cardiaque"
+
+#: glade/pytrainer.glade:11871
 msgid "Calendar"
 msgstr "Calendrier"
 
-#: glade/pytrainer.glade:8050
+#: glade/pytrainer.glade:11997
 msgid "pytrainer"
 msgstr "pytrainer"
 
-#: glade/pytrainer.glade:8051
+#: glade/pytrainer.glade:11998
 msgid "(c) Fiz Vazquez <vud1@sindominio.net>"
 msgstr "(c) Fiz Vazquez <vud1@sindominio.net>"
 
-#: glade/pytrainer.glade:8052
-msgid "The free sport trainning center"
-msgstr "Un outil libre de planification d'entrainements"
+#: glade/pytrainer.glade:11999
+msgid "Track sporting activities and performance"
+msgstr "Un outil de suivi des activités sportives et des performances"
 
-#: glade/pytrainer.glade:8053
+#: glade/pytrainer.glade:12000
 msgid ""
 "(C) Fiz Vazquez\n"
 "\n"
@@ -573,197 +936,135 @@ msgstr ""
 "  You can found the license on Debian systems in the file\n"
 "  /usr/share/common-licenses/GPL\n"
 
-#: glade/pytrainer.glade:8073
+#: glade/pytrainer.glade:12020
 msgid "pytrainer.e-oss.net"
 msgstr "pytrainer.e-oss.net"
 
-#: glade/pytrainer.glade:8075
+#: glade/pytrainer.glade:12022
 msgid ""
+"Basque: Jabier Santamaria <mendikote@gmail.com>\n"
 "Catalan: Eloi Crespillo Itchart <eloi@ikuszen.com>\n"
 "Czech: Lobus Pokorny <sp.pok@seznam.cz>\n"
 "French: Dj <dj@djremixtheblog.be>\n"
+"French: Pierre Gaigé <pgaige@free.fr>\n"
 "Norwegian: Havard Davidsen <havard.davidsen@gmail.com>\n"
 "Polish: Seweryn Kokot <skokot@po.opole.pl>\n"
 "german: Aleks <aleks@schnecklecker.de>\n"
 "Spanish: Fiz vazquez <vud1@sindominio.net>"
 msgstr ""
+"Basque: Jabier Santamaria <mendikote@gmail.com>\n"
 "Catalan: Eloi Crespillo Itchart <eloi@ikuszen.com>\n"
-"Tchèque: Lobus Pokorny <sp.pok@seznam.cz>\n"
-"Français: Pierre Gaigé <pgaige@free.fr>\n"
-"Norvégien: Havard Davidsen <havard.davidsen@gmail.com>\n"
-"Polonais: Seweryn Kokot <skokot@po.opole.pl>\n"
-"Allemand: Aleks <aleks@schnecklecker.de>\n"
-"Espagnol: Fiz vazquez <vud1@sindominio.net>"
+"Czech: Lobus Pokorny <sp.pok@seznam.cz>\n"
+"French: Dj <dj@djremixtheblog.be>\n"
+"French: Pierre Gaigé <pgaige@free.fr>\n"
+"Norwegian: Havard Davidsen <havard.davidsen@gmail.com>\n"
+"Polish: Seweryn Kokot <skokot@po.opole.pl>\n"
+"german: Aleks <aleks@schnecklecker.de>\n"
+"Spanish: Fiz vazquez <vud1@sindominio.net>"
 
-#: glade/pytrainer.glade:8165
+#: glade/pytrainer.glade:12115
 msgid "Edit Record"
 msgstr "Éditer un enregistrement"
 
-#: glade/pytrainer.glade:8186
+#: glade/pytrainer.glade:12136
 msgid "Show graph in classic view"
 msgstr "Montrer le graphe dans la vue classique"
 
-#: glade/pytrainer.glade:8222
+#: glade/pytrainer.glade:12172
 msgid "warning"
 msgstr "attention"
 
-#: glade/pytrainer.glade:8348
-msgid "window2"
-msgstr "fenêtre2"
+#: glade/pytrainer.glade:12374
+msgid "<b>Extension Details</b>"
+msgstr "<b>Détail des Extensions</b>"
 
-#: glade/pytrainer.glade:8424
-#: glade/pytrainer.glade:8774
-msgid "<b>Name:</b>"
-msgstr "<b>Nom:</b>"
-
-#: glade/pytrainer.glade:8452
-#: glade/pytrainer.glade:8802
-msgid "<b>Description:</b>"
-msgstr "<b>Description:</b>"
-
-#: glade/pytrainer.glade:8480
-#: glade/pytrainer.glade:8830
-msgid "<b>Status:</b>"
-msgstr "<b>Statut:</b>"
-
-#: glade/pytrainer.glade:8508
+#: glade/pytrainer.glade:12402
 msgid "name-entry"
 msgstr ""
 
-#: glade/pytrainer.glade:8536
-#: glade/pytrainer.glade:8886
-msgid "description-entry"
-msgstr ""
+#: glade/pytrainer.glade:12458
+#: glade/pytrainer.glade:12865
+msgid "Status:"
+msgstr "Statut:"
 
-#: glade/pytrainer.glade:8564
-#: glade/pytrainer.glade:8914
+#: glade/pytrainer.glade:12514
+#: glade/pytrainer.glade:12837
 msgid "status-entry"
 msgstr ""
 
-#: glade/pytrainer.glade:8699
+#: glade/pytrainer.glade:12542
+msgid "description-entry"
+msgstr ""
+
+#: glade/pytrainer.glade:12677
 msgid "Plugins"
 msgstr "Plugins"
 
-#: glade/pytrainer.glade:8858
+#: glade/pytrainer.glade:12752
+msgid "<b>Plugin Details</b>"
+msgstr "<b>Détail du plugin</b>"
+
+#: glade/pytrainer.glade:12781
+msgid "description-entry "
+msgstr ""
+
+#: glade/pytrainer.glade:12893
 msgid "nameEntry"
 msgstr ""
 
-#: pytrainer/main.py:85
+#: glade/pytrainer.glade:13064
+msgid "Select track record"
+msgstr "Sélectionnez un Circuit"
+
+#: pytrainer/main.py:94
 msgid "No Active Plugins"
 msgstr "Aucun plugins actif"
 
-#: pytrainer/main.py:94
+#: pytrainer/main.py:103
 msgid "No Active Extensions"
 msgstr "Aucune extension active"
 
-#: pytrainer/main.py:203
-msgid "You are going to remove one database entry. Are you sure yo want do it?"
-msgstr "Vous êtes en train de supprimer une entrée de la base de données. Êtes vous sûr de vouloir le faire?"
+#: pytrainer/main.py:245
+msgid "Delete this database entry?"
+msgstr "Supprimer cette entrée de la Base de Données?"
 
-#: pytrainer/main.py:214
-msgid "You are going to remove one waypoint. Are you sure yo want do it?"
-msgstr "Vous êtes en train de supprimer un point de localisation. Êtes vous sûr de vouloir le faire?"
+#: pytrainer/main.py:256
+msgid "Delete this waypoint?"
+msgstr "Détruire ce Point de Localisation"
 
-#: pytrainer/lib/date.py:72
-msgid "January"
-msgstr "Janvier"
+#: pytrainer/gui/windowprofile.py:49
+msgid "Male"
+msgstr "Homme"
 
-#: pytrainer/lib/date.py:73
-msgid "Febrary"
-msgstr "Février"
+#: pytrainer/gui/windowprofile.py:50
+msgid "Female"
+msgstr "Femme"
 
-#: pytrainer/lib/date.py:74
-msgid "March"
-msgstr "Mars"
+#: pytrainer/gui/windowprofile.py:67
+msgid "MET"
+msgstr "MET"
 
-#: pytrainer/lib/date.py:75
-msgid "April"
-msgstr "Avril"
+#: pytrainer/gui/windowplugins.py:70
+#: pytrainer/gui/windowplugins.py:97
+#: pytrainer/gui/windowextensions.py:70
+msgid "Enable"
+msgstr "Activé"
 
-#: pytrainer/lib/date.py:76
-msgid "May"
-msgstr "Mai"
+#: pytrainer/gui/windowplugins.py:72
+#: pytrainer/gui/windowplugins.py:96
+#: pytrainer/gui/windowextensions.py:72
+msgid "Disable"
+msgstr "Désactivé"
 
-#: pytrainer/lib/date.py:77
-msgid "June"
-msgstr "Juin"
+#: pytrainer/gui/windowplugins.py:81
+#: pytrainer/gui/windowextensions.py:81
+#, python-format
+msgid "%s settings"
+msgstr ""
 
-#: pytrainer/lib/date.py:78
-msgid "July"
-msgstr "Juillet"
-
-#: pytrainer/lib/date.py:79
-msgid "August"
-msgstr "Août"
-
-#: pytrainer/lib/date.py:80
-msgid "September"
-msgstr "Septembre"
-
-#: pytrainer/lib/date.py:81
-msgid "October"
-msgstr "Octobre"
-
-#: pytrainer/lib/date.py:82
-msgid "November"
-msgstr "Novembre"
-
-#: pytrainer/lib/date.py:83
-msgid "December"
-msgstr "Décembre"
-
-#: pytrainer/yeargraph.py:37
-#: pytrainer/yeargraph.py:39
-#: pytrainer/yeargraph.py:41
-#: pytrainer/yeargraph.py:43
-#: pytrainer/yeargraph.py:45
-msgid "month"
-msgstr "mois"
-
-#: pytrainer/yeargraph.py:37
-#: pytrainer/monthgraph.py:37
-msgid "kilometers"
-msgstr "kilomètres"
-
-#: pytrainer/yeargraph.py:37
-msgid "monthly kilometers"
-msgstr "Kilomètres mensuels"
-
-#: pytrainer/yeargraph.py:39
-#: pytrainer/monthgraph.py:39
-msgid "time in hours"
-msgstr "Temps en heures"
-
-#: pytrainer/yeargraph.py:39
-msgid "monthly time"
-msgstr "Durées mensuelles"
-
-#: pytrainer/yeargraph.py:41
-#: pytrainer/monthgraph.py:41
-msgid "beats per minute"
-msgstr "pulsations par minute"
-
-#: pytrainer/yeargraph.py:41
-msgid "monthly beats"
-msgstr "pulsations mensuelles"
-
-#: pytrainer/yeargraph.py:43
-#: pytrainer/monthgraph.py:43
-msgid "average (hm/h)"
-msgstr "moyenne (km/h)"
-
-#: pytrainer/yeargraph.py:43
-msgid "monthly averages"
-msgstr "moyennes mensuelles"
-
-#: pytrainer/yeargraph.py:45
-#: pytrainer/monthgraph.py:45
-msgid "calories"
-msgstr "calories"
-
-#: pytrainer/yeargraph.py:45
-msgid "monthly calories"
-msgstr "Calories mensuelles"
+#: pytrainer/gui/windowplugins.py:104
+msgid "Ok"
+msgstr "Ok"
 
 #: pytrainer/gui/windowmain.py:49
 #: pytrainer/gui/windowmain.py:52
@@ -773,109 +1074,365 @@ msgstr "id"
 
 #: pytrainer/gui/windowmain.py:49
 msgid "Kilometer"
-msgstr "Kilométrage"
+msgstr "Kilomètres"
 
 #: pytrainer/gui/windowmain.py:52
-#: pytrainer/gui/windowmain.py:367
+#: pytrainer/gui/windowmain.py:468
+msgid "Title"
+msgstr "Titre"
+
+#: pytrainer/gui/windowmain.py:52
+#: pytrainer/gui/windowmain.py:469
+#: pytrainer/gui/dialogselecttrack.py:36
+msgid "Date"
+msgstr "Date"
+
+#: pytrainer/gui/windowmain.py:52
+#: pytrainer/gui/windowmain.py:470
 msgid "Distance"
 msgstr "Distance"
 
 #: pytrainer/gui/windowmain.py:52
-#: pytrainer/gui/windowmain.py:370
+#: pytrainer/gui/windowmain.py:472
+msgid "Time"
+msgstr "Temps"
+
+#: pytrainer/gui/windowmain.py:52
+#: pytrainer/gui/windowmain.py:473
 msgid "Beats"
 msgstr "Pulsations"
 
 #: pytrainer/gui/windowmain.py:52
-#: pytrainer/gui/windowmain.py:371
+#: pytrainer/gui/windowmain.py:474
 msgid "Average"
 msgstr "Moyenne"
 
 #: pytrainer/gui/windowmain.py:56
 msgid "Waypoint"
-msgstr "Point de localisation"
+msgstr "Point de Localisation"
 
-#: pytrainer/gui/windowplugins.py:72
-#: pytrainer/gui/windowextensions.py:70
-msgid "Active"
-msgstr "Actif"
+#: pytrainer/gui/windowmain.py:196
+msgid "Percentages method"
+msgstr "Méthode basée sur des pourcentages"
 
-#: pytrainer/gui/windowplugins.py:74
-#: pytrainer/gui/windowextensions.py:72
-msgid "unActive"
-msgstr "Non Actif"
+#: pytrainer/gui/dialogselecttrack.py:36
+msgid "Track Name"
+msgstr "Nom du Circuit"
 
-#: pytrainer/gui/windowplugins.py:83
-#: pytrainer/gui/windowextensions.py:81
-#, python-format
-msgid "%s settings"
-msgstr ""
-
-#: pytrainer/gui/windowplugins.py:106
 #: pytrainer/gui/windowextensions.py:104
 #: pytrainer/gui/windowextensions.py:117
-msgid "Ok"
-msgstr "Ok"
+msgid "OK"
+msgstr "OK"
 
-#: pytrainer/daygraph.py:48
-#: pytrainer/daygraph.py:50
-#: pytrainer/recordgraph.py:48
-#: pytrainer/recordgraph.py:50
+#: pytrainer/lib/date.py:73
+msgid "January"
+msgstr "Janvier"
+
+#: pytrainer/lib/date.py:74
+msgid "Febrary"
+msgstr "Février"
+
+#: pytrainer/lib/date.py:75
+msgid "March"
+msgstr "Mars"
+
+#: pytrainer/lib/date.py:76
+msgid "April"
+msgstr "Avril"
+
+#: pytrainer/lib/date.py:77
+msgid "May"
+msgstr "Mai"
+
+#: pytrainer/lib/date.py:78
+msgid "June"
+msgstr "Juin"
+
+#: pytrainer/lib/date.py:79
+msgid "July"
+msgstr "Juillet"
+
+#: pytrainer/lib/date.py:80
+msgid "August"
+msgstr "Août"
+
+#: pytrainer/lib/date.py:81
+msgid "September"
+msgstr "Septembre"
+
+#: pytrainer/lib/date.py:82
+msgid "October"
+msgstr "Octobre"
+
+#: pytrainer/lib/date.py:83
+msgid "November"
+msgstr "Novembre"
+
+#: pytrainer/lib/date.py:84
+msgid "December"
+msgstr "Décembre"
+
+#: pytrainer/lib/gpx.py:75
+msgid "No Name"
+msgstr "Sans Nom"
+
+#: pytrainer/lib/gpx.py:81
+msgid "No Data"
+msgstr "Pas de Valeurs"
+
+#: pytrainer/lib/heartrate.py:46
+msgid "Moderate activity"
+msgstr "Activité modérée"
+
+#: pytrainer/lib/heartrate.py:47
+msgid "Weight Control"
+msgstr "Perte de poids"
+
+#: pytrainer/lib/heartrate.py:48
+msgid "Aerobic"
+msgstr "Aérobie"
+
+#: pytrainer/lib/heartrate.py:49
+msgid "Anaerobic"
+msgstr "Anaérobie"
+
+#: pytrainer/lib/heartrate.py:50
+msgid "VO2 MAX"
+msgstr ""
+
+#: pytrainer/waypoint.py:67
+msgid "The gpx file seems to be a several days records. Perhaps you will need to edit your gpx file"
+msgstr "Ce fichier GPX semble contenir plusieurs jours d'enregistrements. Vous devrez peut-être au préalable éditer celui-ci."
+
+#: pytrainer/record.py:207
+msgid "pyTrainer cant import data from your gpx file"
+msgstr "pyTrainer ne peut pas importer de données depuis le fichier GPX"
+
+#: pytrainer/daygraph.py:54
+#: pytrainer/daygraph.py:56
+#: pytrainer/daygraph.py:58
+#: pytrainer/recordgraph.py:72
+#: pytrainer/recordgraph.py:74
+#: pytrainer/recordgraph.py:76
+#: pytrainer/recordgraph.py:78
+#: pytrainer/heartrategraph.py:33
 msgid "Distance (km)"
 msgstr "Distance (km) "
 
-#: pytrainer/daygraph.py:48
-#: pytrainer/recordgraph.py:48
+#: pytrainer/daygraph.py:54
+#: pytrainer/recordgraph.py:72
 msgid "Height (m)"
 msgstr "Altitude (m)"
 
-#: pytrainer/daygraph.py:48
-#: pytrainer/recordgraph.py:48
+#: pytrainer/daygraph.py:54
+#: pytrainer/recordgraph.py:72
 msgid "Stage Profile"
 msgstr "Profil de la sortie"
 
-#: pytrainer/daygraph.py:50
-#: pytrainer/recordgraph.py:50
+#: pytrainer/daygraph.py:56
 msgid "Velocity (Km/h)"
 msgstr "Vitesse (km/h)"
 
-#: pytrainer/daygraph.py:50
-#: pytrainer/recordgraph.py:50
-msgid "velocity"
-msgstr "vitesse"
+#: pytrainer/daygraph.py:56
+msgid "Velocity"
+msgstr "Vitesse"
 
-#: pytrainer/monthgraph.py:37
-#: pytrainer/monthgraph.py:39
-#: pytrainer/monthgraph.py:41
-#: pytrainer/monthgraph.py:43
-#: pytrainer/monthgraph.py:45
+#: pytrainer/daygraph.py:58
+#: pytrainer/recordgraph.py:78
+#: pytrainer/heartrategraph.py:33
+msgid "Beats (bpm)"
+msgstr "Pulsations (bpm)"
+
+#: pytrainer/recordgraph.py:74
+#, fuzzy
+msgid "Speed (Km/h)"
+msgstr "Vitesse Max (km/h)"
+
+#: pytrainer/recordgraph.py:74
+msgid "Speed"
+msgstr "Vitesse"
+
+#: pytrainer/recordgraph.py:76
+msgid "Pace (min/km)"
+msgstr "Cadence (min/km)"
+
+#: pytrainer/recordgraph.py:76
+msgid "Pace"
+msgstr "Cadence"
+
+#: pytrainer/yeargraph.py:69
+#: pytrainer/yeargraph.py:71
+#: pytrainer/yeargraph.py:73
+#: pytrainer/yeargraph.py:75
+#: pytrainer/yeargraph.py:77
+msgid "month"
+msgstr "mois"
+
+#: pytrainer/yeargraph.py:69
+msgid "kilometers"
+msgstr "Kilomètres"
+
+#: pytrainer/yeargraph.py:69
+msgid "monthly kilometers"
+msgstr "Kilométrage Mensuel"
+
+#: pytrainer/yeargraph.py:71
+msgid "time in hours"
+msgstr "Temps en heures"
+
+#: pytrainer/yeargraph.py:71
+msgid "monthly time"
+msgstr "Durées Mensuelles"
+
+#: pytrainer/yeargraph.py:73
+msgid "beats per minute"
+msgstr "pulsations par minute"
+
+#: pytrainer/yeargraph.py:73
+msgid "monthly beats"
+msgstr "pulsations mensuelles"
+
+#: pytrainer/yeargraph.py:75
+msgid "average (hm/h)"
+msgstr "moyenne (km/h)"
+
+#: pytrainer/yeargraph.py:75
+msgid "monthly averages"
+msgstr "moyennes mensuelles"
+
+#: pytrainer/yeargraph.py:77
+msgid "calories"
+msgstr "calories"
+
+#: pytrainer/yeargraph.py:77
+msgid "monthly calories"
+msgstr "Calories mensuelles"
+
+#: pytrainer/monthgraph.py:69
+#: pytrainer/monthgraph.py:71
+#: pytrainer/monthgraph.py:73
+#: pytrainer/monthgraph.py:75
+#: pytrainer/monthgraph.py:77
 msgid "day"
 msgstr "jour"
 
-#: pytrainer/monthgraph.py:37
-msgid "daily kilometers"
-msgstr "Kilomètres journaliers"
+#: pytrainer/monthgraph.py:69
+msgid "Kilometers"
+msgstr "Kilomètres"
 
-#: pytrainer/monthgraph.py:39
-msgid "daily time"
-msgstr "durée journalière"
+#: pytrainer/monthgraph.py:69
+msgid "Daily kilometers"
+msgstr "Kilométrage Journalier"
 
-#: pytrainer/monthgraph.py:41
-msgid "daily beats"
-msgstr "pulsations journalières"
+#: pytrainer/monthgraph.py:71
+msgid "Time in Hours"
+msgstr "Durée en Heures"
 
-#: pytrainer/monthgraph.py:43
-msgid "daily averages"
-msgstr "moyennes journalières"
+#: pytrainer/monthgraph.py:71
+msgid "Daily Time"
+msgstr "Durée Journalière"
 
-#: pytrainer/monthgraph.py:45
-msgid "daily calories"
-msgstr "calories journalières"
+#: pytrainer/monthgraph.py:73
+msgid "Beats per Minute"
+msgstr "Pulsations par Minute"
 
-#: pytrainer/record.py:189
-#: pytrainer/waypoint.py:67
-msgid "The gpx file seems to be a several days records. Perhaps you will need to edit your gpx file"
-msgstr "Ce fichier gpx semble contenir plusieurs jours d'enregistrements. Vous devrez peut-être au préalable éditer celui-ci."
+#: pytrainer/monthgraph.py:73
+msgid "Daily Beats"
+msgstr "Pulsations Journalières"
 
+#: pytrainer/monthgraph.py:75
+msgid "Average (km/h)"
+msgstr "Moyenne (km/h)"
+
+#: pytrainer/monthgraph.py:75
+msgid "Daily Averages"
+msgstr "Moyennes Journalières"
+
+#: pytrainer/monthgraph.py:77
+msgid "Daily Calories"
+msgstr "Calories Journalières"
+
+#~ msgid " Km"
+#~ msgstr " Km"
+#~ msgid "<b>Velocity:</b>"
+#~ msgstr "<b>Vitesse:</b>"
+#~ msgid " km/h"
+#~ msgstr " km/h"
+#~ msgid " <b>Accumulated Altitude Change:</b> "
+#~ msgstr " <b>Dénivelé Cumulé:</b> "
+#~ msgid "<b>Average:</b>"
+#~ msgstr "<b>Moyenne:</b>"
+#~ msgid "velocity"
+#~ msgstr "vitesse"
+#~ msgid "Calculate Distance"
+#~ msgstr "Calculer la Distance"
+#~ msgid "Calculate Time"
+#~ msgstr "Calculer la Durée"
+#~ msgid "Calculate Velocity"
+#~ msgstr "Calculer la Vitesse"
+#~ msgid "Calculate Pace"
+#~ msgstr "Calculer le Rythme"
+#~ msgid "Calculate Calories"
+#~ msgstr "Calculer les Calories"
+#~ msgid "Heart rate (bpm):"
+#~ msgstr "Fréquence Cardiaque (bpm):"
+#~ msgid "Calculate Average"
+#~ msgstr "Calcule la Moyenne"
+#~ msgid ""
+#~ "You are going to remove a sport. When you delete a \n"
+#~ "sport you delete the records asociated. Are you sure \n"
+#~ "that you want do it?"
+#~ msgstr ""
+#~ "Vous êtes en train de supprimer un sport. Quand vous supprimez un sport "
+#~ "vous supprimez les résultats associés. Êtes vous sûr de vouloir le faire?"
+#~ msgid ""
+#~ "You are going to remove one database entry. Are you sure yo want do it?"
+#~ msgstr ""
+#~ "Vous êtes en train de supprimer une entrée de la base de données. Êtes "
+#~ "vous sûr de vouloir le faire?"
+#~ msgid "You are going to remove one waypoint. Are you sure yo want do it?"
+#~ msgstr ""
+#~ "Vous êtes en train de supprimer un point de localisation. Êtes vous sûr "
+#~ "de vouloir le faire?"
+#~ msgid ""
+#~ "The gpx file seems to have several track records. Press cancel to select "
+#~ "a track record. Press Ok to load all of them as a single track record."
+#~ msgstr ""
+#~ "Ce fichier GPX semble contenir plusieurs circuits. Pressez Annuler pour "
+#~ "sélectionner un circuit. Pressez Ok pour tous les charger sous un seul et "
+#~ "même circuit."
+#~ msgid "<b>Positive:</b>"
+#~ msgstr "<b>Positif:</b>"
+#~ msgid "<b>Negative:</b>"
+#~ msgstr "<b>Négatif:</b>"
+#~ msgid "Km/day"
+#~ msgstr "Km/jour"
+#~ msgid "bpm/day"
+#~ msgstr "bpm/jour"
+#~ msgid "km/h/day"
+#~ msgstr "km/h/jour"
+#~ msgid "cal/day"
+#~ msgstr "cal/jour"
+#~ msgid "time/day"
+#~ msgstr "temps/jour"
+#~ msgid " <b>Name:</b>"
+#~ msgstr " <b>Nom:</b>"
+#~ msgid " <b>Description:</b>"
+#~ msgstr " <b>Description:</b>"
+#~ msgid "Profile"
+#~ msgstr "Profil"
+#~ msgid "Age"
+#~ msgstr "Age"
+#~ msgid "Database"
+#~ msgstr "Base de données"
+#~ msgid "The free sport trainning center"
+#~ msgstr "Un outil libre de planification d'entrainements"
+#~ msgid "window2"
+#~ msgstr "fenêtre2"
+#~ msgid "Active"
+#~ msgstr "Actif"
+#~ msgid "unActive"
+#~ msgstr "Non Actif"
 #~ msgid "The training tool for the gnu people"
 #~ msgstr "L'outil d'entrainement pour les gens libres"
 
