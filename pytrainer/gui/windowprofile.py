@@ -42,7 +42,9 @@ class WindowProfile(SimpleGladeApp):
 			"prf_ddbbpass",
 			"prf_maxhr",
 			"prf_minhr",
-			"prf_hrzones_karvonen"]
+			"prf_hrzones_karvonen",
+			"prf_us_system"
+			]
 
 	def new(self):
 		self.gender_options = {
@@ -76,9 +78,9 @@ class WindowProfile(SimpleGladeApp):
 			if not list_options.has_key(i):
 				continue
 			var = getattr(self,i)
-			if i != "prf_gender" and i != "prf_ddbb" and i !="prf_hrzones_karvonen":
+			if i != "prf_gender" and i != "prf_ddbb" and i !="prf_hrzones_karvonen" and i!="prf_us_system":
 				var.set_text(list_options[i])
-			elif i == "prf_hrzones_karvonen":
+			elif i == "prf_hrzones_karvonen" or i == "prf_us_system":
 				if list_options[i]=="True":
 					var.set_active(True)
 			elif i == "prf_gender":
@@ -98,9 +100,9 @@ class WindowProfile(SimpleGladeApp):
 		list_options = []
 		for i in self.conf_options:
 			var = getattr(self,i)
-			if i != "prf_gender" and i != "prf_ddbb" and i != "prf_hrzones_karvonen":
+			if i != "prf_gender" and i != "prf_ddbb" and i != "prf_hrzones_karvonen" and i != "prf_us_system":
 				list_options.append((i,var.get_text()))
-			elif i == "prf_hrzones_karvonen":
+			elif i == "prf_hrzones_karvonen" or i == "prf_us_system":
 				if var.get_active():
 					list_options.append((i,"True"))
 				else:

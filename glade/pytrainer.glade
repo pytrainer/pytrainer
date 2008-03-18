@@ -693,7 +693,7 @@
 					      </child>
 
 					      <child>
-						<widget class="GtkLabel" id="label11136">
+						<widget class="GtkLabel" id="r_maxspeed_unit">
 						  <property name="visible">True</property>
 						  <property name="label" translatable="yes">km/h</property>
 						  <property name="use_underline">False</property>
@@ -721,7 +721,7 @@
 					      </child>
 
 					      <child>
-						<widget class="GtkLabel" id="label11139">
+						<widget class="GtkLabel" id="r_maxpace_unit">
 						  <property name="visible">True</property>
 						  <property name="label" translatable="yes">min/km</property>
 						  <property name="use_underline">False</property>
@@ -749,7 +749,7 @@
 					      </child>
 
 					      <child>
-						<widget class="GtkLabel" id="label-2147483648">
+						<widget class="GtkLabel" id="r_descent_unit">
 						  <property name="visible">True</property>
 						  <property name="label" translatable="yes">m</property>
 						  <property name="use_underline">False</property>
@@ -1086,7 +1086,7 @@
 					      </child>
 
 					      <child>
-						<widget class="GtkLabel" id="label-2147483647">
+						<widget class="GtkLabel" id="r_pace_unit">
 						  <property name="visible">True</property>
 						  <property name="label" translatable="yes">min/km</property>
 						  <property name="use_underline">False</property>
@@ -1142,7 +1142,7 @@
 					      </child>
 
 					      <child>
-						<widget class="GtkLabel" id="label11146">
+						<widget class="GtkLabel" id="r_ascent_unit">
 						  <property name="visible">True</property>
 						  <property name="label" translatable="yes">m</property>
 						  <property name="use_underline">False</property>
@@ -1208,7 +1208,7 @@
 					      </child>
 
 					      <child>
-						<widget class="GtkLabel" id="label11128">
+						<widget class="GtkLabel" id="r_distance_unit">
 						  <property name="visible">True</property>
 						  <property name="label" translatable="yes">Km</property>
 						  <property name="use_underline">False</property>
@@ -1261,7 +1261,7 @@
 						    <packing>
 						      <property name="padding">0</property>
 						      <property name="expand">True</property>
-						      <property name="fill">False</property>
+						      <property name="fill">True</property>
 						    </packing>
 						  </child>
 
@@ -1376,7 +1376,7 @@
 					      </child>
 
 					      <child>
-						<widget class="GtkLabel" id="label11130">
+						<widget class="GtkLabel" id="r_speed_unit">
 						  <property name="visible">True</property>
 						  <property name="label" translatable="yes">km/h</property>
 						  <property name="use_underline">False</property>
@@ -2907,7 +2907,7 @@ Heart Rate
 					  <property name="column_spacing">3</property>
 
 					  <child>
-					    <widget class="GtkLabel" id="label73">
+					    <widget class="GtkLabel" id="d_distance_unit">
 					      <property name="visible">True</property>
 					      <property name="label" translatable="yes">Km</property>
 					      <property name="use_underline">False</property>
@@ -3244,7 +3244,7 @@ Heart Rate
 					  </child>
 
 					  <child>
-					    <widget class="GtkLabel" id="label75">
+					    <widget class="GtkLabel" id="d_speed_unit">
 					      <property name="visible">True</property>
 					      <property name="label" translatable="yes">km/h</property>
 					      <property name="use_underline">False</property>
@@ -3301,7 +3301,7 @@ Heart Rate
 					  </child>
 
 					  <child>
-					    <widget class="GtkLabel" id="label-2147483647">
+					    <widget class="GtkLabel" id="d_maxspeed_unit">
 					      <property name="visible">True</property>
 					      <property name="label" translatable="yes">km/h</property>
 					      <property name="use_underline">False</property>
@@ -3525,7 +3525,7 @@ Heart Rate
 					  </child>
 
 					  <child>
-					    <widget class="GtkLabel" id="label-2147483645">
+					    <widget class="GtkLabel" id="d_pace_unit">
 					      <property name="visible">True</property>
 					      <property name="label" translatable="yes">min/km</property>
 					      <property name="use_underline">False</property>
@@ -3581,7 +3581,7 @@ Heart Rate
 					  </child>
 
 					  <child>
-					    <widget class="GtkLabel" id="label-2147483643">
+					    <widget class="GtkLabel" id="d_maxpace_unit">
 					      <property name="visible">True</property>
 					      <property name="label" translatable="yes">min/km</property>
 					      <property name="use_underline">False</property>
@@ -4035,7 +4035,7 @@ Stage Profile/velocity</property>
 					  <property name="column_spacing">3</property>
 
 					  <child>
-					    <widget class="GtkLabel" id="label104">
+					    <widget class="GtkLabel" id="m_distance_unit">
 					      <property name="visible">True</property>
 					      <property name="label" translatable="yes">Km</property>
 					      <property name="use_underline">False</property>
@@ -4345,7 +4345,7 @@ Stage Profile/velocity</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkLabel" id="label106">
+					    <widget class="GtkLabel" id="m_speed_unit">
 					      <property name="visible">True</property>
 					      <property name="label" translatable="yes">km/h</property>
 					      <property name="use_underline">False</property>
@@ -4514,7 +4514,7 @@ Stage Profile/velocity</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkLabel" id="label-2147483646">
+					    <widget class="GtkLabel" id="m_maxspeed_unit">
 					      <property name="visible">True</property>
 					      <property name="label" translatable="yes">km/h</property>
 					      <property name="use_underline">False</property>
@@ -4709,7 +4709,7 @@ Stage Profile/velocity</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkLabel" id="label-2147483643">
+					    <widget class="GtkLabel" id="m_pace_unit">
 					      <property name="visible">True</property>
 					      <property name="label" translatable="yes">min/km</property>
 					      <property name="use_underline">False</property>
@@ -4737,7 +4737,7 @@ Stage Profile/velocity</property>
 					  </child>
 
 					  <child>
-					    <widget class="GtkLabel" id="label-2147483642">
+					    <widget class="GtkLabel" id="m_maxpace_unit">
 					      <property name="visible">True</property>
 					      <property name="label" translatable="yes">min/km</property>
 					      <property name="use_underline">False</property>
@@ -9157,7 +9157,7 @@ Summit</property>
 			  <property name="column_spacing">5</property>
 
 			  <child>
-			    <widget class="GtkRadioButton" id="radiobutton1">
+			    <widget class="GtkRadioButton" id="prf_metric_system">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
 			      <property name="label" translatable="yes">Metric system</property>
@@ -9179,7 +9179,7 @@ Summit</property>
 			  </child>
 
 			  <child>
-			    <widget class="GtkRadioButton" id="radiobutton2">
+			    <widget class="GtkRadioButton" id="prf_us_system">
 			      <property name="visible">True</property>
 			      <property name="can_focus">True</property>
 			      <property name="label" translatable="yes">U.S. customary units</property>
@@ -9189,7 +9189,7 @@ Summit</property>
 			      <property name="active">False</property>
 			      <property name="inconsistent">False</property>
 			      <property name="draw_indicator">True</property>
-			      <property name="group">radiobutton1</property>
+			      <property name="group">prf_metric_system</property>
 			    </widget>
 			    <packing>
 			      <property name="left_attach">1</property>

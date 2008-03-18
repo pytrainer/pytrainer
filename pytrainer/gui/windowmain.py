@@ -27,6 +27,8 @@ from pytrainer.lib.date import Date
 from pytrainer.lib.system import checkConf
 from pytrainer.lib.xmlUtils import XMLParser
 
+from pytrainer.lib.unitsconversor import *
+
 class Main(SimpleGladeApp):
 	def __init__(self, data_path = None, parent = None, version = None):
 		self.version = version
@@ -129,6 +131,26 @@ class Main(SimpleGladeApp):
 			i+=1
 	
 	def actualize_recordview(self,record_list):
+		conf = checkConf()
+		filename = conf.getValue("conffile")
+        	configuration = XMLParser(filename)
+		if configuration.getValue("pytraining","prf_us_system") == "True":
+			self.r_distance_unit.set_text(_("miles"))
+			self.r_speed_unit.set_text(_("miles/h"))
+			self.r_maxspeed_unit.set_text(_("miles/h"))
+			self.r_pace_unit.set_text(_("min/mile"))
+			self.r_maxpace_unit.set_text(_("min/mile"))
+			self.r_ascent_unit.set_text(_("feet"))
+			self.r_descent_unit.set_text(_("feet"))
+		else:
+			self.r_distance_unit.set_text(_("km"))
+			self.r_speed_unit.set_text(_("km/h"))
+			self.r_maxspeed_unit.set_text(_("km/h"))
+			self.r_pace_unit.set_text(_("min/km"))
+			self.r_maxpace_unit.set_text(_("min/km"))
+			self.r_ascent_unit.set_text(_("m"))
+			self.r_descent_unit.set_text(_("m"))
+
 		if len(record_list)>0:
 			record_list=record_list[0]
 			
@@ -142,24 +164,35 @@ class Main(SimpleGladeApp):
 			unegative = self.parseFloat(record_list[11])
 			title = str(record_list[9])
 			comments = str(record_list[5])
-			pace = self.parseFloat(record_list[13])
+			pace = self.parseFloat(record_list[14])
 			maxspeed = self.parseFloat(record_list[12])
-			maxpace = self.parseFloat(record_list[14])
+			maxpace = self.parseFloat(record_list[13])
+			
+			if configuration.getValue("pytraining","prf_us_system") == "True":
+				self.record_distance.set_text("%0.2f" %km2miles(distance))
+				self.record_upositive.set_text("%0.2f" %m2feet(upositive))
+				self.record_unegative.set_text("%0.2f" %m2feet(unegative))
+				self.record_average.set_text("%0.2f" %km2miles(average))
+				self.record_maxspeed.set_text("%0.2f" %km2miles(maxspeed))
+				self.record_pace.set_text("%0.2f" %pacekm2miles(pace))
+				self.record_maxpace.set_text("%0.2f" %pacekm2miles(maxpace))
+		
+			else:
+				self.record_distance.set_text("%0.2f" %distance)
+				self.record_upositive.set_text("%0.2f" %upositive)
+				self.record_unegative.set_text("%0.2f" %unegative)
+				self.record_average.set_text("%0.2f" %average)
+				self.record_maxspeed.set_text("%0.2f" %maxspeed)
+				self.record_pace.set_text("%0.2f" %pace)
+				self.record_maxpace.set_text("%0.2f" %maxpace)
 			
 			self.record_sport.set_text(sport)
 			self.record_date.set_text(date)
-			self.record_distance.set_text("%0.2f" %distance)
 			hour,min,sec=self.parent.date.second2time(int(record_list[3]))
 			self.record_hour.set_text("%d" %hour)
 			self.record_minute.set_text("%d" %min)
 			self.record_second.set_text("%d" %sec)
-			self.record_average.set_text("%0.2f" %average)
 			self.record_calories.set_text("%0.0f" %calories)
-			self.record_upositive.set_text("%0.2f" %upositive)
-			self.record_unegative.set_text("%0.2f" %unegative)
-			self.record_maxspeed.set_text("%0.2f" %maxspeed)
-			self.record_pace.set_text("%0.2f" %pace)
-			self.record_maxpace.set_text("%0.2f" %maxpace)
 			self.record_title.set_text(title)
 			buffer = self.record_comments.get_buffer()
                 	start,end = buffer.get_bounds()
@@ -198,6 +231,22 @@ class Main(SimpleGladeApp):
 			self.recordview.set_sensitive(0)
 
 	def actualize_dayview(self,record_list):
+		conf = checkConf()
+		filename = conf.getValue("conffile")
+        	configuration = XMLParser(filename)
+		if configuration.getValue("pytraining","prf_us_system") == "True":
+			self.d_distance_unit.set_text(_("miles"))
+			self.d_speed_unit.set_text(_("miles/h"))
+			self.d_maxspeed_unit.set_text(_("miles/h"))
+			self.d_pace_unit.set_text(_("min/mile"))
+			self.d_maxpace_unit.set_text(_("min/mile"))
+		else:
+			self.d_distance_unit.set_text(_("km"))
+			self.d_speed_unit.set_text(_("km/h"))
+			self.d_maxspeed_unit.set_text(_("km/h"))
+			self.d_pace_unit.set_text(_("min/km"))
+			self.d_maxpace_unit.set_text(_("min/km"))
+
 		if len(record_list)>0:
 			tbeats = 0
 			distance = 0
@@ -219,6 +268,10 @@ class Main(SimpleGladeApp):
 					maxspeed = self.parseFloat(record[9])
 				if record[10] > maxbeats:
 					maxbeats = self.parseFloat(record[10])
+			
+			if configuration.getValue("pytraining","prf_us_system") == "True":
+				distance = km2miles(distance)
+				maxspeed = km2miles(maxspeed)
 			
 			if tbeats > 0:		
 				tbeats = tbeats/(timeinseconds/60/60)
@@ -267,6 +320,22 @@ class Main(SimpleGladeApp):
 		pace = 0
 		maxpace = 0
 		maxbeats = 0
+		
+		conf = checkConf()
+		filename = conf.getValue("conffile")
+        	configuration = XMLParser(filename)
+		if configuration.getValue("pytraining","prf_us_system") == "True":
+			self.m_distance_unit.set_text(_("miles"))
+			self.m_speed_unit.set_text(_("miles/h"))
+			self.m_maxspeed_unit.set_text(_("miles/h"))
+			self.m_pace_unit.set_text(_("min/mile"))
+			self.m_maxpace_unit.set_text(_("min/mile"))
+		else:
+			self.m_distance_unit.set_text(_("km"))
+			self.m_speed_unit.set_text(_("km/h"))
+			self.m_maxspeed_unit.set_text(_("km/h"))
+			self.m_pace_unit.set_text(_("min/km"))
+			self.m_maxpace_unit.set_text(_("min/km"))
 	
 		if num_records>0:
 			for record in record_list:
@@ -282,6 +351,11 @@ class Main(SimpleGladeApp):
 					maxspeed = self.parseFloat(record[7])
 				if record[8] > maxbeats:
 					maxbeats = self.parseFloat(record[8])
+			
+			if configuration.getValue("pytraining","prf_us_system") == "True":
+				km = km2miles(km)
+				maxspeed = km2miles(maxspeed)
+			
 			if time_in_min > 0:
 				tbeats = tbeats/time_in_min		
 			else:
