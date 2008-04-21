@@ -107,10 +107,14 @@ class Profile:
 		logging.debug("<<")
 		
 	def updateSport(self,oldnamesport,newnamesport,newmetsport,newweightsport):
-		self.ddbb.update("sports","name,weight,met",[newnamesport,newmetsport,newweightsport],"name=\"%s\""%oldnamesport)
+		logging.debug("--")
+		#self.ddbb.update("sports","name,weight,met",[newnamesport,newmetsport,newweightsport],"name=\"%s\""%oldnamesport)
+		self.ddbb.update("sports","name,met,weight",[newnamesport,newmetsport,newweightsport],"name=\"%s\""%oldnamesport)
 	
 	def getSportInfo(self,namesport):
-		return self.ddbb.select("sports","name,weight,met","name=\"%s\""%namesport)[0]
+		logging.debug("--")
+		#return self.ddbb.select("sports","name,weight,met","name=\"%s\""%namesport)[0]
+		return self.ddbb.select("sports","name,met,weight","name=\"%s\""%namesport)[0]
 	
 	def build_ddbb(self):
 		logging.debug("--")
