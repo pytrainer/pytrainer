@@ -19,27 +19,29 @@
 
 
 from optparse import OptionParser
-from gtrnctr2gpx import gtrnctr2gpx
+#from gtrnctr2gpx import gtrnctr2gpx
 import os
 
 parser = OptionParser()
 parser.add_option("-d", "--device", dest="device")
 (options,args) =  parser.parse_args()
 
-tmpgpx = "/tmp/reg.gpx"
-dummy = 0
+#tmpgpx = "/tmp/reg.gpx"
+#dummy = 0
 
 
 try:
 	os.system("gpsbabel -t -i garmin -f %s -o gtrnctr -F /tmp/file.gtrnctr | zenity --progress --pulsate --text='Loading Data' auto-close" %options.device)
-	dummy = 1
+	print "/tmp/file.gtrnctr"
+	#dummy = 1
 except:
 	f = os.popen("zenity --error --text='Cant open garmin device. Check your configuration or connect the device correctly.'");
-	dummy = 0
-
+	#dummy = 0
+"""
 if dummy == 1:
 	gtrnctr2gpx("/tmp/file.gtrnctr","/tmp/file.gpx")
 	print "/tmp/file.gpx"
 else:
 	print 0
+"""
 
