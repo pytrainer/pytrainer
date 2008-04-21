@@ -53,10 +53,14 @@ class Gpx:
 		self.maxhr = 0
 		self.date = ""
 		self.tracks = []
-		if not os.path.isfile(self.filename):
-			return None
-		self.dom = xml.dom.minidom.parse(self.filename)
-		self.Values = self._getValues()
+		if filename != None:
+			if not os.path.isfile(self.filename):
+				return None
+			logging.debug("parsing content from "+self.filename)
+			self.dom = xml.dom.minidom.parse(self.filename)
+			logging.debug("getting values...")
+			self.Values = self._getValues()
+		logging.debug("<<")
 
 	def getMaxValues(self):
 		return self.total_dist, self.total_time, self.maxvel, self.maxhr
@@ -218,3 +222,47 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 			vel = (arr_velocity[0]+arr_velocity[1]+arr_velocity[2])/3
 		#logging.debug("<<")
 		return vel,arr_velocity
+		
+	def getStartTimeFromGPX(self, gpxFile):
+		"""25.03.2008 - dgranda
+		Retrieves start time from a given gpx file
+		args:
+			- gpxFile: path to xml file (gpx format)
+		returns: string with start time - 2008-03-22T12:17:43Z"""
+		logging.debug("--")
+		xmldoc = xml.dom.minidom.parse(gpxFile)
+		times = xmldoc.getElementsByTagName("time")
+		return times[0].firstChild.data
+		"""
+		tree = xml.etree.cElementTree.parse(gpxFile)
+		#xml.etree.cElementTree.dump(tree)
+		#prueba = xml.etree.cElementTree.parse(gpxFile).find('trkpt')
+		#xml.etree.cElementTree.dump(prueba)
+		
+		prueba1=tree.findtext('.//time')
+		logging.debug('prueba1: '+str(prueba1))
+		prueba2=tree.findtext('trk/trkseg/trkpt/time')
+		logging.debug('prueba2: '+str(prueba2))
+		prueba3=tree.findtext(".//"+timeTag)
+		logging.debug('prueba3: '+str(prueba3))
+		prueba4=tree.findtext(timeTag)
+		logging.debug('prueba4: '+str(prueba4))
+		prueba5=tree.findtext(trackTag)
+		logging.debug('prueba5: '+str(prueba5))
+		#return prueba.findtext('.//time')
+		"""
+	
+	def retrieveDataFromGTRNCTR(self, gtrnctrFile, entry):
+		"""23.03.2008 - dgranda
+		Builds a new GPX file based on one entry from GPS (dates matching)
+		args:
+			- gtrnctrFile: path of file with data from GPS file (garmin format)
+			- entry: list with dictionaries: SPORT|DATE|START_TIME
+		returns: path to new GPX file"""
+		logging.debug('>>')
+		xmlParser = XMLParser(gtrnctrFile)
+		selectedEntry = xmlParser.getTrackFromDates(gtrnctrFile,entry,0)
+		newGPXEntry = "/tmp/new_entry.gpx"
+		gtrnctr2gpx(selectedEntry, newGPXEntry)
+		logging.debug('<<')
+		return newGPXEntry	
