@@ -145,7 +145,20 @@ class pyTrainer:
 			 logging.info('gpxfile exists')
 			 self.record.newGpxRecord(gpxfile,list_sport)
 		else:
-			self.record.editRecord(gpxfile,list_sport)	
+			 logging.info('editing gpxfile...')
+			 self.record.editRecord(gpxfile,list_sport)
+		logging.debug('<<')
+		
+		"""
+	def runPlugin(self,widget,pathPlugin):
+		logging.debug('>>')
+		gtrnctrFile = self.plugins.runPlugin(pathPlugin)
+		if os.path.isfile(gtrnctrFile):
+			logging.info('File exists. Size: '+ str(os.path.getsize(gtrnctrFile)))
+ 			self.record.importFromGTRNCTR(gtrnctrFile)
+ 		else:
+ 			logging.error('File '+gtrnctrFile+' not valid')
+		logging.debug('<<')
 
 	def runExtension(self,extension,id):
 		logging.debug('>>')
