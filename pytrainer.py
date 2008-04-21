@@ -41,10 +41,14 @@ from pytrainer.main import pyTrainer
 
 os.popen("MOZILLA_FIVE_HOME=/usr/lib/firefox")
 
-def main():
+# 21.03.2008 - dgranda
+# check command line arguments
+# for more complex handling, see http://docs.python.org/lib/module-getopt.html
+# only -d (for debug log level) is supported right now
+def main(argv):
 	#Lanzamos el pytrainer
 	pytrainer = pyTrainer(None, data_path)
 	#pytrainer.run()
 
 if __name__ == "__main__":
-        main()
+        main(sys.argv[1:])
