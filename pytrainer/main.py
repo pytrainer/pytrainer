@@ -24,6 +24,7 @@ import gobject
 pygtk.require('2.0')
 import gtk
 import gtk.glade
+import logging
 
 from record import Record
 from waypoint import Waypoint
@@ -49,9 +50,30 @@ from lib.soapUtils import webService
 
 from lib.heartrate import *
 
+# 21.03.2008 - dgranda
+# setting up logging
+# Only one parameter from command line is accepted
+# ERROR is the default log level
+debug_level = logging.ERROR
+if len(sys.argv) >1:
+	if sys.argv[1]=='-d':
+		debug_level = logging.DEBUG
+	elif sys.argv[1]=='-i':
+		debug_level = logging.INFO
+	elif sys.argv[1]=='-w':
+		debug_level = logging.WARNING
+	else:
+		print "CLI - Unknown parameter "+sys.argv[1]
+
+print "*** Log level set to "+ logging.getLevelName(debug_level) +" ***"
+logging.basicConfig(level=debug_level,
+					 format='%(asctime)s|%(levelname)s|%(module)s|%(funcName)s|%(message)s',
+					 filemode='w')
+
 class pyTrainer:
-	def __init__(self,filename = None, data_path = None):
-		self.data_path = data_path
+	def __init__(self,filename = None, data_path = None): 
+		logging.debug('>>') 
+		self.data_path = data_path 
 		#configuration
 		self.version ="1.5.0.3"
 		self.conf = checkConf()
@@ -59,7 +81,7 @@ class pyTrainer:
 		self.windowmain = Main(data_path,self,self.version)
 		self.date = Date(self.windowmain.calendar)
 
-		#Preparamos el webservice	
+		#Preparamos el webservice	 
 		gtk.gdk.threads_init()
 		self.webservice = webService(data_path,self.refreshWaypointView,self.newRecord)
 		self.webservice.start()
@@ -79,194 +101,244 @@ class pyTrainer:
 		self.windowmain.createMap(Googlemaps,self.waypoint)
 		self.windowmain.createWaypointEditor(WaypointEditor,self.waypoint)
 		self.windowmain.on_calendar_selected(None)
-	
-		self.refreshMainSportList()	
+		self.refreshMainSportList()	 
 		self.windowmain.run()
+		logging.debug('<<') 
 
 	def quit(self): 
+		logging.debug('--') 
 		self.webservice.stop()
 		self.windowmain.gtk_main_quit()
 		sys.exit("Exit!")
 
-	def loadPlugins(self):	
+	def loadPlugins(self):
+		logging.debug('>>')
 		activeplugins = self.plugins.getActivePlugins()
 		if (len(activeplugins)<1):
-			print _("No Active Plugins")
+			 print _("No Active Plugins")
 		else:
-			for plugin in activeplugins:
+			 for plugin in activeplugins:
 				txtbutton = self.plugins.loadPlugin(plugin)
 				self.windowmain.addImportPlugin(txtbutton)
-	
-	def loadExtensions(self):	
+		logging.debug('<<')
+	 
+	def loadExtensions(self):
+		logging.debug('>>')
 		activeextensions = self.extension.getActiveExtensions()
 		if (len(activeextensions)<1):
-			print _("No Active Extensions")
+			 print _("No Active Extensions")
 		else:
-			for extension in activeextensions:
+			 for extension in activeextensions:
 				txtbutton = self.extension.loadExtension(extension)
 				self.windowmain.addExtension(txtbutton)
-	
+		logging.debug('<<')
+	""" 
 	def runPlugin(self,widget,pathPlugin):
+		logging.debug('>>')
 		gpxfile = self.plugins.runPlugin(pathPlugin)
 		list_sport = self.profile.getSportList()
+		logging.info('gpxfile: '+ gpxfile +' | sports list: '+str(list_sport))
 		if gpxfile == False or gpxfile=="":
-			pass
+			 logging.error('gpxfile not valid')
+			 pass
 		elif os.path.isfile(gpxfile):
-			self.record.newGpxRecord(gpxfile,list_sport)
+			 logging.info('gpxfile exists')
+			 self.record.newGpxRecord(gpxfile,list_sport)
 		else:
 			self.record.editRecord(gpxfile,list_sport)	
 
 	def runExtension(self,extension,id):
+		logging.debug('>>')
 		txtbutton,pathExtension,type = extension
 		if type == "record":
-			#Si es record le tenemos que crear el googlemaps, el gpx y darle el id de la bbdd
-			alert = self.extension.runExtension(pathExtension,id)
-	
+			 #Si es record le tenemos que crear el googlemaps, el gpx y darle el id de la bbdd
+			 alert = self.extension.runExtension(pathExtension,id)
+		logging.debug('<<')
+	 
 	def refreshMainSportList(self):
+		logging.debug('>>')
 		listSport = self.profile.getSportList()
 		self.windowmain.updateSportList(listSport)
+		logging.debug('<<')
 		
 	def refreshGraphView(self, view, sport=None):
+		logging.debug('>>')
 		date_selected = self.date.getDate()
 		if view=="record":
-			if self.windowmain.recordview.get_current_page()==0:
+			 logging.debug('record view')
+			 if self.windowmain.recordview.get_current_page()==0:
 				self.refreshRecordGraphView("info")
-			elif self.windowmain.recordview.get_current_page()==1:
+			 elif self.windowmain.recordview.get_current_page()==1:
 				self.refreshRecordGraphView("graphs")
-			elif self.windowmain.recordview.get_current_page()==2:
+			 elif self.windowmain.recordview.get_current_page()==2:
 				self.refreshRecordGraphView("map")
-			elif self.windowmain.recordview.get_current_page()==3:
+			 elif self.windowmain.recordview.get_current_page()==3:
 				self.refreshRecordGraphView("heartrate")
 		elif view=="day":
-			record_list = self.record.getrecordList(date_selected)
-			self.windowmain.actualize_dayview(record_list)
-			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
-				
+			 logging.debug('day view')
+			 record_list = self.record.getrecordList(date_selected)
+			 self.windowmain.actualize_dayview(record_list)
+			 selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
 		elif view=="month":
-			date_ini, date_end = self.date.getMonthInterval(date_selected)
-			sport = self.windowmain.getSportSelected()
-                	record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport)
-			nameMonth = self.date.getNameMonth(date_selected)
-			self.windowmain.actualize_monthview(record_list, nameMonth)
-			self.windowmain.actualize_monthgraph(record_list)
+			 logging.debug('month view')
+			 date_ini, date_end = self.date.getMonthInterval(date_selected)
+			 sport = self.windowmain.getSportSelected()
+			 record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport)
+			 #logging.debug('record list: '+record_list)
+			 nameMonth = self.date.getNameMonth(date_selected)
+			 self.windowmain.actualize_monthview(record_list, nameMonth)
+			 self.windowmain.actualize_monthgraph(record_list)
 		elif view=="year":
-			date_ini, date_end = self.date.getYearInterval(date_selected)
-			sport = self.windowmain.getSportSelected()
-			year = self.date.getYear(date_selected)
-                	record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport)
-			self.windowmain.actualize_yearview(record_list, year)
-			self.windowmain.actualize_yeargraph(record_list)
-	
+			 logging.debug('year view')
+			 date_ini, date_end = self.date.getYearInterval(date_selected)
+			 sport = self.windowmain.getSportSelected()
+			 year = self.date.getYear(date_selected)
+			 record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport)
+			 self.windowmain.actualize_yearview(record_list, year)
+			 self.windowmain.actualize_yeargraph(record_list)
+		logging.debug('<<')
+	 
 	def refreshRecordGraphView(self, view):
+		logging.debug('>>')
 		if view=="info":
-			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
-			record_list=[]
-			if iter:
+			 selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+			 record_list=[]
+			 if iter:
 				id_record = selected.get_value(iter,0)
 				record_list = self.record.getrecordInfo(id_record)
-			self.windowmain.actualize_recordview(record_list)
+			 self.windowmain.actualize_recordview(record_list)
 
 		if view=="graphs":
-			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
-			gpx_tracklist = []
-			if iter:
+			 selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+			 gpx_tracklist = []
+			 if iter:
 				id_record = selected.get_value(iter,0)
 				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
 				if os.path.isfile(gpxfile):
-					gpx = Gpx(self.data_path,gpxfile)
-					gpx_tracklist = gpx.getTrackList()
-			self.windowmain.actualize_recordgraph(gpx_tracklist)
+					 gpx = Gpx(self.data_path,gpxfile)
+					 gpx_tracklist = gpx.getTrackList()
+			 self.windowmain.actualize_recordgraph(gpx_tracklist)
 
 		if view=="map":
-			self.refreshMapView()
+			 self.refreshMapView()
 
 		if view=="heartrate":
-			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
-			gpx_tracklist = []
-			record_list=[]
-			if iter:
+			 selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+			 gpx_tracklist = []
+			 record_list=[]
+			 if iter:
 				id_record = selected.get_value(iter,0)
 				record_list = self.record.getrecordInfo(id_record)
 				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
 				if os.path.isfile(gpxfile):
-					gpx = Gpx(self.data_path,gpxfile)
-					gpx_tracklist = gpx.getTrackList()
-			self.windowmain.actualize_heartrategraph(gpx_tracklist)
-			zones = getZones()
-			filename = self.conf.getValue("conffile")
-        		configuration = XMLParser(filename)
-			karvonen_method = configuration.getValue("pytraining","prf_hrzones_karvonen")
-			self.windowmain.actualize_hrview(record_list,zones,karvonen_method)
-			
+					 gpx = Gpx(self.data_path,gpxfile)
+					 gpx_tracklist = gpx.getTrackList()
+			 self.windowmain.actualize_heartrategraph(gpx_tracklist)
+			 zones = getZones()
+			 filename = self.conf.getValue("conffile")
+			 configuration = XMLParser(filename)
+			 karvonen_method = configuration.getValue("pytraining","prf_hrzones_karvonen")
+			 self.windowmain.actualize_hrview(record_list,zones,karvonen_method)
+		logging.debug('<<')
+			 
 	def refreshMapView(self):
+		logging.debug('>>')
 		selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
 		id_record = selected.get_value(iter,0)
 		self.windowmain.actualize_map(id_record)
+		logging.debug('<<')
 
 	def refreshListRecords(self):
+		logging.debug('>>')
 		date = self.date.getDate()
 		record_list = self.record.getrecordList(date)
 		self.windowmain.actualize_recordTreeView(record_list)
 		record_list = self.record.getRecordDayList(date)
 		self.windowmain.actualize_calendar(record_list)
+		logging.debug('<<')
 
 	def refreshListView(self):
+		logging.debug('>>')
 		record_list = self.record.getAllRecordList()
 		self.windowmain.actualize_listview(record_list)
-	
+		logging.debug('<<')
+	 
 	def refreshWaypointView(self,default_waypoint=False,redrawmap=1):
+		logging.debug('>>')
 		waypoint_list = self.waypoint.getAllWaypoints()
 		self.windowmain.actualize_waypointview(waypoint_list,default_waypoint,redrawmap)
-	
+		logging.debug('<<')
+	 
 	def searchListView(self,condition):
+		logging.debug('>>')
 		record_list = self.record.getRecordListByCondition(condition)
 		self.windowmain.actualize_listview(record_list)
+		logging.debug('<<')
 		
 	def editExtensions(self):
-                self.extension.manageExtensions()
+		logging.debug('>>')
+		self.extension.manageExtensions()
+		logging.debug('<<')
 		
 	def editGpsPlugins(self):
+		logging.debug('>>')
 		self.plugins.managePlugins()
+		logging.debug('<<')
 
 	def newRecord(self,title=None,distance=None,time=None,upositive=None,unegative=None,bpm=None,calories=None,date=None,comment=None):
+		logging.debug('>>')
 		list_sport = self.profile.getSportList()
 		if date == None:
-			date = self.date.getDate()
-                self.record.newRecord(list_sport, date, title, distance, time, upositive, unegative, bpm, calories, comment)
+			 date = self.date.getDate()
+			 self.record.newRecord(list_sport, date, title, distance, time, upositive, unegative, bpm, calories, comment)
+		logging.debug('<<')
 
 	def editRecord(self, id_record):
+		logging.debug('>>')
 		list_sport = self.profile.getSportList()
-                self.record.editRecord(id_record,list_sport)
+		logging.debug('id_record: '+str(id_record)+' | list_sport: '+str(list_sport))
+		self.record.editRecord(id_record,list_sport)
+		logging.debug('<<')
 
 	def removeRecord(self, id_record, confirm = False):
+		logging.debug('>>')
 		if confirm:
-			self.record.removeRecord(id_record)
+			 self.record.removeRecord(id_record)
 		else:
-			msg = _("Delete this database entry?")
-			params = [id_record,True]
-			warning = Warning(self.data_path,self.removeRecord,params)
-			warning.set_text(msg)
-			warning.run()
-	
+			 msg = _("Delete this database entry?")
+			 params = [id_record,True]
+			 warning = Warning(self.data_path,self.removeRecord,params)
+			 warning.set_text(msg)
+			 warning.run()
+		logging.debug('<<')
+	 
 	def removeWaypoint(self,id_waypoint, confirm = False):
+		logging.debug('>>')
 		if confirm:
-			self.waypoint.removeWaypoint(id_waypoint)
-			self.refreshWaypointView()
+			 self.waypoint.removeWaypoint(id_waypoint)
+			 self.refreshWaypointView()
 		else:
-			msg = _("Delete this waypoint?")
-			params = [id_waypoint,True]
-			warning = Warning(self.data_path,self.removeWaypoint,params)
-			warning.set_text(msg)
-			warning.run()
+			 msg = _("Delete this waypoint?")
+			 params = [id_waypoint,True]
+			 warning = Warning(self.data_path,self.removeWaypoint,params)
+			 warning.set_text(msg)
+			 warning.run()
+		logging.debug('<<')
 
 	def updateWaypoint(self,id_waypoint,lat,lon,name,desc,sym):
+		logging.debug('>>')
 		self.waypoint.updateWaypoint(id_waypoint,lat,lon,name,desc,sym)
 		self.refreshWaypointView(id_waypoint)
-	
+		logging.debug('<<')
+	 
 	def exportCsv(self):
+		logging.debug('>>')
 		from save import Save
 		save = Save(self.data_path, self.record)
-		save.run()		
-	
+		save.run()
+		logging.debug('<<')	 
+	 
 	def editProfile(self):
+		logging.debug('>>')
 		self.profile.editProfile()
+		logging.debug('<<')
