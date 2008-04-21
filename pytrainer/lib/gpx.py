@@ -22,14 +22,28 @@ import math
 import re
 import os
 from system import checkConf
-import xml.dom.minidom 
+ 
 import time
+import logging
+from xmlUtils import XMLParser
+import xml.dom
+from xml.dom import minidom, Node, getDOMImplementation
+import xml.etree.cElementTree
+from gtrnctr2gpx import gtrnctr2gpx # copied to pytrainer/lib/ directory
+
+# use of namespaces is mandatory if defined
+mainNS = string.Template("{http://www.topografix.com/GPX/1/1}$tag")
+timeTag = mainNS.substitute(tag="time")
+trackTag = mainNS.substitute(tag="trk")
+trackPointTag = mainNS.substitute(tag="trkpt")
 
 class Gpx:
 	def __init__(self, data_path = None, filename = None, trkname = None):
+		logging.debug(">>")
 		self.data_path = data_path
 		self.filename = filename
 		self.trkname = trkname
+		logging.debug(str(data_path)+"|"+str(filename)+"|"+str(trkname))
 		self.conf = checkConf()
 		self.total_dist = 0
 		self.total_time = 0
@@ -63,6 +77,7 @@ class Gpx:
 		return self.hr_average
 		
 	def _getValues(self):
+		logging.debug(">>")
 		dom = self.dom
 		content = dom.toxml()
 
@@ -78,7 +93,8 @@ class Gpx:
 				mk_time = time.strptime(time_, "%Y-%m-%dT%H:%M:%SZ")
 				time_ = time.strftime("%Y-%m-%d", mk_time)
 			else:
-				time_ = _("No Data")	
+				time_ = _("No Data")
+			logging.debug("name: "+name+" | time: "+time_)
 			self.tracks.append((name,time_))
 			
 			name = trk.getElementsByTagName("name")[0].firstChild.data
@@ -187,10 +203,12 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 		self.hr_average = 0
 		if len_validhrpoints > 0:
 			self.hr_average = total_hr/len_validhrpoints
-		self.total_dist = total_dist 
+		self.total_dist = total_dist
+		logging.debug("<<")
 		return retorno
 	
 	def _calculate_velocity(self,velocity, arr_velocity):
+		#logging.debug(">>")
 		arr_velocity.append(velocity)
 		if len(arr_velocity)>3:
 			arr_velocity.pop(0)
@@ -198,4 +216,5 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 			vel=0
 		else:
 			vel = (arr_velocity[0]+arr_velocity[1]+arr_velocity[2])/3
+		#logging.debug("<<")
 		return vel,arr_velocity
