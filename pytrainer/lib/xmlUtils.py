@@ -19,10 +19,17 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import os
+import string
+import logging
+import xml.dom
+from xml.dom import minidom, Node, getDOMImplementation
+import xml.etree.cElementTree
 
-import xml.dom.minidom 
-from xml.dom.minidom import Node
-from xml.dom.minidom import getDOMImplementation
+# use of namespaces is mandatory if defined
+mainNSGarmin = string.Template("{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}$tag")
+timeTag = mainNSGarmin.substitute(tag="time")
+trackTag = mainNSGarmin.substitute(tag="trk")
+trackPointTag = mainNSGarmin.substitute(tag="trkpt")
 
 class XMLParser:
 	def __init__(self,filename = None):
@@ -98,3 +105,72 @@ class XMLParser:
 		out.write(xmlcontent)
 		out.close()
 
+	def shortFromGPS(self, gtrnctrFile):
+		"""23.03.2008 - dgranda
+		Retrieves sport, date and start time from each entry coming from GPS
+		args: file with data from GPS file (garmin format)
+		returns: list with dictionaries: SPORT|DATE_STARTTIME"""
+		logging.debug('>>')
+		listTracksGPS = []
+		# using minidom
+		# http://gnosis.cx/publish/programming/parser-benchmarks.png
+		logging.debug('parsing '+gtrnctrFile)
+		xmldoc = minidom.parse(gtrnctrFile)
+		# only Running is supported as sport - 25.03.2008
+		tracks = xmldoc.getElementsByTagName("Track")
+		#logging.debug('sports available: '+sports)
+		num_tracks = tracks.length
+		if num_tracks>0:
+			logging.info('Tracks found: '+str(num_tracks))
+			for track in tracks:
+				# we are looking for date and time for the first trackpoint
+				#print track.childNodes[1].toxml()
+				date_time = track.childNodes[1].getElementsByTagName("Time")[0].firstChild.data
+				track_sport = "Run" #hardcoded
+				logging.debug('Found: '+track_sport+' | '+date_time)
+				listTracksGPS.append((track_sport,date_time))
+		"""
+		# Using ElementTree -> http://effbot.org/zone/element-index.htm
+		tree = xml.etree.cElementTree.parse(gtrnctrFile).getroot()
+		tracks = tree.findall(".//Track")
+		num_tracks = len(tracks)
+		logging.info('Tracks found: '+str(num_tracks))
+		if num_tracks>0:
+			for track in tracks:
+				# we are looking for date and time for the first trackpoint
+				date_time = track.findtext(".//Time") #returns first instance found
+				track_sport = "Run" #hardcoded
+				logging.debug('Found: '+track_sport+' | '+date_time)
+				listTracksGPS.append((track_sport,date_time))
+		"""
+		logging.debug('<<')
+		return listTracksGPS
+		
+		
+	def getTrackFromDates(self, source_file , entry , isGpx):
+		"""23.03.2008 - dgranda
+		Retrieves track given sport, date and start time
+		args:
+			- source_file: absolute path to source file
+			- entry: dictionary with SPORT|DATE_STARTTIME
+			- isGpx: 1 if source file is GPX, 0 if garmin format
+		returns: path to selected entry file"""
+		logging.debug('>>')
+		selectedEntry = ""
+		# 23.03.2008 Only source from garmin files are supported right now (isGpx = 0)
+		# this is intended to work in the future with variables instead of hardcoded field names
+		#dom = xml.dom.minidom.parse(source_file)
+		trks = self.xmldoc.getElementsByTagName("Track")
+		for trk in trks:
+			trkpoints = trk.getElementsByTagName("Trackpoint")
+			# we just need to check first one's date
+			date_time = trkpoints[0].getElementsByTagName("Time")[0].firstChild.data
+			if date_time == entry[1]:
+				#this is the track we are looking for
+				selectedEntry = "/tmp/track"+date_time
+				logging.debug('Writing selected track to '+selectedEntry)
+				f = open(selectedEntry,'w')
+				f.write(trk.toxml())
+				f.close()
+		logging.debug('<<')
+		return selectedEntry
