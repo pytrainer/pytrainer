@@ -401,13 +401,10 @@ class Record:
 		args: lists with dictionaries: SPORT|DATE|START_TIME
 		returns: tracks which are not present locally (list with dictionaries)"""
 		logging.debug('>>')
-		# First attempt, needs optimization
+		# Optimizing comparison - 26042008
 		# http://mail.python.org/pipermail/python-list/2002-May/142854.html
-		resultList = listTracksGPS[:]
-		for item in resultList:
-			if item in listTracksLocal:
-				logging.debug('Track '+str(item)+' already exists locally')
-				resultList.remove(item)
+		tempDict = dict(zip(listTracksLocal,listTracksLocal))
+		resultList = [x for x in listTracksGPS if x not in tempDict]
 		logging.info('Tracks to be imported: '+str(len(resultList)))
 		logging.debug('<<')
 		return resultList
