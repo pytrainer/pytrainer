@@ -26,22 +26,10 @@ parser = OptionParser()
 parser.add_option("-d", "--device", dest="device")
 (options,args) =  parser.parse_args()
 
-#tmpgpx = "/tmp/reg.gpx"
-#dummy = 0
-
-
 try:
+	# Can't export to GPX directly because lack of support for heartrate and  sports (1.0 version, may change when gpsbabel supports 1.1)
 	os.system("gpsbabel -t -i garmin -f %s -o gtrnctr -F /tmp/file.gtrnctr | zenity --progress --pulsate --text='Loading Data' auto-close" %options.device)
 	print "/tmp/file.gtrnctr"
-	#dummy = 1
 except:
 	f = os.popen("zenity --error --text='Cant open garmin device. Check your configuration or connect the device correctly.'");
-	#dummy = 0
-"""
-if dummy == 1:
-	gtrnctr2gpx("/tmp/file.gtrnctr","/tmp/file.gpx")
-	print "/tmp/file.gpx"
-else:
-	print 0
-"""
-
+	
