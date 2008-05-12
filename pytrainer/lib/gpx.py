@@ -37,6 +37,11 @@ timeTag = mainNS.substitute(tag="time")
 trackTag = mainNS.substitute(tag="trk")
 trackPointTag = mainNS.substitute(tag="trkpt")
 
+mainNSGpX = string.Template("{http://www.topografix.com/GPX/1/1}$tag")
+trackTag = mainNSGpX.substitute(tag="trk")
+trackPointTag = mainNSGpX.substitute(tag="trkpt")
+timeTag = mainNSGpX.substitute(tag="time")
+
 class Gpx:
 	def __init__(self, data_path = None, filename = None, trkname = None):
 		logging.debug(">>")
@@ -222,35 +227,29 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 			vel = (arr_velocity[0]+arr_velocity[1]+arr_velocity[2])/3
 		#logging.debug("<<")
 		return vel,arr_velocity
-		
+	"""	
 	def getStartTimeFromGPX(self, gpxFile):
-		"""25.03.2008 - dgranda
+		25.03.2008 - dgranda
 		Retrieves start time from a given gpx file
 		args:
 			- gpxFile: path to xml file (gpx format)
-		returns: string with start time - 2008-03-22T12:17:43Z"""
+		returns: string with start time - 2008-03-22T12:17:43Z
 		logging.debug("--")
 		xmldoc = xml.dom.minidom.parse(gpxFile)
 		times = xmldoc.getElementsByTagName("time")
 		return times[0].firstChild.data
-		"""
-		tree = xml.etree.cElementTree.parse(gpxFile)
-		#xml.etree.cElementTree.dump(tree)
-		#prueba = xml.etree.cElementTree.parse(gpxFile).find('trkpt')
-		#xml.etree.cElementTree.dump(prueba)
+	"""
 		
-		prueba1=tree.findtext('.//time')
-		logging.debug('prueba1: '+str(prueba1))
-		prueba2=tree.findtext('trk/trkseg/trkpt/time')
-		logging.debug('prueba2: '+str(prueba2))
-		prueba3=tree.findtext(".//"+timeTag)
-		logging.debug('prueba3: '+str(prueba3))
-		prueba4=tree.findtext(timeTag)
-		logging.debug('prueba4: '+str(prueba4))
-		prueba5=tree.findtext(trackTag)
-		logging.debug('prueba5: '+str(prueba5))
-		#return prueba.findtext('.//time')
-		"""
+	def getStartTimeFromGPX(self, gpxFile):
+		"""03.05.2008 - dgranda
+		Retrieves start time from a given gpx file (cElementTree version)
+		args:
+			- gpxFile: path to xml file (gpx format)
+		returns: string with start time - 2008-03-22T12:17:43Z"""
+		logging.debug("--")
+		tree = xml.etree.cElementTree.parse(gpxFile)
+		date_time = tree.getroot().findtext(".//"+timeTag) #returns first instance found
+		return date_time
 	
 	def retrieveDataFromGTRNCTR(self, gtrnctrFile, entry):
 		"""23.03.2008 - dgranda
