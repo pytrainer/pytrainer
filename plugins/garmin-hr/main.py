@@ -27,9 +27,19 @@ parser.add_option("-d", "--device", dest="device")
 (options,args) =  parser.parse_args()
 
 try:
-	# Can't export to GPX directly because lack of support for heartrate and  sports (1.0 version, may change when gpsbabel supports 1.1)
+	# Can't export to GPX directly because lack of support for heartrate and sports (1.0 version, may change when gpsbabel supports 1.1 with custom fields)
 	os.system("gpsbabel -t -i garmin -f %s -o gtrnctr -F /tmp/file.gtrnctr | zenity --progress --pulsate --text='Loading Data' auto-close" %options.device)
-	print "/tmp/file.gtrnctr"
+	#os.system("gpsbabel -t -i garmin -f usb: -o gtrnctr -F /tmp/file.gtrnctr | zenity --progress --pulsate --text='Loading Data' auto-close")
+	# XMl file from gpsbabel refers to schemas and namespace definitions which are no longer available, removing this info - dgg - 12.05.2008
+	f = open("/tmp/file.gtrnctr","r")
+	lines = f.readlines()
+	f.close()
+	f = open("/tmp/file_mod.gtrnctr",'w')
+	headers = lines[0]+'<TrainingCenterDatabase>\n'
+	f.write(headers)
+	f.write(''.join(lines[6:]))
+	f.close()
+	print "/tmp/file_mod.gtrnctr"
 except:
 	f = os.popen("zenity --error --text='Cant open garmin device. Check your configuration or connect the device correctly.'");
 	
