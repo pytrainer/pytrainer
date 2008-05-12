@@ -115,6 +115,7 @@ class XMLParser:
 		# using minidom
 		# http://gnosis.cx/publish/programming/parser-benchmarks.png
 		logging.debug('parsing '+gtrnctrFile)
+		"""
 		xmldoc = minidom.parse(gtrnctrFile)
 		# only Running is supported as sport - 25.03.2008
 		tracks = xmldoc.getElementsByTagName("Track")
@@ -131,6 +132,7 @@ class XMLParser:
 				listTracksGPS.append((track_sport,date_time))
 		"""
 		# Using ElementTree -> http://effbot.org/zone/element-index.htm
+		# cElementTree -> http://mike.hostetlerhome.com/present_files/pyxml.html
 		tree = xml.etree.cElementTree.parse(gtrnctrFile).getroot()
 		tracks = tree.findall(".//Track")
 		num_tracks = len(tracks)
@@ -142,7 +144,6 @@ class XMLParser:
 				track_sport = "Run" #hardcoded
 				logging.debug('Found: '+track_sport+' | '+date_time)
 				listTracksGPS.append((track_sport,date_time))
-		"""
 		logging.debug('<<')
 		return listTracksGPS
 		
