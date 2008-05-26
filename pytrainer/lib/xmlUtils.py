@@ -112,38 +112,33 @@ class XMLParser:
 		returns: list with dictionaries: SPORT|DATE_STARTTIME"""
 		logging.debug('>>')
 		listTracksGPS = []
-		# using minidom
 		# http://gnosis.cx/publish/programming/parser-benchmarks.png
-		logging.debug('parsing '+gtrnctrFile)
-		"""
-		xmldoc = minidom.parse(gtrnctrFile)
-		# only Running is supported as sport - 25.03.2008
-		tracks = xmldoc.getElementsByTagName("Track")
-		#logging.debug('sports available: '+sports)
-		num_tracks = tracks.length
-		if num_tracks>0:
-			logging.info('Tracks found: '+str(num_tracks))
-			for track in tracks:
-				# we are looking for date and time for the first trackpoint
-				#print track.childNodes[1].toxml()
-				date_time = track.childNodes[1].getElementsByTagName("Time")[0].firstChild.data
-				track_sport = "Run" #hardcoded
-				logging.debug('Found: '+track_sport+' | '+date_time)
-				listTracksGPS.append((track_sport,date_time))
-		"""
 		# Using ElementTree -> http://effbot.org/zone/element-index.htm
 		# cElementTree -> http://mike.hostetlerhome.com/present_files/pyxml.html
+		logging.debug('parsing '+gtrnctrFile)
+		listTracksGPS = []
 		tree = xml.etree.cElementTree.parse(gtrnctrFile).getroot()
-		tracks = tree.findall(".//Track")
-		num_tracks = len(tracks)
-		logging.info('Tracks found: '+str(num_tracks))
-		if num_tracks>0:
-			for track in tracks:
-				# we are looking for date and time for the first trackpoint
-				date_time = track.findtext(".//Time") #returns first instance found
-				track_sport = "Run" #hardcoded
-				logging.debug('Found: '+track_sport+' | '+date_time)
-				listTracksGPS.append((track_sport,date_time))
+		history = tree.findall(".//History")
+		for sport in history:
+			#print "Element: "+sport.tag
+			if sport.getchildren():
+				for child in sport:
+					#print "\tSport found: "+child.tag
+					if child.getchildren():
+						for entry in child:
+							logging.debug("Entry found: "+entry.tag)
+							tracks = entry.findall(".//Track")
+							num_tracks = len(tracks)
+							#print 'Tracks found: '+str(num_tracks)
+							if num_tracks>0:
+								for track in tracks:
+									# we are looking for date and time for the first trackpoint
+									date_time = track.findtext(".//Time") #returns first instance found
+									track_sport = entry.tag
+									logging.info('Found: '+track_sport+' | '+date_time)
+									listTracksGPS.append((track_sport,date_time))
+					else:
+						logging.debug("No entry found for "+child.tag)
 		logging.debug('<<')
 		return listTracksGPS
 		
