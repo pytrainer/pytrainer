@@ -21,25 +21,43 @@
 from optparse import OptionParser
 #from gtrnctr2gpx import gtrnctr2gpx
 import os
+import commands
 
 parser = OptionParser()
 parser.add_option("-d", "--device", dest="device")
 (options,args) =  parser.parse_args()
+gtrnctrFile="/tmp/file.gtrnctr"
+gtrnctrFileMod="/tmp/file_mod.gtrnctr"
+input_dev = options.device
 
+# ToDo (19.05.2008): better exception handling
 try:
+	outmod = commands.getstatusoutput('/sbin/lsmod | grep garmin_gps')
+	#os.popen("zenity --error --text='Devuelve: %s'" %str(outmod))
+	if outmod[0]==256:	#there is no garmin_gps module loaded
+		input_dev = "usb:"
+	else:
+		raise Exception
 	# Can't export to GPX directly because lack of support for heartrate and sports (1.0 version, may change when gpsbabel supports 1.1 with custom fields)
-	os.system("gpsbabel -t -i garmin -f %s -o gtrnctr -F /tmp/file.gtrnctr | zenity --progress --pulsate --text='Loading Data' auto-close" %options.device)
-	#os.system("gpsbabel -t -i garmin -f usb: -o gtrnctr -F /tmp/file.gtrnctr | zenity --progress --pulsate --text='Loading Data' auto-close")
-	# XMl file from gpsbabel refers to schemas and namespace definitions which are no longer available, removing this info - dgg - 12.05.2008
-	f = open("/tmp/file.gtrnctr","r")
-	lines = f.readlines()
-	f.close()
-	f = open("/tmp/file_mod.gtrnctr",'w')
-	headers = lines[0]+'<TrainingCenterDatabase>\n'
-	f.write(headers)
-	f.write(''.join(lines[6:]))
-	f.close()
-	print "/tmp/file_mod.gtrnctr"
-except:
-	f = os.popen("zenity --error --text='Cant open garmin device. Check your configuration or connect the device correctly.'");
-	
+	outgps = commands.getstatusoutput("gpsbabel -t -i garmin -f %s -o gtrnctr -F /tmp/file.gtrnctr | zenity --progress --pulsate --text='Loading Data' auto-close" %input_dev)
+	#os.popen("zenity --error --text='Devuelve: %s'" %str(outgps))
+	# XML file from gpsbabel refers to schemas and namespace definitions which are no longer available, removing this info - dgg - 12.05.2008
+	if outgps[0]==0:
+		if outgps[1] == "Found no Garmin USB devices.": # check localizations
+			raise Exception
+		else:
+			if os.path.isfile(gtrnctrFile):
+				f = open(gtrnctrFile,"r")
+				lines = f.readlines()
+				f.close()
+				f = open(gtrnctrFileMod,'w')
+				headers = lines[0]+'<TrainingCenterDatabase>\n'
+				f.write(headers)
+				f.write(''.join(lines[6:]))
+				f.close()
+				print gtrnctrFileMod
+	else:
+		raise Exception
+except Exception:
+	os.popen("zenity --error --text='Can not handle Garmin device\nCheck your configuration\nCurrent usb port is set to:\t %s'" %input_dev);
+
