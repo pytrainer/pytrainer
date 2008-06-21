@@ -246,9 +246,11 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 		args:
 			- gpxFile: path to xml file (gpx format)
 		returns: string with start time - 2008-03-22T12:17:43Z"""
-		logging.debug("--")
+		logging.debug(">>")
 		tree = xml.etree.cElementTree.parse(gpxFile)
 		date_time = tree.getroot().findtext(".//"+timeTag) #returns first instance found
+		logging.debug(gpxFile+" | "+ date_time)
+		logging.debug("<<")
 		return date_time
 	
 	def retrieveDataFromGTRNCTR(self, gtrnctrFile, entry):
