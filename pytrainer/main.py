@@ -75,7 +75,7 @@ class pyTrainer:
 		logging.debug('>>') 
 		self.data_path = data_path 
 		#configuration
-		self.version ="1.5.0.3"
+		self.version ="1.6.0"
 		self.conf = checkConf()
 		#preparamos la ventana principal
 		self.windowmain = Main(data_path,self,self.version)
