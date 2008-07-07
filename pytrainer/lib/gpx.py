@@ -247,9 +247,13 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 			- gpxFile: path to xml file (gpx format)
 		returns: string with start time - 2008-03-22T12:17:43Z"""
 		logging.debug(">>")
-		tree = xml.etree.cElementTree.parse(gpxFile)
-		date_time = tree.getroot().findtext(".//"+timeTag) #returns first instance found
-		logging.debug(gpxFile+" | "+ date_time)
+		try:
+			tree = xml.etree.cElementTree.parse(gpxFile)
+			date_time = tree.getroot().findtext(".//"+timeTag) #returns first instance found
+			logging.debug(gpxFile+" | "+ date_time)
+		except Exception:
+			print "Problems when retrieving start time from "+gpxFile+". Please check data integrity"
+			date_time=0
 		logging.debug("<<")
 		return date_time
 	
