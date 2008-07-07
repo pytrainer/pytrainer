@@ -29,6 +29,7 @@ setup( 	name="pytrainer",
 	data_files=[
 		('share/pytrainer/glade/',glob("glade/*.glade")),
 		('share/pytrainer/glade/',glob("glade/*.png")),
+		('share/pytrainer/glade/',glob("glade/*.jpg")),
 		('share/pytrainer/',glob("*.style")),
 		install_plugin("garmin301"),
 		install_plugin("garmin-hr"),
