@@ -349,7 +349,7 @@ class Record:
 	def importFromGTRNCTR(self,gtrnctrFile):
 		"""22.03.2008 - dgranda
 		Retrieves sport, date and start time from each entry coming from GPS
-		and compares with is stored locally, just to import new entries
+		and compares with what is stored locally, just to import new entries
 		args: file with data from GPS file (garmin format)
 		returns: list with dictionaries: SPORT|DATE|START_TIME"""
 		logging.debug('>>')
@@ -390,8 +390,11 @@ class Record:
 			#logging.debug('File: '+gpxFile)
 			gpx = Gpx()
 			date_time = gpx.getStartTimeFromGPX(gpxDir+"/"+gpxFile)
-			logging.debug('File: '+gpxFile+' | Date: '+date_time)
-			listTracksGPX.append((sport,date_time))
+			if date_time != 0:
+				logging.debug('File: '+gpxFile+' | Date: '+date_time)
+				listTracksGPX.append((sport,date_time))
+			else:
+				logging.error('Skipping '+gpxFile+' because of wrong format')
 		logging.debug('<<')
 		return listTracksGPX
 		
