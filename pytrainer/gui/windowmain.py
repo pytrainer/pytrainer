@@ -164,8 +164,8 @@ class Main(SimpleGladeApp):
 			unegative = self.parseFloat(record_list[11])
 			title = str(record_list[9])
 			comments = str(record_list[5])
-			pace = self.parseFloat(record_list[14])
-			maxspeed = self.parseFloat(record_list[12])
+			pace = self.parseFloat(record_list[14]) #to review
+			maxspeed = self.parseFloat(record_list[12]) #to review
 			maxpace = self.parseFloat(record_list[13])
 			
 			if configuration.getValue("pytraining","prf_us_system") == "True":
@@ -278,9 +278,13 @@ class Main(SimpleGladeApp):
 
 			average = distance/(timeinseconds/60/60)
 			if maxspeed > 0:
-				maxpace = 60/maxspeed
+				#maxpace = 60/maxspeed
+				maxpace = "%d.%d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
+				print "Maxpace: "+maxpace
 			if average > 0:
-				pace = 60/average
+				#pace = 60/average
+				pace = "%d.%d" %((3600/average)/60,(3600/average)%60)
+				print "Pace: "+pace
 			
 			self.dayview.set_sensitive(1)
 			self.day_distance.set_text("%0.2f" %distance)
@@ -292,8 +296,8 @@ class Main(SimpleGladeApp):
 			self.day_maxbeats.set_text("%0.2f" %maxbeats)
 			self.day_average.set_text("%0.2f" %average)
 			self.day_maxspeed.set_text("%0.2f" %maxspeed)
-			self.day_pace.set_text("%0.2f" %pace)
-			self.day_maxpace.set_text("%0.2f" %maxpace)
+			self.day_pace.set_text(pace)
+			self.day_maxpace.set_text(maxpace)
 			self.day_calories.set_text("%0.0f" %calories)
 			self.day_topic.set_text(record[1])
 			
@@ -361,11 +365,13 @@ class Main(SimpleGladeApp):
 			else:
 				tbeats = 0
 			average = (km/(time/3600))
-	
+		
 			if maxspeed > 0:
-				maxpace = 60/maxspeed
+				#maxpace = 60/maxspeed
+				maxpace = "%d.%d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 			if average > 0:
-				pace = 60/average
+				#pace = 60/average
+				pace = "%d.%d" %((3600/average)/60,(3600/average)%60)
 		
 			self.montha_distance.set_text("%0.2f" %km)
 			hour,min,sec = self.parent.date.second2time(time)
@@ -376,8 +382,8 @@ class Main(SimpleGladeApp):
 			self.montha_beats.set_text("%0.2f" %(tbeats))
 			self.montha_average.set_text("%0.2f" %average)
 			self.montha_maxspeed.set_text("%0.2f" %maxspeed)
-			self.montha_pace.set_text("%0.2f" %pace)
-			self.montha_maxpace.set_text("%0.2f" %maxpace)
+			self.montha_pace.set_text(pace)
+			self.montha_maxpace.set_text(maxpace)
 			self.montha_calories.set_text("%0.0f" %calories)
 			self.monthview.set_sensitive(1)
 		else:
@@ -415,11 +421,14 @@ class Main(SimpleGladeApp):
 			else:
 				tbeats = 0
 			average = (km/(time/3600))
-	
+			
 			if maxspeed > 0:
-				maxpace = 60/maxspeed
+				#maxpace = 60/maxspeed
+				maxpace = "%d.%d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 			if average > 0:
-				pace = 60/average
+				#pace = 60/average
+				pace = "%d.%d" %((3600/average)/60,(3600/average)%60)
+
 			self.yeara_distance.set_text("%0.2f" %km)
 			hour,min,sec = self.parent.date.second2time(time)
 			self.yeara_hour.set_text("%d" %hour)
@@ -429,8 +438,8 @@ class Main(SimpleGladeApp):
 			self.yeara_maxbeats.set_text("%0.2f" %(maxbeats))
 			self.yeara_average.set_text("%0.2f" %average)
 			self.yeara_maxspeed.set_text("%0.2f" %maxspeed)
-			self.yeara_pace.set_text("%0.2f" %pace)
-			self.yeara_maxpace.set_text("%0.2f" %maxpace)
+			self.yeara_pace.set_text(pace)
+			self.yeara_maxpace.set_text(maxpace)
 			self.yeara_calories.set_text("%0.0f" %calories)
 			self.yearview.set_sensitive(1)
 		else:
