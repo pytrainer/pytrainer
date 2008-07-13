@@ -85,7 +85,7 @@ class Gpx:
 	def getHeartRateAverage(self):
 		return self.hr_average
 		
-	def _getValues(self):
+	def _getValues(self): # migrate to cElementTree
 		logging.debug(">>")
 		dom = self.dom
 		content = dom.toxml()
@@ -98,7 +98,7 @@ class Gpx:
 			else:
 				name = _("No Name")
 			if len(trk.getElementsByTagName("time")) > 0:
-				time_ = trk.getElementsByTagName("time")[0].firstChild.data
+				time_ = trk.getElementsByTagName("time")[0].firstChild.data # check timezone
 				mk_time = time.strptime(time_, "%Y-%m-%dT%H:%M:%SZ")
 				time_ = time.strftime("%Y-%m-%d", mk_time)
 			else:
@@ -262,7 +262,7 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 		Builds a new GPX file based on one entry from GPS (dates matching)
 		args:
 			- gtrnctrFile: path of file with data from GPS file (garmin format)
-			- entry: list with dictionaries: SPORT|DATE|START_TIME
+			- entry: list with dictionaries: SPORT|DATE_START_TIME
 		returns: path to new GPX file"""
 		logging.debug('>>')
 		xmlParser = XMLParser(gtrnctrFile)
