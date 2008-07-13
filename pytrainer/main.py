@@ -47,7 +47,9 @@ from lib.system import checkConf
 from lib.date import Date
 from lib.gpx import Gpx
 from lib.soapUtils import webService
-
+from lib.ddbb import DDBB
+from lib.xmlUtils import XMLParser
+from lib.system import checkConf
 from lib.heartrate import *
 
 # 21.03.2008 - dgranda
@@ -73,10 +75,20 @@ logging.basicConfig(level=debug_level,
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>') 
-		self.data_path = data_path 
-		#configuration
-		self.version ="1.6.0"
+		self.data_path = data_path
+		self.record = Record(data_path,self)
+		self.version ="1.6.0.1" # 13.07.2008
+		logging.debug('checking configuration...')
 		self.conf = checkConf()
+		self.filename = self.conf.getValue("conffile")
+		logging.debug('retrieving data from '+ self.filename)
+		self.configuration = XMLParser(self.filename)
+		self.ddbb = DDBB(self.configuration)
+		logging.debug('connecting to DDBB')
+		self.ddbb.connect()
+		
+		self.migrationCheck()
+		
 		#preparamos la ventana principal
 		self.windowmain = Main(data_path,self,self.version)
 		self.date = Date(self.windowmain.calendar)
@@ -91,7 +103,6 @@ class pyTrainer:
 		self.profile.setVersion(self.version)
 		self.profile.isProfileConfigured()
 
-		self.record = Record(data_path,self,self.version)
 		self.waypoint = Waypoint(data_path,self)
 		self.extension = Extension(data_path)
 		self.plugins = Plugins(data_path)
@@ -354,4 +365,71 @@ class pyTrainer:
 	def editProfile(self):
 		logging.debug('>>')
 		self.profile.editProfile()
+		logging.debug('<<')
+		
+	def migrationCheck(self):
+		"""22.06.2008 - dgranda
+		Checks if it is necessary to run migration scripts for new features
+		args: none
+		returns: none"""
+		logging.debug('>>')
+		logging.debug('Checking current configuration...')
+		self.conf = checkConf()
+		self.filename = self.conf.getValue("conffile")
+		logging.debug('Retrieving data from '+ self.filename)
+		version_tmp = self.configuration.getOption("version")
+		logging.info('Old version: '+version_tmp+' | New version: '+self.version)
+		if version_tmp=="1.0":
+			logging.debug('updating month data')
+			self.ddbb.updatemonth()
+		if version_tmp<="0.9.8":
+			logging.debug('updating date format')
+			self.ddbb.updateDateFormat()
+		if version_tmp<="0.9.8.2":
+			logging.debug('updating DB title')
+			self.ddbb.addTitle2ddbb()
+		if version_tmp<="1.3.1":
+			self.ddbb.addUnevenness2ddbb()
+		if version_tmp<="1.4.1.1":
+			self.ddbb.addWaypoints2ddbb()
+		if version_tmp<="1.4.2":
+			try:
+				self.ddbb.addWaypoints2ddbb()
+			except:
+				pass
+		if version_tmp<="1.5.0":
+			self.ddbb.addweightandmet2ddbb()
+		if version_tmp<="1.5.0.1":
+			self.ddbb.checkmettable()
+		if version_tmp<="1.5.0.2":
+			self.ddbb.addpaceandmax2ddbb()
+		if version_tmp < "1.6.0.1":
+			logging.info('Adding date_time_utc column and retrieving data from local GPX files')
+			self.addDateTimeUTC()
+		if version_tmp < self.version:
+			self.configuration.setVersion(self.version)
+		logging.debug('<<')
+	
+	def addDateTimeUTC(self):
+		"""12.07.2008 - dgranda
+		Adds date_time (UTC format) for each record (new column date_time_utc in table records). New in version 1.6.1
+		args: none
+		returns: none"""
+		logging.debug('>>')
+		# Retrieves info from all GPX files stored locally
+		listTracksGPX = self.record.shortFromLocal()
+		logging.debug('Retrieved info from local files: '+ str(listTracksGPX))
+		# Creates column date_time_utc in records table
+		try:
+			self.ddbb.addDateTimeUTC2ddbb()
+		except:
+			logging.error('Column date_time_utc already exists in DB')		
+		# Updates data
+		for track in listTracksGPX:
+			try:
+				# update records set date_time_utc="2008-07-11T10:21:31Z" where id_record='158';
+				logging.debug('Updating: '+str(track))
+				self.ddbb.update("records","date_time_utc",[track[1]], "id_record = %d" %int(track[2]))
+			except:
+				logging.error('Error when updating data for track '+ track[2])
 		logging.debug('<<')
