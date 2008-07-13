@@ -141,4 +141,12 @@ class DDBB:
 		self.ddbbObject.freeExec(sql)
 		sql = "alter table records add maxbeats float"
 		self.ddbbObject.freeExec(sql)
+		
+	def addDateTimeUTC2ddbb(self):
+		sql = "alter table records add date_time_utc varchar2(20)"
+		self.ddbbObject.freeExec(sql)
+		
+	def shortFromLocal(self): # Check LEFT and RIGHT JOINS with people with multiple sports
+		sql = "select sports.name,records.date_time_utc from sports INNER JOIN records ON sports.id_sports = records.sport"
+		return self.ddbbObject.freeExec(sql)
 
