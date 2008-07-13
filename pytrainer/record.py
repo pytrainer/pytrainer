@@ -1,6 +1,7 @@
 # -*- coding: iso-8859-1 -*-
 
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
+#Modified by dgranda
 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -29,49 +30,20 @@ from lib.date import Date
 from lib.gpx import Gpx
 
 class Record:
-	def __init__(self, data_path = None, parent = None, version=None):
+	def __init__(self, data_path = None, parent = None):
 		logging.debug('>>') 
 		self.parent = parent
 		self.data_path = data_path
 		logging.debug('setting date...')
 		self.date = Date()
-		logging.debug('checking configuration...')
+		logging.debug('Checking current configuration...')
 		self.conf = checkConf()
 		self.filename = self.conf.getValue("conffile")
-		logging.debug('retrieving data from '+ self.filename)
+		logging.debug('Retrieving data from '+ self.filename)
 		self.configuration = XMLParser(self.filename)
 		self.ddbb = DDBB(self.configuration)
 		logging.debug('connecting to DDBB')
 		self.ddbb.connect()
-		#hack for pytrainer 0.9.5 and previous
-		version_tmp = self.configuration.getOption("version")
-		logging.debug('version_tmp: '+ version_tmp)
-		if version_tmp=="1.0":
-			logging.debug('updating month data')
-			self.ddbb.updatemonth()
-		if version_tmp<="0.9.8":
-			logging.debug('updating date format')
-			self.ddbb.updateDateFormat()
-		if version_tmp<="0.9.8.2":
-			logging.debug('updating DB title')
-			self.ddbb.addTitle2ddbb()
-		if version_tmp<="1.3.1":
-			self.ddbb.addUnevenness2ddbb()
-		if version_tmp<="1.4.1.1":
-			self.ddbb.addWaypoints2ddbb()
-		if version_tmp<="1.4.2":
-			try:
-				self.ddbb.addWaypoints2ddbb()
-			except:
-				pass
-		if version_tmp<="1.5.0":
-			self.ddbb.addweightandmet2ddbb()
-		if version_tmp<="1.5.0.1":
-			self.ddbb.checkmettable()
-		if version_tmp<="1.5.0.2":
-			self.ddbb.addpaceandmax2ddbb()
-		if version_tmp<version:
-			self.configuration.setVersion(version)
 		logging.debug('<<')
 
 	def newRecord(self, list_sport, date, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None):
@@ -107,7 +79,7 @@ class Record:
 		logging.debug('>>')
 		time = self.date.time2second(list_options["rcd_time"])
 		average = self.parseFloatRecord(list_options["rcd_average"])
-		cells= "date,sport,distance,time,beats,comments,average,calories,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats"
+		cells= "date,sport,distance,time,beats,comments,average,calories,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc"
 		if (list_options["rcd_beats"] == ""):
 			list_options["rcd_beats"] = 0
 		
@@ -129,8 +101,8 @@ class Record:
 			self.parseFloatRecord(list_options["rcd_maxvel"]),
 			self.parseFloatRecord(list_options["rcd_maxpace"]),
 			self.parseFloatRecord(list_options["rcd_pace"]),
-			self.parseFloatRecord(list_options["rcd_maxbeats"])
-
+			self.parseFloatRecord(list_options["rcd_maxbeats"]),
+			list_options["date_time_utc"],
 			)
 		logging.debug('<<')
 		return cells,values
@@ -151,14 +123,14 @@ class Record:
 		logging.debug('<<')
 		return self.ddbb.lastRecord("records")
 		
-	def insertNewRecord(self, gpxOrig):
+	def insertNewRecord(self, gpxOrig, entry):
 		"""29.03.2008 - dgranda
 		Moves GPX file to store destination and updates database
 		args: path to source GPX file"""
 		logging.debug('--')
-		return self.insertRecord(self.summaryFromGPX(gpxOrig))
+		return self.insertRecord(self.summaryFromGPX(gpxOrig, entry))
 		
-	def summaryFromGPX(self, gpxOrig):
+	def summaryFromGPX(self, gpxOrig, entry):
 		"""29.03.2008 - dgranda
 		Retrieves info which will be stored in DB from GPX file
 		args: path to source GPX file
@@ -171,7 +143,7 @@ class Record:
 		time_hhmmss = [time//3600,(time/60)%60,time%60]
 		summaryRecord = {}
 		summaryRecord['rcd_gpxfile'] = gpxOrig
-		summaryRecord['rcd_sport'] = 'Run' # hardcoded
+		summaryRecord['rcd_sport'] = entry[0]
 		summaryRecord['rcd_date'] = gpx.getDate()
 		summaryRecord['rcd_calories'] = '0.0' # not supported yet (29.03.2008)
 		summaryRecord['rcd_comments'] = ''
@@ -186,6 +158,7 @@ class Record:
 		summaryRecord['rcd_maxbeats'] = maxheartrate
 		summaryRecord['rcd_upositive'] = upositive
 		summaryRecord['rcd_unegative'] = unegative
+		summaryRecord['date_time_utc'] = entry[1]
 		logging.debug('summary: '+str(summaryRecord))
 		logging.debug('<<')
 		return summaryRecord
@@ -351,26 +324,26 @@ class Record:
 		Retrieves sport, date and start time from each entry coming from GPS
 		and compares with what is stored locally, just to import new entries
 		args: file with data from GPS file (garmin format)
-		returns: list with dictionaries: SPORT|DATE|START_TIME"""
+		returns: none"""
 		logging.debug('>>')
 		logging.info('Retrieving data from '+gtrnctrFile)
 		xmlParser=XMLParser(gtrnctrFile)
-		listTracksGPS = xmlParser.shortFromGPS(gtrnctrFile) # Done 22.03.2008
+		listTracksGPS = xmlParser.shortFromGPS(gtrnctrFile)
 		logging.info('GPS: '+str(len(listTracksGPS))+' entries found')
-		# ToDo: store this info in DB for each record -> implies DB schema changes
 		if len(listTracksGPS)>0:
-			listTracksLocal = self.shortFromLocal() # Done 25.03.2008
+			#listTracksLocal = self.shortFromLocal() # Done 25.03.2008
+			listTracksLocal = self.shortFromLocalDB()
 			logging.info('Local: '+str(len(listTracksLocal))+' entries found')
-			listNewTracks=self.compareTracks(listTracksGPS,listTracksLocal) # Done 22.03.2008
+			listNewTracks=self.compareTracks(listTracksGPS,listTracksLocal)
 			newTracks = len(listNewTracks)
-			#un nuevo constructor vacío para Gpx 
+			# empty constructor for Gpx 
 			gpx = Gpx()
 			i=0
 			for entry in listNewTracks:
 				i=i+1
 				logging.debug('Entry summary to import: '+str(entry))
-				newGPX=gpx.retrieveDataFromGTRNCTR(gtrnctrFile, entry) # Done 24.03.2008
-				entry_id = self.insertNewRecord(newGPX)
+				newGPX=gpx.retrieveDataFromGTRNCTR(gtrnctrFile, entry)
+				entry_id = self.insertNewRecord(newGPX, entry)
 				logging.info('Entry '+str(entry_id)+' has been added ('+str(i)+'/'+str(newTracks)+')')
 		else:
 			logging.info('No tracks found in GPS device')
@@ -379,10 +352,11 @@ class Record:
 	def shortFromLocal(self):
 		"""25.03.2008 - dgranda
 		Retrieves sport, date and start time from each entry stored locally
-		returns: list with dictionaries: SPORT|DATE_START_TIME"""
+		12.07.2008 - dgranda Added id_record for each one
+		returns: list with dictionaries: SPORT|DATE_START_TIME|ID_RECORD"""
 		logging.debug('>>')
 		listTracksGPX = []
-		sport = "Run" #hardcoded - 25.03.2008
+		sport = "Run" #hardcoded - 25.03.2008 (no info stored in gpx files yet)
 		# looking in configuration for storing directory
 		gpxDir = self.conf.getValue("gpxdir")
 		# retrieving how many files are there
@@ -392,9 +366,22 @@ class Record:
 			date_time = gpx.getStartTimeFromGPX(gpxDir+"/"+gpxFile)
 			if date_time != 0:
 				logging.debug('File: '+gpxFile+' | Date: '+date_time)
-				listTracksGPX.append((sport,date_time))
+				id_record = gpxFile.partition('.')[0]
+				listTracksGPX.append((sport,date_time,id_record))
 			else:
 				logging.error('Skipping '+gpxFile+' because of wrong format')
+		logging.debug('<<')
+		return listTracksGPX
+		
+	def shortFromLocalDB(self):
+		"""12.07.2008 - dgranda
+		Retrieves sport, date and start time from local database
+		returns: list with dictionaries: SPORT|DATE_START_TIME"""
+		logging.debug('>>')
+		# Retrieving sport and date_time (UTC) for each entry in DB
+		# ToDo: replace id_sports with name
+		listTracksGPX = self.ddbb.shortFromLocal()
+		logging.debug('Retrieved info: '+str(listTracksGPX))
 		logging.debug('<<')
 		return listTracksGPX
 		
