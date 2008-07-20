@@ -428,16 +428,20 @@ class pyTrainer:
 		try:
 			self.ddbb.addDateTimeUTC2ddbb()
 		except:
-			logging.error('Column date_time_utc already exists in DB')		
+			logging.error('Column date_time_utc already exists in DB')
+			traceback.print_exc()	
 		# Updates data
+		num=0
 		for track in listTracksGPX:
 			try:
 				# update records set date_time_utc="2008-07-11T10:21:31Z" where id_record='158';
 				logging.debug('Updating: '+str(track))
 				self.ddbb.update("records","date_time_utc",[track[1]], "id_record = %d" %int(track[2]))
+				num+=1
 			except:
 				logging.error('Error when updating data for track '+ track[2])
-				traceback.print_last()
+				traceback.print_exc()
+		logging.info('Updated '+str(num)+' entries')
 		logging.debug('<<')
 		
 	def checkPacesDB(self):
