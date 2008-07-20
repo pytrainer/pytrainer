@@ -278,13 +278,9 @@ class Main(SimpleGladeApp):
 
 			average = distance/(timeinseconds/60/60)
 			if maxspeed > 0:
-				#maxpace = 60/maxspeed
 				maxpace = "%d.%d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
-				print "Maxpace: "+maxpace
 			if average > 0:
-				#pace = 60/average
 				pace = "%d.%d" %((3600/average)/60,(3600/average)%60)
-				print "Pace: "+pace
 			
 			self.dayview.set_sensitive(1)
 			self.day_distance.set_text("%0.2f" %distance)
