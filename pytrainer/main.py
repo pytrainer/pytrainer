@@ -1,6 +1,7 @@
 # -*- coding: iso-8859-1 -*-
 
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
+# Modified by dgranda
 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -25,6 +26,7 @@ pygtk.require('2.0')
 import gtk
 import gtk.glade
 import logging
+import traceback
 
 from record import Record
 from waypoint import Waypoint
@@ -77,7 +79,7 @@ class pyTrainer:
 		logging.debug('>>') 
 		self.data_path = data_path
 		self.record = Record(data_path,self)
-		self.version ="1.6.0.1" # 13.07.2008
+		self.version ="1.6.0.2" # 20.07.2008
 		logging.debug('checking configuration...')
 		self.conf = checkConf()
 		self.filename = self.conf.getValue("conffile")
@@ -406,13 +408,16 @@ class pyTrainer:
 		if version_tmp < "1.6.0.1":
 			logging.info('Adding date_time_utc column and retrieving data from local GPX files')
 			self.addDateTimeUTC()
+		if version_tmp < "1.6.0.2":
+			logging.info('Checking pace and max pace stored in DB')
+			self.checkPacesDB()
 		if version_tmp < self.version:
 			self.configuration.setVersion(self.version)
 		logging.debug('<<')
 	
 	def addDateTimeUTC(self):
 		"""12.07.2008 - dgranda
-		Adds date_time (UTC format) for each record (new column date_time_utc in table records). New in version 1.6.1
+		Adds date_time (UTC format) for each record (new column date_time_utc in table records). New in version 1.6.0.1
 		args: none
 		returns: none"""
 		logging.debug('>>')
@@ -432,4 +437,30 @@ class pyTrainer:
 				self.ddbb.update("records","date_time_utc",[track[1]], "id_record = %d" %int(track[2]))
 			except:
 				logging.error('Error when updating data for track '+ track[2])
+				traceback.print_last()
+		logging.debug('<<')
+		
+	def checkPacesDB(self):
+		"""19.07.2008 - dgranda
+		Updates paces in DB (maxspeed<->maxpace | average<->pace). New in version 1.6.0.2
+		args: none
+		returns: none"""
+		logging.debug('>>')
+		# Retrieves info from DB: id_record,maxspeed,maxpace,average,pace
+		listPaces = self.ddbb.select("records", "id_record,maxspeed,maxpace,average,pace")
+		logging.debug('Retrieved info from db: '+ str(listPaces))
+		num=0
+		for entry in listPaces:
+			if entry[1]>0 and entry[3]>0:
+				tmpMax = "%d.%d" %((3600/entry[1])/60,(3600/entry[1])%60)
+				tmpAve = "%d.%d" %((3600/entry[3])/60,(3600/entry[3])%60)
+				try:
+					self.ddbb.update("records","maxpace,pace",[eval(tmpMax),eval(tmpAve)], "id_record = %d" %int(entry[0]))
+					num+=1
+				except:
+					logging.error('Error when updating data for track '+ entry[0])
+					traceback.print_last()
+			else:
+				logging.error('No pace info available for entry '+str(entry[0])+' in DB. Please check')
+		logging.info('Updated '+str(num)+' entries')
 		logging.debug('<<')
