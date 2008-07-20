@@ -79,7 +79,42 @@ class Record:
 		logging.debug('>>')
 		time = self.date.time2second(list_options["rcd_time"])
 		average = self.parseFloatRecord(list_options["rcd_average"])
-		cells= "date,sport,distance,time,beats,comments,average,calories,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc"
+		cells= "date,sport,distance,time,beats,comments,average,calories,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats"
+		if (list_options["rcd_beats"] == ""):
+			list_options["rcd_beats"] = 0
+		
+		#calculate the sport id
+		sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %list_options["rcd_sport"])[0][0]
+
+		values= (
+			list_options["rcd_date"],
+			sport_id,
+			self.parseFloatRecord(list_options["rcd_distance"]),
+			time,
+			self.parseFloatRecord(list_options["rcd_beats"]),
+			list_options["rcd_comments"],
+			average,
+			self.parseFloatRecord(list_options["rcd_calories"]),
+			list_options["rcd_title"],
+			self.parseFloatRecord(list_options["rcd_upositive"]),
+			self.parseFloatRecord(list_options["rcd_unegative"]),
+			self.parseFloatRecord(list_options["rcd_maxvel"]),
+			self.parseFloatRecord(list_options["rcd_maxpace"]),
+			self.parseFloatRecord(list_options["rcd_pace"]),
+			self.parseFloatRecord(list_options["rcd_maxbeats"])
+			)
+		logging.debug('<<')
+		return cells,values
+		
+	def _formatRecordNew (self, list_options):
+		"""20.07.2008 - dgranda
+		New records handle date_time_utc field which is transparent when updating, so logic method has been splitted
+		args: list with keys and values without valid format
+		returns: keys and values matching DB schema"""
+		logging.debug('>>')
+		time = self.date.time2second(list_options["rcd_time"])
+		average = self.parseFloatRecord(list_options["rcd_average"])
+		keys= "date,sport,distance,time,beats,comments,average,calories,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc"
 		if (list_options["rcd_beats"] == ""):
 			list_options["rcd_beats"] = 0
 		
@@ -105,12 +140,12 @@ class Record:
 			list_options["date_time_utc"],
 			)
 		logging.debug('<<')
-		return cells,values
+		return keys,values
 
 	def insertRecord(self, list_options):
 		logging.debug('>>')
 		logging.debug('list_options: '+str(list_options))
-		cells,values = self._formatRecord(list_options)
+		cells,values = self._formatRecordNew(list_options)
 		self.ddbb.insert("records",cells,values)
 		logging.debug('DB updated: '+str(cells)+' | '+str(values))
 		gpxOrig = self.conf.tmpdir+"/newgpx.gpx"
