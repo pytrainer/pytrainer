@@ -76,10 +76,16 @@ logging.basicConfig(level=debug_level,
 
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
-		logging.debug('>>') 
+		logging.debug('>>')
 		self.data_path = data_path
-		self.record = Record(data_path,self)
-		self.version ="1.6.0.2" # 20.07.2008
+		self.version ="1.6.0.3" # 31.07.2008
+		self.date = Date()
+
+		# Checking profile
+		self.profile = Profile(self.data_path,self)
+		#self.profile.setVersion("0.0")
+		self.profile.isProfileConfigured()
+
 		logging.debug('checking configuration...')
 		self.conf = checkConf()
 		self.filename = self.conf.getValue("conffile")
@@ -87,7 +93,8 @@ class pyTrainer:
 		self.configuration = XMLParser(self.filename)
 		self.ddbb = DDBB(self.configuration)
 		logging.debug('connecting to DDBB')
-		self.ddbb.connect()
+		self.ddbb.connect()		
+		self.record = Record(data_path,self)
 		
 		self.migrationCheck()
 		
@@ -99,11 +106,6 @@ class pyTrainer:
 		gtk.gdk.threads_init()
 		self.webservice = webService(data_path,self.refreshWaypointView,self.newRecord)
 		self.webservice.start()
-
-		#comprobamos que el profile esta configurado
-		self.profile = Profile(self.data_path,self)
-		self.profile.setVersion(self.version)
-		self.profile.isProfileConfigured()
 
 		self.waypoint = Waypoint(data_path,self)
 		self.extension = Extension(data_path)
@@ -145,24 +147,7 @@ class pyTrainer:
 				txtbutton = self.extension.loadExtension(extension)
 				self.windowmain.addExtension(txtbutton)
 		logging.debug('<<')
-	""" 
-	def runPlugin(self,widget,pathPlugin):
-		logging.debug('>>')
-		gpxfile = self.plugins.runPlugin(pathPlugin)
-		list_sport = self.profile.getSportList()
-		logging.info('gpxfile: '+ gpxfile +' | sports list: '+str(list_sport))
-		if gpxfile == False or gpxfile=="":
-			 logging.error('gpxfile not valid')
-			 pass
-		elif os.path.isfile(gpxfile):
-			 logging.info('gpxfile exists')
-			 self.record.newGpxRecord(gpxfile,list_sport)
-		else:
-			 logging.info('editing gpxfile...')
-			 self.record.editRecord(gpxfile,list_sport)
-		logging.debug('<<')
-		
-		"""
+
 	def runPlugin(self,widget,pathPlugin):
 		logging.debug('>>')
 		gtrnctrFile = self.plugins.runPlugin(pathPlugin)
@@ -370,47 +355,44 @@ class pyTrainer:
 		logging.debug('<<')
 		
 	def migrationCheck(self):
-		"""22.06.2008 - dgranda
+		"""22.06.2008 - dgranda (reviewed 31.07.2008)
 		Checks if it is necessary to run migration scripts for new features
 		args: none
 		returns: none"""
 		logging.debug('>>')
-		logging.debug('Checking current configuration...')
-		self.conf = checkConf()
 		self.filename = self.conf.getValue("conffile")
 		logging.debug('Retrieving data from '+ self.filename)
 		version_tmp = self.configuration.getOption("version")
 		logging.info('Old version: '+version_tmp+' | New version: '+self.version)
-		if version_tmp=="1.0":
-			logging.debug('updating month data')
-			self.ddbb.updatemonth()
-		if version_tmp<="0.9.8":
-			logging.debug('updating date format')
-			self.ddbb.updateDateFormat()
-		if version_tmp<="0.9.8.2":
-			logging.debug('updating DB title')
-			self.ddbb.addTitle2ddbb()
-		if version_tmp<="1.3.1":
-			self.ddbb.addUnevenness2ddbb()
-		if version_tmp<="1.4.1.1":
-			self.ddbb.addWaypoints2ddbb()
-		if version_tmp<="1.4.2":
-			try:
+		if version_tmp == "0.0":
+			logging.info('Nothing to do, first installation')
+		else:
+			if version_tmp=="1.0":
+				logging.debug('updating month data')
+				self.ddbb.updatemonth()
+			if version_tmp<="0.9.8":
+				logging.debug('updating date format')
+				self.ddbb.updateDateFormat()
+			if version_tmp<="0.9.8.2":
+				logging.debug('updating DB title')
+				self.ddbb.addTitle2ddbb()
+			if version_tmp<="1.3.1":
+				self.ddbb.addUnevenness2ddbb()
+			if version_tmp<="1.4.2":
 				self.ddbb.addWaypoints2ddbb()
-			except:
-				pass
-		if version_tmp<="1.5.0":
-			self.ddbb.addweightandmet2ddbb()
-		if version_tmp<="1.5.0.1":
-			self.ddbb.checkmettable()
-		if version_tmp<="1.5.0.2":
-			self.ddbb.addpaceandmax2ddbb()
-		if version_tmp < "1.6.0.1":
-			logging.info('Adding date_time_utc column and retrieving data from local GPX files')
-			self.addDateTimeUTC()
-		if version_tmp < "1.6.0.2":
-			logging.info('Checking pace and max pace stored in DB')
-			self.checkPacesDB()
+			if version_tmp<="1.5.0.1":
+				self.ddbb.addweightandmet2ddbb()
+			if version_tmp<="1.5.0.2":
+				self.ddbb.addpaceandmax2ddbb()
+			if version_tmp < "1.6.0.1":
+				logging.info('Adding date_time_utc column and retrieving data from local GPX files')
+				self.addDateTimeUTC()
+			if version_tmp < "1.6.0.2":
+				logging.info('Checking pace and max pace stored in DB')
+				self.checkPacesDB()
+			if version_tmp < "1.6.0.3":
+				logging.info('Checking configuration file integrity')
+				self.profile.checkProfile()
 		if version_tmp < self.version:
 			self.configuration.setVersion(self.version)
 		logging.debug('<<')
