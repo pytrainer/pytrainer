@@ -75,7 +75,8 @@ class Sql:
 			maxspeed float,
 			maxpace float,
 			pace float,
-			maxbeats float
+			maxbeats float,
+         date_time_utc varchar2(20)
 			) ;"""
 		cur.execute(sql)
 

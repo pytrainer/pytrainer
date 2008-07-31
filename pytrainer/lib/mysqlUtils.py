@@ -84,6 +84,7 @@ class Sql:
 			maxpace FLOAT NOT NULL,
 			pace FLOAT NOT NULL,
 			maxbeats FLOAT NOT NULL,
+         date_time_utc VARCHAR( 20 ) NOT NULL ,
 			INDEX ( `id_record` )
 			) ENGINE = MYISAM ;""")
 		
