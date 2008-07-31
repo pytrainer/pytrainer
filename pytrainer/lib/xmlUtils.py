@@ -3,6 +3,7 @@
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
 # vud1@grupoikusnet.com
 # Jakinbidea & Grupo Ikusnet Developer
+# Modified by dgranda
 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -52,7 +53,7 @@ class XMLParser:
 		list_options = {}
 		list_keys = root.attributes.keys()
 		for i in list_keys:
-			value = self.getOption(i)
+			value = self.getValue("pytraining",i)
 			list_options[i] = value
 		return list_options	
 	
@@ -148,7 +149,7 @@ class XMLParser:
 		Retrieves track given sport, date and start time
 		args:
 			- source_file: absolute path to source file
-			- entry: dictionary with SPORT|DATE_STARTTIME
+			- entry: dictionary with SPORT|DATE_START_TIME
 			- isGpx: 1 if source file is GPX, 0 if garmin format
 		returns: path to selected entry file"""
 		logging.debug('>>')
