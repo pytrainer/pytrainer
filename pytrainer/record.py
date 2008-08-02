@@ -185,8 +185,8 @@ class Record:
 		summaryRecord['rcd_title'] = ''
 		summaryRecord['rcd_time'] = time_hhmmss #ToDo: makes no sense to work with arrays
 		summaryRecord['rcd_distance'] = "%0.2f" %distance 
-		summaryRecord['rcd_pace'] = "%d.%d" %((3600/speed)/60,(3600/speed)%60)
-		summaryRecord['rcd_maxpace'] = "%d.%d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
+		summaryRecord['rcd_pace'] = "%d.%02d" %((3600/speed)/60,(3600/speed)%60)
+		summaryRecord['rcd_maxpace'] = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 		summaryRecord['rcd_average'] = speed
 		summaryRecord['rcd_maxvel'] = maxspeed
 		summaryRecord['rcd_beats'] = gpx.getHeartRateAverage()
@@ -325,7 +325,7 @@ class Record:
 		self.recordwindow.on_calcaverage_clicked(None)
 		self.recordwindow.on_calcpace_clicked(None)
 		self.recordwindow.on_calccalories_clicked(None)
-		self.recordwindow.rcd_maxpace.set_text("%d.%d" %((3600/maxspeed)/60,(3600/maxspeed)%60))
+		self.recordwindow.rcd_maxpace.set_text("%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60))
 		logging.debug('<<')
 	
 	def __actualize_fromgpx(self, gpxfile, name=None):

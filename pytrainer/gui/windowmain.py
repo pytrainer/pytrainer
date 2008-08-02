@@ -1,6 +1,7 @@
 # -*- coding: iso-8859-1 -*-
 
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
+# Modified by dgranda
 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -278,9 +279,9 @@ class Main(SimpleGladeApp):
 
 			average = distance/(timeinseconds/60/60)
 			if maxspeed > 0:
-				maxpace = "%d.%d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
+				maxpace = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 			if average > 0:
-				pace = "%d.%d" %((3600/average)/60,(3600/average)%60)
+				pace = "%d.%02d" %((3600/average)/60,(3600/average)%60)
 			
 			self.dayview.set_sensitive(1)
 			self.day_distance.set_text("%0.2f" %distance)
@@ -364,10 +365,10 @@ class Main(SimpleGladeApp):
 		
 			if maxspeed > 0:
 				#maxpace = 60/maxspeed
-				maxpace = "%d.%d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
+				maxpace = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 			if average > 0:
 				#pace = 60/average
-				pace = "%d.%d" %((3600/average)/60,(3600/average)%60)
+				pace = "%d.%02d" %((3600/average)/60,(3600/average)%60)
 		
 			self.montha_distance.set_text("%0.2f" %km)
 			hour,min,sec = self.parent.date.second2time(time)
@@ -420,10 +421,10 @@ class Main(SimpleGladeApp):
 			
 			if maxspeed > 0:
 				#maxpace = 60/maxspeed
-				maxpace = "%d.%d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
+				maxpace = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 			if average > 0:
 				#pace = 60/average
-				pace = "%d.%d" %((3600/average)/60,(3600/average)%60)
+				pace = "%d.%02d" %((3600/average)/60,(3600/average)%60)
 
 			self.yeara_distance.set_text("%0.2f" %km)
 			hour,min,sec = self.parent.date.second2time(time)

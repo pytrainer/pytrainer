@@ -387,10 +387,9 @@ class pyTrainer:
 			if version_tmp < "1.6.0.1":
 				logging.info('Adding date_time_utc column and retrieving data from local GPX files')
 				self.addDateTimeUTC()
-			if version_tmp < "1.6.0.2":
+			if version_tmp < "1.6.0.3":
 				logging.info('Checking pace and max pace stored in DB')
 				self.checkPacesDB()
-			if version_tmp < "1.6.0.3":
 				logging.info('Checking configuration file integrity')
 				self.profile.checkProfile()
 		if version_tmp < self.version:
@@ -438,8 +437,8 @@ class pyTrainer:
 		num=0
 		for entry in listPaces:
 			if entry[1]>0 and entry[3]>0:
-				tmpMax = "%d.%d" %((3600/entry[1])/60,(3600/entry[1])%60)
-				tmpAve = "%d.%d" %((3600/entry[3])/60,(3600/entry[3])%60)
+				tmpMax = "%d.%02d" %((3600/entry[1])/60,(3600/entry[1])%60)
+				tmpAve = "%d.%02d" %((3600/entry[3])/60,(3600/entry[3])%60)
 				try:
 					self.ddbb.update("records","maxpace,pace",[eval(tmpMax),eval(tmpAve)], "id_record = %d" %int(entry[0]))
 					num+=1
