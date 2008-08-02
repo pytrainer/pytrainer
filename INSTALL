@@ -1,0 +1,40 @@
+PyTrainer basic installation
+===========================
+
+These are generic installation instructions to use with *.tar.gz files
+
+1.- Dependency Overview
+
+Here you are dependencies for PyTrainer. Of course you must have a working environment with proper shell configuration and typical GNU tools to uncompress (gunzip) and untar (tar) files.
+
+1.1.- Mandatory packages (Fedora 9 package revisions as of 02.08.2008)
+
+python-2.5.1-26
+libxml2-python-2.6.32-2
+python-sqlite2-2.3.3-3
+pygtk2-libglade-2.12.1-6
+pygtk2-2.12.1-6
+python-matplotlib-0.91.2-2
+SOAPpy-0.11.6-7
+sqlite-3.5.6-2 (sqlite is preferred as db than mysql)
+gnome-python2-gtkmozembed-2.19.1-17
+gpsbabel-1.3.5-1
+xulrunner-1.9.0.1-1
+
+1.2.- Optional packages (Google Maps integration)
+
+firefox-3.0.1-1
+
+2.- Installation process
+
+Copy the tarball file to a location where you have write and execution rights. Make sure executables are under your $PATH.
+
+$ tar -xf pytrainer-X.Y.Z.tar.gz
+$ cd pytrainer-X.Y.Z
+$ ./pytrainer.py -i
+*** Log level set to INFO ***
+...
+
+3.- USB access
+
+Currently PyTrainer is using gpsbabel (http://www.gpsbabel.org) to retrieve information from the Garmin device. There are some problems regarding driver to access usb ports, please take a look at http://www.gpsbabel.org/os/Linux_Hotplug.html
