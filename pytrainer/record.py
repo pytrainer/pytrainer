@@ -193,7 +193,10 @@ class Record:
 		summaryRecord['rcd_maxbeats'] = maxheartrate
 		summaryRecord['rcd_upositive'] = upositive
 		summaryRecord['rcd_unegative'] = unegative
-		summaryRecord['date_time_utc'] = entry[1]
+		if entry[1]=="": # coming from new track dialog (file opening)
+			summaryRecord['date_time_utc'] = gpx.getStartTimeFromGPX(gpxOrig)
+		else: # coming from GPS device
+			summaryRecord['date_time_utc'] = entry[1]
 		logging.debug('summary: '+str(summaryRecord))
 		logging.debug('<<')
 		return summaryRecord
