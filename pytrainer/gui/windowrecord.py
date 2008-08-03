@@ -75,6 +75,7 @@ class WindowRecord(SimpleGladeApp):
 		
 	def on_accept_clicked(self,widget):
 		list_options = {}
+		trackSummary = {}
 		for i in self.conf_options:
 			var = getattr(self,i)
 			if i == "rcd_title":
@@ -89,8 +90,9 @@ class WindowRecord(SimpleGladeApp):
 				list_options[i] = buffer.get_text(start,end, True)
 				list_options[i] = list_options[i].replace("\"","'")
 			list_options["rcd_time"] = [self.rcd_hour.get_value_as_int(),self.rcd_min.get_value_as_int(),self.rcd_second.get_value_as_int()]
-		if self.mode == "newrecord": 
-			self.parent.insertRecord(list_options)
+		if self.mode == "newrecord":
+			trackSummary=(list_options["rcd_sport"],"","")
+			self.parent.insertNewRecord(list_options["rcd_gpxfile"], trackSummary)
 		elif self.mode == "editrecord":
 			self.parent.updateRecord(list_options, self.id_record)
 		self.close_window()
