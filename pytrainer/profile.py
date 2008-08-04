@@ -145,9 +145,8 @@ class Profile:
 		logging.debug(">>")
 		condition = "name=\"%s\"" %sport
 		id_sport = self.ddbb.select("sports","id_sports",condition)[0][0]
-		logging.debug("removing records from sport "+ sport)
+		logging.debug("removing records from sport "+ sport + " (id_sport: "+str(id_sport)+")")
 		self.ddbb.delete("records","sport=\"%d\""%id_sport)
-		logging.debug("removing sport "+ id_sport +" from DB")
 		self.ddbb.delete("sports","id_sports=\"%d\""%id_sport)
 		logging.debug("<<")
 		
