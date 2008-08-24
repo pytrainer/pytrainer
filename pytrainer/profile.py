@@ -134,7 +134,7 @@ class Profile:
 		else:
 			return connection
 
-	def addNewSport(self,sport,weight,met):
+	def addNewSport(self,sport,met,weight):
 		logging.debug(">>")
 		logging.debug("Adding new sport: "+sport+"|"+weight+"|"+met)
 		sport = [sport,met,weight]
