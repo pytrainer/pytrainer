@@ -135,11 +135,20 @@ class Profile:
 			return connection
 
 	def addNewSport(self,sport,met,weight):
+		"""31.08.2008 - dgranda
+		It adds a new sport.
+		arguments:
+			sport: sport's name 
+			met:
+			weight:
+		returns: id_sports from new sport"""
 		logging.debug(">>")
 		logging.debug("Adding new sport: "+sport+"|"+weight+"|"+met)
 		sport = [sport,met,weight]
 		self.ddbb.insert("sports","name,met,weight",sport)
+		sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))
 		logging.debug("<<")
+		return sport_id
 		
 	def delSport(self,sport):
 		logging.debug(">>")
