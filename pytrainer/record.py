@@ -20,6 +20,7 @@
 import os
 import shutil
 import logging
+import traceback
 
 from gui.windowrecord import WindowRecord
 from gui.dialogselecttrack import DialogSelectTrack
@@ -118,8 +119,8 @@ class Record:
 		if (list_options["rcd_beats"] == ""):
 			list_options["rcd_beats"] = 0
 		
-		#calculate the sport id
-		sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %list_options["rcd_sport"])[0][0]
+		#retrieving sport id (adding sport if it doesn't exist yet)
+		sport_id = self.getSportId(sport,add=None)
 
 		values= (
 			list_options["rcd_date"],
@@ -258,6 +259,44 @@ class Record:
 	def getSportWeight(self,sport):
 		logging.debug('--')
 		return self.ddbb.select("sports","weight","name=\"%s\"" %(sport))[0][0]
+		
+	def getSportId(self,sport,add=None):
+		"""31.08.2008 - dgranda
+		Retrieves id_sports from provided sport. If add is not set to None, sport is added to the system
+		arguments:
+			sport: sport's name to get id from 
+			add: attribute to add or not the sport to db
+		returns: id_sports from provided sport"""
+		logging.debug('>>')
+		sport_id=0
+		try:
+			sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))
+		except:
+			logging.error('Error retrieving id_sports from '+ str(sport))
+			traceback.print_last()
+			if add is None:
+				logging.debug('Sport '+str(sport)+' will not be added to DB')
+			else:
+				logging.debug('Adding sport '+str(sport)+' to DB')
+				sport_id = self.addNewSport(self,sport,0,0)
+		logging.debug('<<')
+		return sport_id
+	
+	def addNewSport(self,sport,met,weight):
+		"""31.08.2008 - dgranda
+		Copied from Profile class, adds a new sport.
+		arguments:
+			sport: sport's name 
+			met:
+			weight:
+		returns: id_sports from new sport"""
+		logging.debug(">>")
+		logging.debug("Adding new sport: "+sport+"|"+weight+"|"+met)
+		sport = [sport,met,weight]
+		self.ddbb.insert("sports","name,met,weight",sport)
+		sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))[0][0]
+		logging.debug("<<")
+		return sport_id
 	
 	def getAllrecord(self):
 		logging.debug('--')
@@ -361,16 +400,16 @@ class Record:
 		"""22.03.2008 - dgranda
 		Retrieves sport, date and start time from each entry coming from GPS
 		and compares with what is stored locally, just to import new entries
+		31.08.2008 - dgranda - Only checks start time, discarding sport info
 		args: file with data from GPS file (garmin format)
 		returns: none"""
 		logging.debug('>>')
 		logging.info('Retrieving data from '+gtrnctrFile)
 		xmlParser=XMLParser(gtrnctrFile)
-		listTracksGPS = xmlParser.shortFromGPS(gtrnctrFile)
+		listTracksGPS = xmlParser.shortFromGPS(gtrnctrFile, None)
 		logging.info('GPS: '+str(len(listTracksGPS))+' entries found')
 		if len(listTracksGPS)>0:
-			#listTracksLocal = self.shortFromLocal() # Done 25.03.2008
-			listTracksLocal = self.shortFromLocalDB()
+			listTracksLocal = self.shortFromLocalDB(None)
 			logging.info('Local: '+str(len(listTracksLocal))+' entries found')
 			listNewTracks=self.compareTracks(listTracksGPS,listTracksLocal)
 			newTracks = len(listNewTracks)
@@ -390,8 +429,9 @@ class Record:
 	def shortFromLocal(self):
 		"""25.03.2008 - dgranda
 		Retrieves sport, date and start time from each entry stored locally
-		12.07.2008 - dgranda Added id_record for each one
-		returns: list with dictionaries: SPORT|DATE_START_TIME|ID_RECORD"""
+		12.07.2008 - dgranda - Added id_record for each one
+		returns: list with dictionaries: SPORT|DATE_START_TIME|ID_RECORD
+		31.08.2008 - dgranda - Only available due to migration purposes from Main class"""
 		logging.debug('>>')
 		listTracksGPX = []
 		sport = "Run" #hardcoded - 25.03.2008 (no info stored in gpx files yet)
@@ -411,14 +451,23 @@ class Record:
 		logging.debug('<<')
 		return listTracksGPX
 		
-	def shortFromLocalDB(self):
+	def shortFromLocalDB(self, getSport=True):
 		"""12.07.2008 - dgranda
 		Retrieves sport, date and start time from local database
 		returns: list with dictionaries: SPORT|DATE_START_TIME"""
 		logging.debug('>>')
-		# Retrieving sport and date_time (UTC) for each entry in DB
+		# Retrieving sport (optional) and date_time (UTC) for each entry in DB
 		# ToDo: replace id_sports with name
-		listTracksGPX = self.ddbb.shortFromLocal()
+		listTracksGPX = self.ddbb.shortFromLocal(getSport)
+		# There is an issue when retrieving data without sport info:
+		# record|shortFromLocalDB|Retrieved info: [(None,), (u'2008-01-15T11:35:50Z',), (u'2008-01-16T11:05:53Z',)...
+		# ToDo: check sqliteUtils.freeExec(self,sql)
+		# Just a dirty workaround to make comparison work
+		if getSport is not True:
+			tempList = []
+			for entry in listTracksGPX:
+				tempList.append(entry[0])
+			listTracksGPX = tempList
 		logging.debug('Retrieved info: '+str(listTracksGPX))
 		logging.debug('<<')
 		return listTracksGPX
@@ -426,7 +475,9 @@ class Record:
 	def compareTracks(self,listTracksGPS,listTracksLocal):
 		"""22.03.2008 - dgranda
 		Compares tracks retrieved from GPS with already locally stored
-		args: lists with dictionaries: SPORT|DATE|START_TIME
+		args:
+			listTracksGPS: gps track list with dictionaries -> (SPORT)|DATE_START_TIME
+			listTracksLocal: local track list with dictionaries -> (SPORT)|DATE_START_TIME
 		returns: tracks which are not present locally (list with dictionaries)"""
 		logging.debug('>>')
 		# Optimizing comparison - 26042008
