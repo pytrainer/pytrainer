@@ -194,7 +194,10 @@ class DDBB:
 			logging.error('Column date_time_utc already exists in DB. Printing traceback and continuing')
 			traceback.print_exc()
 		
-	def shortFromLocal(self): # Check LEFT and RIGHT JOINS with people with multiple sports
-		sql = "select sports.name,records.date_time_utc from sports INNER JOIN records ON sports.id_sports = records.sport"
+	def shortFromLocal(self, getSport=True): # Check LEFT and RIGHT JOINS with people with multiple sports
+		if getSport is True:
+			sql = "select sports.name,records.date_time_utc from sports INNER JOIN records ON sports.id_sports = records.sport"
+		else:
+			sql = "select records.date_time_utc from sports INNER JOIN records ON sports.id_sports = records.sport"
 		return self.ddbbObject.freeExec(sql)
 
