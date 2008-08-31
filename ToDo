@@ -22,10 +22,24 @@ Error when updating records because of new date_time_utc field in DB -> FIXED (2
 Complete review of migration scripts. Special attention to ~/.pytrainer/conf.xml file -> DONE (31.07.2008)
 Number output always with two figures to avoid confusion -> DONE (02.08.2008)
 
+- PyTrainer tasks for 1.6.0.4:
+
+Added support for date_time_utc field when importing new tracks via file upload
+pytrainer/profile.py: fixed logging issue when removing sport from database
+
+- PyTrainer tasks for 1.6.0.5:
+
+mozpytrainer launch script with log level support -> DONE (24.08.2008)
+MET and extra weight values swapped when adding a new sport -> DONE (22.08.2008)
+PyTrainer crashes when adding an activity which sport is not yet in DB -> DONE (31.08.2008, needs testing) 
+Should be enough to check timestamps when adding new activities -> DONE (31.08.2008)
+Correct initialization of pace and maxpace values -> DONE (31.08.2008) 
+
 - Future releases
 
+Loading of changed preferences seems weird
 Incorrect timezone when importing tracks -> check gpx._getValues
-Calories support -> garmintools
+garmintools integration (laps and calories support, real sport retrieved from gps device, overall performance improvement)
 Logging improvements
 XML output with cElementTree
 Tracks regularization
@@ -35,10 +49,6 @@ Added from Pierre's email:
 
 - Equipment management :
 Ability to store a list of equipment (running shoes, ...) and associate it (or not) with records. It is to follow how many km have been done with some shoes for example.
-
-- Laps information :
-This have been discussed before and it seems to be a bit difficult to implement. None of the gpsbabel format catch this information from the watch.
-Do you know this project http://code.google.com/p/garmintools/ ? Binary information and not in python but all data seems to be extracted. Could be the base for a new import plugin with addtionnal functionnalities.
 
 - Graph improvement:
 Many things here... Curve smoothing option. Ability to zoom in and out. Select a portion of track and extract some simple statistics information (avg speed, hr, max hr, Total Ascent, ...)
