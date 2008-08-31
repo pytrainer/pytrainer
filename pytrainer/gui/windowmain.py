@@ -256,8 +256,8 @@ class Main(SimpleGladeApp):
 			beats = 0
 			maxbeats = 0
 			maxspeed = 0
-			maxpace = 0
-			pace = 0
+			maxpace = "0.00"
+			pace = "0.00"
 			for record in record_list:
 				distance += self.parseFloat(record[2])
 				calories += self.parseFloat(record[7])
@@ -318,8 +318,8 @@ class Main(SimpleGladeApp):
 		time_in_min = 0
 		tbeats = 0
 		maxspeed = 0
-		pace = 0
-		maxpace = 0
+		pace = "0.00"
+		maxpace = "0.00"
 		maxbeats = 0
 		
 		conf = checkConf()
@@ -396,8 +396,8 @@ class Main(SimpleGladeApp):
 		time_in_min = 0
 		tbeats = 0
 		maxspeed = 0
-		pace = 0
-		maxpace = 0
+		pace = "0.00"
+		maxpace = "0.00"
 		maxbeats = 0
 		if num_records>0:
 			for record in record_list:
