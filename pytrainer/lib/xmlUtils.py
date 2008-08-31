@@ -106,17 +106,23 @@ class XMLParser:
 		out.write(xmlcontent)
 		out.close()
 
-	def shortFromGPS(self, gtrnctrFile):
+	def shortFromGPS(self, gtrnctrFile, getSport=True):
 		"""23.03.2008 - dgranda
 		Retrieves sport, date and start time from each entry coming from GPS
-		args: file with data from GPS file (garmin format)
-		returns: list with dictionaries: SPORT|DATE_STARTTIME"""
+		args:
+			gtrnctrFile: file with data from GPS file (garmin format)
+			getSport: indicates if sport info should be added
+		returns: list with dictionaries (just a list in case of sport is not retrieved) SPORT|DATE_STARTTIME"""
 		logging.debug('>>')
 		listTracksGPS = []
 		# http://gnosis.cx/publish/programming/parser-benchmarks.png
 		# Using ElementTree -> http://effbot.org/zone/element-index.htm
 		# cElementTree -> http://mike.hostetlerhome.com/present_files/pyxml.html
 		logging.debug('parsing '+gtrnctrFile)
+		if getSport is True:
+			logging.debug('Retrieving sport info')
+		else:
+			logging.debug('Discarding sport info')
 		listTracksGPS = []
 		tree = xml.etree.cElementTree.parse(gtrnctrFile).getroot()
 		history = tree.findall(".//History")
@@ -137,9 +143,13 @@ class XMLParser:
 									date_time = track.findtext(".//Time") #returns first instance found
 									track_sport = entry.tag
 									logging.info('Found: '+track_sport+' | '+date_time)
-									listTracksGPS.append((track_sport,date_time))
+									if getSport is True:
+										listTracksGPS.append((track_sport,date_time))
+									else:
+										listTracksGPS.append(date_time)
 					else:
 						logging.debug("No entry found for "+child.tag)
+		logging.debug('Retrieved info: '+str(listTracksGPS))
 		logging.debug('<<')
 		return listTracksGPS
 		
