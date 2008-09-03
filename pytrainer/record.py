@@ -75,6 +75,7 @@ class Record:
 		if os.path.isfile(gpxfile):
 			os.remove(gpxfile)
 			logging.debug('removed gpxfile '+gpxfile)
+		logging.debug('<<')
 
 	def _formatRecord (self, list_options):
 		logging.debug('>>')
@@ -120,7 +121,7 @@ class Record:
 			list_options["rcd_beats"] = 0
 		
 		#retrieving sport id (adding sport if it doesn't exist yet)
-		sport_id = self.getSportId(sport,add=None)
+		sport_id = self.getSportId(list_options["rcd_sport"],add=None)
 
 		values= (
 			list_options["rcd_date"],
@@ -270,7 +271,7 @@ class Record:
 		logging.debug('>>')
 		sport_id=0
 		try:
-			sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))
+			sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))[0][0]
 		except:
 			logging.error('Error retrieving id_sports from '+ str(sport))
 			traceback.print_last()
@@ -406,12 +407,12 @@ class Record:
 		logging.debug('>>')
 		logging.info('Retrieving data from '+gtrnctrFile)
 		xmlParser=XMLParser(gtrnctrFile)
-		listTracksGPS = xmlParser.shortFromGPS(gtrnctrFile, None)
+		listTracksGPS = xmlParser.shortFromGPS(gtrnctrFile, True)
 		logging.info('GPS: '+str(len(listTracksGPS))+' entries found')
 		if len(listTracksGPS)>0:
-			listTracksLocal = self.shortFromLocalDB(None)
+			listTracksLocal = self.shortFromLocalDB(True)
 			logging.info('Local: '+str(len(listTracksLocal))+' entries found')
-			listNewTracks=self.compareTracks(listTracksGPS,listTracksLocal)
+			listNewTracks=self.compareTracks(listTracksGPS,listTracksLocal,False)
 			newTracks = len(listNewTracks)
 			# empty constructor for Gpx 
 			gpx = Gpx()
@@ -430,7 +431,7 @@ class Record:
 		"""25.03.2008 - dgranda
 		Retrieves sport, date and start time from each entry stored locally
 		12.07.2008 - dgranda - Added id_record for each one
-		returns: list with dictionaries: SPORT|DATE_START_TIME|ID_RECORD
+		returns: list with lists: SPORT|DATE_START_TIME|ID_RECORD
 		31.08.2008 - dgranda - Only available due to migration purposes from Main class"""
 		logging.debug('>>')
 		listTracksGPX = []
@@ -454,7 +455,7 @@ class Record:
 	def shortFromLocalDB(self, getSport=True):
 		"""12.07.2008 - dgranda
 		Retrieves sport, date and start time from local database
-		returns: list with dictionaries: SPORT|DATE_START_TIME"""
+		returns: list with lists: SPORT|DATE_START_TIME"""
 		logging.debug('>>')
 		# Retrieving sport (optional) and date_time (UTC) for each entry in DB
 		# ToDo: replace id_sports with name
@@ -472,19 +473,49 @@ class Record:
 		logging.debug('<<')
 		return listTracksGPX
 		
-	def compareTracks(self,listTracksGPS,listTracksLocal):
+	def removeSportFromList(self, list1):
+		resultList = []
+		for entry in list1:
+			resultList.append(entry[1])
+		return resultList
+		
+	def compareLists(self,list1,list2):
+		# Optimizing comparison - 26042008
+		# http://mail.python.org/pipermail/python-list/2002-May/142854.html
+		tempDict = dict(zip(list1,list1))
+		return [x for x in list2 if x not in tempDict]
+		
+	def compareTracks(self,listTracksGPS,listTracksLocal,checkSport=True):
 		"""22.03.2008 - dgranda
 		Compares tracks retrieved from GPS with already locally stored
 		args:
-			listTracksGPS: gps track list with dictionaries -> (SPORT)|DATE_START_TIME
-			listTracksLocal: local track list with dictionaries -> (SPORT)|DATE_START_TIME
-		returns: tracks which are not present locally (list with dictionaries)"""
+			listTracksGPS: gps track list with lists -> (SPORT)|DATE_START_TIME
+			listTracksLocal: local track list with lists -> (SPORT)|DATE_START_TIME
+			checkSport (02.09.2008): indicates if sport data is included when comparing 
+		returns: tracks which are not present locally (list with lists)"""
 		logging.debug('>>')
-		# Optimizing comparison - 26042008
-		# http://mail.python.org/pipermail/python-list/2002-May/142854.html
-		tempDict = dict(zip(listTracksLocal,listTracksLocal))
-		resultList = [x for x in listTracksGPS if x not in tempDict]
+		if checkSport is True:
+			logging.info('Comparing sport info')
+			listGPS = listTracksGPS[:]
+			listLocal = listTracksLocal[:]
+		else:
+			logging.info('Discarding sport info')
+			listGPS = self.removeSportFromList(listTracksGPS)
+			listLocal = self.removeSportFromList(listTracksLocal)
+		
+		resultList = self.compareLists(listLocal,listGPS)
+		
+		if len(resultList)>0 and checkSport is not True: # sport info is added to resultList
+			tempList = []
+			for entry in resultList:
+				for x in listTracksGPS:
+					if x[1] is entry:
+						tempList.append(x)
+						break
+			resultList = tempList[:]
+		
 		logging.info('Tracks to be imported: '+str(len(resultList)))
+		logging.debug('Tracks summary: '+str(resultList))
 		logging.debug('<<')
 		return resultList
 		
