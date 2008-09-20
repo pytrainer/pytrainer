@@ -59,7 +59,7 @@ class Main(SimpleGladeApp):
 		column_names=[_("id"),_("Waypoint")]
 		self.create_treeview(self.waypointTreeView,column_names)
 		conf = checkConf()
-                self.fileconf = conf.getValue("confdir")+"/listviewmenu.xml"
+		self.fileconf = conf.getValue("confdir")+"/listviewmenu.xml"
 		if not os.path.isfile(self.fileconf):
 			self._createXmlListView(self.fileconf)
 		self.showAllRecordTreeViewColumns()
@@ -134,7 +134,7 @@ class Main(SimpleGladeApp):
 	def actualize_recordview(self,record_list):
 		conf = checkConf()
 		filename = conf.getValue("conffile")
-        	configuration = XMLParser(filename)
+		configuration = XMLParser(filename)
 		if configuration.getValue("pytraining","prf_us_system") == "True":
 			self.r_distance_unit.set_text(_("miles"))
 			self.r_speed_unit.set_text(_("miles/h"))
@@ -196,8 +196,8 @@ class Main(SimpleGladeApp):
 			self.record_calories.set_text("%0.0f" %calories)
 			self.record_title.set_text(title)
 			buffer = self.record_comments.get_buffer()
-                	start,end = buffer.get_bounds()
-                	buffer.set_text(comments)
+			start,end = buffer.get_bounds()
+			buffer.set_text(comments)
 
 		else:
 			self.recordview.set_sensitive(0)
@@ -234,7 +234,7 @@ class Main(SimpleGladeApp):
 	def actualize_dayview(self,record_list):
 		conf = checkConf()
 		filename = conf.getValue("conffile")
-        	configuration = XMLParser(filename)
+		configuration = XMLParser(filename)
 		if configuration.getValue("pytraining","prf_us_system") == "True":
 			self.d_distance_unit.set_text(_("miles"))
 			self.d_speed_unit.set_text(_("miles/h"))
@@ -324,7 +324,7 @@ class Main(SimpleGladeApp):
 		
 		conf = checkConf()
 		filename = conf.getValue("conffile")
-        	configuration = XMLParser(filename)
+		configuration = XMLParser(filename)
 		if configuration.getValue("pytraining","prf_us_system") == "True":
 			self.m_distance_unit.set_text(_("miles"))
 			self.m_speed_unit.set_text(_("miles/h"))
