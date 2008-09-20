@@ -11990,48 +11990,6 @@ Continue?</property>
   </child>
 </widget>
 
-<widget class="GtkAboutDialog" id="aboutdialog1">
-  <property name="border_width">5</property>
-  <property name="visible">True</property>
-  <property name="destroy_with_parent">True</property>
-  <property name="name" translatable="yes">pytrainer</property>
-  <property name="copyright" translatable="yes">(c) Fiz Vazquez &lt;vud1@sindominio.net&gt;</property>
-  <property name="comments" translatable="yes">Track sporting activities and performance</property>
-  <property name="license" translatable="yes">(C) Fiz Vazquez
-
-  This program is free software; you can redistribute 
-  it and/or modify it under the terms of the GNU 
-  General Public License as published by the Free 
-  Software Foundation; either version 2 of the License, 
-  or (at your option) any later version.
-
-  This program is distributed in the hope that it will be 
-  useful, but WITHOUT ANY WARRANTY; without even the
-  implied warranty of MERCHANTABILITY or FITNESS FOR 
-  A PARTICULAR PURPOSE.  See the GNU General Public 
-  License &lt;http://www.opensource.org/gpl-license.html&gt;
-  for more details.
-
-  You can found the license on Debian systems in the file
-  /usr/share/common-licenses/GPL
-</property>
-  <property name="wrap_license">False</property>
-  <property name="website">http://pytrainer.e-oss.net</property>
-  <property name="website_label" translatable="yes">pytrainer.e-oss.net</property>
-  <property name="authors">Fiz vazquez &lt;vud1@sindominio.net&gt;</property>
-  <property name="translator_credits" translatable="yes" comments="TRANSLATORS: Replace this string with your names, one name per line.">Basque: Jabier Santamaria &lt;mendikote@gmail.com&gt;
-Catalan: Eloi Crespillo Itchart &lt;eloi@ikuszen.com&gt;
-Czech: Lobus Pokorny &lt;sp.pok@seznam.cz&gt;
-French: Dj &lt;dj@djremixtheblog.be&gt;
-French: Pierre Gaigé &lt;pgaige@free.fr&gt;
-Norwegian: Havard Davidsen &lt;havard.davidsen@gmail.com&gt;
-Polish: Seweryn Kokot &lt;skokot@po.opole.pl&gt;
-german: Aleks &lt;aleks@schnecklecker.de&gt;
-Spanish: Fiz vazquez &lt;vud1@sindominio.net&gt;</property>
-  <property name="logo">pytrainer_mini.png</property>
-  <signal name="close" handler="gtk_widget_destroy" last_modification_time="Thu, 09 Nov 2006 20:25:31 GMT"/>
-</widget>
-
 <widget class="GtkFileChooserDialog" id="filechooserdialog">
   <property name="border_width">5</property>
   <property name="visible">True</property>
