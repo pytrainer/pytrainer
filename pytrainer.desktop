@@ -5,5 +5,5 @@ Encoding=UTF-8
 Name=pyTrainer sport training log
 Comment=The Free Sport Training Center
 Exec=pytrainer
-Icon=pytrainer.png
-Categories=Office
+Icon=pytrainer
+Categories=Office;
