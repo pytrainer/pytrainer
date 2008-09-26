@@ -20,6 +20,7 @@
 
 import _mysql
 
+# Fixed some issues with MySql tables creation (email from Jonas Liljenfeldt)
 class Sql:
 	def __init__(self,host=None, ddbb = None, user = None, password = None):
 		self.ddbb_user = user
@@ -31,20 +32,18 @@ class Sql:
 	def connect(self):
 		#si devolvemos 1 ha ido todo con exito
 		#con 0 es que no estaba la bbdd creada
-		#con 1 imposible conectar a la maquina.
+		#con -1 imposible conectar a la maquina.
 		try:
 			self.db=_mysql.connect(
 				host=self.ddbb_host,
 				user=self.ddbb_user,
 				passwd=self.ddbb_pass,
 				db=self.ddbb)
+			self.select("records","id_record","1=1 limit 0,1")
 			return 1
 		except:
 			try:
-				self.db=_mysql.connect(
-					host=self.ddbb_host,
-					user=self.ddbb_user,
-					passwd=self.ddbb_pass)
+				self.createTables()
 				return 0
 			except:
 				return -1
@@ -80,7 +79,7 @@ class Sql:
 			`title` VARCHAR( 200 ) NOT NULL ,
 			`upositive` FLOAT NOT NULL ,
 			`unegative` FLOAT NOT NULL ,
-			`maxspeed` FLOAT, NOT NULL,
+			`maxspeed` FLOAT NOT NULL,
 			maxpace FLOAT NOT NULL,
 			pace FLOAT NOT NULL,
 			maxbeats FLOAT NOT NULL,
