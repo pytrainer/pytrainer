@@ -29,14 +29,16 @@ class About:
 	def run(self):
 		authors = ["Fiz Vázquez <vud1@sindominio.net>\nDavid García Granda <dgranda@gmail.com>"]
 		translator_credits = "Basque: Jabier Santamaria <mendikote@gmail.com>\nCatalan: Eloi Crespillo Itchart <eloi@ikuszen.com>\nCzech: Lobus Pokorny <sp.pok@seznam.cz>\nFrench: Dj <dj@djremixtheblog.be>\nFrench: Pierre Gaigé <pgaige@free.fr>\nNorwegian: Havard Davidsen <havard.davidsen@gmail.com>\nPolish: Seweryn Kokot <skokot@po.opole.pl>\nGerman: Aleks <aleks@schnecklecker.de>\nSpanish: Fiz Vázquez <vud1@sindominio.net>"
+		license = "PyTrainer - The free sport tracking center\nCopyright (C) 2005-08 Fiz Vázquez\n\nThis program is free software; you can redistribute it and/or modify\nit under the terms of the GNU General Public License as published by\nthe Free Software Foundation; either version 2 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU General Public License for more details.\n\nYou should have received a copy of the GNU General Public License\nalong with this program; if not, write to the Free Software\nFoundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307 USA"
 		about_dialog = gtk.AboutDialog()
 		about_dialog.set_destroy_with_parent(True)
 		about_dialog.set_name("pyTrainer")
 		about_dialog.set_version(self.version)
 		about_dialog.set_copyright("Copyright \xc2\xa9 2005-8 Fiz Vázquez")
 		about_dialog.set_website("http://sourceforge.net/projects/pytrainer")
-		about_dialog.set_comments("Track sporting activities and performance")
-		about_dialog.set_license("GNU GPL v2 or later\nPlease check http://www.gnu.org/licenses/old-licenses/gpl-2.0.html")
+		about_dialog.set_comments("The free sport tracking center")
+		about_dialog.set_license(license)
+		
 		about_dialog.set_authors(authors)
 		about_dialog.set_translator_credits(translator_credits)
 		about_dialog.set_logo(gtk.gdk.pixbuf_new_from_file(self.data_path+"glade/pytrainer_mini.png"))
