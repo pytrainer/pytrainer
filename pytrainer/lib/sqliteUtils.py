@@ -18,7 +18,13 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from pysqlite2 import dbapi2 as sqlite
+import logging
+try:
+	from sqlite3 import dbapi2 as sqlite
+except ImportError:
+	logging.error('Not able to find sqlite2 module (new in python 2.5)')
+	from pysqlite2 import dbapi2 as sqlite
+	logging.info('Using pysqlite2 module to access DB. Think about upgrading to python 2.5!')
 from system import checkConf
 from logs import Log
 
