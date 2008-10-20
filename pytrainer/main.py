@@ -78,7 +78,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.6.0.6" # 27.09.2008
+		self.version ="1.6.0.7" # 20.10.2008
 		self.date = Date()
 
 		# Checking profile

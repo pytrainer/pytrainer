@@ -1,3 +1,8 @@
+- PyTrainer tasks for 1.6.0.7:
+
+Bug #2100647 - Quick entry doesn't work if no gpx file - Fixed (svn rev. 287)
+FR #2126411 - Package  python-sqlite2 not needed anymore (http://www.python.org/doc/2.5.2/lib/module-sqlite3.html (svn rev. 286)
+
 - PyTrainer tasks for 1.6.0.6:
 
 Close button in "About" dialog now works. Migrating from Glade to GTKBuilder
