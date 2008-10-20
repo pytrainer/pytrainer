@@ -16,6 +16,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+import logging
 from SimpleGladeApp import SimpleGladeApp
 from windowcalendar import WindowCalendar
 from filechooser import FileChooser
@@ -91,8 +92,15 @@ class WindowRecord(SimpleGladeApp):
 				list_options[i] = list_options[i].replace("\"","'")
 			list_options["rcd_time"] = [self.rcd_hour.get_value_as_int(),self.rcd_min.get_value_as_int(),self.rcd_second.get_value_as_int()]
 		if self.mode == "newrecord":
-			trackSummary=(list_options["rcd_sport"],"","")
-			self.parent.insertNewRecord(list_options["rcd_gpxfile"], trackSummary)
+			logging.debug('Track data: '+str(list_options))
+			if list_options["rcd_gpxfile"] != "":
+				logging.info('Adding new activity based on GPX file')
+				trackSummary=(list_options["rcd_sport"],"","")
+				self.parent.insertNewRecord(list_options["rcd_gpxfile"], trackSummary)
+			else:
+				logging.info('Adding new activity based on provided data')
+				list_options["date_time_utc"] = list_options["rcd_date"] + "T12:00:00Z" # hardcoded
+				self.parent.insertRecord(list_options)
 		elif self.mode == "editrecord":
 			self.parent.updateRecord(list_options, self.id_record)
 		self.close_window()
