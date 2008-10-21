@@ -106,7 +106,6 @@ class Gpx:
 			logging.debug("name: "+name+" | time: "+time_)
 			self.tracks.append((name,time_))
 			
-			name = trk.getElementsByTagName("name")[0].firstChild.data
 			if name == self.trkname:
 				dom = trk
 				content = """<?xml version="1.0" encoding="UTF-8"?>
@@ -143,7 +142,10 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 		total_hr = 0
 		tmp_alt = 0
 		len_validhrpoints = 0
-			
+
+		if not len(trkpoints):
+			return retorno
+		
 		date_ = trkpoints[0].getElementsByTagName("time")[0].firstChild.data
 		mk_time = time.strptime(date_, "%Y-%m-%dT%H:%M:%SZ")
 		self.date = time.strftime("%Y-%m-%d", mk_time)
