@@ -215,7 +215,7 @@ class Record:
 				logging.debug('removing gpxfile') # ein?
 				logging.debug('updating bbdd') #ein?
 		cells,values = self._formatRecord(list_options)
-		self.ddbb.update("records",cells,values," id_record=%d" %id_record)
+		self.ddbb.update("records",cells,values," id_record=%d" %int(id_record))
 		self.parent.refreshListView()
 		logging.debug('<<')
 
