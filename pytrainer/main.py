@@ -256,6 +256,7 @@ class pyTrainer:
 		logging.debug('>>')
 		selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
 		id_record = selected.get_value(iter,0)
+		logging.debug('Trying to show map for record '+str(id_record))
 		self.windowmain.actualize_map(id_record)
 		logging.debug('<<')
 
@@ -383,6 +384,7 @@ class pyTrainer:
 			if version_tmp<="1.5.0.1":
 				self.ddbb.addweightandmet2ddbb()
 			if version_tmp<="1.5.0.2":
+				logging.info('Adding maxspeed, maxpace, pace and maxbeats columns')
 				self.ddbb.addpaceandmax2ddbb()
 			if version_tmp < "1.6.0.1":
 				logging.info('Adding date_time_utc column and retrieving data from local GPX files')

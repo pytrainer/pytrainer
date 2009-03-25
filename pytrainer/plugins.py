@@ -17,6 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import os
+import logging
 
 from lib.xmlUtils import XMLParser
 from lib.system import checkConf
@@ -36,24 +37,28 @@ class Plugins:
 		return retorno	
 
 	def loadPlugin(self,plugin):
+		logging.debug('>>')
 		info = XMLParser(plugin+"/conf.xml")
 		button = info.getValue("pytrainer-plugin","pluginbutton")
 		name = info.getValue("pytrainer-plugin","name")
-		print "Loading Plugin %s" %name
+		logging.info('Loading plugin '+name)
+		logging.debug('<<')
 		return button,plugin
 	
 	def runPlugin(self,pathPlugin):
+		logging.debug('>>')
 		info = XMLParser(pathPlugin+"/conf.xml")
 		bin = info.getValue("pytrainer-plugin","executable")
-		binnary = pathPlugin+"/"+bin
+		binary = pathPlugin+"/"+bin
 		params = ""
 		for opt in self.getPluginConfParams(pathPlugin):
 			if opt[0]!="status":
 				params += " --%s %s" %(opt[0],opt[1])
-		print "%s %s" %(binnary,params)
-		gpxfile = os.popen("%s %s" %(binnary,params)).read()
+		logging.debug('Executing '+binary+' '+params)
+		gpxfile = os.popen("%s %s" %(binary,params)).read()
 		gpxfile = gpxfile.replace("\n","")
 		gpxfile = gpxfile.replace("\r","")
+		logging.debug('<<')
 		if gpxfile == "0":
 			return False
 		return gpxfile

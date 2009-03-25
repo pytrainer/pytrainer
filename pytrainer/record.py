@@ -220,7 +220,7 @@ class Record:
 		logging.debug('<<')
 
 	def parseFloatRecord(self,string):
-		logging.debug('>>')
+		logging.debug('--')
 		if string != "":
 			try:
 				return float(string.replace(",",","))
