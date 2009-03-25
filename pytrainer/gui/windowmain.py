@@ -19,6 +19,7 @@
 
 import gobject
 import sys
+import logging
 
 from SimpleGladeApp import *
 from popupmenu import PopupMenu
@@ -132,6 +133,7 @@ class Main(SimpleGladeApp):
 			i+=1
 	
 	def actualize_recordview(self,record_list):
+		logging.debug(">>")
 		conf = checkConf()
 		filename = conf.getValue("conffile")
 		configuration = XMLParser(filename)
@@ -201,18 +203,24 @@ class Main(SimpleGladeApp):
 
 		else:
 			self.recordview.set_sensitive(0)
+		logging.debug(">>")
 	
 	def actualize_recordgraph(self,record_list):
+		logging.debug(">>")
 		if len(record_list)>0:
 			self.record_vbox.set_sensitive(1)
 		else:
 			self.record_vbox.set_sensitive(0)
 		self.drawarearecord.drawgraph(record_list)
+		logging.debug("<<")
 	
 	def actualize_heartrategraph(self,record_list):
+		logging.debug(">>")
 		self.drawareaheartrate.drawgraph(record_list)
+		logging.debug(">>")
 
 	def actualize_hrview(self,record_list,zones,is_karvonen_method):
+		logging.debug(">>")
 		if len(record_list)>0:
 			record_list=record_list[0]
 			self.record_zone1.set_text("%s-%s" %(zones[4][0],zones[4][1]))
@@ -230,8 +238,10 @@ class Main(SimpleGladeApp):
 				self.record_zonesmethod.set_text(_("Percentages method"))
 		else:
 			self.recordview.set_sensitive(0)
+		logging.debug("<<")
 
 	def actualize_dayview(self,record_list):
+		logging.debug(">>")
 		conf = checkConf()
 		filename = conf.getValue("conffile")
 		configuration = XMLParser(filename)
@@ -300,18 +310,24 @@ class Main(SimpleGladeApp):
 			
 		else:
 			self.dayview.set_sensitive(0)
+		logging.debug("<<")
 	
 	def actualize_daygraph(self,record_list):
+		logging.debug(">>")
 		if len(record_list)>0:
 			self.day_vbox.set_sensitive(1)
 		else:
 			self.day_vbox.set_sensitive(0)
 		self.drawareaday.drawgraph(record_list)
+		logging.debug("<<")
 	
 	def actualize_map(self,id_record):
+		logging.debug(">>")
 		self.googlemaps.drawMap(id_record)
+		logging.debug("<<")
 	
 	def actualize_monthview(self,record_list, nameMonth):
+		logging.debug(">>")
 		self.month_date.set_text(nameMonth)
 		km = calories = time = average = beats = 0
 		num_records = len(record_list)
@@ -385,11 +401,15 @@ class Main(SimpleGladeApp):
 			self.monthview.set_sensitive(1)
 		else:
 			self.monthview.set_sensitive(0)
+		logging.debug("<<")
 
 	def actualize_monthgraph(self,record_list):
+		logging.debug(">>")
 		self.drawareamonth.drawgraph(record_list)
+		logging.debug("<<")
 	
 	def actualize_yearview(self,record_list, year):
+		logging.debug(">>")
 		self.year_date.set_text("%d" %int(year))
 		km = calories = time = average = beats = 0
 		num_records = len(record_list)
@@ -442,11 +462,15 @@ class Main(SimpleGladeApp):
 		else:
 			self.yearview.set_sensitive(0)
 			self.drawareayear.drawgraph([])
+		logging.debug("<<")
 	
 	def actualize_yeargraph(self,record_list):
+		logging.debug(">>")
 		self.drawareayear.drawgraph(record_list)
+		logging.debug("<<")
 
 	def actualize_listview(self,record_list):
+		logging.debug(">>")
 		#recod list tiene:
 		#date,distance,average,title,sports.name,id_record,time,beats,caloriesi
 		#Laas columnas son:
@@ -482,8 +506,10 @@ class Main(SimpleGladeApp):
 				)
 		#self.allRecordTreeView.set_headers_clickable(True)
 		self.allRecordTreeView.set_model(store)
+		logging.debug("<<")
 
 	def actualize_waypointview(self,record_list,default_waypoint,redrawmap = 1):
+		logging.debug(">>")
 		#redrawmap: indica si tenemos que refrescar tb el mapa. 1 si 0 no
 		#waypoint list tiene:
 		#id_waypoint,lat,lon,ele,comment,time,name,sym
@@ -527,6 +553,7 @@ class Main(SimpleGladeApp):
 		if redrawmap == 1:
 			self.waypointeditor.createHtml(default_waypoint)
 			self.waypointeditor.drawMap()
+		logging.debug("<<")
 	
 	def on_waypointTreeView_button_press(self, treeview, event):
 		x = int(event.x)
@@ -647,9 +674,11 @@ class Main(SimpleGladeApp):
 		self.parent.newRecord()
 	
 	def on_sportlist_changed(self,widget):
+		logging.debug("--")
 		self.parent.refreshGraphView(self.selected_view)
 	
 	def on_page_change(self,widget,gpointer,page):
+		logging.debug("--")
 		if page == 0:
 			self.selected_view="record"
 		elif page == 1:
@@ -681,15 +710,19 @@ class Main(SimpleGladeApp):
 		self.infoarea.show()
 	
 	def on_day_combovalue_changed(self,widget):
+		logging.debug("--")
 		self.parent.refreshGraphView(self.selected_view)
 	
 	def on_month_combovalue_changed(self,widget):
+		logging.debug("--")
 		self.parent.refreshGraphView(self.selected_view)
 	
 	def on_year_combovalue_changed(self,widget):
+		logging.debug("--")
 		self.parent.refreshGraphView(self.selected_view)
 	
 	def on_calendar_selected(self,widget):
+		logging.debug("--")
 		if self.block:
 			self.block = False
 		else:
@@ -699,6 +732,7 @@ class Main(SimpleGladeApp):
 			self.parent.refreshGraphView(self.selected_view)
 
 	def on_calendar_changemonth(self,widget):
+		logging.debug("--")
 		self.block = True
 		self.notebook.set_current_page(2)
 		self.selected_view="month"
@@ -706,6 +740,7 @@ class Main(SimpleGladeApp):
 		self.parent.refreshGraphView(self.selected_view)
 	
 	def on_calendar_next_year(self,widget):
+		logging.debug("--")
 		self.block = True
 		self.notebook.set_current_page(3)
 		self.selected_view="year"
@@ -736,6 +771,7 @@ class Main(SimpleGladeApp):
 		self.parent.editGpsPlugins()
 	#hasta aqui revisado
 	def on_allRecordTreeView_button_press(self, treeview, event):
+		logging.debug(">>")
 		print "on_allRecordTreeView_"
 		x = int(event.x)
 		y = int(event.y)
@@ -756,9 +792,11 @@ class Main(SimpleGladeApp):
 			elif event.button == 1:
 				self.notebook.set_current_page(0)
 				self.parent.refreshGraphView("record")
+		logging.debug("<<")
 		return False
 	
 	def actualize_recordTreeView(self, record_list):
+		logging.debug(">>")
 		iterOne = False
 		store = gtk.ListStore(
 			gobject.TYPE_INT,
@@ -778,6 +816,7 @@ class Main(SimpleGladeApp):
 		self.recordTreeView.set_model(store)
 		if iterOne:
 			self.recordTreeView.get_selection().select_iter(iterOne)
+		logging.debug("<<")
 		#if len(record_list)>0:
 	
 	def parseFloat(self,string):
@@ -787,9 +826,11 @@ class Main(SimpleGladeApp):
 			return float(0)
 
 	def actualize_calendar(self,record_list):
+		logging.debug(">>")
 		self.calendar.clear_marks()
 		for i in record_list:
 			self.calendar.mark_day(int(i))
+		logging.debug("<<")
 
 	def on_about_activate(self,widget):
 		aboutwindow = About(self.data_path, self.version)
