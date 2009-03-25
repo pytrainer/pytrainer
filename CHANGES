@@ -1,7 +1,13 @@
 - PyTrainer tasks for 1.6.0.7:
 
+Removal of maps directory due to license issue: https://sourceforge.net/mailarchive/message.php?msg_name=1237752714.4330.15.camel%40thinker.domain.lan (svn rev 300) 
+Removal of opensuse_mozpytrainer.sh launch script as it is included in (renamed) pytrainer.sh. Deleted README.txt file to avoid confusion (svn rev 298)
+Updated INSTALL file with current package versions (svn rev 297)
+Fixed Google Maps integration (svn rev 296)
+Updated garmin-hr config file with correct usb port value (svn rev 294)
+Fixed bug where track record was supposed to be updated in database. Type cast was missing (svn rev 293)
 Bug #2100647 - Quick entry doesn't work if no gpx file - Fixed (svn rev. 287)
-FR #2126411 - Package  python-sqlite2 not needed anymore (http://www.python.org/doc/2.5.2/lib/module-sqlite3.html (svn rev. 286)
+FR #2126411 - Package python-sqlite2 not needed anymore: http://www.python.org/doc/2.5.2/lib/module-sqlite3.html (svn rev. 286)
 
 - PyTrainer tasks for 1.6.0.6:
 
