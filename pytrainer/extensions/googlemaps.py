@@ -19,6 +19,7 @@
 import gtkmozembed
 import os
 import re
+import logging
 
 from pytrainer.lib.system import checkConf
 from pytrainer.lib.gpx import Gpx
@@ -27,15 +28,19 @@ from pytrainer.lib.fileUtils import fileUtils
 
 class Googlemaps:
 	def __init__(self, data_path = None, vbox = None, waypoint = None):
+		logging.debug(">>")
 		self.data_path = data_path
 		self.conf = checkConf()
+		gtkmozembed.set_profile_path("/tmp", "foobar") # http://faq.pygtk.org/index.py?req=show&file=faq19.018.htp
 		self.moz = gtkmozembed.MozEmbed()
-                vbox.pack_start(self.moz, True, True)
+		vbox.pack_start(self.moz, True, True)
 		vbox.show_all()
 		self.htmlfile = ""
 		self.waypoint=waypoint
+		logging.debug("<<")
 	
 	def drawMap(self,id_record):
+		logging.debug(">>")
 		code = "googlemapsviewer"
 		extensiondir = self.conf.getValue("extensiondir")+"/"+code
 		if not os.path.isdir(extensiondir):
@@ -44,7 +49,6 @@ class Googlemaps:
 		levels = []
 		pointlist = []
 		htmlfile = self.conf.getValue("tmpdir")+"/index.html"
-		
 		gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
 		if os.path.isfile(gpxfile):
 			gpx = Gpx(self.data_path,gpxfile)
@@ -56,16 +60,16 @@ class Googlemaps:
 	
 			self.createHtml(points,levels,pointlist[0])
 			htmlfile = os.path.abspath(htmlfile)
+			logging.debug("HTML file created: "+htmlfile)
 			if htmlfile != self.htmlfile:
-        			self.moz.load_url("file://"+htmlfile)
+				self.moz.load_url("file://"+htmlfile)
 		else:
 			self.createErrorHtml()
         		self.moz.load_url("file://"+htmlfile)
-		#	self.htmlfile = htmlfile
-		#else:
-		#	pass
+		logging.debug("<<")
 	
 	def createHtml(self,points,levels,init_point):
+		logging.debug(">>")
 		waypoints = self.waypoint.getAllWaypoints()
 		tmpdir = self.conf.getValue("tmpdir")
 		content = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \n"
@@ -163,8 +167,10 @@ class Googlemaps:
 		filename = tmpdir+"/index.html"
 		file = fileUtils(filename,content)
 		file.run()
+		logging.debug("<<")
 		
 	def createErrorHtml(self):
+		logging.debug(">>")
 		content = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \n"
     		content += "		\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
 		content += "	<html xmlns=\"http://www.w3.org/1999/xhtml\"  xmlns:v=\"urn:schemas-microsoft-com:vml\">\n"
@@ -178,3 +184,4 @@ No Gpx Data
 		filename = tmpdir+"/index.html"
 		file = fileUtils(filename,content)
 		file.run()
+		logging.debug("<<")
