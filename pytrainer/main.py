@@ -178,6 +178,8 @@ class pyTrainer:
 		if view=="record":
 			 logging.debug('record view')
 			 if self.windowmain.recordview.get_current_page()==0:
+                                self.refreshRecordGraphView("graphs")
+                                self.refreshRecordGraphView("heartrate")
 				self.refreshRecordGraphView("info")
 			 elif self.windowmain.recordview.get_current_page()==1:
 				self.refreshRecordGraphView("graphs")

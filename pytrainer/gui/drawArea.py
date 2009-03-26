@@ -90,6 +90,10 @@ class DrawArea:
 		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		self.canvas.show()
                 self.vbox.pack_start(self.canvas, True, True)
+		if title[0] == 'Stage Profile':
+			self.figure.savefig('/tmp/stage.png', dpi=75)
+		if title[0] == 'Heart Rate':
+			self.figure.savefig('/tmp/hr.png', dpi=75)
 	
 	def drawPie(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
                 self.canvas.destroy()
