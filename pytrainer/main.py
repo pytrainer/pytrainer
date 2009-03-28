@@ -121,10 +121,12 @@ class pyTrainer:
 		logging.debug('<<') 
 
 	def quit(self): 
-		logging.debug('--') 
+		logging.debug('--')
+		logging.info("Exit!")
 		self.webservice.stop()
 		self.windowmain.gtk_main_quit()
-		sys.exit("Exit!")
+		logging.shutdown()
+		sys.exit() # Any nonzero value is considered “abnormal termination” by shells and the like
 
 	def loadPlugins(self):
 		logging.debug('>>')
