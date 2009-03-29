@@ -1,5 +1,8 @@
 - PyTrainer tasks for 1.6.0.7:
 
+Removing pytrainer gui minimal window size (svn rev 304)
+Ordered shutdown of logging stuff (svn rev 303)
+HR and elevation graphs included when exporting to wordpress (svn rev 302)
 Removal of maps directory due to license issue: https://sourceforge.net/mailarchive/message.php?msg_name=1237752714.4330.15.camel%40thinker.domain.lan (svn rev 300) 
 Removal of opensuse_mozpytrainer.sh launch script as it is included in (renamed) pytrainer.sh. Deleted README.txt file to avoid confusion (svn rev 298)
 Updated INSTALL file with current package versions (svn rev 297)
