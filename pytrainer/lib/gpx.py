@@ -64,7 +64,11 @@ class Gpx:
 			logging.debug("parsing content from "+self.filename)
 			self.dom = xml.dom.minidom.parse(self.filename)
 			logging.debug("getting values...")
+			time1 =  time.time()
 			self.Values = self._getValues()
+			time2 = time.time()
+			time_ = time2-time1
+			print "loading gpx file. Time: %f seconds " %time_
 		logging.debug("<<")
 
 	def getMaxValues(self):
@@ -90,6 +94,7 @@ class Gpx:
 		dom = self.dom
 		content = dom.toxml()
 
+		'''
 		trks = dom.getElementsByTagName("trk")
 		retorno = []
 		for trk in trks:
@@ -131,7 +136,7 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 		fp = open(newfilename,"a+")
 		fp.write(content)
 		fp.close()
-
+'''
 		trkpoints = dom.getElementsByTagName("trkpt")
 		retorno = []
 		his_vel = []
@@ -180,9 +185,11 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 				if last_lat != "False":
 					time_ = tmp_time - last_time
 					if time_>0:
+						#Caqlculate diference betwen last and new point
 						tempnum=(math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon))
 						#try:
-						#Obtenemos el punto respecto al punto anterior
+						#Pasamos la distancia de radianes a metros..  creo
+						#David no me mates que esto lo escribi hace anhos
 						try:
 							dist=math.acos(tempnum)*111.302*57.29577951
 						except:
