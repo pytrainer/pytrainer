@@ -57,7 +57,6 @@ class Gpx:
 		self.maxvel = 0
 		self.maxhr = 0
 		self.date = ""
-		self.tracks = []
 		if filename != None:
 			if not os.path.isfile(self.filename):
 				return None
@@ -78,24 +77,8 @@ class Gpx:
 		return self.date
 
 	def getTrackRoutes(self):	
-		return self.tracks
-		
-	def getUnevenness(self):
-		return self.upositive,self.unegative 
-	
-	def getTrackList(self):
-		return self.Values
-
-	def getHeartRateAverage(self):
-		return self.hr_average
-		
-	def _getValues(self): # migrate to cElementTree
-		logging.debug(">>")
-		dom = self.dom
-		content = dom.toxml()
-
-		'''
-		trks = dom.getElementsByTagName("trk")
+		trks = self.dom.getElementsByTagName("trk")
+		tracks = []
 		retorno = []
 		for trk in trks:
 			if len(trk.getElementsByTagName("name")) > 0:
@@ -109,34 +92,22 @@ class Gpx:
 			else:
 				time_ = _("No Data")
 			logging.debug("name: "+name+" | time: "+time_)
-			self.tracks.append((name,time_))
-			
-			if name == self.trkname:
-				dom = trk
-				content = """<?xml version="1.0" encoding="UTF-8"?>
+			tracks.append((name,time_))
+		return tracks
+		
+	def getUnevenness(self):
+		return self.upositive,self.unegative 
+	
+	def getTrackList(self):
+		return self.Values
 
-<gpx 
-creator="pytrainer http://pytrainer.e-oss.net"
-version="1.1" 
-xmlns="http://www.topografix.com/GPX/1/1" 
-xmlns:geocache="http://www.groundspeak.com/cache/1/0" 
-xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" 
-xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd http://www.cluetrust.com/XML/GPXDATA/1/0 http://www.cluetrust.com/Schemas/gpxdata10.xsd">
-
-
-"""
-				content += dom.toxml()
-				content += "</gpx>"
-
-		#Guardamos el xml en un fichero (por si hay que guardar solo un track)					
-		newfilename = self.conf.tmpdir+"/newgpx.gpx"
-		if os.path.isfile(newfilename):
-			os.remove(newfilename)
-		fp = open(newfilename,"a+")
-		fp.write(content)
-		fp.close()
-'''
+	def getHeartRateAverage(self):
+		return self.hr_average
+		
+	def _getValues(self): # migrate to cElementTree
+		logging.debug(">>")
+		dom = self.dom
+		
 		trkpoints = dom.getElementsByTagName("trkpt")
 		retorno = []
 		his_vel = []
@@ -186,12 +157,13 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
 					time_ = tmp_time - last_time
 					if time_>0:
 						#Caqlculate diference betwen last and new point
-						tempnum=(math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon))
+						#tempnum=(math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon))
 						#try:
 						#Pasamos la distancia de radianes a metros..  creo
 						#David no me mates que esto lo escribi hace anhos
 						try:
-							dist=math.acos(tempnum)*111.302*57.29577951
+							#dist=math.acos(tempnum)*111.302*57.29577951
+							dist=math.acos((math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon)))*111.302*57.29577951
 						except:
 							dist=0
 						total_dist += dist
