@@ -324,8 +324,8 @@ class Record:
 		logging.debug('Found '+str(len(records))+' entries')
 		day_list = []
 		for i in records:
-			record = i[0].split("-")
-			logging.debug('date:'+i[0])
+			record = i[0].isoformat().split("-")
+			logging.debug('date:'+i[0].isoformat())
 			day_list.append(record[2])
 		logging.debug('<<')
 		return day_list

@@ -18,7 +18,9 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import _mysql
+#import _mysql
+import MySQLdb
+from logs import Log
 
 # Fixed some issues with MySql tables creation (email from Jonas Liljenfeldt)
 class Sql:
@@ -28,13 +30,14 @@ class Sql:
 		self.ddbb_host = host
 		self.ddbb = ddbb
 		self.db = None
+		self.log = Log()
 	
 	def connect(self):
 		#si devolvemos 1 ha ido todo con exito
 		#con 0 es que no estaba la bbdd creada
 		#con -1 imposible conectar a la maquina.
 		try:
-			self.db=_mysql.connect(
+			self.db=MySQLdb.connect(
 				host=self.ddbb_host,
 				user=self.ddbb_user,
 				passwd=self.ddbb_pass,
@@ -130,7 +133,15 @@ class Sql:
 		self.db.query("""insert into %s (%s) values (%s)"""  %(table,cells,string))
 
 	def freeExec(self,sql):
-		self.db.query(sql)
+		#self.db.query(sql)
+		self.log.run(sql)
+		cur = self.db.cursor()
+		cur.execute(sql)
+		retorno = []
+		for row in cur.fetchall():
+			retorno.append(row)
+	       	self.db.commit()
+		return retorno
 	
 	def delete(self,table,condition):
 		sql = "delete from %s where %s"  %(table,condition)
