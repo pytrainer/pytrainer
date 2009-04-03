@@ -190,7 +190,7 @@ class Main(SimpleGladeApp):
 				self.record_maxpace.set_text("%0.2f" %maxpace)
 			
 			self.record_sport.set_text(sport)
-			self.record_date.set_text(date.isoformat())
+			self.record_date.set_text(date)
 			hour,min,sec=self.parent.date.second2time(int(record_list[3]))
 			self.record_hour.set_text("%d" %hour)
 			self.record_minute.set_text("%d" %min)
@@ -306,7 +306,7 @@ class Main(SimpleGladeApp):
 			self.day_pace.set_text(pace)
 			self.day_maxpace.set_text(maxpace)
 			self.day_calories.set_text("%0.0f" %calories)
-			self.day_topic.set_text(record[1].isoformat())
+			self.day_topic.set_text(str(record[1]))
 			
 		else:
 			self.dayview.set_sensitive(0)
