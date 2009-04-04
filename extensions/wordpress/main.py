@@ -4,8 +4,9 @@ import points as Points
 from optparse import OptionParser
 import os
 import googlemaps
-
-from pytrainer.lib.date import Date
+import sys
+sys.path.insert(0,os.path.join(sys.path[0],'../../pytrainer/lib'))
+from date import Date
 
 import SOAPpy
 
@@ -40,9 +41,9 @@ class Main:
 			hfile = self.wp.newMediaObject(htmlpath)
 			kfile = self.wp.newMediaObject(kmlpath)
 
-			description_route = '''<strong>Route: <strong> <br/>
-			<iframe width='540' height='500' src='%s'> Need frame support </iframe><br/>
-			<a href='%s'>Gpx file</a> <a href='%s'>Kml file (GoogleEarth)</a><br/><br/>''' %(hfile,gfile,kfile)
+			description_route = '''<strong>Map: <strong> <br/>
+			<iframe width='480' height='480' src='%s'> Need frame support </iframe><br/>
+			<a href='%s'>Gpx-format</a> <a href='%s'>Kml-format (GoogleEarth)</a><br/><br/>''' %(hfile,gfile,kfile)
 		return description_route
 
 	def loadRecordInfo(self):
@@ -59,9 +60,14 @@ class Main:
                 self.title = record["title"]
                 self.upositive = record["upositive"]
                 self.unegative = record["unegative"]
+                self.unegative = record["unegative"]
+                self.maxspeed = record["maxspeed"]
+                self.maxpace = record["maxpace"]
+                self.pace = record["pace"]
+                self.maxbeats = record["maxbeats"]
 
 	def createBody(self):
-		return '''<b> Descripcion: <b/><br/>
+		return '''<b> Description: </b><br/>
 %s<br/>''' %self.comments
 	
 	def createTable(self):
@@ -69,47 +75,59 @@ class Main:
 			<br/>
 			<table border=0>
 				<tr>
-					<td><strong>Deporte:</strong></td>
+					<td><strong>Activity:</strong></td>
 					<td>%s</td>
-					<td><strong>Fecha:</strong></td>
-					<td>%s</td>
-				</tr>
-				<tr>
-					<td><strong>Distancia:</strong></td>
-					<td>%s</td>
-					<td><strong>Tiempo:</strong></td>
+					<td><strong>Date:</strong></td>
 					<td>%s</td>
 				</tr>
 				<tr>
-					<td><strong>Calorias:</strong></td>
+					<td><strong>Distance:</strong></td>
 					<td>%s</td>
-					<td><strong>Media:</strong></td>
+					<td><strong>Time (hh, mm, ss):</strong></td>
 					<td>%s</td>
 				</tr>
 				<tr>
-					<td><strong>Desnivel Positivo:</strong></td>
+					<td><strong>Max speed:</strong></td>
 					<td>%s</td>
-					<td><strong>Desnivel Negativo:</strong></td>
+					<td><strong>Avg speed (km/h):</strong></td>
+					<td>%s</td>
+				</tr>
+				<tr>
+					<td><strong>Max pace (min/km):</strong></td>
+					<td>%s</td>
+					<td><strong>Avg pace (min/km):</strong></td>
+					<td>%s</td>
+				</tr>
+				<tr>
+					<td><strong>Max pulse:</strong></td>
+					<td>%s</td>
+					<td><strong>Avg pulse:</strong></td>
+					<td>%s</td>
+				</tr>
+				<tr>
+					<td><strong>Acc elevation +:</strong></td>
+					<td>%s</td>
+					<td><strong>Acc elevation -:</strong></td>
 					<td>%s</td>
 				</tr>
 			</table>					
-			''' %(self.sport,self.date,self.distance,self.time,self.calories,self.average,self.upositive,self.unegative)
+			''' %(self.sport,self.date,self.distance,self.time,self.maxspeed,self.average,self.maxpace,self.pace,self.maxbeats,self.beats,self.upositive,self.unegative)
 		return description_table
 
 	def createFigures(self):
-                hr_fig_path = "/tmp/hr.png"
-                stage_fig_path = "/tmp/stage.png"
-                blog_figures = ''
-                # If there are no graphs, return empty string.
+		hr_fig_path = "/tmp/hr.png"
+		stage_fig_path = "/tmp/stage.png"
+		blog_figures = ''
+		# If there are no graphs, return empty string.
 		if os.path.isfile(hr_fig_path) and os.path.isfile(stage_fig_path):
-                        #the graph files are created because the graph tabs are automatically visited (which invokes graph generation)
+			#the graph files are created because the graph tabs are automatically visited (which invokes graph generation)
 			hrfile = self.wp.newMediaObject(hr_fig_path)
-                        stagefile = self.wp.newMediaObject(stage_fig_path)
-                        blog_figures = '''<br/> <img src='%s' /> <img src='%s' /> <br/>''' %(hrfile, stagefile)
-			return blog_figures
+			stagefile = self.wp.newMediaObject(stage_fig_path)
+			blog_figures = '''<br/> <img src='%s' /> <img src='%s' /> <br/>''' %(hrfile, stagefile)
+		return blog_figures
 
 	def createFoot(self):
-		return ''' <center>Powered by <a href='http://pytrainer.e-oss.net'>Pytrainer</a></center>'''
+		return ''' <center>Powered by <a href='http://sourceforge.net/projects/pytrainer/'>Pytrainer</a></center>'''
 	
 	def createTitle(self):
 		if self.title==None:
@@ -141,7 +159,7 @@ class Main:
 			post.title = blog_title
 			post.description = blog_body+blog_table+blog_route+blog_figures+blog_foot
 			post.categories = blog_category
-			idNewPost = self.wp.newPost(post, False)
+			idNewPost = self.wp.newPost(post, True)
 			return "The post has been submited" 
         				
 		else:

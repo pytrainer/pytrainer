@@ -18,17 +18,30 @@
 
 import os
 import re
-
-from pytrainer.lib.gpx import Gpx
-import pytrainer.lib.points as Points 
-from pytrainer.lib.fileUtils import fileUtils
-
+import sys
+sys.path.insert(0,os.path.join(sys.path[0],'../../pytrainer/lib'))
+from gpx import Gpx
+import points as Points 
+from  fileUtils import fileUtils
+import fileinput
 	
 def drawMap(gpxfile,key,htmlpath):
 	cachefile = "/tmp/gpx.txt"
 	trackdistance = 100
 	os.system("gpsbabel -t -i gpx -f %s -x position,distance=%sm -o gpx -F %s" %(gpxfile,trackdistance,cachefile))
 
+	# Test if file already contains gpxdata attribute
+	found = False
+	for line in fileinput.FileInput(cachefile,inplace=1):
+		if "xmlns:gpxdata" in line:
+			found = True
+		print line.rstrip('\n');
+	# If file don't has gpxdata attribute: add namespace
+	if not found:
+		for line in fileinput.FileInput(cachefile,inplace=1):
+			if "xmlns:xsi" in line:
+				line=line.replace('xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"','xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"')
+			print line.rstrip('\n');
 	gpx = Gpx("",cachefile)
 	list_values = gpx.getTrackList()
 	pointlist = []
@@ -72,7 +85,7 @@ def createHtml(points,levels,init_point,htmlpath,key):
 	content += "	</script>\n"
 	content += "	</head>\n"
 	content += "	<body onload=\"load()\" onunload=\"GUnload()\">\n"
-	content += "		<div id=\"map\" style=\"width: 520px; height: 480px\"></div>\n"
+	content += "		<div id=\"map\" style=\"width: 460px; height: 460px\"></div>\n"
 	content += "	</body>\n"
 	content += "</html>\n" 
 	file = fileUtils(htmlpath,content)

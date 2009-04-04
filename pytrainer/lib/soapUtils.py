@@ -47,7 +47,7 @@ class webService(Thread):
 		ddbb = DDBB(configuration)
 		ddbb.connect()
 		recordinfo = ddbb.select("records,sports",
-                        "sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative",
+                        "sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats",
                         "id_record=\"%s\" and records.sport=sports.id_sports" %id_record)
 		record = recordinfo[0]
 		info = {}
@@ -62,6 +62,10 @@ class webService(Thread):
 		info["title"] = record[9]
 		info["upositive"] = record[10]
 		info["unegative"] = record[11]
+		info["maxspeed"] = record[12]
+		info["maxpace"] = record[13]
+		info["pace"] = record[14]
+		info["maxbeats"] = record[15]
 		return info
 
 	def newRecord(self,title=None,distance=None,time=None,upositive=None, unegative=None, bpm=None,calories=None, date=None, comment=None):
