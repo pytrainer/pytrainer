@@ -141,7 +141,7 @@ class WindowRecord(SimpleGladeApp):
 		#(50, u'2006-10-13', 1, 25.0, u'5625', 0.0, 16.0, 0, u'', gpsfile, title,upositive,unegative,maxspeed|maxpace|pace|maxbeats
 		self.id_record = values[0]
 		self.setTime(values[4])
-		self.rcd_date.set_text(values[1])
+		self.rcd_date.set_text(str(values[1]))
 		self.setValue("rcd_distance",values[3])
 		self.setValue("rcd_average",values[6])
 		self.setValue("rcd_calories",values[7])
