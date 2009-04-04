@@ -190,7 +190,7 @@ class Main(SimpleGladeApp):
 				self.record_maxpace.set_text("%0.2f" %maxpace)
 			
 			self.record_sport.set_text(sport)
-			self.record_date.set_text(date)
+			self.record_date.set_text(str(date))
 			hour,min,sec=self.parent.date.second2time(int(record_list[3]))
 			self.record_hour.set_text("%d" %hour)
 			self.record_minute.set_text("%d" %min)
