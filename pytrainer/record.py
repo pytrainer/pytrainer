@@ -150,7 +150,7 @@ class Record:
 		cells,values = self._formatRecordNew(list_options)
 		self.ddbb.insert("records",cells,values)
 		logging.debug('DB updated: '+str(cells)+' | '+str(values))
-		gpxOrig = self.conf.tmpdir+"/newgpx.gpx"
+		gpxOrig = self.conf.tmpdir+"/new_entry.gpx"
 		if os.path.isfile(gpxOrig):
 			gpxDest = self.conf.getValue("gpxdir")
 			id_record = self.ddbb.lastRecord("records")
