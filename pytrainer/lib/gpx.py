@@ -63,11 +63,7 @@ class Gpx:
 			logging.debug("parsing content from "+self.filename)
 			self.dom = xml.dom.minidom.parse(self.filename)
 			logging.debug("getting values...")
-			time1 =  time.time()
 			self.Values = self._getValues()
-			time2 = time.time()
-			time_ = time2-time1
-			print "loading gpx file. Time: %f seconds " %time_
 		logging.debug("<<")
 
 	def getMaxValues(self):
