@@ -244,7 +244,7 @@ class Gpx:
 		logging.debug('>>')
 		xmlParser = XMLParser(gtrnctrFile)
 		selectedEntry = xmlParser.getTrackFromDates(gtrnctrFile,entry,0)
-		newGPXEntry = "/tmp/new_entry.gpx"
+		newGPXEntry =  self.conf.tmpdir + "/new_entry.gpx"
 		gtrnctr2gpx(selectedEntry, newGPXEntry)
 		logging.debug('<<')
 		return newGPXEntry	
