@@ -26,7 +26,10 @@ pygtk.require('2.0')
 import gtk
 import gtk.glade
 import logging
+import logging.handlers
 import traceback
+
+from os import path
 
 from record import Record
 from waypoint import Waypoint
@@ -54,25 +57,30 @@ from lib.xmlUtils import XMLParser
 from lib.system import checkConf
 from lib.heartrate import *
 
-# 21.03.2008 - dgranda
-# setting up logging
+# 21.03.2008 - dgranda (updated 17.04.2008)
 # Only one parameter from command line is accepted
 # ERROR is the default log level
-debug_level = logging.ERROR
-if len(sys.argv) >1:
+log_level = logging.ERROR
+PATH = os.environ['HOME']+"/.pytrainer"
+if not os.path.exists(PATH):
+	os.mkdir(PATH)
+LOG_FILENAME = PATH + "/log.out"
+if len(sys.argv) > 1:
 	if sys.argv[1]=='-d':
-		debug_level = logging.DEBUG
+		log_level = logging.DEBUG
 	elif sys.argv[1]=='-i':
-		debug_level = logging.INFO
+		log_level = logging.INFO
 	elif sys.argv[1]=='-w':
-		debug_level = logging.WARNING
+		log_level = logging.WARNING
 	else:
 		print "CLI - Unknown parameter "+sys.argv[1]
 
-print "*** Log level set to "+ logging.getLevelName(debug_level) +" ***"
-logging.basicConfig(level=debug_level,
-					 format='%(asctime)s|%(levelname)s|%(module)s|%(funcName)s|%(message)s',
-					 filemode='w')
+# Adding rotating support to default logger with customized format
+rotHandler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=100000, backupCount=5)
+formatter = logging.Formatter('%(asctime)s|%(levelname)s|%(module)s|%(funcName)s|%(message)s')
+rotHandler.setFormatter(formatter)
+logging.getLogger('').addHandler(rotHandler)
+logging.getLogger('').setLevel(log_level)
 
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
