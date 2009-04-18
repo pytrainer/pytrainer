@@ -1,7 +1,7 @@
 #!/bin/sh
 
 
-SOFTWARE=$(zenity --list --text="Select your translation software" --radiolist --column "Pick" --column "Software" TRUE "gtranslator" FALSE "kbabel")
+SOFTWARE=$(zenity --list --text="Select your translation software" --radiolist --column "Pick" --column "Software" TRUE "gtranslator" FALSE "kbabel" FALSE "poedit")
 if [ $? != 0 ]; then exit ; fi
 
 LANGUAGE=$(zenity --list --text="Select your language" --radiolist --column "Pick" --column "Language" TRUE "es" FALSE "eu" FALSE "ca" FALSE "fr" FALSE "da" FALSE "de" FALSE "pl" FALSE "no" FALSE "cs" FALSE "ru" FALSE "pl")
