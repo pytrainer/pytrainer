@@ -23,28 +23,41 @@ from matplotlib.axes import Subplot
 from matplotlib.backends.backend_gtk import FigureCanvasGTK, NavigationToolbar
 from matplotlib.numerix import *
 from pylab import *
+import logging
 
 class DrawArea:
 	def __init__(self, vbox = None):
+		logging.debug('>>')
 		self.figure = Figure(figsize=(6,4), dpi=72)
         	self.axis = self.figure.add_subplot(111)
 		self.vbox = vbox
         	self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		self.drawDefault()
+		logging.debug('<<')
 
 	def stadistics(self,type,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
+		logging.debug('>>')	
 		if len(xvalues[0]) < 1:
 			self.drawDefault()
 			return False
+		logging.debug('xvalues: '+str(xvalues))
+		logging.debug('yvalues: '+str(yvalues))
+		logging.debug('xlabel: '+str(xlabel))
+		logging.debug('ylabel: '+str(ylabel))
+		logging.debug('title: '+str(title))
+		logging.debug('color: '+str(color))
+		logging.debug('zones: '+str(zones))
 		if type == "bars":
 			self.drawBars(xvalues,yvalues,xlabel,ylabel,title,color)
 		elif type == "plot":
 			self.drawPlot(xvalues,yvalues,xlabel,ylabel,title,color,zones)
 		elif type == "pie":
 			self.drawPie(xvalues,yvalues,xlabel,ylabel,title,color,zones)
+		logging.debug('<<')
 
 	def drawBars(self,xvalues,yvalues,xlabel,ylabel,title,color):
-                self.canvas.destroy()
+		logging.debug('>>')		
+		self.canvas.destroy()
 		self.figure = Figure(figsize=(6,4), dpi=72)
         	self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		self.axis.clear()
@@ -52,55 +65,60 @@ class DrawArea:
 		i=0
 		for value in xvalues:
 			if len(xvalues) == 1:
-        			self.axis = self.figure.add_subplot(111)
+				self.axis = self.figure.add_subplot(111)
 			else:
-        			self.axis =self.figure.add_subplot(211 + i)
-                	self.axis.set_xlim(-width,len(xvalues[i]))
+				self.axis =self.figure.add_subplot(211 + i)
+			self.axis.set_xlim(-width,len(xvalues[i]))
 			self.axis.set_xlabel(xlabel[i])
 			self.axis.set_ylabel(ylabel[i])
-			self.axis.set_title(title[i])
-		
-                	p1 = self.axis.bar(xvalues[i], yvalues[i], width, color=color[i])
+			self.axis.set_title(title[i])		
+			p1 = self.axis.bar(xvalues[i], yvalues[i], width, color=color[i])
 			i+=1
+		
 		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
-                self.canvas.show()
-                self.vbox.pack_start(self.canvas, True, True)
+		self.canvas.show()
+		self.vbox.pack_start(self.canvas, True, True)
+		logging.debug('<<')
 
 	def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
-                self.canvas.destroy()
+		logging.debug('>>')  
+		self.canvas.destroy()
 		self.figure = Figure(figsize=(6,4), dpi=72)
-        	#self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
+      #self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		#self.axis.clear()
 		i = 0
 		for value in xvalues:
 			if len(xvalues) == 1:
-        			self.axis = self.figure.add_subplot(111)
+				self.axis = self.figure.add_subplot(111)
 			else:
-        			self.axis =self.figure.add_subplot(211 + i)
+				self.axis =self.figure.add_subplot(211 + i)
 			self.axis.set_xlabel(xlabel[i])
 			self.axis.set_ylabel(ylabel[i])
 			self.axis.set_title(title[i])
-        		self.axis.grid(True)
-                	self.axis.plot(xvalues[i],yvalues[i], color=color[i])
+			self.axis.grid(True)
+			self.axis.plot(xvalues[i],yvalues[i], color=color[i])
 			i+=1
+		
 		if zones!=None:	
 			for zone in zones:	
-                		p = self.axis.axhspan(zone[0], zone[1], facecolor=zone[2], alpha=0.5, label=zone[3])
+				p = self.axis.axhspan(zone[0], zone[1], facecolor=zone[2], alpha=0.5, label=zone[3])
 			l = self.axis.legend(loc='lower right')
 		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		self.canvas.show()
-                self.vbox.pack_start(self.canvas, True, True)
+		self.vbox.pack_start(self.canvas, True, True)
 		if title[0] == 'Stage Profile':
 			self.figure.savefig('/tmp/stage.png', dpi=75)
 		if title[0] == 'Heart Rate':
 			self.figure.savefig('/tmp/hr.png', dpi=75)
+		logging.debug('<<')
 	
 	def drawPie(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
-                self.canvas.destroy()
+		logging.debug('>>')
+		self.canvas.destroy()
 		self.figure = Figure(figsize=(6,4), dpi=72)
-        	#self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
+		#self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		#self.axis.clear()
-        	self.axis = self.figure.add_subplot(111)
+		self.axis = self.figure.add_subplot(111)
 
 		labels = ["rest"]
 		colors = ["#ffffff"]
@@ -134,40 +152,44 @@ class DrawArea:
 
 		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		self.canvas.show()
-                self.vbox.pack_start(self.canvas, True, True)
+		self.vbox.pack_start(self.canvas, True, True)
+		logging.debug('<<')
 
 	def drawDefault(self):
-		#self.axis.clear()
-        	self.axis=self.figure.add_subplot(111)
-        	self.axis.set_xlabel('Yepper')
-        	self.axis.set_ylabel('Flabber')
-        	self.axis.set_title('An Empty Graph')
-        	self.axis.grid(True)
-                self.canvas.destroy()
-        	self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
-        	self.canvas.show()
-        	self.vbox.pack_start(self.canvas, True, True)
+		logging.debug('>>')
+		self.axis=self.figure.add_subplot(111)
+		self.axis.set_xlabel('Yepper')
+		self.axis.set_ylabel('Flabber')
+		self.axis.set_title('An Empty Graph')
+		self.axis.grid(True)
+		self.canvas.destroy()
+		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
+		self.canvas.show()
+		self.vbox.pack_start(self.canvas, True, True)
+		logging.debug('<<')
 
 	def fill_over(self, ax, x, y, val, color, over=True):
-    		"""
-    		Plot filled x,y for all y over val
-    		if over = False, fill all areas < val
-    		"""
-    		ybase = asarray(y)-val
-    		crossings = nonzero(less(ybase[:-1] * ybase[1:],0))
+		"""
+		Plot filled x,y for all y over val
+		if over = False, fill all areas < val
+		"""
+		logging.debug('>>')
+		ybase = asarray(y)-val
+		crossings = nonzero(less(ybase[:-1] * ybase[1:],0))
 
-    		if ybase[0]>=0: fillon = over
-    		else:           fillon = not over
-
-
-    		indLast = 0
-    		for ind in crossings:
-        		if fillon:
-            			thisX = x[indLast:ind+1]
-            			thisY = y[indLast:ind+1]
-            			thisY[0] = val
-            			thisY[-1] = val
-            			ax.fill(thisX, thisY, color)
-        		fillon = not fillon
-        		indLast = ind
+		if ybase[0]>=0:
+			fillon = over
+		else:
+			fillon = not over
+		indLast = 0
+		for ind in crossings:
+			if fillon:
+				thisX = x[indLast:ind+1]
+				thisY = y[indLast:ind+1]
+				thisY[0] = val
+				thisY[-1] = val
+				ax.fill(thisX, thisY, color)
+			fillon = not fillon
+        	indLast = ind
+		logging.debug('<<')
 

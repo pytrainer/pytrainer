@@ -16,15 +16,19 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+import logging
 from gui.drawArea import DrawArea
 
 class RecordGraph:
 	def __init__(self, vbox = None, combovalue = None, combovalue2 = None):
+		logging.debug(">>")		
 		self.drawarea = DrawArea(vbox)
 		self.combovalue = combovalue
 		self.combovalue2 = combovalue2
+		logging.debug("<<")
 
 	def drawgraph(self,values):
+		logging.debug(">>")
 		xval = []
 		yval = []
 		xlab = []
@@ -63,9 +67,9 @@ class RecordGraph:
 			xlab.append(xlabel)
 			ylab.append(ylabel)
 			tit.append("")
-			col.append(color)
-		
+			col.append(color)		
 		self.drawarea.stadistics("plot",xval,yval,xlab,ylab,tit,col)
+		logging.debug("<<")
 
 	def get_value_params(self,value):
 		if value == 0:
@@ -79,6 +83,7 @@ class RecordGraph:
 
 
 	def get_values(self,values, value_selected):
+		logging.debug(">>")
 		xvalue = []
 		yvalue = []
 		for value in values:
@@ -94,6 +99,7 @@ class RecordGraph:
                                 	yvalue.append(0)
 			if value_selected==3:
                                 yvalue.append(value[6])
+		logging.debug("<<")
 		return xvalue,yvalue
 	
 	def getFloatValue(self, value):

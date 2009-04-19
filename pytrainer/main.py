@@ -140,7 +140,7 @@ class pyTrainer:
 		logging.debug('>>')
 		activeplugins = self.plugins.getActivePlugins()
 		if (len(activeplugins)<1):
-			 print _("No Active Plugins")
+			 logging.info("No active plugins")
 		else:
 			 for plugin in activeplugins:
 				txtbutton = self.plugins.loadPlugin(plugin)
@@ -151,7 +151,7 @@ class pyTrainer:
 		logging.debug('>>')
 		activeextensions = self.extension.getActiveExtensions()
 		if (len(activeextensions)<1):
-			 print _("No Active Extensions")
+			 logging.info("No active extensions")
 		else:
 			 for extension in activeextensions:
 				txtbutton = self.extension.loadExtension(extension)

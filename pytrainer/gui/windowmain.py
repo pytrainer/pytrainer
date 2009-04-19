@@ -112,14 +112,15 @@ class Main(SimpleGladeApp):
 		self.googlemaps = Googlemaps(self.data_path, self.map_vbox,waypoint)
 
 	def updateSportList(self,listSport):
+		logging.debug(">>")
 		self.sportlist.set_active(1)
 		while (self.sportlist.get_active() == 1):
 			self.sportlist.remove_text(1)
 			self.sportlist.set_active(1)
-		
 		for i in listSport:
 			self.sportlist.append_text(i[0])
 			self.sportlist.set_active(0)
+		logging.debug("<<")
 
 	def create_treeview(self,treeview,column_names):
 		i=0
@@ -211,6 +212,7 @@ class Main(SimpleGladeApp):
 			self.record_vbox.set_sensitive(1)
 		else:
 			self.record_vbox.set_sensitive(0)
+		#logging.debug("Going to draw "+str(record_list))
 		self.drawarearecord.drawgraph(record_list)
 		logging.debug("<<")
 	
