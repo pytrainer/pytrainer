@@ -1,3 +1,12 @@
+- PyTrainer tasks for 1.6.0.8:
+
+Rotating log file support added (rev 322, http://sourceforge.net/tracker/?func=detail&aid=2717142&group_id=213157&atid=1024595)
+Translations reviewed and added script to facilitate them (rev 319-321,323)
+Several improvements to Wordpress extension (rev 315,317)
+Changed potential problems when dealing with date objects using MySQL as DB (rev 311-314)
+Removing redundant calls improving graphical performance (rev 310, linked to http://sourceforge.net/tracker/?func=detail&aid=2717135&group_id=213157&atid=1024592, not yet fully fixed)
+Optimizing xml files parsing when retrieving data from them (rev 309)
+
 - PyTrainer tasks for 1.6.0.7:
 
 Removing pytrainer gui minimal window size (svn rev 304)
