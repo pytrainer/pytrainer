@@ -114,20 +114,28 @@ class Main:
 			''' %(self.sport,self.date,self.distance,self.time,self.maxspeed,self.average,self.maxpace,self.pace,self.maxbeats,self.beats,self.upositive,self.unegative)
 		return description_table
 
-	def createFigures(self):
+	def createFigureHR(self):
 		hr_fig_path = "/tmp/hr.png"
+		blog_figures = ''
+		# If there are no graphs, return empty string.
+		if os.path.isfile(hr_fig_path):
+			#the graph files are created because the graph tabs are automatically visited (which invokes graph generation)
+			hrfile = self.wp.newMediaObject(hr_fig_path)
+			blog_figures = '''<br/> <img src='%s' /> ''' %hrfile
+		return blog_figures
+
+	def createFigureStage(self):
 		stage_fig_path = "/tmp/stage.png"
 		blog_figures = ''
 		# If there are no graphs, return empty string.
-		if os.path.isfile(hr_fig_path) and os.path.isfile(stage_fig_path):
+		if os.path.isfile(stage_fig_path):
 			#the graph files are created because the graph tabs are automatically visited (which invokes graph generation)
-			hrfile = self.wp.newMediaObject(hr_fig_path)
 			stagefile = self.wp.newMediaObject(stage_fig_path)
-			blog_figures = '''<br/> <img src='%s' /> <img src='%s' /> <br/>''' %(hrfile, stagefile)
+			blog_figures = '''<br/> <img src='%s' /> ''' %stagefile
 		return blog_figures
 
 	def createFoot(self):
-		return ''' <center>Powered by <a href='http://sourceforge.net/projects/pytrainer/'>Pytrainer</a></center>'''
+		return ''' <br/><center>Powered by <a href='http://sourceforge.net/projects/pytrainer/'>Pytrainer</a></center>'''
 	
 	def createTitle(self):
 		if self.title==None:
@@ -151,13 +159,14 @@ class Main:
 			blog_route = self.createRoute()
 			blog_body = self.createBody()
 			blog_table = self.createTable()
-			blog_figures = self.createFigures()
+			blog_figureHR = self.createFigureHR()
+			blog_figureStage = self.createFigureStage()
 			blog_foot = self.createFoot()
 			self.wp.selectBlog(0)
 	
 			post = wordpresslib.WordPressPost()
 			post.title = blog_title
-			post.description = blog_body+blog_table+blog_route+blog_figures+blog_foot
+			post.description = blog_body+blog_table+blog_route+blog_figureHR+blog_figureStage+blog_foot
 			post.categories = blog_category
 			idNewPost = self.wp.newPost(post, True)
 			return "The post has been submited" 
