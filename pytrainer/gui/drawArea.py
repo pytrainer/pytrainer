@@ -29,24 +29,20 @@ class DrawArea:
 	def __init__(self, vbox = None):
 		logging.debug('>>')
 		self.figure = Figure(figsize=(6,4), dpi=72)
-        	self.axis = self.figure.add_subplot(111)
+		self.axis = self.figure.add_subplot(111)
 		self.vbox = vbox
-        	self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
-		self.drawDefault()
+		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
+		#self.drawDefault()
 		logging.debug('<<')
 
 	def stadistics(self,type,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
 		logging.debug('>>')	
 		if len(xvalues[0]) < 1:
-			self.drawDefault()
+			#self.drawDefault()
 			return False
-		logging.debug('xvalues: '+str(xvalues))
-		logging.debug('yvalues: '+str(yvalues))
-		logging.debug('xlabel: '+str(xlabel))
-		logging.debug('ylabel: '+str(ylabel))
-		logging.debug('title: '+str(title))
-		logging.debug('color: '+str(color))
-		logging.debug('zones: '+str(zones))
+		#logging.debug('xvalues: '+str(xvalues))
+		#logging.debug('yvalues: '+str(yvalues))
+		logging.info("Type: "+type+" | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
 		if type == "bars":
 			self.drawBars(xvalues,yvalues,xlabel,ylabel,title,color)
 		elif type == "plot":
@@ -58,6 +54,7 @@ class DrawArea:
 	def drawBars(self,xvalues,yvalues,xlabel,ylabel,title,color):
 		logging.debug('>>')		
 		self.canvas.destroy()
+		self.vbox.remove(self.canvas)
 		self.figure = Figure(figsize=(6,4), dpi=72)
         	self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		self.axis.clear()
@@ -83,11 +80,12 @@ class DrawArea:
 	def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
 		logging.debug('>>')  
 		self.canvas.destroy()
+		self.vbox.remove(self.canvas)
 		self.figure = Figure(figsize=(6,4), dpi=72)
-      #self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		#self.axis.clear()
 		i = 0
 		for value in xvalues:
+			#logging.debug('xvalues: '+str(xvalues)) 
 			if len(xvalues) == 1:
 				self.axis = self.figure.add_subplot(111)
 			else:
@@ -115,6 +113,7 @@ class DrawArea:
 	def drawPie(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
 		logging.debug('>>')
 		self.canvas.destroy()
+		self.vbox.remove(self.canvas)
 		self.figure = Figure(figsize=(6,4), dpi=72)
 		#self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		#self.axis.clear()

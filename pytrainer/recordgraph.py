@@ -36,7 +36,9 @@ class RecordGraph:
 		tit = []
 		col = []
 		value_selected = self.combovalue.get_active()
+		logging.debug("Value selected 1: "+ str(value_selected))
 		value_selected2 = self.combovalue2.get_active()
+		logging.debug("Value selected 2: "+ str(value_selected2))
 		if value_selected < 0:
 			self.combovalue.set_active(0)
 			value_selected = 0
@@ -68,6 +70,7 @@ class RecordGraph:
 			ylab.append(ylabel)
 			tit.append("")
 			col.append(color)		
+		logging.info("To show: tit: "+str(tit)+" | col: "+str(col)+" | xlab: "+str(xlab)+" | ylab: "+str(ylab))
 		self.drawarea.stadistics("plot",xval,yval,xlab,ylab,tit,col)
 		logging.debug("<<")
 

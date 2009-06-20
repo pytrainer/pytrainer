@@ -221,6 +221,7 @@ class pyTrainer:
 	 
 	def refreshRecordGraphView(self, view):
 		logging.debug('>>')
+		logging.info('Working on '+view+' graph')
 		if view=="info":
 			 selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
 			 record_list=[]
