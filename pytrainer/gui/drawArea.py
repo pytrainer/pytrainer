@@ -22,8 +22,11 @@ from matplotlib.figure import Figure
 from matplotlib.axes import Subplot
 from matplotlib.backends.backend_gtk import FigureCanvasGTK, NavigationToolbar
 from matplotlib.numerix import *
+import matplotlib.pyplot as plt
 from pylab import *
 import logging
+
+import numpy as np
 
 class DrawArea:
 	def __init__(self, vbox = None):
@@ -81,26 +84,40 @@ class DrawArea:
 		logging.debug('>>')  
 		self.canvas.destroy()
 		self.vbox.remove(self.canvas)
-		self.figure = Figure(figsize=(6,4), dpi=72)
-		#self.axis.clear()
+		self.figure = plt.figure()
+		self.axis.clear()
 		i = 0
 		for value in xvalues:
-			#logging.debug('xvalues: '+str(xvalues)) 
-			if len(xvalues) == 1:
+			if i==0:
 				self.axis = self.figure.add_subplot(111)
-			else:
-				self.axis =self.figure.add_subplot(211 + i)
-			self.axis.set_xlabel(xlabel[i])
-			self.axis.set_ylabel(ylabel[i])
-			self.axis.set_title(title[i])
-			self.axis.grid(True)
-			self.axis.plot(xvalues[i],yvalues[i], color=color[i])
+				self.axis.plot(xvalues[i],yvalues[i], color=color[i])
+				self.axis.set_xlabel(xlabel[i])
+				#self.axis.set_ylabel(ylabel[i],color=color[i])
+				if (len(xvalues)>1):
+					self.axis.set_title("%s vs %s" %(ylabel[0],ylabel[1]))
+				else:
+					self.axis.set_title("%s" %(ylabel[0]))
+					
+				self.axis.grid(True)
+				for tl in self.axis.get_yticklabels():
+    					tl.set_color('%s' %color[i])
+			if i==1:
+				ax2 = self.axis.twinx()
+				ax2.plot(xvalues[i], yvalues[i], color=color[i])
+				for tl in ax2.get_yticklabels():
+    					tl.set_color('%s' %color[i])
+		#		axis2 = self.axis.twinx()
+		#		axis2.plot(xvalues[i],yvalues[i], color=color[i])
+				#axis2.set_ylabel(ylabel[i],color=color[i])
+			#else:
+			#	self.axis =self.figure.add_subplot(211 + i)
 			i+=1
-		
-		if zones!=None:	
-			for zone in zones:	
-				p = self.axis.axhspan(zone[0], zone[1], facecolor=zone[2], alpha=0.5, label=zone[3])
-			l = self.axis.legend(loc='lower right')
+
+
+		#if zones!=None:	
+		#	for zone in zones:	
+		#		p = self.axis.axhspan(zone[0], zone[1], facecolor=zone[2], alpha=0.5, label=zone[3])
+		#	l = self.axis.legend(loc='lower right')
 		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		self.canvas.show()
 		self.vbox.pack_start(self.canvas, True, True)
