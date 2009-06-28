@@ -20,9 +20,14 @@
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
 import gtk
+import pytrainer.lib.webUtils
 
 class About:
 	def __init__(self,data_path = None, version = None):
+		def url_hook(dialog, url):
+			pytrainer.lib.webUtils.open_url_in_browser(url)
+		# Available in PyGTK 2.6 and above
+		gtk.about_dialog_set_url_hook(url_hook)		
 		self.data_path = data_path
 		self.version = version
 
@@ -34,8 +39,9 @@ class About:
 		about_dialog.set_destroy_with_parent(True)
 		about_dialog.set_name("pyTrainer")
 		about_dialog.set_version(self.version)
-		about_dialog.set_copyright("Copyright \xc2\xa9 2005-8 Fiz Vázquez")
+		about_dialog.set_copyright("Copyright \xc2\xa9 2005-9 Fiz Vázquez")
 		about_dialog.set_website("http://sourceforge.net/projects/pytrainer")
+		about_dialog.set_website_label("http://sourceforge.net/projects/pytrainer")
 		about_dialog.set_comments("The free sport tracking center")
 		about_dialog.set_license(license)
 		
