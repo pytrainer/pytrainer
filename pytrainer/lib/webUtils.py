@@ -19,6 +19,7 @@
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
 from pytrainer.lib.system import checkConf
+import webbrowser
 
 class MyHandler(BaseHTTPRequestHandler):
     	def do_GET(self):
@@ -44,4 +45,19 @@ class webServer(Thread):
 		#	print "molaaaaa"
 		#	time.sleep(1)
 		#print "Iniciamos3"
+
+def open_url_in_browser(url):
+    """
+    Opens a url in the desktop's default browser
+
+    :param url: the url to open
+    """
+
+    class BrowserThread(threading.Thread):
+        def __init__(self, url):
+            Thread.__init__(self)
+            self.url = url
+        def run(self):
+            webbrowser.open(self.url)
+    BrowserThread(url).start()
 
