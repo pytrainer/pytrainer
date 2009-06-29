@@ -25,8 +25,6 @@ class DayGraph:
 
 	def drawgraph(self,values):
 		value_selected = self.combovalue.get_active()
-		print "value selected "
-		print value_selected
 		if value_selected < 0:
 			self.combovalue.set_active(0)
 			value_selected = 0

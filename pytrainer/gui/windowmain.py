@@ -101,12 +101,12 @@ class Main(SimpleGladeApp):
 		self.parent.runExtension(extension,id)
 
 	def createGraphs(self,RecordGraph,DayGraph,MonthGraph,YearGraph,HeartRateGraph):
-		self.drawarearecord = RecordGraph(self.record_vbox, self.record_combovalue, self.record_combovalue2)
-		self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox,self.heartrate_vbox2)
+		self.drawarearecord = RecordGraph(self.record_vbox, self.window1, self.record_combovalue, self.record_combovalue2)
+		self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox, self.window1, self.heartrate_vbox2)
 		#self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
 		self.day_vbox.hide()
-		self.drawareamonth = MonthGraph(self.month_vbox, self.month_combovalue,self.month_combovalue2)
-		self.drawareayear = YearGraph(self.year_vbox, self.year_combovalue,self.year_combovalue2)
+		self.drawareamonth = MonthGraph(self.month_vbox, self.window1, self.month_combovalue,self.month_combovalue2)
+		self.drawareayear = YearGraph(self.year_vbox, self.window1, self.year_combovalue,self.year_combovalue2)
 	
 	def createMap(self,Googlemaps,waypoint):
 		self.googlemaps = Googlemaps(self.data_path, self.map_vbox,waypoint)

@@ -20,9 +20,9 @@ import logging
 from gui.drawArea import DrawArea
 
 class RecordGraph:
-	def __init__(self, vbox = None, combovalue = None, combovalue2 = None):
+	def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None):
 		logging.debug(">>")		
-		self.drawarea = DrawArea(vbox)
+		self.drawarea = DrawArea(vbox, window)
 		self.combovalue = combovalue
 		self.combovalue2 = combovalue2
 		logging.debug("<<")

@@ -20,20 +20,21 @@ import matplotlib
 matplotlib.use('GTK')
 from matplotlib.figure import Figure
 from matplotlib.axes import Subplot
-from matplotlib.backends.backend_gtk import FigureCanvasGTK, NavigationToolbar
+from matplotlib.backends.backend_gtk import FigureCanvasGTK
 from matplotlib.numerix import *
 import matplotlib.pyplot as plt
 from pylab import *
 import logging
 
-import numpy as np
+from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
 
 class DrawArea:
-	def __init__(self, vbox = None):
+	def __init__(self, vbox = None, window = None):
 		logging.debug('>>')
 		self.figure = Figure(figsize=(6,4), dpi=72)
 		self.axis = self.figure.add_subplot(111)
 		self.vbox = vbox
+		self.window = window
 		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		#self.drawDefault()
 		logging.debug('<<')
@@ -82,9 +83,14 @@ class DrawArea:
 
 	def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
 		logging.debug('>>')  
-		self.canvas.destroy()
-		self.vbox.remove(self.canvas)
-		self.figure = plt.figure()
+		#self.canvas.destroy()
+		#self.vbox.remove(self.canvas)
+		for child in self.vbox.get_children():
+			if self.vbox.get_children()[0] != child:
+				self.vbox.remove(child)
+
+		#self.figure = plt.figure()
+		self.figure = Figure()
 		self.axis.clear()
 		i = 0
 		for value in xvalues:
@@ -106,6 +112,7 @@ class DrawArea:
 				ax2.plot(xvalues[i], yvalues[i], color=color[i])
 				for tl in ax2.get_yticklabels():
     					tl.set_color('%s' %color[i])
+				self.axis.set_xlabel(xlabel[i])
 		#		axis2 = self.axis.twinx()
 		#		axis2.plot(xvalues[i],yvalues[i], color=color[i])
 				#axis2.set_ylabel(ylabel[i],color=color[i])
@@ -121,6 +128,8 @@ class DrawArea:
 		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		self.canvas.show()
 		self.vbox.pack_start(self.canvas, True, True)
+		toolbar = NavigationToolbar(self.canvas, self.window)
+		self.vbox.pack_start(toolbar, False, False)
 		if title[0] == 'Stage Profile':
 			self.figure.savefig('/tmp/stage.png', dpi=75)
 		if title[0] == 'Heart Rate':

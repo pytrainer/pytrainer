@@ -19,8 +19,8 @@
 from gui.drawArea import DrawArea
 
 class MonthGraph:
-	def __init__(self, vbox = None, combovalue = None, combovalue2 = None):
-		self.drawarea = DrawArea(vbox)
+	def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None):
+		self.drawarea = DrawArea(vbox, window)
 		self.combovalue = combovalue
 		self.combovalue2 = combovalue2
 

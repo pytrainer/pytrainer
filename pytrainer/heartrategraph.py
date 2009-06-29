@@ -22,9 +22,9 @@ from lib.xmlUtils import XMLParser
 from lib.heartrate import *
 
 class HeartRateGraph:
-	def __init__(self, vbox = None, vbox2 = None):
-		self.drawarea = DrawArea(vbox)
-		self.drawarea2 = DrawArea(vbox2)
+	def __init__(self, vbox = None, window = None, vbox2 = None):
+		self.drawarea = DrawArea(vbox, window)
+		self.drawarea2 = DrawArea(vbox2, window)
 
 	def drawgraph(self,values):
 		zones = getZones()
