@@ -19,11 +19,10 @@
 import matplotlib
 matplotlib.use('GTK')
 from matplotlib.figure import Figure
-from matplotlib.axes import Subplot
 from matplotlib.backends.backend_gtk import FigureCanvasGTK
-from matplotlib.numerix import *
+#from matplotlib.numerix import *
 import matplotlib.pyplot as plt
-from pylab import *
+#from pylab import *
 import logging
 
 from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
@@ -31,11 +30,11 @@ from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as Navig
 class DrawArea:
 	def __init__(self, vbox = None, window = None):
 		logging.debug('>>')
-		self.figure = Figure(figsize=(6,4), dpi=72)
-		self.axis = self.figure.add_subplot(111)
+		#self.figure = Figure(figsize=(6,4), dpi=72)
+		#self.axis = self.figure.add_subplot(111)
 		self.vbox = vbox
 		self.window = window
-		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
+		#self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		#self.drawDefault()
 		logging.debug('<<')
 
@@ -57,93 +56,108 @@ class DrawArea:
 
 	def drawBars(self,xvalues,yvalues,xlabel,ylabel,title,color):
 		logging.debug('>>')		
-		self.canvas.destroy()
-		self.vbox.remove(self.canvas)
-		self.figure = Figure(figsize=(6,4), dpi=72)
-        	self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
-		self.axis.clear()
-		width = 1
+		
+		for child in self.vbox.get_children():
+			if self.vbox.get_children()[0] != child:
+				self.vbox.remove(child)
+		
+		figure = Figure(figsize=(6,4), dpi=72)
+        	canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
+		
+		xmod = 0.4
+		if len(xvalues) > 1:
+			width = 0.40
+		else:
+			width = 0.80
 		i=0
+		
 		for value in xvalues:
-			if len(xvalues) == 1:
-				self.axis = self.figure.add_subplot(111)
-			else:
-				self.axis =self.figure.add_subplot(211 + i)
-			self.axis.set_xlim(-width,len(xvalues[i]))
-			self.axis.set_xlabel(xlabel[i])
-			self.axis.set_ylabel(ylabel[i])
-			self.axis.set_title(title[i])		
-			p1 = self.axis.bar(xvalues[i], yvalues[i], width, color=color[i])
+			if i<1:
+				axis = figure.add_subplot(111)
+				axis.set_xlim(-width,len(xvalues[i]))
+				axis.set_xlabel(xlabel[i])
+				axis.set_ylabel(ylabel[i])
+				axis.set_title(title[i])	
+				j=0
+				for x in xvalues[i]:
+					xvalues[i][j]=x-xmod
+					j+=1
+				axis.bar(xvalues[i], yvalues[i], width, color=color[i])
+					
+				axis.grid(True)
+				for tl in axis.get_yticklabels():
+    					tl.set_color('%s' %color[i])
+			if i>=1:
+				ax2 = axis.twinx()
+				ax2.bar(xvalues[i], yvalues[i], width, color=color[i])
+				for tl in ax2.get_yticklabels():
+    					tl.set_color('%s' %color[i])
+			axis.set_xlabel(xlabel[i])
 			i+=1
 		
-		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
-		self.canvas.show()
-		self.vbox.pack_start(self.canvas, True, True)
+		if (len(xvalues)>1):
+			axis.set_title("%s vs %s" %(ylabel[0],ylabel[1]))
+		else:
+			axis.set_title("%s" %(ylabel[0]))
+
+		
+		canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
+		canvas.show()
+		self.vbox.pack_start(canvas, True, True)
+		toolbar = NavigationToolbar(canvas, self.window)
+		self.vbox.pack_start(toolbar, False, False)
 		logging.debug('<<')
 
 	def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
 		logging.debug('>>')  
-		#self.canvas.destroy()
-		#self.vbox.remove(self.canvas)
+		
 		for child in self.vbox.get_children():
 			if self.vbox.get_children()[0] != child:
 				self.vbox.remove(child)
 
-		#self.figure = plt.figure()
-		self.figure = Figure()
-		self.axis.clear()
+		figure = Figure()
 		i = 0
 		for value in xvalues:
-			if i==0:
-				self.axis = self.figure.add_subplot(111)
-				self.axis.plot(xvalues[i],yvalues[i], color=color[i])
-				self.axis.set_xlabel(xlabel[i])
-				#self.axis.set_ylabel(ylabel[i],color=color[i])
-				if (len(xvalues)>1):
-					self.axis.set_title("%s vs %s" %(ylabel[0],ylabel[1]))
-				else:
-					self.axis.set_title("%s" %(ylabel[0]))
+			if i<1:
+				axis = figure.add_subplot(111)
+				axis.plot(xvalues[i],yvalues[i], color=color[i])
 					
-				self.axis.grid(True)
-				for tl in self.axis.get_yticklabels():
+				axis.grid(True)
+				for tl in axis.get_yticklabels():
     					tl.set_color('%s' %color[i])
-			if i==1:
-				ax2 = self.axis.twinx()
+			if i>=1:
+				ax2 = axis.twinx()
 				ax2.plot(xvalues[i], yvalues[i], color=color[i])
 				for tl in ax2.get_yticklabels():
     					tl.set_color('%s' %color[i])
-				self.axis.set_xlabel(xlabel[i])
-		#		axis2 = self.axis.twinx()
-		#		axis2.plot(xvalues[i],yvalues[i], color=color[i])
-				#axis2.set_ylabel(ylabel[i],color=color[i])
-			#else:
-			#	self.axis =self.figure.add_subplot(211 + i)
+			axis.set_xlabel(xlabel[i])
 			i+=1
+		
+		if (len(xvalues)>1):
+			axis.set_title("%s vs %s" %(ylabel[0],ylabel[1]))
+		else:
+			axis.set_title("%s" %(ylabel[0]))
 
-
-		#if zones!=None:	
-		#	for zone in zones:	
-		#		p = self.axis.axhspan(zone[0], zone[1], facecolor=zone[2], alpha=0.5, label=zone[3])
-		#	l = self.axis.legend(loc='lower right')
-		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
-		self.canvas.show()
-		self.vbox.pack_start(self.canvas, True, True)
-		toolbar = NavigationToolbar(self.canvas, self.window)
+		canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
+		canvas.show()
+		self.vbox.pack_start(canvas, True, True)
+		toolbar = NavigationToolbar(canvas, self.window)
 		self.vbox.pack_start(toolbar, False, False)
 		if title[0] == 'Stage Profile':
-			self.figure.savefig('/tmp/stage.png', dpi=75)
+			figure.savefig('/tmp/stage.png', dpi=75)
 		if title[0] == 'Heart Rate':
-			self.figure.savefig('/tmp/hr.png', dpi=75)
+			figure.savefig('/tmp/hr.png', dpi=75)
 		logging.debug('<<')
 	
 	def drawPie(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
 		logging.debug('>>')
-		self.canvas.destroy()
-		self.vbox.remove(self.canvas)
-		self.figure = Figure(figsize=(6,4), dpi=72)
-		#self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
-		#self.axis.clear()
-		self.axis = self.figure.add_subplot(111)
+		
+		for child in self.vbox.get_children():
+			if self.vbox.get_children()[0] != child:
+				self.vbox.remove(child)
+
+		figure = Figure(figsize=(6,4), dpi=72)
+		axis = figure.add_subplot(111)
 
 		labels = ["rest"]
 		colors = ["#ffffff"]
@@ -173,11 +187,11 @@ class DrawArea:
 			
 		fracs = [frac0,frac1,frac2,frac3,frac4, frac5]
 		explode=(0, 0, 0, 0,0,0)
-		self.axis.pie(fracs, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True)
+		axis.pie(fracs, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True)
 
-		self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
-		self.canvas.show()
-		self.vbox.pack_start(self.canvas, True, True)
+		canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
+		canvas.show()
+		self.vbox.pack_start(canvas, True, True)
 		logging.debug('<<')
 
 	def drawDefault(self):
