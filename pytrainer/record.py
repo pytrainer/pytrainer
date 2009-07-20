@@ -150,12 +150,13 @@ class Record:
 		cells,values = self._formatRecordNew(list_options)
 		self.ddbb.insert("records",cells,values)
 		logging.debug('DB updated: '+str(cells)+' | '+str(values))
-		gpxOrig = self.conf.tmpdir+"/new_entry.gpx"
+		gpxOrig = list_options["rcd_gpxfile"]
 		if os.path.isfile(gpxOrig):
 			gpxDest = self.conf.getValue("gpxdir")
 			id_record = self.ddbb.lastRecord("records")
-			shutil.copy2(gpxOrig, gpxDest+"/%d.gpx"%id_record)
-			logging.debug('Moving '+gpxOrig+' to '+gpxDest+"/"+str(id_record))
+			gpxNew = gpxDest+"/%d.gpx"%id_record
+			shutil.copy2(gpxOrig, gpxNew)
+			logging.debug('Moving '+gpxOrig+' to '+gpxNew)
 		#self.parent.refreshListRecords()
 		logging.debug('<<')
 		return self.ddbb.lastRecord("records")
@@ -206,9 +207,9 @@ class Record:
 	def updateRecord(self, list_options, id_record):
 		logging.debug('>>')
 		gpxfile = self.conf.getValue("gpxdir")+"/%d.gpx"%int(id_record)
-		if os.path.isfile(list_options["rcd_gpxfile"]):
-			if gpxfile != list_options["rcd_gpxfile"]:
-				gpxOrig = self.conf.tmpdir+"/newgpx.gpx"
+		gpxOrig = list_options["rcd_gpxfile"]
+		if os.path.isfile(gpxOrig):
+			if gpxfile != gpxOrig:
 				shutil.copy2(gpxOrig, gpxfile)
 		else:
 			if (list_options["rcd_gpxfile"]==""):
