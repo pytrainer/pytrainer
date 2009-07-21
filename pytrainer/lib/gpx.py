@@ -57,6 +57,7 @@ class Gpx:
 		self.maxvel = 0
 		self.maxhr = 0
 		self.date = ""
+		self.calories= 0
 		if filename != None:
 			if not os.path.isfile(self.filename):
 				return None
@@ -99,12 +100,20 @@ class Gpx:
 
 	def getHeartRateAverage(self):
 		return self.hr_average
+
+	def getCalories(self):
+		return self.calories
 		
 	def _getValues(self): # migrate to cElementTree
 		logging.debug(">>")
 		dom = self.dom
 		
 		trkpoints = dom.getElementsByTagName("trkpt")
+		#start with the info at trkseg level
+		#calories - maybe more than one, currently adding them together
+		calorieCollection = dom.getElementsByTagName("gpxdata:calories")
+		for cal in calorieCollection:
+			self.calories += int(cal.firstChild.data)
 		retorno = []
 		his_vel = []
 		last_lat = "False"

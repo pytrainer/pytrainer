@@ -183,7 +183,8 @@ class Record:
 		summaryRecord['rcd_gpxfile'] = gpxOrig
 		summaryRecord['rcd_sport'] = entry[0]
 		summaryRecord['rcd_date'] = gpx.getDate()
-		summaryRecord['rcd_calories'] = '0.0' # not supported yet (29.03.2008)
+		summaryRecord['rcd_calories'] = gpx.getCalories()
+		logging.debug('rcd_calories: ' + str(summaryRecord['rcd_calories']))
 		summaryRecord['rcd_comments'] = ''
 		summaryRecord['rcd_title'] = ''
 		summaryRecord['rcd_time'] = time_hhmmss #ToDo: makes no sense to work with arrays
@@ -357,11 +358,13 @@ class Record:
 		upositive,unegative = gpx.getUnevenness()
 		heartrate = gpx.getHeartRateAverage()
 		date = gpx.getDate()
+		calories = gpx.getCalories()
 		
 		self.recordwindow.rcd_date.set_text(date)
 		self.recordwindow.rcd_upositive.set_text(str(upositive))
 		self.recordwindow.rcd_unegative.set_text(str(unegative))
 		self.recordwindow.rcd_beats.set_text(str(heartrate))
+		self.recordwindow.rcd_calories.set_text(str(calories))
 		self.recordwindow.set_distance(distance)
 		self.recordwindow.set_maxspeed(maxspeed)
 		self.recordwindow.set_maxhr(maxheartrate)
