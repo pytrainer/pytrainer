@@ -729,7 +729,7 @@ msgid "Sports"
 msgstr ""
 
 #: glade/pytrainer.glade:11384
-msgid "Maximun heart rate:"
+msgid "Maximum heart rate:"
 msgstr ""
 
 #: glade/pytrainer.glade:11412
@@ -738,7 +738,7 @@ msgstr ""
 
 #: glade/pytrainer.glade:11486
 msgid ""
-"<small><b>Note:</b> Maximun heart rate is calculated by subtracting the "
+"<small><b>Note:</b> Maximum heart rate is calculated by subtracting the "
 "number 220 minus your age. </small>"
 msgstr ""
 

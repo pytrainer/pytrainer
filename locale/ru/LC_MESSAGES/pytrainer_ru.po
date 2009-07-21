@@ -179,7 +179,7 @@ msgstr ""
 
 #: glade/pytrainer.glade:1621
 #, fuzzy
-msgid "<b>Maximun:</b>"
+msgid "<b>Maximum:</b>"
 msgstr "<b>Время:</b>"
 
 #: glade/pytrainer.glade:1705
