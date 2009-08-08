@@ -80,8 +80,14 @@ class Main(SimpleGladeApp):
 		savedOptions.append(("calories","False"))
 		menufile.createXMLFile("listviewmenu",savedOptions)	
 
+	def removeImportPlugin(self, plugin):
+		for widget in self.menuitem1_menu:
+			if widget.get_name() == plugin[1]:
+				self.menuitem1_menu.remove(widget)
+
 	def addImportPlugin(self,plugin):
 		button = gtk.MenuItem(plugin[0])
+		button.set_name(plugin[1])
 		button.connect("activate", self.parent.runPlugin, plugin[1])
 		self.menuitem1_menu.insert(button,2)
 		self.menuitem1_menu.show_all()

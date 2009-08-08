@@ -305,7 +305,21 @@ class pyTrainer:
 		
 	def editGpsPlugins(self):
 		logging.debug('>>')
+		activeplugins_before = self.plugins.getActivePlugins()
 		self.plugins.managePlugins()
+		activeplugins_after = self.plugins.getActivePlugins()
+		#Need to check for plugins that have been disabled (were active and now are not)
+		for plugin in activeplugins_before:
+			if plugin not in activeplugins_after:
+				#disabled plugin -> need to unload plugin
+				txtbutton = self.plugins.loadPlugin(plugin)
+				self.windowmain.removeImportPlugin(txtbutton)
+		#Need to check for plugins that have been enabled (were not active and now are)
+		for plugin in activeplugins_after:
+			if plugin not in activeplugins_before:
+				#new active plugin -> need to load plugin
+				txtbutton = self.plugins.loadPlugin(plugin)
+				self.windowmain.addImportPlugin(txtbutton)
 		logging.debug('<<')
 
 	def newRecord(self,title=None,distance=None,time=None,upositive=None,unegative=None,bpm=None,calories=None,date=None,comment=None):
