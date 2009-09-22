@@ -1,3 +1,14 @@
+- PyTrainer tasks for 1.6.0.9:
+
+Added dynamic loading and unloading of plugin menu items (svn rev 344)
+Removal of decommissioned plugin (garmin301) and addition of new ones (garmingpx). Update of project data (version and url) (svn rev 343)
+Adding calories support suggested by JB (svn rev 342)
+Maximum is misspelled Maximun, see http://bugs.debian.org/537723 (svn 341)
+Fixed some hardcoded stuff that prevents pytrainer to copy entries to ~/.pytrainer/gpx (thanks to JB) (svn 340)
+Major improvements in graphs (thanks to Fiz) (svn revs 339, 336, 332, 331)
+Updated german translation - bug ID: 2811507 (thanks to Noèl) (svn revs 338, 333)
+Minor project and license information updated (svn revs 337, 335, 334, 329)
+
 - PyTrainer tasks for 1.6.0.8:
 
 Rotating log file support added (rev 322, http://sourceforge.net/tracker/?func=detail&aid=2717142&group_id=213157&atid=1024595)
