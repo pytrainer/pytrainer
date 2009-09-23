@@ -121,7 +121,7 @@ class Record:
 			list_options["rcd_beats"] = 0
 		
 		#retrieving sport id (adding sport if it doesn't exist yet)
-		sport_id = self.getSportId(list_options["rcd_sport"],add=None)
+		sport_id = self.getSportId(list_options["rcd_sport"],add=True)
 
 		values= (
 			list_options["rcd_date"],
@@ -276,12 +276,12 @@ class Record:
 			sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))[0][0]
 		except:
 			logging.error('Error retrieving id_sports from '+ str(sport))
-			traceback.print_last()
+			#traceback.print_last()
 			if add is None:
 				logging.debug('Sport '+str(sport)+' will not be added to DB')
 			else:
 				logging.debug('Adding sport '+str(sport)+' to DB')
-				sport_id = self.addNewSport(self,sport,0,0)
+				sport_id = self.addNewSport(sport,"0","0")
 		logging.debug('<<')
 		return sport_id
 	
@@ -295,8 +295,8 @@ class Record:
 		returns: id_sports from new sport"""
 		logging.debug(">>")
 		logging.debug("Adding new sport: "+sport+"|"+weight+"|"+met)
-		sport = [sport,met,weight]
-		self.ddbb.insert("sports","name,met,weight",sport)
+		sportT = [sport,met,weight]
+		self.ddbb.insert("sports","name,met,weight",sportT)
 		sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))[0][0]
 		logging.debug("<<")
 		return sport_id
@@ -399,6 +399,18 @@ class Record:
 		self.actualize_fromgpx(gpxfile)
 		logging.debug('Launching window...')
 		self.recordwindow.run()
+		logging.debug('<<')
+
+	def importFromGPX(self, gpxFile):
+		"""
+		Add a record from a valid pytrainer type GPX file
+		"""	
+		logging.debug('>>')
+		logging.info('Retrieving data from '+gpxFile)
+		#create an entry, defaulting sport to 'import' - in future could get actual sport from gpxFile....
+		entry = ["import",""]
+		entry_id = self.insertNewRecord(gpxFile, entry)
+		logging.info('Entry '+str(entry_id)+' has been added')
 		logging.debug('<<')
 
 	def importFromGTRNCTR(self,gtrnctrFile):
