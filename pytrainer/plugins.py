@@ -17,6 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import os
+import sys
 import logging
 
 from lib.xmlUtils import XMLParser
@@ -44,8 +45,26 @@ class Plugins:
 		logging.info('Loading plugin '+name)
 		logging.debug('<<')
 		return button,plugin
-	
-	def runPlugin(self,pathPlugin):
+
+	def importClass(self, pathPlugin):
+		logging.debug('>>')
+		info = XMLParser(pathPlugin+"/conf.xml")
+	  	#import plugin
+		plugin_dir = os.path.realpath(pathPlugin) 
+		plugin_filename = info.getValue("pytrainer-plugin","executable")
+		plugin_classname = info.getValue("pytrainer-plugin","plugincode")
+		logging.debug("Plugin Filename: " + plugin_filename )
+		logging.debug("Plugin Classname: " + plugin_classname)
+		sys.path.insert(0, plugin_dir)
+		module = __import__(plugin_filename)
+		logging.debug('<<')
+		pluginMain = getattr(module, plugin_classname)
+		return pluginMain(self) 
+
+
+
+	#def runPlugin(self,pathPlugin):
+		"""
 		logging.debug('>>')
 		info = XMLParser(pathPlugin+"/conf.xml")
 		bin = info.getValue("pytrainer-plugin","executable")
@@ -61,8 +80,9 @@ class Plugins:
 		logging.debug('<<')
 		if gpxfile == "0":
 			return False
-		return gpxfile
-	
+		return gpxfile"""
+
+
 	def managePlugins(self):
 		pluginsList = self.getPluginsList()
 		windowplugins = WindowPlugins(self.data_path, self)
@@ -118,7 +138,8 @@ class Plugins:
 		if not os.path.isdir(plugindir):
 			os.mkdir(plugindir)
 		if not os.path.isfile(plugindir+"/conf.xml"):
-			savedOptions.append(("status","0"))
+			if ("status", "1") not in savedOptions:
+				savedOptions.append(("status","0"))
 		info = XMLParser(plugindir+"/conf.xml")
 		info.createXMLFile("pytrainer-plugin",savedOptions)
 

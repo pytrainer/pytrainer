@@ -160,12 +160,16 @@ class pyTrainer:
 
 	def runPlugin(self,widget,pathPlugin):
 		logging.debug('>>')
-		gtrnctrFile = self.plugins.runPlugin(pathPlugin)
-		if os.path.isfile(gtrnctrFile):
-			logging.info('File exists. Size: '+ str(os.path.getsize(gtrnctrFile)))
- 			self.record.importFromGTRNCTR(gtrnctrFile)
- 		else:
- 			logging.error('File '+gtrnctrFile+' not valid')
+		self.pluginClass = self.plugins.importClass(pathPlugin)
+		pluginFiles = self.pluginClass.run() 
+		logging.debug("Plugin returned " +str(len(pluginFiles)) + " files: " +','.join(pluginFiles) )	
+		#process returned GPX files	
+		for pluginFile in pluginFiles:
+			if os.path.isfile(pluginFile):
+				logging.info('File exists. Size: '+ str(os.path.getsize(pluginFile)))
+				self.record.importFromGPX(pluginFile)
+ 			else:
+ 				logging.error('File '+pluginFile+' not valid')
 		logging.debug('<<')
 
 	def runExtension(self,extension,id):

@@ -413,13 +413,14 @@ class Record:
 		logging.info('Entry '+str(entry_id)+' has been added')
 		logging.debug('<<')
 
-	def importFromGTRNCTR(self,gtrnctrFile):
+	#def importFromGTRNCTR(self,gtrnctrFile):
 		"""22.03.2008 - dgranda
 		Retrieves sport, date and start time from each entry coming from GPS
 		and compares with what is stored locally, just to import new entries
 		31.08.2008 - dgranda - Only checks start time, discarding sport info
 		args: file with data from GPS file (garmin format)
 		returns: none"""
+		"""
 		logging.debug('>>')
 		logging.info('Retrieving data from '+gtrnctrFile)
 		xmlParser=XMLParser(gtrnctrFile)
@@ -442,6 +443,7 @@ class Record:
 		else:
 			logging.info('No tracks found in GPS device')
 		logging.debug('<<')
+		"""
 		
 	def shortFromLocal(self):
 		"""25.03.2008 - dgranda

@@ -18,14 +18,20 @@
 
 import os
 
-# Kind of lame to shell out for this....
-f = os.popen("zenity --file-selection --title 'Choose a GPX file to import'")
+class garmingpx():
+	def __init__(self, parent = None):
+		self.parent = parent
+		self.tmpdir = self.parent.conf.getValue("tmpdir")
 
-file_name = f.read().strip()
+	def run(self):
+		# Kind of lame to shell out for this....
+		f = os.popen("zenity --file-selection --multiple --title 'Choose a GPX file to import'")
+		inputData = f.read().strip()
+		inputfiles = inputData.split('|')
 
-rv = f.close()
-if rv:
-    if os.WEXITSTATUS(rv) != 0:
-        raise Exception()
+		rv = f.close()
+		if rv:
+		    if os.WEXITSTATUS(rv) != 0:
+		        raise Exception()
 
-print file_name
+		return inputfiles
