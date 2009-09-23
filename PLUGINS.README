@@ -1,0 +1,31 @@
+Information on creating Plugins
+===========================================
+
+Plugins are created by:
+1) Making a directory in <pytrainer>/plugins/
+2) Creating a python class in a file in your directory
+	- class must have run(self) function
+	- run(self) returns tuple of GPX files to import
+3) Creating a conf.xml configuration file in your directory with at least the following information:
+	<?xml version="1.0" ?>
+	<pytrainer-plugin 
+		name="Garmin v2 TCX" 
+		description="Import your records from a version 2 TCX file from a Garmin gps device (i.e. Forerunner 405)" 
+		plugincode="garminTCXv2"
+		pluginbutton="Import from Garmin TCX (version 2)" 
+		executable="garmintcxv2" 
+	>
+	</pytrainer-plugin>
+
+Where
+	name: is the name of your plugin
+	description: is the description
+	plugincode: is the name of the class in your plugin file 
+	pluginbutton: is the label that the menu option will have once your plugin is enabled
+	executable: is the file that the python class in in (without the .py extension)
+
+
+
+
+
+
