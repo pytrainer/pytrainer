@@ -118,7 +118,8 @@ class Plugins:
 		if not os.path.isdir(plugindir):
 			os.mkdir(plugindir)
 		if not os.path.isfile(plugindir+"/conf.xml"):
-			savedOptions.append(("status","0"))
+			if ("status", "1") not in savedOptions:
+				savedOptions.append(("status","0"))
 		info = XMLParser(plugindir+"/conf.xml")
 		info.createXMLFile("pytrainer-plugin",savedOptions)
 
