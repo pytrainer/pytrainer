@@ -6,5 +6,4 @@ export LD_LIBRARY_PATH=/usr/lib/firefox
 PATH_XULRUNNER=/usr/lib
 XULRUNNER_VERSION=`ls "$PATH_XULRUNNER" | grep xulrunner`
 export MOZILLA_FIVE_HOME=$PATH_XULRUNNER/$XULRUNNER_VERSION
-rm /home/johnb/.pytrainer/log.out
-python pytrainer.py -d
+python pytrainer.py $1
