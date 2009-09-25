@@ -26,9 +26,10 @@ from lib.system import checkConf
 from gui.windowplugins import WindowPlugins
 
 class Plugins:
-	def __init__(self, data_path = None):
+	def __init__(self, data_path = None, parent = None):
 		self.data_path=data_path
 		self.conf = checkConf()
+		self.parent = parent
 	
 	def getActivePlugins(self):
 		retorno = []
@@ -57,8 +58,8 @@ class Plugins:
 		logging.debug("Plugin Classname: " + plugin_classname)
 		sys.path.insert(0, plugin_dir)
 		module = __import__(plugin_filename)
-		logging.debug('<<')
 		pluginMain = getattr(module, plugin_classname)
+		logging.debug('<<')
 		return pluginMain(self) 
 
 

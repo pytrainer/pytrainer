@@ -1,7 +1,9 @@
 #!/usr/bin/python
 # -*- coding: iso-8859-1 -*-
 
-#Copyright (C) Fiz Vazquez vud1@sindominio.net
+#Copyright (C) 
+
+#Based on plugin by Fiz Vazquez vud1@sindominio.net
 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -19,68 +21,70 @@
 
 import os
 import logging
-import commands
+from lxml import etree
 
-from lib.xmlUtils import XMLParser
-from lib.gpx import Gpx
+from gui.dialogs import fileChooserDialog, guiFlush
+
 
 class garminhrfile():
+	""" Plugin to import from a Garmin Training Center (version 1) file (as outputed from gpsbabel)
+		Can have multiple activities in the file
+		Checks to each activity to see if any entries are in the database with the same start time
+		Creates GPX files for each activity not in the database
+
+		Note: using lxml see http://codespeak.net/lxml
+	"""
 	def __init__(self, parent = None):
 		self.parent = parent
 		self.tmpdir = self.parent.conf.getValue("tmpdir")
+		self.data_path = os.path.dirname(__file__)
 
 	def run(self):
-		f = os.popen("zenity --file-selection --title 'Choose a Garmin Training Center file to import'")
-		gtrnctrFile = f.read().strip()
+		selectedFiles = fileChooserDialog(title="Choose a Garmin Training Center file to import").getFiles()
+		guiFlush()
+		importfiles = []
+		if not selectedFiles:
+			return importfiles
+		for filename in selectedFiles: #could be multiple files selected - currently only single selection enabled
+			tracks = self.getTracks(filename)
+			logging.debug("Found %d tracks in %s" % (len(tracks), filename))
+			for track in tracks: #can be multiple tracks
+				if shouldImport(track):
+					gpxfile = "%s/garminhrfile%d.gpx" % (self.tmpdir, len(importfiles))
+					self.createGPXfile(gpxfile, track)
+					importfiles.append(gpxfile)
+		return importfiles
 
-		# XML file from gpsbabel refers to schemas and namespace definitions which are no longer available, removing this info - dgg - 12.05.2008
-		# check to see if we can remove this...
-		gtrnctrFileMod = removeHeaders(gtrnctrFile)
-		print "modified gtrnctrfile: " + gtrnctrFileMod
-		
-		return [gtrnctrFileMod,] #TODO this is where the conversion and checking will occur
-
-		def removeHeaders(gtrnctrFile):
-			if os.path.isfile(gtrnctrFile):
-				gtrnctrFileMod = self.tmpdir+"/file_mod.gtrnctr"
-				f = open(gtrnctrFile,"r")
-				lines = f.readlines()
-				f.close()
-				f = open(gtrnctrFileMod,'w')
-				headers = lines[0]+'<TrainingCenterDatabase>\n'
-				f.write(headers)
-				f.write(''.join(lines[6:]))
-				f.close()
-				return gtrnctrFileMod
+	def shouldImport(self, track):
+		""" Function determines whether a track should be imported or not
+			Currently using time only
+		"""
+		timeElement = track.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}Time")
+		if timeElement is None:
+			#print (etree.tostring(track, pretty_print=True))
+			logging.debug("Error no time found in track")
+			return False
+		else:
+			time = timeElement.text	
+			#comparing date and start time (sport may have been changed in DB after import)
+			if self.parent.parent.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
+				return True
 			else:
-				return None
+				return False
 
-		def importFromGTRNCTR(self,gtrnctrFile):
-			"""22.03.2008 - dgranda
-			Retrieves sport, date and start time from each entry coming from GPS
-			and compares with what is stored locally, just to import new entries
-			31.08.2008 - dgranda - Only checks start time, discarding sport info
-			args: file with data from GPS file (garmin format)
-			returns: none"""
-			logging.debug('>>')
-			logging.info('Retrieving data from '+gtrnctrFile)
-			xmlParser=XMLParser(gtrnctrFile)
-			listTracksGPS = xmlParser.shortFromGPS(gtrnctrFile, True)
-			logging.info('GPS: '+str(len(listTracksGPS))+' entries found')
-			if len(listTracksGPS)>0:
-				listTracksLocal = self.shortFromLocalDB(True)
-				logging.info('Local: '+str(len(listTracksLocal))+' entries found')
-				listNewTracks=self.compareTracks(listTracksGPS,listTracksLocal,False)
-				newTracks = len(listNewTracks)
-				# empty constructor for Gpx 
-				gpx = Gpx()
-				i=0
-				for entry in listNewTracks:
-					i=i+1
-					logging.debug('Entry summary to import: '+str(entry))
-					newGPX=gpx.retrieveDataFromGTRNCTR(gtrnctrFile, entry)
-					entry_id = self.insertNewRecord(newGPX, entry)
-					logging.info('Entry '+str(entry_id)+' has been added ('+str(i)+'/'+str(newTracks)+')')
-			else:
-				logging.info('No tracks found in GPS device')
-			logging.debug('<<')
+	def getTracks(self, filename):
+		""" Function to return all the tracks in a Garmin Training Center v1 file
+		"""
+		tree = etree.ElementTree(file=filename)
+		root = tree.getroot()
+		tracks = root.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}Track")
+		return tracks
+
+	def createGPXfile(self, gpxfile, track):
+		""" Function to transform a Garmin Training Center v1 Track to a valid GPX file
+		"""
+		xslt_doc = etree.parse(self.data_path+"/translate.xsl")
+		transform = etree.XSLT(xslt_doc)
+		result_tree = transform(track)
+		result_tree.write(gpxfile)
+

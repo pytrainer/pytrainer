@@ -88,7 +88,8 @@ class pyTrainer:
 		self.data_path = data_path
 		self.version ="1.6.0.9" # 22.10.2009
 		self.date = Date()
-
+		main_dir = os.path.realpath(os.path.dirname(__file__)) #why?
+		sys.path.insert(0, main_dir) #why?
 		# Checking profile
 		self.profile = Profile(self.data_path,self)
 		#self.profile.setVersion("0.0")
@@ -117,7 +118,7 @@ class pyTrainer:
 
 		self.waypoint = Waypoint(data_path,self)
 		self.extension = Extension(data_path)
-		self.plugins = Plugins(data_path)
+		self.plugins = Plugins(data_path, self)
 		self.loadPlugins()
 		self.loadExtensions()
 		self.windowmain.createGraphs(RecordGraph,DayGraph,MonthGraph,YearGraph,HeartRateGraph)
@@ -162,14 +163,17 @@ class pyTrainer:
 		logging.debug('>>')
 		self.pluginClass = self.plugins.importClass(pathPlugin)
 		pluginFiles = self.pluginClass.run() 
-		logging.debug("Plugin returned " +str(len(pluginFiles)) + " files: " +','.join(pluginFiles) )	
-		#process returned GPX files	
-		for pluginFile in pluginFiles:
-			if os.path.isfile(pluginFile):
-				logging.info('File exists. Size: '+ str(os.path.getsize(pluginFile)))
-				self.record.importFromGPX(pluginFile)
- 			else:
- 				logging.error('File '+pluginFile+' not valid')
+		if pluginFiles is not None:
+			logging.debug("Plugin returned " +str(len(pluginFiles)) + " files: " +','.join(pluginFiles) )	
+			#process returned GPX files	
+			for pluginFile in pluginFiles:
+				if os.path.isfile(pluginFile):
+					logging.info('File exists. Size: '+ str(os.path.getsize(pluginFile)))
+					self.record.importFromGPX(pluginFile)
+ 				else:
+ 					logging.error('File '+pluginFile+' not valid')
+		else:
+			logging.debug("No files returned from Plugin")
 		logging.debug('<<')
 
 	def runExtension(self,extension,id):
