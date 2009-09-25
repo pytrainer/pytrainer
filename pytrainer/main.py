@@ -94,6 +94,7 @@ class pyTrainer:
 		self.profile = Profile(self.data_path,self)
 		#self.profile.setVersion("0.0")
 		self.profile.isProfileConfigured()
+		self.log_level = log_level
 
 		logging.debug('checking configuration...')
 		self.conf = checkConf()

@@ -1,0 +1,22 @@
+This folder contains the schemas that are relevant to pytrainer 
+(though they are NOT all supported yet)
+
+The schemas are:
+Topografix_gpx11.xsd - The base GPX schema from Topografix (version 1.1)
+Cluetrust_gpxdata10.xsd - The Cluetrust (also known as GPXDATA) extensions used by pytrainer for heartrate (and lap) support
+GarminTrainingCenterDatabase_v1.xsd - Garmin Training Center version 1 
+GarminTrainingCenterDatabase_v2.xsd - Garmin Training Center version 2 (TCX) 
+
+Internally pytrainer uses Topografix_gpx11.xsd with Cluetrust_gpxdata10.xsd extensions
+
+validate_gpsfile.py is a command line tool that allows files to be validated against the schemas (requires lxml)
+Usage: validate_gpsfile.py [options] filename
+
+Options:
+  -h, --help            show this help message and exit
+  -s SCHEMA, --schema=SCHEMA
+                        specify schema to validate FILE against
+  -v, --verbose         show extra information (including why validation
+                        fails)
+
+If a schema is not specified the tool will try to validate against all four schemas

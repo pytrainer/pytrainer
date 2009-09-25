@@ -60,7 +60,12 @@ class Plugins:
 		module = __import__(plugin_filename)
 		pluginMain = getattr(module, plugin_classname)
 		logging.debug('<<')
-		return pluginMain(self) 
+		#Only validate files if in Debug mode
+		if self.parent.log_level == logging.DEBUG:
+			validate_inputfiles=True
+		else:
+			validate_inputfiles=False
+		return pluginMain(self, validate_inputfiles) 
 
 
 

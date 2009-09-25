@@ -19,6 +19,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
+import os
 from gui.dialogs import fileChooserDialog, guiFlush
 import xml.etree.cElementTree
 
@@ -27,21 +28,37 @@ class garmingpx():
 		Expects only one activity in each file 
 		Checks to see if any entries are in the database with the same start time
 	"""
-	def __init__(self, parent = None):
+	def __init__(self, parent = None, validate=False):
 		self.parent = parent
 		self.tmpdir = self.parent.conf.getValue("tmpdir")
+		self.validate = validate
 
 	def run(self):
 		selectedFiles = fileChooserDialog(title="Choose a GPX file (or files) to import", multiple=True).getFiles()
 		guiFlush()
 		importFiles = []
 		for filename in selectedFiles:
-			if not self.inDatabase(filename):
-				importFiles.append(filename)
+			if self.valid_input_file(filename):
+				if not self.inDatabase(filename):
+					importFiles.append(filename)
+				else:
+					logging.debug("%s already in database. Skipping import." % (filename,) )
 			else:
-				print "%s already in database. Skipping import." % (filename,) 
-				logging.debug("%s already in database. Skipping import." % (filename,) )
+				logging.debug("Invalid input file %s" % (filename))
 		return importFiles
+
+	def valid_input_file(self, filename):
+		""" Function to validate input file if requested"""
+		if not self.validate:
+			#not asked to validate
+			return True
+		else:
+			#To validate GPX as used for pytrainer must test against both Topograpfix and Cluetrust
+			topografixXSLfile = os.path.realpath(self.parent.parent.data_path)+ "/schemas/Topografix_gpx11.xsd"
+			cluetrustXSLfile = os.path.realpath(self.parent.parent.data_path)+ "/schemas/Cluetrust_gpxdata10.xsd"
+			from lib.xmlValidation import xmlValidator
+			validator = xmlValidator()
+			return validator.validateXSL(filename, topografixXSLfile) and validator.validateXSL(filename, cluetrustXSLfile)
 
 	def inDatabase(self, filename):
 		#comparing date and start time (sport may have been changed in DB after import)

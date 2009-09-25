@@ -34,10 +34,11 @@ class garminhrfile():
 
 		Note: using lxml see http://codespeak.net/lxml
 	"""
-	def __init__(self, parent = None):
+	def __init__(self, parent = None, validate=False):
 		self.parent = parent
 		self.tmpdir = self.parent.conf.getValue("tmpdir")
 		self.data_path = os.path.dirname(__file__)
+		self.validate = validate
 
 	def run(self):
 		selectedFiles = fileChooserDialog(title="Choose a Garmin Training Center file to import").getFiles()
@@ -46,14 +47,28 @@ class garminhrfile():
 		if not selectedFiles:
 			return importfiles
 		for filename in selectedFiles: #could be multiple files selected - currently only single selection enabled
-			tracks = self.getTracks(filename)
-			logging.debug("Found %d tracks in %s" % (len(tracks), filename))
-			for track in tracks: #can be multiple tracks
-				if shouldImport(track):
-					gpxfile = "%s/garminhrfile%d.gpx" % (self.tmpdir, len(importfiles))
-					self.createGPXfile(gpxfile, track)
-					importfiles.append(gpxfile)
+			if self.valid_input_file(filename):
+				tracks = self.getTracks(filename)
+				logging.debug("Found %d tracks in %s" % (len(tracks), filename))
+				for track in tracks: #can be multiple tracks
+					if self.shouldImport(track):
+						gpxfile = "%s/garminhrfile%d.gpx" % (self.tmpdir, len(importfiles))
+						self.createGPXfile(gpxfile, track)
+						importfiles.append(gpxfile)
+				logging.debug("Importing %s of %s tracks" % (len(importfiles), len(tracks)) )
+			else:
+				logging.debug("Invalid input file %s" % (filename))
 		return importfiles
+
+	def valid_input_file(self, filename):
+		""" Function to validate input file if requested"""
+		if not self.validate: #not asked to validate
+			return True
+		else: #Validate TCXv1, note are validating against gpsbabels 'broken' result...
+			xslfile = os.path.realpath(self.parent.parent.data_path)+ "/schemas/GarminTrainingCenterDatabase_v1-gpsbabel.xsd"
+			from lib.xmlValidation import xmlValidator
+			validator = xmlValidator()
+			return validator.validateXSL(filename, xslfile)
 
 	def shouldImport(self, track):
 		""" Function determines whether a track should be imported or not
@@ -68,9 +83,10 @@ class garminhrfile():
 			time = timeElement.text	
 			#comparing date and start time (sport may have been changed in DB after import)
 			if self.parent.parent.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
-				return True
-			else:
+				logging.debug("Not importing track for time %s" % (time))
 				return False
+			else:
+				return True
 
 	def getTracks(self, filename):
 		""" Function to return all the tracks in a Garmin Training Center v1 file
