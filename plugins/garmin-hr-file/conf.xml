@@ -1,0 +1,9 @@
+<?xml version="1.0" ?>
+<pytrainer-plugin 
+	name="Garmin Import with HR (from TCXv1file)" 
+	description="Import records from a garmin gps device with heart rate support (from TCXv1 file)" 
+	plugincode="garminhrfile"
+	pluginbutton="Import from Garmin file (HR support)" 
+	executable="garminhrfile" 
+>
+</pytrainer-plugin>

@@ -17,6 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import os
+import lib.fileSelector
 
 class garmingpx():
 	def __init__(self, parent = None):
@@ -25,6 +26,8 @@ class garmingpx():
 
 	def run(self):
 		# Kind of lame to shell out for this....
+		f = FileSelectionDialog( )
+		return
 		f = os.popen("zenity --file-selection --multiple --title 'Choose a GPX file to import'")
 		inputData = f.read().strip()
 		inputfiles = inputData.split('|')

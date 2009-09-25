@@ -1,9 +1,10 @@
 <?xml version="1.0" ?>
 <pytrainer-plugin 
 	name="Garmin Heart Rate" 
-	description="Import records from a garmin gps device with heart rate support (from a file)" 
-	plugincode="garminhrfile"
-	pluginbutton="Import from Garmin file (HR support)" 
-	executable="garminhrfile" 
+	description="Import yor records direclty from your garmin gps device with heart rate support" 
+	plugincode="garmin-hr"
+	pluginbutton="Import from Garmin (HR support)" 
+	executable="main.py" 
 >
+<conf-values variable="device" value="usb:"/>
 </pytrainer-plugin>
