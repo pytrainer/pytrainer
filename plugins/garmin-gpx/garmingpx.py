@@ -34,18 +34,20 @@ class garmingpx():
 		self.validate = validate
 
 	def run(self):
+		logging.debug(">>")
 		selectedFiles = fileChooserDialog(title="Choose a GPX file (or files) to import", multiple=True).getFiles()
 		guiFlush()
-		importFiles = []
+		importfiles = []
 		for filename in selectedFiles:
 			if self.valid_input_file(filename):
 				if not self.inDatabase(filename):
-					importFiles.append(filename)
+					importfiles.append(filename)
 				else:
-					logging.debug("%s already in database. Skipping import." % (filename,) )
+					logging.debug("%s already in database. Skipping import." % (filename) )
 			else:
 				logging.debug("Invalid input file %s" % (filename))
-		return importFiles
+		logging.debug("<<")
+		return importfiles
 
 	def valid_input_file(self, filename):
 		""" Function to validate input file if requested"""
@@ -61,7 +63,10 @@ class garmingpx():
 			return validator.validateXSL(filename, topografixXSLfile) and validator.validateXSL(filename, cluetrustXSLfile)
 
 	def inDatabase(self, filename):
-		#comparing date and start time (sport may have been changed in DB after import)
+		""" Function to determine if a given file has already been imported into the database
+		    only compares date and start time (sport may have been changed in DB after import)
+			only valid for GPX files with a single activity 
+		"""
 		time = self.detailsFromGPX(filename)
 		if self.parent.parent.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
 			return True
@@ -69,6 +74,7 @@ class garmingpx():
 			return False
 
 	def detailsFromGPX(self, filename):
+		""" Function to return the first time element from a GPX 1.1 file """
 		tree = xml.etree.cElementTree.ElementTree(file=filename)
 		root = tree.getroot()
 		timeElement = root.find(".//{http://www.topografix.com/GPX/1/1}time")

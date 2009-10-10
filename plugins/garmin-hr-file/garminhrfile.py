@@ -41,6 +41,7 @@ class garminhrfile():
 		self.validate = validate
 
 	def run(self):
+		logging.debug(">>")
 		selectedFiles = fileChooserDialog(title="Choose a Garmin Training Center file to import").getFiles()
 		guiFlush()
 		importfiles = []
@@ -58,6 +59,7 @@ class garminhrfile():
 				logging.debug("Importing %s of %s tracks" % (len(importfiles), len(tracks)) )
 			else:
 				logging.debug("Invalid input file %s" % (filename))
+		logging.debug("<<")
 		return importfiles
 
 	def valid_input_file(self, filename):
@@ -97,7 +99,7 @@ class garminhrfile():
 		return tracks
 
 	def createGPXfile(self, gpxfile, track):
-		""" Function to transform a Garmin Training Center v1 Track to a valid GPX file
+		""" Function to transform a Garmin Training Center v1 Track to a valid GPX+ file
 		"""
 		xslt_doc = etree.parse(self.data_path+"/translate.xsl")
 		transform = etree.XSLT(xslt_doc)

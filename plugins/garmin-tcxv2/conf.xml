@@ -3,7 +3,7 @@
 	name="Garmin v2 TCX" 
 	description="Import your records from a version 2 TCX file from a Garmin gps device (i.e. Forerunner 405)" 
 	plugincode="garminTCXv2"
-	pluginbutton="Import from Garmin TCX (version 2)" 
+	pluginbutton="Import from Garmin TCX file (version 2)" 
 	executable="garmin-tcxv2" 
 >
 </pytrainer-plugin>
