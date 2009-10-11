@@ -47,14 +47,14 @@ class garminTCXv2():
 				else:
 					logging.debug("%s already in database. Skipping import." % (filename,) )
 			else:
-				logging.debug("Invalid input file %s" % (filename))
+				logging.info("File %s failed validation" % (filename))
 		logging.debug("<<")
 		return importfiles
 
 	def valid_input_file(self, filename):
 		""" Function to validate input file if requested"""
-		if not self.validate:
-			#not asked to validate
+		if not self.validate:  #not asked to validate
+			logging.debug("Not validating %s" % (filename) )
 			return True
 		else:
 			xslfile = os.path.realpath(self.parent.parent.data_path)+ "/schemas/GarminTrainingCenterDatabase_v2.xsd"

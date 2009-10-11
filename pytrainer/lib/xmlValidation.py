@@ -26,13 +26,13 @@ class xmlValidator():
 			xsl_doc = etree.parse(xslfile)
 			xsl = etree.XMLSchema(xsl_doc)
 		except:
-			logging.debug("Error attempting to parse %s or %s" % (filename, xslfile))
+			logging.error("Error attempting to parse %s or %s" % (filename, xslfile))
 			return False
 		if xsl.validate(doc):
-			logging.debug("%s validates against %s" % (filename, xslfile))
-			#print "%s validates against %s" % (filename, xslfile)
+			logging.info("%s validates against %s" % (filename, xslfile))
+			print "%s validates against %s" % (filename, xslfile)
 			return True
 		else:
-			logging.debug("%s did not validate against %s" % (filename, xslfile))
-			#print "%s did not validate against %s" % (filename, xslfile)
+			logging.info("%s did not validate against %s" % (filename, xslfile))
+			print "%s did not validate against %s" % (filename, xslfile)
 			return False

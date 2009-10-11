@@ -25,6 +25,7 @@ import gobject
 pygtk.require('2.0')
 import gtk
 import gtk.glade
+from optparse import OptionParser
 import logging
 import logging.handlers
 import traceback
@@ -60,20 +61,25 @@ from lib.heartrate import *
 # 21.03.2008 - dgranda (updated 17.04.2008)
 # Only one parameter from command line is accepted
 # ERROR is the default log level
-log_level = logging.ERROR
 PATH = os.environ['HOME']+"/.pytrainer"
 if not os.path.exists(PATH):
 	os.mkdir(PATH)
 LOG_FILENAME = PATH + "/log.out"
-if len(sys.argv) > 1:
-	if sys.argv[1]=='-d':
-		log_level = logging.DEBUG
-	elif sys.argv[1]=='-i':
-		log_level = logging.INFO
-	elif sys.argv[1]=='-w':
-		log_level = logging.WARNING
-	else:
-		print "CLI - Unknown parameter "+sys.argv[1]
+
+#Setup usage and permitted options
+usage = """usage: %prog [options]
+
+For more help on valid options try:
+   %prog -h """
+parser = OptionParser(usage=usage)
+parser.set_defaults(log_level=logging.ERROR, validate=False)
+parser.add_option("-d", "--debug", action="store_const", const=logging.DEBUG, dest="log_level", help="enable logging at debug level")
+parser.add_option("-i", "--info", action="store_const", const=logging.INFO, dest="log_level", help="enable logging at info level")
+parser.add_option("-w", "--warn", action="store_const", const=logging.WARNING, dest="log_level", help="enable logging at warning level")
+parser.add_option("--valid", action="store_true", dest="validate", help="enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation")
+(options, args) = parser.parse_args()
+log_level = options.log_level
+validate = options.validate
 
 # Adding rotating support to default logger with customized format
 rotHandler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=100000, backupCount=5)
@@ -95,6 +101,7 @@ class pyTrainer:
 		#self.profile.setVersion("0.0")
 		self.profile.isProfileConfigured()
 		self.log_level = log_level
+		self.validate = validate
 
 		logging.debug('checking configuration...')
 		self.conf = checkConf()
