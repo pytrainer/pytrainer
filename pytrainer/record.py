@@ -189,8 +189,14 @@ class Record:
 		summaryRecord['rcd_title'] = ''
 		summaryRecord['rcd_time'] = time_hhmmss #ToDo: makes no sense to work with arrays
 		summaryRecord['rcd_distance'] = "%0.2f" %distance 
-		summaryRecord['rcd_pace'] = "%d.%02d" %((3600/speed)/60,(3600/speed)%60)
-		summaryRecord['rcd_maxpace'] = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
+		if speed == 0:
+			summaryRecord['rcd_pace'] = 0
+		else:
+			summaryRecord['rcd_pace'] = "%d.%02d" %((3600/speed)/60,(3600/speed)%60)
+		if maxspeed == 0:
+			summaryRecord['rcd_maxpace'] = 0
+		else:
+			summaryRecord['rcd_maxpace'] = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 		summaryRecord['rcd_average'] = speed
 		summaryRecord['rcd_maxvel'] = maxspeed
 		summaryRecord['rcd_beats'] = gpx.getHeartRateAverage()
