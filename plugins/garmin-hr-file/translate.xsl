@@ -41,9 +41,9 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
                 <trkpt lat="{$lat}" lon="{$lon}"><xsl:value-of select="$newline"/>
                 <ele><xsl:value-of select="t:AltitudeMeters"/></ele><xsl:value-of select="$newline"/>
                 <time><xsl:value-of select="t:Time"/></time><xsl:value-of select="$newline"/>
-				<xsl:if test="t:HeartRateBpm/t:Value">
+				<xsl:if test="t:HeartRateBpm">
 	                <extensions><xsl:value-of select="$newline"/>
-    	            <gpxdata:hr><xsl:value-of select="t:HeartRateBpm/t:Value"/></gpxdata:hr><xsl:value-of select="$newline"/>
+    	            <gpxdata:hr><xsl:value-of select="t:HeartRateBpm"/></gpxdata:hr><xsl:value-of select="$newline"/>
     	            </extensions><xsl:value-of select="$newline"/>
 				</xsl:if>
                 </trkpt><xsl:value-of select="$newline"/>
