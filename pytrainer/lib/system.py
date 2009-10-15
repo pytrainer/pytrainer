@@ -30,8 +30,8 @@ class checkConf:
 		self.plugindir = None
 
 		self._setHome()
-		self._setTempDir()
 		self._setConfFiles()
+		self._setTempDir()
 		self._setExtensionDir()
 		self._setPluginDir()
 		self._setGpxDir()
@@ -48,7 +48,7 @@ class checkConf:
         	if sys.platform == "win32":
             		self.tmpdir = "C:/backup"
         	elif sys.platform == "linux2":
-            		self.tmpdir = "/tmp/virtual_dir"
+            		self.tmpdir = self.confdir+"/tmp"
         
         	if not os.path.isdir(self.tmpdir):
             		os.mkdir(self.tmpdir)
