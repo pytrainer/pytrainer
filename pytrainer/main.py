@@ -105,6 +105,8 @@ class pyTrainer:
 
 		logging.debug('checking configuration...')
 		self.conf = checkConf()
+		logging.debug("clearing tmp directory %s" % self.conf.getValue("tmpdir"))
+		self.conf.clearTempDir()
 		self.filename = self.conf.getValue("conffile")
 		logging.debug('retrieving data from '+ self.filename)
 		self.configuration = XMLParser(self.filename)
