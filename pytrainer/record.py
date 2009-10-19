@@ -146,6 +146,8 @@ class Record:
 
 	def insertRecord(self, list_options):
 		logging.debug('>>')
+		if list_options is None:
+			return None
 		logging.debug('list_options: '+str(list_options))
 		cells,values = self._formatRecordNew(list_options)
 		self.ddbb.insert("records",cells,values)
@@ -155,7 +157,7 @@ class Record:
 			gpxDest = self.conf.getValue("gpxdir")
 			id_record = self.ddbb.lastRecord("records")
 			gpxNew = gpxDest+"/%d.gpx"%id_record
-			shutil.copy2(gpxOrig, gpxNew)
+			shutil.move(gpxOrig, gpxNew)
 			logging.debug('Moving '+gpxOrig+' to '+gpxNew)
 		#self.parent.refreshListRecords()
 		logging.debug('<<')
@@ -176,6 +178,8 @@ class Record:
 		logging.debug('>>')
 		gpx = Gpx(self.data_path,gpxOrig)
 		distance, time, maxspeed, maxheartrate = gpx.getMaxValues()
+		if time == 0: #invalid record
+			return None
 		upositive,unegative = gpx.getUnevenness()
 		speed = distance*3600/time
 		time_hhmmss = [time//3600,(time/60)%60,time%60]
@@ -416,7 +420,10 @@ class Record:
 		#create an entry, defaulting sport to 'import' - in future could get actual sport from gpxFile....
 		entry = ["import",""]
 		entry_id = self.insertNewRecord(gpxFile, entry)
-		logging.info('Entry '+str(entry_id)+' has been added')
+		if entry_id is None:
+			logging.error("Entry not created for file %s" % gpxFile)
+		else:
+			logging.info("Entry %d has been added" % entry_id)
 		logging.debug('<<')
 
 	#def importFromGTRNCTR(self,gtrnctrFile):
