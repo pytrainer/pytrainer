@@ -105,5 +105,5 @@ class garminhrfile():
 		xslt_doc = etree.parse(self.data_path+"/translate.xsl")
 		transform = etree.XSLT(xslt_doc)
 		result_tree = transform(track)
-		result_tree.write(gpxfile)
+		result_tree.write(gpxfile, xml_declaration=True)
 

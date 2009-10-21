@@ -86,5 +86,5 @@ class garminTCXv2():
 		transform = etree.XSLT(xslt_doc)
 		xml_doc = etree.parse(filename)
 		result_tree = transform(xml_doc)
-		result_tree.write(gpxfile)
+		result_tree.write(gpxfile, xml_declaration=True)
 
