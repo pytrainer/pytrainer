@@ -12,14 +12,9 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 </xsl:text></xsl:variable>
 
 <xsl:template match="/">
-    <gpx xmlns="http://www.topografix.com/GPX/1/1"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0"
-    creator="pytrainer http://sourceforge.net/projects/pytrainer" version="1.1"
-    xsi:schemaLocation="http://www.topografix.com/GPX/1/1
-    http://www.topografix.com/GPX/1/1/gpx.xsd
-    http://www.cluetrust.com/XML/GPXDATA/1/0
-    http://www.cluetrust.com/Schemas/gpxdata10.xsd">
+    <gpx creator="pytrainer http://sourceforge.net/projects/pytrainer" version="1.1" 
+	xmlns="http://www.topografix.com/GPX/1/1"
+    xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" >
 
     <xsl:value-of select="$newline"/>
     <xsl:variable name="sport"><xsl:value-of select="t:TrainingCenterDatabase/t:Activities/t:Activity/@Sport"/></xsl:variable>
