@@ -20,6 +20,7 @@
 import os, sys
 import logging
 from lxml import etree
+from lib.xmlUtils import XMLParser
 
 import commands
 
@@ -40,10 +41,12 @@ class garminhr():
 	def run(self):
 		logging.debug(">>")
 		importfiles = []
-		if self.garminDeviceExists():
+		if not self.checkGPSBabelVersion("1.3.5"):
+			#TODO Remove Zenity below
+			os.popen("zenity --error --text='Must be using version 1.3.5 of GPSBabel for this plugin'");
+		elif self.garminDeviceExists():
 			try:
 				gpsbabelOutputFile = "%s/file.gtrnctr" % (self.tmpdir)
-				testInputFile = "/home/johnb/garmin/2009.07.26\ 143201.TCX"
 				#TODO Remove Zenity below
 				outgps = commands.getstatusoutput("gpsbabel -t -i garmin -f %s -o gtrnctr -F %s | zenity --progress --pulsate --text='Loading Data' auto-close" % (self.input_dev, gpsbabelOutputFile) )
 				if outgps[0]==0:
@@ -72,8 +75,26 @@ class garminhr():
 		logging.debug("<<")
 		return importfiles
 
+	def checkGPSBabelVersion(self, validVersion):
+		result = commands.getstatusoutput('gpsbabel -V')
+		if result[0] == 0:
+			version = result[1].split()
+			try:
+				if version[2] == validVersion:
+					return True
+				else:
+					print "GPSBabel at version %s instead of expected version %s" % (version[2], validVersion)
+			except:
+				print "Unexpected result from gpsbabel -V"
+				return False
+		return False
 
 	def garminDeviceExists(self):
+		info = XMLParser(self.data_path+"/conf.xml")
+		prefs = info.getAllValues("conf-values")
+		for (variable, value) in prefs:
+			if variable == "device": 
+				self.input_dev = value
 		try:
 			outmod = commands.getstatusoutput('/sbin/lsmod | grep garmin_gps')
 			if outmod[0]==256:	#there is no garmin_gps module loaded
