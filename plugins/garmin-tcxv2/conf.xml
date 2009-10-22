@@ -6,4 +6,5 @@
 	pluginbutton="Import from Garmin TCX file (version 2)" 
 	executable="garmin-tcxv2" 
 >
+<conf-values variable="Force_sport_to" value=""/>
 </pytrainer-plugin>

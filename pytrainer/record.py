@@ -411,14 +411,15 @@ class Record:
 		self.recordwindow.run()
 		logging.debug('<<')
 
-	def importFromGPX(self, gpxFile):
+	def importFromGPX(self, gpxFile, sport):
 		"""
 		Add a record from a valid pytrainer type GPX file
 		"""	
 		logging.debug('>>')
 		logging.info('Retrieving data from '+gpxFile)
-		#create an entry, defaulting sport to 'import' - in future could get actual sport from gpxFile....
-		entry = ["import",""]
+		if not sport:
+			sport = "import"
+		entry = [sport,""]
 		entry_id = self.insertNewRecord(gpxFile, entry)
 		if entry_id is None:
 			logging.error("Entry not created for file %s" % gpxFile)

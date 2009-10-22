@@ -172,14 +172,14 @@ class pyTrainer:
 	def runPlugin(self,widget,pathPlugin):
 		logging.debug('>>')
 		self.pluginClass = self.plugins.importClass(pathPlugin)
-		pluginFiles = self.pluginClass.run() 
+		pluginFiles = self.pluginClass.run()
 		if pluginFiles is not None:
-			logging.debug("Plugin returned " +str(len(pluginFiles)) + " files: " +','.join(pluginFiles) )	
+			logging.debug("Plugin returned %d files" % (len(pluginFiles)) )	
 			#process returned GPX files	
-			for pluginFile in pluginFiles:
+			for (pluginFile, sport) in pluginFiles:
 				if os.path.isfile(pluginFile):
-					logging.info('File exists. Size: '+ str(os.path.getsize(pluginFile)))
-					self.record.importFromGPX(pluginFile)
+					logging.info('File exists. Size: %d. Sport: %s' % (os.path.getsize(pluginFile), sport))
+					self.record.importFromGPX(pluginFile, sport)
  				else:
  					logging.error('File '+pluginFile+' not valid')
 		else:

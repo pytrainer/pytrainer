@@ -6,5 +6,5 @@
 	pluginbutton="Import from Garmin GPX file" 
 	executable="garmingpx" 
 >
-<!--<conf-values variable="device" value="/dev/ttyUSB0"/>-->
+<conf-values variable="Force_sport_to" value=""/>
 </pytrainer-plugin>

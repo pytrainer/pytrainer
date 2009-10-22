@@ -20,6 +20,7 @@
 import logging
 import os
 from lxml import etree
+from lib.xmlUtils import XMLParser
 
 from gui.dialogs import fileChooserDialog, guiFlush
 
@@ -29,6 +30,18 @@ class garminTCXv2():
 		self.tmpdir = self.parent.conf.getValue("tmpdir")
 		self.data_path = os.path.dirname(__file__)
 		self.validate = validate
+		self.sport = self.getConfValue("Force_sport_to")
+
+	def getConfValue(self, confVar):
+		info = XMLParser(self.data_path+"/conf.xml")
+		code = info.getValue("pytrainer-plugin","plugincode")
+		plugindir = self.parent.conf.getValue("plugindir")
+		if not os.path.isfile(plugindir+"/"+code+"/conf.xml"):
+			value = None
+		else:
+			info = XMLParser(plugindir+"/"+code+"/conf.xml")
+			value = info.getValue("pytrainer-plugin",confVar)
+		return value
 
 	def run(self):
 		logging.debug(">>")
@@ -41,9 +54,10 @@ class garminTCXv2():
 		for filename in selectedFiles:
 			if self.valid_input_file(filename):
 				if not self.inDatabase(filename):
+					sport = self.getSport(filename)
 					gpxfile = "%s/garmin-tcxv2-%d.gpx" % (self.tmpdir, len(importfiles))					
 					self.createGPXfile(gpxfile, filename)
-					importfiles.append(gpxfile)					
+					importfiles.append((gpxfile, sport))					
 				else:
 					logging.debug("%s already in database. Skipping import." % (filename,) )
 			else:
@@ -69,6 +83,19 @@ class garminTCXv2():
 			return True
 		else:
 			return False
+
+	def getSport(self, filename):
+		#return sport from file or overide if present
+		if self.sport:
+			return self.sport
+		tree = etree.ElementTree(file=filename)
+		root = tree.getroot()
+		sportElement = root.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Activity")
+		try:
+			sport = sportElement.get("Sport")
+		except:
+			sport = "import"
+		return sport
 
 	def detailsFromTCX(self, filename):
 		tree = etree.ElementTree(file=filename)

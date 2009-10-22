@@ -75,8 +75,11 @@ class XMLParser:
 
 	def getValue(self,tagname,variable):
 		self._load()
-		root = self.xmldoc.getElementsByTagName(tagname)[0]
-		value = root.attributes[variable].value
+		try:
+			root = self.xmldoc.getElementsByTagName(tagname)[0]
+			value = root.attributes[variable].value
+		except KeyError:
+			value = ""
 		return value
 	
 	def getAllValues(self,tagname):	

@@ -22,6 +22,7 @@
 import os
 import logging
 from lxml import etree
+from lib.xmlUtils import XMLParser
 
 from gui.dialogs import fileChooserDialog, guiFlush
 
@@ -39,6 +40,18 @@ class garminhrfile():
 		self.tmpdir = self.parent.conf.getValue("tmpdir")
 		self.data_path = os.path.dirname(__file__)
 		self.validate = validate
+		self.sport = self.getConfValue("Force_sport_to")
+
+	def getConfValue(self, confVar):
+		info = XMLParser(self.data_path+"/conf.xml")
+		code = info.getValue("pytrainer-plugin","plugincode")
+		plugindir = self.parent.conf.getValue("plugindir")
+		if not os.path.isfile(plugindir+"/"+code+"/conf.xml"):
+			value = None
+		else:
+			info = XMLParser(plugindir+"/"+code+"/conf.xml")
+			value = info.getValue("pytrainer-plugin",confVar)
+		return value
 
 	def run(self):
 		logging.debug(">>")
@@ -53,9 +66,10 @@ class garminhrfile():
 				logging.debug("Found %d tracks in %s" % (len(tracks), filename))
 				for track in tracks: #can be multiple tracks
 					if self.shouldImport(track):
+						sport = self.getSport(track) #TODO need to fix this logic....
 						gpxfile = "%s/garminhrfile%d.gpx" % (self.tmpdir, len(importfiles))
 						self.createGPXfile(gpxfile, track)
-						importfiles.append(gpxfile)
+						importfiles.append((gpxfile, sport))
 				logging.debug("Importing %s of %s tracks" % (len(importfiles), len(tracks)) )
 			else:
 				logging.info("File %s failed validation" % (filename))
@@ -90,6 +104,13 @@ class garminhrfile():
 				return False
 			else:
 				return True
+
+	def getSport(self, track):
+		#TODO return sport
+		if self.sport:
+			return self.sport
+		else:
+			return "import"
 
 	def getTracks(self, filename):
 		""" Function to return all the tracks in a Garmin Training Center v1 file

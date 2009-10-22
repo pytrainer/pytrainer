@@ -20,8 +20,10 @@
 
 import logging
 import os
+import shutil
 from gui.dialogs import fileChooserDialog, guiFlush
 import xml.etree.cElementTree
+from lib.xmlUtils import XMLParser
 
 class garmingpx():
 	""" Plugin to import from a GPX file or files
@@ -32,16 +34,35 @@ class garmingpx():
 		self.parent = parent
 		self.tmpdir = self.parent.conf.getValue("tmpdir")
 		self.validate = validate
+		self.data_path = os.path.dirname(__file__)
+		self.sport = self.getConfValue("Force_sport_to")
+
+	def getConfValue(self, confVar):
+		info = XMLParser(self.data_path+"/conf.xml")
+		code = info.getValue("pytrainer-plugin","plugincode")
+		plugindir = self.parent.conf.getValue("plugindir")
+		if not os.path.isfile(plugindir+"/"+code+"/conf.xml"):
+			value = None
+		else:
+			info = XMLParser(plugindir+"/"+code+"/conf.xml")
+			value = info.getValue("pytrainer-plugin",confVar)
+		return value
 
 	def run(self):
 		logging.debug(">>")
 		selectedFiles = fileChooserDialog(title="Choose a GPX file (or files) to import", multiple=True).getFiles()
 		guiFlush()
 		importfiles = []
+		if not selectedFiles:
+			return importfiles
 		for filename in selectedFiles:
 			if self.valid_input_file(filename):
 				if not self.inDatabase(filename):
-					importfiles.append(filename)
+					sport = self.getSport(filename)
+					gpxfile = "%s/garmin-gpx-%d.gpx" % (self.tmpdir, len(importfiles))	
+					shutil				
+					shutil.copy(filename, gpxfile)
+					importfiles.append((gpxfile, sport))
 				else:
 					logging.debug("%s already in database. Skipping import." % (filename) )
 			else:
@@ -72,6 +93,13 @@ class garmingpx():
 			return True
 		else:
 			return False
+
+	def getSport(self, filename):
+		#return sport from overide if present or default to "import"
+		if self.sport:
+			return self.sport
+		sport = "import"
+		return sport
 
 	def detailsFromGPX(self, filename):
 		""" Function to return the first time element from a GPX 1.1 file """
