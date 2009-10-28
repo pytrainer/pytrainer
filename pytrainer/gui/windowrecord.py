@@ -153,7 +153,7 @@ class WindowRecord(SimpleGladeApp):
 		self.setValue("rcd_pace",values[15])
 		self.setValue("rcd_maxbeats",values[16])
 		self.rcd_title.set_text("%s"%values[10])
-		self.rcd_sport.set_active(int(values[2])-1)
+		self.rcd_sport.set_active(int(values[2])-1) #TODO Fix - This does not work if a sport has been deleted...
 		buffer = self.rcd_comments.get_buffer()
 		start,end = buffer.get_bounds()
 		buffer.set_text(values[8])
