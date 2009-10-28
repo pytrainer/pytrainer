@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <pytrainer-plugin 
-	name="GarminGPX" 
+	name="Garmin GPX file" 
 	description="Import your records directly from a garmin gpx file." 
 	plugincode="garmingpx"
-	pluginbutton="Import from Garmin GPX file" 
+	pluginbutton="Import from file: Garmin GPX" 
 	executable="garmingpx" 
 >
 <conf-values variable="Force_sport_to" value=""/>

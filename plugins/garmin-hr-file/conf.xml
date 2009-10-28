@@ -1,9 +1,9 @@
 <?xml version="1.0" ?>
 <pytrainer-plugin 
-	name="Garmin training center file import (version 1)" 
+	name="Garmin Training Center file (v1)" 
 	description="Import records from a garmin gps device with heart rate support (from training center version 1 file)" 
 	plugincode="garminhrfile"
-	pluginbutton="Import from Garmin training center file (version 1)" 
+	pluginbutton="Import from file: Garmin Training Center (version 1)" 
 	executable="garminhrfile" 
 >
 <conf-values variable="Force_sport_to" value=""/>

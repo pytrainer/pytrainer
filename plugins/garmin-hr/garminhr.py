@@ -67,15 +67,19 @@ class garminhr():
 						pass 
 					else: #gpsbabel worked - now process file...
 						if self.valid_input_file(gpsbabelOutputFile):
-							tracks = self.getTracks(gpsbabelOutputFile)
-							logging.debug("Found %d tracks in %s" % (len(tracks), gpsbabelOutputFile))
-							for track in tracks: #can be multiple tracks
-								if self.shouldImport(track):
-									sport = self.getSport(track) #TODO need to fix this logic....
-									gpxfile = "%s/garminhrfile%d.gpx" % (self.tmpdir, len(importfiles))
-									self.createGPXfile(gpxfile, track)
-									importfiles.append((gpxfile, sport))
-							logging.debug("Importing %s of %s tracks" % (len(importfiles), len(tracks)) )
+							sportsList = ("Running", "Biking", "Other", "MultiSport") # valid sports in training center v1 files
+							for sport in sportsList:
+								tracks = self.getTracks(gpsbabelOutputFile, sport)
+								logging.debug("Found %d tracks for %s sport in %s" % (len(tracks), sport, gpsbabelOutputFile))
+								for track in tracks: #can be multiple tracks
+									if self.shouldImport(track):
+										gpxfile = "%s/garminhrfile%d.gpx" % (self.tmpdir, len(importfiles))
+										self.createGPXfile(gpxfile, track)
+										if self.sport: #Option to overide sport is set
+											importfiles.append((gpxfile, self.sport))
+										else: #Use sport from file
+											importfiles.append((gpxfile, sport))
+								logging.debug("Importing %s of %s tracks for sport %s" % (len(importfiles), len(tracks), sport) )
 						else:
 							logging.info("File %s failed validation" % (gpsbabelOutputFile))
 			except Exception:
@@ -124,12 +128,17 @@ class garminhr():
 			validator = xmlValidator()
 			return validator.validateXSL(filename, xslfile)
 
-	def getTracks(self, filename):
+	def getTracks(self, filename, sport):
 		""" Function to return all the tracks in a Garmin Training Center v1 file
 		"""
 		tree = etree.ElementTree(file=filename)
 		root = tree.getroot()
-		tracks = root.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}Track")
+		try:
+			sportLevel = root.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}%s" % sport)
+			tracks = sportLevel.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}Track")
+		except:
+			print "No entries for sport %s" % sport
+			return []
 		return tracks
 
 	def shouldImport(self, track):
@@ -149,13 +158,6 @@ class garminhr():
 				return False
 			else:
 				return True
-
-	def getSport(self, track):
-		#TODO return sport
-		if self.sport:
-			return self.sport
-		else:
-			return "import"
 
 	def createGPXfile(self, gpxfile, track):
 		""" Function to transform a Garmin Training Center v1 Track to a valid GPX+ file
