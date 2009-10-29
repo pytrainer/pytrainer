@@ -48,11 +48,9 @@ class WindowRecord(SimpleGladeApp):
 			"rcd_maxpace",
 			"rcd_maxvel"
 			]
-		count = 0
 		self.listSport = {}
 		for i in listSport:
-			self.listSport[count] = i[0]
-			count = count+1
+			self.listSport[i[3]] = i[0] #Create dictionary using SportID as key (may be non sequential if sports have been deleted)
 		for i in self.listSport:	
 			self.rcd_sport.insert_text(i,self.listSport[i])
 		self.rcd_sport.set_active(0)
@@ -153,11 +151,25 @@ class WindowRecord(SimpleGladeApp):
 		self.setValue("rcd_pace",values[15])
 		self.setValue("rcd_maxbeats",values[16])
 		self.rcd_title.set_text("%s"%values[10])
-		self.rcd_sport.set_active(int(values[2])-1) #TODO Fix - This does not work if a sport has been deleted...
+		sportID = values[2]
+		sportPosition = self.getSportPosition(sportID)
+		self.rcd_sport.set_active(sportPosition) 
 		buffer = self.rcd_comments.get_buffer()
 		start,end = buffer.get_bounds()
 		buffer.set_text(values[8])
 		self.mode = "editrecord"
+
+	def getSportPosition(self, sportID):
+		"""
+			Function to determin the position in the sport array for a given sport ID
+			Needed as once sports are deleted there are gaps in the list...
+		"""
+		count = 0
+		for key, value in self.listSport.iteritems():
+			if key == sportID: 
+				return count
+			count +=1
+		return 0
 
 	def on_calctime_clicked(self,widget):
 		try:
