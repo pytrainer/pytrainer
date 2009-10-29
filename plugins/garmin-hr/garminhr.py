@@ -67,19 +67,19 @@ class garminhr():
 						pass 
 					else: #gpsbabel worked - now process file...
 						if self.valid_input_file(gpsbabelOutputFile):
-							sportsList = ("Running", "Biking", "Other", "MultiSport") # valid sports in training center v1 files
-							for sport in sportsList:
-								tracks = self.getTracks(gpsbabelOutputFile, sport)
+							for (sport, tracks) in self.getTracks(gpsbabelOutputFile):
 								logging.debug("Found %d tracks for %s sport in %s" % (len(tracks), sport, gpsbabelOutputFile))
+								count = 0
 								for track in tracks: #can be multiple tracks
 									if self.shouldImport(track):
+										count += 1
 										gpxfile = "%s/garminhrfile%d.gpx" % (self.tmpdir, len(importfiles))
 										self.createGPXfile(gpxfile, track)
 										if self.sport: #Option to overide sport is set
 											importfiles.append((gpxfile, self.sport))
 										else: #Use sport from file
 											importfiles.append((gpxfile, sport))
-								logging.debug("Importing %s of %s tracks for sport %s" % (len(importfiles), len(tracks), sport) )
+								logging.debug("Importing %d of %d tracks for sport %s" % (count, len(tracks), sport) )
 						else:
 							logging.info("File %s failed validation" % (gpsbabelOutputFile))
 			except Exception:
@@ -128,18 +128,21 @@ class garminhr():
 			validator = xmlValidator()
 			return validator.validateXSL(filename, xslfile)
 
-	def getTracks(self, filename, sport):
+	def getTracks(self, filename):
 		""" Function to return all the tracks in a Garmin Training Center v1 file
 		"""
+		sportsList = ("Running", "Biking", "Other", "MultiSport")
+		result = []
 		tree = etree.ElementTree(file=filename)
 		root = tree.getroot()
-		try:
-			sportLevel = root.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}%s" % sport)
-			tracks = sportLevel.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}Track")
-		except:
-			print "No entries for sport %s" % sport
-			return []
-		return tracks
+		for sport in sportsList:
+			try:
+				sportLevel = root.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}%s" % sport)
+				tracks = sportLevel.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}Track")
+				result.append((sport, tracks))
+			except:
+				print "No entries for sport %s" % sport
+		return result
 
 	def shouldImport(self, track):
 		""" Function determines whether a track should be imported or not
