@@ -121,7 +121,7 @@ class Record:
 			list_options["rcd_beats"] = 0
 		
 		#retrieving sport id (adding sport if it doesn't exist yet)
-		sport_id = self.getSportId(list_options["rcd_sport"],add=None)
+		sport_id = self.getSportId(list_options["rcd_sport"],add=True)
 
 		values= (
 			list_options["rcd_date"],
@@ -146,6 +146,8 @@ class Record:
 
 	def insertRecord(self, list_options):
 		logging.debug('>>')
+		if list_options is None:
+			return None
 		logging.debug('list_options: '+str(list_options))
 		cells,values = self._formatRecordNew(list_options)
 		self.ddbb.insert("records",cells,values)
@@ -155,7 +157,7 @@ class Record:
 			gpxDest = self.conf.getValue("gpxdir")
 			id_record = self.ddbb.lastRecord("records")
 			gpxNew = gpxDest+"/%d.gpx"%id_record
-			shutil.copy2(gpxOrig, gpxNew)
+			shutil.move(gpxOrig, gpxNew)
 			logging.debug('Moving '+gpxOrig+' to '+gpxNew)
 		#self.parent.refreshListRecords()
 		logging.debug('<<')
@@ -176,6 +178,8 @@ class Record:
 		logging.debug('>>')
 		gpx = Gpx(self.data_path,gpxOrig)
 		distance, time, maxspeed, maxheartrate = gpx.getMaxValues()
+		if time == 0: #invalid record
+			return None
 		upositive,unegative = gpx.getUnevenness()
 		speed = distance*3600/time
 		time_hhmmss = [time//3600,(time/60)%60,time%60]
@@ -189,8 +193,14 @@ class Record:
 		summaryRecord['rcd_title'] = ''
 		summaryRecord['rcd_time'] = time_hhmmss #ToDo: makes no sense to work with arrays
 		summaryRecord['rcd_distance'] = "%0.2f" %distance 
-		summaryRecord['rcd_pace'] = "%d.%02d" %((3600/speed)/60,(3600/speed)%60)
-		summaryRecord['rcd_maxpace'] = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
+		if speed == 0:
+			summaryRecord['rcd_pace'] = 0
+		else:
+			summaryRecord['rcd_pace'] = "%d.%02d" %((3600/speed)/60,(3600/speed)%60)
+		if maxspeed == 0:
+			summaryRecord['rcd_maxpace'] = 0
+		else:
+			summaryRecord['rcd_maxpace'] = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 		summaryRecord['rcd_average'] = speed
 		summaryRecord['rcd_maxvel'] = maxspeed
 		summaryRecord['rcd_beats'] = gpx.getHeartRateAverage()
@@ -276,12 +286,12 @@ class Record:
 			sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))[0][0]
 		except:
 			logging.error('Error retrieving id_sports from '+ str(sport))
-			traceback.print_last()
+			#traceback.print_last()
 			if add is None:
 				logging.debug('Sport '+str(sport)+' will not be added to DB')
 			else:
 				logging.debug('Adding sport '+str(sport)+' to DB')
-				sport_id = self.addNewSport(self,sport,0,0)
+				sport_id = self.addNewSport(sport,"0","0")
 		logging.debug('<<')
 		return sport_id
 	
@@ -295,8 +305,8 @@ class Record:
 		returns: id_sports from new sport"""
 		logging.debug(">>")
 		logging.debug("Adding new sport: "+sport+"|"+weight+"|"+met)
-		sport = [sport,met,weight]
-		self.ddbb.insert("sports","name,met,weight",sport)
+		sportT = [sport,met,weight]
+		self.ddbb.insert("sports","name,met,weight",sportT)
 		sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))[0][0]
 		logging.debug("<<")
 		return sport_id
@@ -401,13 +411,30 @@ class Record:
 		self.recordwindow.run()
 		logging.debug('<<')
 
-	def importFromGTRNCTR(self,gtrnctrFile):
+	def importFromGPX(self, gpxFile, sport):
+		"""
+		Add a record from a valid pytrainer type GPX file
+		"""	
+		logging.debug('>>')
+		logging.info('Retrieving data from '+gpxFile)
+		if not sport:
+			sport = "import"
+		entry = [sport,""]
+		entry_id = self.insertNewRecord(gpxFile, entry)
+		if entry_id is None:
+			logging.error("Entry not created for file %s" % gpxFile)
+		else:
+			logging.info("Entry %d has been added" % entry_id)
+		logging.debug('<<')
+
+	#def importFromGTRNCTR(self,gtrnctrFile):
 		"""22.03.2008 - dgranda
 		Retrieves sport, date and start time from each entry coming from GPS
 		and compares with what is stored locally, just to import new entries
 		31.08.2008 - dgranda - Only checks start time, discarding sport info
 		args: file with data from GPS file (garmin format)
 		returns: none"""
+		"""
 		logging.debug('>>')
 		logging.info('Retrieving data from '+gtrnctrFile)
 		xmlParser=XMLParser(gtrnctrFile)
@@ -430,6 +457,7 @@ class Record:
 		else:
 			logging.info('No tracks found in GPS device')
 		logging.debug('<<')
+		"""
 		
 	def shortFromLocal(self):
 		"""25.03.2008 - dgranda

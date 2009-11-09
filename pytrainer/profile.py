@@ -130,7 +130,7 @@ class Profile:
 		connection = self.ddbb.connect()
 		if (connection == 1):
 			logging.debug("retrieving sports info")
-			return self.ddbb.select("sports","name,met,weight",None)
+			return self.ddbb.select("sports","name,met,weight,id_sports",None)
 		else:
 			return connection
 

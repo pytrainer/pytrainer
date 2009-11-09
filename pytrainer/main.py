@@ -25,6 +25,7 @@ import gobject
 pygtk.require('2.0')
 import gtk
 import gtk.glade
+from optparse import OptionParser
 import logging
 import logging.handlers
 import traceback
@@ -60,20 +61,25 @@ from lib.heartrate import *
 # 21.03.2008 - dgranda (updated 17.04.2008)
 # Only one parameter from command line is accepted
 # ERROR is the default log level
-log_level = logging.ERROR
 PATH = os.environ['HOME']+"/.pytrainer"
 if not os.path.exists(PATH):
 	os.mkdir(PATH)
 LOG_FILENAME = PATH + "/log.out"
-if len(sys.argv) > 1:
-	if sys.argv[1]=='-d':
-		log_level = logging.DEBUG
-	elif sys.argv[1]=='-i':
-		log_level = logging.INFO
-	elif sys.argv[1]=='-w':
-		log_level = logging.WARNING
-	else:
-		print "CLI - Unknown parameter "+sys.argv[1]
+
+#Setup usage and permitted options
+usage = """usage: %prog [options]
+
+For more help on valid options try:
+   %prog -h """
+parser = OptionParser(usage=usage)
+parser.set_defaults(log_level=logging.ERROR, validate=False)
+parser.add_option("-d", "--debug", action="store_const", const=logging.DEBUG, dest="log_level", help="enable logging at debug level")
+parser.add_option("-i", "--info", action="store_const", const=logging.INFO, dest="log_level", help="enable logging at info level")
+parser.add_option("-w", "--warn", action="store_const", const=logging.WARNING, dest="log_level", help="enable logging at warning level")
+parser.add_option("--valid", action="store_true", dest="validate", help="enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation")
+(options, args) = parser.parse_args()
+log_level = options.log_level
+validate = options.validate
 
 # Adding rotating support to default logger with customized format
 rotHandler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=100000, backupCount=5)
@@ -88,14 +94,19 @@ class pyTrainer:
 		self.data_path = data_path
 		self.version ="1.6.0.9" # 22.10.2009
 		self.date = Date()
-
+		main_dir = os.path.realpath(os.path.dirname(__file__)) #why?
+		sys.path.insert(0, main_dir) #why?
 		# Checking profile
 		self.profile = Profile(self.data_path,self)
 		#self.profile.setVersion("0.0")
 		self.profile.isProfileConfigured()
+		self.log_level = log_level
+		self.validate = validate
 
 		logging.debug('checking configuration...')
 		self.conf = checkConf()
+		logging.debug("clearing tmp directory %s" % self.conf.getValue("tmpdir"))
+		self.conf.clearTempDir()
 		self.filename = self.conf.getValue("conffile")
 		logging.debug('retrieving data from '+ self.filename)
 		self.configuration = XMLParser(self.filename)
@@ -117,7 +128,7 @@ class pyTrainer:
 
 		self.waypoint = Waypoint(data_path,self)
 		self.extension = Extension(data_path)
-		self.plugins = Plugins(data_path)
+		self.plugins = Plugins(data_path, self)
 		self.loadPlugins()
 		self.loadExtensions()
 		self.windowmain.createGraphs(RecordGraph,DayGraph,MonthGraph,YearGraph,HeartRateGraph)
@@ -160,12 +171,19 @@ class pyTrainer:
 
 	def runPlugin(self,widget,pathPlugin):
 		logging.debug('>>')
-		gtrnctrFile = self.plugins.runPlugin(pathPlugin)
-		if os.path.isfile(gtrnctrFile):
-			logging.info('File exists. Size: '+ str(os.path.getsize(gtrnctrFile)))
- 			self.record.importFromGTRNCTR(gtrnctrFile)
- 		else:
- 			logging.error('File '+gtrnctrFile+' not valid')
+		self.pluginClass = self.plugins.importClass(pathPlugin)
+		pluginFiles = self.pluginClass.run()
+		if pluginFiles is not None:
+			logging.debug("Plugin returned %d files" % (len(pluginFiles)) )	
+			#process returned GPX files	
+			for (pluginFile, sport) in pluginFiles:
+				if os.path.isfile(pluginFile):
+					logging.info('File exists. Size: %d. Sport: %s' % (os.path.getsize(pluginFile), sport))
+					self.record.importFromGPX(pluginFile, sport)
+ 				else:
+ 					logging.error('File '+pluginFile+' not valid')
+		else:
+			logging.debug("No files returned from Plugin")
 		logging.debug('<<')
 
 	def runExtension(self,extension,id):

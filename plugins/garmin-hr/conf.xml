@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<pytrainer-plugin 
+	name="Garmin via GPSBabel 1.3.5" 
+	description="Import your records directly from your Garmin GPS device (e.g. Forerunner 205 or 305) using GPSBabel (version 1.3.5)" 
+	plugincode="garminhr"
+	pluginbutton="Import from Garmin GPS device (via GPSBabel)" 
+	executable="garminhr" 
+>
+<conf-values variable="device" value="usb:"/>
+</pytrainer-plugin>

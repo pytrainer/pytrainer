@@ -17,6 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import os
+import sys
 import logging
 
 from lib.xmlUtils import XMLParser
@@ -25,9 +26,10 @@ from lib.system import checkConf
 from gui.windowplugins import WindowPlugins
 
 class Plugins:
-	def __init__(self, data_path = None):
+	def __init__(self, data_path = None, parent = None):
 		self.data_path=data_path
 		self.conf = checkConf()
+		self.parent = parent
 	
 	def getActivePlugins(self):
 		retorno = []
@@ -44,8 +46,32 @@ class Plugins:
 		logging.info('Loading plugin '+name)
 		logging.debug('<<')
 		return button,plugin
-	
-	def runPlugin(self,pathPlugin):
+
+	def importClass(self, pathPlugin):
+		logging.debug('>>')
+		info = XMLParser(pathPlugin+"/conf.xml")
+	  	#import plugin
+		plugin_dir = os.path.realpath(pathPlugin) 
+		plugin_filename = info.getValue("pytrainer-plugin","executable")
+		plugin_classname = info.getValue("pytrainer-plugin","plugincode")
+		logging.debug("Plugin Filename: " + plugin_filename )
+		logging.debug("Plugin Classname: " + plugin_classname)
+		sys.path.insert(0, plugin_dir)
+		module = __import__(plugin_filename)
+		pluginMain = getattr(module, plugin_classname)
+		logging.debug('<<')
+		#Only validate files if enabled at startup 
+		if self.parent.validate:
+			validate_inputfiles=True
+			print "validating plugin input files enabled"
+		else:
+			validate_inputfiles=False
+		return pluginMain(self, validate_inputfiles) 
+
+
+
+	#def runPlugin(self,pathPlugin):
+		"""
 		logging.debug('>>')
 		info = XMLParser(pathPlugin+"/conf.xml")
 		bin = info.getValue("pytrainer-plugin","executable")
@@ -61,8 +87,9 @@ class Plugins:
 		logging.debug('<<')
 		if gpxfile == "0":
 			return False
-		return gpxfile
-	
+		return gpxfile"""
+
+
 	def managePlugins(self):
 		pluginsList = self.getPluginsList()
 		windowplugins = WindowPlugins(self.data_path, self)

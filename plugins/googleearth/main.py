@@ -1,6 +1,7 @@
-#!/usr/bin/env python
+#!/usr/bin/python
+# -*- coding: iso-8859-1 -*-
 
-#Copyright (C) Kevin Dwyer kevin@pheared.net
+#Copyright (C) Fiz Vazquez vud1@sindominio.net
 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -16,16 +17,21 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+
 import os
+import commands
 
-# Kind of lame to shell out for this....
-f = os.popen("zenity --file-selection --title 'Choose a GPX file to import'")
+class googleearth():
+	def __init__(self, parent = None):
+		self.parent = parent
+		self.tmpdir = self.parent.conf.getValue("tmpdir")
 
-file_name = f.read().strip()
+	def run(self):
+		f = os.popen("zenity --file-selection --title 'Choose a Google Earth file (.kml) to import'")
+		inputData = f.read().strip()
 
-rv = f.close()
-if rv:
-    if os.WEXITSTATUS(rv) != 0:
-        raise Exception()
+		tmpgpx="/tmp/reg.gpx"
+		outgps = commands.getstatusoutput("gpsbabel -t -i kml -f %s -o gpx -F %s" % (inputData, tmpgpx) )
 
-print file_name
+		return [tmpgpx, ]
+
