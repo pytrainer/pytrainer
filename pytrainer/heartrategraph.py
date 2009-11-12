@@ -20,26 +20,34 @@ from gui.drawArea import DrawArea
 from lib.system import checkConf
 from lib.xmlUtils import XMLParser
 from lib.heartrate import *
+import logging
 
 class HeartRateGraph:
 	def __init__(self, vbox = None, window = None, vbox2 = None):
+		logging.debug('>>')
 		self.drawarea = DrawArea(vbox, window)
 		self.drawarea2 = DrawArea(vbox2, window)
+		logging.debug('<<')
 
 	def drawgraph(self,values):
-		zones = getZones()
-	
+		logging.debug('>>')
+		zones = getZones()	
 		xvalues, yvalues = self.get_values(values)
+		#logging.debug('xvalues: '+str(xvalues))
+		#logging.debug('yvalues: '+str(yvalues))
 		xlabel,ylabel,title,color = _("Distance (km)"),_("Beats (bpm)"),_("Heart Rate"),"#740074"
 		self.drawarea.stadistics("plot",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color],zones)
 		self.drawarea2.stadistics("pie",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color],zones)
+		logging.debug('<<')
 
 	def get_values(self,values):
+		logging.debug('>>')
 		xvalue = []
 		yvalue = []
 		for value in values:
 			xvalue.append(value[0])
-                        yvalue.append(value[6])
+			yvalue.append(value[6])
+		logging.debug('<<')
 		return xvalue,yvalue
 	
 	def getFloatValue(self, value):

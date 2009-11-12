@@ -27,25 +27,32 @@ from pytrainer.lib.fileUtils import fileUtils
 import string,cgi,time
 import time
 
+import logging
 
 class WaypointEditor:
-	def __init__(self, data_path = None, vbox = None, waypoint=None):
+	def __init__(self, data_path = None, vbox = None, waypoint=None):		
+		logging.debug(">>")
 		self.data_path = data_path
 		self.conf = checkConf()
 		self.extension = Extension()
 		self.moz = gtkmozembed.MozEmbed()
-                vbox.pack_start(self.moz, True, True)
+		vbox.pack_start(self.moz, True, True)
 		vbox.show_all()
 		self.htmlfile = ""
 		self.waypoint=waypoint
+		logging.debug("<<")
 	
 	def drawMap(self):
+		logging.debug(">>")
 		#self.createHtml()
 		tmpdir = self.conf.getValue("tmpdir")
 		htmlfile = tmpdir+"/waypointeditor.html"
-        	self.moz.load_url("file://"+htmlfile)
+		logging.debug("HTML file: "+str(htmlfile))
+		self.moz.load_url("file://"+htmlfile)
+		logging.debug("<<")
 	
 	def createHtml(self,default_waypoint=None):
+		logging.debug(">>")
 		tmpdir = self.conf.getValue("tmpdir")
 		filename = tmpdir+"/waypointeditor.html"
 	
@@ -268,6 +275,6 @@ class WaypointEditor:
 """
 		file = fileUtils(filename,content)
 		file.run()
-
+		logging.debug("<<")
 
 
