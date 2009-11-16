@@ -21,7 +21,6 @@ matplotlib.use('GTK')
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvasGTK
 from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
-#from matplotlib.backends.backend_gtk import FigureCanvasGTK
 #from matplotlib.numerix import *
 import matplotlib.pyplot as plt
 #from pylab import *
@@ -55,15 +54,16 @@ class DrawArea:
 		logging.debug('<<')
 
 	def drawBars(self,xvalues,yvalues,xlabel,ylabel,title,color):
-		logging.debug('>>')
-
+		logging.debug('>>')		
+		
 		# ToDo: check why vertical container is shared
 		for child in self.vbox.get_children():
-			logging.debug('Removing child: '+str(child))
-			self.vbox.remove(child)
+			if self.vbox.get_children()[0] != child:
+				logging.debug('Removing child: '+str(child))
+				self.vbox.remove(child)
 		
 		figure = Figure(figsize=(6,4), dpi=72)
-        	#canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
+		#canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
 		
 		xmod = 0.4
 		if len(xvalues) > 1:
@@ -101,6 +101,7 @@ class DrawArea:
 		else:
 			axis.set_title("%s" %(ylabel[0]))
 
+		
 		canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
 		canvas.show()
 		self.vbox.pack_start(canvas, True, True)
@@ -114,12 +115,16 @@ class DrawArea:
 
 	def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
 		logging.debug('>>')  
-		
+
 		logging.debug('xlabel: '+str(xlabel)+' | ylabel: '+str(ylabel)+' | title: '+str(title))
+		vboxChildren = self.vbox.get_children()
+		logging.debug('Vbox has %d children %s' % (len(vboxChildren), str(vboxChildren) ))
 		# ToDo: check why vertical container is shared
-		for child in self.vbox.get_children():
-			logging.debug('Removing child: '+str(child))
-			self.vbox.remove(child)
+		for child in vboxChildren:
+			#Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
+			if isinstance(child, matplotlib.backends.backend_gtkagg.FigureCanvasGTK) or isinstance(child, matplotlib.backends.backend_gtkagg.NavigationToolbar2GTKAgg):
+				logging.debug('Removing child: '+str(child))
+				self.vbox.remove(child)
 
 		figure = Figure()
 		figure.clf()
@@ -128,6 +133,7 @@ class DrawArea:
 			if i<1:
 				axis = figure.add_subplot(111)
 				axis.plot(xvalues[i],yvalues[i], color=color[i])
+					
 				axis.grid(True)
 				for tl in axis.get_yticklabels():
     					tl.set_color('%s' %color[i])
@@ -135,7 +141,7 @@ class DrawArea:
 				ax2 = axis.twinx()
 				ax2.plot(xvalues[i], yvalues[i], color=color[i])
 				for tl in ax2.get_yticklabels():
-					tl.set_color('%s' %color[i])
+    					tl.set_color('%s' %color[i])
 			axis.set_xlabel(xlabel[i])
 			i+=1
 		
@@ -143,10 +149,9 @@ class DrawArea:
 			axis.set_title("%s vs %s" %(ylabel[0],ylabel[1]))
 		else:
 			axis.set_title("%s" %(ylabel[0]))
-	
+
 		canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
 		canvas.show()
-
 		self.vbox.pack_start(canvas, True, True)
 		toolbar = NavigationToolbar(canvas, self.window)
 		self.vbox.pack_start(toolbar, False, False)
@@ -165,11 +170,11 @@ class DrawArea:
 
 		# ToDo: check why vertical container is shared
 		for child in self.vbox.get_children():
-			logging.debug('Removing child: '+str(child))
-			self.vbox.remove(child)
+			if self.vbox.get_children()[0] != child:
+				logging.debug('Removing child: '+str(child))
+				self.vbox.remove(child)
 
 		figure = Figure(figsize=(6,4), dpi=72)
-		figure.clf()
 		axis = figure.add_subplot(111)
 
 		labels = ["rest"]
@@ -201,7 +206,7 @@ class DrawArea:
 		fracs = [frac0,frac1,frac2,frac3,frac4, frac5]
 		explode=(0, 0, 0, 0,0,0)
 		axis.pie(fracs, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True)
-	
+
 		canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
 		canvas.show()
 

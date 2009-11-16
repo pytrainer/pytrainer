@@ -225,7 +225,7 @@ class Main(SimpleGladeApp):
 	def actualize_heartrategraph(self,record_list):
 		logging.debug(">>")
 		self.drawareaheartrate.drawgraph(record_list)
-		logging.debug(">>")
+		logging.debug("<<")
 
 	def actualize_hrview(self,record_list,zones,is_karvonen_method):
 		logging.debug(">>")
