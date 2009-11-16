@@ -168,9 +168,12 @@ class DrawArea:
 	def drawPie(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
 		logging.debug('>>')
 
+		vboxChildren = self.vbox.get_children()
+		logging.debug('Vbox has %d children %s' % (len(vboxChildren), str(vboxChildren) ))
 		# ToDo: check why vertical container is shared
-		for child in self.vbox.get_children():
-			if self.vbox.get_children()[0] != child:
+		for child in vboxChildren:
+			#Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
+			if isinstance(child, matplotlib.backends.backend_gtkagg.FigureCanvasGTK) or isinstance(child, matplotlib.backends.backend_gtkagg.NavigationToolbar2GTKAgg):
 				logging.debug('Removing child: '+str(child))
 				self.vbox.remove(child)
 
