@@ -80,7 +80,6 @@ class DDBB:
 		ret_val = self.ddbbObject.freeExec(sql)
 		return ret_val[0][0]
 
-
 	def addTitle2ddbb(self):
 		#this function add a title column in
 		#the record ddbb. New in 0.9.9 version
@@ -194,10 +193,71 @@ class DDBB:
 			logging.error('Column date_time_utc already exists in DB. Printing traceback and continuing')
 			traceback.print_exc()
 		
-	def shortFromLocal(self, getSport=True): # Check LEFT and RIGHT JOINS with people with multiple sports
+	def shortFromLocal(self, getSport=True): # Check LEFT and RIGHT JOINS for people with multiple sports
 		if getSport is True:
 			sql = "select sports.name,records.date_time_utc from sports INNER JOIN records ON sports.id_sports = records.sport"
 		else:
 			sql = "select records.date_time_utc from sports INNER JOIN records ON sports.id_sports = records.sport"
 		return self.ddbbObject.freeExec(sql)
+
+	def checkDBIntegrity(self):
+		"""17.11.2009 - dgranda
+		Retrieves tables and columns from database and adds something if missed. New in version 1.7.0
+		args: none
+		returns: none"""
+		logging.debug('>>')
+		columnsSports = {"id_sports":"integer primary key autoincrement", 
+			"name":"varchar(100)",
+			"weight":"float", 
+			"met":"float"}
+		columnsRecords = {"id_record":"integer primary key autoincrement",
+			"date":"date",
+			"sport":"integer",
+			"distance":"float",
+			"time":"varchar(200)",
+			"beats":"float",
+			"average":"float",
+			"calories":"int",
+			"comments":"text",
+			"gpslog":"varchar(200)",
+			"title":"varchar(200)",
+			"upositive":"float",
+			"unegative":"float", 
+			"maxspeed":"float", 
+			"maxpace":"float", 
+			"pace":"float", 
+			"maxbeats":"float", 
+			"date_time_utc":"varchar2(20)"}
+		columnsWaypoints = {"id_waypoint":"integer primary key autoincrement",
+			"lat":"float",
+			"lon":"float",
+			"ele":"float",
+			"comment":"varchar(240)",
+			"time":"date",
+			"name":"varchar(200)",
+			"sym":"varchar(200)"}
+		tablesList = ["records","sports","waypoints"]
+		columns = [columnsRecords,columnsSports,columnsWaypoints]
+		try:
+			tablesDB = self.ddbbObject.select("sqlite_master","name", "type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY name")
+			logging.debug('Found '+ str(len(tablesDB))+' tables in db: '+ str(tablesDB))
+		except:
+			logging.error('Not able to retrieve which tables are in DB. Printing traceback')
+			traceback.print_exc()
+			exit(-1)
+		if len(tablesDB) > len(tablesList):
+			logging.info('Database has more tables than expected, please check duplicity!')
+		for entry in tablesDB:
+			if tablesList.count(entry[0]) > 0: 
+				logging.debug('Inspecting '+str(entry[0])+' table')
+				#self.checkTable(table,columns[tablesList.pos(table)]) # ToDo
+				tablesList.remove(entry[0])
+		if len(tablesList) > 0:
+			logging.info('Missing '+str(len(tablesList))+' tables in database, adding them')
+			for table in tablesList:
+				logging.info('Adding table '+str(table))
+				#self.createTableDefault(table,columns[tablesList.pos(table)]) # ToDo -> review sqliteUtils.createTables
+		else:
+			logging.info('Database has all needed tables')
+		logging.debug('<<')
 
