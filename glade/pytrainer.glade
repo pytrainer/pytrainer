@@ -3995,6 +3995,29 @@ Stage Profile/velocity</property>
 			      <property name="type">tab</property>
 			    </packing>
 			  </child>
+			  <child>
+			    <widget class="GtkVBox" id="weekview">
+			      <property name="visible">True</property>
+			      <property name="homogeneous">False</property>
+			      <property name="spacing">0</property>
+			    </widget>
+				<packing>
+				  <property name="padding">0</property>
+				  <property name="expand">False</property>
+				  <property name="fill">False</property>
+				</packing>
+			  </child>			  
+			  <child>
+                <widget class="GtkLabel" id="weekviewlabel">
+                   <property name="visible">True</property>
+                   <property name="label" translatable="yes">Week</property>
+                </widget>
+                <packing>
+                   <property name="position">2</property>
+                   <property name="tab_fill">False</property>
+                   <property name="type">tab</property>
+                </packing>
+              </child>
 
 			  <child>
 			    <widget class="GtkVBox" id="monthview">

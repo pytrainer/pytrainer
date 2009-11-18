@@ -39,6 +39,7 @@ from plugins import Plugins
 from profile import Profile
 from recordgraph import RecordGraph
 from daygraph import DayGraph
+from weekgraph import WeekGraph
 from monthgraph import MonthGraph
 from yeargraph import YearGraph
 from heartrategraph import HeartRateGraph
@@ -131,7 +132,7 @@ class pyTrainer:
 		self.plugins = Plugins(data_path, self)
 		self.loadPlugins()
 		self.loadExtensions()
-		self.windowmain.createGraphs(RecordGraph,DayGraph,MonthGraph,YearGraph,HeartRateGraph)
+		self.windowmain.createGraphs(RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph)
 		self.windowmain.createMap(Googlemaps,self.waypoint)
 		self.windowmain.createWaypointEditor(WaypointEditor,self.waypoint)
 		self.windowmain.on_calendar_selected(None)
@@ -218,6 +219,11 @@ class pyTrainer:
 			 record_list = self.record.getrecordList(date_selected)
 			 self.windowmain.actualize_dayview(record_list)
 			 selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+		elif view=="week":
+			 logging.debug('week view')
+			 date_ini, date_end = self.date.getWeekInterval(date_selected)
+			 record_list = self.record.getrecordPeriod(date_ini, date_end)
+			 self.windowmain.actualize_weekview(record_list, date_ini, date_end)
 		elif view=="month":
 			 logging.debug('month view')
 			 date_ini, date_end = self.date.getMonthInterval(date_selected)
@@ -235,6 +241,8 @@ class pyTrainer:
 			 record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport)
 			 self.windowmain.actualize_yearview(record_list, year)
 			 self.windowmain.actualize_yeargraph(record_list)
+		else:
+			print "Unknown view %s" % view
 		logging.debug('<<')
 	 
 	def refreshRecordGraphView(self, view):

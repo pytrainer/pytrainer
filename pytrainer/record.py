@@ -252,6 +252,12 @@ class Record:
 		return self.ddbb.select("records,sports",
 					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats",
 					"date=\"%s\" and records.sport=sports.id_sports" %date)
+
+	def getrecordPeriod(self,date_ini, date_end):
+		tables = "records,sports"
+		condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports" %(date_ini,date_end)
+	
+		return self.ddbb.select(tables,"sports.name, date,distance,time,beats,comments,average,calories,maxspeed,maxbeats", condition)
 	
 	def getrecordPeriodSport(self,date_ini, date_end,sport):
 		if sport<1 :

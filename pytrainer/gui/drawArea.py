@@ -21,9 +21,8 @@ matplotlib.use('GTK')
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvasGTK
 from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
-#from matplotlib.numerix import *
 import matplotlib.pyplot as plt
-#from pylab import *
+import pylab 
 import logging
 
 class DrawArea:
@@ -37,7 +36,7 @@ class DrawArea:
 		#self.drawDefault()
 		logging.debug('<<')
 
-	def stadistics(self,type,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
+	def stadistics(self,type,xvalues,yvalues,xlabel,ylabel,title,color=None,zones=None):
 		logging.debug('>>')	
 		if len(xvalues[0]) < 1:
 			#self.drawDefault()
@@ -47,6 +46,8 @@ class DrawArea:
 		logging.debug("Type: "+type+" | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
 		if type == "bars":
 			self.drawBars(xvalues,yvalues,xlabel,ylabel,title,color)
+		elif type == "stackedbars":
+			self.drawStackedBars(xvalues,yvalues,xlabel,ylabel,title)
 		elif type == "plot":
 			self.drawPlot(xvalues,yvalues,xlabel,ylabel,title,color,zones)
 		elif type == "pie":
@@ -54,14 +55,8 @@ class DrawArea:
 		logging.debug('<<')
 
 	def drawBars(self,xvalues,yvalues,xlabel,ylabel,title,color):
-		logging.debug('>>')		
-		
-		# ToDo: check why vertical container is shared
-		for child in self.vbox.get_children():
-			if self.vbox.get_children()[0] != child:
-				logging.debug('Removing child: '+str(child))
-				self.vbox.remove(child)
-		
+		logging.debug('>>')	
+		self.removeVboxChildren()	
 		figure = Figure(figsize=(6,4), dpi=72)
 		#canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
 		
@@ -113,19 +108,81 @@ class DrawArea:
 
 		logging.debug('<<')
 
+	def getColor(self, x):
+		colors=["b","g","r","c","m","y","k", "w"]
+		if x > len(colors):
+			x = x % len(colors)
+		return colors[x]
+	
+	def fmt(self, x):
+		if x <= 0.0001:
+			return ' '
+		else:
+			return '%1.1f' % x
+
+	def drawStackedBars(self,xbars,yvalues,xlabel,ylabel,title):
+		'''function to draw stacked bars
+			xbars needs to be a list of strings, e.g. ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+			yvalues needs to be a dict e.g. {'Kayak': {'Tue': 10.08, 'Fri': 17.579999999999998, 'Thu': 15.66, 'Sat': 30.619999999999997}, {'Run': {'Mon': 9.65, 'Sun': 15.59}}
+		'''
+		#TODO tidy
+		#Add totals to table?
+		logging.debug('>>')	
+		self.removeVboxChildren()
+		keys = yvalues.keys()
+		numRows = len(keys)
+		numCols = len(xbars)
+		if numRows == 0:
+			return
+		width = .8
+		figure = plt.figure(figsize=(6,4), dpi=72) 
+		axis = plt.subplot(111)
+
+		ybottoms = [0] * numCols
+		yheights = [0] * numCols
+		inds = xrange(0, numCols)
+		xvals = [x+(1-width)/2 for x in xrange(0, numCols)]
+		cellText = []
+		for key in keys:
+			for ind in inds:
+				ybottoms[ind] += yheights[ind]
+				yheights[ind] = 0 #Zero heights
+			color = self.getColor(keys.index(key))
+			for xvalue in xbars:
+				index = xbars.index(xvalue)
+				if xvalue in yvalues[key]:
+					height = yvalues[key][xvalue]
+				else:
+					height = 0.000000000001
+				yheights[index] = height
+			cellText.append([self.fmt(x) for x in yheights])
+			axis.bar(xvals, yheights, bottom=ybottoms, width=width, color=color,  align='edge', label=key)
+		axis.set_xticklabels('' * len(xbars))
+		axis.set_ylabel(ylabel)
+		plt.title(title)
+		axis.legend(loc=0)
+
+		## try to do some table stuff
+		colLabels = xbars
+		rowLabels = keys
+		axis.table(cellText=cellText, cellLoc='center', rowLabels=rowLabels, colLabels=colLabels, loc='bottom')
+		plt.subplots_adjust(left=0.15,bottom=0.08+(0.03*numRows))
+		axis.grid(True)
+		canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
+		canvas.show()
+		self.vbox.pack_start(canvas, True, True)
+		toolbar = NavigationToolbar(canvas, self.window)
+		self.vbox.pack_start(toolbar, False, False)
+
+		for child in self.vbox.get_children():
+			logging.debug('Child available: '+str(child))
+
+		logging.debug('<<')
+
 	def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
 		logging.debug('>>')  
-
 		logging.debug('xlabel: '+str(xlabel)+' | ylabel: '+str(ylabel)+' | title: '+str(title))
-		vboxChildren = self.vbox.get_children()
-		logging.debug('Vbox has %d children %s' % (len(vboxChildren), str(vboxChildren) ))
-		# ToDo: check why vertical container is shared
-		for child in vboxChildren:
-			#Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
-			if isinstance(child, matplotlib.backends.backend_gtkagg.FigureCanvasGTK) or isinstance(child, matplotlib.backends.backend_gtkagg.NavigationToolbar2GTKAgg):
-				logging.debug('Removing child: '+str(child))
-				self.vbox.remove(child)
-
+		self.removeVboxChildren()
 		figure = Figure()
 		figure.clf()
 		i = 0
@@ -167,16 +224,7 @@ class DrawArea:
 	
 	def drawPie(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
 		logging.debug('>>')
-
-		vboxChildren = self.vbox.get_children()
-		logging.debug('Vbox has %d children %s' % (len(vboxChildren), str(vboxChildren) ))
-		# ToDo: check why vertical container is shared
-		for child in vboxChildren:
-			#Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
-			if isinstance(child, matplotlib.backends.backend_gtkagg.FigureCanvasGTK) or isinstance(child, matplotlib.backends.backend_gtkagg.NavigationToolbar2GTKAgg):
-				logging.debug('Removing child: '+str(child))
-				self.vbox.remove(child)
-
+		self.removeVboxChildren()
 		figure = Figure(figsize=(6,4), dpi=72)
 		axis = figure.add_subplot(111)
 
@@ -257,3 +305,18 @@ class DrawArea:
         	indLast = ind
 		logging.debug('<<')
 
+	def removeVboxChildren(self):
+		''' function to delete vbox children so that multiple graphs do not appear
+			there must a better way to do this - pyplot?
+		'''
+		logging.debug('>>')
+		#Tidy up draw areas	
+		vboxChildren = self.vbox.get_children()
+		logging.debug('Vbox has %d children %s' % (len(vboxChildren), str(vboxChildren) ))
+		# ToDo: check why vertical container is shared
+		for child in vboxChildren:
+			#Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
+			if isinstance(child, matplotlib.backends.backend_gtkagg.FigureCanvasGTK) or isinstance(child, matplotlib.backends.backend_gtkagg.NavigationToolbar2GTKAgg):
+				logging.debug('Removing child: '+str(child))
+				self.vbox.remove(child)
+		logging.debug('<<')

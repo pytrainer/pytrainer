@@ -1,5 +1,3 @@
-# -*- coding: iso-8859-1 -*-
-
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
 # Modified by dgranda
 
@@ -106,11 +104,12 @@ class Main(SimpleGladeApp):
 			id = selected.get_value(iter,0)
 		self.parent.runExtension(extension,id)
 
-	def createGraphs(self,RecordGraph,DayGraph,MonthGraph,YearGraph,HeartRateGraph):
+	def createGraphs(self,RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph):
 		self.drawarearecord = RecordGraph(self.record_vbox, self.window1, self.record_combovalue, self.record_combovalue2)
 		self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox, self.window1, self.heartrate_vbox2)
 		#self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
 		self.day_vbox.hide()
+		self.drawareaweek = WeekGraph(self.weekview, self.window1)
 		self.drawareamonth = MonthGraph(self.month_vbox, self.window1, self.month_combovalue,self.month_combovalue2)
 		self.drawareayear = YearGraph(self.year_vbox, self.window1, self.year_combovalue,self.year_combovalue2)
 	
@@ -334,6 +333,11 @@ class Main(SimpleGladeApp):
 		self.googlemaps.drawMap(id_record)
 		logging.debug("<<")
 	
+	def actualize_weekview(self, record_list, date_ini, date_end):
+		logging.debug(">>")
+		self.drawareaweek.drawgraph(record_list)
+		logging.debug("<<")
+
 	def actualize_monthview(self,record_list, nameMonth):
 		logging.debug(">>")
 		self.month_date.set_text(nameMonth)
@@ -692,8 +696,10 @@ class Main(SimpleGladeApp):
 		elif page == 1:
 			self.selected_view="day"
 		elif page == 2:
-			self.selected_view="month"
+			self.selected_view="week"
 		elif page == 3:
+			self.selected_view="month"
+		elif page == 4:
 			self.selected_view="year"
 		self.parent.refreshGraphView(self.selected_view)
 	
@@ -742,7 +748,7 @@ class Main(SimpleGladeApp):
 	def on_calendar_changemonth(self,widget):
 		logging.debug("--")
 		self.block = True
-		self.notebook.set_current_page(2)
+		self.notebook.set_current_page(3)
 		self.selected_view="month"
 		self.parent.refreshListRecords()
 		self.parent.refreshGraphView(self.selected_view)
@@ -750,7 +756,7 @@ class Main(SimpleGladeApp):
 	def on_calendar_next_year(self,widget):
 		logging.debug("--")
 		self.block = True
-		self.notebook.set_current_page(3)
+		self.notebook.set_current_page(4)
 		self.selected_view="year"
 		self.parent.refreshListRecords()
 		self.parent.refreshGraphView(self.selected_view)
