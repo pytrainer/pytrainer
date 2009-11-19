@@ -664,12 +664,12 @@ class Main(SimpleGladeApp):
 	######################
 
 	def on_edit_clicked(self,widget):
-    		selected,iter = self.recordTreeView.get_selection().get_selected()
+		selected,iter = self.recordTreeView.get_selection().get_selected()
 		id_record = selected.get_value(iter,0)
 		self.parent.editRecord(id_record)
 
 	def on_remove_clicked(self,widget):
-    		selected,iter = self.recordTreeView.get_selection().get_selected()
+		selected,iter = self.recordTreeView.get_selection().get_selected()
 		id_record = selected.get_value(iter,0)
 		self.parent.removeRecord(id_record)
 	

@@ -185,6 +185,7 @@ class pyTrainer:
  					logging.error('File '+pluginFile+' not valid')
 		else:
 			logging.debug("No files returned from Plugin")
+		self.refreshListRecords()
 		logging.debug('<<')
 
 	def runExtension(self,extension,id):
@@ -354,6 +355,7 @@ class pyTrainer:
 		if date == None:
 			 date = self.date.getDate()
 			 self.record.newRecord(list_sport, date, title, distance, time, upositive, unegative, bpm, calories, comment)
+		self.refreshListRecords()
 		logging.debug('<<')
 
 	def editRecord(self, id_record):
@@ -361,6 +363,7 @@ class pyTrainer:
 		list_sport = self.profile.getSportList()
 		logging.debug('id_record: '+str(id_record)+' | list_sport: '+str(list_sport))
 		self.record.editRecord(id_record,list_sport)
+		self.refreshListRecords()
 		logging.debug('<<')
 
 	def removeRecord(self, id_record, confirm = False):
@@ -373,6 +376,7 @@ class pyTrainer:
 			 warning = Warning(self.data_path,self.removeRecord,params)
 			 warning.set_text(msg)
 			 warning.run()
+		self.refreshListRecords()
 		logging.debug('<<')
 	 
 	def removeWaypoint(self,id_waypoint, confirm = False):
