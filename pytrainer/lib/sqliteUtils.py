@@ -179,3 +179,29 @@ class Sql:
 			retorno.append(row)
 		return retorno
 
+	def checkTable(self,tableName,columns):
+		"""19.11.2009 - dgranda
+		Checks column names and values from table and adds something if missed. New in version 1.7.0
+		args:
+			tableName - string with name of the table
+			columns - dictionary containing column names and data types coming from definition
+		returns: none"""
+		logging.debug('>>')
+		cur = self.db.cursor()
+		sql = "PRAGMA table_info(%s);" %tableName
+		cur.execute(sql)
+		tableInfo = []
+		for row in cur:
+			tableInfo.append(row)
+		logging.debug('Raw data retrieved from table '+str(tableName)+': '+str(tableInfo))
+		logging.debug('Table '+str(tableName)+' definition: '+str(columns))
+		# Comparing data retrieved from DB and what comes from definition
+		# Extracting data needed (column names and types)
+		tableInfoComp = {}
+		for field in tableInfo:
+			newField = {field[1]:field[2]}
+			tableInfoComp.update(newField)
+		logging.debug('Useful data retrieved from table '+str(tableName)+': '+str(tableInfoComp))
+		# Finding out if they differ and what exactly if yes - ToDo
+		logging.debug('<<')
+

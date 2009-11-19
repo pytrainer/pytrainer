@@ -24,10 +24,10 @@ import traceback
 
 class DDBB:
 	def __init__(self, configuration):
-		ddbb_type = configuration.getValue("pytraining","prf_ddbb")
-		if ddbb_type == "mysql":
+		self.ddbb_type = configuration.getValue("pytraining","prf_ddbb")
+		if self.ddbb_type == "mysql":
 			from mysqlUtils import Sql
-		if ddbb_type == "sqlite":
+		else:
 			from sqliteUtils import Sql
 		
 		ddbb_host = configuration.getValue("pytraining","prf_ddbbhost")
@@ -39,7 +39,7 @@ class DDBB:
 	def connect(self):
 		#si devolvemos 1 ha ido todo con exito
 		#con 0 es que no estaba la bbdd creada
-		#con 1 imposible conectar a la maquina.
+		#con -1 imposible conectar a la maquina.
 		var = self.ddbbObject.connect()
 		if var == 0:
 			self.ddbbObject.createDDBB()
@@ -206,6 +206,9 @@ class DDBB:
 		args: none
 		returns: none"""
 		logging.debug('>>')
+		if self.ddbb_type != "sqlite":
+			logging.error('Support for MySQL database is decommissioned, please migrate to SQLite. Exiting check')
+			exit(-2)
 		columnsSports = {"id_sports":"integer primary key autoincrement", 
 			"name":"varchar(100)",
 			"weight":"float", 
@@ -236,8 +239,8 @@ class DDBB:
 			"time":"date",
 			"name":"varchar(200)",
 			"sym":"varchar(200)"}
-		tablesList = ["records","sports","waypoints"]
 		columns = [columnsRecords,columnsSports,columnsWaypoints]
+		tablesList = {"records":columnsRecords,"sports":columnsSports,"waypoints":columnsWaypoints}
 		try:
 			tablesDB = self.ddbbObject.select("sqlite_master","name", "type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY name")
 			logging.debug('Found '+ str(len(tablesDB))+' tables in db: '+ str(tablesDB))
@@ -248,15 +251,15 @@ class DDBB:
 		if len(tablesDB) > len(tablesList):
 			logging.info('Database has more tables than expected, please check duplicity!')
 		for entry in tablesDB:
-			if tablesList.count(entry[0]) > 0: 
+			if entry[0] in tablesList: 
 				logging.debug('Inspecting '+str(entry[0])+' table')
-				#self.checkTable(table,columns[tablesList.pos(table)]) # ToDo
-				tablesList.remove(entry[0])
+				self.ddbbObject.checkTable(entry[0],tablesList[entry[0]]) # ToDo
+				del tablesList[entry[0]]
 		if len(tablesList) > 0:
 			logging.info('Missing '+str(len(tablesList))+' tables in database, adding them')
 			for table in tablesList:
 				logging.info('Adding table '+str(table))
-				#self.createTableDefault(table,columns[tablesList.pos(table)]) # ToDo -> review sqliteUtils.createTables
+				#self.ddbbObject.createTableDefault(table,columns[tablesList.pos(table)]) # ToDo -> review sqliteUtils.createTables
 		else:
 			logging.info('Database has all needed tables')
 		logging.debug('<<')
