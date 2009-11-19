@@ -31,6 +31,10 @@ from pytrainer.lib.unitsconversor import *
 
 class Main(SimpleGladeApp):
 	def __init__(self, data_path = None, parent = None, version = None):
+		def url_hook(dialog, url):
+			pytrainer.lib.webUtils.open_url_in_browser(url)
+		# Available in PyGTK 2.6 and above
+		gtk.about_dialog_set_url_hook(url_hook)
 		self.version = version
 		self.parent = parent
 		self.data_path = data_path
