@@ -153,7 +153,7 @@ class DrawArea:
 				if xvalue in yvalues[key]:
 					height = yvalues[key][xvalue]
 				else:
-					height = 0.000000000001
+					height = 0.0000000000000000001
 				yheights[index] = height
 			cellText.append([self.fmt(x) for x in yheights])
 			axis.bar(xvals, yheights, bottom=ybottoms, width=width, color=color,  align='edge', label=key)
@@ -171,8 +171,8 @@ class DrawArea:
 		canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
 		canvas.show()
 		self.vbox.pack_start(canvas, True, True)
-		toolbar = NavigationToolbar(canvas, self.window)
-		self.vbox.pack_start(toolbar, False, False)
+		#toolbar = NavigationToolbar(canvas, self.window)
+		#self.vbox.pack_start(toolbar, False, False)
 
 		for child in self.vbox.get_children():
 			logging.debug('Child available: '+str(child))
