@@ -20,6 +20,7 @@
 
 import time
 import datetime
+import calendar
 
 class Date:
 	def __init__(self, calendar=None):
@@ -50,11 +51,19 @@ class Date:
 	def time2string(self,date):
 		return "%0.4d-%0.2d-%0.2d" %(int(date[0]),int(date[1]),int(date[2]))
 
-	def getWeekInterval(self,date):
-		weekDate = datetime.datetime.strptime(date, "%Y-%m-%d")
-		dayOfWeek = int(weekDate.strftime("%w"))
-		date_ini = weekDate + datetime.timedelta(days=0-dayOfWeek)
-		date_end = weekDate + datetime.timedelta(days=6-dayOfWeek)
+	def getWeekInterval(self,date, prf_us_system):
+		if prf_us_system == "True":
+			#Sunday is first day of week
+			weekDate = datetime.datetime.strptime(date, "%Y-%m-%d")
+			dayOfWeek = int(weekDate.strftime("%w"))
+			date_ini = weekDate + datetime.timedelta(days=0-dayOfWeek)
+			date_end = weekDate + datetime.timedelta(days=6-dayOfWeek)
+		else:
+			#Monday is first day of week
+			weekDate = datetime.datetime.strptime(date, "%Y-%m-%d")
+			dayOfWeek = int(weekDate.strftime("%w"))
+			date_ini = weekDate + datetime.timedelta(days=1-dayOfWeek)
+			date_end = weekDate + datetime.timedelta(days=7-dayOfWeek)
 		return date_ini.strftime("%Y-%m-%d"), date_end.strftime("%Y-%m-%d")
 	
 	def getMonthInterval(self,date):

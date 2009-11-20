@@ -339,7 +339,7 @@ class Main(SimpleGladeApp):
 	
 	def actualize_weekview(self, record_list, date_ini, date_end):
 		logging.debug(">>")
-		self.drawareaweek.drawgraph(record_list)
+		self.drawareaweek.drawgraph(record_list, date_ini, date_end)
 		logging.debug("<<")
 
 	def actualize_monthview(self,record_list, nameMonth):

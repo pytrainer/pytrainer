@@ -24,11 +24,17 @@ class WeekGraph:
 	def __init__(self, vbox = None, window = None):
 		self.drawarea = DrawArea(vbox, window)
 
-	def drawgraph(self,values):
+	def drawgraph(self,values, date_ini, date_end):
 		logging.debug(">>")
 		#print "Found %d records" % len(values)
 		logging.debug(str(values))
-		days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+		#build days list to ensure localised values are used.
+		days = []
+		for day in range(0, 7):
+			dateTemp = datetime.datetime.strptime(date_ini, "%Y-%m-%d")
+			incrementDay = datetime.timedelta(days=day)
+			dateToUse = dateTemp + incrementDay
+			days.append( dateToUse.strftime("%a") )
 		valueDict = {}
 		for record in values:
 			day = datetime.datetime.strptime(record[1], "%Y-%m-%d").strftime("%a") # Gives Sun, Mon etc for this record
