@@ -18,6 +18,7 @@
 import gobject
 import sys
 import logging
+import datetime
 
 from SimpleGladeApp import *
 from popupmenu import PopupMenu
@@ -113,7 +114,7 @@ class Main(SimpleGladeApp):
 		self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox, self.window1, self.heartrate_vbox2)
 		#self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
 		self.day_vbox.hide()
-		self.drawareaweek = WeekGraph(self.weekview, self.window1)
+		self.drawareaweek = WeekGraph(self.weekview, self.window1, self.week_combovalue)
 		self.drawareamonth = MonthGraph(self.month_vbox, self.window1, self.month_combovalue,self.month_combovalue2)
 		self.drawareayear = YearGraph(self.year_vbox, self.window1, self.year_combovalue,self.year_combovalue2)
 	
@@ -339,6 +340,9 @@ class Main(SimpleGladeApp):
 	
 	def actualize_weekview(self, record_list, date_ini, date_end):
 		logging.debug(">>")
+		date_s = datetime.datetime.strptime(date_ini, "%Y-%m-%d")
+		date_e = datetime.datetime.strptime(date_end, "%Y-%m-%d")
+		self.weekview_weekinfo.set_text("%s - %s" % (datetime.datetime.strftime(date_s, "%a %d %b"), datetime.datetime.strftime(date_e, "%a %d %b")) )
 		self.drawareaweek.drawgraph(record_list, date_ini, date_end)
 		logging.debug("<<")
 
@@ -731,6 +735,10 @@ class Main(SimpleGladeApp):
 		logging.debug("--")
 		self.parent.refreshGraphView(self.selected_view)
 	
+	def on_week_combovalue_changed(self,widget):
+		logging.debug("--")
+		self.parent.refreshGraphView(self.selected_view)
+
 	def on_month_combovalue_changed(self,widget):
 		logging.debug("--")
 		self.parent.refreshGraphView(self.selected_view)

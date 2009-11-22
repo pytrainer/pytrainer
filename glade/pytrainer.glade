@@ -4000,13 +4000,91 @@ Stage Profile/velocity</property>
 			      <property name="visible">True</property>
 			      <property name="homogeneous">False</property>
 			      <property name="spacing">0</property>
+        			<child> 
+				      <widget class="GtkTable" id="weekview_table">
+				        <property name="visible">True</property>
+				        <property name="n_rows">2</property>
+				        <property name="n_columns">2</property>
+							<child> <!-- weekview_weeklabel -->
+					          <widget class="GtkLabel" id="weekview_weeklabel">
+        		    			<property name="visible">True</property>
+					            <property name="xalign">0</property>
+					            <property name="yalign">0</property>
+					            <property name="xpad">17</property>
+					            <property name="ypad">7</property>
+								<property name="use_markup">True</property>
+					            <property name="label" translatable="yes">&lt;b&gt;Week:&lt;/b&gt;</property>
+					            <property name="single_line_mode">True</property>
+					            <property name="track_visited_links">False</property>
+					          </widget>
+        		  			  <packing>
+					            <property name="x_options">GTK_SHRINK</property>
+					            <property name="y_options">GTK_SHRINK</property>
+					          </packing>
+        				    </child> <!-- weekview_weeklabel -->
+							<child>
+								<widget class="GtkAlignment" id="weekview_alignment">
+						            <property name="visible">True</property>
+						            <property name="xalign">0</property>
+            							<child> <!-- weekview_weekinfo -->
+					    			      <widget class="GtkLabel" id="weekview_weekinfo">
+        		    						<property name="visible">True</property>
+					    			        <property name="xalign">0</property>
+					    			        <property name="yalign">0</property>
+					    			        <property name="xpad">0</property>
+					    			        <property name="ypad">7</property>
+											<property name="justify">GTK_JUSTIFY_LEFT</property>
+											<property name="use_markup">True</property>
+					    			        <property name="label" translatable="yes"></property>
+					    			        <property name="single_line_mode">True</property>
+					    			        <property name="track_visited_links">False</property>
+					    			      </widget>
+        		  						  <packing>
+					    			      </packing>
+        						    </child> <!-- weekview_weekinfo -->
+					          </widget>
+					          <packing>	
+					    		<property name="left_attach">1</property>
+					    		<property name="right_attach">2</property>
+					            <property name="x_options">GTK_FILL</property>
+					            <property name="y_options">GTK_FILL</property>
+					          </packing>
+							</child> <!-- weekview_alignment -->
+
+							<child> <!-- weekview_combovalue -->
+							  <widget class="GtkComboBoxEntry" id="week_combovalue">
+	 						    <property name="visible">True</property>
+							    <property name="items" translatable="yes">Distance
+Time
+</property>
+							    <property name="add_tearoffs">False</property>
+							    <property name="has_frame">True</property>
+							    <property name="focus_on_click">True</property>
+							    <signal name="changed" handler="on_week_combovalue_changed" />
+							  </widget>
+	 		          		  <packing>
+	            				<property name="left_attach">1</property>
+    	    				    <property name="right_attach">2</property>
+    	     				    <property name="top_attach">1</property>
+    	      				    <property name="bottom_attach">2</property>
+		        				<property name="x_options">GTK_SHRINK</property>
+  		          				<property name="y_options">GTK_SHRINK</property>
+				 	         </packing>
+				  	      </child> <!-- weekview_combovalue -->
+			 	     </widget>
+					<packing>
+					  <property name="padding">5</property>
+					  <property name="expand">False</property>
+					  <property name="fill">True</property>
+					</packing>
+			      </child> <!-- weekview_table -->
 			    </widget>
 				<packing>
 				  <property name="padding">0</property>
 				  <property name="expand">False</property>
-				  <property name="fill">False</property>
+				  <property name="fill">True</property>
 				</packing>
-			  </child>			  
+			  </child> <!-- weekview-->			  
 			  <child>
                 <widget class="GtkLabel" id="weekviewlabel">
                    <property name="visible">True</property>

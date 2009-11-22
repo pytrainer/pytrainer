@@ -52,18 +52,23 @@ class Date:
 		return "%0.4d-%0.2d-%0.2d" %(int(date[0]),int(date[1]),int(date[2]))
 
 	def getWeekInterval(self,date, prf_us_system):
+		''' Function to provide beginning and ending of the week that a certain day is in
+			Problems as python date functions do not respect locale (i.e. Sunday is always start of week????)
+			Note: %w gives weekday as a decimal number [0(Sunday),6(Saturday)].
+		'''
 		if prf_us_system == "True":
 			#Sunday is first day of week
 			weekDate = datetime.datetime.strptime(date, "%Y-%m-%d")
 			dayOfWeek = int(weekDate.strftime("%w"))
-			date_ini = weekDate + datetime.timedelta(days=0-dayOfWeek)
-			date_end = weekDate + datetime.timedelta(days=6-dayOfWeek)
 		else:
 			#Monday is first day of week
 			weekDate = datetime.datetime.strptime(date, "%Y-%m-%d")
 			dayOfWeek = int(weekDate.strftime("%w"))
-			date_ini = weekDate + datetime.timedelta(days=1-dayOfWeek)
-			date_end = weekDate + datetime.timedelta(days=7-dayOfWeek)
+			if dayOfWeek == 0: #Sunday, need to adjust
+				dayOfWeek = 7
+			dayOfWeek -= 1
+		date_ini = weekDate + datetime.timedelta(days=0-dayOfWeek)
+		date_end = weekDate + datetime.timedelta(days=6-dayOfWeek)
 		return date_ini.strftime("%Y-%m-%d"), date_end.strftime("%Y-%m-%d")
 	
 	def getMonthInterval(self,date):

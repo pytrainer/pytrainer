@@ -46,8 +46,6 @@ class DrawArea:
 		logging.debug("Type: "+type+" | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
 		if type == "bars":
 			self.drawBars(xvalues,yvalues,xlabel,ylabel,title,color)
-		elif type == "stackedbars":
-			self.drawStackedBars(xvalues,yvalues,xlabel,ylabel,title)
 		elif type == "plot":
 			self.drawPlot(xvalues,yvalues,xlabel,ylabel,title,color,zones)
 		elif type == "pie":
@@ -128,6 +126,7 @@ class DrawArea:
 		#TODO tidy
 		#Add totals to table?
 		logging.debug('>>')	
+		logging.debug("Title: %s", (title, ))
 		self.removeVboxChildren()
 		keys = yvalues.keys()
 		numRows = len(keys)
