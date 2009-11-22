@@ -102,6 +102,27 @@ class Sql:
 		self.insert("sports","name",["Mountain Bike"]);
 		self.insert("sports","name",["Bike"]);
 		self.insert("sports","name",["Run"]);
+
+	def createTableDefault(self,tableName,columns):
+		"""22.11.2009 - dgranda
+		Creates a new table in database given name and column name and data types. New in version 1.7.0
+		args:
+			tableName - string with name of the table
+			columns - dictionary containing column names and data types coming from definition
+		returns: none"""
+		logging.debug('>>')
+		logging.info('Creating '+str(tableName)+' table with default values')
+		logging.debug('Columns definition: '+str(columns))
+		cur = self.db.cursor()
+		sql = 'CREATE TABLE %s (' %(tableName)
+		for entry in columns:
+			sql += '%s %s,' %(entry,columns[entry])
+		# Removing trailing comma
+		sql = sql.rstrip(',')
+		sql = sql+");"
+		logging.debug('SQL sentence: '+str(sql))
+		cur.execute(sql)
+		logging.debug('<<')
 		
 	def addWaipoints2ddbb(self):
 		cur = self.db.cursor()	
@@ -187,21 +208,48 @@ class Sql:
 			columns - dictionary containing column names and data types coming from definition
 		returns: none"""
 		logging.debug('>>')
+		logging.info('Inspecting '+str(tableName)+' table')
+		logging.debug('Columns definition: '+str(columns))
+
+		# Retrieving data from DB
+		tableInfo = self.retrieveTableInfo(tableName)
+		#logging.debug('Raw data retrieved from DB '+str(tableName)+': '+str(tableInfo))
+
+		# Comparing data retrieved from DB with what comes from definition
+		columnsDB = {}
+		for field in tableInfo:
+			newField = {field[1]:field[2]}
+			columnsDB.update(newField)
+		logging.debug('Useful data retrieved from '+str(tableName)+' in DB: '+str(columnsDB))
+
+		# http://mail.python.org/pipermail/python-list/2002-May/142854.html
+		tempDict = dict(zip(columns,columns))
+		result = [x for x in columnsDB if x not in tempDict]
+		logging.debug("Comparison result: "+str(result))
+
+		if len(result) > 0: # may have also different data type
+			logging.debug('Found columns missed in DB: '+ str(result))
+			for entry in result:
+				logging.debug('Column '+ str(entry) +' not found in DB')
+				self.addColumn(tableName,str(entry),columnsDB[entry])
+		else:
+			logging.info('Table '+ str(tableName) +' is OK')
+		logging.debug('<<')
+
+	def retrieveTableInfo(self,tableName):
 		cur = self.db.cursor()
 		sql = "PRAGMA table_info(%s);" %tableName
 		cur.execute(sql)
 		tableInfo = []
 		for row in cur:
 			tableInfo.append(row)
-		logging.debug('Raw data retrieved from table '+str(tableName)+': '+str(tableInfo))
-		logging.debug('Table '+str(tableName)+' definition: '+str(columns))
-		# Comparing data retrieved from DB and what comes from definition
-		# Extracting data needed (column names and types)
-		tableInfoComp = {}
-		for field in tableInfo:
-			newField = {field[1]:field[2]}
-			tableInfoComp.update(newField)
-		logging.debug('Useful data retrieved from table '+str(tableName)+': '+str(tableInfoComp))
-		# Finding out if they differ and what exactly if yes - ToDo
-		logging.debug('<<')
+		return tableInfo
+
+	def addColumn(self,tableName,columnName,dataType):
+		sql = "alter table %s add %s %s" %(tableName,columnName,dataType)
+		try:
+			self.ddbbObject.freeExec(sql)
+		except:
+			logging.error('Not able to add/change column '+columnName+' to table '+tableName)
+			traceback.print_exc()
 

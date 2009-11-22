@@ -21,6 +21,8 @@
 
 import logging
 import traceback
+import commands
+from system import checkConf
 
 class DDBB:
 	def __init__(self, configuration):
@@ -29,6 +31,10 @@ class DDBB:
 			from mysqlUtils import Sql
 		else:
 			from sqliteUtils import Sql
+		
+		self.conf = checkConf()
+		self.confdir = self.conf.getValue("confdir")
+		self.ddbb_path = "%s/pytrainer.ddbb" %self.confdir
 		
 		ddbb_host = configuration.getValue("pytraining","prf_ddbbhost")
 		ddbb = configuration.getValue("pytraining","prf_ddbbname")
@@ -202,10 +208,11 @@ class DDBB:
 
 	def checkDBIntegrity(self):
 		"""17.11.2009 - dgranda
-		Retrieves tables and columns from database and adds something if missed. New in version 1.7.0
+		Retrieves tables and columns from database, checks current ones and adds something if missed. New in version 1.7.0
 		args: none
 		returns: none"""
 		logging.debug('>>')
+		logging.info('Checking PyTrainer database')
 		if self.ddbb_type != "sqlite":
 			logging.error('Support for MySQL database is decommissioned, please migrate to SQLite. Exiting check')
 			exit(-2)
@@ -239,28 +246,42 @@ class DDBB:
 			"time":"date",
 			"name":"varchar(200)",
 			"sym":"varchar(200)"}
-		columns = [columnsRecords,columnsSports,columnsWaypoints]
 		tablesList = {"records":columnsRecords,"sports":columnsSports,"waypoints":columnsWaypoints}
 		try:
-			tablesDB = self.ddbbObject.select("sqlite_master","name", "type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY name")
-			logging.debug('Found '+ str(len(tablesDB))+' tables in db: '+ str(tablesDB))
+			tablesDBT = self.ddbbObject.select("sqlite_master","name", "type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY name")
 		except:
 			logging.error('Not able to retrieve which tables are in DB. Printing traceback')
 			traceback.print_exc()
 			exit(-1)
-		if len(tablesDB) > len(tablesList):
-			logging.info('Database has more tables than expected, please check duplicity!')
-		for entry in tablesDB:
-			if entry[0] in tablesList: 
-				logging.debug('Inspecting '+str(entry[0])+' table')
-				self.ddbbObject.checkTable(entry[0],tablesList[entry[0]]) # ToDo
-				del tablesList[entry[0]]
-		if len(tablesList) > 0:
-			logging.info('Missing '+str(len(tablesList))+' tables in database, adding them')
-			for table in tablesList:
-				logging.info('Adding table '+str(table))
-				#self.ddbbObject.createTableDefault(table,columns[tablesList.pos(table)]) # ToDo -> review sqliteUtils.createTables
+
+		tablesDB = [] # Database retrieves a list with tuples ¿?
+		for entry in tablesDBT:
+			tablesDB.append(entry[0])
+		logging.debug('Found '+ str(len(tablesDB))+' tables in DB: '+ str(tablesDB))
+
+		# Create a compressed copy of current DB
+		try: 
+			self.createDatabaseBackup()
+		except:
+			logging.error('Not able to make a copy of current DB. Printing traceback and exiting')
+			traceback.print_exc()
+			exit(-1)
+
+		for entry in tablesList:
+			if entry not in tablesDB:
+				logging.warn('Table '+str(entry)+' does not exist in DB')
+				self.ddbbObject.createTableDefault(entry,tablesList[entry])
+			else:
+				self.ddbbObject.checkTable(entry,tablesList[entry])
+		logging.debug('<<')
+
+	def createDatabaseBackup(self):
+		logging.debug('>>')
+		logging.debug('Database path: '+str(self.ddbb_path))
+		result = commands.getstatusoutput('gzip -c '+self.ddbb_path+' > '+self.ddbb_path+'_`date +%Y%m%d_%H%M`.gz')
+		if result[0] != 0:
+			raise Exception, "Copying current database does not work, error #"+str(result[0])
 		else:
-			logging.info('Database has all needed tables')
+			logging.info('Database backup successfully created')
 		logging.debug('<<')
 
