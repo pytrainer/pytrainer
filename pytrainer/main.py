@@ -59,8 +59,6 @@ from lib.xmlUtils import XMLParser
 from lib.system import checkConf
 from lib.heartrate import *
 
-# 21.03.2008 - dgranda (updated 17.04.2008)
-# Only one parameter from command line is accepted
 # ERROR is the default log level
 PATH = os.environ['HOME']+"/.pytrainer"
 if not os.path.exists(PATH):
@@ -78,9 +76,11 @@ parser.add_option("-d", "--debug", action="store_const", const=logging.DEBUG, de
 parser.add_option("-i", "--info", action="store_const", const=logging.INFO, dest="log_level", help="enable logging at info level")
 parser.add_option("-w", "--warn", action="store_const", const=logging.WARNING, dest="log_level", help="enable logging at warning level")
 parser.add_option("--valid", action="store_true", dest="validate", help="enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation")
+parser.add_option("--check", action="store_true", dest="check", help="triggers database (only sqlite based) and configuration file sanity checks, adding fields if necessary. Backup of database is done before any change. Details at info or debug logging level")
 (options, args) = parser.parse_args()
 log_level = options.log_level
 validate = options.validate
+check = options.check
 
 # Adding rotating support to default logger with customized format
 rotHandler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=100000, backupCount=5)
@@ -93,7 +93,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.6.0.9 svn 397"
+		self.version ="1.6.0.9_svn#401"
 		self.date = Date()
 		main_dir = os.path.realpath(os.path.dirname(__file__)) #why?
 		sys.path.insert(0, main_dir) #why?
@@ -103,6 +103,7 @@ class pyTrainer:
 		self.profile.isProfileConfigured()
 		self.log_level = log_level
 		self.validate = validate
+		self.check = check
 		self.windowmain = None
 
 		logging.debug('checking configuration...')
@@ -118,7 +119,11 @@ class pyTrainer:
 		self.ddbb.connect()		
 		self.record = Record(data_path,self)
 		
-		self.migrationCheck()
+		if self.check:
+			#self.migrationCheck()
+			self.sanityCheck() # Deprecates migrationCheck. Review first installation and version control
+		else:
+			logging.info('No sanity check requested')
 		
 		#preparamos la ventana principal
 		self.windowmain = Main(data_path,self,self.version)
@@ -455,10 +460,22 @@ class pyTrainer:
 			if version_tmp < "1.6.0.3":
 				logging.info('Checking pace and max pace stored in DB')
 				self.checkPacesDB()
-				logging.info('Checking configuration file integrity')
-				self.profile.checkProfile()
+		logging.info('Checking configuration file integrity')
+		self.profile.checkProfile()
 		if version_tmp < self.version:
 			self.configuration.setVersion(self.version)
+		logging.debug('<<')
+
+	def sanityCheck(self):
+		"""23.11.2009 - dgranda
+		Checks database and configuration file if flag "--check" is enabled at start
+		args: none
+		returns: none"""
+		logging.debug('>>')
+		logging.info('Checking database integrity')
+		self.ddbb.checkDBIntegrity()
+		logging.info('Checking configuration file integrity')
+		self.profile.checkProfile()
 		logging.debug('<<')
 	
 	def addDateTimeUTC(self):
