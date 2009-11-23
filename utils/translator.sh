@@ -1,6 +1,5 @@
 #!/bin/sh
 
-
 SOFTWARE=$(zenity --list --text="Select your translation software" --radiolist --column "Pick" --column "Software" TRUE "gtranslator" FALSE "kbabel" FALSE "poedit")
 if [ $? != 0 ]; then exit ; fi
 
@@ -11,7 +10,7 @@ cd ../
 
 xgettext glade/pytrainer.glade -o ./messages.pot
 if [ $? != 0 ]; then echo "WARNNING: xgettext not found. Please, install gettext package"; exit; fi
-find ./ -iname "*.py" -exec xgettext -k_ -j -o ./messages.pot ./pytrainer/main.py {} 
+find ./ -iname "*.py" -exec xgettext -k_ -j -o ./messages.pot ./pytrainer/main.py {} \;
 
 msginit -i ./messages.pot -l $LANGUAGE -o ./locale/$LANGUAGE/LC_MESSAGES/pytrainer_$LANGUAGE.pot
 
@@ -20,5 +19,4 @@ make merge
 $SOFTWARE pytrainer_$LANGUAGE.po
 if [ $? != 0 ]; then echo "WARNNING: $SOFTWARE not found"; exit ; fi
 make
-
 
