@@ -21,9 +21,10 @@ import logging
 import datetime
 
 class WeekGraph:
-	def __init__(self, vbox = None, window = None, combovalue = None):
+	def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None):
 		self.drawarea = DrawArea(vbox, window)
 		self.combovalue = combovalue
+		self.combovalue2 = combovalue2
 
 	def drawgraph(self,values, date_ini, date_end):
 		logging.debug(">>")
@@ -43,9 +44,9 @@ class WeekGraph:
 
 		#TODO Need to add time etc (currently distance only)
 		for record in values:
-			day = datetime.datetime.strptime(record[1], "%Y-%m-%d").strftime("%a") # Gives Sun, Mon etc for this record
-			sport = record[0]
-			distance = record[2]
+			day = datetime.datetime.strptime(record[0], "%Y-%m-%d").strftime("%a") # Gives Sun, Mon etc for this record
+			sport = record[9]
+			distance = record[1]
 			if sport in valueDict: #Already got this sport
 				if day in valueDict[sport]: #Already got this sport on this day
 					valueDict[sport][day] += distance
@@ -54,9 +55,9 @@ class WeekGraph:
 			else: #New sport
 				valueDict[sport] = {day: distance}
 
-		xlabel = "Day"
-		ylabel = "kilometers"
-		title = "Week View"
+		xlabel = _("Day")
+		ylabel = _("kilometers")
+		title = _("Week View")
 		self.drawarea.drawStackedBars(days,valueDict,xlabel,ylabel,title)
 		logging.debug("<<")
 

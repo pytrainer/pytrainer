@@ -93,7 +93,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.6.0.9 svn" # 22.10.2009
+		self.version ="1.6.0.9 svn 397"
 		self.date = Date()
 		main_dir = os.path.realpath(os.path.dirname(__file__)) #why?
 		sys.path.insert(0, main_dir) #why?
@@ -103,6 +103,7 @@ class pyTrainer:
 		self.profile.isProfileConfigured()
 		self.log_level = log_level
 		self.validate = validate
+		self.windowmain = None
 
 		logging.debug('checking configuration...')
 		self.conf = checkConf()
@@ -205,6 +206,10 @@ class pyTrainer:
 		
 	def refreshGraphView(self, view, sport=None):
 		logging.debug('>>')
+		if self.windowmain is None:
+			logging.debug("First call to refreshGraphView")
+			logging.debug('>>')
+			return
 		date_selected = self.date.getDate()
 		if view=="record":
 			 logging.debug('record view')
@@ -224,6 +229,8 @@ class pyTrainer:
 		elif view=="week":
 			 logging.debug('week view')
 			 date_ini, date_end = self.date.getWeekInterval(date_selected, self.prf_us_system)
+			 #sport = self.windowmain.getSportSelected()
+			 #still need to fix for sport selection
 			 record_list = self.record.getrecordPeriod(date_ini, date_end)
 			 self.windowmain.actualize_weekview(record_list, date_ini, date_end)
 		elif view=="month":

@@ -40,8 +40,11 @@ class Date:
 
 	def getDate(self):
 		#hack for the gtk calendar widget
-		year,month,day = self.calendar.get_date()
-		return "%0.4d-%0.2d-%0.2d" %(year,month+1,day)
+		if self.calendar is not None:
+			year,month,day = self.calendar.get_date()
+			return "%0.4d-%0.2d-%0.2d" %(year,month+1,day)
+		else:
+			return datetime.date.today().strftime("%Y-%m-%d")
 
 	def setDate(self,newdate):
 		year,month,day = newdate.split("-")

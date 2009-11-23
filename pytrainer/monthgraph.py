@@ -37,6 +37,7 @@ class MonthGraph:
 			self.combovalue.set_active(0)
 			value_selected = 0
 		daysmonth,xlabel,ylabel,title,color = self.get_value_params(value_selected)
+		#print "daysmonth %s,xlabel %s,ylabel %s,title %s,color %s" % (daysmonth,xlabel,ylabel,title,color)
 		xvalues,yvalues = self.get_values(values,value_selected,daysmonth)
 
 		xval.append(xvalues)
@@ -77,7 +78,7 @@ class MonthGraph:
 			return 32,_("day"),_("Calories"), _("Daily Calories"),"b"
 
 	def get_values(self,values,value_selected,daysmonth):
-		#hacemos una relacion entre el value_selected y los values
+		#hacemos una relacion entre el value_selected y los values / we make a relation between value_selected and the values
 		conv = {
 			0: 1, #value 0 es kilometros (1)
 			1: 2, #value 1 es tiempo (2)
@@ -93,7 +94,7 @@ class MonthGraph:
 
 		value_sel = conv[value_selected]
 		for value in values:
-			#si la opcion es tiempo lo pasamos a horas
+			#si la opcion es tiempo lo pasamos a horas / if the option is time we passed it to hours
 			if (value_sel == 2):
 				graph_value = self.getFloatValue(value[value_sel])/3600
 			else:
@@ -102,10 +103,10 @@ class MonthGraph:
 			date = value[0]
 			year,month,day = date.split("-")
 
-			#si es una opcion de suma de absolutos:
+			#si es una opcion de suma de absolutos / if it is an option of sum of absolute
                         if ((value_selected == 0) or (value_selected==1) or (value_selected==4)):
                                 list_values[int(day)] += graph_value
-                        #si se trata de calcular medias:
+                        #si se trata de calcular medias / if one is to calculate averages:
                         else:
                                 list_values[int(day)] += graph_value
                                 list_average[int(day)] += 1

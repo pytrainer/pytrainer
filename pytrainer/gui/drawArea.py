@@ -34,6 +34,7 @@ class DrawArea:
 		self.window = window
 		#self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
 		#self.drawDefault()
+		self.NEARLY_ZERO = 0.0000000000000000000001
 		logging.debug('<<')
 
 	def stadistics(self,type,xvalues,yvalues,xlabel,ylabel,title,color=None,zones=None):
@@ -73,6 +74,8 @@ class DrawArea:
 				axis.set_ylabel(ylabel[i])
 				axis.set_title(title[i])	
 				j=0
+				#print "xvalues: %s" % (xvalues)
+				#print "yvalues: %s" % (yvalues)
 				for x in xvalues[i]:
 					xvalues[i][j]=x-xmod
 					j+=1
@@ -152,7 +155,7 @@ class DrawArea:
 				if xvalue in yvalues[key]:
 					height = yvalues[key][xvalue]
 				else:
-					height = 0.0000000000000000001
+					height = self.NEARLY_ZERO
 				yheights[index] = height
 			cellText.append([self.fmt(x) for x in yheights])
 			axis.bar(xvals, yheights, bottom=ybottoms, width=width, color=color,  align='edge', label=key)

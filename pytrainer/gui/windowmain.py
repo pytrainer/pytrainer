@@ -68,6 +68,7 @@ class Main(SimpleGladeApp):
 			self._createXmlListView(self.fileconf)
 		self.showAllRecordTreeViewColumns()
 		self.allRecordTreeView.set_search_column(1)
+		self.notebook.set_current_page(1)
 	
 	def _createXmlListView(self,file):
 		menufile = XMLParser(file)
@@ -114,7 +115,7 @@ class Main(SimpleGladeApp):
 		self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox, self.window1, self.heartrate_vbox2)
 		#self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
 		self.day_vbox.hide()
-		self.drawareaweek = WeekGraph(self.weekview, self.window1, self.week_combovalue)
+		self.drawareaweek = WeekGraph(self.weekview, self.window1, self.week_combovalue, self.week_combovalue2)
 		self.drawareamonth = MonthGraph(self.month_vbox, self.window1, self.month_combovalue,self.month_combovalue2)
 		self.drawareayear = YearGraph(self.year_vbox, self.window1, self.year_combovalue,self.year_combovalue2)
 	
@@ -342,7 +343,80 @@ class Main(SimpleGladeApp):
 		logging.debug(">>")
 		date_s = datetime.datetime.strptime(date_ini, "%Y-%m-%d")
 		date_e = datetime.datetime.strptime(date_end, "%Y-%m-%d")
-		self.weekview_weekinfo.set_text("%s - %s" % (datetime.datetime.strftime(date_s, "%a %d %b"), datetime.datetime.strftime(date_e, "%a %d %b")) )
+		self.week_date.set_text("%s - %s (%d)" % (datetime.datetime.strftime(date_s, "%a %d %b"), datetime.datetime.strftime(date_e, "%a %d %b"), int(datetime.datetime.strftime(date_e, "%W"))+1) )
+
+		km = calories = time = average = beats = 0
+		num_records = len(record_list)
+		time_in_min = 0
+		tbeats = 0
+		maxspeed = 0
+		pace = "0.00"
+		maxpace = "0.00"
+		maxbeats = 0
+		
+		conf = checkConf()
+		filename = conf.getValue("conffile")
+		configuration = XMLParser(filename)
+		if configuration.getValue("pytraining","prf_us_system") == "True":
+			self.w_distance_unit.set_text(_("miles"))
+			self.w_speed_unit.set_text(_("miles/h"))
+			self.w_maxspeed_unit.set_text(_("miles/h"))
+			self.w_pace_unit.set_text(_("min/mile"))
+			self.w_maxpace_unit.set_text(_("min/mile"))
+		else:
+			self.w_distance_unit.set_text(_("km"))
+			self.w_speed_unit.set_text(_("km/h"))
+			self.w_maxspeed_unit.set_text(_("km/h"))
+			self.w_pace_unit.set_text(_("min/km"))
+			self.w_maxpace_unit.set_text(_("min/km"))
+
+		if num_records>0:
+			for record in record_list:
+				km += self.parseFloat(record[1])
+				time += self.parseFloat(record[2])
+				average += self.parseFloat(record[5])
+				calories += self.parseFloat(record[6])
+				beats = self.parseFloat(record[3])
+				if float(beats) > 0:
+					time_in_min += time/60
+					tbeats += beats*(time/60)
+				if record[7] > maxspeed:
+					maxspeed = self.parseFloat(record[7])
+				if record[8] > maxbeats:
+					maxbeats = self.parseFloat(record[8])
+			
+			if configuration.getValue("pytraining","prf_us_system") == "True":
+				km = km2miles(km)
+				maxspeed = km2miles(maxspeed)
+			
+			if time_in_min > 0:
+				tbeats = tbeats/time_in_min		
+			else:
+				tbeats = 0
+			average = (km/(time/3600))
+		
+			if maxspeed > 0:
+				#maxpace = 60/maxspeed
+				maxpace = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
+			if average > 0:
+				#pace = 60/average
+				pace = "%d.%02d" %((3600/average)/60,(3600/average)%60)
+		
+			self.weeka_distance.set_text("%0.2f" %km)
+			hour,min,sec = self.parent.date.second2time(time)
+			self.weeka_hour.set_text("%d" %hour)
+			self.weeka_minute.set_text("%d" %min)
+			self.weeka_second.set_text("%d" %sec)
+			self.weeka_maxbeats.set_text("%0.2f" %(maxbeats))
+			self.weeka_beats.set_text("%0.2f" %(tbeats))
+			self.weeka_average.set_text("%0.2f" %average)
+			self.weeka_maxspeed.set_text("%0.2f" %maxspeed)
+			self.weeka_pace.set_text(pace)
+			self.weeka_maxpace.set_text(maxpace)
+			self.weeka_calories.set_text("%0.0f" %calories)
+			self.weekview.set_sensitive(1)
+		else:
+			self.weekview.set_sensitive(0)
 		self.drawareaweek.drawgraph(record_list, date_ini, date_end)
 		logging.debug("<<")
 
@@ -752,8 +826,8 @@ class Main(SimpleGladeApp):
 		if self.block:
 			self.block = False
 		else:
-			self.notebook.set_current_page(1)
-			self.selected_view="day"
+			#self.notebook.set_current_page(1)
+			#self.selected_view="day"
 			self.parent.refreshListRecords()
 			self.parent.refreshGraphView(self.selected_view)
 
