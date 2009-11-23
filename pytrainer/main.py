@@ -208,7 +208,7 @@ class pyTrainer:
 		logging.debug('>>')
 		if self.windowmain is None:
 			logging.debug("First call to refreshGraphView")
-			logging.debug('>>')
+			logging.debug('<<')
 			return
 		date_selected = self.date.getDate()
 		if view=="record":
