@@ -253,14 +253,18 @@ class Record:
 					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats",
 					"date=\"%s\" and records.sport=sports.id_sports" %date)
 
-	def getrecordPeriod(self,date_ini, date_end):
+	def getrecordPeriod(self,date_ini, date_end, sport=None):
+		#This is essentially the same as getrecordPeriodSport (except date ranges) - need to look at merging the two
 		tables = "records,sports"
-		condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports" %(date_ini,date_end)
+		if not sport:
+			condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports" %(date_ini,date_end)
+		else:
+			condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports and sports.name=\"%s\"" %(date_ini,date_end, sport)
 	
 		return self.ddbb.select(tables,"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats, sports.name", condition)
 	
 	def getrecordPeriodSport(self,date_ini, date_end,sport):
-		if sport<1 :
+		if not sport:
 			tables = "records"
 			condition = "date>\"%s\" and date<\"%s\"" %(date_ini,date_end)
 		else :

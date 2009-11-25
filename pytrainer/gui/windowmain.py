@@ -941,7 +941,7 @@ class Main(SimpleGladeApp):
 		if (sport > 0):
 			return self.sportlist.get_active_text()
 		else:
-			return -1
+			return None
 
 	def quit(self, *args):
 		self.parent.quit()

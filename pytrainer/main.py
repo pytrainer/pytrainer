@@ -93,7 +93,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.6.0.9_svn#401"
+		self.version ="1.6.0.9_svn#403"
 		self.date = Date()
 		main_dir = os.path.realpath(os.path.dirname(__file__)) #why?
 		sys.path.insert(0, main_dir) #why?
@@ -234,9 +234,8 @@ class pyTrainer:
 		elif view=="week":
 			 logging.debug('week view')
 			 date_ini, date_end = self.date.getWeekInterval(date_selected, self.prf_us_system)
-			 #sport = self.windowmain.getSportSelected()
-			 #still need to fix for sport selection
-			 record_list = self.record.getrecordPeriod(date_ini, date_end)
+			 sport = self.windowmain.getSportSelected()
+			 record_list = self.record.getrecordPeriod(date_ini, date_end, sport)
 			 self.windowmain.actualize_weekview(record_list, date_ini, date_end)
 		elif view=="month":
 			 logging.debug('month view')
