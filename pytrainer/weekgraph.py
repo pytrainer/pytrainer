@@ -32,7 +32,13 @@ class WeekGraph:
 		if value_selected < 0:
 			self.combovalue.set_active(0)
 			value_selected = 0
+		value_selected2 = self.combovalue2.get_active()
+		if value_selected2 < 0:
+			self.combovalue2.set_active(0)
+			value_selected2 = 0
 		logging.debug(str(values))
+		ylabel,title = self.get_value_params(value_selected)
+		xlabel = ""
 		#build days list to ensure localised values are used.
 		days = []
 		for day in range(0, 7):
@@ -40,29 +46,69 @@ class WeekGraph:
 			incrementDay = datetime.timedelta(days=day)
 			dateToUse = dateTemp + incrementDay
 			days.append( dateToUse.strftime("%a") )
-		valueDict = {}
 
-		#TODO Need to add time etc (currently distance only)
+		valueDict = {} #Stores the totals
+		valueCount = {} #Counts the totals to allow for averaging if needed
+
 		for record in values:
 			day = datetime.datetime.strptime(record[0], "%Y-%m-%d").strftime("%a") # Gives Sun, Mon etc for this record
 			sport = record[9]
-			distance = record[1]
+			value = self.getValue(record, value_selected)
 			if sport in valueDict: #Already got this sport
 				if day in valueDict[sport]: #Already got this sport on this day
-					valueDict[sport][day] += distance
+					valueDict[sport][day] += value
+					valueCount[sport][day] += 1
 				else: #New day for this sport
-					valueDict[sport][day] = distance
+					valueDict[sport][day] = value
+					valueCount[sport][day] = 1
 			else: #New sport
-				valueDict[sport] = {day: distance}
+				valueDict[sport] = {day: value}
+				valueCount[sport] = {day: 1}
 
-		xlabel = _("Day")
-		ylabel = _("kilometers")
-		title = _("Week View")
+		if value_selected == 2 or value_selected == 3:
+			for sport in valueDict.keys():
+				for day in valueDict[sport].keys():
+					logging.debug("averaging values: before %s (count %s)" % (valueDict[sport][day],valueCount[sport][day]))
+					if valueCount[sport][day] > 1: #Only average if 2 or more entries on this day
+						valueDict[sport][day] /= valueCount[sport][day]
+					logging.debug("averaging values: after %s" % valueDict[sport][day])
+
 		self.drawarea.drawStackedBars(days,valueDict,xlabel,ylabel,title)
 		logging.debug("<<")
 
+	def get_value_params(self,value):
+		if value == 0:
+			return _("Kilometers"),_("Weekly kilometers")
+		elif value == 1:
+			return _("Time in Hours"), _("Weekly Time")
+		elif value == 2:
+			return _("Beats per Minute"), _("weekly Beats")
+		elif value == 3:
+			return _("Average Speed (km/h)"), _("Weekly Speed Averages")
+		elif value == 4:
+			return _("Calories"), _("Weekly Calories")
 
-
+	def getValue(self,record,value_selected):
+		#hacemos una relacion entre el value_selected y los values / we make a relation between value_selected and the values
+		conv = {
+			0: 1, #value 0 es kilometros (1)
+			1: 2, #value 1 es tiempo (2)
+			2: 3, #value 2 es pulsaciones(3)
+			3: 5, #value 3 es media(5)
+			4: 6 #value 4 es calorias(6)
+			}
+		value_sel = conv[value_selected]
+		#si la opcion es tiempo lo pasamos a horas / if the option is time we passed it to hours
+		if (value_sel == 2):
+			return self.getFloatValue(record[value_sel])/3600
+		else:
+			return self.getFloatValue(record[value_sel])
+	
+	def getFloatValue(self, value):
+		try:
+			return float(value)
+		except:
+			return float(0)
 
 
 

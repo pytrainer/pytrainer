@@ -145,6 +145,7 @@ class DrawArea:
 		inds = xrange(0, numCols)
 		xvals = [x+(1-width)/2 for x in xrange(0, numCols)]
 		cellText = []
+		self.showGraph=False
 		for key in keys:
 			for ind in inds:
 				ybottoms[ind] += yheights[ind]
@@ -154,11 +155,16 @@ class DrawArea:
 				index = xbars.index(xvalue)
 				if xvalue in yvalues[key]:
 					height = yvalues[key][xvalue]
+					if float(height) > 0.0:
+						self.showGraph=True
 				else:
 					height = self.NEARLY_ZERO
 				yheights[index] = height
 			cellText.append([self.fmt(x) for x in yheights])
-			axis.bar(xvals, yheights, bottom=ybottoms, width=width, color=color,  align='edge', label=key)
+			if self.showGraph:
+				axis.bar(xvals, yheights, bottom=ybottoms, width=width, color=color,  align='edge', label=key)
+			else:	#Only zero results
+				pass
 		axis.set_xticklabels('' * len(xbars))
 		axis.set_ylabel(ylabel)
 		plt.title(title)
