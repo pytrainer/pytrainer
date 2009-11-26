@@ -19,6 +19,7 @@
 from gui.drawArea import DrawArea
 import logging
 import datetime
+import calendar
 
 class WeekGraph:
 	def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None):
@@ -38,8 +39,8 @@ class WeekGraph:
 			value_selected2 = 0
 		logging.debug(str(values))
 		ylabel,title = self.get_value_params(value_selected)
-		xlabel = ""
 		#build days list to ensure localised values are used.
+		#TODO look at using calendar.day_abbr for this
 		days = []
 		for day in range(0, 7):
 			dateTemp = datetime.datetime.strptime(date_ini, "%Y-%m-%d")
@@ -72,8 +73,12 @@ class WeekGraph:
 					if valueCount[sport][day] > 1: #Only average if 2 or more entries on this day
 						valueDict[sport][day] /= valueCount[sport][day]
 					logging.debug("averaging values: after %s" % valueDict[sport][day])
+		if value_selected == 1: #Values are of time type
+			valuesAreTime=True
+		else:
+			valuesAreTime=False
 
-		self.drawarea.drawStackedBars(days,valueDict,xlabel,ylabel,title)
+		self.drawarea.drawStackedBars(days,valueDict,ylabel,title, valuesAreTime)
 		logging.debug("<<")
 
 	def get_value_params(self,value):

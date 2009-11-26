@@ -57,52 +57,70 @@ class DrawArea:
 		logging.debug('>>')	
 		self.removeVboxChildren()	
 		figure = Figure(figsize=(6,4), dpi=72)
-		#canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
-		
+		numCols=len(xvalues[0])
 		xmod = 0.4
-		if len(xvalues) > 1:
-			width = 0.40
-		else:
-			width = 0.80
-		i=0
-		
-		for value in xvalues:
-			if i<1:
-				axis = figure.add_subplot(111)
-				axis.set_xlim(-width,len(xvalues[i]))
-				axis.set_xlabel(xlabel[i])
-				axis.set_ylabel(ylabel[i])
-				axis.set_title(title[i])	
-				j=0
-				#print "xvalues: %s" % (xvalues)
-				#print "yvalues: %s" % (yvalues)
-				for x in xvalues[i]:
-					xvalues[i][j]=x-xmod
-					j+=1
-				axis.bar(xvalues[i], yvalues[i], width, color=color[i])
-					
-				axis.grid(True)
-				for tl in axis.get_yticklabels():
-    					tl.set_color('%s' %color[i])
-			if i>=1:
-				ax2 = axis.twinx()
-				ax2.bar(xvalues[i], yvalues[i], width, color=color[i])
-				for tl in ax2.get_yticklabels():
-    					tl.set_color('%s' %color[i])
-			axis.set_xlabel(xlabel[i])
-			i+=1
-		
-		if (len(xvalues)>1):
-			axis.set_title("%s vs %s" %(ylabel[0],ylabel[1]))
-		else:
-			axis.set_title("%s" %(ylabel[0]))
+		self.showGraph=False
+		axis = figure.add_subplot(111)
 
+		if len(xvalues) == 1: #One axis
+			barWidth = 0.8
+			barOffset = 0.1
+		elif len(xvalues) == 2: #Twin axes
+			barWidth = 0.4
+			barOffset = 0.1
+		else: #Error
+			return
+
+		axis.set_xlabel(xlabel[0])
+		axis.set_ylabel(ylabel[0])
+		xvals = [x+barOffset for x in range(0, numCols)]
+		yvals = [0] * numCols
+		for i in range(0, numCols):
+			yval = yvalues[0][i]
+			if float(yval) > 0.0:
+				self.showGraph=True
+			else:
+				yval = self.NEARLY_ZERO
+			yvals[i] = yval
+		if self.showGraph:
+			axis.bar(xvals, yvals, barWidth, color=color[0], align='edge')		
+		else:	#Only zero results
+			pass
+
+		axis.grid(True)
+		axis.set_title("%s" %(ylabel[0]))
+		for tl in axis.get_yticklabels():
+			tl.set_color('%s' %color[0])
+
+		if len(xvalues) == 2: #Display twin axis
+			ax2 = axis.twinx()
+			xvals = [x+barOffset+barWidth for x in range(0, numCols)]
+			for i in range(0, numCols):
+				yval = yvalues[1][i]
+				if float(yval) > 0.0:
+					self.showGraph=True
+				else:
+					yval = self.NEARLY_ZERO
+				yvals[i] = yval
+			if self.showGraph:
+				ax2.bar(xvals, yvals, barWidth, color=color[1], align='edge')
+				ax2.set_ylabel(ylabel[1])
+			else:	#Only zero results
+				pass
+			for tl in ax2.get_yticklabels():
+   				tl.set_color('%s' %color[1])
+			axis.set_title("%s vs %s" %(ylabel[0],ylabel[1]))
+
+		tickLocations = [x+0.5 for x in xrange(0, numCols)]
+		axis.set_xticks(tickLocations)
+		axis.set_xticklabels(xvalues[0])
+		axis.set_xlim(0, numCols)
 		
 		canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
 		canvas.show()
 		self.vbox.pack_start(canvas, True, True)
-		toolbar = NavigationToolbar(canvas, self.window)
-		self.vbox.pack_start(toolbar, False, False)
+		#toolbar = NavigationToolbar(canvas, self.window)
+		#self.vbox.pack_start(toolbar, False, False)
 
 		for child in self.vbox.get_children():
 			logging.debug('Child available: '+str(child))
@@ -115,13 +133,22 @@ class DrawArea:
 			x = x % len(colors)
 		return colors[x]
 	
-	def fmt(self, x):
+	def fmtTableText(self, x, valuesAreTime):
 		if x <= 0.0001:
 			return ' '
+		elif valuesAreTime:
+			hour = int(x)
+			minutes = int((x-hour)*60)
+			hourLabel = _("h")
+			minLabel = _("min")
+			if hour > 0:
+				return "%d%s %02d%s" % (hour, hourLabel, minutes, minLabel)
+			else:
+				return "%02d%s" % (minutes, minLabel)
 		else:
 			return '%1.1f' % x
 
-	def drawStackedBars(self,xbars,yvalues,xlabel,ylabel,title):
+	def drawStackedBars(self,xbars,yvalues,ylabel,title, valuesAreTime=False):
 		'''function to draw stacked bars
 			xbars needs to be a list of strings, e.g. ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 			yvalues needs to be a dict e.g. {'Kayak': {'Tue': 10.08, 'Fri': 17.579999999999998, 'Thu': 15.66, 'Sat': 30.619999999999997}, {'Run': {'Mon': 9.65, 'Sun': 15.59}}
@@ -160,7 +187,7 @@ class DrawArea:
 				else:
 					height = self.NEARLY_ZERO
 				yheights[index] = height
-			cellText.append([self.fmt(x) for x in yheights])
+			cellText.append([self.fmtTableText(x, valuesAreTime) for x in yheights])
 			if self.showGraph:
 				axis.bar(xvals, yheights, bottom=ybottoms, width=width, color=color,  align='edge', label=key)
 			else:	#Only zero results

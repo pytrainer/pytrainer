@@ -24,7 +24,7 @@ class MonthGraph:
 		self.combovalue = combovalue
 		self.combovalue2 = combovalue2
 
-	def drawgraph(self,values):
+	def drawgraph(self,values, daysInMonth):
 		xval = []
 		yval = []
 		xlab = []
@@ -36,9 +36,8 @@ class MonthGraph:
 		if value_selected < 0:
 			self.combovalue.set_active(0)
 			value_selected = 0
-		daysmonth,xlabel,ylabel,title,color = self.get_value_params(value_selected)
-		#print "daysmonth %s,xlabel %s,ylabel %s,title %s,color %s" % (daysmonth,xlabel,ylabel,title,color)
-		xvalues,yvalues = self.get_values(values,value_selected,daysmonth)
+		xlabel,ylabel,title,color = self.get_value_params(value_selected)
+		xvalues,yvalues = self.get_values(values,value_selected,daysInMonth)
 
 		xval.append(xvalues)
 		yval.append(yvalues)
@@ -55,8 +54,8 @@ class MonthGraph:
 			value_selected2 = 0
 		if value_selected2 > 0:
 			value_selected2 = value_selected2-1
-			daysmonth,xlabel,ylabel,title,color = self.get_value_params(value_selected2)
-			xvalues,yvalues = self.get_values(values,value_selected2,daysmonth)
+			xlabel,ylabel,title,color = self.get_value_params(value_selected2)
+			xvalues,yvalues = self.get_values(values,value_selected2,daysInMonth)
 			xval.append(xvalues)
 			yval.append(yvalues)
 			xlab.append(xlabel)
@@ -67,17 +66,17 @@ class MonthGraph:
 
 	def get_value_params(self,value):
 		if value == 0:
-			return 32,_("day"),_("Kilometers"),_("Daily kilometers"),"y"
+			return _("day"),_("Kilometers"),_("Daily kilometers"),"y"
 		elif value == 1:
-			return 32,_("day"),_("Time in Hours"), _("Daily Time"),"b"
+			return _("day"),_("Time in Hours"), _("Daily Time"),"b"
 		elif value == 2:
-			return 32,_("day"),_("Beats per Minute"), _("Daily Beats"),"r"
+			return _("day"),_("Beats per Minute"), _("Daily Beats"),"r"
 		elif value == 3:
-			return 32,_("day"),_("Average (km/h)"), _("Daily Averages"),"g"
+			return _("day"),_("Average (km/h)"), _("Daily Averages"),"g"
 		elif value == 4:
-			return 32,_("day"),_("Calories"), _("Daily Calories"),"b"
+			return _("day"),_("Calories"), _("Daily Calories"),"b"
 
-	def get_values(self,values,value_selected,daysmonth):
+	def get_values(self,values,value_selected,daysInMonth):
 		#hacemos una relacion entre el value_selected y los values / we make a relation between value_selected and the values
 		conv = {
 			0: 1, #value 0 es kilometros (1)
@@ -88,7 +87,7 @@ class MonthGraph:
 			}
 		list_values = {}
 		list_average = {}
-		for i in range(1,32):
+		for i in range(1,daysInMonth+1):
 			list_values[i]=0
 			list_average[i]=0
 
@@ -113,8 +112,8 @@ class MonthGraph:
 
 		xunits = []
 		yunits = []
-		for i in range (0,daysmonth):
-                        xunits.append(i)
+		for i in range (1,daysInMonth+1):
+			xunits.append(i)
 			yunits.append(float(0))
 	
 		for value in list_values:

@@ -205,8 +205,8 @@ class Main(SimpleGladeApp):
 			self.record_date.set_text(str(date))
 			hour,min,sec=self.parent.date.second2time(int(record_list[3]))
 			self.record_hour.set_text("%d" %hour)
-			self.record_minute.set_text("%d" %min)
-			self.record_second.set_text("%d" %sec)
+			self.record_minute.set_text("%02d" %min)
+			self.record_second.set_text("%02d" %sec)
 			self.record_calories.set_text("%0.0f" %calories)
 			self.record_title.set_text(title)
 			buffer = self.record_comments.get_buffer()
@@ -497,9 +497,9 @@ class Main(SimpleGladeApp):
 			self.monthview.set_sensitive(0)
 		logging.debug("<<")
 
-	def actualize_monthgraph(self,record_list):
+	def actualize_monthgraph(self,record_list, daysInMonth):
 		logging.debug(">>")
-		self.drawareamonth.drawgraph(record_list)
+		self.drawareamonth.drawgraph(record_list, daysInMonth)
 		logging.debug("<<")
 	
 	def actualize_yearview(self,record_list, year):

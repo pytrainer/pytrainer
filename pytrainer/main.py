@@ -93,7 +93,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.6.0.9_svn#406"
+		self.version ="1.6.0.9_svn#407"
 		self.date = Date()
 		main_dir = os.path.realpath(os.path.dirname(__file__)) #why?
 		sys.path.insert(0, main_dir) #why?
@@ -243,9 +243,9 @@ class pyTrainer:
 			 sport = self.windowmain.getSportSelected()
 			 record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport)
 			 #logging.debug('record list: '+record_list)
-			 nameMonth = self.date.getNameMonth(date_selected)
+			 nameMonth, daysInMonth = self.date.getNameMonth(date_selected)
 			 self.windowmain.actualize_monthview(record_list, nameMonth)
-			 self.windowmain.actualize_monthgraph(record_list)
+			 self.windowmain.actualize_monthgraph(record_list, daysInMonth)
 		elif view=="year":
 			 logging.debug('year view')
 			 date_ini, date_end = self.date.getYearInterval(date_selected)

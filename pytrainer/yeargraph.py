@@ -17,6 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from gui.drawArea import DrawArea
+import calendar
 
 class YearGraph:
 	def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None):
@@ -129,7 +130,8 @@ class YearGraph:
 		xunits = []
 		yunits = []
 		for i in range (0,monthsnumber):
-			xunits.append(i)
+			xunits.append(unicode(calendar.month_abbr[i+1]))
+			#xunits.append(i)
 			yunits.append(float(0))
 		for i in list_values:
 			if list_average[i] > 0:

@@ -93,22 +93,24 @@ class Date:
 		return date_ini, date_end
 	
 	def getNameMonth(self, date):
-		month_name = {
-			"01":_("January"),
-			"02":_("Febrary"),
-			"03":_("March"),
-			"04":_("April"),
-			"05":_("May"),
-			"06":_("June"),
-			"07":_("July"),
-			"08":_("August"),
-			"09":_("September"),
-			"10":_("October"),
-			"11":_("November"),
-			"12":_("December")
-			}
+		#month_name = {
+		#	"01":_("January"),
+		#	"02":_("Febrary"),
+		#	"03":_("March"),
+		#	"04":_("April"),
+		#	"05":_("May"),
+		#	"06":_("June"),
+		#	"07":_("July"),
+		#	"08":_("August"),
+		#	"09":_("September"),
+		#	"10":_("October"),
+		#	"11":_("November"),
+		#	"12":_("December")
+		#	}
 		year,month,day = date.split("-")
-		return month_name["%s" %month]
+		day, daysInMonth = calendar.monthrange(int(year), int(month))
+		monthName = calendar.month_name[int(month)]
+		return monthName, daysInMonth
 
 	def getYear(self,date):
 		year,month,day = date.split("-")
