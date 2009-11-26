@@ -45,7 +45,7 @@ class WeekGraph:
 			dateTemp = datetime.datetime.strptime(date_ini, "%Y-%m-%d")
 			incrementDay = datetime.timedelta(days=day)
 			dateToUse = dateTemp + incrementDay
-			days.append( dateToUse.strftime("%a") )
+			days.append( unicode(dateToUse.strftime("%a")) )
 
 		valueDict = {} #Stores the totals
 		valueCount = {} #Counts the totals to allow for averaging if needed
