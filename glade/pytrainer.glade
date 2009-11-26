@@ -5060,7 +5060,12 @@ Calories</property>
 				      <child>
 					<widget class="GtkComboBoxEntry" id="week_combovalue2">
 					  <property name="visible">True</property>
-					  <property name="items" translatable="yes">None</property>
+					  <property name="items" translatable="yes">None
+Kilometers
+Time
+Beats
+Average
+Calories</property>
 					  <property name="add_tearoffs">False</property>
 					  <property name="has_frame">True</property>
 					  <property name="focus_on_click">True</property>

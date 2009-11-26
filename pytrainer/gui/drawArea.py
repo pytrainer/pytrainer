@@ -148,19 +148,29 @@ class DrawArea:
 		else:
 			return '%1.1f' % x
 
-	def drawStackedBars(self,xbars,yvalues,ylabel,title, valuesAreTime=False):
+	def drawStackedBars(self,xvalues,yvalues,ylabel,title, valuesAreTime=False):
 		'''function to draw stacked bars
-			xbars needs to be a list of strings, e.g. ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-			yvalues needs to be a dict e.g. {'Kayak': {'Tue': 10.08, 'Fri': 17.579999999999998, 'Thu': 15.66, 'Sat': 30.619999999999997}, {'Run': {'Mon': 9.65, 'Sun': 15.59}}
+			xvalues needs to be a list of strings, e.g. [0]["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+			yvalues needs to be a dict e.g. [0]{'Kayak': {'Tue': 10.08, 'Fri': 17.579999999999998, 'Thu': 15.66, 'Sat': 30.619999999999997}, {'Run': {'Mon': 9.65, 'Sun': 15.59}}
 		'''
 		#TODO tidy
-		#Add totals to table?
 		logging.debug('>>')	
 		logging.debug("Title: %s", (title, ))
 		self.removeVboxChildren()
-		keys = yvalues.keys()
+
+		#Check how many axes to draw
+		if len(xvalues) == 1: #One axis
+			barWidth = 0.8
+			barOffset = 0.1
+		elif len(xvalues) == 2: #Twin axes
+			barWidth = 0.4
+			barOffset = 0.1
+		else: #Error
+			return
+
+		keys = yvalues[0].keys()
 		numRows = len(keys)
-		numCols = len(xbars)
+		numCols = len(xvalues[0])
 		if numRows == 0:
 			return
 		width = .8
@@ -170,35 +180,76 @@ class DrawArea:
 		ybottoms = [0] * numCols
 		yheights = [0] * numCols
 		inds = xrange(0, numCols)
-		xvals = [x+(1-width)/2 for x in xrange(0, numCols)]
+		xvals = [x+barOffset for x in range(0, numCols)]
 		cellText = []
 		self.showGraph=False
+
+		#Display first axis
 		for key in keys:
 			for ind in inds:
 				ybottoms[ind] += yheights[ind]
 				yheights[ind] = 0 #Zero heights
 			color = self.getColor(keys.index(key))
-			for xvalue in xbars:
-				index = xbars.index(xvalue)
-				if xvalue in yvalues[key]:
-					height = yvalues[key][xvalue]
+			for xvalue in xvalues[0]:
+				index = xvalues[0].index(xvalue)
+				if xvalue in yvalues[0][key]:
+					height = yvalues[0][key][xvalue]
 					if float(height) > 0.0:
 						self.showGraph=True
 				else:
 					height = self.NEARLY_ZERO
 				yheights[index] = height
-			cellText.append([self.fmtTableText(x, valuesAreTime) for x in yheights])
+			cellText.append([self.fmtTableText(x, valuesAreTime[0]) for x in yheights])
 			if self.showGraph:
-				axis.bar(xvals, yheights, bottom=ybottoms, width=width, color=color,  align='edge', label=key)
+				axis.bar(xvals, yheights, bottom=ybottoms, width=barWidth, color=color,  align='edge', label=key)
 			else:	#Only zero results
 				pass
-		axis.set_xticklabels('' * len(xbars))
-		axis.set_ylabel(ylabel)
-		plt.title(title)
-		axis.legend(loc=0)
+		axis.set_xticklabels('' * len(xvalues[0]))
+		axis.set_ylabel(ylabel[0])
+		if len(xvalues) == 1:
+			plt.title(title[0])
+			axis.legend(loc=0)
+
+		#Display twin axis
+		if len(xvalues) == 2: 
+			self.showGraph=False
+			ax2 = axis.twinx()
+			keys = yvalues[1].keys()
+			ybottoms = [0] * numCols
+			yheights = [self.NEARLY_ZERO] * numCols
+			for key in keys:
+				for ind in inds:
+					ybottoms[ind] += yheights[ind]
+					yheights[ind] = 0.0 #Zero heights
+				color = self.getColor(keys.index(key))
+				for xvalue in xvalues[0]:
+					index = xvalues[0].index(xvalue)
+					if xvalue in yvalues[1][key]:
+						height = yvalues[1][key][xvalue]
+						if float(height) > 0.0:
+							self.showGraph=True
+					else:
+						height = self.NEARLY_ZERO
+					yheights[index] = height
+					textToAdd = self.fmtTableText(height, valuesAreTime[1])
+					if textToAdd is not ' ':
+						row = keys.index(key)
+						col = index
+						cellText[row][col] += " | %s" % (self.fmtTableText(height, valuesAreTime[1]))
+						#print "Would add %s to %s %s" % (self.fmtTableText(height, valuesAreTime[1]), index, keys.index(key))						
+				if self.showGraph:
+					xvals = [x+barOffset+barWidth for x in range(0, numCols)]
+					#print "ax2", xvals, yheights, ybottoms
+					ax2.bar(xvals, yheights, bottom=ybottoms, width=barWidth, color=color,  align='edge', label=key)
+				else:	#Only zero results
+					pass
+			ax2.set_xticklabels('' * len(xvalues[1]))
+			ax2.set_ylabel(ylabel[1])
+			ax2.legend(loc=0)
+			plt.title("%s vs %s" %(ylabel[0],ylabel[1]))
 
 		## try to do some table stuff
-		colLabels = xbars
+		colLabels = xvalues[0]
 		rowLabels = keys
 		axis.table(cellText=cellText, cellLoc='center', rowLabels=rowLabels, colLabels=colLabels, loc='bottom')
 		plt.subplots_adjust(left=0.15,bottom=0.08+(0.03*numRows))

@@ -29,6 +29,13 @@ class WeekGraph:
 
 	def drawgraph(self,values, date_ini, date_end):
 		logging.debug(">>")
+		yval = []
+		xlab = []
+		ylab = []
+		tit = []
+		valsAreTime = []
+
+		#Reset the comboboxes if nothing selected
 		value_selected = self.combovalue.get_active()
 		if value_selected < 0:
 			self.combovalue.set_active(0)
@@ -37,17 +44,36 @@ class WeekGraph:
 		if value_selected2 < 0:
 			self.combovalue2.set_active(0)
 			value_selected2 = 0
-		logging.debug(str(values))
-		ylabel,title = self.get_value_params(value_selected)
-		#build days list to ensure localised values are used.
-		#TODO look at using calendar.day_abbr for this
-		days = []
-		for day in range(0, 7):
-			dateTemp = datetime.datetime.strptime(date_ini, "%Y-%m-%d")
-			incrementDay = datetime.timedelta(days=day)
-			dateToUse = dateTemp + incrementDay
-			days.append( unicode(dateToUse.strftime("%a")) )
 
+		#build localised days list
+		days = self.getDays(date_ini)
+
+		ylabel,title = self.get_value_params(value_selected)
+		ylab.append(ylabel)
+		tit.append(title)
+		
+		#TODO
+		yvalues, valuesAreTime = self.get_values(values,value_selected)
+		yval.append(yvalues)
+		xlab.append(days)
+		valsAreTime.append(valuesAreTime)
+		
+		#Second combobox used
+		if value_selected2 > 0:
+			value_selected2 = value_selected2-1
+			ylabel,title = self.get_value_params(value_selected2)
+			ylab.append(ylabel)
+			tit.append(title)
+			yvalues, valuesAreTime = self.get_values(values,value_selected2)
+			yval.append(yvalues)
+			xlab.append(days)
+			valsAreTime.append(valuesAreTime)
+
+		#Draw chart
+		self.drawarea.drawStackedBars(xlab,yval,ylab,tit,valsAreTime)
+		logging.debug("<<")
+
+	def get_values(self, values, value_selected):
 		valueDict = {} #Stores the totals
 		valueCount = {} #Counts the totals to allow for averaging if needed
 
@@ -78,8 +104,7 @@ class WeekGraph:
 		else:
 			valuesAreTime=False
 
-		self.drawarea.drawStackedBars(days,valueDict,ylabel,title, valuesAreTime)
-		logging.debug("<<")
+		return valueDict, valuesAreTime
 
 	def get_value_params(self,value):
 		if value == 0:
@@ -115,5 +140,12 @@ class WeekGraph:
 		except:
 			return float(0)
 
-
-
+	def getDays(self, date_ini):
+		#TODO look at using calendar.day_abbr for this
+		days = []
+		for day in range(0, 7):
+			dateTemp = datetime.datetime.strptime(date_ini, "%Y-%m-%d")
+			incrementDay = datetime.timedelta(days=day)
+			dateToUse = dateTemp + incrementDay
+			days.append( unicode(dateToUse.strftime("%a")) )
+		return days
