@@ -46,6 +46,7 @@ class Main(SimpleGladeApp):
 
 		self.popup = PopupMenu(data_path,self)
 		self.block = False
+		self.activeSport = None
 
 	def new(self):
 		self.menublocking = 0
@@ -122,15 +123,19 @@ class Main(SimpleGladeApp):
 	def createMap(self,Googlemaps,waypoint):
 		self.googlemaps = Googlemaps(self.data_path, self.map_vbox,waypoint)
 
-	def updateSportList(self,listSport):
+	def updateSportList(self,listSport): 
 		logging.debug(">>")
-		self.sportlist.set_active(1)
-		while (self.sportlist.get_active() == 1):
-			self.sportlist.remove_text(1)
-			self.sportlist.set_active(1)
+		liststore =  self.sportlist.get_model()
+		if self.sportlist.get_active() is not 0:
+			self.sportlist.set_active(0) #Set first item active if it isnt
+		firstEntry = self.sportlist.get_active_text()
+		liststore.clear() #Delete all items
+		#Re-add "All Sports"
+		liststore.append([firstEntry])
+		#Re-add all sports in listSport
 		for i in listSport:
-			self.sportlist.append_text(i[0])
-			self.sportlist.set_active(0)
+			liststore.append([i[0]])
+		self.sportlist.set_active(0)
 		logging.debug("<<")
 
 	def create_treeview(self,treeview,column_names):
@@ -769,7 +774,11 @@ class Main(SimpleGladeApp):
 	
 	def on_sportlist_changed(self,widget):
 		logging.debug("--")
-		self.parent.refreshGraphView(self.selected_view)
+		if self.sportlist.get_active() != self.activeSport:
+			self.activeSport = self.sportlist.get_active()
+			self.parent.refreshGraphView(self.selected_view)
+		else:
+			logging.debug("on_sportlist_changed called with no change")
 	
 	def on_page_change(self,widget,gpointer,page):
 		logging.debug("--")
