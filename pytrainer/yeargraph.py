@@ -61,21 +61,21 @@ class YearGraph:
                         yval.append(yvalues)
                         xlab.append(xlabel)
                         ylab.append(ylabel)
-                        tit.append("")
+                        tit.append(title)
                         col.append(color)
 		self.drawarea.stadistics("bars",xval,yval,xlab,ylab,tit,col)
 
 	def get_value_params(self,value):
 		if value == 0:
-			return 12,_("month"),_("kilometers"),_("monthly kilometers"),"y"
+			return 12,_("month"),_("Distance (km)"),_("Monthly Distance"),"y"
 		elif value == 1:
-			return 12,_("month"),_("time in hours"), _("monthly time"),"b"
+			return 12,_("month"),_("Time (hours)"), _("Monthly Time"),"b"
 		elif value == 2:
-			return 12,_("month"),_("beats per minute"), _("monthly beats"),"r"
+			return 12,_("month"),_("Average Heart Rate (bpm)"), _("Monthly Average Heart Rate"),"r"
 		elif value == 3:
-			return 12,_("month"),_("average (hm/h)"), _("monthly averages"),"g"
+			return 12,_("month"),_("Average Speed (km/h)"), _("Monthly Average Speed"),"g"
 		elif value == 4:
-			return 12,_("month"),_("calories"), _("monthly calories"),"b"
+			return 12,_("month"),_("Calories"), _("Monthly Calories"),"b"
 
 	def get_values(self,values,value_selected,monthsnumber):
 		#hacemos una relacion entre el value_selected y los values
@@ -87,61 +87,46 @@ class YearGraph:
 			4: 6 #value 4 es calorias(6)
 			}
 		list_values = {}
-		km_total = {}
-		tm_total = {}
 		list_average = {}
-		i = 1
-		while i < 13:
-			list_values[i] = 0
-			list_average[i] = 0
+		tm_total = {}
+		for i in range(1,monthsnumber+1):
+			list_values[i]=0
+			list_average[i]=0
 			tm_total[i] = 0
-			i += 1
 			
 		value_sel = conv[value_selected]
 
-		log = []	
 		for value in values:
 			date = value[0]
 			year,month,day = date.split("-")
 			month = int(month)
-			#si la opcion es tiempo lo pasamos a horas
+			#si la opcion es tiempo lo pasamos a horas / if the option is time we passed it to hours
 			if (value_sel == 2):
 				graph_value = self.getFloatValue(value[value_sel])/3600
-			#Si la opcion es la media tenemos que recalcular km y tiempo total
-			elif (value_sel == 5):
-				graph_value = self.getFloatValue(value[1])
 			else:
 				graph_value = self.getFloatValue(value[value_sel])
 
-			#si es una opcion de suma de absolutos:
-			if ((value_selected == 0) or (value_selected==1) or (value_selected==4)): 
+			#si es una opcion de suma de absolutos / if it is an option of sum of absolute
+			if ((value_selected == 0) or (value_selected==1) or (value_selected==4)):
 				list_values[int(month)] += graph_value
-
-			#Si es pa la media de velocidad
-			elif (value_selected == 3):
-				list_values[int(month)] += graph_value
-				tm_total[int(month)] += self.getFloatValue(value[2])
-				
-			#si se trata de calcular medias:
+			#si se trata de calcular medias / if one is to calculate averages:
 			else:
-				list_values[int(month)] += graph_value
-				list_average[int(month)] += 1
-	
+				if graph_value is not None and graph_value != 0:
+					list_values[int(month)] += graph_value
+					list_average[int(month)] += 1
+
 		xunits = []
 		yunits = []
 		for i in range (0,monthsnumber):
 			xunits.append(unicode(calendar.month_abbr[i+1]))
-			#xunits.append(i)
 			yunits.append(float(0))
-		for i in list_values:
-			if list_average[i] > 0:
-				val = list_values[i]/list_average[i]
-			if tm_total[i] > 0:
-				val = list_values[i]/(tm_total[i]/3600)
+		for value in list_values:
+			if ((value_selected == 0) or (value_selected==1) or (value_selected==4)):
+				yunits[value-1] = list_values[value]
 			else:
-				val = list_values[i]
-			yunits[i-1] = val
-                return xunits,yunits
+				if list_average[value]>0:
+					yunits[value-1] = list_values[value]/list_average[value]
+		return xunits,yunits
 	
 	def getFloatValue(self, value):
 		try:

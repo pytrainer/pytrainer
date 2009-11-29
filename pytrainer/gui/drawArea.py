@@ -88,7 +88,7 @@ class DrawArea:
 			pass
 
 		axis.grid(True)
-		axis.set_title("%s" %(ylabel[0]))
+		axis.set_title("%s" %(title[0]))
 		for tl in axis.get_yticklabels():
 			tl.set_color('%s' %color[0])
 
@@ -109,7 +109,7 @@ class DrawArea:
 				pass
 			for tl in ax2.get_yticklabels():
    				tl.set_color('%s' %color[1])
-			axis.set_title("%s vs %s" %(ylabel[0],ylabel[1]))
+			axis.set_title("%s vs %s" %(title[0],title[1]))
 
 		tickLocations = [x+0.5 for x in xrange(0, numCols)]
 		axis.set_xticks(tickLocations)
@@ -150,8 +150,8 @@ class DrawArea:
 
 	def drawStackedBars(self,xvalues,yvalues,ylabel,title, valuesAreTime=False):
 		'''function to draw stacked bars
-			xvalues needs to be a list of strings, e.g. [0]["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
-			yvalues needs to be a dict e.g. [0]{'Kayak': {'Tue': 10.08, 'Fri': 17.579999999999998, 'Thu': 15.66, 'Sat': 30.619999999999997}, {'Run': {'Mon': 9.65, 'Sun': 15.59}}
+			xvalues needs to be a list of lists of strings, e.g. [0]["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+			yvalues needs to be a list of dicts e.g. [0]{'Kayak': {'Tue': 10.08, 'Fri': 17.579999999999998, 'Thu': 15.66, 'Sat': 30.619999999999997}, {'Run': {'Mon': 9.65, 'Sun': 15.59}}
 		'''
 		#TODO tidy
 		logging.debug('>>')	
@@ -242,11 +242,12 @@ class DrawArea:
 					#print "ax2", xvals, yheights, ybottoms
 					ax2.bar(xvals, yheights, bottom=ybottoms, width=barWidth, color=color,  align='edge', label=key)
 				else:	#Only zero results
+					ax2.bar(xvals, [0]*numCols, bottom=[0]*numCols, width=barWidth, color=color,  align='edge', label=key)
 					pass
 			ax2.set_xticklabels('' * len(xvalues[1]))
 			ax2.set_ylabel(ylabel[1])
 			ax2.legend(loc=0)
-			plt.title("%s vs %s" %(ylabel[0],ylabel[1]))
+			plt.title("%s vs %s" %(title[0],title[1]))
 
 		## try to do some table stuff
 		colLabels = xvalues[0]

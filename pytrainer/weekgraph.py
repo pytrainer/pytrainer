@@ -108,15 +108,15 @@ class WeekGraph:
 
 	def get_value_params(self,value):
 		if value == 0:
-			return _("Kilometers"),_("Weekly kilometers")
+			return _("Distance (km)"),_("Daily Distance")
 		elif value == 1:
-			return _("Time in Hours"), _("Weekly Time")
+			return _("Time (hours)"), _("Daily Time")
 		elif value == 2:
-			return _("Beats per Minute"), _("weekly Beats")
+			return _("Average Heart Rate (bpm)"), _("Daily Average Heart Rate")
 		elif value == 3:
-			return _("Average Speed (km/h)"), _("Weekly Speed Averages")
+			return _("Average Speed (km/h)"), _("Daily Average Speed")
 		elif value == 4:
-			return _("Calories"), _("Weekly Calories")
+			return _("Calories"), _("Daily Calories")
 
 	def getValue(self,record,value_selected):
 		#hacemos una relacion entre el value_selected y los values / we make a relation between value_selected and the values

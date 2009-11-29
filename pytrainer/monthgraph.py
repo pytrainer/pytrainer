@@ -60,19 +60,19 @@ class MonthGraph:
 			yval.append(yvalues)
 			xlab.append(xlabel)
 			ylab.append(ylabel)
-			tit.append("")
+			tit.append(title)
 			col.append(color)
 		self.drawarea.stadistics("bars",xval,yval,xlab,ylab,tit,col)
 
 	def get_value_params(self,value):
 		if value == 0:
-			return _("day"),_("Kilometers"),_("Daily kilometers"),"y"
+			return _("day"),_("Distance (km)"),_("Daily Distance"),"y"
 		elif value == 1:
-			return _("day"),_("Time in Hours"), _("Daily Time"),"b"
+			return _("day"),_("Time (hours)"), _("Daily Time"),"b"
 		elif value == 2:
-			return _("day"),_("Beats per Minute"), _("Daily Beats"),"r"
+			return _("day"),_("Average Heart Rate (bpm)"), _("Daily Average Heart Rate"),"r"
 		elif value == 3:
-			return _("day"),_("Average (km/h)"), _("Daily Averages"),"g"
+			return _("day"),_("Average Speed (km/h)"), _("Daily Average Speed"),"g"
 		elif value == 4:
 			return _("day"),_("Calories"), _("Daily Calories"),"b"
 
@@ -103,12 +103,13 @@ class MonthGraph:
 			year,month,day = date.split("-")
 
 			#si es una opcion de suma de absolutos / if it is an option of sum of absolute
-                        if ((value_selected == 0) or (value_selected==1) or (value_selected==4)):
-                                list_values[int(day)] += graph_value
-                        #si se trata de calcular medias / if one is to calculate averages:
-                        else:
-                                list_values[int(day)] += graph_value
-                                list_average[int(day)] += 1
+			if ((value_selected == 0) or (value_selected==1) or (value_selected==4)):
+				list_values[int(day)] += graph_value
+			#si se trata de calcular medias / if one is to calculate averages:
+			else:
+				if graph_value is not None and graph_value != 0:
+					list_values[int(day)] += graph_value
+					list_average[int(day)] += 1
 
 		xunits = []
 		yunits = []

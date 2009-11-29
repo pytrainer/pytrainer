@@ -5015,10 +5015,10 @@ Stage Profile/velocity</property>
 				      <child>
 					<widget class="GtkComboBoxEntry" id="week_combovalue">
 					  <property name="visible">True</property>
-					  <property name="items" translatable="yes">Kilometers
+					  <property name="items" translatable="yes">Distance
 Time
-Beats
-Average
+Average Heart Rate
+Average Speed
 Calories</property>
 					  <property name="add_tearoffs">False</property>
 					  <property name="has_frame">True</property>
@@ -5061,10 +5061,10 @@ Calories</property>
 					<widget class="GtkComboBoxEntry" id="week_combovalue2">
 					  <property name="visible">True</property>
 					  <property name="items" translatable="yes">None
-Kilometers
+Distance
 Time
-Beats
-Average
+Average Heart Rate
+Average Speed
 Calories</property>
 					  <property name="add_tearoffs">False</property>
 					  <property name="has_frame">True</property>
@@ -6157,10 +6157,10 @@ Calories</property>
 				      <child>
 					<widget class="GtkComboBoxEntry" id="month_combovalue">
 					  <property name="visible">True</property>
-					  <property name="items" translatable="yes">Kilometers
+					  <property name="items" translatable="yes">Distance
 Time
-Beats
-Average
+Average Heart Rate
+Average Speed
 Calories</property>
 					  <property name="add_tearoffs">False</property>
 					  <property name="has_frame">True</property>
@@ -6203,10 +6203,10 @@ Calories</property>
 					<widget class="GtkComboBoxEntry" id="month_combovalue2">
 					  <property name="visible">True</property>
 					  <property name="items" translatable="yes">None
-Kilometers
+Distance
 Time
-Beats
-Average
+Average Heart Rate
+Average Speed
 Calories</property>
 					  <property name="add_tearoffs">False</property>
 					  <property name="has_frame">True</property>
@@ -7313,10 +7313,10 @@ Calories</property>
 				      <child>
 					<widget class="GtkComboBoxEntry" id="year_combovalue">
 					  <property name="visible">True</property>
-					  <property name="items" translatable="yes">Kilometers
+					  <property name="items" translatable="yes">Distance
 Time
-Beats
-Average
+Average Heart Rate
+Average Speed
 Calories</property>
 					  <property name="add_tearoffs">False</property>
 					  <property name="has_frame">True</property>
@@ -7359,10 +7359,10 @@ Calories</property>
 					<widget class="GtkComboBoxEntry" id="year_combovalue2">
 					  <property name="visible">True</property>
 					  <property name="items" translatable="yes">None
-Kilometers
+Distance
 Time
-Beats
-Average
+Average Heart Rate
+Average Speed
 Calories</property>
 					  <property name="add_tearoffs">False</property>
 					  <property name="has_frame">True</property>
