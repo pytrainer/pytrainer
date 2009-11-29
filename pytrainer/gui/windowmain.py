@@ -120,8 +120,8 @@ class Main(SimpleGladeApp):
 		self.drawareamonth = MonthGraph(self.month_vbox, self.window1, self.month_combovalue,self.month_combovalue2)
 		self.drawareayear = YearGraph(self.year_vbox, self.window1, self.year_combovalue,self.year_combovalue2)
 	
-	def createMap(self,Googlemaps,waypoint):
-		self.googlemaps = Googlemaps(self.data_path, self.map_vbox,waypoint)
+	def createMap(self,Googlemaps,waypoint, useGM3):
+		self.googlemaps = Googlemaps(self.data_path, self.map_vbox,waypoint, useGM3)
 
 	def updateSportList(self,listSport): 
 		logging.debug(">>")
@@ -835,10 +835,11 @@ class Main(SimpleGladeApp):
 		if self.block:
 			self.block = False
 		else:
-			#self.notebook.set_current_page(1)
-			#self.selected_view="day"
 			self.parent.refreshListRecords()
 			self.parent.refreshGraphView(self.selected_view)
+			if self.selected_view == "record":
+				self.recordview.set_current_page(0)
+				self.parent.refreshRecordGraphView("info")
 
 	def on_calendar_changemonth(self,widget):
 		logging.debug("--")

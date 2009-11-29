@@ -27,7 +27,7 @@ import pytrainer.lib.points as Points
 from pytrainer.lib.fileUtils import fileUtils
 
 class Googlemaps:
-	def __init__(self, data_path = None, vbox = None, waypoint = None):
+	def __init__(self, data_path = None, vbox = None, waypoint = None, useGM3 = False):
 		logging.debug(">>")
 		self.data_path = data_path
 		self.conf = checkConf()
@@ -35,11 +35,18 @@ class Googlemaps:
 		self.moz = gtkmozembed.MozEmbed()
 		vbox.pack_start(self.moz, True, True)
 		vbox.show_all()
-		self.htmlfile = ""
+		self.htmlfile = "%s/index.html" % (self.conf.getValue("tmpdir")) 
 		self.waypoint=waypoint
+		self.useGM3 = useGM3
 		logging.debug("<<")
 	
 	def drawMap(self,id_record):
+		'''Draw google map 
+			create html file using Google API version??
+			render using embedded Mozilla
+
+			info at http://www.pygtk.org/pygtkmozembed/class-gtkmozembed.html
+		'''
 		logging.debug(">>")
 		code = "googlemapsviewer"
 		extensiondir = self.conf.getValue("extensiondir")+"/"+code
@@ -48,30 +55,151 @@ class Googlemaps:
 		points = []
 		levels = []
 		pointlist = []
-		htmlfile = self.conf.getValue("tmpdir")+"/index.html"
-		gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
+		polyline = []
+		
+		gpxfile = "%s/%s.gpx" % (self.conf.getValue("gpxdir"), id_record)
 		if os.path.isfile(gpxfile):
 			gpx = Gpx(self.data_path,gpxfile)
 			list_values = gpx.getTrackList()
-			for i in list_values:
-				pointlist.append((i[4],i[5]))
-			points,levels = Points.encodePoints(pointlist)
-			points = points.replace("\\","\\\\")
-	
-			self.createHtml(points,levels,pointlist[0])
-			htmlfile = os.path.abspath(htmlfile)
-			logging.debug("HTML file created: "+htmlfile)
-			if htmlfile != self.htmlfile:
-				self.moz.load_url("file://"+htmlfile)
+			if len(list_values) > 0:
+				minlat, minlon = float(list_values[0][4]),float(list_values[0][5])
+				maxlat=minlat
+				maxlon=minlon
+				for i in list_values:
+					lat, lon = float(i[4]), float(i[5])
+					minlat = min(minlat, lat)
+					maxlat = max(maxlat, lat)
+					minlon = min(minlon, lon)
+					maxlon = max(maxlon, lon)
+					pointlist.append((lat,lon))
+					polyline.append("new google.maps.LatLng(%s, %s)" % (lat, lon))
+				logging.debug("minlat: %s, maxlat: %s" % (minlat, maxlat))
+				logging.debug("minlon: %s, maxlon: %s" % (minlon, maxlon))
+				points,levels = Points.encodePoints(pointlist)
+				points = points.replace("\\","\\\\")
+				if self.useGM3:
+					logging.debug("Using Google Maps version 3 API")
+					startinfo = "Start<br>TODO: Put ??? info here"
+					finishinfo = "End<br>TODO: Put summary info here?"
+					self.createHtml_api3(polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo)
+				else:
+					logging.debug("Using Google Maps version 2 API")
+					self.createHtml(points,levels,pointlist[0])
+			else:
+				self.createErrorHtml()
 		else:
 			self.createErrorHtml()
-        		self.moz.load_url("file://"+htmlfile)
+		self.moz.load_url("file://%s" % (self.htmlfile))
 		logging.debug("<<")
 	
+	def createHtml_api3(self,polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo):
+		'''
+		Generate a Google maps html file using the v3 api 
+			documentation at http://code.google.com/apis/maps/documentation/v3
+		'''
+		logging.debug(">>")
+		waypoints = self.waypoint.getAllWaypoints()
+		#TODO waypoints not supported in this function yet
+		#TODO sort polyline encoding (not supported in v3?)
+		#TODO check http://code.google.com/apis/maps/documentation/v3/overlays.html#Polylines for MVArray??
+		content = '''
+		<html>
+		<head>
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+		<script type="text/javascript">
+		  function initialize() {\n'''
+		content += "		    var startlatlng = %s ;\n" % (polyline[0])
+		content += "		    var centerlatlng = new google.maps.LatLng(%f, %f);\n" % ((minlat+maxlat)/2., (minlon+maxlon)/2.)
+		content += "		    var endlatlng = %s;\n" % (polyline[-1])
+		content += "		    var swlatlng = new google.maps.LatLng(%f, %f);\n" % (minlat,minlon)
+		content += "		    var nelatlng = new google.maps.LatLng(%f, %f);\n" % (maxlat,maxlon)
+		content += "		    var startcontent = \"%s\";\n" % (startinfo)
+		content += "		    var finishcontent = \"%s\";\n" % (finishinfo)
+		content += "		    var startimageloc = \"%s/glade/start.png\";\n" % (os.path.abspath(self.data_path))
+		content += "		    var finishimageloc = \"%s/glade/finish.png\";\n" % (os.path.abspath(self.data_path))
+		content +='''
+		    var myOptions = {
+		      zoom: 8,
+		      center: centerlatlng,
+			  scaleControl: true,
+		      mapTypeId: google.maps.MapTypeId.ROADMAP
+		    };
+
+		    var startimage = new google.maps.MarkerImage(startimageloc,\n
+		      // This marker is 32 pixels wide by 32 pixels tall.
+		      new google.maps.Size(32, 32),
+		      // The origin for this image is 0,0.
+		      new google.maps.Point(0,0),
+		      // The anchor for this image is the base of the flagpole
+		      new google.maps.Point(16, 32));\n\n
+		    var finishimage = new google.maps.MarkerImage(finishimageloc,\n
+		      // This marker is 32 pixels wide by 32 pixels tall.
+		      new google.maps.Size(32, 32),
+		      // The origin for this image is 0,0.
+		      new google.maps.Point(0,0),
+		      // The anchor for this image is the base of the flagpole
+		      new google.maps.Point(16, 32));\n
+
+		    var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
+			var startmarker = new google.maps.Marker({
+		      position: startlatlng, 
+		      map: map, 
+			  icon: startimage, 
+		      title:"Start"}); 
+
+			var finishmarker = new google.maps.Marker({
+		      position: endlatlng, 
+			  icon: finishimage, 
+		      map: map, 
+		      title:"End"}); \n
+
+			//Add an infowindows
+			var startinfo = new google.maps.InfoWindow({
+			    content: startcontent
+			});
+
+			var finishinfo = new google.maps.InfoWindow({
+			    content: finishcontent
+			});
+
+			google.maps.event.addListener(startmarker, 'click', function() {
+			  startinfo.open(map,startmarker);
+			});
+
+			google.maps.event.addListener(finishmarker, 'click', function() {
+			  finishinfo.open(map,finishmarker);
+			});
+
+			var boundsBox = new google.maps.LatLngBounds(swlatlng, nelatlng );\n
+			map.fitBounds(boundsBox);\n
+			var polylineCoordinates = [\n'''
+		for point in polyline:
+			content += "			                           %s,\n" % (point)
+		content += '''			  ];\n
+			// Add a polyline.\n
+			var polyline = new google.maps.Polyline({\n
+					path: polylineCoordinates,\n
+					strokeColor: \"#3333cc\",\n
+					strokeOpacity: 0.6,\n
+					strokeWeight: 5,\n
+					});\n
+			polyline.setMap(map);\n
+		  }
+
+		</script>
+		</head>
+		<body onload="initialize()">
+		  <div id="map_canvas" style="width:100%; height:100%"></div>
+		</body>
+		</html>'''
+		file = fileUtils(self.htmlfile,content)
+		file.run()
+		logging.debug("<<")
+
 	def createHtml(self,points,levels,init_point):
 		logging.debug(">>")
 		waypoints = self.waypoint.getAllWaypoints()
-		tmpdir = self.conf.getValue("tmpdir")
 		content = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \n"
     		content += "		\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
 		content += "	<html xmlns=\"http://www.w3.org/1999/xhtml\"  xmlns:v=\"urn:schemas-microsoft-com:vml\">\n"
@@ -164,24 +292,20 @@ class Googlemaps:
     		content += "		<div id=\"map\" style=\"width: 520px; height: 480px\"></div>\n"
   		content += "	</body>\n"
 		content += "</html>\n" 
-		filename = tmpdir+"/index.html"
-		file = fileUtils(filename,content)
+		file = fileUtils(self.htmlfile,content)
 		file.run()
 		logging.debug("<<")
 		
 	def createErrorHtml(self):
 		logging.debug(">>")
-		content = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \n"
-    		content += "		\"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
-		content += "	<html xmlns=\"http://www.w3.org/1999/xhtml\"  xmlns:v=\"urn:schemas-microsoft-com:vml\">\n"
-  		content += """	<head>\n
+		content = '''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:v="urn:schemas-microsoft-com:vml">
+<head>
 <body>
 No Gpx Data
 </body>
 </html>
-		"""
-		tmpdir = self.conf.getValue("tmpdir")
-		filename = tmpdir+"/index.html"
-		file = fileUtils(filename,content)
+		'''
+		file = fileUtils(self.htmlfile,content)
 		file.run()
 		logging.debug("<<")
