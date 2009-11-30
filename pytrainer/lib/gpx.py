@@ -26,21 +26,23 @@ from system import checkConf
 import time
 import logging
 from xmlUtils import XMLParser
-import xml.dom
-from xml.dom import minidom, Node, getDOMImplementation
-import xml.etree.cElementTree
-from gtrnctr2gpx import gtrnctr2gpx # copied to pytrainer/lib/ directory
+#import xml.dom
+#from xml.dom import minidom, Node, getDOMImplementation
+#import xml.etree.cElementTree
+from lxml import etree
+#from gtrnctr2gpx import gtrnctr2gpx # copied to pytrainer/lib/ directory
 
 # use of namespaces is mandatory if defined
-mainNS = string.Template("{http://www.topografix.com/GPX/1/1}$tag")
+mainNS = string.Template(".//{http://www.topografix.com/GPX/1/1}$tag")
 timeTag = mainNS.substitute(tag="time")
 trackTag = mainNS.substitute(tag="trk")
 trackPointTag = mainNS.substitute(tag="trkpt")
+elevationTag = mainNS.substitute(tag="ele")
+nameTag = mainNS.substitute(tag="name")
 
-mainNSGpX = string.Template("{http://www.topografix.com/GPX/1/1}$tag")
-trackTag = mainNSGpX.substitute(tag="trk")
-trackPointTag = mainNSGpX.substitute(tag="trkpt")
-timeTag = mainNSGpX.substitute(tag="time")
+gpxdataNS = string.Template(".//{http://www.cluetrust.com/XML/GPXDATA/1/0}$tag")
+calorieTag = gpxdataNS.substitute(tag="calories")
+hrTag = gpxdataNS.substitute(tag="hr")
 
 class Gpx:
 	def __init__(self, data_path = None, filename = None, trkname = None):
@@ -62,7 +64,7 @@ class Gpx:
 			if not os.path.isfile(self.filename):
 				return None
 			logging.debug("parsing content from "+self.filename)
-			self.dom = xml.dom.minidom.parse(self.filename)
+			self.tree = etree.ElementTree(file=filename).getroot()
 			logging.debug("getting values...")
 			self.Values = self._getValues()
 		logging.debug("<<")
@@ -74,16 +76,18 @@ class Gpx:
 		return self.date
 
 	def getTrackRoutes(self):	
-		trks = self.dom.getElementsByTagName("trk")
+		trks = tree.findall(trackTag)
 		tracks = []
 		retorno = []
 		for trk in trks:
-			if len(trk.getElementsByTagName("name")) > 0:
-				name = trk.getElementsByTagName("name")[0].firstChild.data
+			nameResult = trk.find(nameTag)
+			if nameResult is not None:
+				name = nameResult.text
 			else:
 				name = _("No Name")
-			if len(trk.getElementsByTagName("time")) > 0:
-				time_ = trk.getElementsByTagName("time")[0].firstChild.data # check timezone
+			timeResult = trk.find(timeTag)
+			if timeResult is not None:
+				time_ = timeResult.text # check timezone
 				mk_time = time.strptime(time_, "%Y-%m-%dT%H:%M:%SZ")
 				time_ = time.strftime("%Y-%m-%d", mk_time)
 			else:
@@ -103,17 +107,21 @@ class Gpx:
 
 	def getCalories(self):
 		return self.calories
-		
-	def _getValues(self): # migrate to cElementTree
+	
+	def _getValues(self): 
+		'''
+		Migrated to eTree XML processing 26 Nov 2009 - jblance
+		'''
+
 		logging.debug(">>")
-		dom = self.dom
+		tree  = self.tree
 		
-		trkpoints = dom.getElementsByTagName("trkpt")
+		trkpoints = tree.findall(trackPointTag)
 		#start with the info at trkseg level
 		#calories - maybe more than one, currently adding them together
-		calorieCollection = dom.getElementsByTagName("gpxdata:calories")
+		calorieCollection = tree.findall(calorieTag)
 		for cal in calorieCollection:
-			self.calories += int(cal.firstChild.data)
+			self.calories += int(cal.text)
 		retorno = []
 		his_vel = []
 		last_lat = "False"
@@ -127,37 +135,39 @@ class Gpx:
 		if not len(trkpoints):
 			return retorno
 		
-		date_ = trkpoints[0].getElementsByTagName("time")[0].firstChild.data
+		date_ = tree.find(timeTag).text
 		mk_time = time.strptime(date_, "%Y-%m-%dT%H:%M:%SZ")
 		self.date = time.strftime("%Y-%m-%d", mk_time)
 
 		for trkpoint in trkpoints:
-			lat = trkpoint.attributes["lat"].value
-			lon = trkpoint.attributes["lon"].value
+			lat = trkpoint.get("lat")
+			lon = trkpoint.get("lon")
 			#get the heart rate value from the gpx extended format file
-			if len(trkpoint.getElementsByTagName("gpxdata:hr")) > 0:
-				hr = int(trkpoint.getElementsByTagName("gpxdata:hr")[0].firstChild.data)
+			hrResult = trkpoint.find(hrTag)
+			if hrResult is not None:
+				hr = int(hrResult.text)
 				len_validhrpoints += 1
 			else: 
 				hr = 0
-			if len(trkpoint.getElementsByTagName("time")) > 0:
-				time_ = trkpoint.getElementsByTagName("time")[0].firstChild.data
+			timeResult = trkpoint.find(timeTag)
+			if timeResult is not None:
+				time_ = timeResult.text
 				mk_time = time.strptime(time_, "%Y-%m-%dT%H:%M:%SZ")
 				time_ = time.mktime(mk_time)
 			else:
 				time_ = 1
-			ele = trkpoint.getElementsByTagName("ele")[0].firstChild.data
-			#chequeamos que la altura sea correcta
+			ele = trkpoint.find(elevationTag).text
+			#chequeamos que la altura sea correcta / check that the height is correct
 			if len(ele)<15:
 				tmp_alt = int(float(ele))
 			
-			#evitamos los puntos blancos
+			#evitamos los puntos blancos / we avoid the white points
 			if (float(lat) < -0.000001) or (float(lat) > 0.0000001):
 				tmp_lat = float(lat)*0.01745329252
 				tmp_lon = float(lon)*0.01745329252
 				tmp_time = int(time_)
 		
-				#Para las vueltas diferentes a la primera	
+				#Para las vueltas diferentes a la primera / For the returns different from first	
 				if last_lat != "False":
 					time_ = tmp_time - last_time
 					if time_>0:
@@ -175,16 +185,16 @@ class Gpx:
 						total_hr += hr
 						if hr>self.maxhr:
 							self.maxhr = hr
-						#dividimos kilometros por hora (no por segundo)
+						#dividimos kilometros por hora (no por segundo) / Calculate kilometers per hour (not including seconds)
 						tmp_vel = dist/((time_)/3600.0)
-						vel,his_vel = self._calculate_velocity(tmp_vel,his_vel)
-						#si la velocidad es menor de 90 lo damos por bueno
+						vel,his_vel = self._calculate_velocity(tmp_vel,his_vel, 3)
+						#si la velocidad es menor de 90 lo damos por bueno / if speed is greater than 90 or time greater than 100 we exclude the result
 						if vel<90 and time_ <100:
 							if vel>self.maxvel:
 								self.maxvel=vel
 							self.total_time += time_
-							retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr))
-							rel_alt = tmp_alt - last_alt
+							retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr)) #Could add rpm here
+							rel_alt = tmp_alt - last_alt #Could allow for some 'jitter' in height here
 							if rel_alt > 0:
 								self.upositive += rel_alt
 							elif rel_alt < 0:
@@ -202,47 +212,39 @@ class Gpx:
 		logging.debug("<<")
 		return retorno
 	
-	def _calculate_velocity(self,velocity, arr_velocity):
-		#logging.debug(">>")
+	def _calculate_velocity(self,velocity, arr_velocity, numToAverage): #TODO Check & make generic
+		'''Function to calculate moving average for speed'''
 		arr_velocity.append(velocity)
-		if len(arr_velocity)>3:
+		if len(arr_velocity)>numToAverage:
 			arr_velocity.pop(0)
-		if len(arr_velocity)<3:
-			vel=0
-		else:
-			vel = (arr_velocity[0]+arr_velocity[1]+arr_velocity[2])/3
-		#logging.debug("<<")
+		if len(arr_velocity)<numToAverage:
+			#Got too few numbers to average
+			#Pad with duplicates
+			for x in range(len(arr_velocity), numToAverage):
+				arr_velocity.append(velocity)
+		vel = 0
+		for v in arr_velocity:
+			vel+= v
+		vel /= numToAverage
 		return vel,arr_velocity
-	"""	
-	def getStartTimeFromGPX(self, gpxFile):
-		25.03.2008 - dgranda
-		Retrieves start time from a given gpx file
-		args:
-			- gpxFile: path to xml file (gpx format)
-		returns: string with start time - 2008-03-22T12:17:43Z
-		logging.debug("--")
-		xmldoc = xml.dom.minidom.parse(gpxFile)
-		times = xmldoc.getElementsByTagName("time")
-		return times[0].firstChild.data
-	"""
 		
 	def getStartTimeFromGPX(self, gpxFile):
 		"""03.05.2008 - dgranda
-		Retrieves start time from a given gpx file (cElementTree version)
+		Retrieves start time from a given gpx file 
 		args:
 			- gpxFile: path to xml file (gpx format)
 		returns: string with start time - 2008-03-22T12:17:43Z"""
 		logging.debug(">>")
-		try:
-			tree = xml.etree.cElementTree.parse(gpxFile)
-			date_time = tree.getroot().findtext(".//"+timeTag) #returns first instance found
-			logging.debug(gpxFile+" | "+ date_time)
-		except Exception:
+		date_time = tree.find(timeTag) #returns first instance found
+		logging.debug(gpxFile+" | "+ date_time)
+		if date_time is None:
 			print "Problems when retrieving start time from "+gpxFile+". Please check data integrity"
 			date_time=0
 		logging.debug("<<")
 		return date_time
 	
+	#TODO Pending removal
+	'''
 	def retrieveDataFromGTRNCTR(self, gtrnctrFile, entry):
 		"""23.03.2008 - dgranda
 		Builds a new GPX file based on one entry from GPS (dates matching)
@@ -256,4 +258,4 @@ class Gpx:
 		newGPXEntry =  self.conf.tmpdir + "/new_entry.gpx"
 		gtrnctr2gpx(selectedEntry, newGPXEntry)
 		logging.debug('<<')
-		return newGPXEntry	
+		return newGPXEntry	'''
