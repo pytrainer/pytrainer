@@ -236,12 +236,12 @@ class Gpx:
 		returns: string with start time - 2008-03-22T12:17:43Z"""
 		logging.debug(">>")
 		date_time = self.tree.find(timeTag) #returns first instance found
-		logging.debug(gpxFile+" | "+ date_time)
 		if date_time is None:
 			print "Problems when retrieving start time from "+gpxFile+". Please check data integrity"
-			date_time=0
+			return 0
+		logging.debug(gpxFile+" | "+ date_time.text)
 		logging.debug("<<")
-		return date_time
+		return date_time.text
 	
 	#TODO Pending removal
 	'''
