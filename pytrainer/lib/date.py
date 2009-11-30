@@ -59,7 +59,7 @@ class Date:
 			Problems as python date functions do not respect locale (i.e. Sunday is always start of week????)
 			Note: %w gives weekday as a decimal number [0(Sunday),6(Saturday)].
 		'''
-		if prf_us_system == "True":
+		if prf_us_system:
 			#Sunday is first day of week
 			weekDate = datetime.datetime.strptime(date, "%Y-%m-%d")
 			dayOfWeek = int(weekDate.strftime("%w"))

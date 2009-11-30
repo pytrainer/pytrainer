@@ -25,6 +25,7 @@ from pytrainer.lib.system import checkConf
 from pytrainer.lib.gpx import Gpx
 import pytrainer.lib.points as Points 
 from pytrainer.lib.fileUtils import fileUtils
+from pytrainer.record import Record
 
 class Googlemaps:
 	def __init__(self, data_path = None, vbox = None, waypoint = None, useGM3 = False):
@@ -38,6 +39,7 @@ class Googlemaps:
 		self.htmlfile = "%s/index.html" % (self.conf.getValue("tmpdir")) 
 		self.waypoint=waypoint
 		self.useGM3 = useGM3
+		self.record = Record()
 		logging.debug("<<")
 	
 	def drawMap(self,id_record):
@@ -79,8 +81,13 @@ class Googlemaps:
 				points = points.replace("\\","\\\\")
 				if self.useGM3:
 					logging.debug("Using Google Maps version 3 API")
-					startinfo = "Start<br>TODO: Put ??? info here"
-					finishinfo = "End<br>TODO: Put summary info here?"
+					#"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats"
+					info = self.record.getrecordInfo(id_record)
+					timeHours = int(info[0][3]) / 3600
+					timeMin = (float(info[0][3]) / 3600.0 - timeHours) * 60
+					time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
+					startinfo = "<div id='info_content'>%s: %s</div>" % (info[0][0], info[0][9])
+					finishinfo = "<div id='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), info[0][2], _("km"))
 					self.createHtml_api3(polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo)
 				else:
 					logging.debug("Using Google Maps version 2 API")

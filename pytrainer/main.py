@@ -50,7 +50,6 @@ from extensions.waypointeditor import WaypointEditor
 #from gui.windowextensions import WindowExtensions
 from gui.windowmain import Main
 from gui.warning import Warning
-from lib.system import checkConf
 from lib.date import Date
 from lib.gpx import Gpx
 from lib.soapUtils import webService
@@ -98,7 +97,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.6.0.9_svn#414"
+		self.version ="1.6.0.9_svn#415"
 		self.date = Date()
 		main_dir = os.path.realpath(os.path.dirname(__file__)) #why?
 		sys.path.insert(0, main_dir) #why?
@@ -119,7 +118,10 @@ class pyTrainer:
 		self.filename = self.conf.getValue("conffile")
 		logging.debug('retrieving data from '+ self.filename)
 		self.configuration = XMLParser(self.filename)
-		self.prf_us_system = self.configuration.getValue("pytraining","prf_us_system")
+		if self.configuration.getValue("pytraining","prf_us_system") == "True":
+			self.prf_us_system = True
+		else:
+			self.prf_us_system = False
 		self.ddbb = DDBB(self.configuration)
 		logging.debug('connecting to DDBB')
 		self.ddbb.connect()		
