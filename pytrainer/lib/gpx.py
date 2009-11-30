@@ -76,7 +76,7 @@ class Gpx:
 		return self.date
 
 	def getTrackRoutes(self):	
-		trks = tree.findall(trackTag)
+		trks = self.tree.findall(trackTag)
 		tracks = []
 		retorno = []
 		for trk in trks:
@@ -235,7 +235,7 @@ class Gpx:
 			- gpxFile: path to xml file (gpx format)
 		returns: string with start time - 2008-03-22T12:17:43Z"""
 		logging.debug(">>")
-		date_time = tree.find(timeTag) #returns first instance found
+		date_time = self.tree.find(timeTag) #returns first instance found
 		logging.debug(gpxFile+" | "+ date_time)
 		if date_time is None:
 			print "Problems when retrieving start time from "+gpxFile+". Please check data integrity"
