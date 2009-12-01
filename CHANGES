@@ -1,3 +1,20 @@
+- PyTrainer changes for 1.7.0:
+
+Modified on_sportlist_changed event to improve performance (svn rev 409)
+Fix for minor bug in translation scripts (svn rev 402)
+Fix for bug #2811470 - clickable link for further details on MET (links to wikipedia) (svn rev 391)
+Fix for bug #2089342 auto refresh after import, edit and delete of records (svn rev 390)
+Refactoring database and config file sanity checks (triggered with --check) (svn rev 389,392,396,401)
+Added weekly view (svn rev 388,393,394,395,398,403-410)
+Fix for multiple graphs view (svn rev 386,387)
+Better error handling preventing pytrainer to crash (svn rev 364,369)
+Support for plugin validation (svn rev 361,363,371)
+Import TCXv2 files (svn rev 351,355,356)
+Improving import from TCXv1 format (svn rev 354,371,375,376)
+Several improvements in plugins handling (svn rev 350,353,360,378)
+Import GPX files (svn rev 349)
+
+
 - PyTrainer tasks for 1.6.0.9:
 
 Added dynamic loading and unloading of plugin menu items (svn rev 344)
