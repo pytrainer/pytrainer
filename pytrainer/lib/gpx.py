@@ -24,6 +24,7 @@ import os
 from system import checkConf
  
 import time
+from datetime import datetime
 import logging
 from xmlUtils import XMLParser
 #import xml.dom
@@ -37,6 +38,8 @@ mainNS = string.Template(".//{http://www.topografix.com/GPX/1/1}$tag")
 timeTag = mainNS.substitute(tag="time")
 trackTag = mainNS.substitute(tag="trk")
 trackPointTag = mainNS.substitute(tag="trkpt")
+trackPointTagLast = mainNS.substitute(tag="trkpt[last()]")
+trackSegTag = mainNS.substitute(tag="trkseg")
 elevationTag = mainNS.substitute(tag="ele")
 nameTag = mainNS.substitute(tag="name")
 
@@ -107,6 +110,25 @@ class Gpx:
 
 	def getCalories(self):
 		return self.calories
+
+	def getLaps(self):
+		logging.debug(">>")
+		lapInfo = []
+		tree  = self.tree
+		date = tree.findtext(timeTag)
+		startTime = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+		trksegs = tree.findall(trackSegTag)
+		for trkseg in trksegs:
+			trkpts = trkseg.findall(trackPointTag)
+			trkpt = trkpts[-1]
+			lat = trkpt.get("lat")
+			lon = trkpt.get("lon")
+			temp = trkpt.findtext(timeTag)
+			time = datetime.strptime(temp, "%Y-%m-%dT%H:%M:%SZ")
+			elapsedTime = time - startTime
+			print "Found time: %s, lat: %s lon: %s" % (elapsedTime, lat, lon)
+			lapInfo.append((elapsedTime, lat, lon))
+		return lapInfo
 	
 	def _getValues(self): 
 		'''

@@ -81,6 +81,7 @@ class Googlemaps:
 				points = points.replace("\\","\\\\")
 				if self.useGM3:
 					logging.debug("Using Google Maps version 3 API")
+					laps = gpx.getLaps() # [](elapsedTime, lat, lon)
 					#"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats"
 					info = self.record.getrecordInfo(id_record)
 					timeHours = int(info[0][3]) / 3600
@@ -88,7 +89,7 @@ class Googlemaps:
 					time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
 					startinfo = "<div id='info_content'>%s: %s</div>" % (info[0][0], info[0][9])
 					finishinfo = "<div id='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), info[0][2], _("km"))
-					self.createHtml_api3(polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo)
+					self.createHtml_api3(polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps)
 				else:
 					logging.debug("Using Google Maps version 2 API")
 					self.createHtml(points,levels,pointlist[0])
@@ -99,7 +100,7 @@ class Googlemaps:
 		self.moz.load_url("file://%s" % (self.htmlfile))
 		logging.debug("<<")
 	
-	def createHtml_api3(self,polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo):
+	def createHtml_api3(self,polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps):
 		'''
 		Generate a Google maps html file using the v3 api 
 			documentation at http://code.google.com/apis/maps/documentation/v3
@@ -125,6 +126,7 @@ class Googlemaps:
 		content += "		    var finishcontent = \"%s\";\n" % (finishinfo)
 		content += "		    var startimageloc = \"%s/glade/start.png\";\n" % (os.path.abspath(self.data_path))
 		content += "		    var finishimageloc = \"%s/glade/finish.png\";\n" % (os.path.abspath(self.data_path))
+		content += "		    var lapimageloc = \"%s/glade/waypoint.png\";\n" % (os.path.abspath(self.data_path))
 		content +='''
 		    var myOptions = {
 		      zoom: 8,
@@ -141,6 +143,14 @@ class Googlemaps:
 		      // The anchor for this image is the base of the flagpole
 		      new google.maps.Point(16, 32));\n\n
 		    var finishimage = new google.maps.MarkerImage(finishimageloc,\n
+		      // This marker is 32 pixels wide by 32 pixels tall.
+		      new google.maps.Size(32, 32),
+		      // The origin for this image is 0,0.
+		      new google.maps.Point(0,0),
+		      // The anchor for this image is the base of the flagpole
+		      new google.maps.Point(16, 32));\n
+
+		    var lapimage = new google.maps.MarkerImage(lapimageloc,\n
 		      // This marker is 32 pixels wide by 32 pixels tall.
 		      new google.maps.Size(32, 32),
 		      // The origin for this image is 0,0.
@@ -176,7 +186,15 @@ class Googlemaps:
 
 			google.maps.event.addListener(finishmarker, 'click', function() {
 			  finishinfo.open(map,finishmarker);
-			});
+			});\n'''
+
+		for lap in laps:
+			lapNumber = laps.index(lap)
+			content += "var lap%dmarker = new google.maps.Marker({position: new google.maps.LatLng(%f, %f), icon: lapimage, map: map,  title:\"Lap%d\"}); \n " % (lapNumber, float(lap[1]), float(lap[2]), lapNumber)
+			content += "var lap%d = new google.maps.InfoWindow({content: \"End of lap:%s<br>Elapsed time:%s\" });\n" % (lapNumber, lapNumber+1, lap[0])
+			content += "google.maps.event.addListener(lap%dmarker, 'click', function() { lap%d.open(map,lap%dmarker); });\n" % (lapNumber,lapNumber,lapNumber)
+
+		content += '''
 
 			var boundsBox = new google.maps.LatLngBounds(swlatlng, nelatlng );\n
 			map.fitBounds(boundsBox);\n
