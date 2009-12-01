@@ -189,9 +189,9 @@ class Googlemaps:
 			});\n'''
 
 		for lap in laps:
-			lapNumber = laps.index(lap)
+			lapNumber = laps.index(lap)+1
 			content += "var lap%dmarker = new google.maps.Marker({position: new google.maps.LatLng(%f, %f), icon: lapimage, map: map,  title:\"Lap%d\"}); \n " % (lapNumber, float(lap[1]), float(lap[2]), lapNumber)
-			content += "var lap%d = new google.maps.InfoWindow({content: \"End of lap:%s<br>Elapsed time:%s\" });\n" % (lapNumber, lapNumber+1, lap[0])
+			content += "var lap%d = new google.maps.InfoWindow({content: \"End of lap:%s<br>Elapsed time:%s\" });\n" % (lapNumber, lapNumber, lap[0])
 			content += "google.maps.event.addListener(lap%dmarker, 'click', function() { lap%d.open(map,lap%dmarker); });\n" % (lapNumber,lapNumber,lapNumber)
 
 		content += '''

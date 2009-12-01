@@ -126,7 +126,7 @@ class Gpx:
 			temp = trkpt.findtext(timeTag)
 			time = datetime.strptime(temp, "%Y-%m-%dT%H:%M:%SZ")
 			elapsedTime = time - startTime
-			print "Found time: %s, lat: %s lon: %s" % (elapsedTime, lat, lon)
+			#print "Found time: %s, lat: %s lon: %s" % (elapsedTime, lat, lon)
 			lapInfo.append((elapsedTime, lat, lon))
 		return lapInfo
 	
