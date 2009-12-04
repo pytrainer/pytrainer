@@ -63,7 +63,8 @@ class garminhr():
 				outgps = commands.getstatusoutput("gpsbabel -t -i garmin -f %s -o gtrnctr -F %s | zenity --progress --pulsate --text='Loading Data' auto-close" % (self.input_dev, gpsbabelOutputFile) )
 				if outgps[0]==0:
 					if outgps[1] == "Found no Garmin USB devices.": # check localizations 
-						print "GPSBabel found no Garmin USB devices"
+						logging.error ("GPSBabel found no Garmin USB devices")
+						os.popen("zenity --error --text='GPSBabel found no Garmin USB devices'");
 						pass 
 					else: #gpsbabel worked - now process file...
 						if self.valid_input_file(gpsbabelOutputFile):
@@ -100,9 +101,9 @@ class garminhr():
 				if version[2] == validVersion:
 					return True
 				else:
-					print "GPSBabel at version %s instead of expected version %s" % (version[2], validVersion)
+					logging.error("GPSBabel at version %s instead of expected version %s" % (version[2], validVersion))
 			except:
-				print "Unexpected result from gpsbabel -V"
+				logging.error("Unexpected result from gpsbabel -V")
 				return False
 		return False
 
