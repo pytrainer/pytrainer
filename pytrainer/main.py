@@ -97,7 +97,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.6.0.9_svn#417"
+		self.version ="1.7.0pre"
 		self.date = Date()
 		main_dir = os.path.realpath(os.path.dirname(__file__)) #why?
 		sys.path.insert(0, main_dir) #why?
@@ -201,6 +201,7 @@ class pyTrainer:
 		else:
 			logging.debug("No files returned from Plugin")
 		self.refreshListRecords()
+		self.refreshGraphView("day")
 		logging.debug('<<')
 
 	def runExtension(self,extension,id):
