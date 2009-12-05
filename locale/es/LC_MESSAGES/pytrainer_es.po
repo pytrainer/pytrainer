@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: vud 1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-12-04 21:22+0100\n"
-"PO-Revision-Date: 2009-12-04 22:14+0100\n"
+"PO-Revision-Date: 2009-12-05 14:06+0100\n"
 "Last-Translator: David García Granda <dgranda@gmail.com>\n"
 "Language-Team: Spanish <es@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -170,9 +170,8 @@ msgstr "min/km"
 #: glade/pytrainer.glade:1145
 #: pytrainer/gui/windowmain.py:171
 #: pytrainer/gui/windowmain.py:172
-#, fuzzy
 msgid "m"
-msgstr "km"
+msgstr "m"
 
 #: glade/pytrainer.glade:780
 msgid "       "
@@ -954,7 +953,7 @@ msgstr "advertencia"
 
 #: glade/pytrainer.glade:13455
 msgid "<b>Extension Details</b>"
-msgstr "<b>Detalles de la Extensión</b>"
+msgstr "<b>Detalles de la extensión</b>"
 
 #: glade/pytrainer.glade:13483
 msgid "name-entry"
@@ -963,7 +962,7 @@ msgstr "Nombre"
 #: glade/pytrainer.glade:13539
 #: glade/pytrainer.glade:13946
 msgid "Status:"
-msgstr "<b>Estado:</b>"
+msgstr "Estado:"
 
 #: glade/pytrainer.glade:13595
 #: glade/pytrainer.glade:13918
@@ -988,7 +987,7 @@ msgstr "Descripción"
 
 #: glade/pytrainer.glade:13974
 msgid "nameEntry"
-msgstr "Nueva Entrada"
+msgstr "Nombre entrada"
 
 #: glade/pytrainer.glade:14145
 msgid "Select track record"
@@ -1018,14 +1017,13 @@ msgstr "M.E.T."
 #: pytrainer/gui/windowplugins.py:97
 #: pytrainer/gui/windowextensions.py:70
 msgid "Enable"
-msgstr "Habilitar"
+msgstr "Activo"
 
 #: pytrainer/gui/windowplugins.py:72
 #: pytrainer/gui/windowplugins.py:96
 #: pytrainer/gui/windowextensions.py:72
-#, fuzzy
 msgid "Disable"
-msgstr "Distancia"
+msgstr "Desactivo"
 
 #: pytrainer/gui/windowplugins.py:81
 #: pytrainer/gui/windowextensions.py:81
@@ -1110,15 +1108,13 @@ msgstr ""
 #: pytrainer/gui/windowmain.py:370
 #: pytrainer/gui/windowmain.py:447
 #: pytrainer/gui/windowmain.py:448
-#, fuzzy
 msgid "min/mile"
-msgstr "min/km"
+msgstr "min/milla"
 
 #: pytrainer/gui/windowmain.py:163
 #: pytrainer/gui/windowmain.py:164
-#, fuzzy
 msgid "feet"
-msgstr "borrar"
+msgstr "pies"
 
 #: pytrainer/gui/windowmain.py:166
 #: pytrainer/gui/windowmain.py:273
@@ -1153,7 +1149,7 @@ msgstr "Ok"
 
 #: pytrainer/lib/gpx.py:90
 msgid "No Name"
-msgstr "Nombre"
+msgstr "Sin nombre"
 
 #: pytrainer/lib/gpx.py:97
 msgid "No Data"
@@ -1255,7 +1251,7 @@ msgstr "Tiempo en horas"
 #: pytrainer/monthgraph.py:71
 #: pytrainer/weekgraph.py:113
 msgid "Daily Time"
-msgstr "tiempo diario"
+msgstr "Tiempo diario"
 
 #: pytrainer/monthgraph.py:73
 #: pytrainer/yeargraph.py:74
@@ -1282,7 +1278,7 @@ msgstr "medias diarias"
 #: pytrainer/monthgraph.py:77
 #: pytrainer/weekgraph.py:119
 msgid "Daily Calories"
-msgstr "calorias diarias"
+msgstr "Calorías diarias"
 
 #: pytrainer/waypoint.py:80
 msgid "The gpx file seems to be a several days records. Perhaps you will need to edit your gpx file"
@@ -1306,7 +1302,7 @@ msgstr "Distancia"
 
 #: pytrainer/yeargraph.py:72
 msgid "Monthly Time"
-msgstr "tiempo mensual"
+msgstr "Tiempo mensual"
 
 #: pytrainer/yeargraph.py:74
 msgid "Monthly Average Heart Rate"
@@ -1318,7 +1314,7 @@ msgstr "medias mensuales"
 
 #: pytrainer/yeargraph.py:78
 msgid "Monthly Calories"
-msgstr "calorias mensuales"
+msgstr "Calorías mensuales"
 
 #~ msgid "None"
 #~ msgstr "Ninguno"
