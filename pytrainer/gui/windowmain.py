@@ -352,6 +352,7 @@ class Main(SimpleGladeApp):
 
 		km = calories = time = average = beats = 0
 		num_records = len(record_list)
+		logging.info("Number of records selected week: "+str(num_records))
 		time_in_min = 0
 		tbeats = 0
 		maxspeed = 0

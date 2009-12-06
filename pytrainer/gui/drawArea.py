@@ -156,6 +156,8 @@ class DrawArea:
 		#TODO tidy
 		logging.debug('>>')	
 		logging.debug("Title: %s", (title, ))
+		logging.debug("X values received: %s", str(xvalues))
+		logging.debug("Y values received: %s", str(yvalues))
 		self.removeVboxChildren()
 
 		#Check how many axes to draw
@@ -168,7 +170,7 @@ class DrawArea:
 		else: #Error
 			return
 
-		keys = yvalues[0].keys()
+		keys = yvalues[0].keys() # days of the week
 		numRows = len(keys)
 		numCols = len(xvalues[0])
 		if numRows == 0:
@@ -186,6 +188,7 @@ class DrawArea:
 
 		#Display first axis
 		for key in keys:
+			logging.debug("Day of the week: %s", str(key))
 			for ind in inds:
 				ybottoms[ind] += yheights[ind]
 				yheights[ind] = 0 #Zero heights
@@ -209,6 +212,9 @@ class DrawArea:
 		if len(xvalues) == 1:
 			plt.title(title[0])
 			axis.legend(loc=0)
+
+		logging.debug("X values first axis: %s", str(xvals))
+		logging.debug("Y values first axis: %s", str(yheights))
 
 		#Display twin axis
 		if len(xvalues) == 2: 

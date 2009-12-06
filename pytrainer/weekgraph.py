@@ -35,6 +35,8 @@ class WeekGraph:
 		tit = []
 		valsAreTime = []
 
+		logging.debug("Values: "+str(values))
+
 		#Reset the comboboxes if nothing selected
 		value_selected = self.combovalue.get_active()
 		if value_selected < 0:
@@ -54,6 +56,8 @@ class WeekGraph:
 		
 		#TODO
 		yvalues, valuesAreTime = self.get_values(values,value_selected)
+		logging.debug("yvalues: "+str(yvalues))
+		logging.debug("valuesAreTime: "+str(valuesAreTime))
 		yval.append(yvalues)
 		xlab.append(days)
 		valsAreTime.append(valuesAreTime)
@@ -78,7 +82,7 @@ class WeekGraph:
 		valueCount = {} #Counts the totals to allow for averaging if needed
 
 		for record in values:
-			day = datetime.datetime.strptime(record[0], "%Y-%m-%d").strftime("%a") # Gives Sun, Mon etc for this record
+			day = unicode(datetime.datetime.strptime(record[0], "%Y-%m-%d").strftime("%a")) # Gives Sun, Mon etc for this record
 			sport = record[9]
 			value = self.getValue(record, value_selected)
 			if sport in valueDict: #Already got this sport
