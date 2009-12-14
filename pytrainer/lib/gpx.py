@@ -43,6 +43,10 @@ gpxdataNS = string.Template(".//{http://www.cluetrust.com/XML/GPXDATA/1/0}$tag")
 calorieTag = gpxdataNS.substitute(tag="calories")
 hrTag = gpxdataNS.substitute(tag="hr")
 cadTag = gpxdataNS.substitute(tag="cadence")
+lapTag = gpxdataNS.substitute(tag="lap")
+endPointTag = gpxdataNS.substitute(tag="endPoint")
+elapsedTimeTag = gpxdataNS.substitute(tag="elapsedTime")
+distanceTag = gpxdataNS.substitute(tag="distance")
 
 class Gpx:
 	def __init__(self, data_path = None, filename = None, trkname = None):
@@ -130,19 +134,18 @@ class Gpx:
 		logging.debug(">>")
 		lapInfo = []
 		tree  = self.tree
-		date = tree.findtext(timeTag)
-		startTime = self.getDateTime(date)
-		trksegs = tree.findall(trackSegTag)
-		for trkseg in trksegs:
-			trkpts = trkseg.findall(trackPointTag)
-			trkpt = trkpts[-1]
-			lat = trkpt.get("lat")
-			lon = trkpt.get("lon")
-			temp = trkpt.findtext(timeTag)
-			time = self.getDateTime(temp)
-			elapsedTime = time - startTime
-			#print "Found time: %s, lat: %s lon: %s" % (elapsedTime, lat, lon)
-			lapInfo.append((elapsedTime, lat, lon))
+		#date = tree.findtext(timeTag)
+		#startTime = self.getDateTime(date)
+		laps = tree.findall(lapTag)
+		for lap in laps:
+			endPoint = lap.find(endPointTag)
+			lat = endPoint.get("lat")
+			lon = endPoint.get("lon")
+			elapsedTime = lap.findtext(elapsedTimeTag)
+			calories = lap.findtext(calorieTag)
+			distance = lap.findtext(distanceTag)
+			#print "Found time: %s, lat: %s lon: %s cal: %s dist: %s " % (elapsedTime, lat, lon, calories, distance)
+			lapInfo.append((elapsedTime, lat, lon, calories, distance))
 		return lapInfo
 	
 	def _getValues(self): 
@@ -189,7 +192,6 @@ class Gpx:
 			else: 
 				hr = 0
 			#get the cadence (if present)
-			#TODO
 			cadResult = trkpoint.find(cadTag)
 			if cadResult is not None:				
 				cadence = int(cadResult.text)

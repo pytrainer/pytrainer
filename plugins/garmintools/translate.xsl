@@ -46,6 +46,37 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
         <xsl:value-of select="$newline"/>        
         </trkseg><xsl:value-of select="$newline"/>
     </trk><xsl:value-of select="$newline"/>
+
+<!-- Lap Data -->
+	<xsl:value-of select="$newline"/>
+	<extensions><xsl:value-of select="$newline"/>
+    <xsl:for-each select="root/lap">
+    <xsl:variable name="vIndex">
+    <xsl:number count="lap"/>
+    </xsl:variable>
+		<gpxdata:lap><xsl:value-of select="$newline"/>
+			<gpxdata:index><xsl:value-of select="$vIndex"/></gpxdata:index><xsl:value-of select="$newline"/>
+            <xsl:variable name="stlat"><xsl:value-of select="begin_pos/@lat"/></xsl:variable>
+            <xsl:variable name="stlon"><xsl:value-of select="begin_pos/@lon"/></xsl:variable>
+            <gpxdata:startPoint lat="{$stlat}" lon="{$stlon}"/><xsl:value-of select="$newline"/>
+            <xsl:variable name="endlat"><xsl:value-of select="end_pos/@lat"/></xsl:variable>
+            <xsl:variable name="endlon"><xsl:value-of select="end_pos/@lon"/></xsl:variable>
+            <gpxdata:endPoint lat="{$endlat}" lon="{$endlon}"/><xsl:value-of select="$newline"/>
+			<gpxdata:startTime><xsl:value-of select="@start"/></gpxdata:startTime><xsl:value-of select="$newline"/>
+			<gpxdata:elapsedTime><xsl:value-of select="@duration"/></gpxdata:elapsedTime><xsl:value-of select="$newline"/> <!-- Needs converting to seconds -->
+			<gpxdata:calories><xsl:value-of select="calories"/></gpxdata:calories><xsl:value-of select="$newline"/>
+			<gpxdata:distance><xsl:value-of select="@distance"/></gpxdata:distance><xsl:value-of select="$newline"/>
+			<gpxdata:summary><xsl:value-of select="$newline"/>
+				<MaximumSpeed kind="max"><xsl:value-of select="max_speed"/></MaximumSpeed><xsl:value-of select="$newline"/>
+				<AverageHeartRateBpm kind="avg"><xsl:value-of select="avg_hr"/></AverageHeartRateBpm><xsl:value-of select="$newline"/>
+				<MaximumHeartRateBpm kind="max"><xsl:value-of select="max_hr"/></MaximumHeartRateBpm><xsl:value-of select="$newline"/>
+			</gpxdata:summary><xsl:value-of select="$newline"/> 
+			<gpxdata:trigger><xsl:value-of select="@trigger"/></gpxdata:trigger><xsl:value-of select="$newline"/>
+			<gpxdata:intensity><xsl:value-of select="intensity"/></gpxdata:intensity><xsl:value-of select="$newline"/>
+		</gpxdata:lap><xsl:value-of select="$newline"/>
+    </xsl:for-each>
+    </extensions><xsl:value-of select="$newline"/>
+
     </gpx><xsl:value-of select="$newline"/>
 </xsl:template>
 </xsl:stylesheet>

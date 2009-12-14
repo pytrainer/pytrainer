@@ -81,7 +81,7 @@ class Googlemaps:
 				points = points.replace("\\","\\\\")
 				if self.useGM3:
 					logging.debug("Using Google Maps version 3 API")
-					laps = gpx.getLaps() # [](elapsedTime, lat, lon)
+					laps = gpx.getLaps() # [](elapsedTime, lat, lon, calories, distance)
 					#"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats"
 					info = self.record.getrecordInfo(id_record)
 					timeHours = int(info[0][3]) / 3600
@@ -191,7 +191,7 @@ class Googlemaps:
 		for lap in laps:
 			lapNumber = laps.index(lap)+1
 			content += "var lap%dmarker = new google.maps.Marker({position: new google.maps.LatLng(%f, %f), icon: lapimage, map: map,  title:\"Lap%d\"}); \n " % (lapNumber, float(lap[1]), float(lap[2]), lapNumber)
-			content += "var lap%d = new google.maps.InfoWindow({content: \"End of lap:%s<br>Elapsed time:%s\" });\n" % (lapNumber, lapNumber, lap[0])
+			content += "var lap%d = new google.maps.InfoWindow({content: \"End of lap:%s<br>Elapsed time:%s<br>Distance:%s<br>Calories:%s\" });\n" % (lapNumber, lapNumber, lap[0], lap[4], lap[3])
 			content += "google.maps.event.addListener(lap%dmarker, 'click', function() { lap%d.open(map,lap%dmarker); });\n" % (lapNumber,lapNumber,lapNumber)
 
 		content += '''
