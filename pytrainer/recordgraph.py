@@ -79,10 +79,12 @@ class RecordGraph:
 			return _("Distance (km)"),_("Height (m)"),_("Stage Profile"),"#ff0000"
 		if value == 1:
 			return _("Distance (km)"),_("Speed (Km/h)"),_("Speed"),"#00ff00"
-                if value == 2:
-                        return _("Distance (km)"),_("Pace (min/km)"),_("Pace"),"#0000ff"
-                if value == 3:
-                        return _("Distance (km)"),_("Beats (bpm)"),_("Heart Rate"),"#ff0000"
+		if value == 2:
+			return _("Distance (km)"),_("Pace (min/km)"),_("Pace"),"#0000ff"
+		if value == 3:
+			return _("Distance (km)"),_("Beats (bpm)"),_("Heart Rate"),"#ff0000"
+		if value == 4:
+			return _("Distance (km)"),_("Cadence (rpm)"),_("Cadence"),"#ff0000"
 
 
 	def get_values(self,values, value_selected):
@@ -97,11 +99,13 @@ class RecordGraph:
 				yvalue.append(value[3])
 			if value_selected==2:
 				try:
-                                	yvalue.append(60/value[3])
+					yvalue.append(60/value[3])
 				except:
-                                	yvalue.append(0)
+					yvalue.append(0)
 			if value_selected==3:
-                                yvalue.append(value[6])
+					yvalue.append(value[6])
+			if value_selected==4:
+					yvalue.append(value[7])
 		logging.debug("<<")
 		return xvalue,yvalue
 	

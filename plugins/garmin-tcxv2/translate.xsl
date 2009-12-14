@@ -42,6 +42,11 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     	            <gpxdata:hr><xsl:value-of select="t:HeartRateBpm/t:Value"/></gpxdata:hr><xsl:value-of select="$newline"/>
     	            </extensions><xsl:value-of select="$newline"/>
 				</xsl:if>
+				<xsl:if test="t:Cadence">
+	                <extensions><xsl:value-of select="$newline"/>
+    	            <gpxdata:cadence><xsl:value-of select="t:Cadence"/></gpxdata:cadence><xsl:value-of select="$newline"/>
+    	            </extensions><xsl:value-of select="$newline"/>
+				</xsl:if>
                 </trkpt><xsl:value-of select="$newline"/>
             </xsl:if>
         </xsl:for-each>

@@ -19,6 +19,7 @@ import gobject
 import sys
 import logging
 import datetime
+import matplotlib
 
 from SimpleGladeApp import *
 from popupmenu import PopupMenu
@@ -227,6 +228,15 @@ class Main(SimpleGladeApp):
 		if len(record_list)>0:
 			self.record_vbox.set_sensitive(1)
 		else:
+			#Remove graph
+			vboxChildren = self.record_vbox.get_children()
+			logging.debug('Vbox has %d children %s' % (len(vboxChildren), str(vboxChildren) ))
+			# ToDo: check why vertical container is shared
+			for child in vboxChildren:
+				#Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
+				if isinstance(child, matplotlib.backends.backend_gtkagg.FigureCanvasGTK) or isinstance(child, matplotlib.backends.backend_gtkagg.NavigationToolbar2GTKAgg):
+					logging.debug('Removing child: '+str(child))
+					self.record_vbox.remove(child)
 			self.record_vbox.set_sensitive(0)
 		#logging.debug("Going to draw "+str(record_list))
 		self.drawarearecord.drawgraph(record_list)

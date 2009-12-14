@@ -42,6 +42,7 @@ nameTag = mainNS.substitute(tag="name")
 gpxdataNS = string.Template(".//{http://www.cluetrust.com/XML/GPXDATA/1/0}$tag")
 calorieTag = gpxdataNS.substitute(tag="calories")
 hrTag = gpxdataNS.substitute(tag="hr")
+cadTag = gpxdataNS.substitute(tag="cadence")
 
 class Gpx:
 	def __init__(self, data_path = None, filename = None, trkname = None):
@@ -188,7 +189,12 @@ class Gpx:
 			else: 
 				hr = 0
 			#get the cadence (if present)
-				#TODO
+			#TODO
+			cadResult = trkpoint.find(cadTag)
+			if cadResult is not None:				
+				cadence = int(cadResult.text)
+			else:
+				cadence = 0
 			#get the time
 			timeResult = trkpoint.find(timeTag)
 			if timeResult is not None:
@@ -238,7 +244,7 @@ class Gpx:
 							if vel>self.maxvel:
 								self.maxvel=vel
 							self.total_time += time_
-							retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr)) #Could add rpm here
+							retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr,cadence))
 							rel_alt = tmp_alt - last_alt #Could allow for some 'jitter' in height here
 							if rel_alt > 0:
 								self.upositive += rel_alt
