@@ -27,11 +27,7 @@ import time
 from datetime import datetime
 import logging
 from xmlUtils import XMLParser
-#import xml.dom
-#from xml.dom import minidom, Node, getDOMImplementation
-#import xml.etree.cElementTree
 from lxml import etree
-#from gtrnctr2gpx import gtrnctr2gpx # copied to pytrainer/lib/ directory
 
 # use of namespaces is mandatory if defined
 mainNS = string.Template(".//{http://www.topografix.com/GPX/1/1}$tag")
@@ -91,13 +87,31 @@ class Gpx:
 			timeResult = trk.find(timeTag)
 			if timeResult is not None:
 				time_ = timeResult.text # check timezone
-				mk_time = time.strptime(time_, "%Y-%m-%dT%H:%M:%SZ")
+				mk_time = self.geDatetTime(time_) 
 				time_ = time.strftime("%Y-%m-%d", mk_time)
 			else:
 				time_ = _("No Data")
 			logging.debug("name: "+name+" | time: "+time_)
 			tracks.append((name,time_))
 		return tracks
+
+	def getDateTime(self, time_):
+		try:
+			theTime = datetime.strptime(time_, "%Y-%m-%dT%H:%M:%SZ")
+			return theTime
+		except:
+			pass
+		try:
+			#Time includes UTC offset...
+			#2009-12-02T12:58:55+01:00
+			#TODO Need to sort time offset etc....
+			offset = time_[-6:]
+			time_ = time_[:-6] #remove last 6 chars - ie UTC offset eg +01:00
+			theTime = datetime.strptime(time_, "%Y-%m-%dT%H:%M:%S") 
+			return theTime
+		except:
+			pass
+		return None
 		
 	def getUnevenness(self):
 		return self.upositive,self.unegative 
@@ -116,7 +130,7 @@ class Gpx:
 		lapInfo = []
 		tree  = self.tree
 		date = tree.findtext(timeTag)
-		startTime = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+		startTime = self.getDateTime(date)
 		trksegs = tree.findall(trackSegTag)
 		for trkseg in trksegs:
 			trkpts = trkseg.findall(trackPointTag)
@@ -124,7 +138,7 @@ class Gpx:
 			lat = trkpt.get("lat")
 			lon = trkpt.get("lon")
 			temp = trkpt.findtext(timeTag)
-			time = datetime.strptime(temp, "%Y-%m-%dT%H:%M:%SZ")
+			time = self.getDateTime(temp)
 			elapsedTime = time - startTime
 			#print "Found time: %s, lat: %s lon: %s" % (elapsedTime, lat, lon)
 			lapInfo.append((elapsedTime, lat, lon))
@@ -158,12 +172,14 @@ class Gpx:
 			return retorno
 		
 		date_ = tree.find(timeTag).text
-		mk_time = time.strptime(date_, "%Y-%m-%dT%H:%M:%SZ")
-		self.date = time.strftime("%Y-%m-%d", mk_time)
+		mk_time = self.getDateTime(date_)
+		self.date = mk_time.strftime("%Y-%m-%d")
 
 		for trkpoint in trkpoints:
 			lat = trkpoint.get("lat")
 			lon = trkpoint.get("lon")
+			if lat is None or lat == "" or lon is None or lon == "":
+				continue
 			#get the heart rate value from the gpx extended format file
 			hrResult = trkpoint.find(hrTag)
 			if hrResult is not None:
@@ -171,17 +187,24 @@ class Gpx:
 				len_validhrpoints += 1
 			else: 
 				hr = 0
+			#get the cadence (if present)
+				#TODO
+			#get the time
 			timeResult = trkpoint.find(timeTag)
 			if timeResult is not None:
-				time_ = timeResult.text
-				mk_time = time.strptime(time_, "%Y-%m-%dT%H:%M:%SZ")
-				time_ = time.mktime(mk_time)
+				date_ = timeResult.text
+				mk_time = self.getDateTime(date_)
+				time_ = time.mktime(mk_time.timetuple()) #Convert date to seconds
 			else:
 				time_ = 1
+			#get the elevation
 			ele = trkpoint.find(elevationTag).text
 			#chequeamos que la altura sea correcta / check that the height is correct
-			if len(ele)<15:
-				tmp_alt = int(float(ele))
+			if ele is not None:
+				if len(ele)<15:
+					tmp_alt = int(float(ele))
+			else:
+				tmp_alt= 0
 			
 			#evitamos los puntos blancos / we avoid the white points
 			if (float(lat) < -0.000001) or (float(lat) > 0.0000001):
@@ -255,7 +278,8 @@ class Gpx:
 		Retrieves start time from a given gpx file 
 		args:
 			- gpxFile: path to xml file (gpx format)
-		returns: string with start time - 2008-03-22T12:17:43Z"""
+		returns: string with start time - 2008-03-22T12:17:43Z or 2009-12-02T12:58:55+01:00
+		"""
 		logging.debug(">>")
 		date_time = self.tree.find(timeTag) #returns first instance found
 		if date_time is None:
@@ -264,20 +288,4 @@ class Gpx:
 		logging.debug(gpxFile+" | "+ date_time.text)
 		logging.debug("<<")
 		return date_time.text
-	
-	#TODO Pending removal
-	'''
-	def retrieveDataFromGTRNCTR(self, gtrnctrFile, entry):
-		"""23.03.2008 - dgranda
-		Builds a new GPX file based on one entry from GPS (dates matching)
-		args:
-			- gtrnctrFile: path of file with data from GPS file (garmin format)
-			- entry: list with dictionaries: SPORT|DATE_START_TIME
-		returns: path to new GPX file"""
-		logging.debug('>>')
-		xmlParser = XMLParser(gtrnctrFile)
-		selectedEntry = xmlParser.getTrackFromDates(gtrnctrFile,entry,0)
-		newGPXEntry =  self.conf.tmpdir + "/new_entry.gpx"
-		gtrnctr2gpx(selectedEntry, newGPXEntry)
-		logging.debug('<<')
-		return newGPXEntry	'''
+

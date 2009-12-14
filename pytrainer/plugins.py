@@ -106,7 +106,7 @@ class Plugins:
 				name = plugininfo.getValue("pytrainer-plugin","name")
 				description = plugininfo.getValue("pytrainer-plugin","description")
 				pluginsList.append((pluginsdir+"/"+plugin,name,description))
-	
+		pluginsList.sort()
 		return pluginsList
 	
 	def getPluginInfo(self,pathPlugin):
