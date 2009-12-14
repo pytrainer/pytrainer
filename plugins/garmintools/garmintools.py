@@ -103,6 +103,7 @@ class garmintools():
 		sportElement = root.find(".//run")
 		try:
 			sport = sportElement.get("sport")
+			sport = sport.capitalize()
 		except:
 			sport = "import"
 		print sport
