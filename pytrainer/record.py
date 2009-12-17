@@ -244,13 +244,13 @@ class Record:
 	def getrecordInfo(self,id_record):
 		logging.debug('--')
 		return self.ddbb.select("records,sports",
-					"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats",
+					"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc",
 					"id_record=\"%s\" and records.sport=sports.id_sports" %id_record)
 	
 	def getrecordList(self,date):
 		logging.debug('--')
 		return self.ddbb.select("records,sports",
-					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats",
+					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc",
 					"date=\"%s\" and records.sport=sports.id_sports" %date)
 
 	def getrecordPeriod(self,date_ini, date_end, sport=None):

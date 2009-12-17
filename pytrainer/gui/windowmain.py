@@ -21,6 +21,9 @@ import logging
 import datetime
 import matplotlib
 
+import dateutil.parser
+from dateutil.tz import * # for tzutc()
+
 from SimpleGladeApp import *
 from popupmenu import PopupMenu
 from aboutdialog import About
@@ -188,6 +191,17 @@ class Main(SimpleGladeApp):
 			pace = self.parseFloat(record_list[14]) #to review
 			maxspeed = self.parseFloat(record_list[12]) #to review
 			maxpace = self.parseFloat(record_list[13])
+
+			#Get datetime from date_time_utc and create a local datetime...
+			#TODO get data from date_time_local and parse 
+			dateTime = dateutil.parser.parse(record_list[16])
+			timezone = dateTime.tzname()
+			if timezone == 'UTC': #got a zulu time
+				local_dateTime = dateTime.astimezone(tzlocal()) #datetime with localtime offset (from OS)
+			else:
+				local_dateTime = dateTime #use datetime as supplied
+			recordDateTime = local_dateTime.strftime("%Y-%m-%d %H:%M:%S")
+			recordDateTimeOffset = local_dateTime.strftime("%z")
 			
 			if configuration.getValue("pytraining","prf_us_system") == "True":
 				self.record_distance.set_text("%0.2f" %km2miles(distance))
@@ -214,6 +228,8 @@ class Main(SimpleGladeApp):
 			self.record_minute.set_text("%02d" %min)
 			self.record_second.set_text("%02d" %sec)
 			self.record_calories.set_text("%0.0f" %calories)
+			self.record_datetime.set_text(recordDateTime)
+			self.record_datetime_offset.set_text(recordDateTimeOffset)
 			self.record_title.set_text(title)
 			buffer = self.record_comments.get_buffer()
 			start,end = buffer.get_bounds()

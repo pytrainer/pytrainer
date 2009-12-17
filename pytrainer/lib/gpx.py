@@ -28,6 +28,8 @@ from datetime import datetime
 import logging
 from xmlUtils import XMLParser
 from lxml import etree
+import dateutil.parser
+from dateutil.tz import * # for tzutc()
 
 # use of namespaces is mandatory if defined
 mainNS = string.Template(".//{http://www.topografix.com/GPX/1/1}$tag")
@@ -92,7 +94,7 @@ class Gpx:
 			timeResult = trk.find(timeTag)
 			if timeResult is not None:
 				time_ = timeResult.text # check timezone
-				mk_time = self.geDatetTime(time_) 
+				mk_time = self.getDateTime(time_)[0]
 				time_ = time.strftime("%Y-%m-%d", mk_time)
 			else:
 				time_ = _("No Data")
@@ -101,22 +103,18 @@ class Gpx:
 		return tracks
 
 	def getDateTime(self, time_):
-		try:
-			theTime = datetime.strptime(time_, "%Y-%m-%dT%H:%M:%SZ")
-			return theTime
-		except:
-			pass
-		try:
-			#Time includes UTC offset...
-			#2009-12-02T12:58:55+01:00
-			#TODO Need to sort time offset etc....
-			offset = time_[-6:]
-			time_ = time_[:-6] #remove last 6 chars - ie UTC offset eg +01:00
-			theTime = datetime.strptime(time_, "%Y-%m-%dT%H:%M:%S") 
-			return theTime
-		except:
-			pass
-		return None
+		# Time can be in multiple formats
+		# - zulu 			2009-12-15T09:00Z
+		# - local ISO8601	2009-12-15T10:00+01:00
+		dateTime = dateutil.parser.parse(time_)
+		timezone = dateTime.tzname()
+		if timezone == 'UTC': #got a zulu time
+			local_dateTime = dateTime.astimezone(tzlocal()) #datetime with localtime offset (from OS)
+		else:
+			local_dateTime = dateTime #use datetime as supplied
+		utc_dateTime = dateTime.astimezone(tzutc()) #datetime with 00:00 offset
+		#print utc_dateTime, local_dateTime
+		return (utc_dateTime,local_dateTime)
 		
 	def getUnevenness(self):
 		return self.upositive,self.unegative 
@@ -176,7 +174,7 @@ class Gpx:
 			return retorno
 		
 		date_ = tree.find(timeTag).text
-		mk_time = self.getDateTime(date_)
+		mk_time = self.getDateTime(date_)[0]
 		self.date = mk_time.strftime("%Y-%m-%d")
 
 		for trkpoint in trkpoints:
@@ -201,7 +199,7 @@ class Gpx:
 			timeResult = trkpoint.find(timeTag)
 			if timeResult is not None:
 				date_ = timeResult.text
-				mk_time = self.getDateTime(date_)
+				mk_time = self.getDateTime(date_)[0]
 				time_ = time.mktime(mk_time.timetuple()) #Convert date to seconds
 			else:
 				time_ = 1
@@ -286,14 +284,17 @@ class Gpx:
 		Retrieves start time from a given gpx file 
 		args:
 			- gpxFile: path to xml file (gpx format)
-		returns: string with start time - 2008-03-22T12:17:43Z or 2009-12-02T12:58:55+01:00
+		returns: string with start time - 2008-03-22T12:17:43Z
 		"""
 		logging.debug(">>")
 		date_time = self.tree.find(timeTag) #returns first instance found
 		if date_time is None:
 			print "Problems when retrieving start time from "+gpxFile+". Please check data integrity"
 			return 0
-		logging.debug(gpxFile+" | "+ date_time.text)
+		zuluDateTime = self.getDateTime(date_time.text)[0].strftime("%Y-%m-%dT%H:%M:%SZ")
+		logging.debug(gpxFile+" | "+ date_time.text +" | " + zuluDateTime)
+		print zuluDateTime
+		#return date_time.text
 		logging.debug("<<")
-		return date_time.text
+		return zuluDateTime
 
