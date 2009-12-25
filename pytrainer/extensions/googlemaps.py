@@ -89,6 +89,8 @@ class Googlemaps:
 					time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
 					startinfo = "<div id='info_content'>%s: %s</div>" % (info[0][0], info[0][9])
 					finishinfo = "<div id='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), info[0][2], _("km"))
+					startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
+					finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
 					self.createHtml_api3(polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps)
 				else:
 					logging.debug("Using Google Maps version 2 API")
