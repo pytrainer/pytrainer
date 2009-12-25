@@ -51,15 +51,19 @@ class garminTCXv2():
 		importfiles = []
 		if not selectedFiles: #Nothing selected
 			return importfiles
-		for filename in selectedFiles:
-			if self.valid_input_file(filename):
-				if not self.inDatabase(filename):
-					sport = self.getSport(filename)
-					gpxfile = "%s/garmin-tcxv2-%d.gpx" % (self.tmpdir, len(importfiles))					
-					self.createGPXfile(gpxfile, filename)
-					importfiles.append((gpxfile, sport))					
-				else:
-					logging.debug("%s already in database. Skipping import." % (filename,) )
+		for filename in selectedFiles: #Multiple files
+			if self.valid_input_file(filename): #TODO could consolidate tree generation here
+				tree = etree.ElementTree(file=filename)
+				#Possibly multiple entries in file
+				activities = self.getActivities(tree)
+				for activity in activities:
+					if not self.inDatabase(activity):
+						sport = self.getSport(activity)
+						gpxfile = "%s/garmin-tcxv2-%d.gpx" % (self.tmpdir, len(importfiles))					
+						self.createGPXfile(gpxfile, activity)
+						importfiles.append((gpxfile, sport))					
+					else:
+						logging.debug("File:%s activity %d already in database. Skipping import." % (filename, activities.index(activity)) )
 			else:
 				logging.info("File %s failed validation" % (filename))
 		logging.debug("<<")
@@ -76,42 +80,46 @@ class garminTCXv2():
 			validator = xmlValidator()
 			return validator.validateXSL(filename, xslfile)
 
-	def inDatabase(self, filename):
+	def getActivities(self, tree):
+		'''Function to return all activities in Garmin training center version 2 file
+		'''
+		root = tree.getroot()
+		activities = root.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Activity")
+		return activities
+
+	def inDatabase(self, activity):
 		#comparing date and start time (sport may have been changed in DB after import)
-		time = self.detailsFromTCX(filename)
+		time = self.detailsFromTCX(activity)
 		if self.parent.parent.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
 			return True
 		else:
 			return False
 
-	def getSport(self, filename):
+	def getSport(self, activity):
 		#return sport from file or overide if present
 		if self.sport:
 			return self.sport
-		tree = etree.ElementTree(file=filename)
-		root = tree.getroot()
-		sportElement = root.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Activity")
+		#sportElement = activity.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Activity")
 		try:
-			sport = sportElement.get("Sport")
+			sport = activity.get("Sport")
 		except:
 			sport = "import"
 		return sport
 
-	def detailsFromTCX(self, filename):
-		tree = etree.ElementTree(file=filename)
-		root = tree.getroot()
-		timeElement = root.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Id")
+	def detailsFromTCX(self, activity):
+		timeElement = activity.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Id")
 		if timeElement is None:
 			return None
 		else:
 			return timeElement.text
 
-	def createGPXfile(self, gpxfile, filename):
+	def createGPXfile(self, gpxfile, activity):
 		""" Function to transform a Garmin Training Center v2 Track to a valid GPX+ file
 		"""
 		xslt_doc = etree.parse(self.data_path+"/translate.xsl")
 		transform = etree.XSLT(xslt_doc)
-		xml_doc = etree.parse(filename)
+		#xml_doc = etree.parse(filename)
+		xml_doc = activity
 		result_tree = transform(xml_doc)
 		result_tree.write(gpxfile, xml_declaration=True)
 

@@ -17,8 +17,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" >
 
     <xsl:value-of select="$newline"/>
-    <xsl:variable name="sport"><xsl:value-of select="t:TrainingCenterDatabase/t:Activities/t:Activity/@Sport"/></xsl:variable>
-    <xsl:variable name="time"><xsl:value-of select="t:TrainingCenterDatabase/t:Activities/t:Activity/t:Id"/></xsl:variable>
+    <xsl:variable name="sport"><xsl:value-of select="t:Activity/@Sport"/></xsl:variable>
+    <xsl:variable name="time"><xsl:value-of select="t:Activity/t:Id"/></xsl:variable>
     <xsl:variable name="name"><xsl:value-of select="$sport"/><xsl:value-of  select="substring($time, 1,10)"/></xsl:variable>
     <metadata><xsl:value-of select="$newline"/>
     <name><xsl:value-of select="$name"/></name><xsl:value-of select="$newline"/>
@@ -26,7 +26,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     <time><xsl:value-of select="$time"/></time><xsl:value-of select="$newline"/>
     </metadata><xsl:value-of select="$newline"/>
     <trk><xsl:value-of select="$newline"/>
-    <xsl:for-each select="t:TrainingCenterDatabase/t:Activities/t:Activity/t:Lap">
+    <xsl:for-each select="t:Activity/t:Lap">
         <trkseg><xsl:value-of select="$newline"/>
         <xsl:variable name="calories"><xsl:value-of select="t:Calories"/></xsl:variable>
         <xsl:for-each select="t:Track/t:Trackpoint">
@@ -61,7 +61,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 <!-- Lap Data -->
 	<xsl:value-of select="$newline"/>
 	<extensions><xsl:value-of select="$newline"/>
-    <xsl:for-each select="t:TrainingCenterDatabase/t:Activities/t:Activity/t:Lap">
+    <xsl:for-each select="t:Activity/t:Lap">
     <xsl:variable name="vIndex">
     <xsl:number count="t:Lap"/>
     </xsl:variable>
@@ -70,7 +70,7 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
             <xsl:variable name="stlat"><xsl:value-of select="t:Track/t:Trackpoint[1]/t:Position/t:LatitudeDegrees"/></xsl:variable>
             <xsl:variable name="stlon"><xsl:value-of select="t:Track/t:Trackpoint[1]/t:Position/t:LongitudeDegrees"/></xsl:variable>
             <gpxdata:startPoint lat="{$stlat}" lon="{$stlon}"/><xsl:value-of select="$newline"/>
-			<xsl:variable name="cnt"><xsl:value-of select="count(t:Track/t:Trackpoint/t:Position)"/></xsl:variable>
+			<xsl:variable name="cnt"><xsl:value-of select="count(t:Track/t:Trackpoint/t:Position)-1"/></xsl:variable>
 			<xsl:variable name="endlat"><xsl:value-of select="t:Track/t:Trackpoint[number($cnt)]/t:Position/t:LatitudeDegrees"/></xsl:variable>
    	  	  	<xsl:variable name="endlon"><xsl:value-of select="t:Track/t:Trackpoint[number($cnt)]/t:Position/t:LongitudeDegrees"/></xsl:variable>
       		<gpxdata:endPoint lat="{$endlat}" lon="{$endlon}"/><xsl:value-of select="$newline"/>
