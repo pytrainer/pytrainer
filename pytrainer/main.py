@@ -97,7 +97,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.7.0_svn#436"
+		self.version ="1.7.0_svn#437"
 		self.date = Date()
 		main_dir = os.path.realpath(os.path.dirname(__file__)) #why?
 		sys.path.insert(0, main_dir) #why?
@@ -127,6 +127,11 @@ class pyTrainer:
 		self.ddbb.connect()		
 		self.record = Record(data_path,self)
 		
+		#Look for force check file
+		check_file = self.data_path+"/FORCE_DB_CHECK"
+		if os.path.isfile(check_file):
+			self.check = True
+			os.remove(check_file)
 		if self.check:
 			#self.migrationCheck()
 			self.sanityCheck() # Deprecates migrationCheck. Review first installation and version control
