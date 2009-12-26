@@ -526,7 +526,7 @@ class Record:
 		
 	def compareLists(self,list1,list2):
 		# Optimizing comparison - 26042008
-		# http://mail.python.org/pipermail/python-list/2002-May/142854.html
+		# http://mail.python.org/pipermail/python-list/2002-May/141458.html
 		tempDict = dict(zip(list1,list1))
 		return [x for x in list2 if x not in tempDict]
 		

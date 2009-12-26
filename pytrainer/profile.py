@@ -114,7 +114,7 @@ class Profile:
 		logging.debug("Default values: "+ str(defaultList))
 		#logging.debug("Default keys: "+ str(defaultListKeys))
 		# Comparing fields
-		# http://mail.python.org/pipermail/python-list/2002-May/142854.html
+		# http://mail.python.org/pipermail/python-list/2002-May/141458.html
 		tempDict = dict(zip(currentListKeys,currentListKeys))
 		resultList = [x for x in defaultListKeys if x not in tempDict]
 		logging.info('Fields to be added: '+str(resultList))

@@ -223,7 +223,7 @@ class Sql:
 			columnsDB.update(newField)
 		logging.debug('Useful data retrieved from '+str(tableName)+' in DB: '+str(columnsDB))
 
-		# http://mail.python.org/pipermail/python-list/2002-May/142854.html - not correct URL....
+		# http://mail.python.org/pipermail/python-list/2002-May/141458.html
 		#tempDict = dict(zip(columns,columns))
 		tempDict = dict(columns)
 		#Test for columns that are in DB that shouldn't be
