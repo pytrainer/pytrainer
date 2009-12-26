@@ -19,6 +19,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
+import sys
 try:
 	from sqlite3 import dbapi2 as sqlite
 except ImportError:
@@ -222,17 +223,34 @@ class Sql:
 			columnsDB.update(newField)
 		logging.debug('Useful data retrieved from '+str(tableName)+' in DB: '+str(columnsDB))
 
-		# http://mail.python.org/pipermail/python-list/2002-May/142854.html
-		tempDict = dict(zip(columns,columns))
+		# http://mail.python.org/pipermail/python-list/2002-May/142854.html - not correct URL....
+		#tempDict = dict(zip(columns,columns))
+		tempDict = dict(columns)
+		#Test for columns that are in DB that shouldn't be
 		result = [x for x in columnsDB if x not in tempDict]
-		logging.debug("Comparison result: "+str(result))
+		#Test for columns that are not in the DB that should be
+		result2 = [x for x in tempDict if x not in columnsDB]
 
-		if len(result) > 0: # may have also different data type
-			logging.debug('Found columns missed in DB: '+ str(result))
+		#print result, result2
+		logging.debug("Comparison result: "+str(result))
+		logging.debug("Comparison result: "+str(result2))
+
+		table_ok = True
+		if len(result) > 0:
+			logging.debug('Found columns in DB that should not be: '+ str(result))
+			table_ok = False
 			for entry in result:
+				logging.debug('Column '+ str(entry) +' in DB but not in definition')
+				print "Column %s in DB but not in definition - please fix manually" % (str(entry))
+				print "#TODO need to add auto fix code"
+				sys.exit(1)
+		if len(result2) > 0: # may have also different data type
+			logging.debug('Found columns missed in DB: '+ str(result2))
+			table_ok = False
+			for entry in result2:
 				logging.debug('Column '+ str(entry) +' not found in DB')
-				self.addColumn(tableName,str(entry),columnsDB[entry])
-		else:
+				self.addColumn(tableName,str(entry),columns[entry])
+		if table_ok:
 			logging.info('Table '+ str(tableName) +' is OK')
 		logging.debug('<<')
 
