@@ -192,16 +192,19 @@ class Main(SimpleGladeApp):
 			maxspeed = self.parseFloat(record_list[12]) #to review
 			maxpace = self.parseFloat(record_list[13])
 
-			#Get datetime from date_time_utc and create a local datetime...
+			#Get datetime from DB, use local time if available otherwise use date_time_utc and create a local datetime...
 			#TODO get data from date_time_local and parse 
-			dateTime = dateutil.parser.parse(record_list[16])
-			timezone = dateTime.tzname()
-			if timezone == 'UTC': #got a zulu time
-				local_dateTime = dateTime.astimezone(tzlocal()) #datetime with localtime offset (from OS)
-			else:
-				local_dateTime = dateTime #use datetime as supplied
-			recordDateTime = local_dateTime.strftime("%Y-%m-%d %H:%M:%S")
-			recordDateTimeOffset = local_dateTime.strftime("%z")
+			date_time_local = record_list[17]
+			date_time_utc = record_list[16]
+			if date_time_local is not None: #Have a local time stored in DB
+				dateTime = dateutil.parser.parse(date_time_local)
+				recordDateTime = dateTime.strftime("%Y-%m-%d %H:%M:%S")
+				recordDateTimeOffset = dateTime.strftime("%z")
+			else: #No local time in DB
+				dateTime = dateutil.parser.parse(date_time_utc)
+				local_dateTime = dateTime.astimezone(tzlocal()) #datetime with localtime offset (using value from OS)
+				recordDateTime = local_dateTime.strftime("%Y-%m-%d %H:%M:%S")
+				recordDateTimeOffset = local_dateTime.strftime("%z")
 			
 			if configuration.getValue("pytraining","prf_us_system") == "True":
 				self.record_distance.set_text("%0.2f" %km2miles(distance))
