@@ -266,8 +266,8 @@ class Sql:
 	def addColumn(self,tableName,columnName,dataType):
 		sql = "alter table %s add %s %s" %(tableName,columnName,dataType)
 		try:
-			self.ddbbObject.freeExec(sql)
+			self.freeExec(sql)
 		except:
 			logging.error('Not able to add/change column '+columnName+' to table '+tableName)
-			traceback.print_exc()
+			#traceback.print_exc()
 
