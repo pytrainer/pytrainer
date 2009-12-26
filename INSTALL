@@ -10,11 +10,12 @@ Here you are dependencies for PyTrainer. Of course you must have a working envir
 1.1.- Working packages (Fedora 12 package revisions as of 2009.12.06 for 1.7.0)
 
 python-2.6.2-2
+python-devel-2.6.2-2 (to run the installation from tarball)
 python-matplotlib-0.98.5.2-5
 gnome-python2-gtkmozembed-2.25.3-13
-pygtk2-libglade-2.16.0-1.fc12.i686
-pygtk2-2.16.0-1.fc12.i686
-SOAPpy-0.11.6-10.fc12.noarch
+pygtk2-libglade-2.16.0-1
+pygtk2-2.16.0-1
+SOAPpy-0.11.6-10
 python-lxml-2.2.3-1
 libxml2-python-2.7.6-1
 libxml2-2.7.6-1
@@ -27,13 +28,14 @@ firefox-3.5.5-1
 
 2.- Installation process
 
-Copy the tarball file to a location where you have write and execution rights. Make sure executables are under your $PATH.
+Copy the tarball file to a location where you have write and execution rights (e.g. /tmp or ~/). Make sure executables are under your $PATH.
 
-$ tar -xf pytrainer-X.Y.Z.tar.gz
+$ tar -xzf pytrainer-X.Y.Z.tar.gz
 $ cd pytrainer-X.Y.Z
-$ ./pytrainer.sh -i
-*** Log level set to INFO ***
-...
+$ sudo python setup.py install
+$ pytrainer -i
+
+For more information about the process, please check http://docs.python.org/distutils/setupscript.html
 
 3.- USB access
 

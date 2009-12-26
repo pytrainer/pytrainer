@@ -15,9 +15,9 @@ def install_extension(extension_name):
 	return "share/pytrainer/extensions/%s"%extension_name, glob("extensions/%s/*"%extension_name) 
 
 setup( 	name="pytrainer",
-	version="1.6.0.9",
+	version="1.7.0",
 	author="Fiz Vazquez",
-	author_email="vud1@sindominio.net",
+	maintainer_email="pytrainer-devel@lists.sourceforge.net",
 	url="https://sourceforge.net/projects/pytrainer/",
 	license="GNU General Public License(GPL)",
 	packages=[	'pytrainer',
@@ -50,4 +50,4 @@ setup( 	name="pytrainer",
 		('share/applications/',['pytrainer.desktop'])
 		],
 	scripts=['bin/pytrainer'] 
-)	
+)
