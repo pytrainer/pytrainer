@@ -20,12 +20,13 @@ import logging
 from SimpleGladeApp import SimpleGladeApp
 from windowcalendar import WindowCalendar
 from filechooser import FileChooser
+import dateutil.parser
 
 class WindowRecord(SimpleGladeApp):
-	def __init__(self, data_path = None, listSport = None, parent = None, date = None, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None):
+	def __init__(self, data_path = None, listSport = None, parent = None, date = None, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None, windowTitle=None):
 		self.parent = parent
 		self.data_path = data_path
-		glade_path="glade/pytrainer.glade"
+		glade_path="glade/newrecord.glade"
 		root = "newrecord"
 		domain = None
 		self.mode = "newrecord"
@@ -55,6 +56,8 @@ class WindowRecord(SimpleGladeApp):
 			self.rcd_sport.insert_text(i,self.listSport[i])
 		self.rcd_sport.set_active(0)
 
+		if windowTitle is not None:
+			self.newrecord.set_title(windowTitle)
 		if date != None:
 			self.setDate(date)
 		if title != None:
@@ -127,30 +130,37 @@ class WindowRecord(SimpleGladeApp):
 		self.rcd_min.set_value(min)
 		self.rcd_second.set_value(sec)
 
-	def setValue(self,var,value):
+	def setValue(self,var,value, format="%0.2f"):
 		var = getattr(self,var)
 		try:
-			valueString = "%0.2f" %value
+			valueString = format %value
 			var.set_text(valueString)
 		except:
 			pass
 	
 	def setValues(self,values):
+		#(24, u'2009-12-26', 4, 23.48, u'9979', 0.0, 8.4716666232200009, 2210, u'', None, u'', 573.0, 562.0, 11.802745244400001, 5.0499999999999998, 7.04, 0.0, u'2009-12-25T19:41:48Z', u'2009-12-26 08:41:48+13:00')
 		#(50, u'2006-10-13', 1, 25.0, u'5625', 0.0, 16.0, 0, u'', gpsfile, title,upositive,unegative,maxspeed|maxpace|pace|maxbeats
 		self.id_record = values[0]
 		self.setTime(values[4])
 		self.rcd_date.set_text(str(values[1]))
 		self.setValue("rcd_distance",values[3])
 		self.setValue("rcd_average",values[6])
-		self.setValue("rcd_calories",values[7])
-		self.setValue("rcd_beats",values[5])
+		self.setValue("rcd_calories",values[7], "%0.0f")
+		self.setValue("rcd_beats",values[5], "%0.0f")
 		self.setValue("rcd_upositive",values[11])
 		self.setValue("rcd_unegative",values[12])
 		self.setValue("rcd_maxvel",values[13])
 		self.setValue("rcd_maxpace",values[14])
 		self.setValue("rcd_pace",values[15])
-		self.setValue("rcd_maxbeats",values[16])
+		self.setValue("rcd_maxbeats",values[16], "%0.0f")
 		self.rcd_title.set_text("%s"%values[10])
+		
+		local_time = values[18]
+		if local_time is not None:
+			dateTime = dateutil.parser.parse(local_time)
+			sTime = dateTime.strftime("%X")
+			self.rcd_time.set_text("%s" % sTime)
 		sportID = values[2]
 		sportPosition = self.getSportPosition(sportID)
 		self.rcd_sport.set_active(sportPosition) 

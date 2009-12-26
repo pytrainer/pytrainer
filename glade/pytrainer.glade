@@ -8556,7 +8556,7 @@ Summit</property>
     </widget>
   </child>
 </widget>
-
+<!-- moved to newrecord.glade
 <widget class="GtkWindow" id="newrecord">
   <property name="visible">True</property>
   <property name="title" translatable="yes">New Entry</property>
@@ -10421,7 +10421,7 @@ Summit</property>
       </child>
     </widget>
   </child>
-</widget>
+</widget> -->
 
 <widget class="GtkWindow" id="newprofile">
   <property name="visible">True</property>

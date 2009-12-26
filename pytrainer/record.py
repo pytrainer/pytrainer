@@ -58,7 +58,7 @@ class Record:
 		logging.debug('retrieving data from DB: '+str(record))
 		gpxfile = self.conf.getValue("gpxdir")+"/%d.gpx"%int(id_record)
 		logging.debug('gpx file associated: '+gpxfile)
-		self.recordwindow = WindowRecord(self.data_path, list_sport,self, None)
+		self.recordwindow = WindowRecord(self.data_path, list_sport,self, None, windowTitle=_("Edit Entry"))
 		if os.path.isfile(gpxfile):
 			self.recordwindow.rcd_gpxfile.set_text(gpxfile)
 		logging.debug('sending record info to window')
