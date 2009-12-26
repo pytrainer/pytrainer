@@ -198,13 +198,13 @@ class Main(SimpleGladeApp):
 			date_time_utc = record_list[16]
 			if date_time_local is not None: #Have a local time stored in DB
 				dateTime = dateutil.parser.parse(date_time_local)
-				recordDateTime = dateTime.strftime("%Y-%m-%d %H:%M:%S")
-				recordDateTimeOffset = dateTime.strftime("%z")
 			else: #No local time in DB
-				dateTime = dateutil.parser.parse(date_time_utc)
-				local_dateTime = dateTime.astimezone(tzlocal()) #datetime with localtime offset (using value from OS)
-				recordDateTime = local_dateTime.strftime("%Y-%m-%d %H:%M:%S")
-				recordDateTimeOffset = local_dateTime.strftime("%z")
+				tmpDateTime = dateutil.parser.parse(date_time_utc)
+				dateTime = tmpDateTime.astimezone(tzlocal()) #datetime with localtime offset (using value from OS)
+			recordDateTime = dateTime.strftime("%Y-%m-%d %H:%M:%S")
+			recordDate = dateTime.strftime("%x")
+			recordTime = dateTime.strftime("%X")
+			recordDateTimeOffset = dateTime.strftime("%z")
 			
 			if configuration.getValue("pytraining","prf_us_system") == "True":
 				self.record_distance.set_text("%0.2f" %km2miles(distance))
@@ -225,14 +225,16 @@ class Main(SimpleGladeApp):
 				self.record_maxpace.set_text("%0.2f" %maxpace)
 			
 			self.record_sport.set_text(sport)
-			self.record_date.set_text(str(date))
+			#self.record_date.set_text(str(date))
+			self.record_date.set_text(recordDate)
+			self.record_time.set_text(recordTime)
 			hour,min,sec=self.parent.date.second2time(int(record_list[3]))
 			self.record_hour.set_text("%d" %hour)
 			self.record_minute.set_text("%02d" %min)
 			self.record_second.set_text("%02d" %sec)
 			self.record_calories.set_text("%0.0f" %calories)
-			self.record_datetime.set_text(recordDateTime)
-			self.record_datetime_offset.set_text(recordDateTimeOffset)
+			#self.record_datetime.set_text(recordDateTime)
+			#self.record_datetime_offset.set_text(recordDateTimeOffset)
 			self.record_title.set_text(title)
 			buffer = self.record_comments.get_buffer()
 			start,end = buffer.get_bounds()
