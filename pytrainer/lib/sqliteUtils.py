@@ -231,9 +231,8 @@ class Sql:
 		#Test for columns that are not in the DB that should be
 		result2 = [x for x in tempDict if x not in columnsDB]
 
-		#print result, result2
-		logging.debug("Comparison result: "+str(result))
-		logging.debug("Comparison result: "+str(result2))
+		logging.debug("Columns in DB that shouldnt be: "+str(result))
+		logging.debug("Columns missing from DB: "+str(result2))
 
 		table_ok = True
 		if len(result) > 0:

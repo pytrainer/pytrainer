@@ -174,7 +174,8 @@ class Gpx:
 			return retorno
 		
 		date_ = tree.find(timeTag).text
-		mk_time = self.getDateTime(date_)[0]
+		#mk_time = self.getDateTime(date_)[0] #UTC Date
+		mk_time = self.getDateTime(date_)[1] #Local Date
 		self.date = mk_time.strftime("%Y-%m-%d")
 
 		for trkpoint in trkpoints:
@@ -291,10 +292,12 @@ class Gpx:
 		if date_time is None:
 			print "Problems when retrieving start time from "+gpxFile+". Please check data integrity"
 			return 0
-		zuluDateTime = self.getDateTime(date_time.text)[0].strftime("%Y-%m-%dT%H:%M:%SZ")
+		dateTime = self.getDateTime(date_time.text)
+		zuluDateTime = dateTime[0].strftime("%Y-%m-%dT%H:%M:%SZ")
+		localDateTime = dateTime[1]
 		logging.debug(gpxFile+" | "+ date_time.text +" | " + zuluDateTime)
-		print zuluDateTime
+		print localDateTime
 		#return date_time.text
 		logging.debug("<<")
-		return zuluDateTime
+		return (zuluDateTime, localDateTime)
 

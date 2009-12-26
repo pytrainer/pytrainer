@@ -237,6 +237,7 @@ class DDBB:
 			"maxpace":"float", 
 			"pace":"float", 
 			"maxbeats":"float", 
+			"date_time_local":"varchar2(20)",
 			"date_time_utc":"varchar2(20)"}
 		columnsWaypoints = {"id_waypoint":"integer primary key autoincrement",
 			"lat":"float",

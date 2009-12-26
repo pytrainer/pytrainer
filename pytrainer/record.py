@@ -116,7 +116,7 @@ class Record:
 		logging.debug('>>')
 		time = self.date.time2second(list_options["rcd_time"])
 		average = self.parseFloatRecord(list_options["rcd_average"])
-		keys= "date,sport,distance,time,beats,comments,average,calories,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc"
+		keys= "date,sport,distance,time,beats,comments,average,calories,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc,date_time_local"
 		if (list_options["rcd_beats"] == ""):
 			list_options["rcd_beats"] = 0
 		
@@ -140,6 +140,7 @@ class Record:
 			self.parseFloatRecord(list_options["rcd_pace"]),
 			self.parseFloatRecord(list_options["rcd_maxbeats"]),
 			list_options["date_time_utc"],
+			list_options["date_time_local"],
 			)
 		logging.debug('<<')
 		return keys,values
@@ -208,9 +209,11 @@ class Record:
 		summaryRecord['rcd_upositive'] = upositive
 		summaryRecord['rcd_unegative'] = unegative
 		if entry[1]=="": # coming from new track dialog (file opening)
-			summaryRecord['date_time_utc'] = gpx.getStartTimeFromGPX(gpxOrig)
+			summaryRecord['date_time_utc'], summaryRecord['date_time_local'] = gpx.getStartTimeFromGPX(gpxOrig)
 		else: # coming from GPS device
 			summaryRecord['date_time_utc'] = entry[1]
+			summaryRecord['date_time_local'] = entry[1]
+			print "#TODO fix record summaryRecord local and utc time..."
 		logging.debug('summary: '+str(summaryRecord))
 		logging.debug('<<')
 		return summaryRecord
@@ -244,13 +247,13 @@ class Record:
 	def getrecordInfo(self,id_record):
 		logging.debug('--')
 		return self.ddbb.select("records,sports",
-					"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc",
+					"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc,date_time_local",
 					"id_record=\"%s\" and records.sport=sports.id_sports" %id_record)
 	
 	def getrecordList(self,date):
 		logging.debug('--')
 		return self.ddbb.select("records,sports",
-					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc",
+					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local",
 					"date=\"%s\" and records.sport=sports.id_sports" %date)
 
 	def getrecordPeriod(self,date_ini, date_end, sport=None):
@@ -484,7 +487,7 @@ class Record:
 		for gpxFile in os.listdir(gpxDir):
 			#logging.debug('File: '+gpxFile)
 			gpx = Gpx()
-			date_time = gpx.getStartTimeFromGPX(gpxDir+"/"+gpxFile)
+			date_time = gpx.getStartTimeFromGPX(gpxDir+"/"+gpxFile)[0]
 			if date_time != 0:
 				logging.debug('File: '+gpxFile+' | Date: '+date_time)
 				id_record = gpxFile.partition('.')[0]
