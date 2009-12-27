@@ -87,8 +87,8 @@ class Googlemaps:
 					timeHours = int(info[0][3]) / 3600
 					timeMin = (float(info[0][3]) / 3600.0 - timeHours) * 60
 					time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
-					startinfo = "<div id='info_content'>%s: %s</div>" % (info[0][0], info[0][9])
-					finishinfo = "<div id='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), info[0][2], _("km"))
+					startinfo = "<div class='info_content'>%s: %s</div>" % (info[0][0], info[0][9])
+					finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), info[0][2], _("km"))
 					startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
 					finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
 					self.createHtml_api3(polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps)
@@ -115,6 +115,9 @@ class Googlemaps:
 		content = '''
 		<html>
 		<head>
+		<style type="text/css">
+			div.info_content { font-family: sans-serif; font-size: 10px; }
+		</style>
 		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
 		<script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
 		<script type="text/javascript">
@@ -192,8 +195,13 @@ class Googlemaps:
 
 		for lap in laps:
 			lapNumber = laps.index(lap)+1
+			elapsedTime = float(lap[0])
+			elapsedTimeHours = int(elapsedTime/3600)
+			elapsedTimeMins = int((elapsedTime - (elapsedTimeHours * 3600)) / 60)
+			elapsedTimeSecs = elapsedTime - (elapsedTimeHours * 3600) - (elapsedTimeMins * 60)
+			strElapsedTime = "%0.0dh:%0.0dm:%0.2fs" % (elapsedTimeHours, elapsedTimeMins, elapsedTimeSecs) 
 			content += "var lap%dmarker = new google.maps.Marker({position: new google.maps.LatLng(%f, %f), icon: lapimage, map: map,  title:\"Lap%d\"}); \n " % (lapNumber, float(lap[1]), float(lap[2]), lapNumber)
-			content += "var lap%d = new google.maps.InfoWindow({content: \"End of lap:%s<br>Elapsed time:%s<br>Distance:%s<br>Calories:%s\" });\n" % (lapNumber, lapNumber, lap[0], lap[4], lap[3])
+			content += "var lap%d = new google.maps.InfoWindow({content: \"<div class='info_content'>End of lap:%s<br>Elapsed time:%s<br>Distance:%0.2f km<br>Calories:%s</div>\" });\n" % (lapNumber, lapNumber, strElapsedTime, float(lap[4])/1000, lap[3])
 			content += "google.maps.event.addListener(lap%dmarker, 'click', function() { lap%d.open(map,lap%dmarker); });\n" % (lapNumber,lapNumber,lapNumber)
 
 		content += '''
