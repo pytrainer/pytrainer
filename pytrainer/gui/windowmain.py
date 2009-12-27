@@ -58,7 +58,7 @@ class Main(SimpleGladeApp):
 		self.window1.set_title ("pyTrainer %s" % self.version)
 		self.record_list = []
 		#create the columns for the listdayrecord
-		column_names=[_("id"),_("Sport"),_("Kilometer")]
+		column_names=[_("id"),_("Time"), _("Sport"),_("Kilometer")]
 		self.create_treeview(self.recordTreeView,column_names)
 		#create the columns for the listarea
 		column_names=[_("id"),_("Title"),_("Date"),_("Distance"),_("Sport"),_("Time"),_("Beats"),_("Average"),("Calories")]
@@ -914,7 +914,7 @@ class Main(SimpleGladeApp):
 	#hasta aqui revisado
 	def on_allRecordTreeView_button_press(self, treeview, event):
 		logging.debug(">>")
-		print "on_allRecordTreeView_"
+		#print "on_allRecordTreeView_"
 		x = int(event.x)
 		y = int(event.y)
 		time = event.time
@@ -944,16 +944,23 @@ class Main(SimpleGladeApp):
 			gobject.TYPE_INT,
 			gobject.TYPE_STRING,
 			gobject.TYPE_STRING,
+			gobject.TYPE_STRING,
 			object)
 		for i in record_list:
 			iter = store.append()
 			if not iterOne:
 				iterOne = iter
+			dateTime = i[12]
+			if dateTime is not None:
+				localTime = dateutil.parser.parse(dateTime).strftime("%H:%M")
+			else:
+				localTime = ""
 			store.set (
 				iter,
 				0, int(i[8]),
-				1, str(i[0]),
-				2, str(i[2])
+				1, str(localTime),
+				2, str(i[0]),
+				3, str(i[2])
 				)
 		self.recordTreeView.set_model(store)
 		if iterOne:

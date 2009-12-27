@@ -95,7 +95,7 @@ class Gpx:
 			if timeResult is not None:
 				time_ = timeResult.text # check timezone
 				mk_time = self.getDateTime(time_)[0]
-				time_ = time.strftime("%Y-%m-%d", mk_time)
+				time_ = mk_time.strftime("%Y-%m-%d")
 			else:
 				time_ = _("No Data")
 			logging.debug("name: "+name+" | time: "+time_)
@@ -211,14 +211,18 @@ class Gpx:
 			#chequeamos que la altura sea correcta / check that the height is correct
 			if ele is not None:
 				if len(ele)<15:
-					tmp_alt = int(float(ele))
+					tmp_alt = int(float(ele)) #Why convert to int? ele are like "156.3515625"	
+				else:
+					print "ele len >= 15" + ele
 			else:
 				tmp_alt= 0
+				print "tmp_alt:" + tmp_alt
 			
 			#evitamos los puntos blancos / we avoid the white points
 			if (float(lat) < -0.000001) or (float(lat) > 0.0000001):
-				tmp_lat = float(lat)*0.01745329252
-				tmp_lon = float(lon)*0.01745329252
+				#Convert lat and lon from degrees to radians
+				tmp_lat = float(lat)*0.01745329252  #0.01745329252 = number of radians in a degree
+				tmp_lon = float(lon)*0.01745329252  #57.29577951 = 1/0.01745329252 or degrees per radian
 				tmp_time = int(time_)
 		
 				#Para las vueltas diferentes a la primera / For the returns different from first	
@@ -228,8 +232,9 @@ class Gpx:
 						#Caqlculate diference betwen last and new point
 						#tempnum=(math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon))
 						#try:
-						#Pasamos la distancia de radianes a metros..  creo
-						#David no me mates que esto lo escribi hace anhos
+						#Pasamos la distancia de radianes a metros..  creo / We convert the distance from radians to meters
+						#David no me mates que esto lo escribi hace anhos / Do not kill me this was written ages ago
+						#http://faculty.washington.edu/blewis/ocn499/EXER04.htm equation for the distance between 2 points on a spherical earth
 						try:
 							#dist=math.acos(tempnum)*111.302*57.29577951
 							dist=math.acos((math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon)))*111.302*57.29577951

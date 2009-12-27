@@ -580,7 +580,7 @@
 					      <child>
 						<widget class="GtkLabel" id="label11124">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">&lt;b&gt;Time:&lt;/b&gt;</property>
+						  <property name="label" translatable="yes">&lt;b&gt;Duration:&lt;/b&gt;</property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">True</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -3190,7 +3190,7 @@ Cadence
 					  <child>
 					    <widget class="GtkLabel" id="label38">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">&lt;b&gt;Time:&lt;/b&gt;</property>
+					      <property name="label" translatable="yes">&lt;b&gt;Duration:&lt;/b&gt;</property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">True</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -4318,7 +4318,7 @@ Stage Profile/velocity</property>
 					  <child>
 					    <widget class="GtkLabel" id="label100">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">&lt;b&gt;Time:&lt;/b&gt;</property>
+					      <property name="label" translatable="yes">&lt;b&gt;Duration:&lt;/b&gt;</property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">True</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -5460,7 +5460,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="label100">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">&lt;b&gt;Time:&lt;/b&gt;</property>
+					      <property name="label" translatable="yes">&lt;b&gt;Duration:&lt;/b&gt;</property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">True</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -6755,7 +6755,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="label118">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">&lt;b&gt;Time:&lt;/b&gt;</property>
+					      <property name="label" translatable="yes">&lt;b&gt;Duration:&lt;/b&gt;</property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">True</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
