@@ -21,9 +21,10 @@
 import logging
 import os
 import shutil
-from gui.dialogs import fileChooserDialog, guiFlush
 import xml.etree.cElementTree
-from lib.xmlUtils import XMLParser
+
+from pytrainer.gui.dialogs import fileChooserDialog, guiFlush
+from pytrainer.lib.xmlUtils import XMLParser
 
 class garmingpx():
 	""" Plugin to import from a GPX file or files

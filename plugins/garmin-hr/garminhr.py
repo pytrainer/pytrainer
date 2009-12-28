@@ -20,7 +20,7 @@
 import os, sys
 import logging
 from lxml import etree
-from lib.xmlUtils import XMLParser
+from pytrainer.lib.xmlUtils import XMLParser
 
 import commands
 

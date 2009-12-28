@@ -97,7 +97,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.7.0_svn#449"
+		self.version ="1.7.0_svn#450"
 		self.date = Date()
 		# Checking profile
 		self.profile = Profile(self.data_path,self)
@@ -107,8 +107,6 @@ class pyTrainer:
 		self.check = check
 		self.gm3 = gm3
 		self.windowmain = None
-		main_dir = os.path.realpath(os.path.dirname(__file__)) 	#Add pytrainer directory to module search path
-		sys.path.insert(0, main_dir) 				# so modules in subdirs are found e.g. lib.xmlutil
 
 		logging.debug('checking configuration...')
 		self.conf = checkConf()

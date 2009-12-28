@@ -22,9 +22,9 @@
 import os
 import logging
 from lxml import etree
-from lib.xmlUtils import XMLParser
 
-from gui.dialogs import fileChooserDialog, guiFlush
+from pytrainer.lib.xmlUtils import XMLParser
+from pytrainer.gui.dialogs import fileChooserDialog, guiFlush
 
 
 class garminhrfile():

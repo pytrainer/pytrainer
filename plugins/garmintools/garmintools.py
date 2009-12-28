@@ -21,9 +21,9 @@ import logging
 import os
 import StringIO
 from lxml import etree
-from lib.xmlUtils import XMLParser
 
-from gui.dialogs import fileChooserDialog, guiFlush
+from pytrainer.lib.xmlUtils import XMLParser
+from pytrainer.gui.dialogs import fileChooserDialog, guiFlush
 
 class garmintools():
 	def __init__(self, parent = None, validate=False):

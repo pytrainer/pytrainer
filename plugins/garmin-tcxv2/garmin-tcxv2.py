@@ -20,9 +20,8 @@
 import logging
 import os
 from lxml import etree
-from lib.xmlUtils import XMLParser
-
-from gui.dialogs import fileChooserDialog, guiFlush
+from pytrainer.lib.xmlUtils import XMLParser
+from pytrainer.gui.dialogs import fileChooserDialog, guiFlush
 
 class garminTCXv2():
 	def __init__(self, parent = None, validate=False):
