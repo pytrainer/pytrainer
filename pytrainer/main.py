@@ -97,7 +97,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.7.0_svn#450"
+		self.version ="1.7.0_svn#451"
 		self.date = Date()
 		# Checking profile
 		self.profile = Profile(self.data_path,self)
@@ -136,7 +136,7 @@ class pyTrainer:
 			logging.info('No sanity check requested')
 		
 		#preparamos la ventana principal
-		self.windowmain = Main(data_path,self,self.version)
+		self.windowmain = Main(data_path,self,self.version, gpxDir=self.conf.getValue("gpxdir"))
 		self.date = Date(self.windowmain.calendar)
 
 		#Preparamos el webservice	 
