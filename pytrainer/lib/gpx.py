@@ -140,6 +140,10 @@ class Gpx:
 			lat = endPoint.get("lat")
 			lon = endPoint.get("lon")
 			elapsedTime = lap.findtext(elapsedTimeTag)
+			if elapsedTime.count(":") > 0: # got a 0:41:42.14 type elasped time
+				hours, mins, secs = elapsedTime.split(":")
+				elapsedTime = (int(hours) *3600) + (int(mins) * 60) + float(secs)
+				print elapsedTime
 			calories = lap.findtext(calorieTag)
 			distance = lap.findtext(distanceTag)
 			#print "Found time: %s, lat: %s lon: %s cal: %s dist: %s " % (elapsedTime, lat, lon, calories, distance)
