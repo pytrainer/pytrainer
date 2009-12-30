@@ -293,10 +293,10 @@ class DrawArea:
 				if xzones is not None:
 					for xzone in xzones:
 						if xzones.index(xzone) % 2:
-							color='b'
+							zonecolor='b'
 						else:
-							color='g'
-						axis.axvspan(xzone[0], xzone[1], alpha=0.25, facecolor=color)
+							zonecolor='g'
+						axis.axvspan(xzone[0], xzone[1], alpha=0.25, facecolor=zonecolor)
 				maxX = max(xvalues[i])
 			if i>=1:
 				ax2 = axis.twinx()
