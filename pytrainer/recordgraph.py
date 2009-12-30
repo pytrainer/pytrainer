@@ -20,14 +20,15 @@ import logging
 from gui.drawArea import DrawArea
 
 class RecordGraph:
-	def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None):
+	def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None, btnShowLaps = None):
 		logging.debug(">>")		
 		self.drawarea = DrawArea(vbox, window)
 		self.combovalue = combovalue
 		self.combovalue2 = combovalue2
+		self.showLaps = btnShowLaps
 		logging.debug("<<")
 
-	def drawgraph(self,values):
+	def drawgraph(self,values,laps=None):
 		logging.debug(">>")
 		xval = []
 		yval = []
@@ -39,6 +40,19 @@ class RecordGraph:
 		logging.debug("Value selected 1: "+ str(value_selected))
 		value_selected2 = self.combovalue2.get_active()
 		logging.debug("Value selected 2: "+ str(value_selected2))
+		showLaps = self.showLaps.get_active()
+		logging.debug("Show laps: "+ str(showLaps))
+		#Determine left and right lap boundaries
+		if laps is not None and showLaps:
+			lapValues = []
+			lastPoint = 0.0
+			for lap in laps: #(elapsedTime, lat, lon, calories, distance)
+				thisPoint = float(lap[4])/1000.0 + lastPoint
+				lapValues.append((lastPoint, thisPoint))
+				lastPoint = thisPoint
+		else:
+			lapValues = None
+
 		if value_selected < 0:
 			self.combovalue.set_active(0)
 			value_selected = 0
@@ -46,7 +60,6 @@ class RecordGraph:
 		if value_selected2 < 0:
 			self.combovalue2.set_active(0)
 			value_selected2 = 0
-
 		xvalues, yvalues = self.get_values(values,value_selected)
 		xlabel,ylabel,title,color = self.get_value_params(value_selected)
 
@@ -71,7 +84,8 @@ class RecordGraph:
 			tit.append("")
 			col.append(color)		
 		logging.info("To show: tit: "+str(tit)+" | col: "+str(col)+" | xlab: "+str(xlab)+" | ylab: "+str(ylab))
-		self.drawarea.stadistics("plot",xval,yval,xlab,ylab,tit,col)
+		#self.drawPlot(xvalues,yvalues,xlabel,ylabel,title,color,zones)
+		self.drawarea.drawPlot(xval,yval,xlab,ylab,tit,col,None,lapValues)
 		logging.debug("<<")
 
 	def get_value_params(self,value):

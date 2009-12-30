@@ -97,7 +97,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.7.0_svn#453"
+		self.version ="1.7.0_svn#454"
 		self.date = Date()
 		# Checking profile
 		self.profile = Profile(self.data_path,self)
@@ -287,9 +287,10 @@ class pyTrainer:
 				id_record = selected.get_value(iter,0)
 				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
 				if os.path.isfile(gpxfile):
-					 gpx = Gpx(self.data_path,gpxfile)
-					 gpx_tracklist = gpx.getTrackList()
-			 self.windowmain.actualize_recordgraph(gpx_tracklist)
+					gpx = Gpx(self.data_path,gpxfile)
+					gpx_tracklist = gpx.getTrackList()
+					gpx_laps = gpx.getLaps()
+			 self.windowmain.actualize_recordgraph(gpx_tracklist, gpx_laps)
 
 		if view=="map":
 			 self.refreshMapView()

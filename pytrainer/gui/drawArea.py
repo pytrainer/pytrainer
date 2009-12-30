@@ -44,7 +44,7 @@ class DrawArea:
 			return False
 		#logging.debug('xvalues: '+str(xvalues))
 		#logging.debug('yvalues: '+str(yvalues))
-		logging.debug("Type: "+type+" | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
+		#logging.debug("Type: "+type+" | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
 		if type == "bars":
 			self.drawBars(xvalues,yvalues,xlabel,ylabel,title,color)
 		elif type == "plot":
@@ -55,6 +55,7 @@ class DrawArea:
 
 	def drawBars(self,xvalues,yvalues,xlabel,ylabel,title,color):
 		logging.debug('>>')	
+		logging.debug("Type: bars | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
 		self.removeVboxChildren()	
 		figure = Figure(figsize=(6,4), dpi=72)
 		numCols=len(xvalues[0])
@@ -129,7 +130,7 @@ class DrawArea:
 
 	def getColor(self, x):
 		colors=["b","g","r","c","m","y","k", "w"]
-		if x > len(colors):
+		if x >= len(colors):
 			x = x % len(colors)
 		return colors[x]
 	
@@ -272,8 +273,9 @@ class DrawArea:
 
 		logging.debug('<<')
 
-	def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
+	def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None,xzones=None):
 		logging.debug('>>')  
+		logging.debug("Type: plot | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
 		logging.debug('xlabel: '+str(xlabel)+' | ylabel: '+str(ylabel)+' | title: '+str(title))
 		self.removeVboxChildren()
 		figure = Figure()
@@ -286,15 +288,28 @@ class DrawArea:
 					
 				axis.grid(True)
 				for tl in axis.get_yticklabels():
-    					tl.set_color('%s' %color[i])
+					tl.set_color('%s' %color[i])
+				#Draw zones on graph, eg for each lap
+				if xzones is not None:
+					for xzone in xzones:
+						if xzones.index(xzone) % 2:
+							color='b'
+						else:
+							color='g'
+						axis.axvspan(xzone[0], xzone[1], alpha=0.25, facecolor=color)
+				maxX = max(xvalues[i])
 			if i>=1:
 				ax2 = axis.twinx()
 				ax2.plot(xvalues[i], yvalues[i], color=color[i])
 				for tl in ax2.get_yticklabels():
-    					tl.set_color('%s' %color[i])
+					tl.set_color('%s' %color[i])
+				maxXt = max(xvalues[i])
+				if maxXt > maxX:
+					maxX = maxXt
 			axis.set_xlabel(xlabel[i])
 			i+=1
-		
+		axis.set_xlim(0, maxX)
+
 		if (len(xvalues)>1):
 			axis.set_title("%s vs %s" %(ylabel[0],ylabel[1]))
 		else:
@@ -309,14 +324,11 @@ class DrawArea:
 		for child in self.vbox.get_children():
 			logging.debug('Child available: '+str(child))
 
-		if title[0] == 'Stage Profile':
-			figure.savefig('/tmp/stage.png', dpi=75)
-		if title[0] == 'Heart Rate':
-			figure.savefig('/tmp/hr.png', dpi=75)
 		logging.debug('<<')
 	
 	def drawPie(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
 		logging.debug('>>')
+		logging.debug("Type: pie | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
 		self.removeVboxChildren()
 		figure = Figure(figsize=(6,4), dpi=72)
 		axis = figure.add_subplot(111)

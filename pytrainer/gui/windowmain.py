@@ -59,7 +59,7 @@ class Main(SimpleGladeApp):
 		self.window1.set_title ("pyTrainer %s" % self.version)
 		self.record_list = []
 		#create the columns for the listdayrecord
-		column_names=[_("id"),_("Time"), _("Sport"),_("Kilometer")]
+		column_names=[_("id"),_("Start"), _("Sport"),_("Kilometer")]
 		self.create_treeview(self.recordTreeView,column_names)
 		#create the columns for the listarea
 		column_names=[_("id"),_("Title"),_("Date"),_("Distance"),_("Sport"),_("Time"),_("Beats"),_("Average"),("Calories")]
@@ -117,7 +117,7 @@ class Main(SimpleGladeApp):
 		self.parent.runExtension(extension,id)
 
 	def createGraphs(self,RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph):
-		self.drawarearecord = RecordGraph(self.record_vbox, self.window1, self.record_combovalue, self.record_combovalue2)
+		self.drawarearecord = RecordGraph(self.record_vbox, self.window1, self.record_combovalue, self.record_combovalue2, self.btnShowLaps)
 		self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox, self.window1, self.heartrate_vbox2)
 		#self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
 		self.day_vbox.hide()
@@ -245,7 +245,7 @@ class Main(SimpleGladeApp):
 			self.recordview.set_sensitive(0)
 		logging.debug(">>")
 	
-	def actualize_recordgraph(self,record_list):
+	def actualize_recordgraph(self,record_list,laps=None):
 		logging.debug(">>")
 		if len(record_list)>0:
 			self.record_vbox.set_sensitive(1)
@@ -261,7 +261,7 @@ class Main(SimpleGladeApp):
 					self.record_vbox.remove(child)
 			self.record_vbox.set_sensitive(0)
 		#logging.debug("Going to draw "+str(record_list))
-		self.drawarearecord.drawgraph(record_list)
+		self.drawarearecord.drawgraph(record_list,laps)
 		logging.debug("<<")
 	
 	def actualize_heartrategraph(self,record_list):
@@ -846,6 +846,10 @@ class Main(SimpleGladeApp):
 	def on_hidemap_clicked(self,widget):
 		self.maparea.hide()
 		self.infoarea.show()
+
+	def on_btnShowLaps_toggled(self,widget):
+		logging.debug("--")
+		self.parent.refreshGraphView(self.selected_view)
 	
 	def on_day_combovalue_changed(self,widget):
 		logging.debug("--")

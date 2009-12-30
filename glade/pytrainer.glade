@@ -1891,6 +1891,16 @@ Cadence
 					  <property name="fill">False</property>
 					</packing>
 				      </child>
+					<child>
+				      <widget class="GtkCheckButton" id="btnShowLaps">
+				        <property name="label" translatable="yes">Show Laps</property>
+				        <property name="visible">True</property>
+				        <property name="can_focus">False</property>
+				        <property name="receives_default">False</property>
+				        <property name="draw_indicator">True</property>
+						<signal name="toggled" handler="on_btnShowLaps_toggled"/>
+				      </widget>
+				    </child>
 
 				      <child>
 					<widget class="GtkLabel" id="label-2147483645">
