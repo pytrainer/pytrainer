@@ -10433,6 +10433,7 @@ Summit</property>
   </child>
 </widget> -->
 
+<!--
 <widget class="GtkWindow" id="newprofile">
   <property name="visible">True</property>
   <property name="title" translatable="yes">Preferences</property>
@@ -13197,6 +13198,7 @@ Continue?</property>
     </widget>
   </child>
 </widget>
+-->
 
 <widget class="GtkWindow" id="calendardialog">
   <property name="visible">True</property>

@@ -23,7 +23,7 @@ import gobject
 
 class WindowProfile(SimpleGladeApp):
 	def __init__(self, data_path = None, parent=None):
-		glade_path="glade/pytrainer.glade"
+		glade_path="glade/profile.glade"
 		root = "newprofile"
 		domain = None
 		self.parent = parent
