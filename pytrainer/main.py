@@ -97,7 +97,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.7.0_svn#455"
+		self.version ="1.7.0_svn#456"
 		self.date = Date()
 		# Checking profile
 		self.profile = Profile(self.data_path,self)
@@ -122,7 +122,7 @@ class pyTrainer:
 		self.ddbb = DDBB(self.configuration)
 		logging.debug('connecting to DDBB')
 		self.ddbb.connect()		
-		self.record = Record(data_path,self)
+		#self.record = Record(data_path,self)
 		
 		#Look for force check file
 		check_file = self.data_path+"/FORCE_DB_CHECK"
@@ -134,7 +134,9 @@ class pyTrainer:
 			self.sanityCheck() # Deprecates migrationCheck. Review first installation and version control
 		else:
 			logging.info('No sanity check requested')
-		
+
+		self.record = Record(data_path,self)
+
 		#preparamos la ventana principal
 		self.windowmain = Main(data_path,self,self.version, gpxDir=self.conf.getValue("gpxdir"))
 		self.date = Date(self.windowmain.calendar)

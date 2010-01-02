@@ -264,6 +264,7 @@ class Sql:
 
 	def addColumn(self,tableName,columnName,dataType):
 		sql = "alter table %s add %s %s" %(tableName,columnName,dataType)
+		logging.debug("Trying SQL: %s" % sql)
 		try:
 			self.freeExec(sql)
 		except:
