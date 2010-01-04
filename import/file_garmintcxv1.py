@@ -1,0 +1,156 @@
+# -*- coding: iso-8859-1 -*-
+
+#Copyright (C) Fiz Vazquez vud1@sindominio.net
+# Modified by dgranda
+
+#This program is free software; you can redistribute it and/or
+#modify it under the terms of the GNU General Public License
+#as published by the Free Software Foundation; either version 2
+#of the License, or (at your option) any later version.
+
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+
+#You should have received a copy of the GNU General Public License
+#along with this program; if not, write to the Free Software
+#Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
+import logging
+import os
+from lxml import etree
+import dateutil.parser
+from dateutil.tz import * # for tzutc()
+
+from pytrainer.lib.xmlUtils import XMLParser
+from pytrainer.lib.system import checkConf
+#from pytrainer.gui.dialogs import fileChooserDialog, guiFlush
+
+class garmintcxv1():
+	def __init__(self, parent = None, data_path = None):
+		self.parent = parent
+		self.conf = checkConf()
+		self.tmpdir = self.conf.getValue("tmpdir")
+		self.main_data_path = data_path
+		self.data_path = os.path.dirname(__file__)
+		self.xmldoc = None
+		self.activitiesSummary = []
+
+	def getXmldoc(self):
+		''' Function to return parsed xmlfile '''
+		return self.xmldoc
+
+	def getFileType(self):
+		return _("Garmin training center database file version 1")
+
+	def getActivitiesSummary(self):
+		return self.activitiesSummary
+
+	def getDetails(self, activity, startTime):
+		points = activity.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}Trackpoint")
+		while True:
+			lastPoint = points[-1]
+			try:
+				time = lastPoint.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}Time")
+				time = time.text
+				break
+			except:
+				#Try again without the last point (i.e work from end until find time)
+				points = points[:-1]
+				continue
+		return self.getDateTime(time)[0]-startTime[0]
+
+	def testFile(self, filename):
+		logging.debug('>>')
+		logging.debug("Testing " + filename)
+		try:
+			#parse filename as xml
+			xmldoc = etree.parse(filename)
+			#Parse XML schema
+			xmlschema_doc = etree.parse(self.main_data_path+"schemas/GarminTrainingCenterDatabase_v1-gpsbabel.xsd")
+			xmlschema = etree.XMLSchema(xmlschema_doc)
+			if (xmlschema.validate(xmldoc)):
+				#Valid file
+				self.xmldoc = xmldoc
+				#Possibly multiple entries in file
+				for (sport, activities) in self.getActivities(xmldoc):
+					logging.debug("Found %d tracks for %s sport in %s" % (len(activities), sport, filename))
+					for activity in activities:
+						startTime = self.getDateTime(self.getStartTimeFromActivity(activity))
+						inDatabase = self.inDatabase(activity, startTime)
+					 	duration  = self.getDetails(activity, startTime)
+						distance = ""
+						self.activitiesSummary.append( (activities.index(activity),
+														inDatabase, 
+														startTime[1].strftime("%Y-%m-%dT%H:%M:%S"), 
+														distance , 
+														str(duration), 
+														sport,
+														) )
+				#print self.activitiesSummary
+				return True
+		except:
+			#Not valid file
+			return False 
+		return False
+
+	def getActivities(self, tree):
+		""" Function to return all the tracks in a Garmin Training Center v1 file
+		"""
+		sportsList = ("Running", "Biking", "Other", "MultiSport")
+		result = []
+		root = tree.getroot()
+		for sport in sportsList:
+			try:
+				sportLevel = root.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}%s" % sport)
+				tracks = sportLevel.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}Track")
+				result.append((sport, tracks))
+			except:
+				print "No entries for sport %s" % sport
+		return result
+
+	def inDatabase(self, activity, startTime):
+		#comparing date and start time (sport may have been changed in DB after import)
+		time = startTime
+		if time is None:
+			return False
+		time = time[0].strftime("%Y-%m-%dT%H:%M:%SZ")
+		if self.parent.parent.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
+			return True
+		else:
+			return False
+
+	def getStartTimeFromActivity(self, activity):
+		timeElement = activity.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}Time")
+		if timeElement is None:
+			return None
+		else:
+			return timeElement.text
+
+	def getDateTime(self, time_):
+		# Time can be in multiple formats
+		# - zulu 			2009-12-15T09:00Z
+		# - local ISO8601	2009-12-15T10:00+01:00
+		if time_ is None or time_ == "":
+			return (None, None)
+		dateTime = dateutil.parser.parse(time_)
+		timezone = dateTime.tzname()
+		if timezone == 'UTC': #got a zulu time
+			local_dateTime = dateTime.astimezone(tzlocal()) #datetime with localtime offset (from OS)
+		else:
+			local_dateTime = dateTime #use datetime as supplied
+		utc_dateTime = dateTime.astimezone(tzutc()) #datetime with 00:00 offset
+		#print utc_dateTime, local_dateTime
+		return (utc_dateTime,local_dateTime)
+
+	'''def createGPXfile(self, gpxfile, activity):
+		""" Function to transform a Garmin Training Center v2 Track to a valid GPX+ file
+		"""
+		xslt_doc = etree.parse(self.data_path+"/translate.xsl")
+		transform = etree.XSLT(xslt_doc)
+		#xml_doc = etree.parse(filename)
+		xml_doc = activity
+		result_tree = transform(xml_doc)
+		result_tree.write(gpxfile, xml_declaration=True)'''
+

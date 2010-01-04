@@ -54,6 +54,7 @@ class Main(SimpleGladeApp):
 		self.gpxDir = gpxDir
 
 	def new(self):
+		self.testimport = self.parent.testimport
 		self.menublocking = 0
 		self.selected_view="day"
 		self.window1.set_title ("pyTrainer %s" % self.version)
@@ -75,6 +76,10 @@ class Main(SimpleGladeApp):
 		self.showAllRecordTreeViewColumns()
 		self.allRecordTreeView.set_search_column(1)
 		self.notebook.set_current_page(1)
+
+		#Disable import menu item unless specified on startup
+		if not self.testimport:
+			self.menu_importdata.set_sensitive(0)
 	
 	def _createXmlListView(self,file):
 		menufile = XMLParser(file)
@@ -99,7 +104,7 @@ class Main(SimpleGladeApp):
 		button = gtk.MenuItem(plugin[0])
 		button.set_name(plugin[1])
 		button.connect("activate", self.parent.runPlugin, plugin[1])
-		self.menuitem1_menu.insert(button,2)
+		self.menuitem1_menu.insert(button,3)
 		self.menuitem1_menu.show_all()
 
 	def addExtension(self,extension):
@@ -910,6 +915,9 @@ class Main(SimpleGladeApp):
 		self.classicarea.hide()
 		self.parent.refreshWaypointView()
 		self.waypointarea.show()
+
+	def on_menu_importdata_activate(self,widget):
+		self.parent.importData()
 	
 	def on_extensions_activate(self,widget):
 		self.parent.editExtensions()

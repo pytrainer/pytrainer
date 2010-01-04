@@ -78,7 +78,7 @@ class XMLParser:
 		try:
 			root = self.xmldoc.getElementsByTagName(tagname)[0]
 			value = root.attributes[variable].value
-		except KeyError:
+		except:
 			value = ""
 		return value
 	

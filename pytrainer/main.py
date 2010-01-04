@@ -35,6 +35,7 @@ from os import path
 from record import Record
 from waypoint import Waypoint
 from extension import Extension
+from importdata import Importdata
 from plugins import Plugins
 from profile import Profile
 from recordgraph import RecordGraph
@@ -48,6 +49,7 @@ from extensions.googlemaps import Googlemaps
 from extensions.waypointeditor import WaypointEditor
 
 #from gui.windowextensions import WindowExtensions
+from gui.windowimportdata import WindowImportdata
 from gui.windowmain import Main
 from gui.warning import Warning
 from lib.date import Date
@@ -73,18 +75,20 @@ usage = """usage: %prog [options]
 For more help on valid options try:
    %prog -h """
 parser = OptionParser(usage=usage)
-parser.set_defaults(log_level=logging.ERROR, validate=False, gm3=False)
+parser.set_defaults(log_level=logging.ERROR, validate=False, gm3=False, testimport=False)
 parser.add_option("-d", "--debug", action="store_const", const=logging.DEBUG, dest="log_level", help="enable logging at debug level")
 parser.add_option("-i", "--info", action="store_const", const=logging.INFO, dest="log_level", help="enable logging at info level")
 parser.add_option("-w", "--warn", action="store_const", const=logging.WARNING, dest="log_level", help="enable logging at warning level")
 parser.add_option("--valid", action="store_true", dest="validate", help="enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation")
 parser.add_option("--check", action="store_true", dest="check", help="triggers database (only sqlite based) and configuration file sanity checks, adding fields if necessary. Backup of database is done before any change. Details at info or debug logging level")
 parser.add_option("--gmaps3", action="store_true", dest="gm3", help="EXPERIMENTAL: use Google Maps API version3 (currently slower than version 2, but includes some new functionality)")
+parser.add_option("--testimport", action="store_true", dest="testimport", help="EXPERIMENTAL: show new import functionality - for testing only USE AT YOUR OWN RISK")
 (options, args) = parser.parse_args()
 log_level = options.log_level
 validate = options.validate
 check = options.check
 gm3 = options.gm3
+testimport = options.testimport
 
 # Adding rotating support to default logger with customized format
 rotHandler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=100000, backupCount=5)
@@ -97,15 +101,18 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.7.0_svn#457"
+		self.version ="1.7.0_svn#458"
 		self.date = Date()
 		# Checking profile
 		self.profile = Profile(self.data_path,self)
 		self.profile.isProfileConfigured()
+		#Populate startup options
 		self.log_level = log_level
 		self.validate = validate
 		self.check = check
 		self.gm3 = gm3
+		self.testimport = testimport
+
 		self.windowmain = None
 
 		logging.debug('checking configuration...')
@@ -148,6 +155,7 @@ class pyTrainer:
 		self.waypoint = Waypoint(data_path,self)
 		self.extension = Extension(data_path)
 		self.plugins = Plugins(data_path, self)
+		self.importdata = Importdata(data_path, self, self.configuration)
 		self.loadPlugins()
 		self.loadExtensions()
 		self.windowmain.createGraphs(RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph)
@@ -354,6 +362,11 @@ class pyTrainer:
 		logging.debug('>>')
 		self.extension.manageExtensions()
 		logging.debug('<<')
+
+	def importData(self):
+		logging.debug('>>')
+		self.importdata.runImportdata()
+		logging.debug('<<')		
 		
 	def editGpsPlugins(self):
 		logging.debug('>>')
