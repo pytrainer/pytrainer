@@ -66,18 +66,17 @@ class garmintools_full():
 
 	def run(self):
 		logging.debug(">>")
-		# Create a compressed copy of current user directory
-		try: 
-			self.createUserdirBackup()
-		except:
-			logging.error('Not able to make a copy of current user directory. Printing traceback and exiting')
-			traceback.print_exc()
-			exit(-1)
-
 		importFiles = []
 		if self.checkLoadedModule():
 			numError = self.getDeviceInfo()
 			if numError >= 0:
+				# Create a compressed copy of current user directory
+				try: 
+					self.createUserdirBackup()
+				except:
+					logging.error('Not able to make a copy of current user directory. Printing traceback and exiting')
+					traceback.print_exc()
+					exit(-1)
 				#TODO Remove Zenity below
 				outgps = commands.getstatusoutput("garmin_save_runs | zenity --progress --pulsate --text='Loading Data' auto-close")
 				if outgps[0]==0: 
@@ -87,6 +86,8 @@ class garmintools_full():
 					# discard old files
 					selectedFiles = self.discardOld(foundFiles)
 					# checking which entries are not imported yet
+					self.listStringDBUTC = self.parent.parent.ddbb.select("records","date_time_utc")
+					#logging.debug("From DB: "+str(self.listStringDBUTC))
 					# commented out to fully rely on duplicates checking from garmintools plugin
 					#selectedFiles = self.checkDupes(foundFiles)
 					if selectedFiles is not None:
@@ -128,8 +129,22 @@ class garmintools_full():
 			logging.info("Retrieving complete history from GPS device")
 		return tempList
 
-	def checkDupe(self, tree, filename):
+	def checkDupes(self, listEntries):
+		""" The idea behind is building two lists: one with all date_time_utc from DB (need conversion to datetime!)
+			and the other with all times from retrieved entries in UTC (need conversion from localtime -not possible only from filename- and to datetime!).
+			Seconds are the keys in a populated Dict, so if already present in the system can be removed from the mapping structure.
+			In case of legacy support, datetime from garmintools is older than (preceds) one stored in database (GPSBabel)
+			so DTgarmintools + delta (~ 3 mins) >= DTgpsbabel.
+			We obtain the final list retrieving remanent values from the dictionary """
 		logging.debug(">>")
+		tempList = []
+		tempDict = {}
+		for entry in listEntries:
+			filename = os.path.split(entry)[1].rstrip(".gmn")
+			filenameDateTime = datetime.strptime(filename,"%Y%m%dT%H%M%S")
+			logging.debug("Entry time: "+str(filenameDateTime))
+			tempDict[filenameDatetime] = filename
+		
 		stringStartDatetime = self.detailsFromFile(tree) # this time is localtime! (with timezone offset)
 		exists = False
 		if stringStartDatetime is not None:
@@ -157,7 +172,8 @@ class garmintools_full():
 				fileString = StringIO.StringIO("<root>"+xmlString+"</root>")
 				#parse string as xml
 				tree = etree.parse(fileString)
-				if not self.inDatabase(tree, filename):
+				#if not self.inDatabase(tree, filename):
+				if not self.entryExists(tree, filename):
 					sport = self.getSport(tree)
 					gpxfile = "%s/garmintools-%d.gpx" % (self.tmpdir, len(importfiles))					
 					self.createGPXfile(gpxfile, tree)
@@ -182,19 +198,23 @@ class garmintools_full():
 			validator = xmlValidator()
 			return validator.validateXSL(filename, xslfile)'''
 
-	def inDatabase(self, tree, filename):
-		#comparing date and start time (sport may have been changed in DB after import)
+	def entryExists(self, tree, filename):
 		stringStartDatetime = self.detailsFromFile(tree) # this time is localtime! (with timezone offset)
 		exists = False
 		if stringStartDatetime is not None:
 			startDatetime = dateutil.parser.parse(stringStartDatetime)
 			# converting to utc for proper comparison with date_time_utc
-			utcDatetime = startDatetime.astimezone(tzutc()).strftime("%Y-%m-%dT%H:%M:%SZ")
-			if self.parent.parent.ddbb.select("records","*","date_time_utc=\"%s\"" % (utcDatetime)):
-				exists = True
-			else:
-				logging.info("Marking "+str(filename)+" | "+str(utcDatetime)+" to import")
+			stringStartUTC = startDatetime.astimezone(tzutc()).strftime("%Y-%m-%dT%H:%M:%SZ")
+			if self.legacyComp:
+				#ToDo
+				# All entries in UTC, so similars must have same date (startsWith)
 				exists = False
+			else:
+				if (stringStartUTC,) in self.listStringDBUTC: # strange way to store results from DB
+					exists = True
+				else:
+					logging.info("Marking "+str(filename)+" | "+str(stringStartUTC)+" to import")
+					exists = False
 		else:
 			logging.debug("Not able to find start time, please check "+str(filename))
 			exists = True # workaround for old/not correct entries (will crash at some point during import process otherwise)
