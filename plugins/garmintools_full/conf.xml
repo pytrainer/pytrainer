@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<pytrainer-plugin 
+	name="Garmin via garmintools" 
+	description="Import your records directly from your Garmin GPS device (e.g. Forerunner 205 or 305) using garmintools" 
+	plugincode="garmintools_full"
+	pluginbutton="Import from Garmin GPS device (via garmintools)" 
+	executable="garmintools_full" 
+>
+<conf-values variable="Force_sport_to" value=""/>
+<conf-values variable="Not_older_days" value="0"/>
+<conf-values variable="Legacy_comparison" value="True"/>
+</pytrainer-plugin>
