@@ -2,7 +2,7 @@
 Version=1.0
 Type=Application
 Encoding=UTF-8
-Name=pyTrainer sport training log
+Name=pyTrainer
 Comment=The Free Sport Training Center
 Exec=pytrainer
 Icon=pytrainer
