@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <xsd:element name="root" type="root_type"/>
+	<xsd:complexType name="root_type">
+		<xsd:sequence>
+			<xsd:element name="run" type="run_type" minOccurs="1" maxOccurs="unbounded" />
+			<xsd:element name="lap" type="lap_type" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="track" type="track_type" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="point" type="point_type" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+	</xsd:complexType>
+	<xsd:complexType name="run_type">
+		<xsd:sequence>
+			<xsd:element name="laps" type="laps_type" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="type" type="xsd:string" use="required"/>
+		<xsd:attribute name="track" type="xsd:string" use="optional"/>
+		<xsd:attribute name="sport" type="xsd:string" use="optional"/>
+		<xsd:attribute name="multisport" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="laps_type">
+		<xsd:attribute name="first" type="xsd:string" use="optional"/>
+		<xsd:attribute name="last" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="lap_type">
+		<xsd:sequence>
+			<xsd:element name="begin_pos" type="position_type" minOccurs="0" />
+			<xsd:element name="end_pos" type="position_type" minOccurs="0" />
+			<xsd:element name="max_speed" type="xsd:float" minOccurs="0" />
+			<xsd:element name="calories" type="xsd:positiveInteger" minOccurs="0" />
+			<xsd:element name="avg_hr" type="xsd:positiveInteger" minOccurs="0" />
+			<xsd:element name="max_hr" type="xsd:positiveInteger" minOccurs="0" />
+			<xsd:element name="intensity" type="xsd:string" minOccurs="0" />
+			<xsd:element name="unknown" type="xsd:string" minOccurs="0" />
+		</xsd:sequence>
+		<xsd:attribute name="type" type="xsd:string" use="required"/>
+		<xsd:attribute name="index" type="xsd:string" use="optional"/>
+		<xsd:attribute name="start" type="xsd:string" use="optional"/>
+		<xsd:attribute name="duration" type="xsd:string" use="optional"/>
+		<xsd:attribute name="distance" type="xsd:string" use="optional"/>
+		<xsd:attribute name="trigger" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="position_type">
+		<xsd:attribute name="lat" type="xsd:string" use="optional"/>
+		<xsd:attribute name="lon" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="track_type">
+		<xsd:attribute name="type" type="xsd:string" use="required"/>
+		<xsd:attribute name="index" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+	<xsd:complexType name="point_type">
+		<xsd:attribute name="type" type="xsd:string" use="optional"/>
+		<xsd:attribute name="time" type="xsd:string" use="required"/>
+		<xsd:attribute name="lat" type="xsd:string" use="optional"/>
+		<xsd:attribute name="lon" type="xsd:string" use="optional"/>
+		<xsd:attribute name="alt" type="xsd:string" use="optional"/>
+		<xsd:attribute name="distance" type="xsd:string" use="optional"/>
+		<xsd:attribute name="hr" type="xsd:string" use="optional"/>
+	</xsd:complexType>
+</xsd:schema>
