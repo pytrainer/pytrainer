@@ -151,18 +151,6 @@ class WindowImportdata(SimpleGladeApp):
 				self.buttonImport.set_sensitive(1)
 		return	
 
-	def treeviewImportEvents_header_checkbox(self, column, store):
-		"""
-			Handler for click on checkbox column
-		"""
-		if store is None:
-			return
-		for item in store:
-			if item[1]:
-				self.treeviewImportEvents_setCheckboxes(False)
-				return
-		self.treeviewImportEvents_setCheckboxes(True)
-
 	def treeviewImportEvents_setCheckboxes(self, state):
 		"""
 			Sets or unsets all checkboxes
@@ -193,6 +181,18 @@ class WindowImportdata(SimpleGladeApp):
 	## Window signal handlers ##
 	############################
 
+	def treeviewImportEvents_header_checkbox(self, column, store):
+		"""
+			Handler for click on checkbox column
+		"""
+		if store is None:
+			return
+		for item in store:
+			if item[1]:
+				self.treeviewImportEvents_setCheckboxes(False)
+				return
+		self.treeviewImportEvents_setCheckboxes(True)
+
 	def on_win_importdata_delete_event(self, widget, window):
 		self.win_importdata.hide()
 		
@@ -211,8 +211,9 @@ class WindowImportdata(SimpleGladeApp):
 			pass
 
 	def on_filechooserbuttonSelectFile_file_set(self, widget):
-		self.buttonClearFile.set_sensitive(1)
-		self.updateStatusbar(self.statusbarImportFile, "" )
+		self.buttonClearFile.set_sensitive(1) #Enable clear button
+		self.buttonImport.set_sensitive(0) #Disable import button
+		self.updateStatusbar(self.statusbarImportFile, "" ) #Clear status bar
 		#Build treeview
 		if self.store is None:
 			self.store = self.build_tree_view()
@@ -225,7 +226,7 @@ class WindowImportdata(SimpleGladeApp):
 			#Get activities in file
 			activitiesSummary = processClass.getActivitiesSummary()			
 			for activity in activitiesSummary:
-				if not activity[0]:
+				if not activity[1]:
 					#Activity selected, so enable import button
 					self.buttonImport.set_sensitive(1)
 					note = ""
@@ -244,6 +245,7 @@ class WindowImportdata(SimpleGladeApp):
 					6, note,
 					)
 		else:
+			#Selected file not understood by any of the process files
 			self.updateStatusbar(self.statusbarImportFile, _("Unknown file type") )
 			#Display warning
 			msg = _("File selected is of unknown or unsupported file type")

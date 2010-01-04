@@ -24,7 +24,7 @@ class Warning(SimpleGladeApp):
 		self.cancelmethod = cancelmethod
 		self.okparams = okparams
 		self.cancelparams = cancelparams
-		glade_path="glade/pytrainer.glade"
+		glade_path="glade/warning.glade"
 		self.path = data_path+glade_path
 		root = "warning"
 		domain = None
