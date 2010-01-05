@@ -127,14 +127,15 @@ class WindowImportdata(SimpleGladeApp):
 				self.renderer1.connect( 'toggled', self.treeviewImportEvents_toggled_checkbox, store )	
 				column = gtk.TreeViewColumn(column_name, self.renderer1 )
 				column.add_attribute( self.renderer1, "active", column_index)
+				column.set_sort_column_id(-1)
 				column.connect('clicked', self.treeviewImportEvents_header_checkbox, store)
 			else:
 				#Add other columns
 				column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
-			#if column_name == "id":
-			#	column.set_visible(False)
+				column.set_sort_column_id(column_index)
+			if column_name == "id":
+				column.set_visible(False)
 			column.set_resizable(True)
-			#column.set_sort_column_id(0)
 			self.treeviewImportEvents.append_column(column)
 		self.treeviewImportEvents.set_headers_clickable(True)
 		self.treeviewImportEvents.set_model(store)
@@ -240,8 +241,6 @@ class WindowImportdata(SimpleGladeApp):
 
 	def on_win_importdata_delete_event(self, widget, window):
 		self.win_importdata.hide()
-		#self.win_importdata = None
-		#self.quit()
 		
 	def on_notebookMainTabs_switch_page(self, notebook, page, new_page):
 		if new_page == 0:
@@ -330,9 +329,3 @@ class WindowImportdata(SimpleGladeApp):
 
 	def on_buttonCancel_clicked(self, widget):
 		self.win_importdata.hide()
-		#self.win_importdata = None
-		#self.quit()
-		
-		
-
-
