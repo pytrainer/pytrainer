@@ -32,6 +32,9 @@ class Warning(SimpleGladeApp):
 		if okmethod == None:
 			self.cancelbutton1.hide()
 
+	def set_title(self, title):
+		self.warning.set_title(title)
+
 	def set_text(self, msg):
 		self.warningText.set_text(msg)
 	

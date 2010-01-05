@@ -48,6 +48,21 @@ class WindowImportdata(SimpleGladeApp):
 		else:
 			self.defaulttab = int(self.defaulttab)
 		self.notebookMainTabs.set_current_page(self.defaulttab)
+		self.init_tab(self.defaulttab)
+
+	def init_tab(self, page):
+		if page == 0:
+			#'Import from GPS Device' tab
+			self.init_gpsdevice_tab()
+		elif page == 1:
+			#'Import from File' tab
+			self.init_file_tab()
+		elif page ==2:
+			#'Options' tab
+			self.init_options_tab()
+		else:
+			#unknown tab
+			pass
 
 	def updateStatusbar(self, statusbar, text, context_id = None):
 		if context_id is None:
@@ -59,8 +74,15 @@ class WindowImportdata(SimpleGladeApp):
 		return
 
 	def init_file_tab(self):
+		self.filechooserbuttonSelectFile.unselect_all() 
+		self.updateStatusbar(self.statusbarImportFile, _("No file selected") )
+		self.processClass = None
+		if self.store is None:
+			self.store = self.build_tree_view()
+		else:
+			self.store.clear()
 		self.buttonClearFile.set_sensitive(0)
-		self.buttonImport.set_sensitive(0)
+		self.buttonFileImport.set_sensitive(0)
 		return
 
 	def init_options_tab(self):
@@ -146,25 +168,25 @@ class WindowImportdata(SimpleGladeApp):
 			Sets the state of the checkbox to true or false.
 		"""
 		store[path][1] = not store[path][1]
-		self.buttonImport.set_sensitive(0)
+		self.buttonFileImport.set_sensitive(0)
 		for item in store:
 			if item[1]:
 				#Only enable import button if at least one activity is selected
-				self.buttonImport.set_sensitive(1)
+				self.buttonFileImport.set_sensitive(1)
 		return	
 
 	def treeviewImportEvents_setCheckboxes(self, state):
 		"""
 			Sets or unsets all checkboxes
 		"""
-		if self.store is None:
+		if self.store is None or len(self.store) == 0:
 			return
 		for item in self.store:
 			item[1] = state
 		if state:
-			self.buttonImport.set_sensitive(1)
+			self.buttonFileImport.set_sensitive(1)
 		else:
-			self.buttonImport.set_sensitive(0)			
+			self.buttonFileImport.set_sensitive(0)			
 
 	def saveOptions(self):
 		"""
@@ -223,6 +245,10 @@ class WindowImportdata(SimpleGladeApp):
 					self.store[path][6] = notes
 			path +=1
 
+	def close_window(self):
+		self.win_importdata.hide()
+		
+
 	############################
 	## Window signal handlers ##
 	############################
@@ -240,30 +266,18 @@ class WindowImportdata(SimpleGladeApp):
 		self.treeviewImportEvents_setCheckboxes(True)
 
 	def on_win_importdata_delete_event(self, widget, window):
-		self.win_importdata.hide()
+		""" Windows closed """
+		self.close_window()
 		
 	def on_notebookMainTabs_switch_page(self, notebook, page, new_page):
-		if new_page == 0:
-			#Switched to 'Import from GPS Device' tab
-			self.init_gpsdevice_tab()
-		elif new_page == 1:
-			#Switched to 'Import from File' tab
-			self.init_file_tab()
-		elif new_page ==2:
-			#Switched to 'Options' tab
-			self.init_options_tab()
-		else:
-			#Switched to unknown tab
-			pass
+		self.init_tab(new_page)
 
 	def on_filechooserbuttonSelectFile_file_set(self, widget):
 		self.buttonClearFile.set_sensitive(1) #Enable clear button
-		self.buttonImport.set_sensitive(0) #Disable import button
+		self.buttonFileImport.set_sensitive(0) #Disable import button
 		self.updateStatusbar(self.statusbarImportFile, "" ) #Clear status bar
-		#Build treeview
-		if self.store is None:
-			self.store = self.build_tree_view()
-		else:
+		#Clear store
+		if self.store is not None:
 			self.store.clear()
 		#Validate file
 		self.processClass = self.validateFile(self.filechooserbuttonSelectFile.get_filename())
@@ -274,7 +288,7 @@ class WindowImportdata(SimpleGladeApp):
 			for activity in activitiesSummary:
 				if not activity[1]:
 					#Activity selected, so enable import button
-					self.buttonImport.set_sensitive(1)
+					self.buttonFileImport.set_sensitive(1)
 					note = ""
 				else:
 					note = _("Found in database")
@@ -300,32 +314,43 @@ class WindowImportdata(SimpleGladeApp):
 			warning.run()
 
 	def on_buttonClearFile_clicked(self, widget):	
-		self.filechooserbuttonSelectFile.unselect_all() 
-		self.updateStatusbar(self.statusbarImportFile, _("No file selected") )
-		self.processClass = None
-		self.store.clear()
+		self.init_tab(1)
 
-	def on_buttonSave_clicked(self, widget):
+	def on_buttonOptionsSave_clicked(self, widget):
 		self.updateStatusbar(self.statusbarOptions, "Saving options")
 		self.saveOptions()
 		self.updateStatusbar(self.statusbarOptions, "Options saved")
 
-	def on_buttonReset_clicked(self, widget):
+	def on_buttonOptionsReset_clicked(self, widget):
 		#GPS Device is default
 		self.defaulttab = 0
 		#Redisplay tab
 		self.init_options_tab()
 		self.updateStatusbar(self.statusbarOptions, "")
 
-	def on_buttonImport_clicked(self, widget):
+	def on_buttonFileImport_clicked(self, widget):
 		#Import selected activities
 		selectedActivities = self.getSelectedActivities()
-		if len(selectedActivities) > 0:
-			self.updateStatusbar(self.statusbarImportFile, "Importing %d activities" % len(selectedActivities))
+		selectedCount = len(selectedActivities)
+		if selectedCount > 0:
+			if selectedCount == 1:
+				msgImporting = _("Importing one activity")
+				msgImported = _("Imported one activity")
+			else:
+				msgImporting = _("Importing %d activities" % selectedCount)
+				msgImported = _("Imported %d activities" % selectedCount)
+			self.updateStatusbar(self.statusbarImportFile, msgImporting)
 			self.importSelectedActivities(selectedActivities)
-			self.updateStatusbar(self.statusbarImportFile, "Imported %d activities" % len(selectedActivities))
-		self.buttonImport.set_sensitive(0) #Disable import button
-		#self.updateStatusbar(self.statusbarImportFile, "buttonImport clicked")
+			self.updateStatusbar(self.statusbarImportFile, msgImported)
+			warning = Warning(self.data_path)
+			warning.set_text(msgImpored)
+			warning.set_title(_("Import Success"))
+			warning.run()
+		self.buttonFileImport.set_sensitive(0) #Disable import button
 
-	def on_buttonCancel_clicked(self, widget):
-		self.win_importdata.hide()
+	def on_buttonFileCancel_clicked(self, widget):
+		self.close_window()
+
+	def on_buttonDeviceCancel_clicked(self, widget):
+		self.close_window()
+

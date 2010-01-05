@@ -5,6 +5,7 @@
   <widget class="GtkDialog" id="warning">
     <property name="visible">True</property>
     <property name="title" translatable="yes">Warning</property>
+    <property name="resizable">False</property>
     <property name="modal">True</property>
     <property name="window_position">mouse</property>
     <property name="icon">logo_mini.png</property>
