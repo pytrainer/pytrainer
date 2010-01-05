@@ -36,6 +36,8 @@ class garmintcxv1():
 		self.data_path = os.path.dirname(__file__)
 		self.xmldoc = None
 		self.activitiesSummary = []
+		self.activities = []
+		self.sportsList = ("Running", "Biking", "Other", "MultiSport")
 
 	def getXmldoc(self):
 		''' Function to return parsed xmlfile '''
@@ -74,14 +76,16 @@ class garmintcxv1():
 				#Valid file
 				self.xmldoc = xmldoc
 				#Possibly multiple entries in file
-				for (sport, activities) in self.getActivities(xmldoc):
+				self.activities = self.getActivities(xmldoc)
+				for (sport, activities) in self.activities:
 					logging.debug("Found %d tracks for %s sport in %s" % (len(activities), sport, filename))
 					for activity in activities:
 						startTime = self.getDateTime(self.getStartTimeFromActivity(activity))
 						inDatabase = self.inDatabase(activity, startTime)
 					 	duration  = self.getDetails(activity, startTime)
 						distance = ""
-						self.activitiesSummary.append( (activities.index(activity),
+						index = "%d:%d" % (self.activities.index((sport, activities)), activities.index(activity))
+						self.activitiesSummary.append( (index,
 														inDatabase, 
 														startTime[1].strftime("%Y-%m-%dT%H:%M:%S"), 
 														distance , 
@@ -98,10 +102,9 @@ class garmintcxv1():
 	def getActivities(self, tree):
 		""" Function to return all the tracks in a Garmin Training Center v1 file
 		"""
-		sportsList = ("Running", "Biking", "Other", "MultiSport")
 		result = []
 		root = tree.getroot()
-		for sport in sportsList:
+		for sport in self.sportsList:
 			try:
 				sportLevel = root.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}%s" % sport)
 				tracks = sportLevel.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}Track")
@@ -144,13 +147,33 @@ class garmintcxv1():
 		#print utc_dateTime, local_dateTime
 		return (utc_dateTime,local_dateTime)
 
-	'''def createGPXfile(self, gpxfile, activity):
+	def getGPXFile(self, ID):
+		"""
+			Generate GPX file based on activity ID
+
+			Returns (sport, GPX filename)
+		"""
+		sport = None
+		gpxFile = None
+		#index = "%d:%d" % (self.activities.index((sport, activities)), activities.index(activity))
+		sportID, activityID = ID.split(':')
+		sportID = int(sportID)
+		activityID = int(activityID)
+		sport, activities = self.activities[sportID]
+		activitiesCount = len(self.activities)
+		if activitiesCount > 0 and activityID < activitiesCount:
+			gpxFile = "%s/garmin-tcxv1-%d.gpx" % (self.tmpdir, activityID)
+			activity = activities[activityID]
+			self.createGPXfile(gpxFile, activity)
+		return sport, gpxFile
+
+	def createGPXfile(self, gpxfile, activity):
 		""" Function to transform a Garmin Training Center v2 Track to a valid GPX+ file
 		"""
-		xslt_doc = etree.parse(self.data_path+"/translate.xsl")
+		xslt_doc = etree.parse(self.data_path+"/translate_garmintcxv1.xsl")
 		transform = etree.XSLT(xslt_doc)
 		#xml_doc = etree.parse(filename)
 		xml_doc = activity
 		result_tree = transform(xml_doc)
-		result_tree.write(gpxfile, xml_declaration=True)'''
+		result_tree.write(gpxfile, xml_declaration=True)
 

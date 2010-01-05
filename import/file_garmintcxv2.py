@@ -36,6 +36,7 @@ class garmintcxv2():
 		self.data_path = os.path.dirname(__file__)
 		self.xmldoc = None
 		self.activitiesSummary = []
+		self.activities = []
 
 	def getXmldoc(self):
 		''' Function to return parsed xmlfile '''
@@ -79,15 +80,15 @@ class garmintcxv2():
 				#Valid file
 				self.xmldoc = xmldoc
 				#Possibly multiple entries in file
-				activities = self.getActivities(xmldoc)
-				for activity in activities:
+				self.activities = self.getActivities(xmldoc)
+				for activity in self.activities:
 					startTime = self.getDateTime(self.getStartTimeFromActivity(activity))
 					inDatabase = self.inDatabase(activity, startTime)
 					sport = self.getSport(activity)
 
 				 	distance, duration  = self.getDetails(activity, startTime)
 					distance = distance / 1000.0
-					self.activitiesSummary.append( (activities.index(activity),
+					self.activitiesSummary.append( (self.activities.index(activity),
 													inDatabase, 
 													startTime[1].strftime("%Y-%m-%dT%H:%M:%S"), 
 													"%0.2f" % distance , 
@@ -151,13 +152,31 @@ class garmintcxv2():
 		#print utc_dateTime, local_dateTime
 		return (utc_dateTime,local_dateTime)
 
-	'''def createGPXfile(self, gpxfile, activity):
+	def getGPXFile(self, ID):
+		"""
+			Generate GPX file based on activity ID
+
+			Returns (sport, GPX filename)
+		"""
+		sport = None
+		gpxFile = None
+		activityID = int(ID)
+		activitiesCount = len(self.activities)
+		if activitiesCount > 0 and activityID < activitiesCount:
+			gpxFile = "%s/garmin-tcxv2-%d.gpx" % (self.tmpdir, activityID)
+			activity = self.activities[int(activityID)]
+			sport = self.getSport(activity)
+			self.createGPXfile(gpxFile, activity)
+		return sport, gpxFile
+		
+
+	def createGPXfile(self, gpxfile, activity):
 		""" Function to transform a Garmin Training Center v2 Track to a valid GPX+ file
 		"""
-		xslt_doc = etree.parse(self.data_path+"/translate.xsl")
+		xslt_doc = etree.parse(self.data_path+"/translate_garmintcxv2.xsl")
 		transform = etree.XSLT(xslt_doc)
 		#xml_doc = etree.parse(filename)
 		xml_doc = activity
 		result_tree = transform(xml_doc)
-		result_tree.write(gpxfile, xml_declaration=True)'''
+		result_tree.write(gpxfile, xml_declaration=True)
 

@@ -149,11 +149,25 @@ class garmintools():
 			return time
 		return None
 
-	'''def createGPXfile(self, gpxfile, tree):
+	def getGPXFile(self, ID):
+		"""
+			Generate GPX file based on activity ID
+
+			Returns (sport, GPX filename)
+		"""
+		sport = None
+		gpxFile = None
+		if ID == "0": #Only one activity in file
+			gpxFile = "%s/garmintools-%s.gpx" % (self.tmpdir, ID)
+			sport = self.getSport(self.xmldoc)
+			self.createGPXfile(gpxFile, self.xmldoc)
+		return sport, gpxFile
+
+	def createGPXfile(self, gpxfile, tree):
 		""" Function to transform a Garmintools dump file to a valid GPX+ file
 		"""
-		xslt_doc = etree.parse(self.data_path+"/translate.xsl")
+		xslt_doc = etree.parse(self.data_path+"/translate_garmintools.xsl")
 		transform = etree.XSLT(xslt_doc)
 		result_tree = transform(tree)
-		result_tree.write(gpxfile, xml_declaration=True)'''
+		result_tree.write(gpxfile, xml_declaration=True)
 

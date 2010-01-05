@@ -35,6 +35,7 @@ class WindowImportdata(SimpleGladeApp):
 		self.parent = parent
 		self.configuration = config
 		self.store = None
+		self.processClass = None
 		#SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
 
 	def run(self):
@@ -176,6 +177,50 @@ class WindowImportdata(SimpleGladeApp):
 		self.configuration.setValue("pytraining","import_default_tab",self.defaulttab)	
 		#option
 
+	def getSelectedActivities(self):
+		"""
+			Function to determine which activities are selected
+			
+			Returns array of the ids of the selected activities
+		"""
+		selectedActivities = []
+		if self.store is None:
+			return None
+		for item in self.store:
+			if item[1] is True: #Checkbox is True
+				logging.debug("Added activity id:%s to selected list" % item[0])
+				selectedActivities.append(item[0])
+		logging.debug( "Found %d selected activities to import" % len(selectedActivities) )
+		return selectedActivities
+		
+	def importSelectedActivities(self, selectedActivities):
+		"""
+			Function to import selected activities
+		"""
+		if selectedActivities is None or len(selectedActivities) == 0:
+			return
+		for activityID in selectedActivities:
+			logging.debug( "Importing activity %s" % activityID)
+			sport, gpxFile = self.processClass.getGPXFile(activityID)
+			#process returned GPX files	
+			if os.path.isfile(gpxFile):
+				logging.info('File exists. Size: %d. Sport: %s' % (os.path.getsize(gpxFile), sport))
+				#TODO trigger newentry screen to allow user to edit data
+				self.parent.parent.record.importFromGPX(gpxFile, sport)
+				#Deselect imported activity and change note
+				self.updateActivity(activityID, status=False, notes="Imported into database")
+ 			else:
+ 				logging.error('File %s not valid' % gpxFile)
+
+	def updateActivity(self, activityID, status = None, notes = None):
+		path = 0
+		for item in self.store:
+			if item[0] == activityID:
+				if status is not None:
+					self.store[path][1] = status
+				if notes is not None:
+					self.store[path][6] = notes
+			path +=1
 
 	############################
 	## Window signal handlers ##
@@ -195,6 +240,8 @@ class WindowImportdata(SimpleGladeApp):
 
 	def on_win_importdata_delete_event(self, widget, window):
 		self.win_importdata.hide()
+		#self.win_importdata = None
+		#self.quit()
 		
 	def on_notebookMainTabs_switch_page(self, notebook, page, new_page):
 		if new_page == 0:
@@ -220,11 +267,11 @@ class WindowImportdata(SimpleGladeApp):
 		else:
 			self.store.clear()
 		#Validate file
-		processClass = self.validateFile(self.filechooserbuttonSelectFile.get_filename())
-		if processClass is not None:
-			self.updateStatusbar(self.statusbarImportFile, _("Found file of type: %s") % processClass.getFileType() )
+		self.processClass = self.validateFile(self.filechooserbuttonSelectFile.get_filename())
+		if self.processClass is not None:
+			self.updateStatusbar(self.statusbarImportFile, _("Found file of type: %s") % self.processClass.getFileType() )
 			#Get activities in file
-			activitiesSummary = processClass.getActivitiesSummary()			
+			activitiesSummary = self.processClass.getActivitiesSummary()			
 			for activity in activitiesSummary:
 				if not activity[1]:
 					#Activity selected, so enable import button
@@ -256,6 +303,7 @@ class WindowImportdata(SimpleGladeApp):
 	def on_buttonClearFile_clicked(self, widget):	
 		self.filechooserbuttonSelectFile.unselect_all() 
 		self.updateStatusbar(self.statusbarImportFile, _("No file selected") )
+		self.processClass = None
 		self.store.clear()
 
 	def on_buttonSave_clicked(self, widget):
@@ -266,13 +314,25 @@ class WindowImportdata(SimpleGladeApp):
 	def on_buttonReset_clicked(self, widget):
 		#GPS Device is default
 		self.defaulttab = 0
-		#self.saveOptions()
 		#Redisplay tab
 		self.init_options_tab()
 		self.updateStatusbar(self.statusbarOptions, "")
 
 	def on_buttonImport_clicked(self, widget):
-		self.updateStatusbar(self.statusbarImportFile, "buttonImport clicked")
+		#Import selected activities
+		selectedActivities = self.getSelectedActivities()
+		if len(selectedActivities) > 0:
+			self.updateStatusbar(self.statusbarImportFile, "Importing %d activities" % len(selectedActivities))
+			self.importSelectedActivities(selectedActivities)
+			self.updateStatusbar(self.statusbarImportFile, "Imported %d activities" % len(selectedActivities))
+		self.buttonImport.set_sensitive(0) #Disable import button
+		#self.updateStatusbar(self.statusbarImportFile, "buttonImport clicked")
+
+	def on_buttonCancel_clicked(self, widget):
+		self.win_importdata.hide()
+		#self.win_importdata = None
+		#self.quit()
+		
 		
 
 
