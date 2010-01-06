@@ -144,7 +144,7 @@ class WindowImportdata(SimpleGladeApp):
 			else:
 				info = gtk.Label(_("This tool was not found on the system") )
 				info.set_alignment(0,0.5)
-				location = gtk.LinkButton(toolClass.getSourceLocation(), _("Tool Homepage"))
+				location = gtk.LinkButton(toolClass.getSourceLocation(), toolName +_(" Homepage"))
 				info.set_sensitive(0)
 				toolTable.attach(info, 0, 1, 0, 1, xoptions=gtk.EXPAND|gtk.FILL, xpadding=5)
 				toolTable.attach(location, 1, 2, 0, 1, xoptions=gtk.EXPAND|gtk.FILL, xpadding=5)
