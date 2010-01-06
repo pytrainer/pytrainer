@@ -24,8 +24,6 @@ import StringIO
 import logging
 from lxml import etree
 
-from pytrainer.gui.warning import Warning
-
 class WindowImportdata(SimpleGladeApp):
 	def __init__(self, data_path = None, parent=None, config=None):
 		self.data_path = data_path
@@ -36,6 +34,7 @@ class WindowImportdata(SimpleGladeApp):
 		self.configuration = config
 		self.store = None
 		self.processClass = None
+		self.toolsDetected = False
 		#SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
 
 	def run(self):
@@ -71,6 +70,14 @@ class WindowImportdata(SimpleGladeApp):
 		return context_id
 
 	def init_gpsdevice_tab(self):
+		#Only detect tools once (or if requested)
+		if not self.toolsDetected:
+			#Remove all components in vbox - in case of re-detection
+			for child in self.vboxImportTools.get_children():
+				print "removing ", child
+				self.vboxImportTools.remove(child)
+			self.detect_tools()
+			self.toolsDetected = True
 		return
 
 	def init_file_tab(self):
@@ -92,7 +99,58 @@ class WindowImportdata(SimpleGladeApp):
 		else:
 			self.radiobuttonTabGPSDevice.set_active(1)
 		return
-
+	
+	def detect_tools(self):
+		"""
+			Iterate through all tool files from import directory
+			Each file contains information on a particular tool 
+			and knows how to determine if the tool is present on the system 
+			and what configuration options are needed for the tool
+	
+			Currently displays the tool info and config grayed out if tool is not present
+		"""
+		logging.debug('>>')
+		self.updateStatusbar(self.statusbarDevice, "Checking for tools")
+		#Get import tool_* files
+		fileList = glob.glob(self.data_path+"import/tool_*.py")
+		for toolFile in fileList:
+			index = fileList.index(toolFile)
+			directory, filename = os.path.split(toolFile)
+			filename = filename.rstrip('.py') 
+			classname = filename.lstrip('tool_')
+			#Import module
+			sys.path.insert(0, self.data_path+"import")
+			module = __import__(filename)
+			toolMain = getattr(module, classname)
+			#Instantiate module
+			toolClass = toolMain(self.parent, self.data_path)
+			#Get info from class
+			toolName = toolClass.getName()
+			toolTable = gtk.Table()
+			toolFrame = gtk.Frame(label=toolName)
+			toolFrame.add(toolTable)
+			if toolClass.isPresent():
+				version = gtk.Label("Version: " + toolClass.getVersion()) 
+				version.set_alignment(0,0)
+				if toolClass.deviceExists():
+					deviceExists = gtk.Label(_("GPS device found") )
+				else:
+					deviceExists = gtk.Label(_("GPS device <b>not</b> found"))
+					deviceExists.set_alignment(0,0)
+					deviceExists.set_use_markup(True)
+				toolTable.attach(version, 0, 1, 0, 1, xoptions=gtk.EXPAND|gtk.FILL, xpadding=5)
+				toolTable.attach(deviceExists, 0, 1, 1, 2, xoptions=gtk.EXPAND|gtk.FILL, xpadding=5)
+				toolFrame.set_sensitive(1)
+			else:
+				info = gtk.Label(_("This tool was not found on the system") )
+				info.set_alignment(0,0.5)
+				location = gtk.LinkButton(toolClass.getSourceLocation(), _("Tool Homepage"))
+				info.set_sensitive(0)
+				toolTable.attach(info, 0, 1, 0, 1, xoptions=gtk.EXPAND|gtk.FILL, xpadding=5)
+				toolTable.attach(location, 1, 2, 0, 1, xoptions=gtk.EXPAND|gtk.FILL, xpadding=5)
+				#toolFrame.set_sensitive(0)
+			self.vboxImportTools.pack_start(toolFrame, expand=False, fill=False, padding=5)
+		self.win_importdata.show_all()
 
 	def validateFile(self, import_filename):
 		"""
@@ -247,7 +305,7 @@ class WindowImportdata(SimpleGladeApp):
 
 	def close_window(self):
 		self.win_importdata.hide()
-		
+		self.win_importdata.destroy()
 
 	############################
 	## Window signal handlers ##
@@ -307,11 +365,12 @@ class WindowImportdata(SimpleGladeApp):
 		else:
 			#Selected file not understood by any of the process files
 			self.updateStatusbar(self.statusbarImportFile, _("Unknown file type") )
-			#Display warning
+			#Display error
 			msg = _("File selected is of unknown or unsupported file type")
-			warning = Warning(self.data_path)
-			warning.set_text(msg)
-			warning.run()
+			md = gtk.MessageDialog(self.win_importdata, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
+			md.set_title("Error")
+			md.run()
+			md.destroy()
 
 	def on_buttonClearFile_clicked(self, widget):	
 		self.init_tab(1)
@@ -342,15 +401,24 @@ class WindowImportdata(SimpleGladeApp):
 			self.updateStatusbar(self.statusbarImportFile, msgImporting)
 			self.importSelectedActivities(selectedActivities)
 			self.updateStatusbar(self.statusbarImportFile, msgImported)
-			warning = Warning(self.data_path)
-			warning.set_text(msgImpored)
-			warning.set_title(_("Import Success"))
-			warning.run()
+
+			#Display informational dialog box
+			md = gtk.MessageDialog(self.win_importdata, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msgImported)
+			md.set_title(_("Import Success"))
+			md.run()
+			md.destroy()
+
 		self.buttonFileImport.set_sensitive(0) #Disable import button
 
-	def on_buttonFileCancel_clicked(self, widget):
+	def on_buttonFileClose_clicked(self, widget):
 		self.close_window()
 
-	def on_buttonDeviceCancel_clicked(self, widget):
+	def on_buttonDeviceClose_clicked(self, widget):
 		self.close_window()
 
+	def on_buttonOptionsClose_clicked(self, widget):
+		self.close_window()
+
+	def on_buttonDeviceToolRescan_clicked(self, widget):
+		self.toolsDetected = False
+		self.init_gpsdevice_tab()

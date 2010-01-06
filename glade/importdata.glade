@@ -30,15 +30,22 @@
                     <property name="visible">True</property>
                     <property name="left_padding">12</property>
                     <child>
-                      <placeholder/>
+                      <widget class="GtkVBox" id="vboxImportTools">
+                        <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <placeholder/>
+                        </child>
+                      </widget>
                     </child>
                   </widget>
                 </child>
                 <child>
-                  <widget class="GtkLabel" id="label1">
+                  <widget class="GtkLabel" id="labelImportDeviceTools">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">&lt;b&gt;frame1&lt;/b&gt;</property>
+                    <property name="label" translatable="yes">&lt;b&gt;Tools&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
+                    <property name="single_line_mode">True</property>
                   </widget>
                   <packing>
                     <property name="type">label_item</property>
@@ -53,16 +60,30 @@
               <widget class="GtkHBox" id="hboxDeviceButtons">
                 <property name="visible">True</property>
                 <child>
-                  <placeholder/>
+                  <widget class="GtkButton" id="buttonDeviceToolRescan">
+                    <property name="label" translatable="yes">Rescan</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip" translatable="yes">Rescan system for available tools</property>
+                    <signal name="clicked" handler="on_buttonDeviceToolRescan_clicked"/>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="padding">10</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="buttonDeviceCancel">
-                    <property name="label">gtk-cancel</property>
+                  <widget class="GtkButton" id="buttonDeviceClose">
+                    <property name="label">gtk-close</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_stock">True</property>
-                    <signal name="clicked" handler="on_buttonDeviceCancel_clicked"/>
+                    <signal name="clicked" handler="on_buttonDeviceClose_clicked"/>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -226,18 +247,19 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
+                    <property name="padding">10</property>
                     <property name="pack_type">end</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkButton" id="buttonFileCancel">
+                  <widget class="GtkButton" id="buttonFileClose">
                     <property name="label">gtk-close</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="use_stock">True</property>
-                    <signal name="clicked" handler="on_buttonFileCancel_clicked"/>
+                    <signal name="clicked" handler="on_buttonFileClose_clicked"/>
                   </widget>
                   <packing>
                     <property name="expand">False</property>
@@ -372,7 +394,7 @@
                     <property name="expand">False</property>
                     <property name="fill">False</property>
                     <property name="pack_type">end</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
                 <child>
@@ -387,6 +409,22 @@
                     <property name="expand">False</property>
                     <property name="fill">False</property>
                     <property name="padding">10</property>
+                    <property name="pack_type">end</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkButton" id="buttonOptionsClose">
+                    <property name="label">gtk-close</property>
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="use_stock">True</property>
+                    <signal name="clicked" handler="on_buttonOptionsClose_clicked"/>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
                     <property name="pack_type">end</property>
                     <property name="position">0</property>
                   </packing>
