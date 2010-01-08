@@ -8,15 +8,22 @@ if [ $? != 0 ]; then exit ; fi
 
 cd ../
 
+# Extract translatable strings from input files
 xgettext glade/pytrainer.glade -o ./messages.pot
-if [ $? != 0 ]; then echo "WARNNING: xgettext not found. Please, install gettext package"; exit; fi
+if [ $? != 0 ]; then echo "WARNING: xgettext not found. Please install gettext package"; exit; fi
 find ./ -iname "*.py" -exec xgettext -k_ -j -o ./messages.pot ./pytrainer/main.py {} \;
 
-msginit -i ./messages.pot -l $LANGUAGE -o ./locale/$LANGUAGE/LC_MESSAGES/pytrainer_$LANGUAGE.pot
+# Initializing translations for desired language
+msginit -i ./messages.pot -l $LANGUAGE -o ./locale/$LANGUAGE/LC_MESSAGES/pytrainer_$LANGUAGE.po_new
+rm ./messages.pot
 
 cd ./locale/$LANGUAGE/LC_MESSAGES/
+# Merging old po file with the one generated as a result of current script
 make merge
-$SOFTWARE pytrainer_$LANGUAGE.po
-if [ $? != 0 ]; then echo "WARNNING: $SOFTWARE not found"; exit ; fi
-make
 
+# Editing our new gettext catalog (.po file)
+$SOFTWARE pytrainer_$LANGUAGE.po
+if [ $? != 0 ]; then echo "WARNING: $SOFTWARE not found"; exit ; fi
+
+# Compiling our new message catalog into binary files ready for distribution
+make
