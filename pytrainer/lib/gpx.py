@@ -146,7 +146,7 @@ class Gpx:
 				#print elapsedTime
 			calories = lap.findtext(calorieTag)
 			distance = lap.findtext(distanceTag)
-			#print "Found time: %s, lat: %s lon: %s cal: %s dist: %s " % (elapsedTime, lat, lon, calories, distance)
+			logging.debug("Found time: %s, lat: %s lon: %s cal: %s dist: %s " % (elapsedTime, lat, lon, calories, distance))
 			lapInfo.append((elapsedTime, lat, lon, calories, distance))
 		return lapInfo
 	
@@ -154,18 +154,17 @@ class Gpx:
 		'''
 		Migrated to eTree XML processing 26 Nov 2009 - jblance
 		'''
-
 		logging.debug(">>")
 		tree  = self.tree
-		
-		trkpoints = tree.findall(trackPointTag)
-		#start with the info at trkseg level
-		#calories - maybe more than one, currently adding them together
-		trks = tree.findall(trackTag)
-		for trk in trks:
-			calorieCollection = trk.findall(calorieTag)
-			for cal in calorieCollection:
-				self.calories += int(cal.text)
+
+		# Calories data comes within laps. Maybe more than one, adding them together - dgranda 20100114
+		laps = tree.findall(lapTag)
+		for lap in laps:
+			lapCalories = lap.findtext(calorieTag)
+			logging.debug("Lap calories: "+str(lapCalories))
+			self.calories += int(lapCalories)
+		logging.debug("Calories: "+str(self.calories))
+
 		retorno = []
 		his_vel = []
 		last_lat = "False"
@@ -176,6 +175,7 @@ class Gpx:
 		tmp_alt = 0
 		len_validhrpoints = 0
 
+		trkpoints = tree.findall(trackPointTag)
 		if not len(trkpoints):
 			return retorno
 		
