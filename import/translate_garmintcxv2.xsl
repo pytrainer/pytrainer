@@ -67,8 +67,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     </xsl:variable>
 		<gpxdata:lap><xsl:value-of select="$newline"/>
 			<gpxdata:index><xsl:value-of select="$vIndex"/></gpxdata:index><xsl:value-of select="$newline"/>
-            <xsl:variable name="stlat"><xsl:value-of select="t:Track/t:Trackpoint[1]/t:Position/t:LatitudeDegrees"/></xsl:variable>
-            <xsl:variable name="stlon"><xsl:value-of select="t:Track/t:Trackpoint[1]/t:Position/t:LongitudeDegrees"/></xsl:variable>
+            <xsl:variable name="stlat"><xsl:value-of select="t:Track/t:Trackpoint/t:Position[1]/t:LatitudeDegrees"/></xsl:variable>
+            <xsl:variable name="stlon"><xsl:value-of select="t:Track/t:Trackpoint/t:Position[1]/t:LongitudeDegrees"/></xsl:variable>
             <gpxdata:startPoint lat="{$stlat}" lon="{$stlon}"/><xsl:value-of select="$newline"/>
 			<xsl:variable name="cnt"><xsl:value-of select="count(t:Track/t:Trackpoint/t:Position)-1"/></xsl:variable>
 			<xsl:variable name="endlat"><xsl:value-of select="t:Track/t:Trackpoint[number($cnt)]/t:Position/t:LatitudeDegrees"/></xsl:variable>

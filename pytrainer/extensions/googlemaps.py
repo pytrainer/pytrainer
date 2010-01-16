@@ -199,10 +199,23 @@ class Googlemaps:
 			elapsedTimeHours = int(elapsedTime/3600)
 			elapsedTimeMins = int((elapsedTime - (elapsedTimeHours * 3600)) / 60)
 			elapsedTimeSecs = elapsedTime - (elapsedTimeHours * 3600) - (elapsedTimeMins * 60)
-			strElapsedTime = "%0.0dh:%0.2dm:%0.2fs" % (elapsedTimeHours, elapsedTimeMins, elapsedTimeSecs) 
-			content += "var lap%dmarker = new google.maps.Marker({position: new google.maps.LatLng(%f, %f), icon: lapimage, map: map,  title:\"Lap%d\"}); \n " % (lapNumber, float(lap[1]), float(lap[2]), lapNumber)
-			content += "var lap%d = new google.maps.InfoWindow({content: \"<div class='info_content'>End of lap:%s<br>Elapsed time:%s<br>Distance:%0.2f km<br>Calories:%s</div>\" });\n" % (lapNumber, lapNumber, strElapsedTime, float(lap[4])/1000, lap[3])
-			content += "google.maps.event.addListener(lap%dmarker, 'click', function() { lap%d.open(map,lap%dmarker); });\n" % (lapNumber,lapNumber,lapNumber)
+			if elapsedTimeHours > 0:
+				strElapsedTime = "%0.0dh:%0.2dm:%0.2fs" % (elapsedTimeHours, elapsedTimeMins, elapsedTimeSecs) 
+			elif elapsedTimeMins > 0:
+				strElapsedTime = "%0.0dm:%0.2fs" % (elapsedTimeMins, elapsedTimeSecs) 
+			else:
+				strElapsedTime = "%0.0fs" % (elapsedTimeSecs) 
+			#process lat and lon for this lap
+			try:
+				lapLat = float(lap[1])
+				lapLon = float(lap[2])
+				content += "var lap%dmarker = new google.maps.Marker({position: new google.maps.LatLng(%f, %f), icon: lapimage, map: map,  title:\"Lap%d\"}); \n " % (lapNumber, lapLat, lapLon, lapNumber)
+				content += "var lap%d = new google.maps.InfoWindow({content: \"<div class='info_content'>End of lap:%s<br>Elapsed time:%s<br>Distance:%0.2f km<br>Calories:%s</div>\" });\n" % (lapNumber, lapNumber, strElapsedTime, float(lap[4])/1000, lap[3])
+				content += "google.maps.event.addListener(lap%dmarker, 'click', function() { lap%d.open(map,lap%dmarker); });\n" % (lapNumber,lapNumber,lapNumber)
+			except:
+				#Error processing lap lat or lon
+				#dont show this lap
+				print "Error processing lap "+ str(lapNumber) + " (lat,lon) ( " + str(lap[1]) + "," +str (lap[2]) + ")"
 
 		content += '''
 

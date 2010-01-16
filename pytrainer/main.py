@@ -75,13 +75,13 @@ usage = """usage: %prog [options]
 For more help on valid options try:
    %prog -h """
 parser = OptionParser(usage=usage)
-parser.set_defaults(log_level=logging.ERROR, validate=False, gm3=False, testimport=False)
+parser.set_defaults(log_level=logging.ERROR, validate=False, gm3=True, testimport=False)
 parser.add_option("-d", "--debug", action="store_const", const=logging.DEBUG, dest="log_level", help="enable logging at debug level")
 parser.add_option("-i", "--info", action="store_const", const=logging.INFO, dest="log_level", help="enable logging at info level")
 parser.add_option("-w", "--warn", action="store_const", const=logging.WARNING, dest="log_level", help="enable logging at warning level")
 parser.add_option("--valid", action="store_true", dest="validate", help="enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation")
 parser.add_option("--check", action="store_true", dest="check", help="triggers database (only sqlite based) and configuration file sanity checks, adding fields if necessary. Backup of database is done before any change. Details at info or debug logging level")
-parser.add_option("--gmaps3", action="store_true", dest="gm3", help="EXPERIMENTAL: use Google Maps API version3 (currently slower than version 2, but includes some new functionality)")
+parser.add_option("--gmaps2", action="store_false", dest="gm3", help="Use old Google Maps API version (v2)")
 parser.add_option("--testimport", action="store_true", dest="testimport", help="EXPERIMENTAL: show new import functionality - for testing only USE AT YOUR OWN RISK")
 (options, args) = parser.parse_args()
 log_level = options.log_level
