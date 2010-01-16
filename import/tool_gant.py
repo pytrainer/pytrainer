@@ -38,6 +38,12 @@ class gant():
 		return _("Gant")
 
 	def getVersion(self):
+		outstatus = commands.getstatusoutput('which gant')
+		if outstatus[0] == 0: #Found gant in path 
+			path = outstatus[1]
+			return path
+		else:
+			return None
 		return None
 
 	def getSourceLocation(self):

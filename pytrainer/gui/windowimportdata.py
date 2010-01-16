@@ -34,7 +34,6 @@ class WindowImportdata(SimpleGladeApp):
 		self.configuration = config
 		self.store = None
 		self.processClass = None
-		self.toolsDetected = False
 		#SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
 
 	def run(self):
@@ -70,14 +69,7 @@ class WindowImportdata(SimpleGladeApp):
 		return context_id
 
 	def init_gpsdevice_tab(self):
-		#Only detect tools once (or if requested)
-		if not self.toolsDetected:
-			#Remove all components in vbox - in case of re-detection
-			for child in self.vboxImportTools.get_children():
-				print "removing ", child
-				self.vboxImportTools.remove(child)
-			self.detect_tools()
-			self.toolsDetected = True
+
 		return
 
 	def init_file_tab(self):
@@ -111,6 +103,10 @@ class WindowImportdata(SimpleGladeApp):
 		"""
 		logging.debug('>>')
 		self.updateStatusbar(self.statusbarDevice, "Checking for tools")
+		#Remove all components in vbox - in case of re-detection
+		for child in self.vboxImportTools.get_children():
+			print "removing ", child
+			self.vboxImportTools.remove(child)
 		#Get import tool_* files
 		fileList = glob.glob(self.data_path+"import/tool_*.py")
 		for toolFile in fileList:
@@ -134,6 +130,7 @@ class WindowImportdata(SimpleGladeApp):
 				version.set_alignment(0,0)
 				if toolClass.deviceExists():
 					deviceExists = gtk.Label(_("GPS device found") )
+					deviceExists.set_alignment(0,0)
 				else:
 					deviceExists = gtk.Label(_("GPS device <b>not</b> found"))
 					deviceExists.set_alignment(0,0)
@@ -420,5 +417,7 @@ class WindowImportdata(SimpleGladeApp):
 		self.close_window()
 
 	def on_buttonDeviceToolRescan_clicked(self, widget):
-		self.toolsDetected = False
-		self.init_gpsdevice_tab()
+		self.detect_tools()
+
+	def on_comboboxDevice_changed(self, widget):
+		self.detect_tools()
