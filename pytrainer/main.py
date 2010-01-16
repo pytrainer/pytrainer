@@ -101,7 +101,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.7.0_svn#471"
+		self.version ="1.7.0_svn#475"
 		self.date = Date()
 		# Checking profile
 		self.profile = Profile(self.data_path,self)
@@ -130,13 +130,8 @@ class pyTrainer:
 		logging.debug('connecting to DDBB')
 		self.ddbb.connect()		
 		
-		#Look for force check file
-		check_file = self.data_path+"/FORCE_DB_CHECK"
-		if os.path.isfile(check_file):
-			self.check = True
-			os.remove(check_file)
-		if self.check:
-			#self.migrationCheck()
+		# DB check can be triggered either via new version (mandatory) or as runtime parameter (--check)
+		if self.isNewVersion() or self.check:
 			self.sanityCheck() # Deprecates migrationCheck. Review first installation and version control
 		else:
 			logging.info('No sanity check requested')
@@ -490,6 +485,21 @@ class pyTrainer:
 		if version_tmp < self.version:
 			self.configuration.setVersion(self.version)
 		logging.debug('<<')
+
+	def isNewVersion(self):
+		"""16.01.2010 - dgranda
+		Checks if executed version is new
+		args: none
+		returns: boolean. True if version is newer, False otherwise"""
+		logging.debug('>>')
+		version_tmp = self.configuration.getValue("pytraining","version")
+		logging.info('Old version: '+version_tmp+' | New version: '+self.version)
+		isNew = False
+		if version_tmp < self.version:
+			isNew = True
+			self.configuration.setVersion(self.version)
+		logging.debug('<<')
+		return isNew
 
 	def sanityCheck(self):
 		"""23.11.2009 - dgranda
