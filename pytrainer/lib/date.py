@@ -21,6 +21,8 @@
 import time
 import datetime
 import calendar
+import dateutil.parser
+from dateutil.tz import * # for tzutc()
 
 class Date:
 	def __init__(self, calendar=None):
@@ -123,4 +125,18 @@ class Date:
 		month = tm[1]				
 		day = tm[2]
 		return "%0.4d-%0.2d-%0.2d" %(year,month,day)
+
+	def getDateTime(self, time_):
+		# Time can be in multiple formats
+		# - zulu 			2009-12-15T09:00Z
+		# - local ISO8601	2009-12-15T10:00+01:00
+		dateTime = dateutil.parser.parse(time_)
+		timezone = dateTime.tzname()
+		if timezone == 'UTC': #got a zulu time
+			local_dateTime = dateTime.astimezone(tzlocal()) #datetime with localtime offset (from OS)
+		else:
+			local_dateTime = dateTime #use datetime as supplied
+		utc_dateTime = dateTime.astimezone(tzutc()) #datetime with 00:00 offset
+		#print utc_dateTime, local_dateTime
+		return (utc_dateTime,local_dateTime)
 

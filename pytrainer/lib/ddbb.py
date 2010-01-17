@@ -21,8 +21,9 @@
 
 import logging
 import traceback
-import commands
+import commands, os
 from system import checkConf
+from pytrainer.lib.date import Date
 
 class DDBB:
 	def __init__(self, configuration):
@@ -271,12 +272,16 @@ class DDBB:
 			traceback.print_exc()
 			exit(-1)
 
+		#Check Tables
 		for entry in tablesList:
 			if entry not in tablesDB:
 				logging.warn('Table '+str(entry)+' does not exist in DB')
 				self.ddbbObject.createTableDefault(entry,tablesList[entry])
 			else:
 				self.ddbbObject.checkTable(entry,tablesList[entry])
+
+		#Run any functions to update or correct data
+		self.populate_date_time_local()
 		logging.debug('<<')
 
 	def createDatabaseBackup(self):
@@ -289,3 +294,35 @@ class DDBB:
 			logging.info('Database backup successfully created')
 		logging.debug('<<')
 
+	def populate_date_time_local(self):
+		'''	Populate date_time_local and date from date_time_utc
+				only access records that date_time_local is NULL
+				using OS timezone to create local_time
+
+				also updates date if date != local_time
+		'''
+		logging.debug('--')
+		listOfRecords = self.ddbbObject.select("records","id_record,date,date_time_utc,date_time_local", "date_time_local is NULL")
+		logging.debug("Found %d records in DB without date_time_local field populated" % (len(listOfRecords) ) )
+		for record in listOfRecords:
+			try:
+				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx"%(record[0])
+				dateFromUTC = Date().getDateTime(record[2])
+				if os.path.isfile(gpxfile) : #GPX file exists for this record - probably not a manual record
+					date_time_local = str(dateFromUTC[1])
+					dateFromLocal = dateFromUTC[1].strftime("%Y-%m-%d")
+					if record[1] != dateFromLocal:
+						#date field incorrect - update it
+						logging.debug("Updating record id: %s with date: %s and date_time_local: %s" % (record[0], dateFromLocal, date_time_local) )
+						self.ddbbObject.update("records","date, date_time_local",[dateFromLocal, date_time_local], "id_record = %d" %record[0])
+					else:
+						#date field OK, just update date_time_local
+						logging.debug("Updating record id: %s with date_time_local: %s" % (record[0], date_time_local) )
+						self.ddbbObject.update("records","date_time_local",[date_time_local], "id_record = %d" %record[0])
+				else: #Manual entry?	
+					#For manual entries, the UTC time is the local time
+					#TODO figure out a way to correct this...
+					pass
+			except:
+				print "Error updating record: " + str(record)
+				logging.debug("Error updating record: " + str(record))

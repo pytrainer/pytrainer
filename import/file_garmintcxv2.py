@@ -20,8 +20,7 @@
 import logging
 import os
 from lxml import etree
-import dateutil.parser
-from dateutil.tz import * # for tzutc()
+from pytrainer.lib.date import Date
 
 from pytrainer.lib.xmlUtils import XMLParser
 from pytrainer.lib.system import checkConf
@@ -137,20 +136,7 @@ class garmintcxv2():
 			return timeElement.text
 
 	def getDateTime(self, time_):
-		# Time can be in multiple formats
-		# - zulu 			2009-12-15T09:00Z
-		# - local ISO8601	2009-12-15T10:00+01:00
-		if time_ is None or time_ == "":
-			return (None, None)
-		dateTime = dateutil.parser.parse(time_)
-		timezone = dateTime.tzname()
-		if timezone == 'UTC': #got a zulu time
-			local_dateTime = dateTime.astimezone(tzlocal()) #datetime with localtime offset (from OS)
-		else:
-			local_dateTime = dateTime #use datetime as supplied
-		utc_dateTime = dateTime.astimezone(tzutc()) #datetime with 00:00 offset
-		#print utc_dateTime, local_dateTime
-		return (utc_dateTime,local_dateTime)
+		return Date().getDateTime(time_)
 
 	def getGPXFile(self, ID):
 		"""

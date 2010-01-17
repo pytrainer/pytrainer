@@ -101,7 +101,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.7.0_svn#481"
+		self.version ="1.7.0_svn#483"
 		self.DB_version = 1
 		self.date = Date()
 		# Checking profile

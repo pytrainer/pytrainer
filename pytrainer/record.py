@@ -257,7 +257,7 @@ class Record:
 					"date=\"%s\" and records.sport=sports.id_sports" %date)
 
 	def getrecordPeriod(self,date_ini, date_end, sport=None):
-		#This is essentially the same as getrecordPeriodSport (except date ranges) - need to look at merging the two
+		#TODO This is essentially the same as getrecordPeriodSport (except date ranges) - need to look at merging the two
 		tables = "records,sports"
 		if not sport:
 			condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports" %(date_ini,date_end)
@@ -472,13 +472,13 @@ class Record:
 		logging.debug('<<')
 		"""
 		
-	def shortFromLocal(self):
+	#def shortFromLocal(self):
 		"""25.03.2008 - dgranda
 		Retrieves sport, date and start time from each entry stored locally
 		12.07.2008 - dgranda - Added id_record for each one
 		returns: list with lists: SPORT|DATE_START_TIME|ID_RECORD
 		31.08.2008 - dgranda - Only available due to migration purposes from Main class"""
-		logging.debug('>>')
+		'''logging.debug('>>')
 		listTracksGPX = []
 		sport = "Run" #hardcoded - 25.03.2008 (no info stored in gpx files yet)
 		# looking in configuration for storing directory
@@ -495,13 +495,13 @@ class Record:
 			else:
 				logging.error('Skipping '+gpxFile+' because of wrong format')
 		logging.debug('<<')
-		return listTracksGPX
+		return listTracksGPX'''
 		
-	def shortFromLocalDB(self, getSport=True):
+	#def shortFromLocalDB(self, getSport=True):
 		"""12.07.2008 - dgranda
 		Retrieves sport, date and start time from local database
 		returns: list with lists: SPORT|DATE_START_TIME"""
-		logging.debug('>>')
+		'''logging.debug('>>')
 		# Retrieving sport (optional) and date_time (UTC) for each entry in DB
 		# ToDo: replace id_sports with name
 		listTracksGPX = self.ddbb.shortFromLocal(getSport)
@@ -516,21 +516,21 @@ class Record:
 			listTracksGPX = tempList
 		logging.debug('Retrieved info: '+str(listTracksGPX))
 		logging.debug('<<')
-		return listTracksGPX
+		return listTracksGPX'''
 		
-	def removeSportFromList(self, list1):
-		resultList = []
+	#def removeSportFromList(self, list1):
+		'''resultList = []
 		for entry in list1:
 			resultList.append(entry[1])
-		return resultList
+		return resultList'''
 		
-	def compareLists(self,list1,list2):
-		# Optimizing comparison - 26042008
+	#def compareLists(self,list1,list2):
+		'''# Optimizing comparison - 26042008
 		# http://mail.python.org/pipermail/python-list/2002-May/141458.html
 		tempDict = dict(zip(list1,list1))
-		return [x for x in list2 if x not in tempDict]
+		return [x for x in list2 if x not in tempDict]'''
 		
-	def compareTracks(self,listTracksGPS,listTracksLocal,checkSport=True):
+	#def compareTracks(self,listTracksGPS,listTracksLocal,checkSport=True):
 		"""22.03.2008 - dgranda
 		Compares tracks retrieved from GPS with already locally stored
 		args:
@@ -538,7 +538,7 @@ class Record:
 			listTracksLocal: local track list with lists -> (SPORT)|DATE_START_TIME
 			checkSport (02.09.2008): indicates if sport data is included when comparing 
 		returns: tracks which are not present locally (list with lists)"""
-		logging.debug('>>')
+		'''logging.debug('>>')
 		if checkSport is True:
 			logging.info('Comparing sport info')
 			listGPS = listTracksGPS[:]
@@ -562,5 +562,5 @@ class Record:
 		logging.info('Tracks to be imported: '+str(len(resultList)))
 		logging.debug('Tracks summary: '+str(resultList))
 		logging.debug('<<')
-		return resultList
+		return resultList '''
 		

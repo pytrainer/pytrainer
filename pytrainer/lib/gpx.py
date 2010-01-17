@@ -28,8 +28,7 @@ from datetime import datetime
 import logging
 from xmlUtils import XMLParser
 from lxml import etree
-import dateutil.parser
-from dateutil.tz import * # for tzutc()
+from pytrainer.lib.date import Date
 
 # use of namespaces is mandatory if defined
 mainNS = string.Template(".//{http://www.topografix.com/GPX/1/1}$tag")
@@ -65,6 +64,7 @@ class Gpx:
 		self.maxvel = 0
 		self.maxhr = 0
 		self.date = ""
+		#self.Date = Date()
 		self.calories= 0
 		if filename != None:
 			if not os.path.isfile(self.filename):
@@ -103,18 +103,7 @@ class Gpx:
 		return tracks
 
 	def getDateTime(self, time_):
-		# Time can be in multiple formats
-		# - zulu 			2009-12-15T09:00Z
-		# - local ISO8601	2009-12-15T10:00+01:00
-		dateTime = dateutil.parser.parse(time_)
-		timezone = dateTime.tzname()
-		if timezone == 'UTC': #got a zulu time
-			local_dateTime = dateTime.astimezone(tzlocal()) #datetime with localtime offset (from OS)
-		else:
-			local_dateTime = dateTime #use datetime as supplied
-		utc_dateTime = dateTime.astimezone(tzutc()) #datetime with 00:00 offset
-		#print utc_dateTime, local_dateTime
-		return (utc_dateTime,local_dateTime)
+		return Date().getDateTime(time_)
 		
 	def getUnevenness(self):
 		return self.upositive,self.unegative 
