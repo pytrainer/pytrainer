@@ -53,7 +53,7 @@ class Sql:
 	def createDDBB(self):
 		pass
 
-	def createTables(self):
+	def createTables(self): #TODO Needs to be fixed to create tables based on definition, perhaps replaced by createTableDefault?
 		cur = self.db.cursor()	
 		#creamos la tabla sports
 		sql = """CREATE TABLE sports (
@@ -125,7 +125,7 @@ class Sql:
 		cur.execute(sql)
 		logging.debug('<<')
 		
-	def addWaipoints2ddbb(self):
+	def addWaipoints2ddbb(self): #TODO Remove?
 		cur = self.db.cursor()	
 		sql = """CREATE TABLE waypoints (
 			id_waypoint integer primary key autoincrement ,

@@ -58,7 +58,7 @@ class DDBB:
 	def disconnect(self):
 		self.ddbbObject.disconnect()
 
-	def build_ddbb(self):
+	def build_ddbb(self): #TODO Is this needed?
 		self.ddbbObject.createDDBB()
 		self.ddbbObject.connect()
 		self.ddbbObject.createTables()
@@ -88,7 +88,6 @@ class DDBB:
 		return ret_val[0][0]
 
 	#TODO Remove extra check functions below
-	#TODO Add functions to check that fill in date_time_local and update date etc
 
 	#def addTitle2ddbb(self):
 		'''#this function add a title column in
@@ -134,7 +133,7 @@ class DDBB:
 			newdate = "%s-%d-%s" %(rec[0],newmonth,rec[2])
 			self.ddbbObject.update("records","date",[newdate], "id_record = %d" %record[0])'''
 
-	#def updateDateFormat(self):
+	#def updateDateFormat(self): #TODO Might still need this function??
 		'''#this is a function to repair a bug from 
 		#pytrainer 0.9.8 and previus
 		listOfRecords = self.ddbbObject.select("records","id_record,date", None)
@@ -281,6 +280,7 @@ class DDBB:
 				self.ddbbObject.checkTable(entry,tablesList[entry])
 
 		#Run any functions to update or correct data
+		#These functions _must_ be safe to run at any time (i.e. not be version specfic or only safe to run once)
 		self.populate_date_time_local()
 		logging.debug('<<')
 
@@ -300,6 +300,8 @@ class DDBB:
 				using OS timezone to create local_time
 
 				also updates date if date != local_time
+
+				TODO - leaves date_time_local blank for records that have been manually created (as date_time_utc will actually be local time)
 		'''
 		logging.debug('--')
 		listOfRecords = self.ddbbObject.select("records","id_record,date,date_time_utc,date_time_local", "date_time_local is NULL")
