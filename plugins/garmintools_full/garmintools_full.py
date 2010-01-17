@@ -109,7 +109,6 @@ class garmintools_full():
 				#TODO Remove Zenity below
 				os.popen("zenity --error --text='Can not handle Garmin device (wrong module loaded)\nCheck your configuration'");
 		logging.info("Entries to import: "+str(len(importFiles)))
-		exit(0)
 		logging.debug("<<")
 		return importFiles
 
