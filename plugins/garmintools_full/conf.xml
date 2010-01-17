@@ -7,6 +7,6 @@
 	executable="garmintools_full" 
 >
 <conf-values variable="Force_sport_to" value=""/>
-<conf-values variable="Not_older_days" value="0"/>
-<conf-values variable="Legacy_comparison" value="True"/>
+<conf-values variable="Not_older_days" value="30"/>
+<conf-values variable="Max_gap_seconds" value="195"/>
 </pytrainer-plugin>
