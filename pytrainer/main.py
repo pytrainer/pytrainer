@@ -130,18 +130,19 @@ class pyTrainer:
 		self.ddbb = DDBB(self.configuration)
 		logging.debug('connecting to DDBB')
 		self.ddbb.connect()		
-		
-		# DB check can be triggered either via new version (mandatory) or as runtime parameter (--check)
+
+		#Get user's DB version
 		currentDB_version = self.configuration.getValue("pytraining","DB_version")
 		logging.debug("Current DB version: "+str(currentDB_version))
-		
-		if currentDB_version is None or self.check:
-			self.sanityCheck() # Deprecates migrationCheck. Review first installation and version control
+		# DB check can be triggered either via new version (mandatory) or as runtime parameter (--check)		
+		if self.check: # User requested check
+			self.sanityCheck() 
+		elif currentDB_version is None: # No stored DB version - check DB etc
+			self.sanityCheck() 
+		elif self.DB_version > int(currentDB_version): # DB version expected is newer than user's version - check DB etc
+			self.sanityCheck() 
 		else:
-			if self.DB_version > int(currentDB_version):
-				self.sanityCheck() # Deprecates migrationCheck. Review first installation and version control
-			else:
-				logging.info('No sanity check requested')
+			logging.info('No sanity check requested')
 
 		self.record = Record(data_path,self)
 
@@ -452,7 +453,7 @@ class pyTrainer:
 
 	def sanityCheck(self):
 		"""23.11.2009 - dgranda
-		Checks database and configuration file if flag "--check" is enabled at start
+		Checks database and configuration file 
 		args: none
 		returns: none"""
 		logging.debug('>>')
@@ -460,14 +461,16 @@ class pyTrainer:
 		self.ddbb.checkDBIntegrity()
 		logging.info('Checking configuration file integrity')
 		self.profile.checkProfile()
+		logging.info('Setting DB version to: ' + str(self.DB_version))
+		self.configuration.setValue("pytraining","DB_version", str(self.DB_version))
 		logging.debug('<<')
 	
-	def addDateTimeUTC(self):
+	#def addDateTimeUTC(self):
 		"""12.07.2008 - dgranda
 		Adds date_time (UTC format) for each record (new column date_time_utc in table records). New in version 1.6.0.1
 		args: none
 		returns: none"""
-		logging.debug('>>')
+		'''logging.debug('>>')
 		# Retrieves info from all GPX files stored locally
 		listTracksGPX = self.record.shortFromLocal()
 		logging.debug('Retrieved info from local files: '+ str(listTracksGPX))
@@ -489,14 +492,14 @@ class pyTrainer:
 				logging.error('Error when updating data for track '+ track[2])
 				traceback.print_exc()
 		logging.info('Updated '+str(num)+' entries')
-		logging.debug('<<')
+		logging.debug('<<')'''
 		
-	def checkPacesDB(self):
+	#def checkPacesDB(self):
 		"""19.07.2008 - dgranda
 		Updates paces in DB (maxspeed<->maxpace | average<->pace). New in version 1.6.0.2
 		args: none
 		returns: none"""
-		logging.debug('>>')
+		'''logging.debug('>>')
 		# Retrieves info from DB: id_record,maxspeed,maxpace,average,pace
 		listPaces = self.ddbb.select("records", "id_record,maxspeed,maxpace,average,pace")
 		logging.debug('Retrieved info from db: '+ str(listPaces))
@@ -514,4 +517,4 @@ class pyTrainer:
 			else:
 				logging.error('No pace info available for entry '+str(entry[0])+' in DB. Please check')
 		logging.info('Updated '+str(num)+' entries')
-		logging.debug('<<')
+		logging.debug('<<')'''

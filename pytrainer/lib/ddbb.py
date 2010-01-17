@@ -75,7 +75,7 @@ class DDBB:
 	def update(self,table,cells,value,condition):
 		self.ddbbObject.update(table,cells,value,condition)
 	
-	def lastRecord(self,table):
+	def lastRecord(self,table): #TODO Make generic i.e. something like id = "id_" + table[:-1] 
 		if table=="records":
 			id = "id_record"
 		if table=="sports":
@@ -86,18 +86,21 @@ class DDBB:
 		ret_val = self.ddbbObject.freeExec(sql)
 		return ret_val[0][0]
 
-	def addTitle2ddbb(self):
-		#this function add a title column in
+	#TODO Remove extra check functions below
+	#TODO Add functions to check that fill in date_time_local and update date etc
+
+	#def addTitle2ddbb(self):
+		'''#this function add a title column in
 		#the record ddbb. New in 0.9.9 version
 		sql = "alter table records add title varchar(200)"
 		try:
 			self.ddbbObject.freeExec(sql)
 		except:
 			logging.error('Column title already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()
+			traceback.print_exc()'''
 		
-	def addUnevenness2ddbb(self):
-		#this function add accumulated unevennes columns in
+	#def addUnevenness2ddbb(self):
+		'''#this function add accumulated unevennes columns in
 		#the record ddbb. New in 1.3.2 version
 		sql = "alter table records add upositive float"
 		try:
@@ -110,28 +113,28 @@ class DDBB:
 			self.ddbbObject.freeExec(sql)
 		except:
 			logging.error('Column unegative already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()
+			traceback.print_exc()'''
 			
-	def addWaypoints2ddbb(self):
-		#adds waipoints table to database
+	#def addWaypoints2ddbb(self):
+		'''#adds waipoints table to database
 		try:
 			self.ddbbObject.addWaipoints2ddbb()
 		except:
 			logging.error('Waypoints table already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()
+			traceback.print_exc()'''
 	
-	def updatemonth(self):
-		#this is a function to repair a bug from
+	#def updatemonth(self):
+		'''#this is a function to repair a bug from
 		#pytrainer 0.9.5 and previus
 		listOfRecords = self.ddbbObject.select("records","id_record,date", None)
 		for record in listOfRecords:
 			rec = record[1].split("-")
 			newmonth = int(rec[1])+1
 			newdate = "%s-%d-%s" %(rec[0],newmonth,rec[2])
-			self.ddbbObject.update("records","date",[newdate], "id_record = %d" %record[0])
+			self.ddbbObject.update("records","date",[newdate], "id_record = %d" %record[0])'''
 
-	def updateDateFormat(self):
-		#this is a function to repair a bug from 
+	#def updateDateFormat(self):
+		'''#this is a function to repair a bug from 
 		#pytrainer 0.9.8 and previus
 		listOfRecords = self.ddbbObject.select("records","id_record,date", None)
 		for record in listOfRecords:
@@ -140,10 +143,10 @@ class DDBB:
 				newdate = "%0.4d-%0.2d-%0.2d" %(int(rec[0]),int(rec[1]),int(rec[2]))
 				self.ddbbObject.update("records","date",[newdate], "id_record = %d" %record[0])
 			except:
-				print record
+				print record'''
 			
-	def addweightandmet2ddbb(self):
-		#this function add weight extra and met fields to sports table
+	#def addweightandmet2ddbb(self):
+		'''#this function add weight extra and met fields to sports table
 		sql = "alter table sports add weight float"
 		try:
 			self.ddbbObject.freeExec(sql)
@@ -155,18 +158,18 @@ class DDBB:
 			self.ddbbObject.freeExec(sql)
 		except:
 			logging.error('Column met already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()
+			traceback.print_exc()'''
 			
-	def checkmettable(self):
-		sql = "alter table sports add met float"
+	#def checkmettable(self):
+		'''sql = "alter table sports add met float"
 		try:
 			self.ddbbObject.freeExec(sql)
 		except:
 			logging.error('Column met already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()
+			traceback.print_exc()'''
 
-	def addpaceandmax2ddbb(self):
-		sql = "alter table records add maxspeed float"
+	#def addpaceandmax2ddbb(self):
+		'''sql = "alter table records add maxspeed float"
 		try:
 			self.ddbbObject.freeExec(sql)
 		except:
@@ -189,15 +192,15 @@ class DDBB:
 			self.ddbbObject.freeExec(sql)
 		except:
 			logging.error('Column maxbeats already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()
+			traceback.print_exc()'''
 		
-	def addDateTimeUTC2ddbb(self):
-		sql = "alter table records add date_time_utc varchar2(20)"
+	#def addDateTimeUTC2ddbb(self):
+		'''sql = "alter table records add date_time_utc varchar2(20)"
 		try:
 			self.ddbbObject.freeExec(sql)
 		except:
 			logging.error('Column date_time_utc already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()
+			traceback.print_exc()'''
 		
 	def shortFromLocal(self, getSport=True): # Check LEFT and RIGHT JOINS for people with multiple sports
 		if getSport is True:
