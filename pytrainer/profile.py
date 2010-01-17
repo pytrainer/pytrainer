@@ -107,7 +107,8 @@ class Profile:
 			("prf_ddbbname",""),
 			("prf_ddbbuser",""),
 			("prf_ddbbpass",""),
-			("prf_us_system","False")]
+			("prf_us_system","False"),
+			("DB_version","1")]
 		defaultListKeys = []
 		for entry in defaultList:
 			defaultListKeys.append(unicode(entry[0]))
