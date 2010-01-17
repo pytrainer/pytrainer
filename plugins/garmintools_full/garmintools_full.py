@@ -31,7 +31,7 @@ from dateutil.tz import * # for tzutc()
 import traceback
 
 class garmintools_full():
-	""" Plugin to import from a Garmin device using gpsbabel
+	""" Plugin to import from a Garmin device using garmintools
 		Checks each activity to see if any entries are in the database with the same start time
 		Creates GPX files for each activity not in the database
 
@@ -48,10 +48,14 @@ class garmintools_full():
 		self.sport = self.getConfValue("Force_sport_to")
 		self.deltaDays = self.getConfValue("Not_older_days")
 		if self.deltaDays is None:
+			logging.info("Delta days not set, retrieving complete history, defaulting to 0")
 			self.deltaDays = 0
 		#so far hardcoded to False - dg 20100104
 		#self.legacyComp = self.getConfValue("Legacy_comparison")
-		self.legacyComp = False
+		self.maxGap = self.getConfValue("Max_gap_seconds")
+		if self.maxGap is None:
+			logging.info("No gap defined, strict comparison")
+			self.maxGap = 0
 
 	def getConfValue(self, confVar):
 		info = XMLParser(self.data_path+"/conf.xml")
@@ -70,30 +74,26 @@ class garmintools_full():
 		if self.checkLoadedModule():
 			numError = self.getDeviceInfo()
 			if numError >= 0:
-				# Create a compressed copy of current user directory
-				try: 
-					self.createUserdirBackup()
-				except:
-					logging.error('Not able to make a copy of current user directory. Printing traceback and exiting')
-					traceback.print_exc()
-					exit(-1)
 				#TODO Remove Zenity below
 				outgps = commands.getstatusoutput("garmin_save_runs | zenity --progress --pulsate --text='Loading Data' auto-close")
 				if outgps[0]==0: 
 					# now we should have a lot of gmn (binary) files under $GARMIN_SAVE_RUNS
 					foundFiles = self.searchFiles(self.tmpdir, "gmn")
 					logging.info("Retrieved "+str(len(foundFiles))+" entries from GPS device")
-					# discard old files
-					selectedFiles = self.discardOld(foundFiles)
-					# checking which entries are not imported yet
-					self.listStringDBUTC = self.parent.parent.ddbb.select("records","date_time_utc")
-					#logging.debug("From DB: "+str(self.listStringDBUTC))
-					# commented out to fully rely on duplicates checking from garmintools plugin
-					#selectedFiles = self.checkDupes(foundFiles)
-					if selectedFiles is not None:
+					# Trying to minimize number of files to dump
+					if int(self.deltaDays) > 0:
+						selectedFiles = self.discardOld(foundFiles)
+					else:
+						logging.info("Retrieving complete history from GPS device")
+						selectedFiles = foundFiles
+					if len(selectedFiles) > 0:
 						logging.info("Dumping "+str(len(selectedFiles))+" binary files found")
 						dumpFiles = self.dumpBinaries(selectedFiles)
-						logging.info("Starting import")
+						self.listStringDBUTC = self.parent.parent.ddbb.select("records","date_time_utc")
+						if self.maxGap > 0:
+							logging.info("Starting import. Comparison will be made with "+str(self.maxGap)+" seconds interval")
+						else:
+							logging.info("Starting import. Comparison will be strict")
 						importFiles = self.importEntries(dumpFiles)
 					else:
 						logging.info("No new entries to add")
@@ -108,55 +108,26 @@ class garmintools_full():
 		else: #No garmin device found
 				#TODO Remove Zenity below
 				os.popen("zenity --error --text='Can not handle Garmin device (wrong module loaded)\nCheck your configuration'");
-		logging.info("Entries to import: "+str(len(importFiles)))		
+		logging.info("Entries to import: "+str(len(importFiles)))
+		exit(0)
 		logging.debug("<<")
 		return importFiles
 
 	def discardOld(self, listEntries):
-		tempList = []
-		if self.deltaDays > 0:
-			logging.info("Discarding entries older than "+str(self.deltaDays)+" days")
-			limit = datetime.now() - timedelta(days = int(self.deltaDays))
-			for entry in listEntries:
-				filename = os.path.split(entry)[1].rstrip(".gmn")
-				filenameDateTime = datetime.strptime(filename,"%Y%m%dT%H%M%S")
-				logging.debug("Entry time: "+str(filenameDateTime)+" | limit: "+str(limit))
-				if filenameDateTime < limit:
-					logging.debug("Discarding old entry: "+str(filenameDateTime))
-				else:
-					tempList.append(entry)
-		else:
-			logging.info("Retrieving complete history from GPS device")
-		return tempList
-
-	def checkDupes(self, listEntries):
-		""" The idea behind is building two lists: one with all date_time_utc from DB (need conversion to datetime!)
-			and the other with all times from retrieved entries in UTC (need conversion from localtime -not possible only from filename- and to datetime!).
-			Seconds are the keys in a populated Dict, so if already present in the system can be removed from the mapping structure.
-			In case of legacy support, datetime from garmintools is older than (preceds) one stored in database (GPSBabel)
-			so DTgarmintools + delta (~ 3 mins) >= DTgpsbabel.
-			We obtain the final list retrieving remanent values from the dictionary """
 		logging.debug(">>")
 		tempList = []
-		tempDict = {}
+		logging.info("Discarding entries older than "+str(self.deltaDays)+" days")
+		limit = datetime.now() - timedelta(days = int(self.deltaDays))
 		for entry in listEntries:
 			filename = os.path.split(entry)[1].rstrip(".gmn")
 			filenameDateTime = datetime.strptime(filename,"%Y%m%dT%H%M%S")
-			logging.debug("Entry time: "+str(filenameDateTime))
-			tempDict[filenameDatetime] = filename
-		
-		stringStartDatetime = self.detailsFromFile(tree) # this time is localtime! (with timezone offset)
-		exists = False
-		if stringStartDatetime is not None:
-			startDatetime = dateutil.parser.parse(stringStartDatetime)
-			# converting to utc for proper comparison with date_time_utc
-			utcStartDatetime = startDatetime.astimezone(tzutc()).strftime("%Y-%m-%dT%H:%M:%SZ")
-			#ToDo. Think about best approach
-		else:
-			logging.debug("Not able to find start time, please check "+str(filename))
-			exists = True # workaround for old/not correct entries (will crash at some point during import process otherwise)
+			logging.debug("Entry time: "+str(filenameDateTime)+" | limit: "+str(limit))
+			if filenameDateTime < limit:
+				logging.debug("Discarding old entry: "+str(filenameDateTime))
+			else:
+				tempList.append(entry)
 		logging.debug("<<")
-		return exists
+		return tempList
 
 	def importEntries(self, entries):
 		# modified from garmintools plugin written by jb
@@ -199,26 +170,55 @@ class garmintools_full():
 			return validator.validateXSL(filename, xslfile)'''
 
 	def entryExists(self, tree, filename):
+		logging.debug(">>")
 		stringStartDatetime = self.detailsFromFile(tree) # this time is localtime! (with timezone offset)
 		exists = False
 		if stringStartDatetime is not None:
 			startDatetime = dateutil.parser.parse(stringStartDatetime)
 			# converting to utc for proper comparison with date_time_utc
 			stringStartUTC = startDatetime.astimezone(tzutc()).strftime("%Y-%m-%dT%H:%M:%SZ")
-			if self.legacyComp:
-				#ToDo
-				# All entries in UTC, so similars must have same date (startsWith)
-				exists = False
+			if self.checkDupe(stringStartUTC, self.listStringDBUTC, int(self.maxGap)):
+				exists = True
 			else:
-				if (stringStartUTC,) in self.listStringDBUTC: # strange way to store results from DB
-					exists = True
-				else:
-					logging.info("Marking "+str(filename)+" | "+str(stringStartUTC)+" to import")
-					exists = False
+				logging.info("Marking "+str(filename)+" | "+str(stringStartUTC)+" to import")
+				exists = False
 		else:
 			logging.debug("Not able to find start time, please check "+str(filename))
 			exists = True # workaround for old/not correct entries (will crash at some point during import process otherwise)
+		logging.debug("<<")
 		return exists
+
+	def checkDupe(self, stringStartUTC, listStringStartUTC, gap):
+		""" Checks if there is any startUTC in DB between provided startUTC plus a defined gap:
+			Check for same day (as baselined to UTC)
+			startDatetime + delta (~ 3 mins) >= listDatetime[x]
+			args:
+				stringStartUTC
+				listStringStartUTC
+				gap
+			returns: True if any coincidence is found. False otherwise"""
+		logging.debug(">>")
+		found = False
+		if gap > 0:
+			# Retrieve date from 2010-01-14T11:34:49Z
+			stringStartDate = stringStartUTC[0:10]
+			for entry in listStringStartUTC:
+				#logging.debug("start: "+str(startDatetime)+" | entry: "+str(entry)+" | gap: "+str(datetimePlusDelta))
+				if entry[0] is not None:		
+					if str(entry[0]).startswith(stringStartDate):
+						deltaGap = timedelta(seconds=gap)
+						datetimeStartUTC = datetime.strptime(stringStartUTC,"%Y-%m-%dT%H:%M:%SZ")
+						datetimeStartUTCDB = datetime.strptime(entry[0],"%Y-%m-%dT%H:%M:%SZ")
+						datetimePlusDelta = datetimeStartUTC + deltaGap
+						if datetimeStartUTC <= datetimeStartUTCDB and datetimeStartUTCDB <= datetimePlusDelta:
+							found = True
+							logging.debug("Found: "+str(stringStartUTC)+" <= "+str(entry[0])+" <= "+str(datetimePlusDelta))
+							break
+		else:
+			if (stringStartUTC,) in listStringStartUTC: # strange way to store results from DB
+				found = True		
+		logging.debug("<<")
+		return found
 
 	def getSport(self, tree):
 		#return sport from file or overide if present
