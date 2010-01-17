@@ -101,7 +101,8 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.7.0_svn#476"
+		self.version ="1.7.0_svn#480"
+		self.DB_version = 1
 		self.date = Date()
 		# Checking profile
 		self.profile = Profile(self.data_path,self)
@@ -131,10 +132,16 @@ class pyTrainer:
 		self.ddbb.connect()		
 		
 		# DB check can be triggered either via new version (mandatory) or as runtime parameter (--check)
-		if self.isNewVersion() or self.check:
+		currentDB_version = self.configuration.getValue("pytraining","DB_version")
+		logging.debug("Current DB version: "+str(currentDB_version))
+		
+		if currentDB_version is None or self.check:
 			self.sanityCheck() # Deprecates migrationCheck. Review first installation and version control
 		else:
-			logging.info('No sanity check requested')
+			if self.DB_version > int(currentDB_version):
+				self.sanityCheck() # Deprecates migrationCheck. Review first installation and version control
+			else:
+				logging.info('No sanity check requested')
 
 		self.record = Record(data_path,self)
 
@@ -442,64 +449,6 @@ class pyTrainer:
 		logging.debug('>>')
 		self.profile.editProfile()
 		logging.debug('<<')
-		
-	def migrationCheck(self):
-		"""22.06.2008 - dgranda (reviewed 31.07.2008)
-		Checks if it is necessary to run migration scripts for new features
-		args: none
-		returns: none"""
-		logging.debug('>>')
-		self.filename = self.conf.getValue("conffile")
-		logging.debug('Retrieving data from '+ self.filename)
-		version_tmp = self.configuration.getOption("version")
-		logging.info('Old version: '+version_tmp+' | New version: '+self.version)
-		if version_tmp == "0.0":
-			logging.info('Nothing to do, first installation')
-		else:
-			if version_tmp=="1.0":
-				logging.debug('updating month data')
-				self.ddbb.updatemonth()
-			if version_tmp<="0.9.8":
-				logging.debug('updating date format')
-				self.ddbb.updateDateFormat()
-			if version_tmp<="0.9.8.2":
-				logging.debug('updating DB title')
-				self.ddbb.addTitle2ddbb()
-			if version_tmp<="1.3.1":
-				self.ddbb.addUnevenness2ddbb()
-			if version_tmp<="1.4.2":
-				self.ddbb.addWaypoints2ddbb()
-			if version_tmp<="1.5.0.1":
-				self.ddbb.addweightandmet2ddbb()
-			if version_tmp<="1.5.0.2":
-				logging.info('Adding maxspeed, maxpace, pace and maxbeats columns')
-				self.ddbb.addpaceandmax2ddbb()
-			if version_tmp < "1.6.0.1":
-				logging.info('Adding date_time_utc column and retrieving data from local GPX files')
-				self.addDateTimeUTC()
-			if version_tmp < "1.6.0.3":
-				logging.info('Checking pace and max pace stored in DB')
-				self.checkPacesDB()
-		logging.info('Checking configuration file integrity')
-		self.profile.checkProfile()
-		if version_tmp < self.version:
-			self.configuration.setVersion(self.version)
-		logging.debug('<<')
-
-	def isNewVersion(self):
-		"""16.01.2010 - dgranda
-		Checks if executed version is new
-		args: none
-		returns: boolean. True if version is newer, False otherwise"""
-		logging.debug('>>')
-		version_tmp = self.configuration.getValue("pytraining","version")
-		logging.info('Old version: '+version_tmp+' | New version: '+self.version)
-		isNew = False
-		if version_tmp < self.version:
-			isNew = True
-			self.configuration.setVersion(self.version)
-		logging.debug('<<')
-		return isNew
 
 	def sanityCheck(self):
 		"""23.11.2009 - dgranda
