@@ -290,6 +290,7 @@ class WindowImportdata(SimpleGladeApp):
  			else:
  				logging.error('File %s not valid' % gpxFile)
 
+
 	def updateActivity(self, activityID, status = None, notes = None):
 		path = 0
 		for item in self.store:
@@ -396,15 +397,15 @@ class WindowImportdata(SimpleGladeApp):
 				msgImporting = _("Importing %d activities" % selectedCount)
 				msgImported = _("Imported %d activities" % selectedCount)
 			self.updateStatusbar(self.statusbarImportFile, msgImporting)
+			while gtk.events_pending():	# This allows the GUI to update 
+				gtk.main_iteration()	# before completion of this entire action
 			self.importSelectedActivities(selectedActivities)
 			self.updateStatusbar(self.statusbarImportFile, msgImported)
-
 			#Display informational dialog box
 			md = gtk.MessageDialog(self.win_importdata, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msgImported)
 			md.set_title(_("Import Success"))
 			md.run()
 			md.destroy()
-
 		self.buttonFileImport.set_sensitive(0) #Disable import button
 
 	def on_buttonFileClose_clicked(self, widget):
