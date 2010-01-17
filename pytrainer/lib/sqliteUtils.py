@@ -19,7 +19,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
-import sys
+import sys, traceback
 try:
 	from sqlite3 import dbapi2 as sqlite
 except ImportError:
@@ -269,5 +269,5 @@ class Sql:
 			self.freeExec(sql)
 		except:
 			logging.error('Not able to add/change column '+columnName+' to table '+tableName)
-			#traceback.print_exc()
+			traceback.print_exc()
 

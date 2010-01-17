@@ -38,13 +38,13 @@ class Record:
 		logging.debug('setting date...')
 		self.date = Date()
 		logging.debug('Checking current configuration...')
-		self.conf = checkConf()
-		self.filename = self.conf.getValue("conffile")
-		logging.debug('Retrieving data from '+ self.filename)
-		self.configuration = XMLParser(self.filename)
-		self.ddbb = DDBB(self.configuration)
-		logging.debug('connecting to DDBB')
-		self.ddbb.connect()
+		self.conf = checkConf()									#TODO change to reference main versions of these
+		self.filename = self.conf.getValue("conffile")			#
+		logging.debug('Retrieving data from '+ self.filename)	#
+		self.configuration = XMLParser(self.filename)			#
+		self.ddbb = DDBB(self.configuration)					#
+		logging.debug('connecting to DDBB')						#
+		self.ddbb.connect()										#
 		logging.debug('<<')
 
 	def newRecord(self, list_sport, date, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None):
@@ -67,7 +67,7 @@ class Record:
 		self.recordwindow.run()
 		logging.debug('<<')
 	
-	def removeRecord(self,id_record):
+	def removeRecord(self,id_record): #TODO remember to update once laps are in DB
 		logging.debug('>>')
 		record = self.ddbb.delete("records", "id_record=\"%s\"" %id_record)
 		logging.debug('removed record '+str(id_record)+' from bbdd')
@@ -164,7 +164,7 @@ class Record:
 		logging.debug('<<')
 		return self.ddbb.lastRecord("records")
 		
-	def insertNewRecord(self, gpxOrig, entry):
+	def insertNewRecord(self, gpxOrig, entry): #TODO consolidate with insertRecord
 		"""29.03.2008 - dgranda
 		Moves GPX file to store destination and updates database
 		args: path to source GPX file"""
@@ -299,7 +299,7 @@ class Record:
 			sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))[0][0]
 		except:
 			logging.error('Error retrieving id_sports from '+ str(sport))
-			#traceback.print_last()
+			traceback.print_last()
 			if add is None:
 				logging.debug('Sport '+str(sport)+' will not be added to DB')
 			else:
@@ -355,7 +355,7 @@ class Record:
 		logging.debug('<<')
 		return day_list
 		
-	def actualize_fromgpx(self,gpxfile):
+	def actualize_fromgpx(self,gpxfile): #TODO remove? - should never have multiple tracks per GPX file
 		logging.debug('>>')
 		logging.debug('loading file: '+gpxfile)
 		gpx = Gpx(self.data_path,gpxfile)
@@ -404,7 +404,7 @@ class Record:
 		self._actualize_fromgpx(gpx)
 		logging.debug('<<')
 
-	def _select_trkfromgpx(self,gpxfile,tracks):
+	def _select_trkfromgpx(self,gpxfile,tracks):  #TODO remove? - should never have multiple tracks per GPX file
 		logging.debug('>>')
 		logging.debug('Track dialog '+ self.data_path +'|'+ gpxfile)
 		selectrckdialog = DialogSelectTrack(self.data_path, tracks,self.__actualize_fromgpx, gpxfile)
@@ -412,7 +412,7 @@ class Record:
 		selectrckdialog.run()
 		logging.debug('<<')
 		
-	def newGpxRecord(self,gpxfile,list_sport):
+	def newGpxRecord(self,gpxfile,list_sport): #TODO Not used?
 		logging.debug('>>')
 		logging.debug("opening a new window record "+self.data_path+'|'+gpxfile+'|'+str(list_sport))
 		self.recordwindow = WindowRecord(self.data_path, list_sport,self, None)
@@ -440,7 +440,7 @@ class Record:
 			logging.info("Entry %d has been added" % entry_id)
 		logging.debug('<<')
 
-	#def importFromGTRNCTR(self,gtrnctrFile):
+	#def importFromGTRNCTR(self,gtrnctrFile): #TODO remove
 		"""22.03.2008 - dgranda
 		Retrieves sport, date and start time from each entry coming from GPS
 		and compares with what is stored locally, just to import new entries
@@ -472,7 +472,7 @@ class Record:
 		logging.debug('<<')
 		"""
 		
-	#def shortFromLocal(self):
+	#def shortFromLocal(self): #TODO remove
 		"""25.03.2008 - dgranda
 		Retrieves sport, date and start time from each entry stored locally
 		12.07.2008 - dgranda - Added id_record for each one
@@ -497,7 +497,7 @@ class Record:
 		logging.debug('<<')
 		return listTracksGPX'''
 		
-	#def shortFromLocalDB(self, getSport=True):
+	#def shortFromLocalDB(self, getSport=True): #TODO remove
 		"""12.07.2008 - dgranda
 		Retrieves sport, date and start time from local database
 		returns: list with lists: SPORT|DATE_START_TIME"""
@@ -518,19 +518,19 @@ class Record:
 		logging.debug('<<')
 		return listTracksGPX'''
 		
-	#def removeSportFromList(self, list1):
+	#def removeSportFromList(self, list1): #TODO remove
 		'''resultList = []
 		for entry in list1:
 			resultList.append(entry[1])
 		return resultList'''
 		
-	#def compareLists(self,list1,list2):
+	#def compareLists(self,list1,list2): #TODO remove
 		'''# Optimizing comparison - 26042008
 		# http://mail.python.org/pipermail/python-list/2002-May/141458.html
 		tempDict = dict(zip(list1,list1))
 		return [x for x in list2 if x not in tempDict]'''
 		
-	#def compareTracks(self,listTracksGPS,listTracksLocal,checkSport=True):
+	#def compareTracks(self,listTracksGPS,listTracksLocal,checkSport=True): #TODO remove
 		"""22.03.2008 - dgranda
 		Compares tracks retrieved from GPS with already locally stored
 		args:

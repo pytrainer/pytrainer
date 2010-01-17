@@ -101,7 +101,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.7.0_svn#484"
+		self.version ="1.7.0_svn#485"
 		self.DB_version = 1
 		self.date = Date()
 		# Checking profile
@@ -117,17 +117,17 @@ class pyTrainer:
 		self.windowmain = None
 
 		logging.debug('checking configuration...')
-		self.conf = checkConf()
+		self.conf = checkConf() #TODO set this up so other modules can reference this and not have to duplicate this
 		logging.debug("clearing tmp directory %s" % self.conf.getValue("tmpdir"))
 		self.conf.clearTempDir()
 		self.filename = self.conf.getValue("conffile")
 		logging.debug('retrieving data from '+ self.filename)
-		self.configuration = XMLParser(self.filename)
+		self.configuration = XMLParser(self.filename) #TODO set this up so other modules can reference this and not have to duplicate this
 		if self.configuration.getValue("pytraining","prf_us_system") == "True":
 			self.prf_us_system = True
 		else:
 			self.prf_us_system = False
-		self.ddbb = DDBB(self.configuration)
+		self.ddbb = DDBB(self.configuration) #TODO set this up so other modules can reference this and not have to duplicate this
 		logging.debug('connecting to DDBB')
 		self.ddbb.connect()		
 
@@ -151,6 +151,7 @@ class pyTrainer:
 		self.date = Date(self.windowmain.calendar)
 
 		#Preparamos el webservice	 
+		#TODO check reason for webservice - remove / change to optional start if not needed
 		gtk.gdk.threads_init()
 		self.webservice = webService(data_path,self.refreshWaypointView,self.newRecord)
 		self.webservice.start()
@@ -465,7 +466,7 @@ class pyTrainer:
 		self.configuration.setValue("pytraining","DB_version", str(self.DB_version))
 		logging.debug('<<')
 	
-	#def addDateTimeUTC(self):
+	#def addDateTimeUTC(self): #TODO remove
 		"""12.07.2008 - dgranda
 		Adds date_time (UTC format) for each record (new column date_time_utc in table records). New in version 1.6.0.1
 		args: none
@@ -494,7 +495,7 @@ class pyTrainer:
 		logging.info('Updated '+str(num)+' entries')
 		logging.debug('<<')'''
 		
-	#def checkPacesDB(self):
+	#def checkPacesDB(self): #TODO remove
 		"""19.07.2008 - dgranda
 		Updates paces in DB (maxspeed<->maxpace | average<->pace). New in version 1.6.0.2
 		args: none

@@ -28,7 +28,7 @@ from pytrainer.lib.date import Date
 class DDBB:
 	def __init__(self, configuration):
 		self.ddbb_type = configuration.getValue("pytraining","prf_ddbb")
-		if self.ddbb_type == "mysql":
+		if self.ddbb_type == "mysql": #TODO no longer supported?
 			from mysqlUtils import Sql
 		else:
 			from sqliteUtils import Sql
@@ -44,9 +44,9 @@ class DDBB:
 		self.ddbbObject = Sql(ddbb_host,ddbb,ddbb_user,ddbb_pass)
 		
 	def connect(self):
-		#si devolvemos 1 ha ido todo con exito
-		#con 0 es que no estaba la bbdd creada
-		#con -1 imposible conectar a la maquina.
+		#si devolvemos 1 ha ido todo con exito 		: return 1 if all successful
+		#con 0 es que no estaba la bbdd creada		: 0 is DB not created
+		#con -1 imposible conectar a la maquina.	: -1 is impossible to connect to the host
 		var = self.ddbbObject.connect()
 		if var == 0:
 			self.ddbbObject.createDDBB()
@@ -202,12 +202,12 @@ class DDBB:
 			logging.error('Column date_time_utc already exists in DB. Printing traceback and continuing')
 			traceback.print_exc()'''
 		
-	def shortFromLocal(self, getSport=True): # Check LEFT and RIGHT JOINS for people with multiple sports
-		if getSport is True:
+	#def shortFromLocal(self, getSport=True): # Check LEFT and RIGHT JOINS for people with multiple sports
+		'''if getSport is True:
 			sql = "select sports.name,records.date_time_utc from sports INNER JOIN records ON sports.id_sports = records.sport"
 		else:
 			sql = "select records.date_time_utc from sports INNER JOIN records ON sports.id_sports = records.sport"
-		return self.ddbbObject.freeExec(sql)
+		return self.ddbbObject.freeExec(sql)'''
 
 	def checkDBIntegrity(self):
 		"""17.11.2009 - dgranda
