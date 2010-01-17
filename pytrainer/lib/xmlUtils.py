@@ -58,7 +58,7 @@ class XMLParser:
 		return list_options	
 	
 	def getOption(self,option):
-		print "this function is obsolete, use getValue instead"
+		logging.info("this function is obsolete, use getValue instead")
 		return self.getValue("pytraining",option)
 		
 	def setVersion(self,version):
@@ -79,7 +79,7 @@ class XMLParser:
 			root = self.xmldoc.getElementsByTagName(tagname)[0]
 			value = root.attributes[variable].value
 		except:
-			value = ""
+			value = None
 		return value
 	
 	def getAllValues(self,tagname):	
