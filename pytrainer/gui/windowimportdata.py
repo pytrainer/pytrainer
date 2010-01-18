@@ -24,6 +24,8 @@ import StringIO
 import logging
 from lxml import etree
 
+from pytrainer.plugins import Plugins
+
 class WindowImportdata(SimpleGladeApp):
 	def __init__(self, data_path = None, parent=None, config=None):
 		self.data_path = data_path
@@ -34,6 +36,7 @@ class WindowImportdata(SimpleGladeApp):
 		self.configuration = config
 		self.store = None
 		self.processClass = None
+		self.plugins = Plugins(data_path, self.parent.parent)
 		#SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
 
 	def run(self):
@@ -56,6 +59,9 @@ class WindowImportdata(SimpleGladeApp):
 			#'Import from File' tab
 			self.init_file_tab()
 		elif page ==2:
+			#'Plugins' tab
+			self.init_plugins_tab()
+		elif page ==3:
 			#'Options' tab
 			self.init_options_tab()
 		else:
@@ -69,7 +75,6 @@ class WindowImportdata(SimpleGladeApp):
 		return context_id
 
 	def init_gpsdevice_tab(self):
-
 		return
 
 	def init_file_tab(self):
@@ -82,6 +87,58 @@ class WindowImportdata(SimpleGladeApp):
 			self.store.clear()
 		self.buttonClearFile.set_sensitive(0)
 		self.buttonFileImport.set_sensitive(0)
+		return
+
+	def init_plugins_tab(self):
+		#Remove all components in vbox - in case of re-detection
+		for child in self.vboxPlugins.get_children():
+			print "removing ", child
+			self.vboxPlugins.remove(child)
+		pluginList = self.plugins.getPluginsList()
+		for plugin in pluginList:
+			#Store plugin details
+			pluginClass = plugin[0]
+			pluginName = plugin[1]
+			pluginDescription = plugin[2]
+			#Build frame with name and description
+			pluginFrame = gtk.Frame(label="<b>"+pluginName+"</b>")
+			pluginFrameLabel = pluginFrame.get_label_widget()
+			pluginFrameLabel.set_use_markup(True)
+			description = gtk.Label("<small>"+pluginDescription+"</small>")
+			description.set_alignment(0,0)
+			description.set_use_markup(True)
+			description.set_line_wrap(True)
+			pluginFrame.add(description)
+			#Get plugin information
+			name,description,status = self.plugins.getPluginInfo(pluginClass)
+			#get plugin conf params ## These are the default params, need to get those stored for the user
+			#params = self.plugins.getPluginConfParams(pluginClass)
+			#print params
+			#Create buttons
+			statusButton = gtk.Button(label="Disable")
+			statusButton.connect('clicked', self.pluginsButton_clicked, pluginClass)
+			configButton = gtk.Button(label="Configure")
+			configButton.connect('clicked', self.pluginsButton_clicked, pluginClass)
+			runButton = gtk.Button(label="Run")
+			runButton.connect('clicked', self.pluginsButton_clicked, pluginClass)
+
+			if status == 0 or status == "0":
+				#Plugin disabled
+				pluginFrame.set_sensitive(0)
+				statusButton.set_label("Enable")
+				configButton.set_sensitive(0)
+				runButton.set_sensitive(0)
+			else:
+				pass
+			#Create a table for the frame and button
+			pluginTable = gtk.Table()
+			pluginTable.attach(pluginFrame, 0, 1, 0, 1, xoptions=gtk.EXPAND|gtk.FILL, xpadding=5)
+			pluginTable.attach(statusButton, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.SHRINK, xpadding=5, ypadding=5)
+			pluginTable.attach(configButton, 2, 3, 0, 1, xoptions=gtk.FILL, yoptions=gtk.SHRINK, xpadding=5, ypadding=5)
+			pluginTable.attach(runButton, 3, 4, 0, 1, xoptions=gtk.FILL, yoptions=gtk.SHRINK, xpadding=5, ypadding=5)
+			#Add frame to tab
+			self.vboxPlugins.pack_start(pluginTable, expand=False, fill=False, padding=5)
+		self.win_importdata.show_all()
 		return
 
 	def init_options_tab(self):
@@ -308,6 +365,12 @@ class WindowImportdata(SimpleGladeApp):
 	############################
 	## Window signal handlers ##
 	############################
+
+	def pluginsButton_clicked(self, button, pluginClass):
+		'''
+			Handler for plugin Buttons
+		'''
+		print button.get_label(), pluginClass
 
 	def treeviewImportEvents_header_checkbox(self, column, store):
 		"""

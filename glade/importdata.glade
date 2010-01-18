@@ -347,6 +347,32 @@ Test 2</property>
           </packing>
         </child>
         <child>
+          <widget class="GtkVBox" id="vboxPlugins">
+            <property name="visible">True</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <placeholder/>
+            </child>
+          </widget>
+          <packing>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkLabel" id="labelPluginsPage">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">&lt;b&gt;Plugins&lt;/b&gt;</property>
+            <property name="use_markup">True</property>
+            <property name="single_line_mode">True</property>
+          </widget>
+          <packing>
+            <property name="position">3</property>
+            <property name="tab_expand">True</property>
+            <property name="tab_fill">False</property>
+            <property name="type">tab</property>
+          </packing>
+        </child>
+        <child>
           <widget class="GtkVBox" id="vboxOptions">
             <property name="visible">True</property>
             <property name="orientation">vertical</property>
@@ -493,7 +519,7 @@ Test 2</property>
             </child>
           </widget>
           <packing>
-            <property name="position">2</property>
+            <property name="position">3</property>
           </packing>
         </child>
         <child>
@@ -504,8 +530,7 @@ Test 2</property>
             <property name="single_line_mode">True</property>
           </widget>
           <packing>
-            <property name="position">2</property>
-            <property name="tab_expand">True</property>
+            <property name="position">3</property>
             <property name="tab_fill">False</property>
             <property name="type">tab</property>
           </packing>
