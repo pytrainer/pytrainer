@@ -145,7 +145,6 @@ class Gpx:
 		'''
 		logging.debug(">>")
 		tree  = self.tree
-
 		# Calories data comes within laps. Maybe more than one, adding them together - dgranda 20100114
 		laps = tree.findall(lapTag)
 		for lap in laps:
@@ -200,7 +199,11 @@ class Gpx:
 			else:
 				time_ = 1
 			#get the elevation
-			ele = trkpoint.find(elevationTag).text
+			eleResult = trkpoint.find(elevationTag)
+			if eleResult is not None:
+				ele = eleResult.text
+			else: 
+				ele = None
 			#chequeamos que la altura sea correcta / check that the height is correct
 			if ele is not None:
 				if len(ele)<15:
@@ -209,7 +212,7 @@ class Gpx:
 					print "ele len >= 15" + ele
 			else:
 				tmp_alt= 0
-				print "tmp_alt:" + tmp_alt
+				#print "tmp_alt:" + str(tmp_alt)
 			
 			#evitamos los puntos blancos / we avoid the white points
 			if (float(lat) < -0.000001) or (float(lat) > 0.0000001):

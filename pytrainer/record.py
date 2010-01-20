@@ -294,12 +294,14 @@ class Record:
 			add: attribute to add or not the sport to db
 		returns: id_sports from provided sport"""
 		logging.debug('>>')
-		sport_id=0
+		sport_id=1
+		if sport == "" or sport is None:
+			return sport_id
 		try:
 			sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))[0][0]
 		except:
 			logging.error('Error retrieving id_sports from '+ str(sport))
-			traceback.print_last()
+			#traceback.print_last()
 			if add is None:
 				logging.debug('Sport '+str(sport)+' will not be added to DB')
 			else:
