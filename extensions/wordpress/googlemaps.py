@@ -19,16 +19,20 @@
 import os
 import re
 import sys
-sys.path.insert(0,os.path.join(sys.path[0],'../../pytrainer/lib'))
-from gpx import Gpx
-import points as Points 
-from  fileUtils import fileUtils
 import fileinput
+import shutil
+
+import pytrainer.lib.points as Points
+from pytrainer.lib.gpx import Gpx
+from  pytrainer.lib.fileUtils import fileUtils
+
 	
 def drawMap(gpxfile,key,htmlpath):
+	#Not sure why need to process gpx file
 	cachefile = "/tmp/gpx.txt"
-	trackdistance = 100
-	os.system("gpsbabel -t -i gpx -f %s -x position,distance=%sm -o gpx -F %s" %(gpxfile,trackdistance,cachefile))
+	#trackdistance = 100
+	#os.system("gpsbabel -t -i gpx -f %s -x position,distance=%sm -o gpx -F %s" %(gpxfile,trackdistance,cachefile))
+	shutil.copy2(gpxfile, cachefile)
 
 	# Test if file already contains gpxdata attribute
 	found = False

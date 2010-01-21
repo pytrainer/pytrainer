@@ -1,14 +1,13 @@
 #!/usr/bin/env python
-import wordpresslib
-import points as Points
 from optparse import OptionParser
 import os
-import googlemaps
 import sys
-sys.path.insert(0,os.path.join(sys.path[0],'../../pytrainer/lib'))
-from date import Date
-
 import SOAPpy
+
+import wordpresslib
+import googlemaps
+import pytrainer.lib.points as Points
+from pytrainer.lib.date import Date
 
 class Main:
 	def __init__(self,options):
