@@ -477,7 +477,7 @@
 					      <child>
 						<widget class="GtkLabel" id="record_sport">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">      </property>
+						  <property name="label">      </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -505,7 +505,7 @@
 					      <child>
 						<widget class="GtkLabel" id="record_upositive">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">         </property>
+						  <property name="label">         </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -533,7 +533,7 @@
 					      <child>
 						<widget class="GtkLabel" id="record_calories">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">         </property>
+						  <property name="label">         </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -841,7 +841,7 @@
 					      <child>
 						<widget class="GtkLabel" id="record_distance">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">       </property>
+						  <property name="label">       </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -869,7 +869,7 @@
 					      <child>
 						<widget class="GtkLabel" id="record_maxspeed">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">     </property>
+						  <property name="label">     </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -897,7 +897,7 @@
 					      <child>
 						<widget class="GtkLabel" id="record_maxpace">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">      </property>
+						  <property name="label">      </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -925,7 +925,7 @@
 					      <child>
 						<widget class="GtkLabel" id="record_date">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">      </property>
+						  <property name="label">      </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -954,7 +954,7 @@
 					      <child>
 						<widget class="GtkLabel" id="record_unegative">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">         </property>
+						  <property name="label">         </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -1180,7 +1180,7 @@
 					      <child>
 						<widget class="GtkLabel" id="record_datetime">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">  </property>
+						  <property name="label">  </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -1236,7 +1236,7 @@
 					      <child>
 						<widget class="GtkLabel" id="record_pace">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">        </property>
+						  <property name="label">        </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -1292,7 +1292,7 @@
 					      <child>
 						<widget class="GtkLabel" id="record_average">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">     </property>
+						  <property name="label">     </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -1616,7 +1616,7 @@
 					  <child>
 					    <widget class="GtkLabel" id="label11145">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -2255,7 +2255,7 @@ Cadence
 					      <child>
 						<widget class="GtkLabel" id="record_beats">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">     </property>
+						  <property name="label">     </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -2283,7 +2283,7 @@ Cadence
 					      <child>
 						<widget class="GtkLabel" id="record_maxbeats">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">     </property>
+						  <property name="label">     </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -2311,7 +2311,7 @@ Cadence
 					      <child>
 						<widget class="GtkLabel" id="record_calories2"> <!-- not sure what this one is/... -->
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">     </property>
+						  <property name="label">     </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -2451,7 +2451,7 @@ Cadence
 					      <child>
 						<widget class="GtkLabel" id="record_zone4">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">    </property>
+						  <property name="label">    </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -2479,7 +2479,7 @@ Cadence
 					      <child>
 						<widget class="GtkLabel" id="record_zone3">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">     </property>
+						  <property name="label">     </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -2507,7 +2507,7 @@ Cadence
 					      <child>
 						<widget class="GtkLabel" id="record_zone2">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">    </property>
+						  <property name="label">    </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -2535,7 +2535,7 @@ Cadence
 					      <child>
 						<widget class="GtkLabel" id="record_zone1">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">    </property>
+						  <property name="label">    </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -2590,7 +2590,7 @@ Cadence
 					      <child>
 						<widget class="GtkLabel" id="record_zone5">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">   </property>
+						  <property name="label">   </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -2757,7 +2757,7 @@ Cadence
 					      <child>
 						<widget class="GtkLabel" id="record_zonesmethod">
 						  <property name="visible">True</property>
-						  <property name="label" translatable="yes">  </property>
+						  <property name="label">  </property>
 						  <property name="use_underline">False</property>
 						  <property name="use_markup">False</property>
 						  <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -3152,7 +3152,7 @@ Cadence
 					  <child>
 					    <widget class="GtkLabel" id="day_distance">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -3434,7 +3434,7 @@ Cadence
 					  <child>
 					    <widget class="GtkLabel" id="day_average">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -3575,7 +3575,7 @@ Cadence
 					  <child>
 					    <widget class="GtkLabel" id="day_calories">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -3659,7 +3659,7 @@ Cadence
 					  <child>
 					    <widget class="GtkLabel" id="day_beats">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -3883,7 +3883,7 @@ Cadence
 					  <child>
 					    <widget class="GtkLabel" id="day_maxspeed">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">    </property>
+					      <property name="label">    </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -3911,7 +3911,7 @@ Cadence
 					  <child>
 					    <widget class="GtkLabel" id="day_maxbeats">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">     </property>
+					      <property name="label">     </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -3939,7 +3939,7 @@ Cadence
 					  <child>
 					    <widget class="GtkLabel" id="day_pace">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -3967,7 +3967,7 @@ Cadence
 					  <child>
 					    <widget class="GtkLabel" id="day_maxpace">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -4280,7 +4280,7 @@ Stage Profile/velocity</property>
 									<child>
 										<widget class="GtkLabel" id="weeka_distance">
 											<property name="visible">True</property>
-											<property name="label" translatable="yes">   </property>
+											<property name="label">   </property>
 											<property name="use_underline">False</property>
 											<property name="use_markup">False</property>
 											<property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -4535,7 +4535,7 @@ Stage Profile/velocity</property>
 					  <child>
 					    <widget class="GtkLabel" id="weeka_average">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -4619,7 +4619,7 @@ Stage Profile/velocity</property>
 					  <child>
 					    <widget class="GtkLabel" id="weeka_calories">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -4704,7 +4704,7 @@ Stage Profile/velocity</property>
 					  <child>
 					    <widget class="GtkLabel" id="weeka_maxspeed">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">    </property>
+					      <property name="label">    </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -4815,7 +4815,7 @@ Stage Profile/velocity</property>
 					  <child>
 					    <widget class="GtkLabel" id="weeka_beats">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -5039,7 +5039,7 @@ Stage Profile/velocity</property>
 					  <child>
 					    <widget class="GtkLabel" id="weeka_pace">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">    </property>
+					      <property name="label">    </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -5067,7 +5067,7 @@ Stage Profile/velocity</property>
 					  <child>
 					    <widget class="GtkLabel" id="weeka_maxpace">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">     </property>
+					      <property name="label">     </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -5095,7 +5095,7 @@ Stage Profile/velocity</property>
 					  <child>
 					    <widget class="GtkLabel" id="weeka_maxbeats">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -5422,7 +5422,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="montha_distance">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -5677,7 +5677,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="montha_average">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -5761,7 +5761,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="montha_calories">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -5846,7 +5846,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="montha_maxspeed">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">    </property>
+					      <property name="label">    </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -5957,7 +5957,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="montha_beats">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -6181,7 +6181,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="montha_pace">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">    </property>
+					      <property name="label">    </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -6209,7 +6209,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="montha_maxpace">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">     </property>
+					      <property name="label">     </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -6237,7 +6237,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="montha_maxbeats">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -6577,7 +6577,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="yeara_calories">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -6661,7 +6661,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="yeara_beats">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -6717,7 +6717,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="yeara_distance">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -7026,7 +7026,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="yeara_average">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -7309,7 +7309,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="yeara_pace">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -7337,7 +7337,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="yeara_maxpace">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -7365,7 +7365,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="yeara_maxspeed">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
@@ -7393,7 +7393,7 @@ Calories</property>
 					  <child>
 					    <widget class="GtkLabel" id="yeara_maxbeats">
 					      <property name="visible">True</property>
-					      <property name="label" translatable="yes">   </property>
+					      <property name="label">   </property>
 					      <property name="use_underline">False</property>
 					      <property name="use_markup">False</property>
 					      <property name="justify">GTK_JUSTIFY_LEFT</property>
