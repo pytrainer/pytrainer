@@ -1,3 +1,36 @@
+See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/pytrainer/roadmap
+
+- PyTrainer changes for 1.7.1:
+
+    * New import plugin - Garmintools - svn [430], [431], [436], [452], [453], [459], [460], [461], [463], [464], [486], [487], [488]
+          o both file (dump file) and device import implemented
+          o smart import from device to cater for different start times compared to GPSBabel (to reduce duplicated activities) 
+    * Move to Google maps API version 3 - svn [477]
+    * Add lap functionality - svn [433], [447], [448], [451], [454], [455]
+          o display individual laps under activity on treeview
+          o visually display lap duration on record graphs (user selectable)
+          o display lap markers on route map 
+    * Improve check functionality - svn [437], [438], [439], [475], [478], [479], [480], [482]
+          o Can be initiated by command line option --check
+          o Will be initiated if DB version in code is newer than user's DB version
+          o DB migration checks refactored and improved 
+    * Timezone support - svn [434], [440], [442], [483]
+          o DB updated with new field date_time_local
+          o field populated on import (or when DB check is run)
+          o field used in preference to UTC if present for display 
+    * Cadence / RPM support and graph added (tcx v2 file import only) - svn [432]
+    * Improved install process and remove unneeded files - svn [445], [446], [462], [467], [472], [473]
+    * Bug fix to TCX v2 to cater for multiple activities per file - svn [435]
+    * Bug fix for calorie calculation - svn [441], [474]
+    * Bug fix for migration/new install error bug #2924209 - svn [456]
+    * Bug fix for GPX import without elevation data - svn [490]
+    * Separate some GUI elements into separate files to ease development - svn [443], [457], [465]
+    * EXPERIMENTAL Unified Import GUI begun (for testing/feedback only) - svn [458], [466], [468], [469], [470], [471], [476], [481], [489]
+          o disabled by default
+          o enabled on startup with --testimport
+          o file import functional
+          o device import NOT functional 
+
 - PyTrainer changes for 1.7.0:
 
 Updated Spanish translation (svn rev 420,423,424)
