@@ -53,7 +53,7 @@ def open_url_in_browser(url):
     :param url: the url to open
     """
 
-    class BrowserThread(threading.Thread):
+    class BrowserThread(Thread):
         def __init__(self, url):
             Thread.__init__(self)
             self.url = url
