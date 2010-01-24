@@ -15,7 +15,7 @@ def install_extension(extension_name):
 	return "share/pytrainer/extensions/%s"%extension_name, glob("extensions/%s/*"%extension_name) 
 
 setup( 	name="pytrainer",
-	version="1.7.0",
+	version="1.7.1",
 	author="Fiz Vazquez",
 	maintainer_email="pytrainer-devel@lists.sourceforge.net",
 	url="https://sourceforge.net/projects/pytrainer/",
