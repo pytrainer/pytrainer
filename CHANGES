@@ -24,6 +24,8 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
     * Bug fix for calorie calculation - svn [441], [474]
     * Bug fix for migration/new install error bug #2924209 - svn [456]
     * Bug fix for GPX import without elevation data - svn [490]
+    * Bug fix to prevent adding empty entries - svn [496], [498], [499]
+    * Updated localizations (es, fr) - svn [494], [495], [497]
     * Separate some GUI elements into separate files to ease development - svn [443], [457], [465]
     * EXPERIMENTAL Unified Import GUI begun (for testing/feedback only) - svn [458], [466], [468], [469], [470], [471], [476], [481], [489]
           o disabled by default
