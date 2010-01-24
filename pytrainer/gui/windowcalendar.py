@@ -19,12 +19,19 @@
 from SimpleGladeApp import SimpleGladeApp
 
 class WindowCalendar(SimpleGladeApp):
-	def __init__(self, data_path = None, parent = None):
+	def __init__(self, data_path = None, parent = None, date = None):
 		self.parent = parent
-		glade_path="glade/pytrainer.glade"
+		glade_path="glade/calendar.glade"
 		root = "calendardialog"
 		domain = None
 		SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
+		if date is not None:
+			try:
+				year, month, day = date.split("-")
+				self.calendar.select_month( int(month)-1, int(year) )
+				self.calendar.select_day( int(day) )
+			except:	
+				pass
 		
 	def on_accept_clicked(self,widget):
 		date = self.calendar.get_date()	

@@ -21,6 +21,7 @@
 import time
 import datetime
 import calendar
+import datetime
 import dateutil.parser
 from dateutil.tz import * # for tzutc()
 
@@ -29,6 +30,8 @@ class Date:
 		self.calendar = calendar
 	
 	def second2time(self,seconds):
+		if not seconds:
+			return 0,0,0
 		time_in_hour = seconds/3600.0
 		hour = int(time_in_hour)
 		min = int((time_in_hour-hour)*60)
@@ -38,7 +41,11 @@ class Date:
 
 	def time2second(self,time):
 		hour,min,sec = time
-		return sec+(min*60)+(hour*3600)
+		return int(sec)+(int(min)*60)+(int(hour)*3600)
+
+	def getLocalTZ(self):
+		''' Returns string representation of local timezone'''
+		return datetime.datetime.now(tzlocal()).tzname()
 
 	def getDate(self):
 		#hack for the gtk calendar widget

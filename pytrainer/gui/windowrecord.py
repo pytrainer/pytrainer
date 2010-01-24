@@ -16,11 +16,14 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+import os
 import logging
 from SimpleGladeApp import SimpleGladeApp
 from windowcalendar import WindowCalendar
 from filechooser import FileChooser
+from pytrainer.lib.date import Date
 import dateutil.parser
+from dateutil.tz import * # for tzutc()
 
 class WindowRecord(SimpleGladeApp):
 	def __init__(self, data_path = None, listSport = None, parent = None, date = None, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None, windowTitle=None):
@@ -47,7 +50,7 @@ class WindowRecord(SimpleGladeApp):
 			"rcd_maxbeats",
 			"rcd_pace",
 			"rcd_maxpace",
-			"rcd_maxvel"
+			"rcd_maxvel",
 			]
 		self.listSport = {}
 		for i in listSport:
@@ -95,12 +98,20 @@ class WindowRecord(SimpleGladeApp):
 		if self.mode == "newrecord":
 			logging.debug('Track data: '+str(list_options))
 			if list_options["rcd_gpxfile"] != "":
-				logging.info('Adding new activity based on GPX file')
+				logging.info('Adding new activity based on GPX file')	
 				trackSummary=(list_options["rcd_sport"],"","")
 				self.parent.insertNewRecord(list_options["rcd_gpxfile"], trackSummary)
 			else:
 				logging.info('Adding new activity based on provided data')
-				list_options["date_time_utc"] = list_options["rcd_date"] + "T12:00:00Z" # hardcoded
+				#Manual entry, calculate time info
+				record_time = self.rcd_time.get_text()
+				record_date = self.rcd_date.get_text()
+				localtz = Date().getLocalTZ()
+				date = dateutil.parser.parse(record_date+" "+record_time+" "+localtz)
+				local_date = str(date)
+				utc_date = date.astimezone(tzutc()).strftime("%Y-%m-%dT%H:%M:%SZ")
+				list_options["date_time_utc"] = utc_date
+				list_options["date_time_local"] = local_date
 				self.parent.insertRecord(list_options)
 		elif self.mode == "editrecord":
 			self.parent.updateRecord(list_options, self.id_record)
@@ -115,7 +126,7 @@ class WindowRecord(SimpleGladeApp):
 		self.quit()
 
 	def on_calendar_clicked(self,widget):
-		calendardialog = WindowCalendar(self.data_path,self)
+		calendardialog = WindowCalendar(self.data_path,self, date=self.rcd_date.get_text())
 		calendardialog.run()
 
 	def setDate(self,date):
@@ -270,5 +281,8 @@ class WindowRecord(SimpleGladeApp):
 
 	def on_calculatevalues_clicked(self,widget):
 		gpxfile = self.rcd_gpxfile.get_text()
-		self.parent.actualize_fromgpx(gpxfile)
+		if os.path.isfile(gpxfile):
+			self.frameGeneral.set_sensitive(0)
+			self.frameVelocity.set_sensitive(0)	
+			self.parent.actualize_fromgpx(gpxfile)
 

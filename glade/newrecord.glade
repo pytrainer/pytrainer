@@ -179,7 +179,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFrame" id="frame24">
+                  <widget class="GtkFrame" id="frameGeneral">
                     <property name="visible">True</property>
                     <property name="border_width">4</property>
                     <property name="label_xalign">0</property>
@@ -248,6 +248,7 @@
                                     <property name="adjustment">0 0 23 1 2 2</property>
                                     <property name="climb_rate">1</property>
                                     <property name="numeric">True</property>
+                                    <property name="wrap">True</property>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -270,9 +271,10 @@
                                     <property name="width_request">47</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="adjustment">0 0 59 1 2 2</property>
+                                    <property name="adjustment">0 0 59 2 2 2</property>
                                     <property name="climb_rate">1</property>
                                     <property name="numeric">True</property>
+                                    <property name="wrap">True</property>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -297,6 +299,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="adjustment">0 0 59 1 2 2</property>
                                     <property name="climb_rate">1</property>
+                                    <property name="wrap">True</property>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -432,8 +435,8 @@
                               <widget class="GtkEntry" id="rcd_time">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="editable">False</property>
                                 <property name="width_chars">10</property>
+                                <property name="text" translatable="yes">12:00:00</property>
                               </widget>
                               <packing>
                                 <property name="left_attach">3</property>
@@ -472,7 +475,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFrame" id="Velocity">
+                  <widget class="GtkFrame" id="frameVelocity">
                     <property name="visible">True</property>
                     <property name="border_width">5</property>
                     <property name="label_xalign">0</property>

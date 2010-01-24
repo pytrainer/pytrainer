@@ -249,7 +249,7 @@ class Main(SimpleGladeApp):
 		else:
 			self.recordview.set_sensitive(0)
 		logging.debug(">>")
-	
+
 	def actualize_recordgraph(self,record_list,laps=None):
 		logging.debug(">>")
 		if len(record_list)>0:
@@ -321,6 +321,7 @@ class Main(SimpleGladeApp):
 			beats = 0
 			maxbeats = 0
 			maxspeed = 0
+			average = 0
 			maxpace = "0.00"
 			pace = "0.00"
 			for record in record_list:
@@ -341,8 +342,8 @@ class Main(SimpleGladeApp):
 			
 			if tbeats > 0:		
 				tbeats = tbeats/(timeinseconds/60/60)
-
-			average = distance/(timeinseconds/60/60)
+			if distance > 0:
+				average = distance/(timeinseconds/60/60)
 			if maxspeed > 0:
 				maxpace = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 			if average > 0:
@@ -993,6 +994,7 @@ class Main(SimpleGladeApp):
 		for i in record_list:
 			#Get lap info #TODO refactor to use a database table
 			gpxfile =  "%s/%s.gpx" %(self.gpxDir, i[8])
+			laps = None
 			if os.path.isfile(gpxfile):
 				gpx = Gpx(self.data_path,gpxfile)
 				laps = gpx.getLaps() #(elapsedTime, lat, lon, calories, distance)
@@ -1012,25 +1014,26 @@ class Main(SimpleGladeApp):
 				2, str(i[0]),
 				3, str(i[2])
 				)
-			for lap in laps:
-				lapNumber = "%s%d" % ( _("lap"), (laps.index(lap)+1) )
-				distance = "%0.2f" % (float(lap[4]) / 1000.0)
-				timeHours = int(float(lap[0]) / 3600)
-				timeMin = int((float(lap[0]) / 3600.0 - timeHours) * 60)
-				timeSec = float(lap[0]) - (timeHours * 3600) - (timeMin * 60) 
-				if timeHours > 0:
-					duration = "%d%s%02d%s%02d%s" % (timeHours, _("h"), timeMin, _("m"), timeSec, _("s"))
-				else:
-					duration = "%2d%s%02d%s" % (timeMin, _("m"), timeSec, _("s"))
+			if laps is not None:
+				for lap in laps:
+					lapNumber = "%s%d" % ( _("lap"), (laps.index(lap)+1) )
+					distance = "%0.2f" % (float(lap[4]) / 1000.0)
+					timeHours = int(float(lap[0]) / 3600)
+					timeMin = int((float(lap[0]) / 3600.0 - timeHours) * 60)
+					timeSec = float(lap[0]) - (timeHours * 3600) - (timeMin * 60) 
+					if timeHours > 0:
+						duration = "%d%s%02d%s%02d%s" % (timeHours, _("h"), timeMin, _("m"), timeSec, _("s"))
+					else:
+						duration = "%2d%s%02d%s" % (timeMin, _("m"), timeSec, _("s"))
 
-				child_iter = store.append(iter)
-				store.set (
-					child_iter,
-					0, int(i[8]),
-					1, lapNumber,
-					2, duration,
-					3, distance
-					)
+					child_iter = store.append(iter)
+					store.set (
+						child_iter,
+						0, int(i[8]),
+						1, lapNumber,
+						2, duration,
+						3, distance
+						)
 		self.recordTreeView.set_model(store)
 		if iterOne:
 			self.recordTreeView.get_selection().select_iter(iterOne)

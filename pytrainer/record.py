@@ -61,6 +61,8 @@ class Record:
 		self.recordwindow = WindowRecord(self.data_path, list_sport,self, None, windowTitle=_("Edit Entry"))
 		if os.path.isfile(gpxfile):
 			self.recordwindow.rcd_gpxfile.set_text(gpxfile)
+			self.recordwindow.frameGeneral.set_sensitive(0)		#Currently record values not changed if a GPX file is present
+			self.recordwindow.frameVelocity.set_sensitive(0)	#Greying out options to indicate this to user
 		logging.debug('sending record info to window')
 		self.recordwindow.setValues(record[0])
 		logging.debug('launching window')
