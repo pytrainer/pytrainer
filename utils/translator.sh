@@ -9,9 +9,9 @@ if [ $? != 0 ]; then exit ; fi
 cd ../
 
 # Extract translatable strings from input files
-xgettext glade/pytrainer.glade -o ./messages.pot
+xgettext glade/*.glade -o ./messages.pot
 if [ $? != 0 ]; then echo "WARNING: xgettext not found. Please install gettext package"; exit; fi
-find ./ -iname "*.py" -exec xgettext -k_ -j -o ./messages.pot ./pytrainer/main.py {} \;
+find ./ -iname "*.py" -exec xgettext -k_ -j -o ./messages.pot {} \;
 
 # Initializing translations for desired language
 msginit -i ./messages.pot -l $LANGUAGE -o ./locale/$LANGUAGE/LC_MESSAGES/pytrainer_$LANGUAGE.po_new
