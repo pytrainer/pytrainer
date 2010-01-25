@@ -150,10 +150,7 @@ class Record:
 	def insertRecord(self, list_options):
 		logging.debug('>>')
 		if list_options is None:
-			logging.debug('No data provided, abort adding entry')
-			return None
-		elif list_options["rcd_time"] == [0, 0, 0]:
-			logging.debug('Activity has no duration, abort adding entry')
+			logging.info('No data provided, abort adding entry')
 			return None
 		logging.debug('list_options: '+str(list_options))
 		cells,values = self._formatRecordNew(list_options)
