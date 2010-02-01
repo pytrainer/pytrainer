@@ -46,8 +46,8 @@ class RecordGraph:
 		if laps is not None and showLaps:
 			lapValues = []
 			lastPoint = 0.0
-			for lap in laps: #(elapsedTime, lat, lon, calories, distance)
-				thisPoint = float(lap[4])/1000.0 + lastPoint
+			for lap in laps: #"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories",   
+				thisPoint = float(lap[3])/1000.0 + lastPoint
 				lapValues.append((lastPoint, thisPoint))
 				lastPoint = thisPoint
 		else:

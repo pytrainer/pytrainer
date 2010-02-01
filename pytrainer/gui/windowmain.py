@@ -951,37 +951,6 @@ class Main(SimpleGladeApp):
 		logging.debug("<<")
 		return False
 	
-	'''def actualize_recordTreeView(self, record_list):
-		logging.debug(">>")
-		iterOne = False
-		store = gtk.ListStore(
-			gobject.TYPE_INT,
-			gobject.TYPE_STRING,
-			gobject.TYPE_STRING,
-			gobject.TYPE_STRING,
-			object)
-		for i in record_list:
-			iter = store.append()
-			if not iterOne:
-				iterOne = iter
-			dateTime = i[12]
-			if dateTime is not None:
-				localTime = dateutil.parser.parse(dateTime).strftime("%H:%M")
-			else:
-				localTime = ""
-			store.set (
-				iter,
-				0, int(i[8]),
-				1, str(localTime),
-				2, str(i[0]),
-				3, str(i[2])
-				)
-		self.recordTreeView.set_model(store)
-		if iterOne:
-			self.recordTreeView.get_selection().select_iter(iterOne)
-		logging.debug("<<")
-		#if len(record_list)>0:'''
-
 	def actualize_recordTreeView(self, record_list):
 		logging.debug(">>")
 		iterOne = False
@@ -992,13 +961,23 @@ class Main(SimpleGladeApp):
 			gobject.TYPE_STRING,		#Distance
 			object)
 		for i in record_list:
-			#Get lap info #TODO refactor to use a database table
-			gpxfile =  "%s/%s.gpx" %(self.gpxDir, i[8])
-			laps = None
-			if os.path.isfile(gpxfile):
-				gpx = Gpx(self.data_path,gpxfile)
-				laps = gpx.getLaps() #(elapsedTime, lat, lon, calories, distance)
-			#print gpxfile, laps
+			#Get lap info 
+			id_record = i[8]
+			laps = self.parent.record.getLaps(id_record)
+			if laps is None or laps == []:  #No laps stored - update DB
+				laps = []
+				#Get details from gpx file
+				gpxfile =  "%s/%s.gpx" %(self.gpxDir, id_record)
+				if os.path.isfile(gpxfile):
+					gpx = Gpx(self.data_path,gpxfile)
+					gpxLaps = gpx.getLaps() #(elapsedTime, lat, lon, calories, distance)
+					cells = "record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories"
+					for lap in gpxLaps:
+						values = (id_record, lap[0], lap[4], lap[5], lap[6], lap[1], lap[2], lap[3])
+						logging.debug("Adding lap information: " + str(values))
+						self.parent.record.insertLaps(cells,values)
+				#Try to get lap info again #TODO? refactor				
+				laps = self.parent.record.getLaps(id_record)	
 			iter = store.append(None)
 			if not iterOne:
 				iterOne = iter
@@ -1016,11 +995,12 @@ class Main(SimpleGladeApp):
 				)
 			if laps is not None:
 				for lap in laps:
+					#"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories",  
 					lapNumber = "%s%d" % ( _("lap"), (laps.index(lap)+1) )
-					distance = "%0.2f" % (float(lap[4]) / 1000.0)
-					timeHours = int(float(lap[0]) / 3600)
-					timeMin = int((float(lap[0]) / 3600.0 - timeHours) * 60)
-					timeSec = float(lap[0]) - (timeHours * 3600) - (timeMin * 60) 
+					distance = "%0.2f" % (float(lap[3]) / 1000.0)
+					timeHours = int(float(lap[2]) / 3600)
+					timeMin = int((float(lap[2]) / 3600.0 - timeHours) * 60)
+					timeSec = float(lap[2]) - (timeHours * 3600) - (timeMin * 60) 
 					if timeHours > 0:
 						duration = "%d%s%02d%s%02d%s" % (timeHours, _("h"), timeMin, _("m"), timeSec, _("s"))
 					else:

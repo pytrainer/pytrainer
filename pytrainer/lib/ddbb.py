@@ -76,138 +76,11 @@ class DDBB:
 	def update(self,table,cells,value,condition):
 		self.ddbbObject.update(table,cells,value,condition)
 	
-	def lastRecord(self,table): #TODO Make generic i.e. something like id = "id_" + table[:-1] 
-		if table=="records":
-			id = "id_record"
-		if table=="sports":
-			id = "id_sport"
-		if table=="waypoints":
-			id = "id_waypoint" 
+	def lastRecord(self,table): 
+		id = "id_" + table[:-1] #prune 's' of table name and pre-pend 'id_' to get id column
 		sql = "select %s from %s order by %s Desc limit 0,1" %(id,table,id)
 		ret_val = self.ddbbObject.freeExec(sql)
 		return ret_val[0][0]
-
-	#TODO Remove extra check functions below
-
-	#def addTitle2ddbb(self):
-		'''#this function add a title column in
-		#the record ddbb. New in 0.9.9 version
-		sql = "alter table records add title varchar(200)"
-		try:
-			self.ddbbObject.freeExec(sql)
-		except:
-			logging.error('Column title already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()'''
-		
-	#def addUnevenness2ddbb(self):
-		'''#this function add accumulated unevennes columns in
-		#the record ddbb. New in 1.3.2 version
-		sql = "alter table records add upositive float"
-		try:
-			self.ddbbObject.freeExec(sql)
-		except:
-			logging.error('Column upositive already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()
-		sql = "alter table records add unegative float"
-		try:
-			self.ddbbObject.freeExec(sql)
-		except:
-			logging.error('Column unegative already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()'''
-			
-	#def addWaypoints2ddbb(self):
-		'''#adds waipoints table to database
-		try:
-			self.ddbbObject.addWaipoints2ddbb()
-		except:
-			logging.error('Waypoints table already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()'''
-	
-	#def updatemonth(self):
-		'''#this is a function to repair a bug from
-		#pytrainer 0.9.5 and previus
-		listOfRecords = self.ddbbObject.select("records","id_record,date", None)
-		for record in listOfRecords:
-			rec = record[1].split("-")
-			newmonth = int(rec[1])+1
-			newdate = "%s-%d-%s" %(rec[0],newmonth,rec[2])
-			self.ddbbObject.update("records","date",[newdate], "id_record = %d" %record[0])'''
-
-	#def updateDateFormat(self): #TODO Might still need this function??
-		'''#this is a function to repair a bug from 
-		#pytrainer 0.9.8 and previus
-		listOfRecords = self.ddbbObject.select("records","id_record,date", None)
-		for record in listOfRecords:
-			try:
-				rec = record[1].split("-")
-				newdate = "%0.4d-%0.2d-%0.2d" %(int(rec[0]),int(rec[1]),int(rec[2]))
-				self.ddbbObject.update("records","date",[newdate], "id_record = %d" %record[0])
-			except:
-				print record'''
-			
-	#def addweightandmet2ddbb(self):
-		'''#this function add weight extra and met fields to sports table
-		sql = "alter table sports add weight float"
-		try:
-			self.ddbbObject.freeExec(sql)
-		except:
-			logging.error('Column weight already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()
-		sql = "alter table sports add met float"
-		try:
-			self.ddbbObject.freeExec(sql)
-		except:
-			logging.error('Column met already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()'''
-			
-	#def checkmettable(self):
-		'''sql = "alter table sports add met float"
-		try:
-			self.ddbbObject.freeExec(sql)
-		except:
-			logging.error('Column met already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()'''
-
-	#def addpaceandmax2ddbb(self):
-		'''sql = "alter table records add maxspeed float"
-		try:
-			self.ddbbObject.freeExec(sql)
-		except:
-			logging.error('Column maxspeed already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()
-		sql = "alter table records add maxpace float"
-		try:
-			self.ddbbObject.freeExec(sql)
-		except:
-			logging.error('Column maxpace already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()
-		sql = "alter table records add pace float"
-		try:
-			self.ddbbObject.freeExec(sql)
-		except:
-			logging.error('Column pace already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()
-		sql = "alter table records add maxbeats float"
-		try:
-			self.ddbbObject.freeExec(sql)
-		except:
-			logging.error('Column maxbeats already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()'''
-		
-	#def addDateTimeUTC2ddbb(self):
-		'''sql = "alter table records add date_time_utc varchar2(20)"
-		try:
-			self.ddbbObject.freeExec(sql)
-		except:
-			logging.error('Column date_time_utc already exists in DB. Printing traceback and continuing')
-			traceback.print_exc()'''
-		
-	#def shortFromLocal(self, getSport=True): # Check LEFT and RIGHT JOINS for people with multiple sports
-		'''if getSport is True:
-			sql = "select sports.name,records.date_time_utc from sports INNER JOIN records ON sports.id_sports = records.sport"
-		else:
-			sql = "select records.date_time_utc from sports INNER JOIN records ON sports.id_sports = records.sport"
-		return self.ddbbObject.freeExec(sql)'''
 
 	def checkDBIntegrity(self):
 		"""17.11.2009 - dgranda
@@ -219,38 +92,52 @@ class DDBB:
 		if self.ddbb_type != "sqlite":
 			logging.error('Support for MySQL database is decommissioned, please migrate to SQLite. Exiting check')
 			exit(-2)
-		columnsSports = {"id_sports":"integer primary key autoincrement", 
-			"name":"varchar(100)",
-			"weight":"float", 
-			"met":"float"}
-		columnsRecords = {"id_record":"integer primary key autoincrement",
-			"date":"date",
-			"sport":"integer",
-			"distance":"float",
-			"time":"varchar(200)",
-			"beats":"float",
-			"average":"float",
-			"calories":"int",
-			"comments":"text",
-			"gpslog":"varchar(200)",
-			"title":"varchar(200)",
-			"upositive":"float",
-			"unegative":"float", 
-			"maxspeed":"float", 
-			"maxpace":"float", 
-			"pace":"float", 
-			"maxbeats":"float", 
-			"date_time_local":"varchar2(20)",
-			"date_time_utc":"varchar2(20)"}
-		columnsWaypoints = {"id_waypoint":"integer primary key autoincrement",
-			"lat":"float",
-			"lon":"float",
-			"ele":"float",
-			"comment":"varchar(240)",
-			"time":"date",
-			"name":"varchar(200)",
-			"sym":"varchar(200)"}
-		tablesList = {"records":columnsRecords,"sports":columnsSports,"waypoints":columnsWaypoints}
+		#Define the tables and their columns that should be in the database
+		tablesList = {	"records":{		"id_record":"integer primary key autoincrement",
+										"date":"date",
+										"sport":"integer",
+										"distance":"float",
+										"time":"varchar(200)",
+										"beats":"float",
+										"average":"float",
+										"calories":"int",
+										"comments":"text",
+										"gpslog":"varchar(200)",
+										"title":"varchar(200)",
+										"upositive":"float",
+										"unegative":"float", 
+										"maxspeed":"float", 
+										"maxpace":"float", 
+										"pace":"float", 
+										"maxbeats":"float", 
+										"date_time_local":"varchar2(20)",
+										"date_time_utc":"varchar2(20)",
+										},
+						"sports":{		"id_sports":"integer primary key autoincrement", 
+										"name":"varchar(100)",
+										"weight":"float", 
+										"met":"float",
+										},
+						"waypoints":{	"id_waypoint":"integer primary key autoincrement",
+										"lat":"float",
+										"lon":"float",
+										"ele":"float",
+										"comment":"varchar(240)",
+										"time":"date",
+										"name":"varchar(200)",
+										"sym":"varchar(200)",
+										},
+						"laps":{		"id_lap": "integer primary key autoincrement",
+										"record": "integer",
+										"elapsed_time": "varchar(20)",
+										"distance": "float",
+										"start_lat": "float",
+										"start_lon": "float",
+										"end_lat": "float",
+										"end_lon": "float",
+										"calories": "int", 
+										},
+						}
 		try:
 			tablesDBT = self.ddbbObject.select("sqlite_master","name", "type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY name")
 		except:

@@ -259,6 +259,16 @@ class Record:
 					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local",
 					"date=\"%s\" and records.sport=sports.id_sports" %date)
 
+	def getLaps(self, id_record):
+		logging.debug('--')
+		return self.ddbb.select("laps", 
+					"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories",
+					"record=\"%s\"" % id_record)
+					
+	def insertLaps(self, cells, values):
+		logging.debug('--')
+		self.ddbb.insert("laps",cells,values)
+		
 	def getrecordPeriod(self,date_ini, date_end, sport=None):
 		#TODO This is essentially the same as getrecordPeriodSport (except date ranges) - need to look at merging the two
 		tables = "records,sports"

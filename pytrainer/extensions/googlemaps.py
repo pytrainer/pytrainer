@@ -81,7 +81,9 @@ class Googlemaps:
 				points = points.replace("\\","\\\\")
 				if self.useGM3:
 					logging.debug("Using Google Maps version 3 API")
-					laps = gpx.getLaps() # [](elapsedTime, lat, lon, calories, distance)
+					#laps = gpx.getLaps() # [](elapsedTime, lat, lon, calories, distance)
+					#"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories",  
+					laps = self.record.getLaps(id_record)
 					#"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats"
 					info = self.record.getrecordInfo(id_record)
 					timeHours = int(info[0][3]) / 3600
@@ -193,9 +195,10 @@ class Googlemaps:
 			  finishinfo.open(map,finishmarker);
 			});\n'''
 
+		#"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories",  
 		for lap in laps:
 			lapNumber = laps.index(lap)+1
-			elapsedTime = float(lap[0])
+			elapsedTime = float(lap[2])
 			elapsedTimeHours = int(elapsedTime/3600)
 			elapsedTimeMins = int((elapsedTime - (elapsedTimeHours * 3600)) / 60)
 			elapsedTimeSecs = elapsedTime - (elapsedTimeHours * 3600) - (elapsedTimeMins * 60)
@@ -207,15 +210,15 @@ class Googlemaps:
 				strElapsedTime = "%0.0fs" % (elapsedTimeSecs) 
 			#process lat and lon for this lap
 			try:
-				lapLat = float(lap[1])
-				lapLon = float(lap[2])
+				lapLat = float(lap[6])
+				lapLon = float(lap[7])
 				content += "var lap%dmarker = new google.maps.Marker({position: new google.maps.LatLng(%f, %f), icon: lapimage, map: map,  title:\"Lap%d\"}); \n " % (lapNumber, lapLat, lapLon, lapNumber)
-				content += "var lap%d = new google.maps.InfoWindow({content: \"<div class='info_content'>End of lap:%s<br>Elapsed time:%s<br>Distance:%0.2f km<br>Calories:%s</div>\" });\n" % (lapNumber, lapNumber, strElapsedTime, float(lap[4])/1000, lap[3])
+				content += "var lap%d = new google.maps.InfoWindow({content: \"<div class='info_content'>End of lap:%s<br>Elapsed time:%s<br>Distance:%0.2f km<br>Calories:%s</div>\" });\n" % (lapNumber, lapNumber, strElapsedTime, float(lap[3])/1000, lap[8])
 				content += "google.maps.event.addListener(lap%dmarker, 'click', function() { lap%d.open(map,lap%dmarker); });\n" % (lapNumber,lapNumber,lapNumber)
 			except:
 				#Error processing lap lat or lon
 				#dont show this lap
-				print "Error processing lap "+ str(lapNumber) + " (lat,lon) ( " + str(lap[1]) + "," +str (lap[2]) + ")"
+				print "Error processing lap "+ str(lapNumber) + " id: " + lap(lap[0]) + " (lat,lon) ( " + str(lap[6]) + "," +str (lap[7]) + ")"
 
 		content += '''
 

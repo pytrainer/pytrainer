@@ -46,6 +46,7 @@ hrTag = gpxdataNS.substitute(tag="hr")
 cadTag = gpxdataNS.substitute(tag="cadence")
 lapTag = gpxdataNS.substitute(tag="lap")
 endPointTag = gpxdataNS.substitute(tag="endPoint")
+startPointTag = gpxdataNS.substitute(tag="startPoint")
 elapsedTimeTag = gpxdataNS.substitute(tag="elapsedTime")
 distanceTag = gpxdataNS.substitute(tag="distance")
 
@@ -128,6 +129,12 @@ class Gpx:
 			endPoint = lap.find(endPointTag)
 			lat = endPoint.get("lat")
 			lon = endPoint.get("lon")
+			startPoint = lap.find(startPointTag)
+			if startPoint is not None:
+				stLat = startPoint.get("lat")
+				stLon = startPoint.get("lon")
+			else:
+				stLat, stLon = "",""
 			elapsedTime = lap.findtext(elapsedTimeTag)
 			if elapsedTime.count(":") == 2: # got a 0:41:42.14 type elasped time
 				hours, mins, secs = elapsedTime.split(":")
@@ -136,7 +143,7 @@ class Gpx:
 			calories = lap.findtext(calorieTag)
 			distance = lap.findtext(distanceTag)
 			logging.debug("Found time: %s, lat: %s lon: %s cal: %s dist: %s " % (elapsedTime, lat, lon, calories, distance))
-			lapInfo.append((elapsedTime, lat, lon, calories, distance))
+			lapInfo.append((elapsedTime, lat, lon, calories, distance, stLat, stLon))
 		return lapInfo
 	
 	def _getValues(self): 
