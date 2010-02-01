@@ -72,7 +72,8 @@ class Record:
 	def removeRecord(self,id_record): #TODO remember to update once laps are in DB
 		logging.debug('>>')
 		record = self.ddbb.delete("records", "id_record=\"%s\"" %id_record)
-		logging.debug('removed record '+str(id_record)+' from bbdd')
+		laps = self.ddbb.delete("laps", "record=\"%s\"" %id_record)
+		logging.debug('removed record '+str(id_record)+' (and associated laps) from DB')
 		gpxfile = self.conf.getValue("gpxdir")+"/%d.gpx"%int(id_record)
 		if os.path.isfile(gpxfile):
 			os.remove(gpxfile)
