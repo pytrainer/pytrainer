@@ -129,6 +129,7 @@ class DDBB:
 										},
 						"laps":{		"id_lap": "integer primary key autoincrement",
 										"record": "integer",
+										"lap_number": "integer",
 										"elapsed_time": "varchar(20)",
 										"distance": "float",
 										"start_lat": "float",

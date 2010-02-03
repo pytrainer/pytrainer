@@ -69,7 +69,7 @@ class Record:
 		self.recordwindow.run()
 		logging.debug('<<')
 	
-	def removeRecord(self,id_record): #TODO remember to update once laps are in DB
+	def removeRecord(self,id_record):
 		logging.debug('>>')
 		record = self.ddbb.delete("records", "id_record=\"%s\"" %id_record)
 		laps = self.ddbb.delete("laps", "record=\"%s\"" %id_record)
@@ -148,8 +148,9 @@ class Record:
 		logging.debug('<<')
 		return keys,values
 
-	def insertRecord(self, list_options):
+	def insertRecord(self, list_options, laps=None):
 		logging.debug('>>')
+		#Create entry for activity in records table
 		if list_options is None:
 			logging.info('No data provided, abort adding entry')
 			return None
@@ -157,10 +158,17 @@ class Record:
 		cells,values = self._formatRecordNew(list_options)
 		self.ddbb.insert("records",cells,values)
 		logging.debug('DB updated: '+str(cells)+' | '+str(values))
+		id_record = self.ddbb.lastRecord("records")
+		#Create entry(s) for activity in laps table
+		if laps is not None:
+			for lap in laps:
+				lap['record'] = id_record #Add reference to entry in record table
+				lap_keys = ", ".join(map(str, lap.keys()))
+				lap_values = lap.values()
+				self.insertLaps(lap_keys,lap.values())
 		gpxOrig = list_options["rcd_gpxfile"]
 		if os.path.isfile(gpxOrig):
 			gpxDest = self.conf.getValue("gpxdir")
-			id_record = self.ddbb.lastRecord("records")
 			gpxNew = gpxDest+"/%d.gpx"%id_record
 			shutil.move(gpxOrig, gpxNew)
 			logging.debug('Moving '+gpxOrig+' to '+gpxNew)
@@ -173,13 +181,35 @@ class Record:
 		Moves GPX file to store destination and updates database
 		args: path to source GPX file"""
 		logging.debug('--')
-		return self.insertRecord(self.summaryFromGPX(gpxOrig, entry))
-		
+		list_options, gpx_laps = self.summaryFromGPX(gpxOrig, entry)
+		return self.insertRecord(list_options, laps=gpx_laps)
+	
+	def lapsFromGPX(self, gpx):
+		logging.debug('>>')
+		laps = []
+		gpxLaps = gpx.getLaps() 
+		for lap in gpxLaps:
+			lap_number = gpxLaps.index(lap)
+			tmp_lap = {}
+			tmp_lap['record'] = ""
+			tmp_lap['lap_number'] = lap_number
+			tmp_lap['elapsed_time'] = lap[0]
+			tmp_lap['distance'] = lap[4]
+			tmp_lap['start_lat'] = lap[5]
+			tmp_lap['start_lon'] = lap[6]
+			tmp_lap['end_lat'] = lap[1]
+			tmp_lap['end_lon'] = lap[2]
+			tmp_lap['calories'] = lap[3]
+			laps.append(tmp_lap)
+		logging.debug('<<')
+		return laps
+			
 	def summaryFromGPX(self, gpxOrig, entry):
 		"""29.03.2008 - dgranda
 		Retrieves info which will be stored in DB from GPX file
 		args: path to source GPX file
-		returns: list with fields and values"""
+		returns: list with fields and values, list of laps 
+		"""
 		logging.debug('>>')
 		gpx = Gpx(self.data_path,gpxOrig)
 		distance, time, maxspeed, maxheartrate = gpx.getMaxValues()
@@ -212,15 +242,16 @@ class Record:
 		summaryRecord['rcd_maxbeats'] = maxheartrate
 		summaryRecord['rcd_upositive'] = upositive
 		summaryRecord['rcd_unegative'] = unegative
-		if entry[1]=="": # coming from new track dialog (file opening)
-			summaryRecord['date_time_utc'], summaryRecord['date_time_local'] = gpx.getStartTimeFromGPX(gpxOrig)
-		else: # coming from GPS device
-			summaryRecord['date_time_utc'] = entry[1]
-			summaryRecord['date_time_local'] = entry[1]
-			print "#TODO fix record summaryRecord local and utc time..."
+		if entry[1]=="": # coming from new track dialog (file opening)												#TODO This if-else needs checking
+			summaryRecord['date_time_utc'], summaryRecord['date_time_local'] = gpx.getStartTimeFromGPX(gpxOrig)		#
+		else: # coming from GPS device																				#
+			summaryRecord['date_time_utc'] = entry[1]																#
+			summaryRecord['date_time_local'] = entry[1]																#
+			print "#TODO fix record summaryRecord local and utc time..."											#
 		logging.debug('summary: '+str(summaryRecord))
+		laps = self.lapsFromGPX(gpx)
 		logging.debug('<<')
-		return summaryRecord
+		return summaryRecord, laps
 
 	def updateRecord(self, list_options, id_record):
 		logging.debug('>>')
@@ -262,12 +293,30 @@ class Record:
 
 	def getLaps(self, id_record):
 		logging.debug('--')
-		return self.ddbb.select("laps", 
-					"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories",
+		laps = self.ddbb.select("laps", 
+					"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number",
 					"record=\"%s\"" % id_record)
+		if laps is None or laps == []:  #No laps stored - update DB
+			logging.debug("No laps in DB for record %d" % id_record)
+			gpx_dest = self.conf.getValue("gpxdir")
+			gpxfile = gpx_dest+"/%d.gpx"%id_record
+			gpx = Gpx(self.data_path,gpxfile)
+			laps = self.lapsFromGPX(gpx)
+			if laps is not None:
+				for lap in laps:
+					lap['record'] = id_record #Add reference to entry in record table
+					lap_keys = ", ".join(map(str, lap.keys()))
+					lap_values = lap.values()
+					self.insertLaps(lap_keys,lap.values())
+			#Try to get lap info again #TODO? refactor				
+			laps = self.ddbb.select("laps", 
+					"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number",
+					"record=\"%s\"" % id_record)
+		return laps 
 					
 	def insertLaps(self, cells, values):
 		logging.debug('--')
+		logging.debug("Adding lap information: " + ", ".join(map(str, values)))
 		self.ddbb.insert("laps",cells,values)
 		
 	def getrecordPeriod(self,date_ini, date_end, sport=None):
@@ -445,15 +494,20 @@ class Record:
 		Add a record from a valid pytrainer type GPX file
 		"""	
 		logging.debug('>>')
-		logging.info('Retrieving data from '+gpxFile)
-		if not sport:
-			sport = "import"
-		entry = [sport,""]
-		entry_id = self.insertNewRecord(gpxFile, entry)
-		if entry_id is None:
-			logging.error("Entry not created for file %s" % gpxFile)
+		print gpxFile
+		if not os.path.isfile(gpxFile):
+			logging.error("Invalid file: " +gpxFile)
 		else:
-			logging.info("Entry %d has been added" % entry_id)
+			logging.info('Retrieving data from '+gpxFile)
+			if not sport:
+				sport = "import"
+			entry = [sport,""]
+			entry_id = self.insertNewRecord(gpxFile, entry)
+			if entry_id is None:
+				logging.error("Entry not created for file %s" % gpxFile)
+			else:
+				logging.info("Entry %d has been added" % entry_id)
+				
 		logging.debug('<<')
 
 	#def importFromGTRNCTR(self,gtrnctrFile): #TODO remove

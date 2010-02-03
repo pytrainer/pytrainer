@@ -195,9 +195,9 @@ class Googlemaps:
 			  finishinfo.open(map,finishmarker);
 			});\n'''
 
-		#"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories",  
+		#"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number",  
 		for lap in laps:
-			lapNumber = laps.index(lap)+1
+			lapNumber = int(lap[9])+1
 			elapsedTime = float(lap[2])
 			elapsedTimeHours = int(elapsedTime/3600)
 			elapsedTimeMins = int((elapsedTime - (elapsedTimeHours * 3600)) / 60)
