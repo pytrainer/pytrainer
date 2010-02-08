@@ -25,6 +25,7 @@ import logging
 from lxml import etree
 
 from pytrainer.plugins import Plugins
+from pytrainer.gui.dialogs import fileChooserDialog
 
 class WindowImportdata(SimpleGladeApp):
 	def __init__(self, data_path = None, parent=None, config=None):
@@ -34,8 +35,9 @@ class WindowImportdata(SimpleGladeApp):
 		self.domain = None
 		self.parent = parent
 		self.configuration = config
-		self.store = None
-		self.processClass = None
+		self.activities_store = None
+		self.files_store = None
+		self.processClasses = []
 		self.plugins = Plugins(data_path, self.parent.parent)
 		#SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
 
@@ -78,14 +80,18 @@ class WindowImportdata(SimpleGladeApp):
 		return
 
 	def init_file_tab(self):
-		self.filechooserbuttonSelectFile.unselect_all() 
+		#self.filechooserbuttonSelectFile.unselect_all() 
 		self.updateStatusbar(self.statusbarImportFile, _("No file selected") )
-		self.processClass = None
-		if self.store is None:
-			self.store = self.build_tree_view()
+		self.processClasses = []
+		if self.activities_store is None:
+			self.activities_store = self.build_activities_tree_view()
 		else:
-			self.store.clear()
-		self.buttonClearFile.set_sensitive(0)
+			self.activities_store.clear()
+		if self.files_store is None:
+			self.files_store = self.build_files_tree_view()
+		else:
+			self.files_store.clear()
+		self.buttonRemoveSelectedFiles.set_sensitive(0)
 		self.buttonFileImport.set_sensitive(0)
 		return
 
@@ -220,6 +226,7 @@ class WindowImportdata(SimpleGladeApp):
 		self.updateStatusbar(self.statusbarImportFile, "Checking file type for: " + import_filename)
 		#Get import files_* files
 		fileList = glob.glob(self.data_path+"import/file_*.py")
+		fileList.sort()
 		for processingFile in fileList:
 			directory, filename = os.path.split(processingFile)
 			filename = filename.rstrip('.py') 
@@ -239,20 +246,45 @@ class WindowImportdata(SimpleGladeApp):
 		logging.debug('<<')
 		return processClass
 
-		
-		self.updateStatusbar(self.statusbarImportFile, "Unknown file type")
-		logging.debug('<<')
-		return None
-
-	def build_tree_view(self):
-		store = gtk.ListStore(gobject.TYPE_STRING,
+	def build_files_tree_view(self):
+		store = gtk.ListStore(	gobject.TYPE_STRING,
 								gobject.TYPE_BOOLEAN, 
-								gobject.TYPE_STRING, 
+								gobject.TYPE_STRING,
+								gobject.TYPE_STRING,
+								gobject.TYPE_STRING, )
+		column_names=["id", _(""), _("File"), _("Type"), _("Activities")]
+		for column_index, column_name in enumerate(column_names):
+			if column_index == 1: 
+				#Add button column
+				self.renderer1 = gtk.CellRendererToggle()
+				self.renderer1.set_property('activatable', True)
+				self.renderer1.connect( 'toggled', self.treeviewImportFiles_toggled_checkbox, store )	
+				column = gtk.TreeViewColumn(column_name, self.renderer1 )
+				column.add_attribute( self.renderer1, "active", column_index)
+				column.set_sort_column_id(-1)
+				#column.connect('clicked', self.treeviewImportFiles_header_checkbox, store)
+			else:
+				#Add other columns
+				column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
+				column.set_sort_column_id(column_index)
+			if column_name == "id":
+				column.set_visible(False)
+			column.set_resizable(True)
+			self.treeviewImportFiles.append_column(column)
+		self.treeviewImportFiles.set_headers_clickable(True)
+		self.treeviewImportFiles.set_model(store)
+		return store
+		
+	def build_activities_tree_view(self):
+		store = gtk.ListStore(	gobject.TYPE_STRING,
+								gobject.TYPE_BOOLEAN, 
+								gobject.TYPE_STRING,
+								gobject.TYPE_STRING,
 								gobject.TYPE_STRING, 
 								gobject.TYPE_STRING, 
 								gobject.TYPE_STRING, 								 
 								gobject.TYPE_STRING )
-		column_names=["id", _(""),_("Start Time"), _("Distance"),_("Duration"),_("Sport"), _("Notes")]
+		column_names=["id", _(""), _("Start Time"), _("Distance"),_("Duration"),_("Sport"), _("Notes"), "file_id"]
 		for column_index, column_name in enumerate(column_names):
 			if column_index == 1: 
 				#Add checkbox column
@@ -267,7 +299,7 @@ class WindowImportdata(SimpleGladeApp):
 				#Add other columns
 				column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
 				column.set_sort_column_id(column_index)
-			if column_name == "id":
+			if column_name == "id" or column_name == "file_id":
 				column.set_visible(False)
 			column.set_resizable(True)
 			self.treeviewImportEvents.append_column(column)
@@ -275,7 +307,18 @@ class WindowImportdata(SimpleGladeApp):
 		self.treeviewImportEvents.set_model(store)
 		return store
 
-	def treeviewImportEvents_toggled_checkbox( self, cell, path, store ):
+	def treeviewImportFiles_toggled_checkbox(self, cell, path, store):
+		"""
+			Sets the state of the checkbox to true or false.
+		"""
+		store[path][1] = not store[path][1]
+		self.buttonRemoveSelectedFiles.set_sensitive(0)
+		for item in store:
+			if item[1]:
+				#Only enable remove button if at least one file is selected
+				self.buttonRemoveSelectedFiles.set_sensitive(1)
+
+	def treeviewImportEvents_toggled_checkbox(self, cell, path, store):
 		"""
 			Sets the state of the checkbox to true or false.
 		"""
@@ -285,15 +328,14 @@ class WindowImportdata(SimpleGladeApp):
 			if item[1]:
 				#Only enable import button if at least one activity is selected
 				self.buttonFileImport.set_sensitive(1)
-		return	
 
 	def treeviewImportEvents_setCheckboxes(self, state):
 		"""
 			Sets or unsets all checkboxes
 		"""
-		if self.store is None or len(self.store) == 0:
+		if self.activities_store is None or len(self.activities_store) == 0:
 			return
-		for item in self.store:
+		for item in self.activities_store:
 			item[1] = state
 		if state:
 			self.buttonFileImport.set_sensitive(1)
@@ -312,6 +354,32 @@ class WindowImportdata(SimpleGladeApp):
 		self.configuration.setValue("pytraining","import_default_tab",self.defaulttab)	
 		#option
 
+	def removeSelectedFiles(self):
+		"""
+			Function to determine which files are selected 
+			* remove them from the list
+			* remove the associated activities from the list also
+		"""
+		if self.files_store is None:
+			return
+		file_index = 0
+		file_iters = []
+		activity_iters = []
+		for item in self.files_store:
+			if item[1] is True: #Checkbox is True, file for removal
+				file_id = item[0]
+				activity_index = 0
+				for activity in self.activities_store:
+					if activity[7] == file_id: #Activity relates to file to be removed
+						activity_iters.append(self.activities_store.get_iter(activity_index))
+					activity_index += 1
+				file_iters.append( self.files_store.get_iter(file_index))
+			file_index += 1
+		for activity_iter in activity_iters:
+			self.activities_store.remove(activity_iter)
+		for file_iter in file_iters:
+			self.files_store.remove(file_iter)
+		
 	def getSelectedActivities(self):
 		"""
 			Function to determine which activities are selected
@@ -319,43 +387,49 @@ class WindowImportdata(SimpleGladeApp):
 			Returns array of the ids of the selected activities
 		"""
 		selectedActivities = []
-		if self.store is None:
+		if self.activities_store is None:
 			return None
-		for item in self.store:
+		for item in self.activities_store:
 			if item[1] is True: #Checkbox is True
-				logging.debug("Added activity id:%s to selected list" % item[0])
-				selectedActivities.append(item[0])
+				logging.debug("Added activity %s to selected list" % item)
+				selectedActivities.append(item)
 		logging.debug( "Found %d selected activities to import" % len(selectedActivities) )
 		return selectedActivities
 		
-	def importSelectedActivities(self, selectedActivities):
+	def importSelectedActivity(self, activity):
 		"""
-			Function to import selected activities
+			Function to import selected activity
 		"""
-		if selectedActivities is None or len(selectedActivities) == 0:
-			return
-		for activityID in selectedActivities:
-			logging.debug( "Importing activity %s" % activityID)
-			sport, gpxFile = self.processClass.getGPXFile(activityID)
-			#process returned GPX files	
-			if os.path.isfile(gpxFile):
-				logging.info('File exists. Size: %d. Sport: %s' % (os.path.getsize(gpxFile), sport))
-				#TODO trigger newentry screen to allow user to edit data
-				self.parent.parent.record.importFromGPX(gpxFile, sport)
-				#Deselect imported activity and change note
-				self.updateActivity(activityID, status=False, notes="Imported into database")
- 			else:
- 				logging.error('File %s not valid' % gpxFile)
+		activity_id = activity[0]
+		#selected = activity[1]
+		#start_time = activity[2]
+		#distance = activity[3]
+		#duration = activity[4]
+		#sport = activity[5]
+		#notes = activity[6]
+		file_id = int(activity[7])
+		
+		logging.debug( "Importing activity %s from file %s" % (activity_id, file_id))
+		sport, gpxFile = self.processClasses[file_id].getGPXFile(activity_id)
+		#process returned GPX files	
+		if os.path.isfile(gpxFile):
+			logging.info('File exists. Size: %d. Sport: %s' % (os.path.getsize(gpxFile), sport))
+			#TODO trigger newentry screen to allow user to edit data
+			self.parent.parent.record.importFromGPX(gpxFile, sport)
+			#Deselect imported activity and change note
+			self.updateActivity(activity_id, file_id, status=False, notes="Imported into database")
+ 		else:
+ 			logging.error('File %s not valid' % gpxFile)
 
 
-	def updateActivity(self, activityID, status = None, notes = None):
+	def updateActivity(self, activityID, file_id, status = None, notes = None):
 		path = 0
-		for item in self.store:
-			if item[0] == activityID:
+		for item in self.activities_store:
+			if item[0] == activityID and item[7] == file_id:
 				if status is not None:
-					self.store[path][1] = status
+					self.activities_store[path][1] = status
 				if notes is not None:
-					self.store[path][6] = notes
+					self.activities_store[path][6] = notes
 			path +=1
 
 	def close_window(self):
@@ -391,13 +465,14 @@ class WindowImportdata(SimpleGladeApp):
 	def on_notebookMainTabs_switch_page(self, notebook, page, new_page):
 		self.init_tab(new_page)
 
-	def on_filechooserbuttonSelectFile_file_set(self, widget):
+	#def on_filechooserbuttonSelectFile_file_set(self, widget):
+		'''
 		self.buttonClearFile.set_sensitive(1) #Enable clear button
 		self.buttonFileImport.set_sensitive(0) #Disable import button
 		self.updateStatusbar(self.statusbarImportFile, "" ) #Clear status bar
 		#Clear store
-		if self.store is not None:
-			self.store.clear()
+		if self.activities_store is not None:
+			self.activities_store.clear()
 		#Validate file
 		self.processClass = self.validateFile(self.filechooserbuttonSelectFile.get_filename())
 		if self.processClass is not None:
@@ -412,8 +487,8 @@ class WindowImportdata(SimpleGladeApp):
 				else:
 					note = _("Found in database")
 				#Add activity details to TreeView store to display
-				iter = self.store.append()
-				self.store.set(
+				iter = self.activities_store.append()
+				self.activities_store.set(
 					iter,
 					0, activity[0],
 					1, not activity[1],
@@ -431,10 +506,10 @@ class WindowImportdata(SimpleGladeApp):
 			md = gtk.MessageDialog(self.win_importdata, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
 			md.set_title("Error")
 			md.run()
-			md.destroy()
+			md.destroy()'''
 
-	def on_buttonClearFile_clicked(self, widget):	
-		self.init_tab(1)
+	#def on_buttonClearFile_clicked(self, widget):	
+	#	self.init_tab(1)
 
 	def on_buttonOptionsSave_clicked(self, widget):
 		self.updateStatusbar(self.statusbarOptions, "Saving options")
@@ -448,6 +523,11 @@ class WindowImportdata(SimpleGladeApp):
 		self.init_options_tab()
 		self.updateStatusbar(self.statusbarOptions, "")
 
+	def on_buttonRemoveSelectedFiles_clicked(self, widget):
+		#Remove selected files and associated activities from list
+		#TODO
+		self.removeSelectedFiles()
+		
 	def on_buttonFileImport_clicked(self, widget):
 		#Import selected activities
 		selectedActivities = self.getSelectedActivities()
@@ -462,7 +542,9 @@ class WindowImportdata(SimpleGladeApp):
 			self.updateStatusbar(self.statusbarImportFile, msgImporting)
 			while gtk.events_pending():	# This allows the GUI to update 
 				gtk.main_iteration()	# before completion of this entire action
-			self.importSelectedActivities(selectedActivities)
+			for activity in selectedActivities:
+				self.importSelectedActivity(activity)
+				#TODO progress bar here??
 			self.updateStatusbar(self.statusbarImportFile, msgImported)
 			#Display informational dialog box
 			md = gtk.MessageDialog(self.win_importdata, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msgImported)
@@ -470,6 +552,60 @@ class WindowImportdata(SimpleGladeApp):
 			md.run()
 			md.destroy()
 		self.buttonFileImport.set_sensitive(0) #Disable import button
+		
+	def on_buttonSelectFiles_clicked(self, widget):
+		selectedFiles = fileChooserDialog(title="Choose a file (or files) to import activities from", multiple=True).getFiles()
+		while gtk.events_pending():	# This allows the GUI to update 
+			gtk.main_iteration()	# before completion of this entire action
+		if selectedFiles is None or len(selectedFiles) == 0:
+			#Nothing selected
+			return
+		for filename in selectedFiles: #Multiple files
+			class_index = len(self.processClasses)
+			#Validate file
+			self.processClasses.append(self.validateFile(filename))
+			if self.processClasses[class_index] is not None:
+				self.updateStatusbar(self.statusbarImportFile, _("Found file of type: %s") % self.processClasses[class_index].getFileType() )
+				activitiesSummary = self.processClasses[class_index].getActivitiesSummary()
+				activity_count = len(activitiesSummary)
+				#Add file to files treeview
+				iter = self.files_store.append()
+				self.files_store.set(
+					iter,
+					0, class_index,
+					1, False,
+					2, filename,
+					3, self.processClasses[class_index].getFileType(),
+					4, activity_count
+					)
+				#Get activities in file
+				for activity in activitiesSummary:
+					#Add activity details to TreeView store to display
+					if not activity[1]:
+						#Activity selected, so enable import button
+						self.buttonFileImport.set_sensitive(1)
+						note = ""
+					else:
+						note = _("Found in database")
+					activity_iter = self.activities_store.append()
+					self.activities_store.set(
+						activity_iter,
+						0, activity[0],
+						1, not activity[1],
+						2, activity[2],
+						3, activity[3],
+						4, activity[4],
+						5, activity[5],
+						6, note,
+						7, class_index,
+						)
+			else: #Selected file not understood by any of the process files
+				#Display error
+				msg = _("File %s is of unknown or unsupported file type" % filename)
+				md = gtk.MessageDialog(self.win_importdata, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
+				md.set_title("Error")
+				md.run()
+				md.destroy()
 
 	def on_buttonFileClose_clicked(self, widget):
 		self.close_window()

@@ -179,33 +179,64 @@ Test 2</property>
                     <property name="visible">True</property>
                     <property name="left_padding">12</property>
                     <child>
-                      <widget class="GtkHBox" id="hbox2">
+                      <widget class="GtkVBox" id="vboxImportfromFileSelectFiles">
                         <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
                         <child>
-                          <widget class="GtkFileChooserButton" id="filechooserbuttonSelectFile">
+                          <widget class="GtkTreeView" id="treeviewImportFiles">
                             <property name="visible">True</property>
-                            <property name="create_folders">False</property>
-                            <property name="focus_on_click">False</property>
-                            <signal name="file_set" handler="on_filechooserbuttonSelectFile_file_set"/>
+                            <property name="can_focus">True</property>
                           </widget>
                           <packing>
-                            <property name="position">0</property>
+                            <property name="pack_type">end</property>
+                            <property name="position">1</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkButton" id="buttonClearFile">
-                            <property name="label" translatable="yes">Clear</property>
+                          <widget class="GtkHBox" id="hbox2">
                             <property name="visible">True</property>
-                            <property name="sensitive">False</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">True</property>
-                            <property name="focus_on_click">False</property>
-                            <signal name="clicked" handler="on_buttonClearFile_clicked"/>
+                            <child>
+                              <placeholder/>
+                            </child>
+                            <child>
+                              <widget class="GtkButton" id="buttonRemoveSelectedFiles">
+                                <property name="label">gtk-remove</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="tooltip" translatable="yes">Remove selected files and the associated activities</property>
+                                <property name="use_stock">True</property>
+                                <property name="yalign">0.4699999988079071</property>
+                                <signal name="clicked" handler="on_buttonRemoveSelectedFiles_clicked"/>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="padding">5</property>
+                                <property name="pack_type">end</property>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkButton" id="buttonSelectFiles">
+                                <property name="label">gtk-add</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">True</property>
+                                <property name="use_stock">True</property>
+                                <property name="focus_on_click">False</property>
+                                <signal name="clicked" handler="on_buttonSelectFiles_clicked"/>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="padding">5</property>
+                                <property name="pack_type">end</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
                           </widget>
                           <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="position">1</property>
+                            <property name="pack_type">end</property>
+                            <property name="position">0</property>
                           </packing>
                         </child>
                       </widget>
@@ -215,7 +246,7 @@ Test 2</property>
                 <child>
                   <widget class="GtkLabel" id="labelSelectFileFrame">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">&lt;b&gt;Select a file to import&lt;/b&gt;</property>
+                    <property name="label" translatable="yes">&lt;b&gt;Select file(s) to import activities from&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
                     <property name="single_line_mode">True</property>
                   </widget>
@@ -258,7 +289,7 @@ Test 2</property>
                 <child>
                   <widget class="GtkLabel" id="labelEvents">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">&lt;b&gt;Select Activities to Import&lt;/b&gt;</property>
+                    <property name="label" translatable="yes">&lt;b&gt;Select activities to import&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
                     <property name="single_line_mode">True</property>
                   </widget>

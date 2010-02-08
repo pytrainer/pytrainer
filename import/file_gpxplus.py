@@ -51,8 +51,7 @@ class gpxplus():
 		logging.debug('>>')
 		logging.debug("Testing " + filename)
 		#Check if file is a GPX
-		#try:
-		while True:
+		try:
 			#parse as xml
 			xmldoc = etree.parse(filename)
 			#Parse XML schema
@@ -74,9 +73,9 @@ class gpxplus():
 												sport,
 												) )
 				return True
-		#except:
+		except:
 			#Not gpx file
-		#	return False
+			return False
 		return False
 	
 	def getDateTime(self, time_):
