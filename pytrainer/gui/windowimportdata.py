@@ -28,21 +28,22 @@ from pytrainer.plugins import Plugins
 from pytrainer.gui.dialogs import fileChooserDialog
 
 class WindowImportdata(SimpleGladeApp):
-	def __init__(self, data_path = None, parent=None, config=None):
+	def __init__(self, data_path = None, parent=None, config=None, pytrainer_main=None):
 		self.data_path = data_path
 		self.glade_path=data_path+"glade/importdata.glade"
 		self.root = "win_importdata"
 		self.domain = None
 		self.parent = parent
+		self.pytrainer_main = pytrainer_main
 		self.configuration = config
 		self.activities_store = None
 		self.files_store = None
 		self.processClasses = []
 		self.plugins = Plugins(data_path, self.parent.parent)
-		#SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
-
-	def run(self):
 		SimpleGladeApp.__init__(self, self.glade_path, self.root, self.domain)
+
+	#def run(self):
+	#	SimpleGladeApp.__init__(self, self.glade_path, self.root, self.domain)
 		
 	def new(self):
 		self.defaulttab = self.configuration.getValue("pytraining","import_default_tab")
@@ -96,10 +97,10 @@ class WindowImportdata(SimpleGladeApp):
 		return
 
 	def init_plugins_tab(self):
-		#Remove all components in vbox - in case of re-detection
+		#Remove components in vbox - in case of re-detection
 		for child in self.vboxPlugins.get_children():
-			print "removing ", child
-			self.vboxPlugins.remove(child)
+			if isinstance(child, gtk.Table):
+				self.vboxPlugins.remove(child)
 		pluginList = self.plugins.getPluginsList()
 		for plugin in pluginList:
 			#Store plugin details
@@ -117,29 +118,24 @@ class WindowImportdata(SimpleGladeApp):
 			pluginFrame.add(description)
 			#Get plugin information
 			name,description,status = self.plugins.getPluginInfo(pluginClass)
-			#get plugin conf params ## These are the default params, need to get those stored for the user
-			#params = self.plugins.getPluginConfParams(pluginClass)
-			#print params
-			#Create buttons
-			statusButton = gtk.Button(label="Disable")
-			statusButton.connect('clicked', self.pluginsButton_clicked, pluginClass)
-			configButton = gtk.Button(label="Configure")
-			configButton.connect('clicked', self.pluginsButton_clicked, pluginClass)
-			runButton = gtk.Button(label="Run")
-			runButton.connect('clicked', self.pluginsButton_clicked, pluginClass)
-
+			#Create labels and buttons
+			configButton = gtk.Button(label=_("Configure"))
+			runButton = gtk.Button(label=_("Run"))
+			#Connect button handlers
+			configButton.connect('clicked', self.on_pluginsButton_Configure_clicked, pluginClass)
+			runButton.connect('clicked', self.on_pluginsButton_Run_clicked, pluginClass)
 			if status == 0 or status == "0":
 				#Plugin disabled
 				pluginFrame.set_sensitive(0)
-				statusButton.set_label("Enable")
-				configButton.set_sensitive(0)
 				runButton.set_sensitive(0)
+				statusLabel = gtk.Label(_("Disabled"))
 			else:
-				pass
+				statusLabel = gtk.Label(_("Enabled"))
+
 			#Create a table for the frame and button
 			pluginTable = gtk.Table()
 			pluginTable.attach(pluginFrame, 0, 1, 0, 1, xoptions=gtk.EXPAND|gtk.FILL, xpadding=5)
-			pluginTable.attach(statusButton, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.SHRINK, xpadding=5, ypadding=5)
+			pluginTable.attach(statusLabel, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.SHRINK, xpadding=5, ypadding=5)
 			pluginTable.attach(configButton, 2, 3, 0, 1, xoptions=gtk.FILL, yoptions=gtk.SHRINK, xpadding=5, ypadding=5)
 			pluginTable.attach(runButton, 3, 4, 0, 1, xoptions=gtk.FILL, yoptions=gtk.SHRINK, xpadding=5, ypadding=5)
 			#Add frame to tab
@@ -151,24 +147,25 @@ class WindowImportdata(SimpleGladeApp):
 		#Set correct radiobutton based on saved preference
 		if self.defaulttab == 1:
 			self.radiobuttonFile.set_active(1)
+		elif self.defaulttab == 2:
+			self.radiobuttonPlugins.set_active(1)
 		else:
 			self.radiobuttonTabGPSDevice.set_active(1)
 		return
 	
 	def detect_tools(self):
-		"""
+		'''
 			Iterate through all tool files from import directory
 			Each file contains information on a particular tool 
 			and knows how to determine if the tool is present on the system 
 			and what configuration options are needed for the tool
 	
 			Currently displays the tool info and config grayed out if tool is not present
-		"""
+		'''
 		logging.debug('>>')
 		self.updateStatusbar(self.statusbarDevice, "Checking for tools")
 		#Remove all components in vbox - in case of re-detection
 		for child in self.vboxImportTools.get_children():
-			print "removing ", child
 			self.vboxImportTools.remove(child)
 		#Get import tool_* files
 		fileList = glob.glob(self.data_path+"import/tool_*.py")
@@ -213,7 +210,7 @@ class WindowImportdata(SimpleGladeApp):
 		self.win_importdata.show_all()
 
 	def validateFile(self, import_filename):
-		"""
+		'''
 			Iterate through all supported types of file by reading processing files from import directory
 			Each processing file understands one type of file
 
@@ -221,7 +218,7 @@ class WindowImportdata(SimpleGladeApp):
 				 returns the instantiated class
 			otherwise:
 				 returns None
-		"""
+		'''
 		logging.debug('>>')
 		self.updateStatusbar(self.statusbarImportFile, "Checking file type for: " + import_filename)
 		#Get import files_* files
@@ -308,27 +305,27 @@ class WindowImportdata(SimpleGladeApp):
 		return store
 		
 	def checkTreestoreForSelection(self, store):
-		"""
+		'''
 			Function iterates over store checking if any items are selected 
 			returns True if at least one item is selected, False otherwise
 			Checks item in position 1 only
-		"""
+		'''
 		for item in store:
 			if item[1]:
 				return True
 		return False
 
 	def treeviewImportFiles_toggled_checkbox(self, cell, path, store):
-		"""
+		'''
 			Sets the state of the checkbox to true or false.
-		"""
+		'''
 		store[path][1] = not store[path][1]
 		self.buttonRemoveSelectedFiles.set_sensitive(self.checkTreestoreForSelection(store))
 				
 	def treeviewImportEvents_toggled_checkbox(self, cell, path, store):
-		"""
+		'''
 			Sets the state of the checkbox to true or false.
-		"""
+		'''
 		store[path][1] = not store[path][1]
 		self.buttonFileImport.set_sensitive(self.checkTreestoreForSelection(store))
 
@@ -354,15 +351,17 @@ class WindowImportdata(SimpleGladeApp):
 			self.defaulttab = "0"
 		elif self.radiobuttonFile.get_active():
 			self.defaulttab = "1"
+		elif self.radiobuttonPlugins.get_active():
+			self.defaulttab = "2"
 		self.configuration.setValue("pytraining","import_default_tab",self.defaulttab)	
 		#option
 
 	def removeSelectedFiles(self):
-		"""
+		'''
 			Function to determine which files are selected 
 			* remove them from the list
 			* remove the associated activities from the list also
-		"""
+		'''
 		if self.files_store is None:
 			return
 		file_index = 0
@@ -438,22 +437,78 @@ class WindowImportdata(SimpleGladeApp):
 
 	def close_window(self):
 		self.win_importdata.hide()
-		self.win_importdata.destroy()
+		#self.win_importdata.destroy()
+		self.quit()
 
 	############################
 	## Window signal handlers ##
 	############################
 
-	def pluginsButton_clicked(self, button, pluginClass):
+	def on_pluginsButton_Configure_clicked(self, button, pluginClass):
 		'''
 			Handler for plugin Buttons
 		'''
-		print button.get_label(), pluginClass
-
+		name,description,status = self.plugins.getPluginInfo(pluginClass)
+		prefs = self.plugins.getPluginConfParams(pluginClass)
+		
+		self.prefwindow = gtk.Window()
+		self.prefwindow.set_border_width(20)
+  	    	self.prefwindow.set_title(_("%s settings" %name))
+          	
+		table = gtk.Table(1,2)
+		i=0
+		self.entryList = []
+		for pref in prefs:
+			label = gtk.Label("<b>%s</b>"%pref[0])
+			label.set_use_markup(True)
+			if pref[0] != "status":
+				entry = gtk.Entry()
+				entry.set_text(pref[1])
+				self.entryList.append(entry)	
+				table.attach(entry,1,2,i,i+1)
+			else:
+				combobox = gtk.combo_box_new_text()
+				combobox.append_text(_("Disable"))	
+				combobox.append_text(_("Enable"))	
+				combobox.set_active(int(pref[1]))
+				table.attach(combobox,1,2,i,i+1)
+				self.entryList.append(combobox)	
+			table.attach(label,0,1,i,i+1)
+			i+=1
+				
+		button = gtk.Button(_("Ok"))
+		button.connect("clicked", self.on_pluginAcceptSettings_clicked, pluginClass)
+		table.attach(button,0,2,i,i+1)
+          	self.prefwindow.add(table)
+          	self.prefwindow.show_all()
+		
+	def on_pluginsButton_Run_clicked(self, button, pluginClass):
+		'''
+			Handler for plugin Buttons
+		'''
+		self.pytrainer_main.runPlugin(button,pluginClass)
+		
+	def on_pluginAcceptSettings_clicked(self, widget, pluginClass):
+		prefs = self.plugins.getPluginConfParams(pluginClass)
+		savedOptions = []
+		i = 0
+		for pref in prefs:
+			try:
+				savedOptions.append((pref[0],self.entryList[i].get_text()))
+			except:
+				combobox = self.entryList[i]
+        			index = combobox.get_active()
+				savedOptions.append((pref[0],"%s" %index))
+			i+=1
+		self.prefwindow.hide()
+		self.prefwindow = None
+		self.plugins.setPluginConfParams(pluginClass,savedOptions)
+		self.init_plugins_tab()
+		
 	def treeviewImportEvents_header_checkbox(self, column, store):
-		"""
+		'''
 			Handler for click on checkbox column
-		"""
+		'''
 		if store is None:
 			return
 		for item in store:
@@ -463,62 +518,16 @@ class WindowImportdata(SimpleGladeApp):
 		self.treeviewImportEvents_setCheckboxes(True)
 
 	def on_win_importdata_delete_event(self, widget, window):
-		""" Windows closed """
+		''' Window closed '''
 		self.close_window()
 		
 	def on_notebookMainTabs_switch_page(self, notebook, page, new_page):
 		self.init_tab(new_page)
 
-	#def on_filechooserbuttonSelectFile_file_set(self, widget):
-		'''
-		self.buttonClearFile.set_sensitive(1) #Enable clear button
-		self.buttonFileImport.set_sensitive(0) #Disable import button
-		self.updateStatusbar(self.statusbarImportFile, "" ) #Clear status bar
-		#Clear store
-		if self.activities_store is not None:
-			self.activities_store.clear()
-		#Validate file
-		self.processClass = self.validateFile(self.filechooserbuttonSelectFile.get_filename())
-		if self.processClass is not None:
-			self.updateStatusbar(self.statusbarImportFile, _("Found file of type: %s") % self.processClass.getFileType() )
-			#Get activities in file
-			activitiesSummary = self.processClass.getActivitiesSummary()			
-			for activity in activitiesSummary:
-				if not activity[1]:
-					#Activity selected, so enable import button
-					self.buttonFileImport.set_sensitive(1)
-					note = ""
-				else:
-					note = _("Found in database")
-				#Add activity details to TreeView store to display
-				iter = self.activities_store.append()
-				self.activities_store.set(
-					iter,
-					0, activity[0],
-					1, not activity[1],
-					2, activity[2],
-					3, activity[3],
-					4, activity[4],
-					5, activity[5],
-					6, note,
-					)
-		else:
-			#Selected file not understood by any of the process files
-			self.updateStatusbar(self.statusbarImportFile, _("Unknown file type") )
-			#Display error
-			msg = _("File selected is of unknown or unsupported file type")
-			md = gtk.MessageDialog(self.win_importdata, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
-			md.set_title("Error")
-			md.run()
-			md.destroy()'''
-
-	#def on_buttonClearFile_clicked(self, widget):	
-	#	self.init_tab(1)
-
 	def on_buttonOptionsSave_clicked(self, widget):
-		self.updateStatusbar(self.statusbarOptions, "Saving options")
+		self.updateStatusbar(self.statusbarOptions, _("Saving options"))
 		self.saveOptions()
-		self.updateStatusbar(self.statusbarOptions, "Options saved")
+		self.updateStatusbar(self.statusbarOptions, _("Options saved"))
 
 	def on_buttonOptionsReset_clicked(self, widget):
 		#GPS Device is default
@@ -557,7 +566,7 @@ class WindowImportdata(SimpleGladeApp):
 		self.buttonFileImport.set_sensitive(0) #Disable import button
 		
 	def on_buttonSelectFiles_clicked(self, widget):
-		selectedFiles = fileChooserDialog(title="Choose a file (or files) to import activities from", multiple=True).getFiles()
+		selectedFiles = fileChooserDialog(title=_("Choose a file (or files) to import activities from"), multiple=True).getFiles()
 		while gtk.events_pending():	# This allows the GUI to update 
 			gtk.main_iteration()	# before completion of this entire action
 		if selectedFiles is None or len(selectedFiles) == 0:
@@ -617,6 +626,9 @@ class WindowImportdata(SimpleGladeApp):
 		self.close_window()
 
 	def on_buttonOptionsClose_clicked(self, widget):
+		self.close_window()
+		
+	def on_buttonPluginsClose_clicked(self, widget):
 		self.close_window()
 
 	def on_buttonDeviceToolRescan_clicked(self, widget):

@@ -101,7 +101,7 @@ class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.7.1_svn#511"
+		self.version ="1.7.1_svn#512"
 		self.DB_version = 3
 		self.date = Date()
 		# Checking profile
@@ -369,7 +369,11 @@ class pyTrainer:
 
 	def importData(self):
 		logging.debug('>>')
+		activeplugins_before = self.plugins.getActivePlugins()
 		self.importdata.runImportdata()
+		activeplugins_after = self.plugins.getActivePlugins()
+		#Need to check for plugins that have been disabled (were active and now are not)
+		self.setMenuPlugins(activeplugins_before, activeplugins_after)
 		logging.debug('<<')		
 		
 	def editGpsPlugins(self):
@@ -377,6 +381,12 @@ class pyTrainer:
 		activeplugins_before = self.plugins.getActivePlugins()
 		self.plugins.managePlugins()
 		activeplugins_after = self.plugins.getActivePlugins()
+		#Need to check for plugins that have been disabled (were active and now are not)
+		self.setMenuPlugins(activeplugins_before, activeplugins_after)
+		logging.debug('<<')
+		
+	def setMenuPlugins(self, activeplugins_before, activeplugins_after):
+		logging.debug('>>')
 		#Need to check for plugins that have been disabled (were active and now are not)
 		for plugin in activeplugins_before:
 			if plugin not in activeplugins_after:

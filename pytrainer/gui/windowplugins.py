@@ -23,7 +23,7 @@ import os
 
 class WindowPlugins(SimpleGladeApp):
 	def __init__(self, data_path = None, parent=None):
-		glade_path="glade/pytrainer.glade"
+		glade_path="glade/plugins.glade"
 		root = "plugins"
 		domain = None
 		self.parent = parent
@@ -61,7 +61,6 @@ class WindowPlugins(SimpleGladeApp):
 			i+=1
 
 	def on_pluginsTree_clicked(self,widget,widget2):
-		print "clicked"
 		selected,iter = self.pluginsTreeview.get_selection().get_selected()
 		name,description,status = self.parent.getPluginInfo(selected.get_value(iter,0))
 		self.nameEntry.set_text(name)

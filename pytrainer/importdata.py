@@ -27,9 +27,10 @@ class Importdata:
 	def __init__(self, data_path = None, parent = None, config = None):
 		self.data_path=data_path
 		self.parent = parent
+		self.pytrainer_main = parent
 		#self.conf = checkConf()
 		self.configuration = config
 	
 	def runImportdata(self):
-		windowImportdata = WindowImportdata(self.data_path, self, self.configuration)
+		windowImportdata = WindowImportdata(self.data_path, self, self.configuration, self.pytrainer_main)
 		windowImportdata.run()
