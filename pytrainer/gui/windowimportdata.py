@@ -306,28 +306,31 @@ class WindowImportdata(SimpleGladeApp):
 		self.treeviewImportEvents.set_headers_clickable(True)
 		self.treeviewImportEvents.set_model(store)
 		return store
+		
+	def checkTreestoreForSelection(self, store):
+		"""
+			Function iterates over store checking if any items are selected 
+			returns True if at least one item is selected, False otherwise
+			Checks item in position 1 only
+		"""
+		for item in store:
+			if item[1]:
+				return True
+		return False
 
 	def treeviewImportFiles_toggled_checkbox(self, cell, path, store):
 		"""
 			Sets the state of the checkbox to true or false.
 		"""
 		store[path][1] = not store[path][1]
-		self.buttonRemoveSelectedFiles.set_sensitive(0)
-		for item in store:
-			if item[1]:
-				#Only enable remove button if at least one file is selected
-				self.buttonRemoveSelectedFiles.set_sensitive(1)
-
+		self.buttonRemoveSelectedFiles.set_sensitive(self.checkTreestoreForSelection(store))
+				
 	def treeviewImportEvents_toggled_checkbox(self, cell, path, store):
 		"""
 			Sets the state of the checkbox to true or false.
 		"""
 		store[path][1] = not store[path][1]
-		self.buttonFileImport.set_sensitive(0)
-		for item in store:
-			if item[1]:
-				#Only enable import button if at least one activity is selected
-				self.buttonFileImport.set_sensitive(1)
+		self.buttonFileImport.set_sensitive(self.checkTreestoreForSelection(store))
 
 	def treeviewImportEvents_setCheckboxes(self, state):
 		"""
@@ -377,6 +380,7 @@ class WindowImportdata(SimpleGladeApp):
 			file_index += 1
 		for activity_iter in activity_iters:
 			self.activities_store.remove(activity_iter)
+		self.buttonFileImport.set_sensitive(self.checkTreestoreForSelection(self.activities_store)) #Set correct state for import button
 		for file_iter in file_iters:
 			self.files_store.remove(file_iter)
 		
@@ -425,7 +429,7 @@ class WindowImportdata(SimpleGladeApp):
 	def updateActivity(self, activityID, file_id, status = None, notes = None):
 		path = 0
 		for item in self.activities_store:
-			if item[0] == activityID and item[7] == file_id:
+			if item[0] == activityID and item[7] == str(file_id):
 				if status is not None:
 					self.activities_store[path][1] = status
 				if notes is not None:
@@ -525,7 +529,6 @@ class WindowImportdata(SimpleGladeApp):
 
 	def on_buttonRemoveSelectedFiles_clicked(self, widget):
 		#Remove selected files and associated activities from list
-		#TODO
 		self.removeSelectedFiles()
 		
 	def on_buttonFileImport_clicked(self, widget):

@@ -222,6 +222,7 @@ Test 2</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
+                                <property name="tooltip" translatable="yes">Add files to import activities from</property>
                                 <property name="use_stock">True</property>
                                 <property name="focus_on_click">False</property>
                                 <signal name="clicked" handler="on_buttonSelectFiles_clicked"/>
@@ -246,7 +247,7 @@ Test 2</property>
                 <child>
                   <widget class="GtkLabel" id="labelSelectFileFrame">
                     <property name="visible">True</property>
-                    <property name="label" translatable="yes">&lt;b&gt;Select file(s) to import activities from&lt;/b&gt;</property>
+                    <property name="label" translatable="yes">&lt;b&gt;Add file(s) to import activities from&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
                     <property name="single_line_mode">True</property>
                   </widget>
@@ -312,6 +313,7 @@ Test 2</property>
                     <property name="sensitive">False</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip" translatable="yes">Import selected activities</property>
                     <signal name="clicked" handler="on_buttonFileImport_clicked"/>
                   </widget>
                   <packing>
@@ -328,6 +330,7 @@ Test 2</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
+                    <property name="tooltip" translatable="yes">Close Import dialog</property>
                     <property name="use_stock">True</property>
                     <signal name="clicked" handler="on_buttonFileClose_clicked"/>
                   </widget>
