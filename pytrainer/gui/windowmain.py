@@ -80,7 +80,7 @@ class Main(SimpleGladeApp):
 		#Disable import menu item unless specified on startup
 		if not self.testimport:
 			self.menu_importdata.set_sensitive(0)
-	
+			
 	def _createXmlListView(self,file):
 		menufile = XMLParser(file)
 		savedOptions = []
@@ -117,7 +117,7 @@ class Main(SimpleGladeApp):
 	def runExtension(self,widget,widget2,extension):
 		txtbutton,extensioncode,extensiontype = extension
 		if extensiontype=="record":
-    			selected,iter = self.recordTreeView.get_selection().get_selected()
+			selected,iter = self.recordTreeView.get_selection().get_selected()
 			id = selected.get_value(iter,0)
 		self.parent.runExtension(extension,id)
 
@@ -1042,12 +1042,12 @@ class Main(SimpleGladeApp):
 		self.actualize_yearview()
 	
 	def on_recordTree_clicked(self,widget,num,num2):
-    		selected,iter = self.recordTreeView.get_selection().get_selected()
+		selected,iter = self.recordTreeView.get_selection().get_selected()
 		self.parent.editRecord(selected.get_value(iter,0))
 
 	######## waypoints events ##########
 	def on_savewaypoint_clicked(self,widget):
-    		selected,iter = self.waypointTreeView.get_selection().get_selected()
+		selected,iter = self.waypointTreeView.get_selection().get_selected()
 		id_waypoint = selected.get_value(iter,0)
 		lat = self.waypoint_latitude.get_text()
 		lon = self.waypoint_longitude.get_text()
@@ -1057,7 +1057,7 @@ class Main(SimpleGladeApp):
 		self.parent.updateWaypoint(id_waypoint,lat,lon,name,desc,sym)
 	
 	def on_removewaypoint_clicked(self,widget):
-    		selected,iter = self.waypointTreeView.get_selection().get_selected()
+		selected,iter = self.waypointTreeView.get_selection().get_selected()
 		id_waypoint = selected.get_value(iter,0)
 		self.parent.removeWaypoint(id_waypoint)
 

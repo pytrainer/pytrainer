@@ -60,60 +60,53 @@ from lib.xmlUtils import XMLParser
 from lib.system import checkConf
 from lib.heartrate import *
 
-
-##TODO The below should all be able to be in the __init__ section, i.e. does not need to be global 
-
-# ERROR is the default log level
-PATH = os.environ['HOME']+"/.pytrainer"
-if not os.path.exists(PATH):
-	os.mkdir(PATH)
-LOG_FILENAME = PATH + "/log.out"
-
-#Setup usage and permitted options
-usage = """usage: %prog [options]
-
-For more help on valid options try:
-   %prog -h """
-parser = OptionParser(usage=usage)
-parser.set_defaults(log_level=logging.ERROR, validate=False, gm3=True, testimport=False)
-parser.add_option("-d", "--debug", action="store_const", const=logging.DEBUG, dest="log_level", help="enable logging at debug level")
-parser.add_option("-i", "--info", action="store_const", const=logging.INFO, dest="log_level", help="enable logging at info level")
-parser.add_option("-w", "--warn", action="store_const", const=logging.WARNING, dest="log_level", help="enable logging at warning level")
-parser.add_option("--valid", action="store_true", dest="validate", help="enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation")
-parser.add_option("--check", action="store_true", dest="check", help="triggers database (only sqlite based) and configuration file sanity checks, adding fields if necessary. Backup of database is done before any change. Details at info or debug logging level")
-parser.add_option("--gmaps2", action="store_false", dest="gm3", help="Use old Google Maps API version (v2)")
-parser.add_option("--testimport", action="store_true", dest="testimport", help="EXPERIMENTAL: show new import functionality - for testing only USE AT YOUR OWN RISK")
-(options, args) = parser.parse_args()
-log_level = options.log_level
-validate = options.validate
-check = options.check
-gm3 = options.gm3
-testimport = options.testimport
-
-# Adding rotating support to default logger with customized format
-rotHandler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=100000, backupCount=5)
-formatter = logging.Formatter('%(asctime)s|%(levelname)s|%(module)s|%(funcName)s|%(message)s')
-rotHandler.setFormatter(formatter)
-logging.getLogger('').addHandler(rotHandler)
-logging.getLogger('').setLevel(log_level)
-
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
+		#Version constants
+		self.version ="1.7.1_svn#513"
+		self.DB_version = 3
+		
+		#Setup usage and permitted options
+		usage = '''usage: %prog [options]
+		
+		For more help on valid options try:
+		   %prog -h '''
+		parser = OptionParser(usage=usage)
+		parser.set_defaults(log_level=logging.ERROR, validate=False, gm3=True, testimport=False)
+		parser.add_option("-d", "--debug", action="store_const", const=logging.DEBUG, dest="log_level", help="enable logging at debug level")
+		parser.add_option("-i", "--info", action="store_const", const=logging.INFO, dest="log_level", help="enable logging at info level")
+		parser.add_option("-w", "--warn", action="store_const", const=logging.WARNING, dest="log_level", help="enable logging at warning level")
+		parser.add_option("--valid", action="store_true", dest="validate", help="enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation")
+		parser.add_option("--check", action="store_true", dest="check", help="triggers database (only sqlite based) and configuration file sanity checks, adding fields if necessary. Backup of database is done before any change. Details at info or debug logging level")
+		parser.add_option("--gmaps2", action="store_false", dest="gm3", help="Use old Google Maps API version (v2)")
+		parser.add_option("--testimport", action="store_true", dest="testimport", help="EXPERIMENTAL: show new import functionality - for testing only USE AT YOUR OWN RISK")
+		(options, args) = parser.parse_args()
+		#Populate startup options
+		self.log_level = options.log_level
+		self.validate = options.validate
+		self.check = options.check
+		self.gm3 = options.gm3
+		self.testimport = options.testimport
+		
+		PATH = os.environ['HOME']+"/.pytrainer"
+		if not os.path.exists(PATH):
+			os.mkdir(PATH)
+		LOG_FILENAME = PATH + "/log.out"
+		
+		# Adding rotating support to default logger with customized format
+		rotHandler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=100000, backupCount=5)
+		formatter = logging.Formatter('%(asctime)s|%(levelname)s|%(module)s|%(funcName)s|%(message)s')
+		rotHandler.setFormatter(formatter)
+		logging.getLogger('').addHandler(rotHandler)
+		logging.getLogger('').setLevel(self.log_level)
+
 		logging.debug('>>')
 		self.data_path = data_path
-		self.version ="1.7.1_svn#512"
-		self.DB_version = 3
 		self.date = Date()
 		# Checking profile
 		self.profile = Profile(self.data_path,self)
 		self.profile.isProfileConfigured()
-		#Populate startup options
-		self.log_level = log_level
-		self.validate = validate
-		self.check = check
-		self.gm3 = gm3
-		self.testimport = testimport
-
+		
 		self.windowmain = None
 
 		logging.debug('checking configuration...')
@@ -475,57 +468,3 @@ class pyTrainer:
 		logging.info('Setting DB version to: ' + str(self.DB_version))
 		self.configuration.setValue("pytraining","DB_version", str(self.DB_version))
 		logging.debug('<<')
-	
-	#def addDateTimeUTC(self): #TODO remove
-		"""12.07.2008 - dgranda
-		Adds date_time (UTC format) for each record (new column date_time_utc in table records). New in version 1.6.0.1
-		args: none
-		returns: none"""
-		'''logging.debug('>>')
-		# Retrieves info from all GPX files stored locally
-		listTracksGPX = self.record.shortFromLocal()
-		logging.debug('Retrieved info from local files: '+ str(listTracksGPX))
-		# Creates column date_time_utc in records table
-		try:
-			self.ddbb.addDateTimeUTC2ddbb()
-		except:
-			logging.error('Column date_time_utc already exists in DB')
-			traceback.print_exc()	
-		# Updates data
-		num=0
-		for track in listTracksGPX:
-			try:
-				# update records set date_time_utc="2008-07-11T10:21:31Z" where id_record='158';
-				logging.debug('Updating: '+str(track))
-				self.ddbb.update("records","date_time_utc",[track[1]], "id_record = %d" %int(track[2]))
-				num+=1
-			except:
-				logging.error('Error when updating data for track '+ track[2])
-				traceback.print_exc()
-		logging.info('Updated '+str(num)+' entries')
-		logging.debug('<<')'''
-		
-	#def checkPacesDB(self): #TODO remove
-		"""19.07.2008 - dgranda
-		Updates paces in DB (maxspeed<->maxpace | average<->pace). New in version 1.6.0.2
-		args: none
-		returns: none"""
-		'''logging.debug('>>')
-		# Retrieves info from DB: id_record,maxspeed,maxpace,average,pace
-		listPaces = self.ddbb.select("records", "id_record,maxspeed,maxpace,average,pace")
-		logging.debug('Retrieved info from db: '+ str(listPaces))
-		num=0
-		for entry in listPaces:
-			if entry[1]>0 and entry[3]>0:
-				tmpMax = "%d.%02d" %((3600/entry[1])/60,(3600/entry[1])%60)
-				tmpAve = "%d.%02d" %((3600/entry[3])/60,(3600/entry[3])%60)
-				try:
-					self.ddbb.update("records","maxpace,pace",[eval(tmpMax),eval(tmpAve)], "id_record = %d" %int(entry[0]))
-					num+=1
-				except:
-					logging.error('Error when updating data for track '+ entry[0])
-					traceback.print_last()
-			else:
-				logging.error('No pace info available for entry '+str(entry[0])+' in DB. Please check')
-		logging.info('Updated '+str(num)+' entries')
-		logging.debug('<<')'''
