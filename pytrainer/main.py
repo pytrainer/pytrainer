@@ -63,7 +63,7 @@ from lib.heartrate import *
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.1_svn#514"
+		self.version ="1.7.1_svn#515"
 		self.DB_version = 3
 		
 		#Setup usage and permitted options
@@ -203,7 +203,9 @@ class pyTrainer:
 			for (pluginFile, sport) in pluginFiles:
 				if os.path.isfile(pluginFile):
 					logging.info('File exists. Size: %d. Sport: %s' % (os.path.getsize(pluginFile), sport))
-					self.record.importFromGPX(pluginFile, sport)
+					if self.record.importFromGPX(pluginFile, sport) is None:
+						print "Error importing file "+pluginFile
+						logging.error("Error importing file "+pluginFile)
  				else:
  					logging.error('File '+pluginFile+' not valid')
 		else:

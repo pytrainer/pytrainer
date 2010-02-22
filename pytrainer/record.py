@@ -181,7 +181,9 @@ class Record:
 		Moves GPX file to store destination and updates database
 		args: path to source GPX file"""
 		logging.debug('--')
-		list_options, gpx_laps = self.summaryFromGPX(gpxOrig, entry)
+		(list_options, gpx_laps) = self.summaryFromGPX(gpxOrig, entry)
+		if list_options is None:
+			return None
 		return self.insertRecord(list_options, laps=gpx_laps)
 	
 	def lapsFromGPX(self, gpx):
@@ -214,7 +216,8 @@ class Record:
 		gpx = Gpx(self.data_path,gpxOrig)
 		distance, time, maxspeed, maxheartrate = gpx.getMaxValues()
 		if time == 0: #invalid record
-			return None
+			print "Invalid record"
+			return (None, None)
 		upositive,unegative = gpx.getUnevenness()
 		speed = distance*3600/time
 		time_hhmmss = [time//3600,(time/60)%60,time%60]

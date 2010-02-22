@@ -53,6 +53,7 @@ distanceTag = gpxdataNS.substitute(tag="distance")
 class Gpx:
 	def __init__(self, data_path = None, filename = None, trkname = None):
 		logging.debug(">>")
+		global mainNS, timeTag, trackTag, trackPointTag, trackPointTagLast,	trackSegTag, elevationTag, nameTag
 		self.data_path = data_path
 		self.filename = filename
 		self.trkname = trkname
@@ -72,6 +73,28 @@ class Gpx:
 				return None
 			logging.debug("parsing content from "+self.filename)
 			self.tree = etree.ElementTree(file=filename).getroot()
+			if self.tree.get("version") == "1.0":
+				#Got an old GPX file
+				print "Old gpx version"
+				mainNS = string.Template(".//{http://www.topografix.com/GPX/1/0}$tag")
+				timeTag = mainNS.substitute(tag="time")
+				trackTag = mainNS.substitute(tag="trk")
+				trackPointTag = mainNS.substitute(tag="trkpt")
+				trackPointTagLast = mainNS.substitute(tag="trkpt[last()]")
+				trackSegTag = mainNS.substitute(tag="trkseg")
+				elevationTag = mainNS.substitute(tag="ele")
+				nameTag = mainNS.substitute(tag="name")
+			else:
+				print self.tree.get("version")
+				mainNS = string.Template(".//{http://www.topografix.com/GPX/1/1}$tag")
+				timeTag = mainNS.substitute(tag="time")
+				trackTag = mainNS.substitute(tag="trk")
+				trackPointTag = mainNS.substitute(tag="trkpt")
+				trackPointTagLast = mainNS.substitute(tag="trkpt[last()]")
+				trackSegTag = mainNS.substitute(tag="trkseg")
+				elevationTag = mainNS.substitute(tag="ele")
+				nameTag = mainNS.substitute(tag="name")
+				
 			logging.debug("getting values...")
 			self.Values = self._getValues()
 		logging.debug("<<")
@@ -154,11 +177,14 @@ class Gpx:
 		tree  = self.tree
 		# Calories data comes within laps. Maybe more than one, adding them together - dgranda 20100114
 		laps = tree.findall(lapTag)
-		for lap in laps:
-			lapCalories = lap.findtext(calorieTag)
-			logging.debug("Lap calories: "+str(lapCalories))
-			self.calories += int(lapCalories)
-		logging.debug("Calories: "+str(self.calories))
+		if laps is not None and laps != "":
+			for lap in laps:
+				lapCalories = lap.findtext(calorieTag)
+				logging.debug("Lap calories: "+str(lapCalories))
+				self.calories += int(lapCalories)
+			logging.debug("Calories: "+str(self.calories))
+		else:
+			laps = []
 
 		retorno = []
 		his_vel = []
@@ -169,15 +195,16 @@ class Gpx:
 		total_hr = 0
 		tmp_alt = 0
 		len_validhrpoints = 0
-
 		trkpoints = tree.findall(trackPointTag)
-		if not len(trkpoints):
+		if trkpoints is None or len(trkpoints) == 0:
+			logging.debug( "No trkpoints found in file")
 			return retorno
 		
 		date_ = tree.find(timeTag).text
 		#mk_time = self.getDateTime(date_)[0] #UTC Date
 		mk_time = self.getDateTime(date_)[1] #Local Date
 		self.date = mk_time.strftime("%Y-%m-%d")
+
 
 		for trkpoint in trkpoints:
 			lat = trkpoint.get("lat")

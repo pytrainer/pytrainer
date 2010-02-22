@@ -61,7 +61,6 @@ class garmingpx():
 				if not self.inDatabase(filename):
 					sport = self.getSport(filename)
 					gpxfile = "%s/garmin-gpx-%d.gpx" % (self.tmpdir, len(importfiles))	
-					shutil				
 					shutil.copy(filename, gpxfile)
 					importfiles.append((gpxfile, sport))
 				else:

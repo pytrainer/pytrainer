@@ -1,0 +1,1642 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:kml="http://www.opengis.net/kml/2.2"
+  xmlns:atom="http://www.w3.org/2005/Atom"
+  xmlns:xal="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0"
+  targetNamespace="http://www.opengis.net/kml/2.2"
+  elementFormDefault="qualified"
+  version="2.2.0">
+  
+  <xsd:annotation>
+    <xsd:appinfo>ogckml22.xsd 2008-01-23</xsd:appinfo>
+    <xsd:documentation>XML Schema Document for OGC KML version 2.2. Copyright (c)
+      2008 Open Geospatial Consortium, Inc. All Rights Reserved.
+    </xsd:documentation>
+  </xsd:annotation>  
+
+  <!-- import atom:author and atom:link -->
+  <xsd:import namespace="http://www.w3.org/2005/Atom"
+    schemaLocation="atom-author-link.xsd"/>
+
+  <!-- import xAL:Address -->
+  <xsd:import namespace="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0"
+    schemaLocation="http://docs.oasis-open.org/election/external/xAL.xsd"/>
+
+  <!-- KML field types (simple content) -->
+
+  <xsd:simpleType name="anglepos90Type">
+    <xsd:restriction base="double">
+      <xsd:minInclusive value="0.0"/>
+      <xsd:maxInclusive value="90.0"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="angle90Type">
+    <xsd:restriction base="double">
+      <xsd:minInclusive value="-90"/>
+      <xsd:maxInclusive value="90.0"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="anglepos180Type">
+    <xsd:restriction base="double">
+      <xsd:minInclusive value="0.0"/>
+      <xsd:maxInclusive value="180.0"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="angle180Type">
+    <xsd:restriction base="double">
+      <xsd:minInclusive value="-180.0"/>
+      <xsd:maxInclusive value="180.0"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="angle360Type">
+    <xsd:restriction base="double">
+      <xsd:minInclusive value="-360.0"/>
+      <xsd:maxInclusive value="360.0"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="altitudeModeEnumType">
+    <xsd:restriction base="string">
+      <xsd:enumeration value="clampToGround"/>
+      <xsd:enumeration value="relativeToGround"/>
+      <xsd:enumeration value="absolute"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="colorType">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+        
+        aabbggrr
+        
+        ffffffff: opaque white
+        ff000000: opaque black
+        
+        ]]></xsd:documentation>
+    </xsd:annotation>
+    <xsd:restriction base="hexBinary">
+      <xsd:length value="4"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="coordinatesType">
+    <xsd:list itemType="string"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="colorModeEnumType">
+    <xsd:restriction base="string">
+      <xsd:enumeration value="normal"/>
+      <xsd:enumeration value="random"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="dateTimeType">
+    <xsd:union memberTypes="dateTime date gYearMonth gYear"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="displayModeEnumType">
+    <xsd:restriction base="string">
+      <xsd:enumeration value="default"/>
+      <xsd:enumeration value="hide"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="gridOriginEnumType">
+    <xsd:restriction base="string">
+      <xsd:enumeration value="lowerLeft"/>
+      <xsd:enumeration value="upperLeft"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+  <xsd:simpleType name="itemIconStateType">
+    <xsd:list itemType="kml:itemIconStateEnumType"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="itemIconStateEnumType">
+    <xsd:restriction base="string">
+      <xsd:enumeration value="open"/>
+      <xsd:enumeration value="closed"/>
+      <xsd:enumeration value="error"/>
+      <xsd:enumeration value="fetching0"/>
+      <xsd:enumeration value="fetching1"/>
+      <xsd:enumeration value="fetching2"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="listItemTypeEnumType">
+    <xsd:restriction base="string">
+      <xsd:enumeration value="radioFolder"/>
+      <xsd:enumeration value="check"/>
+      <xsd:enumeration value="checkHideChildren"/>
+      <xsd:enumeration value="checkOffOnly"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="refreshModeEnumType">
+    <xsd:restriction base="string">
+      <xsd:enumeration value="onChange"/>
+      <xsd:enumeration value="onInterval"/>
+      <xsd:enumeration value="onExpire"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="viewRefreshModeEnumType">
+    <xsd:restriction base="string">
+      <xsd:enumeration value="never"/>
+      <xsd:enumeration value="onRequest"/>
+      <xsd:enumeration value="onStop"/>
+      <xsd:enumeration value="onRegion"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="shapeEnumType">
+    <xsd:restriction base="string">
+      <xsd:enumeration value="rectangle"/>
+      <xsd:enumeration value="cylinder"/>
+      <xsd:enumeration value="sphere"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="styleStateEnumType">
+    <xsd:restriction base="string">
+      <xsd:enumeration value="normal"/>
+      <xsd:enumeration value="highlight"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="unitsEnumType">
+    <xsd:restriction base="string">
+      <xsd:enumeration value="fraction"/>
+      <xsd:enumeration value="pixels"/>
+      <xsd:enumeration value="insetPixels"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="vec2Type" abstract="false">
+    <xsd:attribute name="x" type="double" default="1.0"/>
+    <xsd:attribute name="y" type="double" default="1.0"/>
+    <xsd:attribute name="xunits" type="kml:unitsEnumType" use="optional"
+      default="fraction"/>
+    <xsd:attribute name="yunits" type="kml:unitsEnumType" use="optional"
+      default="fraction"/>
+  </xsd:complexType>
+
+  <xsd:element name="address" type="string"/>
+  <xsd:element name="altitude" type="double" default="0.0"/>
+  <xsd:element name="altitudeModeGroup" abstract="true"/>
+  <xsd:element name="altitudeMode" type="kml:altitudeModeEnumType"
+    default="clampToGround" substitutionGroup="kml:altitudeModeGroup"/>
+  <xsd:element name="begin" type="kml:dateTimeType"/>
+  <xsd:element name="bgColor" type="kml:colorType" default="ffffffff"/>
+  <xsd:element name="bottomFov" type="kml:angle90Type" default="0.0"/>
+  <xsd:element name="color" type="kml:colorType" default="ffffffff"/>
+  <xsd:element name="colorMode" type="kml:colorModeEnumType" default="normal"/>
+  <xsd:element name="cookie" type="string"/>
+  <xsd:element name="coordinates" type="kml:coordinatesType"/>
+  <xsd:element name="description" type="string"/>
+  <xsd:element name="displayName" type="string"/>
+  <xsd:element name="displayMode" type="kml:displayModeEnumType" default="default"/>
+  <xsd:element name="drawOrder" type="int" default="0"/>
+  <xsd:element name="east" type="kml:angle180Type" default="180.0"/>
+  <xsd:element name="end" type="kml:dateTimeType"/>
+  <xsd:element name="expires" type="kml:dateTimeType"/>
+  <xsd:element name="extrude" type="boolean" default="0"/>
+  <xsd:element name="fill" type="boolean" default="1"/>
+  <xsd:element name="flyToView" type="boolean" default="0"/>
+  <xsd:element name="gridOrigin" type="kml:gridOriginEnumType" default="lowerLeft"/>
+  <xsd:element name="heading" type="kml:angle360Type" default="0.0"/>
+  <xsd:element name="href" type="string">
+    <xsd:annotation>
+      <xsd:documentation>not anyURI due to $[x] substitution in
+      PhotoOverlay</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:element name="httpQuery" type="string"/>
+  <xsd:element name="hotSpot" type="kml:vec2Type"/>
+  <xsd:element name="key" type="kml:styleStateEnumType" default="normal"/>
+  <xsd:element name="latitude" type="kml:angle90Type" default="0.0"/>
+  <xsd:element name="leftFov" type="kml:angle180Type" default="0.0"/>
+  <xsd:element name="linkDescription" type="string"/>
+  <xsd:element name="linkName" type="string"/>
+  <xsd:element name="linkSnippet" type="kml:SnippetType"/>
+  <xsd:element name="listItemType" type="kml:listItemTypeEnumType" default="check"/>
+  <xsd:element name="longitude" type="kml:angle180Type" default="0.0"/>
+  <xsd:element name="maxSnippetLines" type="int" default="2"/>
+  <xsd:element name="maxSessionLength" type="double" default="-1.0"/>
+  <xsd:element name="message" type="string"/>
+  <xsd:element name="minAltitude" type="double" default="0.0"/>
+  <xsd:element name="minFadeExtent" type="double" default="0.0"/>
+  <xsd:element name="minLodPixels" type="double" default="0.0"/>
+  <xsd:element name="minRefreshPeriod" type="double" default="0.0"/>
+  <xsd:element name="maxAltitude" type="double" default="0.0"/>
+  <xsd:element name="maxFadeExtent" type="double" default="0.0"/>
+  <xsd:element name="maxLodPixels" type="double" default="-1.0"/>
+  <xsd:element name="maxHeight" type="int" default="0"/>
+  <xsd:element name="maxWidth" type="int" default="0"/>
+  <xsd:element name="name" type="string"/>
+  <xsd:element name="near" type="double" default="0.0"/>
+  <xsd:element name="north" type="kml:angle180Type" default="180.0"/>
+  <xsd:element name="open" type="boolean" default="0"/>
+  <xsd:element name="outline" type="boolean" default="1"/>
+  <xsd:element name="overlayXY" type="kml:vec2Type"/>
+  <xsd:element name="phoneNumber" type="string"/>
+  <xsd:element name="range" type="double" default="0.0"/>
+  <xsd:element name="refreshMode" type="kml:refreshModeEnumType"
+    default="onChange"/>
+  <xsd:element name="refreshInterval" type="double" default="4.0"/>
+  <xsd:element name="refreshVisibility" type="boolean" default="0"/>
+  <xsd:element name="rightFov" type="kml:angle180Type" default="0.0"/>
+  <xsd:element name="roll" type="kml:angle180Type" default="0.0"/>
+  <xsd:element name="rotation" type="kml:angle180Type" default="0.0"/>
+  <xsd:element name="rotationXY" type="kml:vec2Type"/>
+  <xsd:element name="scale" type="double" default="1.0"/>
+  <xsd:element name="screenXY" type="kml:vec2Type"/>
+  <xsd:element name="shape" type="kml:shapeEnumType" default="rectangle"/>
+  <xsd:element name="size" type="kml:vec2Type"/>
+  <xsd:element name="south" type="kml:angle180Type" default="-180.0"/>
+  <xsd:element name="sourceHref" type="anyURI"/>
+  <xsd:element name="snippet" type="string"/>
+  <xsd:element name="state" type="kml:itemIconStateType"/>
+  <xsd:element name="styleUrl" type="anyURI"/>
+  <xsd:element name="targetHref" type="anyURI"/>
+  <xsd:element name="tessellate" type="boolean" default="0"/>
+  <xsd:element name="text" type="string"/>
+  <xsd:element name="textColor" type="kml:colorType" default="ff000000"/>
+  <xsd:element name="tileSize" type="int" default="256"/>
+  <xsd:element name="tilt" type="kml:anglepos180Type" default="0.0"/>
+  <xsd:element name="topFov" type="kml:angle90Type" default="0.0"/>
+  <xsd:element name="value" type="string"/>
+  <xsd:element name="viewBoundScale" type="double" default="1.0"/>
+  <xsd:element name="viewFormat" type="string"/>
+  <xsd:element name="viewRefreshMode" type="kml:viewRefreshModeEnumType"
+    default="never"/>
+  <xsd:element name="viewRefreshTime" type="double" default="4.0"/>
+  <xsd:element name="visibility" type="boolean" default="1"/>
+  <xsd:element name="west" type="kml:angle180Type" default="-180.0"/>
+  <xsd:element name="when" type="kml:dateTimeType"/>
+  <xsd:element name="width" type="double" default="1.0"/>
+  <xsd:element name="x" type="double" default="1.0"/>
+  <xsd:element name="y" type="double" default="1.0"/>
+  <xsd:element name="z" type="double" default="1.0"/>
+
+  <xsd:element name="AbstractObjectGroup" type="kml:AbstractObjectType"
+    abstract="true"/>
+  <xsd:complexType name="AbstractObjectType" abstract="true">
+    <xsd:sequence>
+      <xsd:element ref="kml:ObjectSimpleExtensionGroup" minOccurs="0"
+        maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attributeGroup ref="kml:idAttributes"/>
+  </xsd:complexType>
+  <xsd:element name="ObjectSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+
+  <xsd:attributeGroup name="idAttributes">
+    <xsd:attribute name="id" type="ID" use="optional"/>
+    <xsd:attribute name="targetId" type="NCName" use="optional"/>
+  </xsd:attributeGroup>
+
+  <xsd:element name="AbstractFeatureGroup" type="kml:AbstractFeatureType"
+    abstract="true" substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="AbstractFeatureType" abstract="true">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:name" minOccurs="0"/>
+          <xsd:element ref="kml:visibility" minOccurs="0"/>
+          <xsd:element ref="kml:open" minOccurs="0"/>
+          <xsd:element ref="atom:author" minOccurs="0"/>
+          <xsd:element ref="atom:link" minOccurs="0"/>
+          <xsd:element ref="kml:address" minOccurs="0"/>
+          <xsd:element ref="xal:AddressDetails" minOccurs="0"/>
+          <xsd:element ref="kml:phoneNumber" minOccurs="0"/>
+          <xsd:choice>
+            <xsd:annotation>
+              <xsd:documentation>Snippet deprecated in 2.2</xsd:documentation>
+            </xsd:annotation>
+            <xsd:element ref="kml:Snippet" minOccurs="0"/>
+            <xsd:element ref="kml:snippet" minOccurs="0"/>
+          </xsd:choice>
+          <xsd:element ref="kml:description" minOccurs="0"/>
+          <xsd:element ref="kml:AbstractViewGroup" minOccurs="0"/>
+          <xsd:element ref="kml:AbstractTimePrimitiveGroup" minOccurs="0"/>
+          <xsd:element ref="kml:styleUrl" minOccurs="0"/>
+          <xsd:element ref="kml:AbstractStyleSelectorGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:Region" minOccurs="0"/>
+          <xsd:choice>
+            <xsd:annotation>
+              <xsd:documentation>Metadata deprecated in 2.2</xsd:documentation>
+            </xsd:annotation>
+            <xsd:element ref="kml:Metadata" minOccurs="0"/>
+            <xsd:element ref="kml:ExtendedData" minOccurs="0"/>
+          </xsd:choice>
+          <xsd:element ref="kml:AbstractFeatureSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:AbstractFeatureObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="AbstractFeatureObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:element name="AbstractFeatureSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+
+  <xsd:element name="Snippet" type="kml:SnippetType"/>
+  <xsd:complexType name="SnippetType" final="#all">
+    <xsd:simpleContent>
+      <xsd:extension base="string">
+        <xsd:attribute name="maxLines" type="int" use="optional" default="2"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:element name="AbstractViewGroup" type="kml:AbstractViewType" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="AbstractViewType" abstract="true">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:AbstractViewSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:AbstractViewObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="AbstractViewSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="AbstractViewObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="LookAt" type="kml:LookAtType"
+    substitutionGroup="kml:AbstractViewGroup"/>
+  <xsd:complexType name="LookAtType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractViewType">
+        <xsd:sequence>
+          <xsd:element ref="kml:longitude" minOccurs="0"/>
+          <xsd:element ref="kml:latitude" minOccurs="0"/>
+          <xsd:element ref="kml:altitude" minOccurs="0"/>
+          <xsd:element ref="kml:heading" minOccurs="0"/>
+          <xsd:element ref="kml:tilt" minOccurs="0"/>
+          <xsd:element ref="kml:range" minOccurs="0"/>
+          <xsd:element ref="kml:altitudeModeGroup" minOccurs="0"/>
+          <xsd:element ref="kml:LookAtSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:LookAtObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="LookAtSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="LookAtObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Camera" type="kml:CameraType"
+    substitutionGroup="kml:AbstractViewGroup"/>
+  <xsd:complexType name="CameraType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractViewType">
+        <xsd:sequence>
+          <xsd:element ref="kml:longitude" minOccurs="0"/>
+          <xsd:element ref="kml:latitude" minOccurs="0"/>
+          <xsd:element ref="kml:altitude" minOccurs="0"/>
+          <xsd:element ref="kml:heading" minOccurs="0"/>
+          <xsd:element ref="kml:tilt" minOccurs="0"/>
+          <xsd:element ref="kml:roll" minOccurs="0"/>
+          <xsd:element ref="kml:altitudeModeGroup" minOccurs="0"/>
+          <xsd:element ref="kml:CameraSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:CameraObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="CameraSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="CameraObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Metadata" type="kml:MetadataType">
+    <xsd:annotation>
+      <xsd:documentation>Metadata deprecated in 2.2</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+
+  <xsd:complexType name="MetadataType" final="#all">
+    <xsd:annotation>
+      <xsd:documentation>MetadataType deprecated in 2.2</xsd:documentation>
+    </xsd:annotation>
+    <xsd:sequence>
+      <xsd:any namespace="##any" processContents="lax" minOccurs="0"
+        maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="ExtendedData" type="kml:ExtendedDataType"/>
+  <xsd:complexType name="ExtendedDataType" final="#all">
+    <xsd:sequence>
+      <xsd:element ref="kml:Data" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element ref="kml:SchemaData" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:any namespace="##other" processContents="lax" minOccurs="0"
+        maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="SchemaData" type="kml:SchemaDataType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="SchemaDataType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:SimpleData" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="kml:SchemaDataExtension" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="schemaUrl" type="anyURI"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="SchemaDataExtension" abstract="true"/>
+
+  <xsd:element name="SimpleData" type="kml:SimpleDataType"/>
+  <xsd:complexType name="SimpleDataType" final="#all">
+    <xsd:simpleContent>
+      <xsd:extension base="string">
+        <xsd:attribute name="name" type="string" use="required"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:element name="Data" type="kml:DataType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="DataType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:displayName" minOccurs="0"/>
+          <xsd:element ref="kml:value"/>
+          <xsd:element ref="kml:DataExtension" minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+        <xsd:attribute name="name" type="string"/>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="DataExtension" abstract="true"/>
+
+  <xsd:element name="AbstractContainerGroup" type="kml:AbstractContainerType"
+    abstract="true" substitutionGroup="kml:AbstractFeatureGroup"/>
+  <xsd:complexType name="AbstractContainerType" abstract="true">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element ref="kml:AbstractContainerSimpleExtensionGroup"
+            minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="kml:AbstractContainerObjectExtensionGroup"
+            minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="AbstractContainerSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="AbstractContainerObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="AbstractGeometryGroup" type="kml:AbstractGeometryType"
+    abstract="true" substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="AbstractGeometryType" abstract="true">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:AbstractGeometrySimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:AbstractGeometryObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="AbstractGeometrySimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="AbstractGeometryObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="AbstractOverlayGroup" type="kml:AbstractOverlayType"
+    abstract="true" substitutionGroup="kml:AbstractFeatureGroup"/>
+  <xsd:complexType name="AbstractOverlayType" abstract="true">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element ref="kml:color" minOccurs="0"/>
+          <xsd:element ref="kml:drawOrder" minOccurs="0"/>
+          <xsd:element ref="kml:Icon" minOccurs="0"/>
+          <xsd:element ref="kml:AbstractOverlaySimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:AbstractOverlayObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="AbstractOverlaySimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="AbstractOverlayObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="AbstractStyleSelectorGroup"
+    type="kml:AbstractStyleSelectorType" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="AbstractStyleSelectorType" abstract="true">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:AbstractStyleSelectorSimpleExtensionGroup"
+            minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="kml:AbstractStyleSelectorObjectExtensionGroup"
+            minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="AbstractStyleSelectorSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="AbstractStyleSelectorObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="AbstractTimePrimitiveGroup"
+    type="kml:AbstractTimePrimitiveType" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="AbstractTimePrimitiveType" abstract="true">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:AbstractTimePrimitiveSimpleExtensionGroup"
+            minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="kml:AbstractTimePrimitiveObjectExtensionGroup"
+            minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="AbstractTimePrimitiveSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="AbstractTimePrimitiveObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="kml" type="kml:KmlType">
+    <xsd:annotation>
+      <xsd:documentation><![CDATA[
+
+      <kml> is the root element.
+
+      ]]></xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:complexType name="KmlType" final="#all">
+    <xsd:sequence>
+      <xsd:element ref="kml:NetworkLinkControl" minOccurs="0"/>
+      <xsd:element ref="kml:AbstractFeatureGroup" minOccurs="0"/>
+      <xsd:element ref="kml:KmlSimpleExtensionGroup" minOccurs="0"
+        maxOccurs="unbounded"/>
+      <xsd:element ref="kml:KmlObjectExtensionGroup" minOccurs="0"
+        maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="hint" type="string"/>
+  </xsd:complexType>
+  <xsd:element name="KmlSimpleExtensionGroup" abstract="true" type="anySimpleType"/>
+  <xsd:element name="KmlObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="NetworkLinkControl" type="kml:NetworkLinkControlType"/>
+  <xsd:complexType name="NetworkLinkControlType" final="#all">
+    <xsd:sequence>
+      <xsd:element ref="kml:minRefreshPeriod" minOccurs="0"/>
+      <xsd:element ref="kml:maxSessionLength" minOccurs="0"/>
+      <xsd:element ref="kml:cookie" minOccurs="0"/>
+      <xsd:element ref="kml:message" minOccurs="0"/>
+      <xsd:element ref="kml:linkName" minOccurs="0"/>
+      <xsd:element ref="kml:linkDescription" minOccurs="0"/>
+      <xsd:element ref="kml:linkSnippet" minOccurs="0"/>
+      <xsd:element ref="kml:expires" minOccurs="0"/>
+      <xsd:element ref="kml:Update" minOccurs="0"/>
+      <xsd:element ref="kml:AbstractViewGroup" minOccurs="0"/>
+      <xsd:element ref="kml:NetworkLinkControlSimpleExtensionGroup" minOccurs="0"
+        maxOccurs="unbounded"/>
+      <xsd:element ref="kml:NetworkLinkControlObjectExtensionGroup" minOccurs="0"
+        maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="NetworkLinkControlSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="NetworkLinkControlObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Document" type="kml:DocumentType"
+    substitutionGroup="kml:AbstractContainerGroup"/>
+  <xsd:complexType name="DocumentType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractContainerType">
+        <xsd:sequence>
+          <xsd:element ref="kml:Schema" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="kml:AbstractFeatureGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:DocumentSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:DocumentObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="DocumentSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="DocumentObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Schema" type="kml:SchemaType"/>
+  <xsd:complexType name="SchemaType" final="#all">
+    <xsd:sequence>
+      <xsd:element ref="kml:SimpleField" minOccurs="0" maxOccurs="unbounded"/>
+      <xsd:element ref="kml:SchemaExtension" minOccurs="0" maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="name" type="string"/>
+    <xsd:attribute name="id" type="ID"/>
+  </xsd:complexType>
+  <xsd:element name="SchemaExtension" abstract="true"/>
+
+  <xsd:element name="SimpleField" type="kml:SimpleFieldType"/>
+  <xsd:complexType name="SimpleFieldType" final="#all">
+    <xsd:sequence>
+      <xsd:element ref="kml:displayName" minOccurs="0"/>
+      <xsd:element ref="kml:SimpleFieldExtension" minOccurs="0"
+        maxOccurs="unbounded"/>
+    </xsd:sequence>
+    <xsd:attribute name="type" type="string"/>
+    <xsd:attribute name="name" type="string"/>
+  </xsd:complexType>
+  <xsd:element name="SimpleFieldExtension" abstract="true"/>
+
+  <xsd:element name="Folder" type="kml:FolderType"
+    substitutionGroup="kml:AbstractContainerGroup"/>
+  <xsd:complexType name="FolderType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractContainerType">
+        <xsd:sequence>
+          <xsd:element ref="kml:AbstractFeatureGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:FolderSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:FolderObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="FolderSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="FolderObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Placemark" type="kml:PlacemarkType"
+    substitutionGroup="kml:AbstractFeatureGroup"/>
+  <xsd:complexType name="PlacemarkType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element ref="kml:AbstractGeometryGroup" minOccurs="0"/>
+          <xsd:element ref="kml:PlacemarkSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:PlacemarkObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="PlacemarkSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="PlacemarkObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="NetworkLink" type="kml:NetworkLinkType"
+    substitutionGroup="kml:AbstractFeatureGroup"/>
+  <xsd:complexType name="NetworkLinkType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractFeatureType">
+        <xsd:sequence>
+          <xsd:element ref="kml:refreshVisibility" minOccurs="0"/>
+          <xsd:element ref="kml:flyToView" minOccurs="0"/>
+          <xsd:choice>
+            <xsd:annotation>
+              <xsd:documentation>Url deprecated in 2.2</xsd:documentation>
+            </xsd:annotation>
+            <xsd:element ref="kml:Url" minOccurs="0"/>
+            <xsd:element ref="kml:Link" minOccurs="0"/>
+          </xsd:choice>
+          <xsd:element ref="kml:NetworkLinkSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:NetworkLinkObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="NetworkLinkSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="NetworkLinkObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Region" type="kml:RegionType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="RegionType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:LatLonAltBox" minOccurs="0"/>
+          <xsd:element ref="kml:Lod" minOccurs="0"/>
+          <xsd:element ref="kml:RegionSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:RegionObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="RegionSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="RegionObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="LatLonAltBox" type="kml:LatLonAltBoxType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="LatLonAltBoxType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractLatLonBoxType">
+        <xsd:sequence>
+          <xsd:element ref="kml:minAltitude" minOccurs="0"/>
+          <xsd:element ref="kml:maxAltitude" minOccurs="0"/>
+          <xsd:element ref="kml:altitudeModeGroup" minOccurs="0"/>
+          <xsd:element ref="kml:LatLonAltBoxSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:LatLonAltBoxObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="LatLonAltBoxSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="LatLonAltBoxObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Lod" type="kml:LodType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="LodType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:minLodPixels" minOccurs="0"/>
+          <xsd:element ref="kml:maxLodPixels" minOccurs="0"/>
+          <xsd:element ref="kml:minFadeExtent" minOccurs="0"/>
+          <xsd:element ref="kml:maxFadeExtent" minOccurs="0"/>
+          <xsd:element ref="kml:LodSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:LodObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="LodSimpleExtensionGroup" abstract="true" type="anySimpleType"/>
+  <xsd:element name="LodObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Icon" type="kml:LinkType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:element name="Link" type="kml:LinkType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:element name="Url" type="kml:LinkType"
+    substitutionGroup="kml:AbstractObjectGroup">
+    <xsd:annotation>
+      <xsd:documentation>Url deprecated in 2.2</xsd:documentation>
+    </xsd:annotation>
+  </xsd:element>
+  <xsd:complexType name="LinkType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:BasicLinkType">
+        <xsd:sequence>
+          <xsd:element ref="kml:refreshMode" minOccurs="0"/>
+          <xsd:element ref="kml:refreshInterval" minOccurs="0"/>
+          <xsd:element ref="kml:viewRefreshMode" minOccurs="0"/>
+          <xsd:element ref="kml:viewRefreshTime" minOccurs="0"/>
+          <xsd:element ref="kml:viewBoundScale" minOccurs="0"/>
+          <xsd:element ref="kml:viewFormat" minOccurs="0"/>
+          <xsd:element ref="kml:httpQuery" minOccurs="0"/>
+          <xsd:element ref="kml:LinkSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:LinkObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="LinkSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="LinkObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="MultiGeometry" type="kml:MultiGeometryType"
+    substitutionGroup="kml:AbstractGeometryGroup"/>
+  <xsd:complexType name="MultiGeometryType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractGeometryType">
+        <xsd:sequence>
+          <xsd:element ref="kml:AbstractGeometryGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:MultiGeometrySimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:MultiGeometryObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="MultiGeometrySimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="MultiGeometryObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Point" type="kml:PointType"
+    substitutionGroup="kml:AbstractGeometryGroup"/>
+  <xsd:complexType name="PointType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractGeometryType">
+        <xsd:sequence>
+          <xsd:element ref="kml:extrude" minOccurs="0"/>
+          <xsd:element ref="kml:altitudeModeGroup" minOccurs="0"/>
+          <xsd:element ref="kml:coordinates" minOccurs="0"/>
+          <xsd:element ref="kml:PointSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:PointObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="PointSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="PointObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="LineString" type="kml:LineStringType"
+    substitutionGroup="kml:AbstractGeometryGroup"/>
+  <xsd:complexType name="LineStringType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractGeometryType">
+        <xsd:sequence>
+          <xsd:element ref="kml:extrude" minOccurs="0"/>
+          <xsd:element ref="kml:tessellate" minOccurs="0"/>
+          <xsd:element ref="kml:altitudeModeGroup" minOccurs="0"/>
+          <xsd:element ref="kml:coordinates" minOccurs="0"/>
+          <xsd:element ref="kml:LineStringSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:LineStringObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="LineStringSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="LineStringObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="LinearRing" type="kml:LinearRingType"
+    substitutionGroup="kml:AbstractGeometryGroup"/>
+  <xsd:complexType name="LinearRingType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractGeometryType">
+        <xsd:sequence>
+          <xsd:element ref="kml:extrude" minOccurs="0"/>
+          <xsd:element ref="kml:tessellate" minOccurs="0"/>
+          <xsd:element ref="kml:altitudeModeGroup" minOccurs="0"/>
+          <xsd:element ref="kml:coordinates" minOccurs="0"/>
+          <xsd:element ref="kml:LinearRingSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:LinearRingObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="LinearRingSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="LinearRingObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Polygon" type="kml:PolygonType"
+    substitutionGroup="kml:AbstractGeometryGroup"/>
+  <xsd:complexType name="PolygonType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractGeometryType">
+        <xsd:sequence>
+          <xsd:element ref="kml:extrude" minOccurs="0"/>
+          <xsd:element ref="kml:tessellate" minOccurs="0"/>
+          <xsd:element ref="kml:altitudeModeGroup" minOccurs="0"/>
+          <xsd:element ref="kml:outerBoundaryIs" minOccurs="0"/>
+          <xsd:element ref="kml:innerBoundaryIs" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:PolygonSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:PolygonObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="PolygonSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="PolygonObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="outerBoundaryIs" type="kml:BoundaryType"/>
+  <xsd:element name="innerBoundaryIs" type="kml:BoundaryType"/>
+  <xsd:complexType name="BoundaryType" final="#all">
+    <xsd:sequence>
+      <xsd:element ref="kml:LinearRing" minOccurs="0"/>
+      <xsd:element ref="kml:BoundarySimpleExtensionGroup" minOccurs="0"
+        maxOccurs="unbounded"/>
+      <xsd:element ref="kml:BoundaryObjectExtensionGroup" minOccurs="0"
+        maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="BoundarySimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="BoundaryObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Model" type="kml:ModelType"
+    substitutionGroup="kml:AbstractGeometryGroup"/>
+  <xsd:complexType name="ModelType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractGeometryType">
+        <xsd:sequence>
+          <xsd:element ref="kml:altitudeModeGroup" minOccurs="0"/>
+          <xsd:element ref="kml:Location" minOccurs="0"/>
+          <xsd:element ref="kml:Orientation" minOccurs="0"/>
+          <xsd:element ref="kml:Scale" minOccurs="0"/>
+          <xsd:element ref="kml:Link" minOccurs="0"/>
+          <xsd:element ref="kml:ResourceMap" minOccurs="0"/>
+          <xsd:element ref="kml:ModelSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:ModelObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="ModelSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="ModelObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Location" type="kml:LocationType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="LocationType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:longitude" minOccurs="0"/>
+          <xsd:element ref="kml:latitude" minOccurs="0"/>
+          <xsd:element ref="kml:altitude" minOccurs="0"/>
+          <xsd:element ref="kml:LocationSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:LocationObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="LocationSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="LocationObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Orientation" type="kml:OrientationType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="OrientationType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:heading" minOccurs="0"/>
+          <xsd:element ref="kml:tilt" minOccurs="0"/>
+          <xsd:element ref="kml:roll" minOccurs="0"/>
+          <xsd:element ref="kml:OrientationSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:OrientationObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="OrientationSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="OrientationObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Scale" type="kml:ScaleType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="ScaleType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:x" minOccurs="0"/>
+          <xsd:element ref="kml:y" minOccurs="0"/>
+          <xsd:element ref="kml:z" minOccurs="0"/>
+          <xsd:element ref="kml:ScaleSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:ScaleObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="ScaleSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="ScaleObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="ResourceMap" type="kml:ResourceMapType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="ResourceMapType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:Alias" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="kml:ResourceMapSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:ResourceMapObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="ResourceMapSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="ResourceMapObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Alias" type="kml:AliasType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="AliasType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:targetHref" minOccurs="0"/>
+          <xsd:element ref="kml:sourceHref" minOccurs="0"/>
+          <xsd:element ref="kml:AliasSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:AliasObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="AliasSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="AliasObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="GroundOverlay" type="kml:GroundOverlayType"
+    substitutionGroup="kml:AbstractOverlayGroup"/>
+  <xsd:complexType name="GroundOverlayType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractOverlayType">
+        <xsd:sequence>
+          <xsd:element ref="kml:altitude" minOccurs="0"/>
+          <xsd:element ref="kml:altitudeModeGroup" minOccurs="0"/>
+          <xsd:element ref="kml:LatLonBox" minOccurs="0"/>
+          <xsd:element ref="kml:GroundOverlaySimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:GroundOverlayObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="GroundOverlaySimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="GroundOverlayObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:complexType name="AbstractLatLonBoxType" abstract="true">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:north" minOccurs="0"/>
+          <xsd:element ref="kml:south" minOccurs="0"/>
+          <xsd:element ref="kml:east" minOccurs="0"/>
+          <xsd:element ref="kml:west" minOccurs="0"/>
+          <xsd:element ref="kml:AbstractLatLonBoxSimpleExtensionGroup"
+            minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="kml:AbstractLatLonBoxObjectExtensionGroup"
+            minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="AbstractLatLonBoxSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="AbstractLatLonBoxObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="LatLonBox" type="kml:LatLonBoxType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="LatLonBoxType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractLatLonBoxType">
+        <xsd:sequence>
+          <xsd:element ref="kml:rotation" minOccurs="0"/>
+          <xsd:element ref="kml:LatLonBoxSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:LatLonBoxObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="LatLonBoxSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="LatLonBoxObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="ScreenOverlay" type="kml:ScreenOverlayType"
+    substitutionGroup="kml:AbstractOverlayGroup"/>
+  <xsd:complexType name="ScreenOverlayType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractOverlayType">
+        <xsd:sequence>
+          <xsd:element ref="kml:overlayXY" minOccurs="0"/>
+          <xsd:element ref="kml:screenXY" minOccurs="0"/>
+          <xsd:element ref="kml:rotationXY" minOccurs="0"/>
+          <xsd:element ref="kml:size" minOccurs="0"/>
+          <xsd:element ref="kml:rotation" minOccurs="0"/>
+          <xsd:element ref="kml:ScreenOverlaySimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:ScreenOverlayObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="ScreenOverlaySimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="ScreenOverlayObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="PhotoOverlay" type="kml:PhotoOverlayType"
+    substitutionGroup="kml:AbstractOverlayGroup"/>
+  <xsd:complexType name="PhotoOverlayType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractOverlayType">
+        <xsd:sequence>
+          <xsd:element ref="kml:rotation" minOccurs="0"/>
+          <xsd:element ref="kml:ViewVolume" minOccurs="0"/>
+          <xsd:element ref="kml:ImagePyramid" minOccurs="0"/>
+          <xsd:element ref="kml:Point" minOccurs="0"/>
+          <xsd:element ref="kml:shape" minOccurs="0"/>
+          <xsd:element ref="kml:PhotoOverlaySimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:PhotoOverlayObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="PhotoOverlaySimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="PhotoOverlayObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="ViewVolume" type="kml:ViewVolumeType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="ViewVolumeType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:leftFov" minOccurs="0"/>
+          <xsd:element ref="kml:rightFov" minOccurs="0"/>
+          <xsd:element ref="kml:bottomFov" minOccurs="0"/>
+          <xsd:element ref="kml:topFov" minOccurs="0"/>
+          <xsd:element ref="kml:near" minOccurs="0"/>
+          <xsd:element ref="kml:ViewVolumeSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:ViewVolumeObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="ViewVolumeSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="ViewVolumeObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="ImagePyramid" type="kml:ImagePyramidType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="ImagePyramidType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:tileSize" minOccurs="0"/>
+          <xsd:element ref="kml:maxWidth" minOccurs="0"/>
+          <xsd:element ref="kml:maxHeight" minOccurs="0"/>
+          <xsd:element ref="kml:gridOrigin" minOccurs="0"/>
+          <xsd:element ref="kml:ImagePyramidSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:ImagePyramidObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="ImagePyramidSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="ImagePyramidObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Style" type="kml:StyleType"
+    substitutionGroup="kml:AbstractStyleSelectorGroup"/>
+  <xsd:complexType name="StyleType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractStyleSelectorType">
+        <xsd:sequence>
+          <xsd:element ref="kml:IconStyle" minOccurs="0"/>
+          <xsd:element ref="kml:LabelStyle" minOccurs="0"/>
+          <xsd:element ref="kml:LineStyle" minOccurs="0"/>
+          <xsd:element ref="kml:PolyStyle" minOccurs="0"/>
+          <xsd:element ref="kml:BalloonStyle" minOccurs="0"/>
+          <xsd:element ref="kml:ListStyle" minOccurs="0"/>
+          <xsd:element ref="kml:StyleSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:StyleObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="StyleSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="StyleObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="StyleMap" type="kml:StyleMapType"
+    substitutionGroup="kml:AbstractStyleSelectorGroup"/>
+  <xsd:complexType name="StyleMapType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractStyleSelectorType">
+        <xsd:sequence>
+          <xsd:element ref="kml:Pair" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="kml:StyleMapSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:StyleMapObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="StyleMapSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="StyleMapObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Pair" type="kml:PairType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="PairType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:key" minOccurs="0"/>
+          <xsd:element ref="kml:styleUrl" minOccurs="0"/>
+          <xsd:element ref="kml:AbstractStyleSelectorGroup" minOccurs="0"/>
+          <xsd:element ref="kml:PairSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:PairObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="PairSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="PairObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="AbstractSubStyleGroup" type="kml:AbstractSubStyleType"
+    abstract="true" substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="AbstractSubStyleType" abstract="true">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:AbstractSubStyleSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:AbstractSubStyleObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="AbstractSubStyleSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="AbstractSubStyleObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="AbstractColorStyleGroup" type="kml:AbstractColorStyleType"
+    abstract="true" substitutionGroup="kml:AbstractSubStyleGroup"/>
+  <xsd:complexType name="AbstractColorStyleType" abstract="true">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractSubStyleType">
+        <xsd:sequence>
+          <xsd:element ref="kml:color" minOccurs="0"/>
+          <xsd:element ref="kml:colorMode" minOccurs="0"/>
+          <xsd:element ref="kml:AbstractColorStyleSimpleExtensionGroup"
+            minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="kml:AbstractColorStyleObjectExtensionGroup"
+            minOccurs="0" maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="AbstractColorStyleObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:element name="AbstractColorStyleSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+
+  <xsd:element name="IconStyle" type="kml:IconStyleType"
+    substitutionGroup="kml:AbstractColorStyleGroup"/>
+  <xsd:complexType name="IconStyleType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractColorStyleType">
+        <xsd:sequence>
+          <xsd:element ref="kml:scale" minOccurs="0"/>
+          <xsd:element ref="kml:heading" minOccurs="0"/>
+          <xsd:element name="Icon" type="kml:BasicLinkType" minOccurs="0"/>
+          <xsd:element ref="kml:hotSpot" minOccurs="0"/>
+          <xsd:element ref="kml:IconStyleSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:IconStyleObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="IconStyleSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="IconStyleObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:complexType name="BasicLinkType">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:href" minOccurs="0"/>
+          <xsd:element ref="kml:BasicLinkSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:BasicLinkObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="BasicLinkSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="BasicLinkObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="LabelStyle" type="kml:LabelStyleType"
+    substitutionGroup="kml:AbstractColorStyleGroup"/>
+  <xsd:complexType name="LabelStyleType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractColorStyleType">
+        <xsd:sequence>
+          <xsd:element ref="kml:scale" minOccurs="0"/>
+          <xsd:element ref="kml:LabelStyleSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:LabelStyleObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="LabelStyleSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="LabelStyleObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="LineStyle" type="kml:LineStyleType"
+    substitutionGroup="kml:AbstractColorStyleGroup"/>
+  <xsd:complexType name="LineStyleType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractColorStyleType">
+        <xsd:sequence>
+          <xsd:element ref="kml:width" minOccurs="0"/>
+          <xsd:element ref="kml:LineStyleSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:LineStyleObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="LineStyleSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="LineStyleObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="PolyStyle" type="kml:PolyStyleType"
+    substitutionGroup="kml:AbstractColorStyleGroup"/>
+  <xsd:complexType name="PolyStyleType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractColorStyleType">
+        <xsd:sequence>
+          <xsd:element ref="kml:fill" minOccurs="0"/>
+          <xsd:element ref="kml:outline" minOccurs="0"/>
+          <xsd:element ref="kml:PolyStyleSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:PolyStyleObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="PolyStyleSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="PolyStyleObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="BalloonStyle" type="kml:BalloonStyleType"
+    substitutionGroup="kml:AbstractSubStyleGroup"/>
+  <xsd:complexType name="BalloonStyleType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractSubStyleType">
+        <xsd:sequence>
+          <xsd:choice>
+            <xsd:annotation>
+              <xsd:documentation>color deprecated in 2.1</xsd:documentation>
+            </xsd:annotation>
+            <xsd:element ref="kml:color" minOccurs="0"/>
+            <xsd:element ref="kml:bgColor" minOccurs="0"/>
+          </xsd:choice>
+          <xsd:element ref="kml:textColor" minOccurs="0"/>
+          <xsd:element ref="kml:text" minOccurs="0"/>
+          <xsd:element ref="kml:displayMode" minOccurs="0"/>
+          <xsd:element ref="kml:BalloonStyleSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:BalloonStyleObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="BalloonStyleSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="BalloonStyleObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="ListStyle" type="kml:ListStyleType"
+    substitutionGroup="kml:AbstractSubStyleGroup"/>
+  <xsd:complexType name="ListStyleType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractSubStyleType">
+        <xsd:sequence>
+          <xsd:element ref="kml:listItemType" minOccurs="0"/>
+          <xsd:element ref="kml:bgColor" minOccurs="0"/>
+          <xsd:element ref="kml:ItemIcon" minOccurs="0" maxOccurs="unbounded"/>
+          <xsd:element ref="kml:maxSnippetLines" minOccurs="0"/>
+          <xsd:element ref="kml:ListStyleSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:ListStyleObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="ListStyleSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="ListStyleObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="ItemIcon" type="kml:ItemIconType"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+  <xsd:complexType name="ItemIconType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractObjectType">
+        <xsd:sequence>
+          <xsd:element ref="kml:state" minOccurs="0"/>
+          <xsd:element ref="kml:href" minOccurs="0"/>
+          <xsd:element ref="kml:ItemIconSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:ItemIconObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="ItemIconSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="ItemIconObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="TimeStamp" type="kml:TimeStampType"
+    substitutionGroup="kml:AbstractTimePrimitiveGroup"/>
+  <xsd:complexType name="TimeStampType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractTimePrimitiveType">
+        <xsd:sequence>
+          <xsd:element ref="kml:when" minOccurs="0"/>
+          <xsd:element ref="kml:TimeStampSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:TimeStampObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="TimeStampSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="TimeStampObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="TimeSpan" type="kml:TimeSpanType"
+    substitutionGroup="kml:AbstractTimePrimitiveGroup"/>
+  <xsd:complexType name="TimeSpanType" final="#all">
+    <xsd:complexContent>
+      <xsd:extension base="kml:AbstractTimePrimitiveType">
+        <xsd:sequence>
+          <xsd:element ref="kml:begin" minOccurs="0"/>
+          <xsd:element ref="kml:end" minOccurs="0"/>
+          <xsd:element ref="kml:TimeSpanSimpleExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+          <xsd:element ref="kml:TimeSpanObjectExtensionGroup" minOccurs="0"
+            maxOccurs="unbounded"/>
+        </xsd:sequence>
+      </xsd:extension>
+    </xsd:complexContent>
+  </xsd:complexType>
+  <xsd:element name="TimeSpanSimpleExtensionGroup" abstract="true"
+    type="anySimpleType"/>
+  <xsd:element name="TimeSpanObjectExtensionGroup" abstract="true"
+    substitutionGroup="kml:AbstractObjectGroup"/>
+
+  <xsd:element name="Update" type="kml:UpdateType"/>
+  <xsd:complexType name="UpdateType" final="#all">
+    <xsd:sequence>
+      <xsd:element ref="kml:targetHref"/>
+      <xsd:choice maxOccurs="unbounded">
+        <xsd:element ref="kml:Create"/>
+        <xsd:element ref="kml:Delete"/>
+        <xsd:element ref="kml:Change"/>
+        <xsd:element ref="kml:UpdateOpExtensionGroup"/>
+      </xsd:choice>
+      <xsd:element ref="kml:UpdateExtensionGroup" minOccurs="0"
+        maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+  <xsd:element name="UpdateOpExtensionGroup" abstract="true"/>
+  <xsd:element name="UpdateExtensionGroup" abstract="true"/>
+
+  <xsd:element name="Create" type="kml:CreateType"/>
+  <xsd:complexType name="CreateType">
+    <xsd:sequence>
+      <xsd:element ref="kml:AbstractContainerGroup" minOccurs="0"
+        maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="Delete" type="kml:DeleteType"/>
+  <xsd:complexType name="DeleteType">
+    <xsd:sequence>
+      <xsd:element ref="kml:AbstractFeatureGroup" minOccurs="0"
+        maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:element name="Change" type="kml:ChangeType"/>
+  <xsd:complexType name="ChangeType">
+    <xsd:sequence>
+      <xsd:element ref="kml:AbstractObjectGroup" minOccurs="0"
+        maxOccurs="unbounded"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+</xsd:schema>

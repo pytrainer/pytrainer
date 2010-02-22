@@ -75,7 +75,7 @@ class garminTCXv2():
 			return True
 		else:
 			xslfile = os.path.realpath(self.parent.parent.data_path)+ "/schemas/GarminTrainingCenterDatabase_v2.xsd"
-			from lib.xmlValidation import xmlValidator
+			from pytrainer.lib.xmlValidation import xmlValidator
 			validator = xmlValidator()
 			return validator.validateXSL(filename, xslfile)
 
