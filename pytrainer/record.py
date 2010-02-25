@@ -48,7 +48,16 @@ class Record:
 		logging.debug('<<')
 
 	def newRecord(self, list_sport, date, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None):
+		logging.debug('>>')
 		self.recordwindow = WindowRecord(self.data_path, list_sport,self, date, title, distance, time, upositive, unegative, bpm, calories, comment)
+		self.recordwindow.run()
+		logging.debug('<<')
+		
+	def newMultiRecord(self, activities, list_sport):
+		logging.debug('>>')
+		#activities (activity_id, start_time, distance, duration, sport, gpx_file)
+		self.recordwindow = WindowRecord(self.data_path, list_sport, windowTitle="Modify details before importing")
+		self.recordwindow.populateMultiWindow(activities)
 		self.recordwindow.run()
 		logging.debug('<<')
 
@@ -497,7 +506,6 @@ class Record:
 		Add a record from a valid pytrainer type GPX file
 		"""	
 		logging.debug('>>')
-		print gpxFile
 		if not os.path.isfile(gpxFile):
 			logging.error("Invalid file: " +gpxFile)
 		else:

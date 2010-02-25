@@ -18,6 +18,7 @@
 
 import os
 import logging
+import gtk, gobject
 from SimpleGladeApp import SimpleGladeApp
 from windowcalendar import WindowCalendar
 from filechooser import FileChooser
@@ -34,6 +35,7 @@ class WindowRecord(SimpleGladeApp):
 		domain = None
 		self.mode = "newrecord"
 		self.id_record = ""
+		self.store = None
 		SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
 		self.conf_options = [
 			"rcd_date",
@@ -77,6 +79,48 @@ class WindowRecord(SimpleGladeApp):
 			self.rcd_unegative.set_text(unegative)
 		if calories != None:
 			self.rcd_calories.set_text(calories)
+			
+	def populateMultiWindow(self, activities):
+		
+		#activities (activity_id, start_time, distance, duration, sport, gpx_file)
+		#Make treeview
+		self.store = self.build_tree_view()
+		#Add data
+		for activity in activities:
+			iter = self.store.append()
+			self.store.set(
+					iter,
+					0, activity[0],
+					1, activity[1],
+					2, activity[2],
+					3, activity[3],
+					4, activity[4],
+					5, activity[5]
+					)
+		#Make row clickable to show details
+		#Select first activity
+		
+		self.scrolledwindowEntries.show_all()
+		
+	def build_tree_view(self):
+		store = gtk.ListStore(	gobject.TYPE_STRING,
+								gobject.TYPE_STRING,
+								gobject.TYPE_STRING,
+								gobject.TYPE_STRING, 
+								gobject.TYPE_STRING, 
+								gobject.TYPE_STRING )
+		column_names=["id", _("Start Time"), _("Distance"),_("Duration"),_("Sport"), _("GPX File")]
+		for column_index, column_name in enumerate(column_names):
+			#Add columns
+			column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
+			column.set_sort_column_id(column_index)
+			#if column_name == "id":
+			#	column.set_visible(False)
+			column.set_resizable(True)
+			self.treeviewEntries.append_column(column)
+		self.treeviewEntries.set_headers_clickable(True)
+		self.treeviewEntries.set_model(store)
+		return store
 		
 	def on_accept_clicked(self,widget):
 		list_options = {}

@@ -395,35 +395,41 @@ class WindowImportdata(SimpleGladeApp):
 		for item in self.activities_store:
 			if item[1] is True: #Checkbox is True
 				logging.debug("Added activity %s to selected list" % item)
-				selectedActivities.append(item)
+				file_id = int(item[7])
+				activity_id = item[0]
+				start_time = item[2]
+				distance = item[3]
+				duration = item[4]
+				sport = item[5]
+				gpx_file = self.processClasses[file_id].getGPXFile(activity_id)[1]
+				selectedActivities.append((activity_id, start_time, distance, duration, sport, gpx_file))
 		logging.debug( "Found %d selected activities to import" % len(selectedActivities) )
 		return selectedActivities
 		
-	def importSelectedActivity(self, activity):
+	def importSelectedActivities(self, activities):
 		"""
 			Function to import selected activity
 		"""
-		activity_id = activity[0]
-		#selected = activity[1]
-		#start_time = activity[2]
-		#distance = activity[3]
-		#duration = activity[4]
-		#sport = activity[5]
-		#notes = activity[6]
-		file_id = int(activity[7])
 		
-		logging.debug( "Importing activity %s from file %s" % (activity_id, file_id))
-		sport, gpxFile = self.processClasses[file_id].getGPXFile(activity_id)
+		#selectedActivities.append((activity_id, start_time, distance, duration, sport, gpx_file))
+		logging.debug( "Importing %d activities" % len(activities))
+		list_sport = self.pytrainer_main.profile.getSportList()
+		self.pytrainer_main.record.newMultiRecord(activities, list_sport)
+		#sport, gpxFile = self.processClasses[file_id].getGPXFile(activity_id)
 		#process returned GPX files	
-		if os.path.isfile(gpxFile):
+		'''if os.path.isfile(gpxFile):
 			logging.info('File exists. Size: %d. Sport: %s' % (os.path.getsize(gpxFile), sport))
 			#TODO trigger newentry screen to allow user to edit data
-			self.parent.parent.record.importFromGPX(gpxFile, sport)
+			#list_sport = self.pytrainer_main.profile.getSportList()
+			#logging.debug('id_record: '+str(id_record)+' | list_sport: '+str(list_sport))
+			#def newRecord(self, list_sport, date, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None):
+			#self.pytrainer_main.record.newMultiRecord(list_sport, date=start_time, distance=distance, time=duration, comment=sport)
+			#self.pytrainer_main.record.importFromGPX(gpxFile, sport)
 			#Deselect imported activity and change note
 			self.updateActivity(activity_id, file_id, status=False, notes="Imported into database")
  		else:
  			logging.error('File %s not valid' % gpxFile)
-
+		'''
 
 	def updateActivity(self, activityID, file_id, status = None, notes = None):
 		path = 0
@@ -554,9 +560,8 @@ class WindowImportdata(SimpleGladeApp):
 			self.updateStatusbar(self.statusbarImportFile, msgImporting)
 			while gtk.events_pending():	# This allows the GUI to update 
 				gtk.main_iteration()	# before completion of this entire action
-			for activity in selectedActivities:
-				self.importSelectedActivity(activity)
-				#TODO progress bar here??
+			#for activity in selectedActivities:
+			self.importSelectedActivities(selectedActivities)
 			self.updateStatusbar(self.statusbarImportFile, msgImported)
 			#Display informational dialog box
 			md = gtk.MessageDialog(self.win_importdata, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msgImported)

@@ -75,7 +75,7 @@ class Gpx:
 			self.tree = etree.ElementTree(file=filename).getroot()
 			if self.tree.get("version") == "1.0":
 				#Got an old GPX file
-				print "Old gpx version"
+				logging.debug("Old gpx version")
 				mainNS = string.Template(".//{http://www.topografix.com/GPX/1/0}$tag")
 				timeTag = mainNS.substitute(tag="time")
 				trackTag = mainNS.substitute(tag="trk")
@@ -85,7 +85,7 @@ class Gpx:
 				elevationTag = mainNS.substitute(tag="ele")
 				nameTag = mainNS.substitute(tag="name")
 			else:
-				print self.tree.get("version")
+				logging.debug("Importing version %s gpx file" % self.tree.get("version"))
 				mainNS = string.Template(".//{http://www.topografix.com/GPX/1/1}$tag")
 				timeTag = mainNS.substitute(tag="time")
 				trackTag = mainNS.substitute(tag="trk")
