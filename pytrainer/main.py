@@ -63,7 +63,7 @@ from lib.heartrate import *
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.1_svn#515"
+		self.version ="1.7.1_svn#516"
 		self.DB_version = 3
 		
 		#Setup usage and permitted options
@@ -345,7 +345,7 @@ class pyTrainer:
 		self.windowmain.actualize_listview(record_list)
 		logging.debug('<<')
 	 
-	def refreshWaypointView(self,default_waypoint=False,redrawmap=1):
+	def refreshWaypointView(self,default_waypoint=None,redrawmap=1):
 		logging.debug('>>')
 		waypoint_list = self.waypoint.getAllWaypoints()
 		self.windowmain.actualize_waypointview(waypoint_list,default_waypoint,redrawmap)

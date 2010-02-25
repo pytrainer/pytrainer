@@ -46,6 +46,16 @@ class Waypoint:
 		self.ddbb.update("waypoints","lat,lon,comment,name,sym",[lat,lon,desc,name,sym]," id_waypoint=%d" %id_waypoint)
 		self.ddbb.disconnect()
 		logging.debug("<<")
+		
+	def addWaypoint(self,lon=None,lat=None,name=None,comment=None,sym=None): 
+		logging.debug(">>") 
+		self.ddbb.connect() 
+		cells = "lat,lon,comment,name,sym" 
+		values = (lat,lon,comment,name,sym) 
+		self.ddbb.insert("waypoints",cells,values) 
+		id_waypoint = self.ddbb.lastRecord("waypoints") 
+		self.ddbb.disconnect() 
+		logging.debug("<<") 
 
 	def getwaypointInfo(self,id_waypoint):
 		logging.debug(">>")

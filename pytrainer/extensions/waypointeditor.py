@@ -36,11 +36,44 @@ class WaypointEditor:
 		self.conf = checkConf()
 		self.extension = Extension()
 		self.moz = gtkmozembed.MozEmbed()
+		self.moz.connect('title', self.handle_title_changed) 
 		vbox.pack_start(self.moz, True, True)
 		vbox.show_all()
 		self.htmlfile = ""
 		self.waypoint=waypoint
 		logging.debug("<<")
+		
+	def handle_title_changed(self, *args): 
+		title = self.moz.get_title() 
+		m = re.match("call:([a-zA-Z]*)[(](.*)[)]", title) 
+		if m: 
+			fname = m.group(1) 
+			args = m.group(2) 
+			if fname == "addWaypoint": 
+				am = re.match("([+-]?[0-9]+[.][0-9]+),([+-]?[0-9]+[.][0-9]+)", args) 
+				if am: 
+					lon, lat = am.group(1), am.group(2) 
+					lon, lat = float(lon), float(lat) 
+					self.waypoint.addWaypoint(lon, lat, "NEW WAYPOINT") 
+				else: 
+					raise ValueError("Error parsing addWaypoint parameters: %s" % args) 
+			elif fname == "updateWaypoint": 
+				am = re.match("([+-]?[0-9]+[.][0-9]+),([+-]?[0-9]+[.][0-9]+),([0-9]*)", args) 
+				if am: 
+					lon, lat, id_waypoint = am.group(1), am.group(2), am.group(3) 
+					lon, lat, id_waypoint = float(lon), float(lat), int(id_waypoint) 
+					retorno = self.waypoint.getwaypointInfo(id_waypoint) 
+					if retorno: 
+						name, comment, sym = retorno[5], retorno[3], retorno[6] 
+						self.waypoint.updateWaypoint(id_waypoint, lat, lon, name, comment, sym) 
+					else: 
+						raise KeyError("Unknown waypoint id %d", id_waypoint) 
+					self.waypoint.addWaypoint(lon, lat, "NEW WAYPOINT") 
+				else: 
+					raise ValueError("Error parsing addWaypoint parameters: %s" % args) 
+			else: 
+				raise ValueError("Unexpected function name %s" % fname) 
+		return False 
 	
 	def drawMap(self):
 		logging.debug(">>")
@@ -74,6 +107,8 @@ class WaypointEditor:
 """
 		i = 0
 		arrayjs = ""
+		if default_waypoint is None and points: 
+			default_waypoint = points[0][0]
 		for point in points:
 			if point[0] == default_waypoint:
 				londef = point[2]
@@ -95,74 +130,11 @@ class WaypointEditor:
     //<![CDATA[
 
 	function addWaypoint(lon,lat) {
-		var pytrainerAPI = new SOAPCall();
-		netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
-    		pytrainerAPI.transportURI = "http://localhost:8081/";
-
-		var param1 = new SOAPParameter();
-  		param1.name = "lon";
-  		param1.value = lon;
- 
-		var param2 = new SOAPParameter();
-  		param2.name = "lat";
-  		param2.value = lat;
-		
-		var param3 = new SOAPParameter();
-  		param3.name = "name";
-  		param3.value = "NEW WAYPOINT";
- 
-  		var parameters = [param1,param2,param3];
-		pytrainerAPI.encode(0,
-                	"addWaypoint", null,
-                  	0, null,
-                  	parameters.length, parameters);
-		
-		var response = pytrainerAPI.invoke();
-
-		if(response.fault){
-  			alert("An error occured: " + response.fault.faultString);
-			return 0;
-			} 
-		else {
-  			var re = new Array();
-  			re = response.getParameters(false, {});
-			}
-		return re[0].value;
+		document.title = "call:addWaypoint(" + lon + "," + lat + ")";
   		}  	
 	
 	function updateWaypoint(lon,lat,id) {
-		var pytrainerAPI = new SOAPCall();
-		netscape.security.PrivilegeManager.enablePrivilege("UniversalBrowserRead");
-    		pytrainerAPI.transportURI = "http://localhost:8081/";
-
-		var param1 = new SOAPParameter();
-  		param1.name = "lon";
-  		param1.value = lon;
- 
-		var param2 = new SOAPParameter();
-  		param2.name = "lat";
-  		param2.value = lat;
-		
-		var param3 = new SOAPParameter();
-  		param3.name = "id_waypoint";
-  		param3.value = id;
- 
-  		var parameters = [param1,param2,param3];
-		pytrainerAPI.encode(0,
-                	"updateWaypoint", null,
-                  	0, null,
-                  	parameters.length, parameters);
-		
-		var response = pytrainerAPI.invoke();
-
-		if(response.fault){
-  			alert("An error occured: " + response.fault.faultString);
-			} 
-		else {
-  			var re = new Array();
-  			re = response.getParameters(false, {});
-  			//alert("Return value: " + re[0].value);
-			}
+		document.title = "call:updateWaypoint(" + lon + "," + lat + "," + id + ")"; 
   		}  	
 
 	function createMarker(waypoint) {
