@@ -38,9 +38,6 @@ gettext.install("pytrainer",DIR,unicode=1)
 
 from pytrainer.main import pyTrainer
 
-os.environ['MOZILLA_FIVE_HOME']="/usr/lib/firefox"
-os.environ['LD_LIBRARY_PATH']="/usr/lib/firefox"
-#os.environ['MOZILLA_FIVE_HOME']="/usr/lib64/xulrunner-1.9.1"
 os.environ['MOZILLA_FIVE_HOME']=commands.getstatusoutput("find /usr/li* -name xulrunner -exec dirname {} \; 2>/dev/null")[1]
 
 def main(argv):
