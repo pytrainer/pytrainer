@@ -475,6 +475,7 @@ Test 2</property>
                     <child>
                       <widget class="GtkHBox" id="hboxDefaultTab">
                         <property name="visible">True</property>
+                        <property name="orientation">vertical</property>
                         <child>
                           <widget class="GtkRadioButton" id="radiobuttonTabGPSDevice">
                             <property name="label" translatable="yes">Import from GPS Device</property>
@@ -492,19 +493,41 @@ Test 2</property>
                           </packing>
                         </child>
                         <child>
-                          <widget class="GtkRadioButton" id="radiobuttonFile">
-                            <property name="label" translatable="yes">Import from File</property>
+                          <widget class="GtkHBox" id="hbox1">
                             <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="receives_default">False</property>
-                            <property name="active">True</property>
-                            <property name="draw_indicator">True</property>
-                            <property name="group">radiobuttonTabGPSDevice</property>
+                            <child>
+                              <widget class="GtkRadioButton" id="radiobuttonFile">
+                                <property name="label" translatable="yes">Import from File</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="draw_indicator">True</property>
+                                <property name="group">radiobuttonTabGPSDevice</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkCheckButton" id="checkbuttonAutoLaunch">
+                                <property name="label" translatable="yes">Launch 'File Select' on start</property>
+                                <property name="visible">True</property>
+                                <property name="sensitive">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="tooltip" translatable="yes">Automatically start the file selection dialog</property>
+                                <property name="xalign">0.47999998927116394</property>
+                                <property name="draw_indicator">True</property>
+                              </widget>
+                              <packing>
+                                <property name="padding">10</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
                           </widget>
                           <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
-                            <property name="padding">10</property>
                             <property name="position">1</property>
                           </packing>
                         </child>

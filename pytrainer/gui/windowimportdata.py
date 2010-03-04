@@ -51,16 +51,21 @@ class WindowImportdata(SimpleGladeApp):
 			self.defaulttab = 0
 		else:
 			self.defaulttab = int(self.defaulttab)
+		self.auto_launch = self.configuration.getValue("pytraining","auto_launch_file_selection")
+		if self.auto_launch == "True":
+			self.auto_launch = True
+		else:
+			self.auto_launch = False
 		self.notebookMainTabs.set_current_page(self.defaulttab)
-		self.init_tab(self.defaulttab)
+		self.init_tab(self.defaulttab, first=True)
 
-	def init_tab(self, page):
+	def init_tab(self, page, first=False):
 		if page == 0:
 			#'Import from GPS Device' tab
 			self.init_gpsdevice_tab()
 		elif page == 1:
 			#'Import from File' tab
-			self.init_file_tab()
+			self.init_file_tab(first)
 		elif page ==2:
 			#'Plugins' tab
 			self.init_plugins_tab()
@@ -80,7 +85,7 @@ class WindowImportdata(SimpleGladeApp):
 	def init_gpsdevice_tab(self):
 		return
 
-	def init_file_tab(self):
+	def init_file_tab(self, first=False):
 		#self.filechooserbuttonSelectFile.unselect_all() 
 		self.updateStatusbar(self.statusbarImportFile, _("No file selected") )
 		self.processClasses = []
@@ -94,6 +99,11 @@ class WindowImportdata(SimpleGladeApp):
 			self.files_store.clear()
 		self.buttonRemoveSelectedFiles.set_sensitive(0)
 		self.buttonFileImport.set_sensitive(0)
+		if first and self.auto_launch:
+			while gtk.events_pending():	# This allows the GUI to update 
+				gtk.main_iteration()	# before completion of this entire action
+			print "autolaunch active"
+			self.buttonSelectFiles.clicked()
 		return
 
 	def init_plugins_tab(self):
@@ -147,10 +157,13 @@ class WindowImportdata(SimpleGladeApp):
 		#Set correct radiobutton based on saved preference
 		if self.defaulttab == 1:
 			self.radiobuttonFile.set_active(1)
+			self.checkbuttonAutoLaunch.set_sensitive(1)
 		elif self.defaulttab == 2:
 			self.radiobuttonPlugins.set_active(1)
 		else:
 			self.radiobuttonTabGPSDevice.set_active(1)
+		if self.auto_launch:
+			self.checkbuttonAutoLaunch.set_active(1)
 		return
 	
 	def detect_tools(self):
@@ -346,14 +359,18 @@ class WindowImportdata(SimpleGladeApp):
 		"""
 			Save options selected in options tab
 		"""
+		self.autoLaunchFileSelection = "False"
 		#Default tab option
 		if self.radiobuttonTabGPSDevice.get_active():
 			self.defaulttab = "0"
 		elif self.radiobuttonFile.get_active():
 			self.defaulttab = "1"
+			if self.checkbuttonAutoLaunch.get_active():
+				self.autoLaunchFileSelection = "True"
 		elif self.radiobuttonPlugins.get_active():
 			self.defaulttab = "2"
 		self.configuration.setValue("pytraining","import_default_tab",self.defaulttab)	
+		self.configuration.setValue("pytraining","auto_launch_file_selection",self.autoLaunchFileSelection)	
 		#option
 
 	def removeSelectedFiles(self):
@@ -450,6 +467,9 @@ class WindowImportdata(SimpleGladeApp):
 	## Window signal handlers ##
 	############################
 
+	def on_radiobuttonFile_toggled(self, *args):
+		print "radio button toggled"
+		
 	def on_pluginsButton_Configure_clicked(self, button, pluginClass):
 		'''
 			Handler for plugin Buttons
