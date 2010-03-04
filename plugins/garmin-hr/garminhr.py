@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: iso-8859-1 -*-
 
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
