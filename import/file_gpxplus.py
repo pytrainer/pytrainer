@@ -111,7 +111,7 @@ class gpxplus():
 			return timeElement.text
 		return None
 
-	def getGPXFile(self, ID):
+	def getGPXFile(self, ID, file_id):
 		"""
 			Generate GPX file based on activity ID
 
@@ -120,7 +120,7 @@ class gpxplus():
 		sport = None
 		gpxFile = None
 		if ID == "0": #Only one activity in file
-			gpxFile = "%s/gpx-%s.gpx" % (self.tmpdir, ID)
+			gpxFile = "%s/gpx-%s-%s.gpx" % (self.tmpdir, file_id, ID)
 			sport = self.getSport(self.xmldoc)
 			self.createGPXfile(gpxFile, self.xmldoc)
 		return sport, gpxFile

@@ -418,7 +418,7 @@ class WindowImportdata(SimpleGladeApp):
 				distance = item[3]
 				duration = item[4]
 				sport = item[5]
-				gpx_file = self.processClasses[file_id].getGPXFile(activity_id)[1]
+				gpx_file = self.processClasses[file_id].getGPXFile(activity_id, file_id)[1]
 				selectedActivities.append((activity_id, start_time, distance, duration, sport, gpx_file))
 		logging.debug( "Found %d selected activities to import" % len(selectedActivities) )
 		return selectedActivities
@@ -584,10 +584,10 @@ class WindowImportdata(SimpleGladeApp):
 			self.importSelectedActivities(selectedActivities)
 			self.updateStatusbar(self.statusbarImportFile, msgImported)
 			#Display informational dialog box
-			md = gtk.MessageDialog(self.win_importdata, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msgImported)
-			md.set_title(_("Import Success"))
-			md.run()
-			md.destroy()
+			#md = gtk.MessageDialog(self.win_importdata, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msgImported)
+			#md.set_title(_("Import Success"))
+			#md.run()
+			#md.destroy()
 		self.buttonFileImport.set_sensitive(0) #Disable import button
 		
 	def on_buttonSelectFiles_clicked(self, widget):

@@ -135,7 +135,7 @@ class garmintools():
 			return time
 		return None
 
-	def getGPXFile(self, ID):
+	def getGPXFile(self, ID, file_id):
 		"""
 			Generate GPX file based on activity ID
 
@@ -144,7 +144,7 @@ class garmintools():
 		sport = None
 		gpxFile = None
 		if ID == "0": #Only one activity in file
-			gpxFile = "%s/garmintools-%s.gpx" % (self.tmpdir, ID)
+			gpxFile = "%s/garmintools-%s-%s.gpx" % (self.tmpdir, file_id, ID)
 			sport = self.getSport(self.xmldoc)
 			self.createGPXfile(gpxFile, self.xmldoc)
 		return sport, gpxFile

@@ -56,7 +56,7 @@ class Record:
 	def newMultiRecord(self, activities, list_sport):
 		logging.debug('>>')
 		#activities (activity_id, start_time, distance, duration, sport, gpx_file)
-		self.recordwindow = WindowRecord(self.data_path, list_sport, windowTitle="Modify details before importing")
+		self.recordwindow = WindowRecord(self.data_path, list_sport, parent=self, windowTitle="Modify details before importing")
 		self.recordwindow.populateMultiWindow(activities)
 		self.recordwindow.run()
 		logging.debug('<<')

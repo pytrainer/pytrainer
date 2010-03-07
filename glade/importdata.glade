@@ -183,12 +183,19 @@ Test 2</property>
                         <property name="visible">True</property>
                         <property name="orientation">vertical</property>
                         <child>
-                          <widget class="GtkTreeView" id="treeviewImportFiles">
+                          <widget class="GtkScrolledWindow" id="scrolledwindowImportFiles">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="hscrollbar_policy">automatic</property>
+                            <property name="vscrollbar_policy">never</property>
+                            <child>
+                              <widget class="GtkTreeView" id="treeviewImportFiles">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                              </widget>
+                            </child>
                           </widget>
                           <packing>
-                            <property name="pack_type">end</property>
                             <property name="position">1</property>
                           </packing>
                         </child>

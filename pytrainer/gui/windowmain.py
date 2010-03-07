@@ -926,6 +926,7 @@ class Main(SimpleGladeApp):
 	def on_gpsplugins_activate(self,widget):
 		self.parent.editGpsPlugins()
 	#hasta aqui revisado
+	
 	def on_allRecordTreeView_button_press(self, treeview, event):
 		logging.debug(">>")
 		#print "on_allRecordTreeView_"

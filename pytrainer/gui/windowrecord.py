@@ -36,6 +36,7 @@ class WindowRecord(SimpleGladeApp):
 		self.mode = "newrecord"
 		self.id_record = ""
 		self.store = None
+		self.active_row = None
 		SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
 		self.conf_options = [
 			"rcd_date",
@@ -81,8 +82,9 @@ class WindowRecord(SimpleGladeApp):
 			self.rcd_calories.set_text(calories)
 			
 	def populateMultiWindow(self, activities):
-		
+		self.mode = "multiple_activities"
 		#activities (activity_id, start_time, distance, duration, sport, gpx_file)
+		self.activity_data = [] 
 		#Make treeview
 		self.store = self.build_tree_view()
 		#Add data
@@ -97,10 +99,43 @@ class WindowRecord(SimpleGladeApp):
 					4, activity[4],
 					5, activity[5]
 					)
-		#Make row clickable to show details
-		#Select first activity
-		
+			details = {}
+			details["complete"]  = False
+			details["rcd_distance"] = activity[2]
+			duration = activity[3]
+			hours, mins, secs = duration.split(":")
+			#details["rcd_hour"] = float(hours)
+			#details["rcd_min"] = float(mins)
+			#details["rcd_second"] = float(secs)
+			#details["rcd_time"] = (((float(hours) * 60) + float(mins)) * 60) + float(secs)
+			details["rcd_time"] = (float(hours), float(mins), float(secs))
+			details["rcd_sport"] = activity[4]
+			details["rcd_gpxfile"] = activity[5]
+			self.activity_data.append(details)
 		self.scrolledwindowEntries.show_all()
+		#Hide some of the buttons
+		self.button25.hide() #GPX file "Open" button
+		self.button24.hide() #GPX file "Calculate Values" button
+		self.button10.hide() #Distance "Calculate" button
+		self.button11.hide() #Duration "Calculate" button
+		self.button12.hide() #Velocity "Calculate" button
+		self.button43.hide() #Pace "Calculate" button
+		#Make GPX file 'unsensitive'
+		self.rcd_gpxfile.set_sensitive(0)
+		#Make General settings unsensitive
+		self.frameGeneral.set_sensitive(0) #TODO fix update to allow edits here
+		#Make Velocity settings unsensitive
+		self.frameVelocity.set_sensitive(0) #TODO fix update to allow edits here
+		#Make advanced tab settings unsensitive
+		self.vbox26.set_sensitive(0) #TODO fix update to allow edits here	
+		#Make comments unsensitive
+		self.frame23.set_sensitive(0) #TODO fix update to allow edits here	
+		
+		while gtk.events_pending():	# This allows the GUI to update 
+			gtk.main_iteration()	# before completion of this entire action
+		#Select first row and display details
+		self.treeviewEntries.set_cursor(0)
+		self.show_treeviewEntries_row(0)
 		
 	def build_tree_view(self):
 		store = gtk.ListStore(	gobject.TYPE_STRING,
@@ -123,42 +158,58 @@ class WindowRecord(SimpleGladeApp):
 		return store
 		
 	def on_accept_clicked(self,widget):
-		list_options = {}
-		trackSummary = {}
-		for i in self.conf_options:
-			var = getattr(self,i)
-			if i == "rcd_title":
-				list_options[i] = var.get_text().replace("\"","'")
-			elif i != "rcd_sport" and i != "rcd_comments":
-				list_options[i] = var.get_text()
-			elif i == "rcd_sport":
-				list_options[i] = var.get_active_text()
-			elif i == "rcd_comments":
-				buffer = var.get_buffer()
-				start,end = buffer.get_bounds()
-				list_options[i] = buffer.get_text(start,end, True)
-				list_options[i] = list_options[i].replace("\"","'")
-			list_options["rcd_time"] = [self.rcd_hour.get_value_as_int(),self.rcd_min.get_value_as_int(),self.rcd_second.get_value_as_int()]
-		if self.mode == "newrecord":
-			logging.debug('Track data: '+str(list_options))
-			if list_options["rcd_gpxfile"] != "":
-				logging.info('Adding new activity based on GPX file')	
-				trackSummary=(list_options["rcd_sport"],"","")
-				self.parent.insertNewRecord(list_options["rcd_gpxfile"], trackSummary)
-			else:
-				logging.info('Adding new activity based on provided data')
-				#Manual entry, calculate time info
-				record_time = self.rcd_time.get_text()
-				record_date = self.rcd_date.get_text()
-				localtz = Date().getLocalTZ()
-				date = dateutil.parser.parse(record_date+" "+record_time+" "+localtz)
-				local_date = str(date)
-				utc_date = date.astimezone(tzutc()).strftime("%Y-%m-%dT%H:%M:%SZ")
-				list_options["date_time_utc"] = utc_date
-				list_options["date_time_local"] = local_date
-				self.parent.insertRecord(list_options)
-		elif self.mode == "editrecord":
-			self.parent.updateRecord(list_options, self.id_record)
+		if self.mode == "multiple_activities":
+			print "Multi window true and accept clicked"
+			print "#TODO"
+			row = 0 
+			for activity in self.activity_data:
+				if activity["complete"] is False:
+					#Did not view or modify this record - need to get all the details
+					print "Activity incomplete.. " + activity["rcd_gpxfile"]
+					self.update_activity_data(row, activity["rcd_gpxfile"], activity["rcd_sport"])
+				activity["rcd_title"] = activity["rcd_title"].replace("\"","'")
+				#Add activity to DB etc
+				laps = activity.pop("laps", ())
+				self.parent.insertRecord(activity, laps)
+				row += 1
+					
+		else:
+			list_options = {}
+			trackSummary = {}
+			for i in self.conf_options:
+				var = getattr(self,i)
+				if i == "rcd_title":
+					list_options[i] = var.get_text().replace("\"","'")
+				elif i != "rcd_sport" and i != "rcd_comments":
+					list_options[i] = var.get_text()
+				elif i == "rcd_sport":
+					list_options[i] = var.get_active_text()
+				elif i == "rcd_comments":
+					buffer = var.get_buffer()
+					start,end = buffer.get_bounds()
+					list_options[i] = buffer.get_text(start,end, True)
+					list_options[i] = list_options[i].replace("\"","'")
+				list_options["rcd_time"] = [self.rcd_hour.get_value_as_int(),self.rcd_min.get_value_as_int(),self.rcd_second.get_value_as_int()]
+			if self.mode == "newrecord":
+				logging.debug('Track data: '+str(list_options))
+				if list_options["rcd_gpxfile"] != "":
+					logging.info('Adding new activity based on GPX file')	
+					trackSummary=(list_options["rcd_sport"],"","")
+					self.parent.insertNewRecord(list_options["rcd_gpxfile"], trackSummary)
+				else:
+					logging.info('Adding new activity based on provided data')
+					#Manual entry, calculate time info
+					record_time = self.rcd_starttime.get_text()
+					record_date = self.rcd_date.get_text()
+					localtz = Date().getLocalTZ()
+					date = dateutil.parser.parse(record_date+" "+record_time+" "+localtz)
+					local_date = str(date)
+					utc_date = date.astimezone(tzutc()).strftime("%Y-%m-%dT%H:%M:%SZ")
+					list_options["date_time_utc"] = utc_date
+					list_options["date_time_local"] = local_date
+					self.parent.insertRecord(list_options)
+			elif self.mode == "editrecord":
+				self.parent.updateRecord(list_options, self.id_record)
 		self.close_window()
 	
 	def on_cancel_clicked(self,widget):
@@ -185,12 +236,13 @@ class WindowRecord(SimpleGladeApp):
 		self.rcd_min.set_value(min)
 		self.rcd_second.set_value(sec)
 
-	def setValue(self,var,value, format="%0.2f"):
-		var = getattr(self,var)
+	def setValue(self,var_name,value, format="%0.2f"):
+		var = getattr(self,var_name)
 		try:
-			valueString = format %value
+			valueString = format % value
 			var.set_text(valueString)
-		except:
+		except Exception as e:
+			print var_name, value, e
 			pass
 	
 	def setValues(self,values):
@@ -215,7 +267,7 @@ class WindowRecord(SimpleGladeApp):
 		if local_time is not None:
 			dateTime = dateutil.parser.parse(local_time)
 			sTime = dateTime.strftime("%X")
-			self.rcd_time.set_text("%s" % sTime)
+			self.rcd_starttime.set_text("%s" % sTime)
 		sportID = values[2]
 		sportPosition = self.getSportPosition(sportID)
 		self.rcd_sport.set_active(sportPosition) 
@@ -226,7 +278,7 @@ class WindowRecord(SimpleGladeApp):
 
 	def getSportPosition(self, sportID):
 		"""
-			Function to determin the position in the sport array for a given sport ID
+			Function to determine the position in the sport array for a given sport ID
 			Needed as once sports are deleted there are gaps in the list...
 		"""
 		count = 0
@@ -235,7 +287,19 @@ class WindowRecord(SimpleGladeApp):
 				return count
 			count +=1
 		return 0
-
+		
+	def getSportPositionByName(self, sport):
+		"""
+			Function to determine the position in the sport array for a given sport 
+			Needed as once sports are deleted there are gaps in the list...
+		"""
+		count = 0
+		for key, value in self.listSport.iteritems():
+			if value == sport: 
+				return count
+			count +=1
+		return None
+	
 	def on_calctime_clicked(self,widget):
 		try:
 			distance = self.rcd_distance.get_text()
@@ -245,6 +309,119 @@ class WindowRecord(SimpleGladeApp):
 		except:
 			pass
 
+	def update_activity_data(self, row, gpx_file, sport):
+		self.activity_data[row]["rcd_comments"] = ""
+		gpx_summary, laps = self.parent.summaryFromGPX(gpx_file, (sport,""))
+		local_time = gpx_summary['date_time_local']
+		start_date = local_time.strftime("%Y-%m-%d")
+		start_time = local_time.strftime("%H:%M:%S")
+		self.activity_data[row]["rcd_date"] = start_date
+		self.activity_data[row]["rcd_starttime"] = start_time
+		self.activity_data[row]["date_time_local"] = gpx_summary['date_time_local']
+		self.activity_data[row]["date_time_utc"] = gpx_summary['date_time_utc']
+		self.activity_data[row]["rcd_average"] = gpx_summary["rcd_average"]
+		self.activity_data[row]["rcd_calories"] = gpx_summary["rcd_calories"]
+		self.activity_data[row]["rcd_beats"] = gpx_summary["rcd_beats"]
+		self.activity_data[row]["rcd_upositive"] = gpx_summary["rcd_upositive"]
+		self.activity_data[row]["rcd_unegative"] = gpx_summary["rcd_unegative"]
+		self.activity_data[row]["rcd_maxvel"] = gpx_summary["rcd_maxvel"]
+		self.activity_data[row]["rcd_maxpace"] = gpx_summary["rcd_maxpace"]
+		self.activity_data[row]["rcd_pace"] = gpx_summary["rcd_pace"]
+		self.activity_data[row]["rcd_maxbeats"] = gpx_summary["rcd_maxbeats"]
+		self.activity_data[row]["rcd_title"] = ""
+		self.activity_data[row]["laps"] = laps
+		self.activity_data[row]["complete"] = True
+
+		
+	def show_treeviewEntries_row(self, row):
+		'''
+		Show details of treeview entry
+		TODO need to maintain any changes and display those....
+		'''
+		self.active_row = row
+		#Get details from stored data
+		#set sport
+		sport = self.activity_data[row]["rcd_sport"]
+		sportPosition = self.getSportPositionByName(sport)
+		if sportPosition is not None:
+			self.rcd_sport.set_active(sportPosition)
+		#Set gpx file name
+		gpx_file = self.activity_data[row]["rcd_gpxfile"]
+		self.setValue("rcd_gpxfile", gpx_file, "%s")
+		#set duration
+		time = Date().time2second(self.activity_data[row]["rcd_time"])		#TODO Fix to use timeinseconds!!
+		self.setTime(time) 													#TODO Fix to use timeinseconds!!
+		#self.rcd_hour.set_value(self.activity_data[row]["rcd_hour"])
+		#self.rcd_min.set_value(self.activity_data[row]["rcd_min"])
+		#self.rcd_second.set_value(self.activity_data[row]["rcd_second"])
+		#Set distance
+		self.setValue("rcd_distance",self.activity_data[row]["rcd_distance"], "%s")
+		#set start date
+		#start_date = start
+		#self.setValue("rcd_date", start, "%s")
+		while gtk.events_pending():	# This allows the GUI to update 
+			gtk.main_iteration()	# before completion of this entire action
+		if self.activity_data[row]["complete"] is False:
+			#Haven't processed GPX file yet
+			#Blank values not yet known
+			self.setValue("rcd_date", "", "%s")
+			self.setValue("rcd_starttime", "", "%s")
+			self.setValue("rcd_average", "", "%s")
+			self.setValue("rcd_calories","", "%s")
+			self.setValue("rcd_beats", "", "%s")
+			self.setValue("rcd_upositive", "", "%s")
+			self.setValue("rcd_unegative", "", "%s")
+			self.setValue("rcd_maxvel", "", "%s")
+			self.rcd_maxpace.set_text("")
+			self.rcd_pace.set_text("")
+			self.setValue("rcd_maxbeats", "", "%s")
+			while gtk.events_pending():	# This allows the GUI to update 
+				gtk.main_iteration()	# before completion of this entire action
+			#Get some info from gpx file
+			self.update_activity_data(row, gpx_file, sport)
+			
+		self.setValue("rcd_date", self.activity_data[row]["rcd_date"], "%s")
+		self.setValue("rcd_starttime", self.activity_data[row]["rcd_starttime"], "%s")
+		self.setValue("rcd_average",self.activity_data[row]["rcd_average"])
+		self.setValue("rcd_calories",self.activity_data[row]["rcd_calories"], "%0.0f")
+		self.setValue("rcd_beats",self.activity_data[row]["rcd_beats"], "%0.0f")
+		self.setValue("rcd_upositive",self.activity_data[row]["rcd_upositive"])
+		self.setValue("rcd_unegative",self.activity_data[row]["rcd_unegative"])
+		self.setValue("rcd_maxvel",self.activity_data[row]["rcd_maxvel"])
+		self.rcd_maxpace.set_text(self.activity_data[row]["rcd_maxpace"])
+		self.rcd_pace.set_text(self.activity_data[row]["rcd_pace"])
+		self.setValue("rcd_maxbeats",self.activity_data[row]["rcd_maxbeats"], "%0.0f")
+		self.rcd_title.set_text(self.activity_data[row]["rcd_title"])
+		
+	def on_rcd_title_changed(self, widget):
+		if self.mode == "multiple_activities" and self.active_row is not None:
+			self.activity_data[self.active_row]["rcd_title"] = self.rcd_title.get_text()
+			
+	def on_rcd_sport_changed(self, widget):
+		if self.mode == "multiple_activities" and self.active_row is not None:
+			sport = self.rcd_sport.get_active_text()
+			#Update sport in data store
+			self.activity_data[self.active_row]["rcd_sport"] = sport
+			#Update sport in treeview
+			self.store[self.active_row][4] = sport
+			
+	def on_treeviewEntries_row_activated(self, treeview, event):
+		'''
+		 Callback to display details of different activity
+		'''
+		#Get row that was selected
+		x = int(event.x)
+		y = int(event.y)
+		time = event.time
+		pthinfo = treeview.get_path_at_pos(x, y)
+		if pthinfo is not None:
+			path, col, cellx, celly = pthinfo
+			treeview.grab_focus()
+			treeview.set_cursor(path, col, 0)
+			while gtk.events_pending():	# This allows the GUI to update 
+				gtk.main_iteration()	# before completion of this entire action
+			self.show_treeviewEntries_row(path[0])
+		
 	def on_calcaverage_clicked(self,widget):
 		try:
 			hour = self.rcd_hour.get_value_as_int()

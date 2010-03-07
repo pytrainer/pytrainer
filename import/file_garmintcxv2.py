@@ -138,7 +138,7 @@ class garmintcxv2():
 	def getDateTime(self, time_):
 		return Date().getDateTime(time_)
 
-	def getGPXFile(self, ID):
+	def getGPXFile(self, ID, file_id):
 		"""
 			Generate GPX file based on activity ID
 
@@ -149,7 +149,7 @@ class garmintcxv2():
 		activityID = int(ID)
 		activitiesCount = len(self.activities)
 		if activitiesCount > 0 and activityID < activitiesCount:
-			gpxFile = "%s/garmin-tcxv2-%d.gpx" % (self.tmpdir, activityID)
+			gpxFile = "%s/garmin-tcxv2-%s-%d.gpx" % (self.tmpdir, file_id, activityID)
 			activity = self.activities[int(activityID)]
 			sport = self.getSport(activity)
 			self.createGPXfile(gpxFile, activity)
