@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+<xsd:schema xmlns="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
   xmlns:kml="http://www.opengis.net/kml/2.2"
   xmlns:atom="http://www.w3.org/2005/Atom"
   xmlns:xal="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0"
@@ -16,11 +17,11 @@
 
   <!-- import atom:author and atom:link -->
   <xsd:import namespace="http://www.w3.org/2005/Atom"
-    schemaLocation="atom-author-link.xsd"/>
+    schemaLocation="atom-author-link.xsd"/> 
 
   <!-- import xAL:Address -->
   <xsd:import namespace="urn:oasis:names:tc:ciq:xsdschema:xAL:2.0"
-    schemaLocation="http://docs.oasis-open.org/election/external/xAL.xsd"/>
+    schemaLocation="xAL.xsd"/> 
 
   <!-- KML field types (simple content) -->
 

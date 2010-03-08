@@ -159,8 +159,6 @@ class WindowRecord(SimpleGladeApp):
 		
 	def on_accept_clicked(self,widget):
 		if self.mode == "multiple_activities":
-			print "Multi window true and accept clicked"
-			print "#TODO"
 			row = 0 
 			for activity in self.activity_data:
 				if activity["complete"] is False:
