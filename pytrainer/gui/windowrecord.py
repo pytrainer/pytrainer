@@ -123,7 +123,7 @@ class WindowRecord(SimpleGladeApp):
 		#Make GPX file 'unsensitive'
 		self.rcd_gpxfile.set_sensitive(0)
 		#Make General settings unsensitive
-		self.frameGeneral.set_sensitive(0) #TODO fix update to allow edits here
+		#self.frameGeneral.set_sensitive(0) #TODO fix update to allow edits here
 		#Make Velocity settings unsensitive
 		self.frameVelocity.set_sensitive(0) #TODO fix update to allow edits here
 		#Make advanced tab settings unsensitive
@@ -404,6 +404,35 @@ class WindowRecord(SimpleGladeApp):
 			self.activity_data[self.active_row]["rcd_sport"] = sport
 			#Update sport in treeview
 			self.store[self.active_row][4] = sport
+			
+	def on_rcd_distance_changed(self, widget):
+		if self.mode == "multiple_activities" and self.active_row is not None:
+			distance = self.rcd_distance.get_text()
+			#Update distance in data store
+			self.activity_data[self.active_row]["rcd_distance"] = distance
+			#Update distance in treeview
+			self.store[self.active_row][2] = distance
+			
+	def on_rcd_duration_value_changed(self, widget):
+		if self.mode == "multiple_activities" and self.active_row is not None:
+			hour = self.rcd_hour.get_value()
+			min = self.rcd_min.get_value()
+			sec = self.rcd_second.get_value()
+			#print hour, min, sec
+			#Update duration in data store
+			self.activity_data[self.active_row]["rcd_time"] = (hour, min, sec)
+			#Update duration in treeview
+			self.store[self.active_row][3] = "%d:%d:%d" % (int(hour), int(min), int(sec))
+			
+	def on_rcd_date_changed(self, widget):
+		if self.mode == "multiple_activities" and self.active_row is not None:
+			#Update date in data store
+			self.activity_data[self.active_row]["rcd_date"] = self.rcd_date.get_text()
+			
+	def on_rcd_starttime_changed(self, widget):
+		if self.mode == "multiple_activities" and self.active_row is not None:
+			#Update start time in data store
+			self.activity_data[self.active_row]["rcd_starttime"] = self.rcd_starttime.get_text()
 			
 	def on_treeviewEntries_row_activated(self, treeview, event):
 		'''

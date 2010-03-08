@@ -268,6 +268,7 @@
                                     <property name="climb_rate">1</property>
                                     <property name="numeric">True</property>
                                     <property name="wrap">True</property>
+                                    <signal name="value_changed" handler="on_rcd_duration_value_changed"/>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -290,10 +291,11 @@
                                     <property name="width_request">47</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="adjustment">0 0 59 2 2 0</property>
+                                    <property name="adjustment">0 0 59 1 2 0</property>
                                     <property name="climb_rate">1</property>
                                     <property name="numeric">True</property>
                                     <property name="wrap">True</property>
+                                    <signal name="value_changed" handler="on_rcd_duration_value_changed"/>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -319,6 +321,7 @@
                                     <property name="adjustment">0 0 59 1 2 0</property>
                                     <property name="climb_rate">1</property>
                                     <property name="wrap">True</property>
+                                    <signal name="value_changed" handler="on_rcd_duration_value_changed"/>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -340,6 +343,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="width_chars">7</property>
+                                <signal name="changed" handler="on_rcd_distance_changed"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -389,6 +393,7 @@
                                     <property name="can_focus">True</property>
                                     <property name="editable">False</property>
                                     <property name="width_chars">10</property>
+                                    <signal name="changed" handler="on_rcd_date_changed"/>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -456,6 +461,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="width_chars">10</property>
                                 <property name="text" translatable="yes">12:00:00</property>
+                                <signal name="changed" handler="on_rcd_starttime_changed"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">3</property>
