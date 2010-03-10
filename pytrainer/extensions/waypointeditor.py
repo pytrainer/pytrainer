@@ -45,6 +45,7 @@ class WaypointEditor:
 		
 	def handle_title_changed(self, *args): 
 		title = self.moz.get_title() 
+		print "Received title", title
 		m = re.match("call:([a-zA-Z]*)[(](.*)[)]", title) 
 		if m: 
 			fname = m.group(1) 
@@ -64,7 +65,8 @@ class WaypointEditor:
 					lon, lat, id_waypoint = float(lon), float(lat), int(id_waypoint) 
 					retorno = self.waypoint.getwaypointInfo(id_waypoint) 
 					if retorno: 
-						name, comment, sym = retorno[5], retorno[3], retorno[6] 
+						print retorno
+						name, comment, sym = retorno[0][5], retorno[0][3], retorno[0][6] 
 						self.waypoint.updateWaypoint(id_waypoint, lat, lon, name, comment, sym) 
 					else: 
 						raise KeyError("Unknown waypoint id %d", id_waypoint) 

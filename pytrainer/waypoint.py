@@ -60,8 +60,8 @@ class Waypoint:
 	def getwaypointInfo(self,id_waypoint):
 		logging.debug(">>")
 		self.ddbb.connect()
-		retorno = self.ddbb.select("waypoint",
-					"lat,lon,ele,comment,time,name,sym"
+		retorno = self.ddbb.select("waypoints",
+					"lat,lon,ele,comment,time,name,sym",
 					"id_waypoint=\"%s\"" %id_waypoint)
 		self.ddbb.disconnect()
 		logging.debug("<<")
