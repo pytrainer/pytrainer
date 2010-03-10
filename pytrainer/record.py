@@ -224,28 +224,31 @@ class Record:
 		logging.debug('>>')
 		gpx = Gpx(self.data_path,gpxOrig)
 		distance, time, maxspeed, maxheartrate = gpx.getMaxValues()
-		if time == 0: #invalid record
-			print "Invalid record"
-			return (None, None)
+		#if time == 0: #invalid record
+		#	print "Invalid record"
+		#	return (None, None)
 		upositive,unegative = gpx.getUnevenness()
-		speed = distance*3600/time
-		time_hhmmss = [time//3600,(time/60)%60,time%60]
+		if time > 0:
+			speed = distance*3600/time
+			time_hhmmss = [time//3600,(time/60)%60,time%60]
+		else:
+			speed = 0
+			time_hhmmss = [0,0,0]
 		summaryRecord = {}
 		summaryRecord['rcd_gpxfile'] = gpxOrig
 		summaryRecord['rcd_sport'] = entry[0]
 		summaryRecord['rcd_date'] = gpx.getDate()
 		summaryRecord['rcd_calories'] = gpx.getCalories()
-		logging.debug('rcd_calories: ' + str(summaryRecord['rcd_calories']))
 		summaryRecord['rcd_comments'] = ''
 		summaryRecord['rcd_title'] = ''
 		summaryRecord['rcd_time'] = time_hhmmss #ToDo: makes no sense to work with arrays
 		summaryRecord['rcd_distance'] = "%0.2f" %distance 
 		if speed == 0:
-			summaryRecord['rcd_pace'] = 0
+			summaryRecord['rcd_pace'] = "0"
 		else:
 			summaryRecord['rcd_pace'] = "%d.%02d" %((3600/speed)/60,(3600/speed)%60)
 		if maxspeed == 0:
-			summaryRecord['rcd_maxpace'] = 0
+			summaryRecord['rcd_maxpace'] = "0"
 		else:
 			summaryRecord['rcd_maxpace'] = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 		summaryRecord['rcd_average'] = speed

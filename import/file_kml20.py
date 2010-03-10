@@ -19,7 +19,10 @@
 
 import logging
 import os
+import math
 import datetime
+from dateutil.tz import *
+from StringIO import StringIO
 from lxml import etree
 
 from pytrainer.lib.xmlUtils import XMLParser
@@ -59,17 +62,18 @@ class kml20():
 			xmlschema_doc = etree.parse(self.main_data_path+"schemas/kml20-geodistance.xsd")
 			xmlschema = etree.XMLSchema(xmlschema_doc)
 			if (xmlschema.validate(xmldoc)):
+				self.activities.append(xmldoc) # Assuming one activity per file
 				#Valid file
 				self.xmldoc = xmldoc
-				startTime = datetime.datetime.now()
+				self.startTime = datetime.datetime.now(tzlocal())
 				inDatabase = False #cant really check, as dont have start time etc
 				duration  = 0 #
-				distance = ""
+				distance = self.getDistance(xmldoc)
 				index = "%d:%d" % (0,0) 
 				sport = "Running"
 				self.activitiesSummary.append( (index,
 												inDatabase, 
-												startTime.strftime("%Y-%m-%dT%H:%M:%S"), 
+												self.startTime.strftime("%Y-%m-%dT%H:%M:%S%z"), 
 												distance, 
 												str(duration), 
 												sport,
@@ -81,6 +85,35 @@ class kml20():
 			return False 
 		return False
 
+	def getDistance(self, xmldoc):
+		''' function to calculate distance from gps coordinates - code from gpx.py and of uncertain origins....
+		'''
+		total_dist = 0
+		last_lat = last_lon = None
+		coords = xmldoc.find(".//{http://earth.google.com/kml/2.0}coordinates")
+		if coords is None:
+			return total_dist
+		else:
+			logging.debug("Found %s coords" % len(coords))
+			items = coords.text.strip().split()
+			lat = lon = None
+			for item in items:
+				lon, lat, other = item.split(',')
+				#Convert lat and lon from degrees to radians
+				tmp_lat = float(lat)*0.01745329252  #0.01745329252 = number of radians in a degree
+				tmp_lon = float(lon)*0.01745329252  #57.29577951 = 1/0.01745329252 or degrees per radian
+				if last_lat is not None:
+					try:
+						#dist=math.acos(tempnum)*111.302*57.29577951
+						dist=math.acos((math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon)))*111.302*57.29577951
+					except Exception as e:
+						print e
+						dist=0
+					total_dist += dist
+				last_lat = tmp_lat
+				last_lon = tmp_lon
+		return round(total_dist, 2)
+		
 	def getDateTime(self, time_):
 		return Date().getDateTime(time_)
 
@@ -89,27 +122,55 @@ class kml20():
 			Generate GPX file based on activity ID
 			Returns (sport, GPX filename)
 		'''
-		'''sport = None
+		sport = None
 		gpxFile = None
 		#index = "%d:%d" % (self.activities.index((sport, activities)), activities.index(activity))
 		sportID, activityID = ID.split(':')
 		sportID = int(sportID)
 		activityID = int(activityID)
-		sport, activities = self.activities[sportID]
+		#activities = self.activities[sportID]
 		activitiesCount = len(self.activities)
 		if activitiesCount > 0 and activityID < activitiesCount:
 			gpxFile = "%s/kml20-%s-%d.gpx" % (self.tmpdir, file_id, activityID)
-			activity = activities[activityID]
+			activity = self.activities[activityID]
 			self.createGPXfile(gpxFile, activity)
-		return sport, gpxFile'''
+		return sport, gpxFile
 
 	def createGPXfile(self, gpxfile, activity):
 		''' Function to transform a Garmin Training Center v2 Track to a valid GPX+ file
 		'''
-		'''xslt_doc = etree.parse(self.data_path+"/translate_garmintcxv1.xsl")
-		transform = etree.XSLT(xslt_doc)
-		#xml_doc = etree.parse(filename)
-		xml_doc = activity
-		result_tree = transform(xml_doc)
-		result_tree.write(gpxfile, xml_declaration=True)'''
+		tree = etree.parse(StringIO('''<?xml version='1.0' encoding='ASCII'?>
+							<gpx creator="pytrainer http://sourceforge.net/projects/pytrainer" 
+								version="1.1" 
+								xmlns="http://www.topografix.com/GPX/1/1" 
+								xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" >
+							</gpx>'''))
+							
+		root = tree.getroot()
+		
+		metadata = etree.SubElement(root, "metadata")
+		name = etree.SubElement(metadata, "name")
+		name.text = "NeedsaName" #TODO
+		link = etree.SubElement(metadata, "link", href="http://sourceforge.net/projects/pytrainer")
+		time = etree.SubElement(metadata, "time")
+		time.text = self.startTime.strftime("%Y-%m-%dT%H:%M:%S%z")
+		trk = etree.SubElement(root, "trk")
+		trkseg = etree.SubElement(trk, "trkseg")
+		#for trkpt in file
+		coords = activity.find(".//{http://earth.google.com/kml/2.0}coordinates")
+		if coords is None:
+			pass
+		else:
+			items = coords.text.strip().split()
+			lat = lon = None
+			for item in items:
+				lon, lat, other = item.split(',')
+				trkpt = etree.SubElement(trkseg, "trkpt", lat=lat, lon=lon)
+				ele = etree.SubElement(trkpt, "ele")
+				ele.text = "0" #TODO
+				#trkpt_time = etree.SubElement(trkpt, "time")
+				#trkpt_time.text = "2010-03-02T04:52:35Z" #TODO
+		
+		#print(etree.tostring(tree, pretty_print=True))
 
+		tree.write(gpxfile, method="xml", pretty_print=True, xml_declaration=True)

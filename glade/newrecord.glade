@@ -546,7 +546,7 @@
                               <widget class="GtkLabel" id="label133">
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Velocity (km/h)</property>
+                                <property name="label" translatable="yes">Average (km/h)</property>
                               </widget>
                               <packing>
                                 <property name="left_attach">2</property>
@@ -592,7 +592,7 @@
                     <child>
                       <widget class="GtkLabel" id="label162">
                         <property name="visible">True</property>
-                        <property name="label" translatable="yes">&lt;b&gt;Velocity&lt;/b&gt;</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Speed&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </widget>
                       <packing>

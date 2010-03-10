@@ -65,6 +65,7 @@ class Gpx:
 		self.unegative = 0
 		self.maxvel = 0
 		self.maxhr = 0
+		self.hr_average = 0
 		self.date = ""
 		#self.Date = Date()
 		self.calories= 0
@@ -199,6 +200,7 @@ class Gpx:
 		if trkpoints is None or len(trkpoints) == 0:
 			logging.debug( "No trkpoints found in file")
 			return retorno
+		logging.debug("%d trkpoints in file" % len(trkpoints))
 		
 		date_ = tree.find(timeTag).text
 		#mk_time = self.getDateTime(date_)[0] #UTC Date
@@ -210,6 +212,7 @@ class Gpx:
 			lat = trkpoint.get("lat")
 			lon = trkpoint.get("lon")
 			if lat is None or lat == "" or lon is None or lon == "":
+				logging.debug("lat or lon is blank")
 				continue
 			#get the heart rate value from the gpx extended format file
 			hrResult = trkpoint.find(hrTag)
@@ -258,22 +261,23 @@ class Gpx:
 				#Para las vueltas diferentes a la primera / For the returns different from first	
 				if last_lat != "False":
 					time_ = tmp_time - last_time
+					#if time_>0:
+					#Caqlculate diference betwen last and new point
+					#tempnum=(math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon))
+					#try:
+					#Pasamos la distancia de radianes a metros..  creo / We convert the distance from radians to meters
+					#David no me mates que esto lo escribi hace anhos / Do not kill me this was written ages ago
+					#http://faculty.washington.edu/blewis/ocn499/EXER04.htm equation for the distance between 2 points on a spherical earth
+					try:
+						#dist=math.acos(tempnum)*111.302*57.29577951
+						dist=math.acos((math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon)))*111.302*57.29577951
+					except:
+						dist=0
+					total_dist += dist
+					total_hr += hr
+					if hr>self.maxhr:
+						self.maxhr = hr
 					if time_>0:
-						#Caqlculate diference betwen last and new point
-						#tempnum=(math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon))
-						#try:
-						#Pasamos la distancia de radianes a metros..  creo / We convert the distance from radians to meters
-						#David no me mates que esto lo escribi hace anhos / Do not kill me this was written ages ago
-						#http://faculty.washington.edu/blewis/ocn499/EXER04.htm equation for the distance between 2 points on a spherical earth
-						try:
-							#dist=math.acos(tempnum)*111.302*57.29577951
-							dist=math.acos((math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon)))*111.302*57.29577951
-						except:
-							dist=0
-						total_dist += dist
-						total_hr += hr
-						if hr>self.maxhr:
-							self.maxhr = hr
 						#dividimos kilometros por hora (no por segundo) / Calculate kilometers per hour (not including seconds)
 						tmp_vel = dist/((time_)/3600.0)
 						vel,his_vel = self._calculate_velocity(tmp_vel,his_vel, 3)
@@ -282,12 +286,14 @@ class Gpx:
 							if vel>self.maxvel:
 								self.maxvel=vel
 							self.total_time += time_
-							retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr,cadence))
-							rel_alt = tmp_alt - last_alt #Could allow for some 'jitter' in height here
-							if rel_alt > 0:
-								self.upositive += rel_alt
-							elif rel_alt < 0:
-								self.unegative -= rel_alt
+					else:
+						vel = 0
+					rel_alt = tmp_alt - last_alt #Could allow for some 'jitter' in height here
+					if rel_alt > 0:
+						self.upositive += rel_alt
+					elif rel_alt < 0:
+						self.unegative -= rel_alt
+					retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr,cadence))
 				
 				last_lat = tmp_lat
 				last_lon = tmp_lon

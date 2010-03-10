@@ -103,7 +103,10 @@ class WindowRecord(SimpleGladeApp):
 			details["complete"]  = False
 			details["rcd_distance"] = activity[2]
 			duration = activity[3]
-			hours, mins, secs = duration.split(":")
+			if duration.count(":") == 2:
+				hours, mins, secs = duration.split(":")
+			else:
+				hours = mins = secs = 0
 			#details["rcd_hour"] = float(hours)
 			#details["rcd_min"] = float(mins)
 			#details["rcd_second"] = float(secs)
@@ -118,14 +121,14 @@ class WindowRecord(SimpleGladeApp):
 		self.button24.hide() #GPX file "Calculate Values" button
 		self.button10.hide() #Distance "Calculate" button
 		self.button11.hide() #Duration "Calculate" button
-		self.button12.hide() #Velocity "Calculate" button
+		#self.button12.hide() #Velocity "Calculate" button
 		self.button43.hide() #Pace "Calculate" button
 		#Make GPX file 'unsensitive'
 		self.rcd_gpxfile.set_sensitive(0)
 		#Make General settings unsensitive
 		#self.frameGeneral.set_sensitive(0) #TODO fix update to allow edits here
 		#Make Velocity settings unsensitive
-		self.frameVelocity.set_sensitive(0) #TODO fix update to allow edits here
+		#self.frameVelocity.set_sensitive(0) #TODO fix update to allow edits here
 		#Make advanced tab settings unsensitive
 		self.vbox26.set_sensitive(0) #TODO fix update to allow edits here	
 		#Make comments unsensitive
@@ -420,7 +423,7 @@ class WindowRecord(SimpleGladeApp):
 			#Update duration in data store
 			self.activity_data[self.active_row]["rcd_time"] = (hour, min, sec)
 			#Update duration in treeview
-			self.store[self.active_row][3] = "%d:%d:%d" % (int(hour), int(min), int(sec))
+			self.store[self.active_row][3] = "%d:%.2d:%.2d" % (int(hour), int(min), int(sec))
 			
 	def on_rcd_date_changed(self, widget):
 		if self.mode == "multiple_activities" and self.active_row is not None:

@@ -65,7 +65,6 @@ class WaypointEditor:
 					lon, lat, id_waypoint = float(lon), float(lat), int(id_waypoint) 
 					retorno = self.waypoint.getwaypointInfo(id_waypoint) 
 					if retorno: 
-						print retorno
 						name, comment, sym = retorno[0][5], retorno[0][3], retorno[0][6] 
 						self.waypoint.updateWaypoint(id_waypoint, lat, lon, name, comment, sym) 
 					else: 
