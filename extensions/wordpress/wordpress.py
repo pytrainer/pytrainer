@@ -10,6 +10,7 @@ from pytrainer.lib.date import Date
 
 class wordpress:
 	def __init__(self, parent = None, pytrainer_main = None, conf_dir = None, options = None):
+		#TODO could use some logging
 		self.parent = parent
 		self.pytrainer_main = pytrainer_main
 		self.options = options
@@ -50,20 +51,20 @@ class wordpress:
 			post.description = blog_body+blog_table+blog_route+blog_figureHR+blog_figureStage+blog_foot
 			post.categories = blog_category
 			idNewPost = self.wp.newPost(post, True)
-			print "The post has been submited" 
+			print "The post has been submited" #TODO Notification to user
         				
 		else:
 			print self.log
 	
 	def createRoute(self):
-		htmlpath = "/tmp/index.html"
-		kmlpath = "/tmp/gps.kml"
+		htmlpath = "/tmp/index.html" 	#TODO fix to use correct tmp dir
+		kmlpath = "/tmp/gps.kml"		#TODO fix to use correct tmp dir
 		description_route = ''
 		if os.path.isfile(self.gpxfile):
 			#create the html file
-			googlemaps.drawMap(self.gpxfile,self.googlekey,htmlpath)
+			googlemaps.drawMap(self.gpxfile,self.googlekey,htmlpath)	#TODO fix to use main googlemaps and remove extensions copy
 			#create the kml file
-			os.system("gpsbabel -t -i gpx -f %s -o kml,points=0,line_color=ff0000ff -F %s" %(self.gpxfile,kmlpath))
+			os.system("gpsbabel -t -i gpx -f %s -o kml,points=0,line_color=ff0000ff -F %s" %(self.gpxfile,kmlpath))	#TODO fix to remove gpsbabel 
 			
 			gfile = self.wp.newMediaObject(self.gpxfile)
 			hfile = self.wp.newMediaObject(htmlpath)
@@ -142,7 +143,7 @@ class wordpress:
 		return description_table
 
 	def createFigureHR(self):
-		hr_fig_path = "/tmp/hr.png"
+		hr_fig_path = "/tmp/hr.png"	#TODO fix, correct tmp dir and ensure png exists
 		blog_figures = ''
 		# If there are no graphs, return empty string.
 		if os.path.isfile(hr_fig_path):
@@ -152,7 +153,7 @@ class wordpress:
 		return blog_figures
 
 	def createFigureStage(self):
-		stage_fig_path = "/tmp/stage.png"
+		stage_fig_path = "/tmp/stage.png"	#TODO fix, correct tmp dir and ensure png exists
 		blog_figures = ''
 		# If there are no graphs, return empty string.
 		if os.path.isfile(stage_fig_path):
@@ -167,7 +168,7 @@ class wordpress:
 	def createTitle(self):
 		if self.title==None:
 			self.error = True
-			self.log = "A Title must be defined. Please, configure the record propierly"
+			self.log = "A Title must be defined. Please, configure the record properly"
 		return self.title
 	
 	def createCategory(self):
