@@ -471,11 +471,11 @@ class WindowRecord(SimpleGladeApp):
 		sec = self.rcd_second.get_value_as_int()
 		time = sec + (min*60) + (hour*3600)
 		if time<1:
-			return false
+			return False
 		time_in_min = time/60.0
 		distance = float(self.rcd_distance.get_text())
 		if distance<1:
-			return false
+			return False
 		average = time_in_min/distance
 		self.rcd_pace.set_text("%0.2f" %average)
 	
