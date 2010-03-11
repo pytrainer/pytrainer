@@ -116,6 +116,7 @@ class Main(SimpleGladeApp):
 
 	def runExtension(self,widget,widget2,extension):
 		txtbutton,extensioncode,extensiontype = extension
+		id = None
 		if extensiontype=="record":
 			selected,iter = self.recordTreeView.get_selection().get_selected()
 			id = selected.get_value(iter,0)

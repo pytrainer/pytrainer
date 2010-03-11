@@ -2,29 +2,58 @@
 from optparse import OptionParser
 import os
 import sys
-import SOAPpy
 
 import wordpresslib
 import googlemaps
 import pytrainer.lib.points as Points
 from pytrainer.lib.date import Date
 
-class Main:
-	def __init__(self,options):
-		self.wordpressurl = options.wordpressurl
-		self.user = options.wordpressuser
-		self.password = options.wordpresspass
-		self.gpxfile = options.gpxfile
-		self.googlekey = options.googlekey
-		self.idrecord = options.idrecord
-		self.wordpresscategory = options.wordpresscategory
-      		self.webserviceserver = SOAPpy.SOAPProxy("http://localhost:8081/")
+class wordpress:
+	def __init__(self, parent = None, pytrainer_main = None, conf_dir = None, options = None):
+		self.parent = parent
+		self.pytrainer_main = pytrainer_main
+		self.options = options
+		self.conf_dir = conf_dir
+
+	def run(self, id):
+		options = self.options
+		self.wordpressurl = options["wordpressurl"]
+		self.user = options["wordpressuser"]
+		self.password = options["wordpresspass"]
+		self.gpxfile = "%s/gpx/%s.gpx " %(self.conf_dir,id)
+		self.googlekey = options["googlekey"]
+		self.idrecord = id #options.idrecord
+		self.wordpresscategory = options["wordpresscategory"]
+		print self.wordpressurl, self.user, self.password, self.gpxfile, self.googlekey, self.googlekey, self.idrecord, self.wordpresscategory
+		
 		try: 
 			self.wp = wordpresslib.WordPressClient(self.wordpressurl, self.user, self.password)
 			self.error = False
 		except:
 			self.error = True
 			self.log = "Url, user or pass are incorrect. Please, check your configuration"
+		self.loadRecordInfo()
+		blog_title = self.createTitle()
+		blog_category = self.createCategory()
+
+		if self.error == False:
+			blog_route = self.createRoute()
+			blog_body = self.createBody()
+			blog_table = self.createTable()
+			blog_figureHR = self.createFigureHR()
+			blog_figureStage = self.createFigureStage()
+			blog_foot = self.createFoot()
+			self.wp.selectBlog(0)
+	
+			post = wordpresslib.WordPressPost()
+			post.title = blog_title
+			post.description = blog_body+blog_table+blog_route+blog_figureHR+blog_figureStage+blog_foot
+			post.categories = blog_category
+			idNewPost = self.wp.newPost(post, True)
+			print "The post has been submited" 
+        				
+		else:
+			print self.log
 	
 	def createRoute(self):
 		htmlpath = "/tmp/index.html"
@@ -47,27 +76,26 @@ class Main:
 
 	def loadRecordInfo(self):
 		date = Date()
-      		record = self.webserviceserver.getRecordInfo(self.idrecord)
-		self.sport = record["sport"]
-                self.date = record["date"]
-                self.distance = record["distance"]
-                self.time = date.second2time(float(record["time"]))
-                self.beats = record["beats"]
-                self.comments = record["comments"]
-                self.average = record["average"]
-                self.calories = record["calories"]
-                self.title = record["title"]
-                self.upositive = record["upositive"]
-                self.unegative = record["unegative"]
-                self.unegative = record["unegative"]
-                self.maxspeed = record["maxspeed"]
-                self.maxpace = record["maxpace"]
-                self.pace = record["pace"]
-                self.maxbeats = record["maxbeats"]
+		record = self.pytrainer_main.record.getrecordInfo(self.idrecord)[0]
+		#"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc,date_time_local",
+		self.sport = record[0]
+		self.date = record[1]
+		self.distance = record[2]
+		self.time = date.second2time(float(record[3]))
+		self.beats = record[4]
+		self.comments = record[5]
+		self.average = record[6]
+		self.calories = record[7]
+		self.title = record[9]
+		self.upositive = record[10]
+		self.unegative = record[11]
+		self.maxspeed = record[12]
+		self.maxpace = record[13]
+		self.pace = record[14]
+		self.maxbeats = record[15]
 
 	def createBody(self):
-		return '''<b> Description: </b><br/>
-%s<br/>''' %self.comments
+		return '''<b> Description: </b><br/>%s<br/>''' %self.comments
 	
 	def createTable(self):
 		description_table = '''
@@ -148,41 +176,3 @@ class Main:
 			self.log = "A wordpress category must be defined. Please, configure the wordpress extension"
 		else:
 			return ([self.wordpresscategory])
-        					
-	def run(self):
-		self.loadRecordInfo()
-		blog_title = self.createTitle()
-		blog_category = self.createCategory()
-
-		if self.error == False:
-			blog_route = self.createRoute()
-			blog_body = self.createBody()
-			blog_table = self.createTable()
-			blog_figureHR = self.createFigureHR()
-			blog_figureStage = self.createFigureStage()
-			blog_foot = self.createFoot()
-			self.wp.selectBlog(0)
-	
-			post = wordpresslib.WordPressPost()
-			post.title = blog_title
-			post.description = blog_body+blog_table+blog_route+blog_figureHR+blog_figureStage+blog_foot
-			post.categories = blog_category
-			idNewPost = self.wp.newPost(post, True)
-			return "The post has been submited" 
-        				
-		else:
-			return self.log
-
-parser = OptionParser()
-parser.add_option("-d", "--device", dest="device")
-parser.add_option("-k", "--googlekey", dest="googlekey")
-parser.add_option("-u", "--wordpressuser", dest="wordpressuser")
-parser.add_option("-p", "--wordpresspass", dest="wordpresspass")
-parser.add_option("-l", "--wordpressurl", dest="wordpressurl")
-parser.add_option("-c", "--wordpresscategory", dest="wordpresscategory")
-parser.add_option("-g", "--gpxfile", dest="gpxfile")
-parser.add_option("-i", "--idrecord", dest="idrecord")
-(options,args) =  parser.parse_args()
-
-main = Main(options)
-print main.run()

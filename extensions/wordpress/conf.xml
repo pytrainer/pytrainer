@@ -6,7 +6,7 @@
 	extensioncode="wordpress"
 	type="record" 
 	helpfile="README.txt"
-	executable="main.py"
+	executable="wordpress"
 >
 <conf-values variable="googlekey" value=""/>
 <conf-values variable="wordpressuser" value=""/>

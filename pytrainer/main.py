@@ -63,7 +63,7 @@ from lib.heartrate import *
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.1_svn#526"
+		self.version ="1.7.1_svn#527"
 		self.DB_version = 3
 		
 		#Setup usage and permitted options
@@ -145,12 +145,12 @@ class pyTrainer:
 
 		#Preparamos el webservice	 
 		#TODO check reason for webservice - remove / change to optional start if not needed
-		gtk.gdk.threads_init()
-		self.webservice = webService(data_path,self.refreshWaypointView,self.newRecord)
-		self.webservice.start()
+		#gtk.gdk.threads_init()
+		#self.webservice = webService(data_path,self.refreshWaypointView,self.newRecord)
+		#self.webservice.start()
 
 		self.waypoint = Waypoint(data_path,self)
-		self.extension = Extension(data_path)
+		self.extension = Extension(data_path, self)
 		self.plugins = Plugins(data_path, self)
 		self.importdata = Importdata(data_path, self, self.configuration)
 		self.loadPlugins()
@@ -217,9 +217,12 @@ class pyTrainer:
 	def runExtension(self,extension,id):
 		logging.debug('>>')
 		txtbutton,pathExtension,type = extension
-		if type == "record":
-			 #Si es record le tenemos que crear el googlemaps, el gpx y darle el id de la bbdd
-			 alert = self.extension.runExtension(pathExtension,id)
+		self.extensionClass = self.extension.importClass(pathExtension)
+		self.extensionClass.run(id)
+		#if type == "record":
+		#	#Si es record le tenemos que crear el googlemaps, el gpx y darle el id de la bbdd
+		#	alert = self.extension.runExtension(pathExtension,id)
+
 		logging.debug('<<')
 	 
 	def refreshMainSportList(self):
