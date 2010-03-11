@@ -1,2 +1,0 @@
-Web Publish pytrainer extension
-===============================
