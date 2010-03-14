@@ -32,16 +32,21 @@ bin_path = os.path.realpath(os.path.dirname(__file__)) # directory that the pytr
 base_path = os.path.dirname(bin_path) 
 
 data_path = base_path + "/share/pytrainer/"
+site_path = base_path + "/lib/python2.6/site-packages"
 DIR = base_path + "/share/locale"
 
 print "data_path: " + data_path
 print "DIR: " + DIR
+print "site_path: " + site_path
 
 gettext.bindtextdomain("pytrainer", DIR)
 gtk.glade.bindtextdomain("pytrainer", DIR)
 gtk.glade.textdomain("pytrainer")
 gettext.textdomain("pytrainer")
 gettext.install("pytrainer",DIR,unicode=1)
+
+#ensure pytrainer directory is included in import path
+sys.path.insert(0, site_path)
 
 from pytrainer.main import pyTrainer
 
