@@ -27,8 +27,15 @@ import gtk.glade
 import os
 import commands
 
-data_path = "/usr/share/pytrainer/"
-DIR = "/usr/share/locale"
+
+bin_path = os.path.realpath(os.path.dirname(__file__)) # directory that the pytrainer script executes from e.g. /usr/bin or /usr/local/bin
+base_path = os.path.dirname(bin_path) 
+
+data_path = base_path + "/share/pytrainer/"
+DIR = base_path + "/share/locale"
+
+print "data_path: " + data_path
+print "DIR: " + DIR
 
 gettext.bindtextdomain("pytrainer", DIR)
 gtk.glade.bindtextdomain("pytrainer", DIR)

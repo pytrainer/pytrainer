@@ -54,7 +54,7 @@ from gui.windowmain import Main
 from gui.warning import Warning
 from lib.date import Date
 from lib.gpx import Gpx
-from lib.soapUtils import webService
+#from lib.soapUtils import webService
 from lib.ddbb import DDBB
 from lib.xmlUtils import XMLParser
 from lib.system import checkConf
@@ -63,7 +63,7 @@ from lib.heartrate import *
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.1_svn#530"
+		self.version ="1.7.1_svn#532"
 		self.DB_version = 3
 		
 		#Setup usage and permitted options
