@@ -338,7 +338,7 @@ class Gpx:
 		dateTime = self.getDateTime(date_time.text)
 		zuluDateTime = dateTime[0].strftime("%Y-%m-%dT%H:%M:%SZ")
 		localDateTime = dateTime[1]
-		logging.debug(gpxFile+" | "+ date_time.text +" | " + zuluDateTime)
+		logging.debug(gpxFile+" | "+ date_time.text +" | " + zuluDateTime + " | " + str(localDateTime))
 		#print localDateTime
 		#return date_time.text
 		logging.debug("<<")

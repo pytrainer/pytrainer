@@ -59,6 +59,7 @@ class Record:
 		self.recordwindow = WindowRecord(self.data_path, list_sport, parent=self, windowTitle="Modify details before importing")
 		self.recordwindow.populateMultiWindow(activities)
 		self.recordwindow.run()
+		return self.recordwindow.getActivityData()
 		logging.debug('<<')
 
 	def editRecord(self,id_record,list_sport):

@@ -37,6 +37,7 @@ class WindowRecord(SimpleGladeApp):
 		self.id_record = ""
 		self.store = None
 		self.active_row = None
+		self.activity_data = [] 
 		SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
 		self.conf_options = [
 			"rcd_date",
@@ -81,10 +82,13 @@ class WindowRecord(SimpleGladeApp):
 		if calories != None:
 			self.rcd_calories.set_text(calories)
 			
+	def getActivityData(self):
+		return self.activity_data
+		
 	def populateMultiWindow(self, activities):
 		self.mode = "multiple_activities"
-		#activities (activity_id, start_time, distance, duration, sport, gpx_file)
-		self.activity_data = [] 
+		#activities (activity_id, start_time, distance, duration, sport, gpx_file, file_id)
+		self.activity_data = []
 		#Make treeview
 		self.store = self.build_tree_view()
 		#Add data
@@ -111,9 +115,11 @@ class WindowRecord(SimpleGladeApp):
 			#details["rcd_min"] = float(mins)
 			#details["rcd_second"] = float(secs)
 			#details["rcd_time"] = (((float(hours) * 60) + float(mins)) * 60) + float(secs)
+			details["activity_id"] = activity[0]
 			details["rcd_time"] = (float(hours), float(mins), float(secs))
 			details["rcd_sport"] = activity[4]
 			details["rcd_gpxfile"] = activity[5]
+			details["file_id"] = activity[6]
 			self.activity_data.append(details)
 		self.scrolledwindowEntries.show_all()
 		#Hide some of the buttons
@@ -124,16 +130,7 @@ class WindowRecord(SimpleGladeApp):
 		#self.button12.hide() #Velocity "Calculate" button
 		self.button43.hide() #Pace "Calculate" button
 		#Make GPX file 'unsensitive'
-		self.rcd_gpxfile.set_sensitive(0)
-		#Make General settings unsensitive
-		#self.frameGeneral.set_sensitive(0) #TODO fix update to allow edits here
-		#Make Velocity settings unsensitive
-		#self.frameVelocity.set_sensitive(0) #TODO fix update to allow edits here
-		#Make advanced tab settings unsensitive
-		self.vbox26.set_sensitive(0) #TODO fix update to allow edits here	
-		#Make comments unsensitive
-		self.frame23.set_sensitive(0) #TODO fix update to allow edits here	
-		
+		self.rcd_gpxfile.set_sensitive(0)		
 		while gtk.events_pending():	# This allows the GUI to update 
 			gtk.main_iteration()	# before completion of this entire action
 		#Select first row and display details
@@ -162,8 +159,23 @@ class WindowRecord(SimpleGladeApp):
 		
 	def on_accept_clicked(self,widget):
 		if self.mode == "multiple_activities":
+			#Check for edited data in comments
+			if self.active_row is not None:
+				buffer = self.rcd_comments.get_buffer()
+				start,end = buffer.get_bounds()
+				comments = buffer.get_text(start,end, True).replace("\"","'")
+				self.activity_data[self.active_row]["rcd_comments"] = comments
+				#Advanced tab items
+				self.activity_data[self.active_row]["rcd_maxpace"] = self.rcd_maxpace.get_text()
+				self.activity_data[self.active_row]["rcd_pace"] = self.rcd_pace.get_text()
+				self.activity_data[self.active_row]["rcd_upositive"] = self.rcd_upositive.get_text()
+				self.activity_data[self.active_row]["rcd_unegative"] = self.rcd_unegative.get_text()
+				self.activity_data[self.active_row]["rcd_maxbeats"] = self.rcd_maxbeats.get_text()
+				self.activity_data[self.active_row]["rcd_beats"] = self.rcd_beats.get_text()
+				self.activity_data[self.active_row]["rcd_calories"] = self.rcd_calories.get_text()
 			row = 0 
 			for activity in self.activity_data:
+				index = self.activity_data.index(activity)
 				if activity["complete"] is False:
 					#Did not view or modify this record - need to get all the details
 					print "Activity incomplete.. " + activity["rcd_gpxfile"]
@@ -171,9 +183,9 @@ class WindowRecord(SimpleGladeApp):
 				activity["rcd_title"] = activity["rcd_title"].replace("\"","'")
 				#Add activity to DB etc
 				laps = activity.pop("laps", ())
-				self.parent.insertRecord(activity, laps)
+				self.activity_data[index]["db_id"] = self.parent.insertRecord(activity, laps)
 				row += 1
-					
+			logging.debug("Processed %d rows of activity data" % row)
 		else:
 			list_options = {}
 			trackSummary = {}
@@ -439,6 +451,21 @@ class WindowRecord(SimpleGladeApp):
 		'''
 		 Callback to display details of different activity
 		'''
+		#Check for edited data in previous row
+		if self.active_row is not None:
+			#Check for edited data in comments
+			buffer = self.rcd_comments.get_buffer()
+			start,end = buffer.get_bounds()
+			comments = buffer.get_text(start,end, True).replace("\"","'")
+			self.activity_data[self.active_row]["rcd_comments"] = comments
+			#Advanced tab items
+			self.activity_data[self.active_row]["rcd_maxpace"] = self.rcd_maxpace.get_text()
+			self.activity_data[self.active_row]["rcd_pace"] = self.rcd_pace.get_text()
+			self.activity_data[self.active_row]["rcd_upositive"] = self.rcd_upositive.get_text()
+			self.activity_data[self.active_row]["rcd_unegative"] = self.rcd_unegative.get_text()
+			self.activity_data[self.active_row]["rcd_maxbeats"] = self.rcd_maxbeats.get_text()
+			self.activity_data[self.active_row]["rcd_beats"] = self.rcd_beats.get_text()
+			self.activity_data[self.active_row]["rcd_calories"] = self.rcd_calories.get_text()
 		#Get row that was selected
 		x = int(event.x)
 		y = int(event.y)

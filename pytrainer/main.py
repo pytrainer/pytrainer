@@ -63,7 +63,7 @@ from lib.heartrate import *
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.1_svn#532"
+		self.version ="1.7.1_svn#534"
 		self.DB_version = 3
 		
 		#Setup usage and permitted options
@@ -372,6 +372,8 @@ class pyTrainer:
 		activeplugins_after = self.plugins.getActivePlugins()
 		#Need to check for plugins that have been disabled (were active and now are not)
 		self.setMenuPlugins(activeplugins_before, activeplugins_after)
+		self.refreshListRecords()
+		self.refreshGraphView(self.windowmain.selected_view)
 		logging.debug('<<')		
 		
 	def editGpsPlugins(self):

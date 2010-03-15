@@ -248,6 +248,7 @@ class Main(SimpleGladeApp):
 			buffer.set_text(comments)
 
 		else:
+			self.recordview.set_current_page(0)
 			self.recordview.set_sensitive(0)
 		logging.debug(">>")
 
@@ -879,11 +880,11 @@ class Main(SimpleGladeApp):
 		if self.block:
 			self.block = False
 		else:
-			self.parent.refreshListRecords()
-			self.parent.refreshGraphView(self.selected_view)
 			if self.selected_view == "record":
 				self.recordview.set_current_page(0)
 				self.parent.refreshRecordGraphView("info")
+			self.parent.refreshListRecords()
+			self.parent.refreshGraphView(self.selected_view)
 
 	def on_calendar_changemonth(self,widget):
 		logging.debug("--")

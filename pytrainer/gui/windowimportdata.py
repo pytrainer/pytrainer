@@ -22,6 +22,7 @@ import gobject
 import os, glob, sys
 import StringIO
 import logging
+import types
 from lxml import etree
 
 from pytrainer.plugins import Plugins
@@ -453,7 +454,7 @@ class WindowImportdata(SimpleGladeApp):
 				duration = item[4]
 				sport = item[5]
 				gpx_file = self.processClasses[file_id].getGPXFile(activity_id, file_id)[1]
-				selectedActivities.append((activity_id, start_time, distance, duration, sport, gpx_file))
+				selectedActivities.append((activity_id, start_time, distance, duration, sport, gpx_file, file_id))
 		logging.debug( "Found %d selected activities to import" % len(selectedActivities) )
 		return selectedActivities
 		
@@ -465,24 +466,20 @@ class WindowImportdata(SimpleGladeApp):
 		#selectedActivities.append((activity_id, start_time, distance, duration, sport, gpx_file))
 		logging.debug( "Importing %d activities" % len(activities))
 		list_sport = self.pytrainer_main.profile.getSportList()
-		self.pytrainer_main.record.newMultiRecord(activities, list_sport)
-		#sport, gpxFile = self.processClasses[file_id].getGPXFile(activity_id)
-		#process returned GPX files	
-		'''if os.path.isfile(gpxFile):
-			logging.info('File exists. Size: %d. Sport: %s' % (os.path.getsize(gpxFile), sport))
-			#TODO trigger newentry screen to allow user to edit data
-			#list_sport = self.pytrainer_main.profile.getSportList()
-			#logging.debug('id_record: '+str(id_record)+' | list_sport: '+str(list_sport))
-			#def newRecord(self, list_sport, date, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None):
-			#self.pytrainer_main.record.newMultiRecord(list_sport, date=start_time, distance=distance, time=duration, comment=sport)
-			#self.pytrainer_main.record.importFromGPX(gpxFile, sport)
-			#Deselect imported activity and change note
-			self.updateActivity(activity_id, file_id, status=False, notes="Imported into database")
- 		else:
- 			logging.error('File %s not valid' % gpxFile)
-		'''
+		result = self.pytrainer_main.record.newMultiRecord(activities, list_sport)
+		for activity in result:
+			if "db_id" in activity.keys() and type(activity["db_id"]) is types.IntType:
+				#Activity imported correctly
+				duration = "%0.0f:%0.0f:%02.0f" % (float(activity["rcd_time"][0]), float(activity["rcd_time"][1]), float(activity["rcd_time"][2]))
+				self.updateActivity(activity["activity_id"], activity["file_id"],
+									status = False, 
+									notes = _("Imported into database"),
+									sport = activity["rcd_sport"], 
+									distance = activity["rcd_distance"], 
+									duration = duration)
+				#print "updating activity %s " % (str(activity))
 
-	def updateActivity(self, activityID, file_id, status = None, notes = None):
+	def updateActivity(self, activityID, file_id, status = None, notes = None, sport = None, distance = None, duration = None):
 		path = 0
 		for item in self.activities_store:
 			if item[0] == activityID and item[7] == str(file_id):
@@ -490,6 +487,12 @@ class WindowImportdata(SimpleGladeApp):
 					self.activities_store[path][1] = status
 				if notes is not None:
 					self.activities_store[path][6] = notes
+				if sport is not None:
+					self.activities_store[path][5] = sport
+				if distance is not None:
+					self.activities_store[path][3] = distance
+				if duration is not None:
+					self.activities_store[path][4] = duration
 			path +=1
 
 	def close_window(self):
@@ -672,11 +675,13 @@ class WindowImportdata(SimpleGladeApp):
 				self.files_store.set(
 					iter,
 					0, class_index,
-					1, False,
+					1, True,
 					2, filename,
 					3, self.processClasses[class_index].getFileType(),
 					4, activity_count
 					)
+				#File valid, so enable remove button
+				self.buttonRemoveSelectedFiles.set_sensitive(1)
 				#Get activities in file
 				for activity in activitiesSummary:
 					#Add activity details to TreeView store to display
