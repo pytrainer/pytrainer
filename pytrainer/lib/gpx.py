@@ -189,10 +189,11 @@ class Gpx:
 
 		retorno = []
 		his_vel = []
-		last_lat = "False"
-		last_lon = "False"
-		last_time = "False"
+		last_lat = None
+		last_lon = None
+		last_time = None
 		total_dist = 0
+		dist_elapsed = 0 # distance since the last time found
 		total_hr = 0
 		tmp_alt = 0
 		len_validhrpoints = 0
@@ -206,6 +207,7 @@ class Gpx:
 		#mk_time = self.getDateTime(date_)[0] #UTC Date
 		mk_time = self.getDateTime(date_)[1] #Local Date
 		self.date = mk_time.strftime("%Y-%m-%d")
+		waiting_points = []
 
 
 		for trkpoint in trkpoints:
@@ -234,7 +236,7 @@ class Gpx:
 				mk_time = self.getDateTime(date_)[0]
 				time_ = time.mktime(mk_time.timetuple()) #Convert date to seconds
 			else:
-				time_ = 1
+				time_ = None
 			#get the elevation
 			eleResult = trkpoint.find(elevationTag)
 			if eleResult is not None:
@@ -256,11 +258,11 @@ class Gpx:
 				#Convert lat and lon from degrees to radians
 				tmp_lat = float(lat)*0.01745329252  #0.01745329252 = number of radians in a degree
 				tmp_lon = float(lon)*0.01745329252  #57.29577951 = 1/0.01745329252 or degrees per radian
-				tmp_time = int(time_)
+				#tmp_time = int(time_)
 		
 				#Para las vueltas diferentes a la primera / For the returns different from first	
-				if last_lat != "False":
-					time_ = tmp_time - last_time
+				if last_lat is not None:
+					#time_ = tmp_time - last_time
 					#if time_>0:
 					#Caqlculate diference betwen last and new point
 					#tempnum=(math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon))
@@ -273,32 +275,67 @@ class Gpx:
 						dist=math.acos((math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon)))*111.302*57.29577951
 					except:
 						dist=0
+					dist_elapsed += dist
 					total_dist += dist
 					total_hr += hr
 					if hr>self.maxhr:
 						self.maxhr = hr
-					if time_>0:
-						#dividimos kilometros por hora (no por segundo) / Calculate kilometers per hour (not including seconds)
-						tmp_vel = dist/((time_)/3600.0)
-						vel,his_vel = self._calculate_velocity(tmp_vel,his_vel, 3)
-						#si la velocidad es menor de 90 lo damos por bueno / if speed is greater than 90 or time greater than 100 we exclude the result
-						if vel<90 and time_ <100:
-							if vel>self.maxvel:
-								self.maxvel=vel
-							self.total_time += time_
+					#if time_>0:
+					#	#dividimos kilometros por hora (no por segundo) / Calculate kilometers per hour (not including seconds)
+					#	tmp_vel = dist/((time_)/3600.0)
+					#	vel,his_vel = self._calculate_velocity(tmp_vel,his_vel, 3)
+					#	#si la velocidad es menor de 90 lo damos por bueno / if speed is greater than 90 or time greater than 100 we exclude the result
+					#	if vel<90 and time_ <100:
+					#		if vel>self.maxvel:
+					#			self.maxvel=vel
+					#		self.total_time += time_
+					if time_ is not None:
+						tmp_time = int(time_)
+						time_elapsed = tmp_time - last_time if last_time is not None else 0
+						if time_elapsed>0:
+							#Caqlculate diference betwen last and new point
+							#tempnum=(math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon))
+							#try:
+							#Pasamos la distancia de radianes a metros..  creo / We convert the distance from radians to meters
+							#David no me mates que esto lo escribi hace anhos / Do not kill me this was written ages ago
+							#http://faculty.washington.edu/blewis/ocn499/EXER04.htm equation for the distance between 2 points on a spherical earth
+							#dividimos kilometros por hora (no por segundo) / Calculate kilometers per hour (not including seconds)
+							tmp_vel = dist_elapsed/((time_elapsed)/3600.0)
+							vel,his_vel = self._calculate_velocity(tmp_vel,his_vel, 3)
+							#si la velocidad es menor de 90 lo damos por bueno / if speed is greater than 90 we exclude the result
+							self.total_time += time_elapsed
+							if vel<90:
+								if vel>self.maxvel:
+									self.maxvel=vel
+								for ((w_total_dist, w_dist, w_alt, w_total_time, w_lat, w_lon, w_hr, w_cadence)) in waiting_points:
+									w_time = (w_dist/dist_elapsed) * time_elapsed
+									w_vel = w_dist/((w_time)/3600.0)
+									w_total_time += w_time
+									retorno.append((w_total_dist, w_alt, w_total_time, w_vel, w_lat, w_lon, w_hr, w_cadence))
+								waiting_points = []
+								retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr,cadence))
+								rel_alt = tmp_alt - last_alt #Could allow for some 'jitter' in height here
+								if rel_alt > 0:
+									self.upositive += rel_alt
+								elif rel_alt < 0:
+									self.unegative -= rel_alt
+							dist_elapsed = 0
 					else:
-						vel = 0
-					rel_alt = tmp_alt - last_alt #Could allow for some 'jitter' in height here
-					if rel_alt > 0:
-						self.upositive += rel_alt
-					elif rel_alt < 0:
-						self.unegative -= rel_alt
-					retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr,cadence))
+						waiting_points.append((total_dist, dist_elapsed, tmp_alt, self.total_time, lat, lon, hr, cadence))
+					#	vel = 0
+					#rel_alt = tmp_alt - last_alt #Could allow for some 'jitter' in height here
+					#if rel_alt > 0:
+					#	self.upositive += rel_alt
+					#elif rel_alt < 0:
+					#	self.unegative -= rel_alt
+					#retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr,cadence))
 				
 				last_lat = tmp_lat
 				last_lon = tmp_lon
 				last_alt = tmp_alt
-				last_time = tmp_time
+				#last_time = tmp_time
+				if time_ is not None:
+					last_time = int(time_)
 
 		self.hr_average = 0
 		if len_validhrpoints > 0:
