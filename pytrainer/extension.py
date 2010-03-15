@@ -64,25 +64,29 @@ class Extension:
 		extensiondir = self.conf.getValue("extensiondir")
 		helpfile = pathExtension+"/"+info.getValue("pytrainer-extension","helpfile")
 		type = info.getValue("pytrainer-extension","type")
+	
 		if not os.path.isfile(extensiondir+"/"+code+"/conf.xml"):
 			status = 0
 		else:
 			info = XMLParser(extensiondir+"/"+code+"/conf.xml")
 			status = info.getValue("pytrainer-extension","status")
+		#print name,description,status,helpfile,type
 		return name,description,status,helpfile,type
 
 	def getExtensionConfParams(self,pathExtension):
 		info = XMLParser(pathExtension+"/conf.xml")
 		code = info.getValue("pytrainer-extension","extensioncode")
 		extensiondir = self.conf.getValue("extensiondir")
+		params = {}
 		if not os.path.isfile(extensiondir+"/"+code+"/conf.xml"):
-			params = info.getAllValues("conf-values")
-			params.append(("status","0"))
+			prefs = info.getAllValues("conf-values")
+			prefs.append(("status","0"))
+			for pref in prefs:
+				params[pref[0]] = info.getValue("pytrainer-extension",pref[0])
 		else:
 			prefs = info.getAllValues("conf-values")
 			prefs.append(("status","0"))
 			info = XMLParser(extensiondir+"/"+code+"/conf.xml")
-			params = {}
 			for pref in prefs:
 				params[pref[0]] = info.getValue("pytrainer-extension",pref[0])
 				#params.append((pref[0],info.getValue("pytrainer-extension",pref[0])))
@@ -104,7 +108,7 @@ class Extension:
 		txtbutton = info.getValue("pytrainer-extension","extensionbutton")
 		name = info.getValue("pytrainer-extension","name")
 		type = info.getValue("pytrainer-extension","type")
-		print "Loading Extension %s" %name
+		#print "Loading Extension %s" %name
 		return txtbutton,pathExtension,type
 	
 

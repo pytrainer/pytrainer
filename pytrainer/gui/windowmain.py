@@ -99,6 +99,12 @@ class Main(SimpleGladeApp):
 		for widget in self.menuitem1_menu:
 			if widget.get_name() == plugin[1]:
 				self.menuitem1_menu.remove(widget)
+				
+	def removeExtension(self, extension):
+		for widget in self.recordbuttons_hbox:
+			if widget.get_name() == extension[1]:
+				logging.debug("Removing extension: %s " % extension[0])
+				self.recordbuttons_hbox.remove(widget)
 
 	def addImportPlugin(self,plugin):
 		button = gtk.MenuItem(plugin[0])
@@ -108,13 +114,15 @@ class Main(SimpleGladeApp):
 		self.menuitem1_menu.show_all()
 
 	def addExtension(self,extension):
-		txtbutton,extensioncode,extensiontype = extension
-		button = gtk.Button(txtbutton)
+		#txtbutton,extensioncode,extensiontype = extension
+		button = gtk.Button(extension[0])
+		button.set_name(extension[1])
 		button.connect("button_press_event", self.runExtension, extension)
 		self.recordbuttons_hbox.pack_start(button,False,False,0)
 		self.recordbuttons_hbox.show_all()
 
 	def runExtension(self,widget,widget2,extension):
+		print extension
 		txtbutton,extensioncode,extensiontype = extension
 		id = None
 		if extensiontype=="record":

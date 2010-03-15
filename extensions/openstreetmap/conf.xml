@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<pytrainer-extension 
+	name="Openstreetmap Export" 
+	description="Publish your record to Openstreetmap"
+	extensionbutton="Post to Openstreetmap" 
+	extensioncode="openstreetmap"
+	type="record" 
+	helpfile="README.txt"
+	executable="openstreetmap"
+>
+<conf-values variable="username" value=""/>
+<conf-values variable="password" value=""/>
+</pytrainer-extension>

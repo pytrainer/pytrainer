@@ -23,7 +23,7 @@ import os
 
 class WindowExtensions(SimpleGladeApp):
 	def __init__(self, data_path = None, parent=None):
-		glade_path="glade/pytrainer.glade"
+		glade_path="glade/extensions.glade"
 		root = "extensions"
 		domain = None
 		self.parent = parent
@@ -66,10 +66,10 @@ class WindowExtensions(SimpleGladeApp):
 		name,description,status,helpfile,type = self.parent.getExtensionInfo(selected.get_value(iter,0))
 		self.nameEntry.set_text(name)
 		self.descriptionEntry.set_text(description)
-		if int(status) > 0:
-			self.statusEntry.set_text(_("Enable"))
-		else:
+		if status is None or int(status) == 0:
 			self.statusEntry.set_text(_("Disable"))
+		else:
+			self.statusEntry.set_text(_("Enable"))
 
 	def on_preferences_clicked(self,widget):
 		selected,iter = self.extensionsTree.get_selection().get_selected()
@@ -83,19 +83,27 @@ class WindowExtensions(SimpleGladeApp):
 		table = gtk.Table(1,2)
 		i=0
 		self.entryList = []
-		for pref in prefs:
-			label = gtk.Label("<b>%s</b>"%pref[0])
+		#print prefs
+		for key in prefs.keys():
+			#print key, prefs[key]
+			label = gtk.Label("<b>%s</b>"%key)
 			label.set_use_markup(True)
-			if pref[0] != "status":
+			if key != "status":
 				entry = gtk.Entry()
-				entry.set_text(pref[1])
+				if prefs[key] is None:
+					entry.set_text("")
+				else:
+					entry.set_text(prefs[key])
 				self.entryList.append(entry)	
 				table.attach(entry,1,2,i,i+1)
 			else:
 				combobox = gtk.combo_box_new_text()
 				combobox.append_text("Disable")	
 				combobox.append_text("Enable")	
-				combobox.set_active(int(pref[1]))
+				if prefs[key] is None:
+					combobox.set_active(0)
+				else:
+					combobox.set_active(int(prefs[key]))
 				table.attach(combobox,1,2,i,i+1)
 				self.entryList.append(combobox)	
 			table.attach(label,0,1,i,i+1)
@@ -138,13 +146,13 @@ class WindowExtensions(SimpleGladeApp):
 		prefs = self.parent.getExtensionConfParams(selected.get_value(iter,0))
 		savedOptions = []
 		i = 0
-		for pref in prefs:
+		for key in prefs.keys():
 			try:
-				savedOptions.append((pref[0],self.entryList[i].get_text()))
+				savedOptions.append((key,self.entryList[i].get_text()))
 			except:
 				combobox = self.entryList[i]
         			index = combobox.get_active()
-				savedOptions.append((pref[0],"%s" %index))
+				savedOptions.append((key,"%s" %index))
 			i+=1
 		self.prefwindow.hide()
 		self.prefwindow = None

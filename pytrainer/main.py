@@ -63,7 +63,7 @@ from lib.heartrate import *
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.1_svn#535"
+		self.version ="1.7.1_svn#536"
 		self.DB_version = 3
 		
 		#Setup usage and permitted options
@@ -362,7 +362,10 @@ class pyTrainer:
 		
 	def editExtensions(self):
 		logging.debug('>>')
+		before = self.extension.getActiveExtensions()
 		self.extension.manageExtensions()
+		after = self.extension.getActiveExtensions()
+		self.setExtensions(before, after)
 		logging.debug('<<')
 
 	def importData(self):
@@ -399,6 +402,24 @@ class pyTrainer:
 				#new active plugin -> need to load plugin
 				txtbutton = self.plugins.loadPlugin(plugin)
 				self.windowmain.addImportPlugin(txtbutton)
+		logging.debug('<<')
+		
+	def setExtensions(self, before, after):
+		logging.debug('>>')
+		#Need to check for extensions that have been disabled (were active and now are not)
+		for extension in before:
+			if extension not in after:
+				#disabled extension -> need to unload extension
+				print "Need to disable extension %s " % extension
+				txtbutton = self.extension.loadExtension(extension)
+				self.windowmain.removeExtension(txtbutton)
+		#Need to check for plugins that have been enabled (were not active and now are)
+		for extension in after:
+			if extension not in before:
+				#new active extension -> need to load extension
+				logging.debug("Enabling extension %s " % extension)
+				txtbutton = self.extension.loadExtension(extension)
+				self.windowmain.addExtension(txtbutton)
 		logging.debug('<<')
 
 	def newRecord(self,title=None,distance=None,time=None,upositive=None,unegative=None,bpm=None,calories=None,date=None,comment=None):
