@@ -364,14 +364,14 @@ class WindowRecord(SimpleGladeApp):
 		#set duration
 		time = Date().time2second(self.activity_data[row]["rcd_time"])		#TODO Fix to use timeinseconds!!
 		self.setTime(time) 													#TODO Fix to use timeinseconds!!
-		#self.rcd_hour.set_value(self.activity_data[row]["rcd_hour"])
-		#self.rcd_min.set_value(self.activity_data[row]["rcd_min"])
-		#self.rcd_second.set_value(self.activity_data[row]["rcd_second"])
 		#Set distance
 		self.setValue("rcd_distance",self.activity_data[row]["rcd_distance"], "%s")
-		#set start date
-		#start_date = start
-		#self.setValue("rcd_date", start, "%s")
+		#Set comments
+		buffer = self.rcd_comments.get_buffer()
+		start,end = buffer.get_bounds()
+		if "rcd_comments" not in self.activity_data[row]:
+			self.activity_data[row]["rcd_comments"] = ""
+		buffer.set_text(self.activity_data[row]["rcd_comments"])
 		while gtk.events_pending():	# This allows the GUI to update 
 			gtk.main_iteration()	# before completion of this entire action
 		if self.activity_data[row]["complete"] is False:
@@ -396,15 +396,16 @@ class WindowRecord(SimpleGladeApp):
 		self.setValue("rcd_date", self.activity_data[row]["rcd_date"], "%s")
 		self.setValue("rcd_starttime", self.activity_data[row]["rcd_starttime"], "%s")
 		self.setValue("rcd_average",self.activity_data[row]["rcd_average"])
-		self.setValue("rcd_calories",self.activity_data[row]["rcd_calories"], "%0.0f")
-		self.setValue("rcd_beats",self.activity_data[row]["rcd_beats"], "%0.0f")
-		self.setValue("rcd_upositive",self.activity_data[row]["rcd_upositive"])
-		self.setValue("rcd_unegative",self.activity_data[row]["rcd_unegative"])
+		self.setValue("rcd_calories",self.activity_data[row]["rcd_calories"], "%s")
+		self.setValue("rcd_beats",self.activity_data[row]["rcd_beats"], "%s")
+		self.setValue("rcd_upositive",self.activity_data[row]["rcd_upositive"], "%s")
+		self.setValue("rcd_unegative",self.activity_data[row]["rcd_unegative"], "%s")
 		self.setValue("rcd_maxvel",self.activity_data[row]["rcd_maxvel"])
 		self.rcd_maxpace.set_text(self.activity_data[row]["rcd_maxpace"])
 		self.rcd_pace.set_text(self.activity_data[row]["rcd_pace"])
-		self.setValue("rcd_maxbeats",self.activity_data[row]["rcd_maxbeats"], "%0.0f")
+		self.setValue("rcd_maxbeats",self.activity_data[row]["rcd_maxbeats"], "%s")
 		self.rcd_title.set_text(self.activity_data[row]["rcd_title"])
+		
 		
 	def on_rcd_title_changed(self, widget):
 		if self.mode == "multiple_activities" and self.active_row is not None:

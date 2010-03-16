@@ -122,7 +122,7 @@ class Main(SimpleGladeApp):
 		self.recordbuttons_hbox.show_all()
 
 	def runExtension(self,widget,widget2,extension):
-		print extension
+		#print extension
 		txtbutton,extensioncode,extensiontype = extension
 		id = None
 		if extensiontype=="record":
