@@ -60,9 +60,16 @@ class WindowImportdata(SimpleGladeApp):
 		else:
 			self.auto_launch = False
 		logging.debug("Default tab: %s, Auto launch: %s" % (str(self.defaulttab), str(self.auto_launch)))
+		self.init_all_tabs()
 		self.notebookMainTabs.set_current_page(self.defaulttab)
-		self.init_tab(self.defaulttab, first=True)
+		self.init_tab(self.defaulttab, first=True) 			#TODO fix so dont need to re-call init_tab
 		logging.debug("<<")
+		
+	def init_all_tabs(self):
+		logging.debug(">>")
+		tabs = (0,1,2,3)
+		for tab in tabs:
+			self.init_tab(tab)
 
 	def init_tab(self, page, first=False):
 		''' Initialise tab '''
@@ -83,7 +90,6 @@ class WindowImportdata(SimpleGladeApp):
 		else:
 			#unknown tab
 			logging.error("Unknown page %d passed to init_tab" % page)
-			pass
 
 	def updateStatusbar(self, statusbar, text, context_id = None):
 		''' Help function to set the text of the statusbar '''
@@ -596,7 +602,7 @@ class WindowImportdata(SimpleGladeApp):
 		
 	def on_notebookMainTabs_switch_page(self, notebook, page, new_page):
 		logging.debug('--')
-		self.init_tab(new_page)
+		#self.init_tab(new_page)
 
 	def on_buttonOptionsSave_clicked(self, widget):
 		logging.debug('>>')

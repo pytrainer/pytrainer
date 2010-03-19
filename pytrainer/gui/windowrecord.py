@@ -149,8 +149,8 @@ class WindowRecord(SimpleGladeApp):
 			#Add columns
 			column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
 			column.set_sort_column_id(column_index)
-			#if column_name == "id":
-			#	column.set_visible(False)
+			if column_name == "id":
+				column.set_visible(False)
 			column.set_resizable(True)
 			self.treeviewEntries.append_column(column)
 		self.treeviewEntries.set_headers_clickable(True)
