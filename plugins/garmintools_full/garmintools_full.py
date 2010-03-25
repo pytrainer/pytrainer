@@ -17,18 +17,22 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+# Added to support python installations older than 2.6
+from __future__ import with_statement
+
 import os
 import sys
 import logging
 import fnmatch
 import commands
 import StringIO
+import traceback
+import dateutil.parser
+
 from lxml import etree
 from pytrainer.lib.xmlUtils import XMLParser
-import dateutil.parser
 from datetime import date, timedelta, datetime
 from dateutil.tz import * # for tzutc()
-import traceback
 
 class garmintools_full():
 	""" Plugin to import from a Garmin device using garmintools

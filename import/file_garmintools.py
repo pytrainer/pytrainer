@@ -17,6 +17,9 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+# Added to support python installations older than 2.6
+from __future__ import with_statement
+
 import logging
 import os
 import StringIO
