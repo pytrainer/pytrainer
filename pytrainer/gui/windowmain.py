@@ -264,6 +264,7 @@ class Main(SimpleGladeApp):
 		logging.debug(">>")
 		if len(record_list)>0:
 			self.record_vbox.set_sensitive(1)
+			self.drawarearecord.drawgraph(record_list,laps)
 		else:
 			#Remove graph
 			vboxChildren = self.record_vbox.get_children()
@@ -275,8 +276,6 @@ class Main(SimpleGladeApp):
 					logging.debug('Removing child: '+str(child))
 					self.record_vbox.remove(child)
 			self.record_vbox.set_sensitive(0)
-		#logging.debug("Going to draw "+str(record_list))
-		self.drawarearecord.drawgraph(record_list,laps)
 		logging.debug("<<")
 	
 	def actualize_heartrategraph(self,record_list):

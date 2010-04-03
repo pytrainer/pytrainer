@@ -69,6 +69,7 @@ class Gpx:
 		self.date = ""
 		#self.Date = Date()
 		self.calories= 0
+		self.tree = None
 		if filename != None:
 			if not os.path.isfile(self.filename):
 				return None
@@ -145,6 +146,8 @@ class Gpx:
 	def getLaps(self):
 		logging.debug(">>")
 		lapInfo = []
+		if self.tree is None:
+			return lapInfo
 		tree  = self.tree
 		#date = tree.findtext(timeTag)
 		#startTime = self.getDateTime(date)

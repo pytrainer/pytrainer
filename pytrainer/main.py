@@ -63,7 +63,7 @@ from lib.heartrate import *
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.1_svn#541"
+		self.version ="1.7.1_svn#542"
 		self.DB_version = 3
 		
 		#Setup usage and permitted options
@@ -292,16 +292,17 @@ class pyTrainer:
 			 self.windowmain.actualize_recordview(record_list)
 
 		if view=="graphs":
-			 selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
-			 gpx_tracklist = []
-			 if iter:
+			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+			gpx_tracklist = []
+			gpx_laps = None
+			if iter:
 				id_record = selected.get_value(iter,0)
 				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
 				if os.path.isfile(gpxfile):
 					gpx = Gpx(self.data_path,gpxfile)
 					gpx_tracklist = gpx.getTrackList()
 					gpx_laps = self.record.getLaps(id_record)
-			 self.windowmain.actualize_recordgraph(gpx_tracklist, gpx_laps)
+			self.windowmain.actualize_recordgraph(gpx_tracklist, gpx_laps)
 
 		if view=="map":
 			 self.refreshMapView()
