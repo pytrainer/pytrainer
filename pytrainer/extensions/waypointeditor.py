@@ -30,7 +30,7 @@ import time
 import logging
 
 class WaypointEditor:
-	def __init__(self, data_path = None, vbox = None, waypoint=None):		
+	def __init__(self, data_path = None, vbox = None, waypoint=None, parent=None):		
 		logging.debug(">>")
 		self.data_path = data_path
 		self.conf = checkConf()
@@ -41,11 +41,12 @@ class WaypointEditor:
 		vbox.show_all()
 		self.htmlfile = ""
 		self.waypoint=waypoint
+		self.pytrainer_main=parent
 		logging.debug("<<")
 		
 	def handle_title_changed(self, *args): 
 		title = self.moz.get_title() 
-		print "Received title", title
+		logging.debug("Received title: "+ title)
 		m = re.match("call:([a-zA-Z]*)[(](.*)[)]", title) 
 		if m: 
 			fname = m.group(1) 
@@ -55,21 +56,26 @@ class WaypointEditor:
 				if am: 
 					lon, lat = am.group(1), am.group(2) 
 					lon, lat = float(lon), float(lat) 
-					self.waypoint.addWaypoint(lon, lat, "NEW WAYPOINT") 
+					id_waypoint = self.waypoint.addWaypoint(lon, lat, "NEW WAYPOINT") 
+					self.pytrainer_main.refreshWaypointView(default_waypoint=id_waypoint)
 				else: 
 					raise ValueError("Error parsing addWaypoint parameters: %s" % args) 
 			elif fname == "updateWaypoint": 
 				am = re.match("([+-]?[0-9]+[.][0-9]+),([+-]?[0-9]+[.][0-9]+),([0-9]*)", args) 
 				if am: 
 					lon, lat, id_waypoint = am.group(1), am.group(2), am.group(3) 
-					lon, lat, id_waypoint = float(lon), float(lat), int(id_waypoint) 
+					try:
+						lon, lat, id_waypoint = float(lon), float(lat), int(id_waypoint)
+					except ValueError as e:
+						print "Error parsing addWaypoint parameters: " % args
+						print e
 					retorno = self.waypoint.getwaypointInfo(id_waypoint) 
 					if retorno: 
 						name, comment, sym = retorno[0][5], retorno[0][3], retorno[0][6] 
 						self.waypoint.updateWaypoint(id_waypoint, lat, lon, name, comment, sym) 
+						self.pytrainer_main.refreshWaypointView(default_waypoint=id_waypoint)
 					else: 
 						raise KeyError("Unknown waypoint id %d", id_waypoint) 
-					self.waypoint.addWaypoint(lon, lat, "NEW WAYPOINT") 
 				else: 
 					raise ValueError("Error parsing addWaypoint parameters: %s" % args) 
 			else: 

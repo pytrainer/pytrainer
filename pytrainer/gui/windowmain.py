@@ -695,12 +695,27 @@ class Main(SimpleGladeApp):
 			self.waypoint_longitude.set_text(str(record_list[default_id][2]))
 			self.waypoint_name.set_text(str(record_list[default_id][6]))
 			self.waypoint_description.set_text(str(record_list[default_id][4]))
-			self.waypoint_type.insert_text(0,str(record_list[default_id][7]))
-			self.waypoint_type.set_active(0)
+			self.set_waypoint_type(str(record_list[default_id][7]))
 		if redrawmap == 1:
 			self.waypointeditor.createHtml(default_waypoint)
 			self.waypointeditor.drawMap()
 		logging.debug("<<")
+	
+	def set_waypoint_type(self, type):
+		x = 0
+		tree_model = self.waypoint_type.get_model()
+		if tree_model is not None:
+			#iter = tree_model.get_iter_root()
+			for item in tree_model:
+				#if isinstance(item, gtk.TreeModelRow):
+				if item[0] == type:
+					self.waypoint_type.set_active(x)
+					return
+				x += 1
+		self.waypoint_type.insert_text(0, type)
+		self.waypoint_type.set_active(0)
+		return
+			
 	
 	def on_waypointTreeView_button_press(self, treeview, event):
 		x = int(event.x)
@@ -791,8 +806,8 @@ class Main(SimpleGladeApp):
 				menuItems[numcolumn-1].set_active(visible)
 		self.menublocking = 1
 	
-	def createWaypointEditor(self,WaypointEditor,waypoint):
-		self.waypointeditor = WaypointEditor(self.data_path, self.waypointvbox,waypoint)
+	def createWaypointEditor(self,WaypointEditor,waypoint, parent=None):
+		self.waypointeditor = WaypointEditor(self.data_path, self.waypointvbox,waypoint,parent)
 
 	######################
 	## Lista de eventos ##

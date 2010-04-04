@@ -157,7 +157,7 @@ class pyTrainer:
 		self.loadExtensions()
 		self.windowmain.createGraphs(RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph)
 		self.windowmain.createMap(Googlemaps,self.waypoint, self.gm3)
-		self.windowmain.createWaypointEditor(WaypointEditor,self.waypoint)
+		self.windowmain.createWaypointEditor(WaypointEditor,self.waypoint, parent=self)
 		self.windowmain.on_calendar_selected(None)
 		self.refreshMainSportList()	 
 		self.windowmain.run()
