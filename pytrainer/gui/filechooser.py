@@ -28,7 +28,7 @@ class FileChooser(SimpleGladeApp):
 		self.parent = parent
 		self.method = method
 		root="filechooserdialog"
-		SimpleGladeApp.__init__(self, data_path+"glade/pytrainer.glade", root, None)
+		SimpleGladeApp.__init__(self, data_path+"glade/filechooserdialog.glade", root, None)
 		if (action == "open"):
 			self.filechooserdialog.set_action(gtk.FILE_CHOOSER_ACTION_OPEN)
 			filter = gtk.FileFilter()

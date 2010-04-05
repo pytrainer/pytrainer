@@ -31,7 +31,7 @@ class DialogSelectTrack(SimpleGladeApp):
 		self.tracks = tracks
 		self.gpx = gpx
 		root="selecttrackdialog"
-		SimpleGladeApp.__init__(self, data_path+"glade/pytrainer.glade", root, None)
+		SimpleGladeApp.__init__(self, data_path+"glade/selecttrackdialog.glade", root, None)
 		logging.debug("<<")
 
 	def new(self):		
