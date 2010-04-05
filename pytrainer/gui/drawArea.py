@@ -314,6 +314,7 @@ class DrawArea:
 			axis.set_title("%s vs %s" %(ylabel[0],ylabel[1]))
 		else:
 			axis.set_title("%s" %(ylabel[0]))
+		ylim = axis.get_ylim()
 
 		canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
 		canvas.show()
@@ -323,8 +324,9 @@ class DrawArea:
 		
 		for child in self.vbox.get_children():
 			logging.debug('Child available: '+str(child))
-
+		
 		logging.debug('<<')
+		return ylim
 	
 	def drawPie(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
 		logging.debug('>>')

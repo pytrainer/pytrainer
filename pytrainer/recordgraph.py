@@ -18,18 +18,26 @@
 
 import logging
 from gui.drawArea import DrawArea
+import gtk
 
 class RecordGraph:
-	def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None, btnShowLaps = None):
+	def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None, btnShowLaps = None, tableConfig = None):
 		logging.debug(">>")		
 		self.drawarea = DrawArea(vbox, window)
 		self.combovalue = combovalue
 		self.combovalue2 = combovalue2
 		self.showLaps = btnShowLaps
+		self.config_table = tableConfig
 		logging.debug("<<")
 
 	def drawgraph(self,values,laps=None):
 		logging.debug(">>")
+		#Get the config options 
+		for child in self.config_table.get_children():
+			if child.get_name() == "spinbuttonY1Max":
+				spinbuttonY1Max = child
+			elif child.get_name() == "spinbuttonY1Min":
+				spinbuttonY1Min = child
 		xval = []
 		yval = []
 		xlab = []
@@ -61,6 +69,8 @@ class RecordGraph:
 			self.combovalue2.set_active(0)
 			value_selected2 = 0
 		xvalues, yvalues = self.get_values(values,value_selected)
+		max_yvalue = max(yvalues)
+		min_yvalue = min(yvalues)
 		xlabel,ylabel,title,color = self.get_value_params(value_selected)
 
 		xval.append(xvalues)
@@ -77,6 +87,8 @@ class RecordGraph:
 			value_selected2 = value_selected2-1
 			xlabel,ylabel,title,color = self.get_value_params(value_selected2)
 			xvalues,yvalues = self.get_values(values,value_selected2)
+			max_yvalue=max(max(yvalues), max_yvalue)
+			min_yvalue=min(min(yvalues), min_yvalue)
 			xval.append(xvalues)
 			yval.append(yvalues)
 			xlab.append(xlabel)
@@ -85,7 +97,16 @@ class RecordGraph:
 			col.append(color)		
 		logging.info("To show: tit: "+str(tit)+" | col: "+str(col)+" | xlab: "+str(xlab)+" | ylab: "+str(ylab))
 		#self.drawPlot(xvalues,yvalues,xlabel,ylabel,title,color,zones)
-		self.drawarea.drawPlot(xval,yval,xlab,ylab,tit,col,None,lapValues)
+		ymin, ymax = self.drawarea.drawPlot(xval,yval,xlab,ylab,tit,col,None,lapValues)
+		
+		max_yvalue = max(max_yvalue, ymax)
+		min_yvalue = min(min_yvalue, ymin)
+		adjY1Min = gtk.Adjustment(value=ymin, lower=min_yvalue,upper=max_yvalue, step_incr=1, page_incr=10)
+		adjY1Max = gtk.Adjustment(value=ymax, lower=min_yvalue,upper=max_yvalue, step_incr=1, page_incr=10)
+		spinbuttonY1Min.set_adjustment(adjY1Min)
+		spinbuttonY1Max.set_adjustment(adjY1Max)
+		spinbuttonY1Min.set_value(ymin)
+		spinbuttonY1Max.set_value(ymax)
 		logging.debug("<<")
 
 	def get_value_params(self,value):

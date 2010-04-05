@@ -134,7 +134,7 @@ class Main(SimpleGladeApp):
 		self.parent.runExtension(extension,id)
 
 	def createGraphs(self,RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph):
-		self.drawarearecord = RecordGraph(self.record_vbox, self.window1, self.record_combovalue, self.record_combovalue2, self.btnShowLaps)
+		self.drawarearecord = RecordGraph(self.record_graph_vbox, self.window1, self.record_combovalue, self.record_combovalue2, self.btnShowLaps, self.tableConfig)
 		self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox, self.window1, self.heartrate_vbox2)
 		#self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
 		self.day_vbox.hide()
@@ -144,6 +144,7 @@ class Main(SimpleGladeApp):
 	
 	def createMap(self,Googlemaps,waypoint):
 		self.googlemaps = Googlemaps(self.data_path, self.map_vbox,waypoint, pytrainer_main=self.parent)
+		self.googlemaps_old = Googlemaps(self.data_path, self.map_vbox_old,waypoint, pytrainer_main=self.parent)
 
 	def updateSportList(self,listSport): 
 		logging.debug(">>")
@@ -389,9 +390,12 @@ class Main(SimpleGladeApp):
 		self.drawareaday.drawgraph(record_list)
 		logging.debug("<<")
 	
-	def actualize_map(self,id_record):
+	def actualize_map(self,id_record, full_screen=False):
 		logging.debug(">>")
-		self.googlemaps.drawMap(id_record)
+		if full_screen:
+			self.googlemaps_old.drawMap(id_record)
+		else:
+			self.googlemaps.drawMap(id_record)
 		logging.debug("<<")
 	
 	def actualize_weekview(self, record_list, date_ini, date_end):
@@ -874,7 +878,7 @@ class Main(SimpleGladeApp):
 	def on_showmap_clicked(self,widget):
 		self.infoarea.hide()
 		self.maparea.show()
-		self.parent.refreshMapView()
+		self.parent.refreshMapView(full_screen=True)
 	
 	def on_hidemap_clicked(self,widget):
 		self.maparea.hide()

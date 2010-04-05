@@ -1159,11 +1159,12 @@ Cadence
                                         </child>
                                         <child>
                                           <widget class="GtkButton" id="button27">
+                                            <property name="visible">True</property>
                                             <property name="can_focus">True</property>
-                                            <property name="receives_default">False</property>
+                                            <property name="receives_default">True</property>
                                             <signal name="clicked" handler="on_showmap_clicked"/>
                                             <child>
-                                              <widget class="GtkImage" id="image21">
+                                              <widget class="GtkImage" id="image3">
                                                 <property name="visible">True</property>
                                                 <property name="stock">gtk-fullscreen</property>
                                               </widget>
@@ -1179,6 +1180,134 @@ Cadence
                                       <packing>
                                         <property name="expand">False</property>
                                         <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkHPaned" id="hpaned1">
+                                        <property name="visible">True</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="position_set">True</property>
+                                        <child>
+                                          <widget class="GtkTable" id="tableConfig">
+                                            <property name="visible">True</property>
+                                            <property name="n_rows">5</property>
+                                            <property name="n_columns">3</property>
+                                            <child>
+                                              <widget class="GtkLabel" id="labelY1Axis">
+                                                <property name="visible">True</property>
+                                                <property name="xalign">0</property>
+                                                <property name="label" translatable="yes">&lt;small&gt;Y Axis&lt;/small&gt;</property>
+                                                <property name="use_markup">True</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="top_attach">1</property>
+                                                <property name="bottom_attach">2</property>
+                                                <property name="x_options"></property>
+                                                <property name="y_options"></property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkSpinButton" id="spinbuttonY1Min">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="invisible_char">&#x25CF;</property>
+                                                <property name="width_chars">4</property>
+                                                <property name="adjustment">0 0 100 1 10 0</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="left_attach">1</property>
+                                                <property name="right_attach">2</property>
+                                                <property name="top_attach">1</property>
+                                                <property name="bottom_attach">2</property>
+                                                <property name="x_options">GTK_SHRINK</property>
+                                                <property name="y_options">GTK_SHRINK</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkSpinButton" id="spinbuttonY1Max">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="invisible_char">&#x25CF;</property>
+                                                <property name="width_chars">4</property>
+                                                <property name="adjustment">0 0 100 1 10 0</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="left_attach">2</property>
+                                                <property name="right_attach">3</property>
+                                                <property name="top_attach">1</property>
+                                                <property name="bottom_attach">2</property>
+                                                <property name="x_options">GTK_SHRINK</property>
+                                                <property name="y_options">GTK_SHRINK</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkLabel" id="labelGraphConfig">
+                                                <property name="visible">True</property>
+                                                <property name="xalign">0</property>
+                                                <property name="label" translatable="yes">&lt;small&gt;Graph Config Options&lt;/small&gt;</property>
+                                                <property name="use_markup">True</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="right_attach">3</property>
+                                                <property name="y_options"></property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkButton" id="buttonRefreshGraph">
+                                                <property name="label" translatable="yes">Refresh Graph Display</property>
+                                                <property name="visible">True</property>
+                                                <property name="sensitive">False</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">True</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="right_attach">3</property>
+                                                <property name="top_attach">4</property>
+                                                <property name="bottom_attach">5</property>
+                                                <property name="x_options"></property>
+                                                <property name="y_options"></property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <placeholder/>
+                                            </child>
+                                            <child>
+                                              <placeholder/>
+                                            </child>
+                                            <child>
+                                              <placeholder/>
+                                            </child>
+                                            <child>
+                                              <placeholder/>
+                                            </child>
+                                            <child>
+                                              <placeholder/>
+                                            </child>
+                                            <child>
+                                              <placeholder/>
+                                            </child>
+                                          </widget>
+                                          <packing>
+                                            <property name="resize">False</property>
+                                            <property name="shrink">True</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkVBox" id="record_graph_vbox">
+                                            <property name="visible">True</property>
+                                            <property name="orientation">vertical</property>
+                                            <child>
+                                              <placeholder/>
+                                            </child>
+                                          </widget>
+                                          <packing>
+                                            <property name="resize">True</property>
+                                            <property name="shrink">True</property>
+                                          </packing>
+                                        </child>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">1</property>
                                       </packing>
                                     </child>
                                   </widget>
