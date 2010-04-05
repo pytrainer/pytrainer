@@ -261,6 +261,7 @@ class WindowRecord(SimpleGladeApp):
 	def setValues(self,values):
 		#(24, u'2009-12-26', 4, 23.48, u'9979', 0.0, 8.4716666232200009, 2210, u'', None, u'', 573.0, 562.0, 11.802745244400001, 5.0499999999999998, 7.04, 0.0, u'2009-12-25T19:41:48Z', u'2009-12-26 08:41:48+13:00')
 		#(50, u'2006-10-13', 1, 25.0, u'5625', 0.0, 16.0, 0, u'', gpsfile, title,upositive,unegative,maxspeed|maxpace|pace|maxbeats
+		self.mode = "editrecord"
 		self.id_record = values[0]
 		self.setTime(values[4])
 		self.rcd_date.set_text(str(values[1]))
@@ -287,7 +288,6 @@ class WindowRecord(SimpleGladeApp):
 		buffer = self.rcd_comments.get_buffer()
 		start,end = buffer.get_bounds()
 		buffer.set_text(values[8])
-		self.mode = "editrecord"
 
 	def getSportPosition(self, sportID):
 		"""

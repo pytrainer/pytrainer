@@ -64,7 +64,8 @@ class Record:
 
 	def editRecord(self,id_record,list_sport):
 		logging.debug('>>')
-		record = self.ddbb.select("records", "*", "id_record=\"%s\"" %id_record)
+		#record = self.ddbb.select("records", "*", "id_record=\"%s\"" %id_record)
+		record = self.ddbb.select("records", "id_record, date, sport, distance, time, beats, average, calories, comments, gpslog, title, upositive, unegative, maxspeed, maxpace, pace, maxbeats, date_time_utc, date_time_local", "id_record=\"%s\"" %id_record)
 		logging.debug('retrieving data from DB: '+str(record))
 		gpxfile = self.conf.getValue("gpxdir")+"/%d.gpx"%int(id_record)
 		logging.debug('gpx file associated: '+gpxfile)
