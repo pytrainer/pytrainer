@@ -158,7 +158,6 @@ class WindowProfile(SimpleGladeApp):
 			self.init_params_tab()
 	
 	def init_params_tab(self):
-		logging.debug( "log level:", self.pytrainer_main.log_level, "validate:", self.pytrainer_main.validate, "check:", self.pytrainer_main.check, "gm3:", self.pytrainer_main.gm3, "testimport:", self.pytrainer_main.testimport )
 		#Show log level
 		if self.pytrainer_main.log_level == logging.ERROR:
 			self.comboboxLogLevel.set_active(0)
