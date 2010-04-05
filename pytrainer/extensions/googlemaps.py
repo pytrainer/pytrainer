@@ -28,7 +28,7 @@ from pytrainer.lib.fileUtils import fileUtils
 from pytrainer.record import Record
 
 class Googlemaps:
-	def __init__(self, data_path = None, vbox = None, waypoint = None, useGM3 = False):
+	def __init__(self, data_path = None, vbox = None, waypoint = None, pytrainer_main=None):
 		logging.debug(">>")
 		self.data_path = data_path
 		self.conf = checkConf()
@@ -38,7 +38,7 @@ class Googlemaps:
 		vbox.show_all()
 		self.htmlfile = "%s/index.html" % (self.conf.getValue("tmpdir")) 
 		self.waypoint=waypoint
-		self.useGM3 = useGM3
+		self.pytrainer_main = pytrainer_main
 		self.record = Record()
 		logging.debug("<<")
 	
@@ -79,7 +79,7 @@ class Googlemaps:
 				logging.debug("minlon: %s, maxlon: %s" % (minlon, maxlon))
 				points,levels = Points.encodePoints(pointlist)
 				points = points.replace("\\","\\\\")
-				if self.useGM3:
+				if self.pytrainer_main.gm3:
 					logging.debug("Using Google Maps version 3 API")
 					#laps = gpx.getLaps() # [](elapsedTime, lat, lon, calories, distance)
 					#"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories",  

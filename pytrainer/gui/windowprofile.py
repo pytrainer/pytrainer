@@ -168,7 +168,7 @@ class WindowProfile(SimpleGladeApp):
 		elif self.pytrainer_main.log_level == logging.DEBUG:
 			self.comboboxLogLevel.set_active(3)
 		else:
-			self.comboboxLogLevel.set_active(4)
+			self.comboboxLogLevel.set_active(0)
 			print "Unknown logging level specified"
 
 		#Show if validation requested
@@ -197,12 +197,74 @@ class WindowProfile(SimpleGladeApp):
 		
 		#TODO Allow changes to settings!!!
 		#Disable editing as processing of changes not yet implemented
-		self.comboboxLogLevel.set_sensitive(0)
+		#self.comboboxLogLevel.set_sensitive(0)
 		#logging.getLogger('').setLevel(self.log_level)
-		self.checkbuttonValidate.set_sensitive(0)
-		self.checkbuttonCheck.set_sensitive(0)
-		self.checkbuttonGM3.set_sensitive(0)
-		self.checkbuttonUnifiedImport.set_sensitive(0)
+		#self.checkbuttonValidate.set_sensitive(0)
+		#self.checkbuttonCheck.set_sensitive(0)
+		#self.checkbuttonGM3.set_sensitive(0)
+		#self.checkbuttonUnifiedImport.set_sensitive(0)
+		
+	def on_comboboxLogLevel_changed(self, widget):
+		active = self.comboboxLogLevel.get_active()
+		if active == 1:
+			logging.debug("Setting log level to WARNING")
+			self.pytrainer_main.log_level = logging.WARNING
+		elif active == 2:
+			logging.debug("Setting log level to INFO")
+			self.pytrainer_main.log_level = logging.INFO
+		elif active == 3:
+			logging.debug("Setting log level to DEBUG")
+			self.pytrainer_main.log_level = logging.DEBUG
+		else:
+			logging.debug("Setting log level to ERROR")
+			self.pytrainer_main.log_level = logging.ERROR
+		self.pytrainer_main.set_logging_level(self.pytrainer_main.log_level)	
+		
+	def on_checkbuttonValidate_toggled(self, widget):
+		if self.checkbuttonValidate.get_active():
+			logging.debug( "Validate activated")
+			self.pytrainer_main.validate = True
+		else:
+			logging.debug("Validate deactivated")
+			self.pytrainer_main.validate = False
+			
+	def on_checkbuttonCheck_toggled(self, widget):
+		if self.checkbuttonCheck.get_active():
+			logging.debug( "Check activated")
+			if self.pytrainer_main.check is not True:
+				#Need to do sanitycheck
+				logging.debug("Need to do sanitycheck")
+				self.pytrainer_main.sanityCheck()
+			self.pytrainer_main.check = True
+		else:
+			logging.debug("Check deactivated")
+			self.pytrainer_main.check = False
+			
+	def on_checkbuttonGM3_toggled(self, widget):
+		if self.checkbuttonGM3.get_active():
+			logging.debug("GM3 activated")
+			self.pytrainer_main.gm3 = True
+		else:
+			logging.debug("GM3 deactivated")
+			self.pytrainer_main.gm3 = False
+	
+	def on_checkbuttonUnifiedImport_toggled(self, widget):
+		if self.checkbuttonUnifiedImport.get_active():
+			logging.debug("Unified Import activated")
+			if self.pytrainer_main.testimport is not True:
+				#Need to enable unified import
+				logging.debug("Need to enable unified import")
+				self.pytrainer_main.windowmain.set_unified_import(True)
+			else:
+				#No change 
+				logging.debug("No change to unified import")
+		else:
+			logging.debug("Unified Import deactivated")
+			if self.pytrainer_main.testimport is True:
+				logging.debug("Need to deactivate unified import")
+				self.pytrainer_main.windowmain.set_unified_import(False)
+			else:
+				logging.debug("No change to unified import")
 	
 	def on_sportlistbutton_clicked(self,widget):
 		sport_list = self.parent.getSportList()

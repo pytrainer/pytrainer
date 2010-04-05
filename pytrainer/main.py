@@ -63,7 +63,7 @@ from lib.heartrate import *
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.1_svn#544"
+		self.version ="1.7.1_svn#546"
 		self.DB_version = 3
 		
 		#Setup usage and permitted options
@@ -156,12 +156,16 @@ class pyTrainer:
 		self.loadPlugins()
 		self.loadExtensions()
 		self.windowmain.createGraphs(RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph)
-		self.windowmain.createMap(Googlemaps,self.waypoint, self.gm3)
+		self.windowmain.createMap(Googlemaps,self.waypoint)
 		self.windowmain.createWaypointEditor(WaypointEditor,self.waypoint, parent=self)
 		self.windowmain.on_calendar_selected(None)
 		self.refreshMainSportList()	 
 		self.windowmain.run()
 		logging.debug('<<') 
+		
+	def set_logging_level(self,level):
+		logging.debug("Setting logger to level: "+ str(level))
+		logging.getLogger('').setLevel(level)
 
 	def quit(self): 
 		logging.debug('--')

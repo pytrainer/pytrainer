@@ -1624,8 +1624,8 @@ Continue?</property>
                             <property name="items" translatable="yes">Error
 Warning
 Info
-Debug
-Unknown</property>
+Debug</property>
+                            <signal name="changed" handler="on_comboboxLogLevel_changed"/>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
@@ -1667,6 +1667,7 @@ Unknown</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="draw_indicator">True</property>
+                            <signal name="toggled" handler="on_checkbuttonValidate_toggled"/>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
@@ -1712,6 +1713,7 @@ Unknown</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
                             <property name="draw_indicator">True</property>
+                            <signal name="toggled" handler="on_checkbuttonCheck_toggled"/>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
@@ -1758,6 +1760,7 @@ Unknown</property>
                             <property name="receives_default">False</property>
                             <property name="xalign">0</property>
                             <property name="draw_indicator">True</property>
+                            <signal name="toggled" handler="on_checkbuttonGM3_toggled"/>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
@@ -1804,6 +1807,7 @@ Unknown</property>
                             <property name="receives_default">False</property>
                             <property name="xalign">0</property>
                             <property name="draw_indicator">True</property>
+                            <signal name="toggled" handler="on_checkbuttonUnifiedImport_toggled"/>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
@@ -1839,7 +1843,21 @@ Unknown</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkLabel" id="label2">
+                  <widget class="GtkLabel" id="labelNotification">
+                    <property name="visible">True</property>
+                    <property name="xalign">0</property>
+                    <property name="xpad">5</property>
+                    <property name="label" translatable="yes">&lt;small&gt;This screen shows the state of command line configurable options for pytrainer. These options can be changed here which will affect the current instance of pytrainer, they will not be remembered next time though&lt;/small&gt;</property>
+                    <property name="use_markup">True</property>
+                    <property name="wrap">True</property>
+                    <property name="width_chars">75</property>
+                  </widget>
+                  <packing>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="labelNote">
                     <property name="visible">True</property>
                     <property name="xalign">1</property>
                     <property name="yalign">0</property>
@@ -1849,7 +1867,7 @@ Unknown</property>
                     <property name="use_markup">True</property>
                   </widget>
                   <packing>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </widget>

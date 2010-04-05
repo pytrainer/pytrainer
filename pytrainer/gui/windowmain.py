@@ -78,8 +78,11 @@ class Main(SimpleGladeApp):
 		self.notebook.set_current_page(1)
 
 		#Disable import menu item unless specified on startup
-		if not self.testimport:
-			self.menu_importdata.set_sensitive(0)
+		self.set_unified_import(self.testimport)
+			
+	def set_unified_import(self, status=False):
+		self.menu_importdata.set_sensitive(status)
+		self.parent.testimport = status
 			
 	def _createXmlListView(self,file):
 		menufile = XMLParser(file)
@@ -139,8 +142,8 @@ class Main(SimpleGladeApp):
 		self.drawareamonth = MonthGraph(self.month_vbox, self.window1, self.month_combovalue,self.month_combovalue2)
 		self.drawareayear = YearGraph(self.year_vbox, self.window1, self.year_combovalue,self.year_combovalue2)
 	
-	def createMap(self,Googlemaps,waypoint, useGM3):
-		self.googlemaps = Googlemaps(self.data_path, self.map_vbox,waypoint, useGM3)
+	def createMap(self,Googlemaps,waypoint):
+		self.googlemaps = Googlemaps(self.data_path, self.map_vbox,waypoint, pytrainer_main=self.parent)
 
 	def updateSportList(self,listSport): 
 		logging.debug(">>")
