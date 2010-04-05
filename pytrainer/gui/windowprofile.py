@@ -20,13 +20,15 @@ from SimpleGladeApp import SimpleGladeApp
 from windowcalendar import WindowCalendar
 import gtk
 import gobject
+import logging
 
 class WindowProfile(SimpleGladeApp):
-	def __init__(self, data_path = None, parent=None):
+	def __init__(self, data_path = None, parent=None, pytrainer_main=None):
 		glade_path="glade/profile.glade"
 		root = "newprofile"
 		domain = None
 		self.parent = parent
+		self.pytrainer_main = pytrainer_main
 		self.data_path = data_path
 		SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
 		self.conf_options = [
@@ -119,6 +121,7 @@ class WindowProfile(SimpleGladeApp):
 		self.prf_age.set_text(date)
 
 	def on_switch_page(self,widget,pointer,frame):
+		#print widget, pointer, frame
 		if frame==2:
 			self.saveOptions()
 			sport_list = self.parent.getSportList()
@@ -151,6 +154,56 @@ class WindowProfile(SimpleGladeApp):
         			self.sportTreeView.set_model(store)
 				#self.sportlistbutton.hide()
 				self.sportlist.show()
+		elif frame == 4: #Startup Parameters page selected
+			self.init_params_tab()
+	
+	def init_params_tab(self):
+		logging.debug( "log level:", self.pytrainer_main.log_level, "validate:", self.pytrainer_main.validate, "check:", self.pytrainer_main.check, "gm3:", self.pytrainer_main.gm3, "testimport:", self.pytrainer_main.testimport )
+		#Show log level
+		if self.pytrainer_main.log_level == logging.ERROR:
+			self.comboboxLogLevel.set_active(0)
+		elif self.pytrainer_main.log_level == logging.WARNING:
+			self.comboboxLogLevel.set_active(1)
+		elif self.pytrainer_main.log_level == logging.INFO:
+			self.comboboxLogLevel.set_active(2)
+		elif self.pytrainer_main.log_level == logging.DEBUG:
+			self.comboboxLogLevel.set_active(3)
+		else:
+			self.comboboxLogLevel.set_active(4)
+			print "Unknown logging level specified"
+
+		#Show if validation requested
+		if self.pytrainer_main.validate:
+			self.checkbuttonValidate.set_active(True)
+		else:
+			self.checkbuttonValidate.set_active(False)
+			
+		#Show if database and config check requested 
+		if self.pytrainer_main.check:
+			self.checkbuttonCheck.set_active(True)
+		else:
+			self.checkbuttonCheck.set_active(False)
+		
+		#Show if using Googlemaps API v3
+		if self.pytrainer_main.gm3:
+			self.checkbuttonGM3.set_active(True)
+		else:
+			self.checkbuttonGM3.set_active(False)
+			
+		#Show if unified import activated
+		if self.pytrainer_main.testimport:
+			self.checkbuttonUnifiedImport.set_active(True)
+		else:
+			self.checkbuttonUnifiedImport.set_active(False)
+		
+		#TODO Allow changes to settings!!!
+		#Disable editing as processing of changes not yet implemented
+		self.comboboxLogLevel.set_sensitive(0)
+		#logging.getLogger('').setLevel(self.log_level)
+		self.checkbuttonValidate.set_sensitive(0)
+		self.checkbuttonCheck.set_sensitive(0)
+		self.checkbuttonGM3.set_sensitive(0)
+		self.checkbuttonUnifiedImport.set_sensitive(0)
 	
 	def on_sportlistbutton_clicked(self,widget):
 		sport_list = self.parent.getSportList()

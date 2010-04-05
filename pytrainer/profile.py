@@ -177,7 +177,7 @@ class Profile:
 		from gui.windowprofile import WindowProfile
 		logging.debug("retrieving configuration data")
 		list_options = self.configuration.getOptions()
-		profilewindow = WindowProfile(self.data_path, self)
+		profilewindow = WindowProfile(self.data_path, self, pytrainer_main=self.parent)
 		logging.debug("setting data values")
 		profilewindow.setValues(list_options)
 		profilewindow.run()
