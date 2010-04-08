@@ -511,6 +511,7 @@ class Record:
 		Add a record from a valid pytrainer type GPX file
 		"""	
 		logging.debug('>>')
+		entry_id = None
 		if not os.path.isfile(gpxFile):
 			logging.error("Invalid file: " +gpxFile)
 		else:
@@ -523,8 +524,8 @@ class Record:
 				logging.error("Entry not created for file %s" % gpxFile)
 			else:
 				logging.info("Entry %d has been added" % entry_id)
-				
 		logging.debug('<<')
+		return entry_id
 
 	#def importFromGTRNCTR(self,gtrnctrFile): #TODO remove
 		"""22.03.2008 - dgranda
