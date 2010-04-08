@@ -1212,7 +1212,8 @@ Cadence
                                                 <property name="can_focus">True</property>
                                                 <property name="invisible_char">&#x25CF;</property>
                                                 <property name="width_chars">4</property>
-                                                <property name="adjustment">0 0 100 1 10 0</property>
+                                                <property name="adjustment">0 -500 1000 1 10 0</property>
+                                                <signal name="value_changed" handler="on_spinbuttonY1_value_changed"/>
                                               </widget>
                                               <packing>
                                                 <property name="left_attach">1</property>
@@ -1229,7 +1230,8 @@ Cadence
                                                 <property name="can_focus">True</property>
                                                 <property name="invisible_char">&#x25CF;</property>
                                                 <property name="width_chars">4</property>
-                                                <property name="adjustment">0 0 100 1 10 0</property>
+                                                <property name="adjustment">0 -500 1000 1 10 0</property>
+                                                <signal name="value_changed" handler="on_spinbuttonY1_value_changed"/>
                                               </widget>
                                               <packing>
                                                 <property name="left_attach">2</property>
@@ -1243,8 +1245,7 @@ Cadence
                                             <child>
                                               <widget class="GtkLabel" id="labelGraphConfig">
                                                 <property name="visible">True</property>
-                                                <property name="xalign">0</property>
-                                                <property name="label" translatable="yes">&lt;small&gt;Graph Config Options&lt;/small&gt;</property>
+                                                <property name="label" translatable="yes">&lt;small&gt;Graph Display Options&lt;/small&gt;</property>
                                                 <property name="use_markup">True</property>
                                               </widget>
                                               <packing>
@@ -1253,19 +1254,21 @@ Cadence
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkButton" id="buttonRefreshGraph">
-                                                <property name="label" translatable="yes">Refresh Graph Display</property>
+                                              <widget class="GtkButton" id="buttonResetGraph">
+                                                <property name="label" translatable="yes">Reset Graph</property>
                                                 <property name="visible">True</property>
-                                                <property name="sensitive">False</property>
                                                 <property name="can_focus">True</property>
                                                 <property name="receives_default">True</property>
+                                                <property name="tooltip" translatable="yes">Reset Graph display to original settings</property>
+                                                <property name="yalign">1</property>
+                                                <signal name="clicked" handler="on_buttonResetGraph_clicked"/>
                                               </widget>
                                               <packing>
                                                 <property name="right_attach">3</property>
                                                 <property name="top_attach">4</property>
                                                 <property name="bottom_attach">5</property>
                                                 <property name="x_options"></property>
-                                                <property name="y_options"></property>
+                                                <property name="y_options">GTK_EXPAND</property>
                                               </packing>
                                             </child>
                                             <child>

@@ -52,6 +52,8 @@ class Main(SimpleGladeApp):
 		self.block = False
 		self.activeSport = None
 		self.gpxDir = gpxDir
+		self.record_list = None
+		self.laps = None
 
 	def new(self):
 		self.testimport = self.parent.testimport
@@ -266,6 +268,8 @@ class Main(SimpleGladeApp):
 
 	def actualize_recordgraph(self,record_list,laps=None):
 		logging.debug(">>")
+		self.record_list = record_list
+		self.laps = laps
 		if len(record_list)>0:
 			self.record_vbox.set_sensitive(1)
 			self.drawarearecord.drawgraph(record_list,laps)
@@ -815,10 +819,30 @@ class Main(SimpleGladeApp):
 	
 	def createWaypointEditor(self,WaypointEditor,waypoint, parent=None):
 		self.waypointeditor = WaypointEditor(self.data_path, self.waypointvbox,waypoint,parent)
+		
+	def zoom_graph(self, ylimits=None):
+		logging.debug(">>")
+		logging.debug("Reseting graph Y axis with ylimits: %s" % str(ylimits) )
+		self.drawarearecord.drawgraph(self.record_list,self.laps, ylimits=ylimits)
+		logging.debug("<<")
 
 	######################
 	## Lista de eventos ##
 	######################
+	
+	def on_spinbuttonY1_value_changed(self, widget):
+		ymin = self.spinbuttonY1Min.get_value()
+		ymax = self.spinbuttonY1Max.get_value()
+		#Check to see if the min and max have the same...
+		if ymin == ymax: 
+			if widget.get_name() == "spinbuttonY1Min": #User was changing the min spinbutton, so move max up
+				ymax += 1
+			else:	#Move min down
+				ymin -= 1
+		self.zoom_graph(ylimits=(ymin, ymax))
+	
+	def on_buttonResetGraph_clicked(self, widget):
+		self.zoom_graph()
 
 	def on_edit_clicked(self,widget):
 		selected,iter = self.recordTreeView.get_selection().get_selected()

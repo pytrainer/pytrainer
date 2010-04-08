@@ -30,7 +30,7 @@ class RecordGraph:
 		self.config_table = tableConfig
 		logging.debug("<<")
 
-	def drawgraph(self,values,laps=None):
+	def drawgraph(self,values,laps=None, ylimits=None):
 		logging.debug(">>")
 		#Get the config options 
 		for child in self.config_table.get_children():
@@ -97,7 +97,7 @@ class RecordGraph:
 			col.append(color)		
 		logging.info("To show: tit: "+str(tit)+" | col: "+str(col)+" | xlab: "+str(xlab)+" | ylab: "+str(ylab))
 		#self.drawPlot(xvalues,yvalues,xlabel,ylabel,title,color,zones)
-		ymin, ymax = self.drawarea.drawPlot(xval,yval,xlab,ylab,tit,col,None,lapValues)
+		ymin, ymax = self.drawarea.drawPlot(xval,yval,xlab,ylab,tit,col,None,lapValues, ylimits=ylimits)
 		
 		max_yvalue = max(max_yvalue, ymax)
 		min_yvalue = min(min_yvalue, ymin)

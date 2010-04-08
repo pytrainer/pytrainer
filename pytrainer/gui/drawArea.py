@@ -273,7 +273,7 @@ class DrawArea:
 
 		logging.debug('<<')
 
-	def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None,xzones=None):
+	def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None,xzones=None, ylimits=None):
 		logging.debug('>>')  
 		logging.debug("Type: plot | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
 		logging.debug('xlabel: '+str(xlabel)+' | ylabel: '+str(ylabel)+' | title: '+str(title))
@@ -314,7 +314,15 @@ class DrawArea:
 			axis.set_title("%s vs %s" %(ylabel[0],ylabel[1]))
 		else:
 			axis.set_title("%s" %(ylabel[0]))
-		ylim = axis.get_ylim()
+
+		ylim_min, ylim_max = axis.get_ylim()
+		if ylimits is not None:
+			logging.debug("Using ylimits: %s" % str(ylimits))
+			if ylimits[0] is not None:
+				ylim_min = ylimits[0]
+			if ylimits[1] is not None:
+				ylim_max = ylimits[1]
+			axis.set_ylim(ylim_min, ylim_max)
 
 		canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
 		canvas.show()
@@ -326,7 +334,7 @@ class DrawArea:
 			logging.debug('Child available: '+str(child))
 		
 		logging.debug('<<')
-		return ylim
+		return (ylim_min, ylim_max)
 	
 	def drawPie(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
 		logging.debug('>>')
