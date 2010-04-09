@@ -63,7 +63,7 @@ from lib.heartrate import *
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.1_svn#554"
+		self.version ="1.7.1_svn#555"
 		self.DB_version = 3
 		
 		#Setup usage and permitted options
@@ -104,6 +104,7 @@ class pyTrainer:
 		self.data_path = data_path
 		self.date = Date()
 		# Checking profile
+		#TODO configuration is first checked within profile, needs to be centralized - dgranda 2010.04.09
 		self.profile = Profile(self.data_path,self)
 		self.profile.isProfileConfigured()
 		

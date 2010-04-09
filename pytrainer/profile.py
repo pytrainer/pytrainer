@@ -33,6 +33,13 @@ class Profile:
 		self.conf = checkConf()
 		self.filename = self.conf.getValue("conffile")
 		self.configuration = XMLParser(self.filename)
+		# Checks if configuration file is empty
+		if self.configuration.xmldoc is None:
+			logging.error("Seems no data available in local configuration file: "+self.filename+", please check")
+			logging.error("Fatal error, exiting")
+			exit(-3)
+		else:
+			logging.debug("Configuration retrieved: "+str(self.configuration.getOptions()))
 		logging.debug("<<")
 
 	def isProfileConfigured(self):
