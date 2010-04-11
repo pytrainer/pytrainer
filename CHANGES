@@ -1,5 +1,38 @@
 See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/pytrainer/roadmap
 
+- PyTrainer changes for 1.7.2:
+
+    * Lap DB table created and code changed to populate and use the table [507] [508] [509]
+    * Moved some global variables to class variables in main.py [513]
+    * Google Earth plugin modified to work with new plugin architecture [515]
+    * Waypoint editor modified to use handle_title_changed() call back instead of SOAP calls (thanks to David Fraser) and a few bugs fixed [516] [524] [543]
+    * Firefox removed as a dependency [518]
+    * Shebang tidied to be compatible with all python versions [520]
+    * Extension code refactored to run extensions as internal classes [527]
+    * Webservice / SOAP code removed [527] [531]
+    * Incomplete webpublish extension removed from svn [528]
+    * Upload to Openstreetmap extension added [536], [540]
+    * pytrainer startup script modified to work with different install locations [532] [533]
+    * Misc fixes and patches to pytrainer (thanks to David Fraser) [524] [530] [535]
+    * Add support for with command for python versions <2.6 [541]
+    * Removed bug that caused errors for activities with no GPX file [542]
+    * Localisation updates [539]
+    * New tab in preferences displays and allows changes to be made to pytrainer startup options [544] [545] [546]
+    * Move individual screens into separate glade files [547]
+    * Full screen map view reinstated [548]
+    * Removed DB field order bug [549]
+    * Removed fake error when importing entries [550]
+    * Minor fixes to graph display options [551]
+    * Minor cosmetic changes [552] [553] [554]
+    * Added check for early detection of empty local configuration file [555]
+    * EXPERIMENTAL Unified Import GUI modifications (disabled by default, enabled on startup with --testimport) [526]
+          o file import supports multiple files at once [510] [511]
+          o option to have file import window automatically start with a file selection dialog [519]
+          o activities can be edited before import [514] [517] [521] [522] [534] [537] [538]
+          o kml file import support [523] [525]
+          o plugins tab added - provides alternative way of viewing and running import plugins [512]
+          o device import NOT functional 
+
 - PyTrainer changes for 1.7.1:
 
     * New import plugin - Garmintools - svn [430], [431], [436], [452], [453], [459], [460], [461], [463], [464], [486], [487], [488]
