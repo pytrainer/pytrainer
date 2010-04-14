@@ -23,15 +23,16 @@ from lib.heartrate import *
 import logging
 
 class HeartRateGraph:
-	def __init__(self, vbox = None, window = None, vbox2 = None):
+	def __init__(self, vbox = None, window = None, vbox2 = None, pytrainer_main = None):
 		logging.debug('>>')
 		self.drawarea = DrawArea(vbox, window)
 		self.drawarea2 = DrawArea(vbox2, window)
+		self.pytrainer_main = pytrainer_main
 		logging.debug('<<')
 
 	def drawgraph(self,values):
 		logging.debug('>>')
-		zones = getZones()	
+		zones = getZones(self.pytrainer_main)	 #TODO from lib/heartrate.py import - can this file be consolidated?
 		xvalues, yvalues = self.get_values(values)
 		#logging.debug('xvalues: '+str(xvalues))
 		#logging.debug('yvalues: '+str(yvalues))

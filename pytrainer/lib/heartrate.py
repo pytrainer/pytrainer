@@ -18,14 +18,14 @@
 
 from xmlUtils import XMLParser
 
-def getZones():
-	conf = checkConf()
-	filename = conf.getValue("conffile")
-	configuration = XMLParser(filename)
-	maxhr = int(configuration.getValue("pytraining","prf_maxhr"))
-	resthr = int(configuration.getValue("pytraining","prf_minhr"))
+def getZones(pytrainer_main=None):
+	#conf = checkConf()
+	#filename = conf.getValue("conffile")
+	#configuration = XMLParser(filename)
+	maxhr = int(pytrainer_main.profile.getValue("pytraining","prf_maxhr"))
+	resthr = int(pytrainer_main.profile.getValue("pytraining","prf_minhr"))
 
-	if configuration.getValue("pytraining","prf_hrzones_karvonen")=="True":
+	if pytrainer_main.profile.getValue("pytraining","prf_hrzones_karvonen")=="True":
 		#if karvonen method
 		targethr1 = ((maxhr - resthr) * 0.50) + resthr
 		targethr2 = ((maxhr - resthr) * 0.60) + resthr

@@ -59,7 +59,7 @@ from lib.heartrate import *
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.2_svn#563"
+		self.version ="1.7.2_svn#564"
 		self.DB_version = 3
 		#Process command line options
 		self.startup_options = self.get_options()
@@ -307,8 +307,8 @@ class pyTrainer:
 					 gpx = Gpx(self.data_path,gpxfile)
 					 gpx_tracklist = gpx.getTrackList()
 			 self.windowmain.actualize_heartrategraph(gpx_tracklist)
-			 zones = getZones()			#TODO Huh, what is supposed to happen here???
-			 karvonen_method = self.profile.configuration.getValue("pytraining","prf_hrzones_karvonen")
+			 zones = getZones(self)			#TODO from lib/heartrate.py import - can this file be consolidated?
+			 karvonen_method = self.profile.getValue("pytraining","prf_hrzones_karvonen")
 			 self.windowmain.actualize_hrview(record_list,zones,karvonen_method)
 		logging.debug('<<')
 			 
