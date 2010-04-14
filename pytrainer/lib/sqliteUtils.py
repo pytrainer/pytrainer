@@ -26,14 +26,13 @@ except ImportError:
 	logging.error('Not able to find sqlite2 module (new in python 2.5)')
 	from pysqlite2 import dbapi2 as sqlite
 	logging.info('Using pysqlite2 module to access DB. Think about upgrading to python 2.5!')
-from system import checkConf
+	
 from logs import Log
 
 class Sql:
-	def __init__(self,host=None, ddbb = None, user = None, password = None):
+	def __init__(self,host=None, ddbb = None, user = None, password = None, configuration = None):
 		self.db = None
-		conf = checkConf()
-		confdir = conf.getValue("confdir")
+		confdir = configuration.confdir
 		self.ddbb = "%s/pytrainer.ddbb" %confdir
 		self.log = Log()
 	

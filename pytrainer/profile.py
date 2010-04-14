@@ -17,128 +17,201 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import os
+import os, sys
 import logging
 
-from lib.system import checkConf
-from lib.xmlUtils import XMLParser
+#from lib.system import checkConf
+#from lib.xmlUtils import XMLParser
+from lxml import etree
 from lib.ddbb import DDBB
 
 class Profile:
 	def __init__(self, data_path = None, parent = None):
 		logging.debug(">>")
-		self.parent = parent
-		self.version = None
+		self.pytrainer_main = parent
 		self.data_path = data_path
-		self.conf = checkConf()
-		self.filename = self.conf.getValue("conffile")
-		self.configuration = XMLParser(self.filename)
-		# Checks if configuration file is empty
-		if self.configuration.xmldoc is None:
-			logging.error("Seems no data available in local configuration file: "+self.filename+", please check")
-			logging.error("Fatal error, exiting")
-			exit(-3)
+		self.xml_tree = None
+		self.home = None
+		self.tmpdir = None
+		self.confdir = None
+		self.conffile = None
+		self.gpxdir = None
+		self.extensiondir = None
+		self.plugindir = None
+		#Set configuration parameters - old system.checkConf()
+		self._setHome()
+		self._setConfFiles()
+		self._setTempDir()
+		self._setExtensionDir()
+		self._setPluginDir()
+		self._setGpxDir()
+		
+		#Clear temp dir
+		logging.debug("clearing tmp directory %s" % self.tmpdir)
+		self._clearTempDir()
+		
+		#Profile Options and Defaults
+		self.profile_options = {
+			"prf_name":"default",
+			"prf_gender":"",
+			"prf_weight":"",
+			"prf_height":"",
+			"prf_age":"",
+			"prf_ddbb":"sqlite",
+			"prf_ddbbhost":"",
+			"prf_ddbbname":"",
+			"prf_ddbbuser":"",
+			"prf_ddbbpass":"",
+			"version":"0.0",
+			"DB_version":"0",
+			"prf_us_system":"False",
+			"prf_hrzones_karvonen":"False",
+			"prf_maxhr":"",
+			"prf_minhr":"",
+			"auto_launch_file_selection":"False",
+			"import_default_tab":"0",
+			}
+
+		#Parse pytrainer configuration file
+		self.config_file = self.conffile
+		self.configuration = self._parse_config_file(self.config_file)
+		logging.debug("Configuration retrieved: "+str(self.configuration))
+		self.pytrainer_main.ddbb = DDBB(self, pytrainer_main=self.pytrainer_main)
+		logging.debug("<<")
+
+	def _setHome(self):
+		if sys.platform == "linux2":
+			variable = 'HOME'
+		elif sys.platform == "win32":
+			variable = 'USERPROFILE'
 		else:
-			logging.debug("Configuration retrieved: "+str(self.configuration.getOptions()))
-		logging.debug("<<")
+			print "Unsupported sys.platform: %s." % sys.platform
+			sys.exit(1)
+		self.home = os.environ[variable]
+    
+	def _setTempDir(self):
+		self.tmpdir = self.confdir+"/tmp"
+		if not os.path.isdir(self.tmpdir):
+			os.mkdir(self.tmpdir)
 
-	def isProfileConfigured(self):
-		logging.debug(">>")
-		if self.conf.getConfFile():
-			#logging.debug("Profile found. ToDo: check integrity")
-			#self.checkProfile()
-			self.configuration = XMLParser(self.filename)
-			self.ddbb = DDBB(self.configuration)
+	def _clearTempDir(self):
+		"""Function to clear out the tmp directory that pytrainer uses
+			will only remove files
+		"""
+		if not os.path.isdir(self.tmpdir):
+			return
 		else:
-			logging.debug("No profile found. Creating default one")
-			self.createDefaultConf()
-		logging.debug("<<")
-		return True
+			files = os.listdir(self.tmpdir)
+			for name in files:
+				fullname = (os.path.join(self.tmpdir, name))
+				if os.path.isfile(fullname):
+					os.remove(os.path.join(self.tmpdir, name))
+   
+	def _setConfFiles(self):
+		if sys.platform == "win32":
+			self.confdir = self.home+"/pytrainer"
+		elif sys.platform == "linux2":
+			self.confdir = self.home+"/.pytrainer"
+		else:
+			print "Unsupported sys.platform: %s." % sys.platform
+			sys.exit(1)
+		self.conffile = self.confdir+"/conf.xml"
+		if not os.path.isdir(self.confdir):
+			os.mkdir(self.confdir)
+	
+	def _setGpxDir(self):
+		self.gpxdir = self.confdir+"/gpx"
+		if not os.path.isdir(self.gpxdir):
+			os.mkdir(self.gpxdir)
+	
+	def _setExtensionDir(self):
+		self.extensiondir = self.confdir+"/extensions"
+		if not os.path.isdir(self.extensiondir):
+			os.mkdir(self.extensiondir)
+	
+	def _setPluginDir(self):
+		self.plugindir = self.confdir+"/plugins"
+		if not os.path.isdir(self.plugindir):
+			os.mkdir(self.plugindir)
 
-	def createDefaultConf(self):
+	def getConfFile(self):
+		if not os.path.isfile(self.conffile):
+			return False
+		else:
+			return self.conffile
+
+	def _parse_config_file(self, config_file):
+		'''
+		Parse the xml configuration file and convert to a dict
+		
+		returns: dict with option as key
+		'''
+		if config_file is None:
+			logging.error("Configuration file value not set")
+		elif not os.path.isfile(config_file):
+			logging.error("Configuration '%s' file does not exist" % config_file)
+			logging.info("No profile found. Creating default one")
+			self.setProfile(self.profile_options)
+		else:
+			logging.debug("Attempting to parse content from "+ config_file)
+			try:
+				self.xml_tree = etree.ElementTree(file=config_file)
+				#TODO check here for empty file....
+				# Checks if configuration file is empty
+				#if self.configuration.xmldoc is None:
+				#	logging.error("Seems no data available in local configuration file: "+self.filename+", please check")
+				#	logging.error("Fatal error, exiting")
+				#	exit(-3)
+				#Have a populated xml tree, get pytraining node (root) and convert it to a dict
+				pytraining_tag = self.xml_tree.getroot()
+				config = {}
+				config_needs_update = False
+				for key, default in self.profile_options.items():
+					value = pytraining_tag.get(key)
+					#If property is not found, set it to the default
+					if value is None:
+						config_needs_update = True 
+						value = default
+					config[key] = value
+				#Added a property, so update config 
+				if config_needs_update:
+					self.setProfile(config)
+				return config
+			except Exception as e:
+				logging.error("Error parsing file: %s. Exiting" % config_file)
+				logging.error(str(e))
+		logging.error("Fatal error, exiting")
+		exit(-3)
+		
+	def getValue(self, tag, variable):
+		if tag != "pytraining":
+			print "ERROR - pytraining is the only profile tag supported"
+			return None
+		elif not self.configuration.has_key(variable):
+			return None
+		return self.configuration[variable]
+		
+	def setValue(self, tag, variable, value):
 		logging.debug(">>")
-		conf_options = [
-			("prf_name","default"),
-			("prf_gender",""),
-			("prf_weight",""),
-			("prf_height",""),
-			("prf_age",""),
-			("prf_ddbb","sqlite"),
-			("prf_ddbbhost",""),
-			("prf_ddbbname",""),
-			("prf_ddbbuser",""),
-			("prf_ddbbpass",""),
-			("version","0.0"),
-			("prf_us_system","False")]
-		self.setProfile(conf_options)
+		if tag != "pytraining":
+			print "ERROR - pytraining is the only profile tag supported"
+		self.xml_tree.getroot().set(variable, value)  
 		logging.debug("<<")
-
-	def setVersion(self,version):
-		logging.debug("--")
-		self.version = version
 
 	def setProfile(self,list_options):
 		logging.debug(">>")
-		logging.debug("Retrieving data from "+ self.filename)
-		self.configuration = XMLParser(self.filename)
-		#list_options.append(("version",self.version))
-		if not os.path.isfile(self.filename):
-			self.configuration.createXMLFile("pytraining",list_options)
-		for option in list_options:
-			logging.debug("Adding "+option[0]+"|"+option[1])
-			self.configuration.setValue("pytraining",option[0],option[1])
-		self.ddbb = DDBB(self.configuration)
-		logging.debug("<<")
-
-	def checkProfile(self):
-		""" 31.07.2008 - dgranda
-		Checks if all needed properties are in the configuration file
-		If not, property is created with default value
-		args: none
-		returns: none"""
-		logging.debug(">>")
-		logging.debug("Retrieving data from "+ self.filename)
-		self.configuration = XMLParser(self.filename)
-		currentList = self.configuration.getOptions()
-		currentListKeys = currentList.keys()
-		#logging.debug("Values retrieved from conf file: "+ str(currentList))
-		logging.debug("Current keys: "+ str(currentListKeys))
-		defaultList = [
-			("prf_name","default"),
-			("prf_gender",""),
-			("prf_weight",""),
-			("prf_height",""),
-			("prf_age",""),
-			("prf_ddbb","sqlite"),
-			("prf_ddbbhost",""),
-			("prf_ddbbname",""),
-			("prf_ddbbuser",""),
-			("prf_ddbbpass",""),
-			("prf_us_system","False"),
-			("DB_version","0")]
-		defaultListKeys = []
-		for entry in defaultList:
-			defaultListKeys.append(unicode(entry[0]))
-		logging.debug("Default values: "+ str(defaultList))
-		#logging.debug("Default keys: "+ str(defaultListKeys))
-		# Comparing fields
-		# http://mail.python.org/pipermail/python-list/2002-May/141458.html
-		tempDict = dict(zip(currentListKeys,currentListKeys))
-		resultList = [x for x in defaultListKeys if x not in tempDict]
-		logging.info('Fields to be added: '+str(resultList))
-		# Adding missing fields if necessary
-		for field in resultList:
-			pos = defaultListKeys.index(field)
-			logging.debug("Adding "+ str(defaultList[pos]))
-			self.configuration.setValue("pytraining",defaultList[pos][0],defaultList[pos][1])
+		for option, value in list_options.items():
+			logging.debug("Adding "+option+"|"+value)
+			self.setValue("pytraining",option,value)
+		self.xml_tree.write(self.config_file, xml_declaration=True)
 		logging.debug("<<")
 
 	def getSportList(self):
 		logging.debug("--")
-		connection = self.ddbb.connect()
+		connection = self.pytrainer_main.ddbb.connect()
 		if (connection == 1):
 			logging.debug("retrieving sports info")
-			return self.ddbb.select("sports","name,met,weight,id_sports",None)
+			return self.pytrainer_main.ddbb.select("sports","name,met,weight,id_sports",None)
 		else:
 			return connection
 
@@ -153,44 +226,45 @@ class Profile:
 		logging.debug(">>")
 		logging.debug("Adding new sport: "+sport+"|"+weight+"|"+met)
 		sport = [sport,met,weight]
-		self.ddbb.insert("sports","name,met,weight",sport)
-		sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))
+		self.pytrainer_main.ddbb.insert("sports","name,met,weight",sport)
+		sport_id = self.pytrainer_main.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))
 		logging.debug("<<")
 		return sport_id
 		
 	def delSport(self,sport):
 		logging.debug(">>")
 		condition = "name=\"%s\"" %sport
-		id_sport = self.ddbb.select("sports","id_sports",condition)[0][0]
+		id_sport = self.pytrainer_main.ddbb.select("sports","id_sports",condition)[0][0]
 		logging.debug("removing records from sport "+ sport + " (id_sport: "+str(id_sport)+")")
-		self.ddbb.delete("records","sport=\"%d\""%id_sport)
-		self.ddbb.delete("sports","id_sports=\"%d\""%id_sport)
+		self.pytrainer_main.ddbb.delete("records","sport=\"%d\""%id_sport)
+		self.pytrainer_main.ddbb.delete("sports","id_sports=\"%d\""%id_sport)
 		logging.debug("<<")
 		
 	def updateSport(self,oldnamesport,newnamesport,newmetsport,newweightsport):
 		logging.debug("--")
-		self.ddbb.update("sports","name,met,weight",[newnamesport,newmetsport,newweightsport],"name=\"%s\""%oldnamesport)
+		self.pytrainer_main.ddbb.update("sports","name,met,weight",[newnamesport,newmetsport,newweightsport],"name=\"%s\""%oldnamesport)
 	
 	def getSportInfo(self,namesport):
 		logging.debug("--")
-		return self.ddbb.select("sports","name,met,weight","name=\"%s\""%namesport)[0]
+		return self.pytrainer_main.ddbb.select("sports","name,met,weight","name=\"%s\""%namesport)[0]
 	
 	def build_ddbb(self):
 		logging.debug("--")
-		self.ddbb.build_ddbb()
+		self.pytrainer_main.ddbb.build_ddbb()
 
 	def editProfile(self):
 		logging.debug(">>")
 		from gui.windowprofile import WindowProfile
 		logging.debug("retrieving configuration data")
-		list_options = self.configuration.getOptions()
-		profilewindow = WindowProfile(self.data_path, self, pytrainer_main=self.parent)
+		#Refresh configuration
+		self.configuration = self._parse_config_file(self.config_file)
+		profilewindow = WindowProfile(self.data_path, self, pytrainer_main=self.pytrainer_main)
 		logging.debug("setting data values")
-		profilewindow.setValues(list_options)
+		profilewindow.setValues(self.configuration)
 		profilewindow.run()
 		logging.debug("<<")
 		
 	def actualize_mainsportlist(self):
 		logging.debug("--")
-		self.parent.refreshMainSportList()
+		self.pytrainer_main.refreshMainSportList()
 

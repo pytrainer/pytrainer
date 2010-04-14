@@ -24,7 +24,7 @@ from logs import Log
 
 # Fixed some issues with MySql tables creation (email from Jonas Liljenfeldt)
 class Sql:
-	def __init__(self,host=None, ddbb = None, user = None, password = None):
+	def __init__(self,host=None, ddbb = None, user = None, password = None, configuration = None):
 		self.ddbb_user = user
 		self.ddbb_pass = password
 		self.ddbb_host = host

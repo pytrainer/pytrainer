@@ -20,7 +20,6 @@ import gtkmozembed
 import os
 import re
 
-from pytrainer.lib.system import checkConf
 from pytrainer.extension import Extension
 from pytrainer.lib.fileUtils import fileUtils
 
@@ -33,7 +32,6 @@ class WaypointEditor:
 	def __init__(self, data_path = None, vbox = None, waypoint=None, parent=None):		
 		logging.debug(">>")
 		self.data_path = data_path
-		self.conf = checkConf()
 		self.extension = Extension()
 		self.moz = gtkmozembed.MozEmbed()
 		self.moz.connect('title', self.handle_title_changed) 
@@ -85,7 +83,7 @@ class WaypointEditor:
 	def drawMap(self):
 		logging.debug(">>")
 		#self.createHtml()
-		tmpdir = self.conf.getValue("tmpdir")
+		tmpdir = self.pytrainer_main.profile.tmpdir
 		htmlfile = tmpdir+"/waypointeditor.html"
 		logging.debug("HTML file: "+str(htmlfile))
 		self.moz.load_url("file://"+htmlfile)
@@ -93,7 +91,7 @@ class WaypointEditor:
 	
 	def createHtml(self,default_waypoint=None):
 		logging.debug(">>")
-		tmpdir = self.conf.getValue("tmpdir")
+		tmpdir = self.pytrainer_main.profile.tmpdir
 		filename = tmpdir+"/waypointeditor.html"
 	
 		points = self.waypoint.getAllWaypoints()

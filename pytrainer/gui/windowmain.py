@@ -29,7 +29,7 @@ from popupmenu import PopupMenu
 from aboutdialog import About
 
 from pytrainer.lib.date import Date
-from pytrainer.lib.system import checkConf
+#from pytrainer.lib.system import checkConf
 from pytrainer.lib.xmlUtils import XMLParser
 from pytrainer.lib.gpx import Gpx
 from pytrainer.lib.unitsconversor import *
@@ -42,6 +42,7 @@ class Main(SimpleGladeApp):
 		gtk.about_dialog_set_url_hook(url_hook)
 		self.version = version
 		self.parent = parent
+		self.pytrainer_main = parent
 		self.data_path = data_path
 		glade_path="glade/pytrainer.glade"
 		root = "window1"
@@ -56,7 +57,7 @@ class Main(SimpleGladeApp):
 		self.laps = None
 
 	def new(self):
-		self.testimport = self.parent.testimport
+		self.testimport = self.pytrainer_main.startup_options.testimport
 		self.menublocking = 0
 		self.selected_view="day"
 		self.window1.set_title ("pyTrainer %s" % self.version)
@@ -71,8 +72,8 @@ class Main(SimpleGladeApp):
 		#create the columns for the waypoints treeview
 		column_names=[_("id"),_("Waypoint")]
 		self.create_treeview(self.waypointTreeView,column_names)
-		conf = checkConf()
-		self.fileconf = conf.getValue("confdir")+"/listviewmenu.xml"
+		#conf = checkConf()
+		self.fileconf = self.pytrainer_main.profile.confdir+"/listviewmenu.xml"
 		if not os.path.isfile(self.fileconf):
 			self._createXmlListView(self.fileconf)
 		self.showAllRecordTreeViewColumns()
@@ -176,10 +177,7 @@ class Main(SimpleGladeApp):
 	
 	def actualize_recordview(self,record_list):
 		logging.debug(">>")
-		conf = checkConf()
-		filename = conf.getValue("conffile")
-		configuration = XMLParser(filename)
-		if configuration.getValue("pytraining","prf_us_system") == "True":
+		if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 			self.r_distance_unit.set_text(_("miles"))
 			self.r_speed_unit.set_text(_("miles/h"))
 			self.r_maxspeed_unit.set_text(_("miles/h"))
@@ -227,7 +225,7 @@ class Main(SimpleGladeApp):
 			recordTime = dateTime.strftime("%X")
 			recordDateTimeOffset = dateTime.strftime("%z")
 			
-			if configuration.getValue("pytraining","prf_us_system") == "True":
+			if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 				self.record_distance.set_text("%0.2f" %km2miles(distance))
 				self.record_upositive.set_text("%0.2f" %m2feet(upositive))
 				self.record_unegative.set_text("%0.2f" %m2feet(unegative))
@@ -314,10 +312,7 @@ class Main(SimpleGladeApp):
 
 	def actualize_dayview(self,record_list):
 		logging.debug(">>")
-		conf = checkConf()
-		filename = conf.getValue("conffile")
-		configuration = XMLParser(filename)
-		if configuration.getValue("pytraining","prf_us_system") == "True":
+		if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 			self.d_distance_unit.set_text(_("miles"))
 			self.d_speed_unit.set_text(_("miles/h"))
 			self.d_maxspeed_unit.set_text(_("miles/h"))
@@ -353,7 +348,7 @@ class Main(SimpleGladeApp):
 				if record[10] > maxbeats:
 					maxbeats = self.parseFloat(record[10])
 			
-			if configuration.getValue("pytraining","prf_us_system") == "True":
+			if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 				distance = km2miles(distance)
 				maxspeed = km2miles(maxspeed)
 			
@@ -418,10 +413,7 @@ class Main(SimpleGladeApp):
 		maxpace = "0.00"
 		maxbeats = 0
 		
-		conf = checkConf()
-		filename = conf.getValue("conffile")
-		configuration = XMLParser(filename)
-		if configuration.getValue("pytraining","prf_us_system") == "True":
+		if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 			self.w_distance_unit.set_text(_("miles"))
 			self.w_speed_unit.set_text(_("miles/h"))
 			self.w_maxspeed_unit.set_text(_("miles/h"))
@@ -449,7 +441,7 @@ class Main(SimpleGladeApp):
 				if record[8] > maxbeats:
 					maxbeats = self.parseFloat(record[8])
 			
-			if configuration.getValue("pytraining","prf_us_system") == "True":
+			if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 				km = km2miles(km)
 				maxspeed = km2miles(maxspeed)
 			
@@ -496,10 +488,7 @@ class Main(SimpleGladeApp):
 		maxpace = "0.00"
 		maxbeats = 0
 		
-		conf = checkConf()
-		filename = conf.getValue("conffile")
-		configuration = XMLParser(filename)
-		if configuration.getValue("pytraining","prf_us_system") == "True":
+		if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 			self.m_distance_unit.set_text(_("miles"))
 			self.m_speed_unit.set_text(_("miles/h"))
 			self.m_maxspeed_unit.set_text(_("miles/h"))
@@ -527,7 +516,7 @@ class Main(SimpleGladeApp):
 				if record[8] > maxbeats:
 					maxbeats = self.parseFloat(record[8])
 			
-			if configuration.getValue("pytraining","prf_us_system") == "True":
+			if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 				km = km2miles(km)
 				maxspeed = km2miles(maxspeed)
 			

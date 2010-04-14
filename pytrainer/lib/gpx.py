@@ -21,12 +21,10 @@ import string
 import math
 import re
 import os
-from system import checkConf
  
 import time
 from datetime import datetime
 import logging
-from xmlUtils import XMLParser
 from lxml import etree
 from pytrainer.lib.date import Date
 
@@ -58,7 +56,6 @@ class Gpx:
 		self.filename = filename
 		self.trkname = trkname
 		logging.debug(str(data_path)+"|"+str(filename)+"|"+str(trkname))
-		self.conf = checkConf()
 		self.total_dist = 0
 		self.total_time = 0
 		self.upositive = 0

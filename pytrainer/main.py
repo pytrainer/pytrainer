@@ -48,25 +48,77 @@ from heartrategraph import HeartRateGraph
 from extensions.googlemaps import Googlemaps
 from extensions.waypointeditor import WaypointEditor
 
-#from gui.windowextensions import WindowExtensions
 from gui.windowimportdata import WindowImportdata
 from gui.windowmain import Main
 from gui.warning import Warning
 from lib.date import Date
 from lib.gpx import Gpx
-#from lib.soapUtils import webService
 from lib.ddbb import DDBB
-from lib.xmlUtils import XMLParser
-from lib.system import checkConf
 from lib.heartrate import *
 
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.2"
+		self.version ="1.7.2_svn#561"
 		self.DB_version = 3
+		#Process command line options
+		self.startup_options = self.get_options()
+		#Setup logging
+		self.set_logging(self.startup_options.log_level)
+		logging.debug('>>')
+		self.data_path = data_path
+		self.date = Date()
+		self.ddbb = None
+		# Checking profile
+		logging.debug('Checking configuration and profile...')
+		self.profile = Profile(self.data_path,self)
+		self.windowmain = None
+
+		if self.profile.getValue("pytraining","prf_us_system") == "True": #TODO perhaps move to use dict?
+			self.prf_us_system = True
+		else:
+			self.prf_us_system = False
+		self.ddbb = DDBB(self.profile) #TODO set this up so other modules can reference this and not have to duplicate this
+		logging.debug('connecting to DDBB')
+		self.ddbb.connect()		
+
+		#Get user's DB version
+		currentDB_version = self.profile.getValue("pytraining","DB_version")
+		logging.debug("Current DB version: "+str(currentDB_version))
+		# DB check can be triggered either via new version (mandatory) or as runtime parameter (--check)		
+		if self.startup_options.check: # User requested check
+			self.sanityCheck() 
+		elif currentDB_version is None: # No stored DB version - check DB etc
+			self.sanityCheck() 
+		elif self.DB_version > int(currentDB_version): # DB version expected is newer than user's version - check DB etc
+			self.sanityCheck() 
+		else:
+			logging.info('No sanity check requested')
+		self.record = Record(data_path,self)
+		#preparamos la ventana principal
+		self.windowmain = Main(data_path,self,self.version, gpxDir=self.profile.gpxdir)
+		self.date = Date(self.windowmain.calendar)
+		self.waypoint = Waypoint(data_path,self)
+		self.extension = Extension(data_path, self)
+		self.plugins = Plugins(data_path, self)
+		self.importdata = Importdata(data_path, self, self.profile)
+		self.loadPlugins()
+		self.loadExtensions()
+		self.windowmain.createGraphs(RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph)
+		self.windowmain.createMap(Googlemaps,self.waypoint)
+		self.windowmain.createWaypointEditor(WaypointEditor,self.waypoint, parent=self)
+		self.windowmain.on_calendar_selected(None)
+		self.refreshMainSportList()	 
+		self.windowmain.run()
+		logging.debug('<<') 
+
+	
+	def get_options(self):
+		'''
+		Define usage and accepted options for command line startup
 		
-		#Setup usage and permitted options
+		returns: options - dict with option: value pairs
+		'''
 		usage = '''usage: %prog [options]
 		
 		For more help on valid options try:
@@ -81,90 +133,22 @@ class pyTrainer:
 		parser.add_option("--gmaps2", action="store_false", dest="gm3", help="Use old Google Maps API version (v2)")
 		parser.add_option("--testimport", action="store_true", dest="testimport", help="EXPERIMENTAL: show new import functionality - for testing only USE AT YOUR OWN RISK")
 		(options, args) = parser.parse_args()
-		#Populate startup options
-		self.log_level = options.log_level
-		self.validate = options.validate
-		self.check = options.check
-		self.gm3 = options.gm3
-		self.testimport = options.testimport
-		
+		return options
+
+	def set_logging(self,level):
+		'''Setup rotating log file with customized format'''
 		PATH = os.environ['HOME']+"/.pytrainer"
 		if not os.path.exists(PATH):
 			os.mkdir(PATH)
 		LOG_FILENAME = PATH + "/log.out"
-		
-		# Adding rotating support to default logger with customized format
 		rotHandler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=100000, backupCount=5)
 		formatter = logging.Formatter('%(asctime)s|%(levelname)s|%(module)s|%(funcName)s|%(message)s')
 		rotHandler.setFormatter(formatter)
 		logging.getLogger('').addHandler(rotHandler)
-		logging.getLogger('').setLevel(self.log_level)
-
-		logging.debug('>>')
-		self.data_path = data_path
-		self.date = Date()
-		# Checking profile
-		#TODO configuration is first checked within profile, needs to be centralized - dgranda 2010.04.09
-		self.profile = Profile(self.data_path,self)
-		self.profile.isProfileConfigured()
+		self.set_logging_level(self.startup_options.log_level)
 		
-		self.windowmain = None
-
-		logging.debug('checking configuration...')
-		self.conf = checkConf() #TODO set this up so other modules can reference this and not have to duplicate this
-		logging.debug("clearing tmp directory %s" % self.conf.getValue("tmpdir"))
-		self.conf.clearTempDir()
-		self.filename = self.conf.getValue("conffile")
-		logging.debug('retrieving data from '+ self.filename)
-		self.configuration = XMLParser(self.filename) #TODO set this up so other modules can reference this and not have to duplicate this
-		if self.configuration.getValue("pytraining","prf_us_system") == "True":
-			self.prf_us_system = True
-		else:
-			self.prf_us_system = False
-		self.ddbb = DDBB(self.configuration) #TODO set this up so other modules can reference this and not have to duplicate this
-		logging.debug('connecting to DDBB')
-		self.ddbb.connect()		
-
-		#Get user's DB version
-		currentDB_version = self.configuration.getValue("pytraining","DB_version")
-		logging.debug("Current DB version: "+str(currentDB_version))
-		# DB check can be triggered either via new version (mandatory) or as runtime parameter (--check)		
-		if self.check: # User requested check
-			self.sanityCheck() 
-		elif currentDB_version is None: # No stored DB version - check DB etc
-			self.sanityCheck() 
-		elif self.DB_version > int(currentDB_version): # DB version expected is newer than user's version - check DB etc
-			self.sanityCheck() 
-		else:
-			logging.info('No sanity check requested')
-
-		self.record = Record(data_path,self)
-
-		#preparamos la ventana principal
-		self.windowmain = Main(data_path,self,self.version, gpxDir=self.conf.getValue("gpxdir"))
-		self.date = Date(self.windowmain.calendar)
-
-		#Preparamos el webservice	 
-		#TODO check reason for webservice - remove / change to optional start if not needed
-		#gtk.gdk.threads_init()
-		#self.webservice = webService(data_path,self.refreshWaypointView,self.newRecord)
-		#self.webservice.start()
-
-		self.waypoint = Waypoint(data_path,self)
-		self.extension = Extension(data_path, self)
-		self.plugins = Plugins(data_path, self)
-		self.importdata = Importdata(data_path, self, self.configuration)
-		self.loadPlugins()
-		self.loadExtensions()
-		self.windowmain.createGraphs(RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph)
-		self.windowmain.createMap(Googlemaps,self.waypoint)
-		self.windowmain.createWaypointEditor(WaypointEditor,self.waypoint, parent=self)
-		self.windowmain.on_calendar_selected(None)
-		self.refreshMainSportList()	 
-		self.windowmain.run()
-		logging.debug('<<') 
-		
-	def set_logging_level(self,level):
+	def set_logging_level(self, level):
+		'''Set level of information written to log'''
 		logging.debug("Setting logger to level: "+ str(level))
 		logging.getLogger('').setLevel(level)
 
@@ -301,7 +285,7 @@ class pyTrainer:
 			gpx_laps = None
 			if iter:
 				id_record = selected.get_value(iter,0)
-				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
+				gpxfile = self.profile.gpxdir+"/%s.gpx" %id_record
 				if os.path.isfile(gpxfile):
 					gpx = Gpx(self.data_path,gpxfile)
 					gpx_tracklist = gpx.getTrackList()
@@ -318,15 +302,13 @@ class pyTrainer:
 			 if iter:
 				id_record = selected.get_value(iter,0)
 				record_list = self.record.getrecordInfo(id_record)
-				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx" %id_record
+				gpxfile = self.profile.gpxdir+"/%s.gpx" %id_record
 				if os.path.isfile(gpxfile):
 					 gpx = Gpx(self.data_path,gpxfile)
 					 gpx_tracklist = gpx.getTrackList()
 			 self.windowmain.actualize_heartrategraph(gpx_tracklist)
-			 zones = getZones()
-			 filename = self.conf.getValue("conffile")
-			 configuration = XMLParser(filename)
-			 karvonen_method = configuration.getValue("pytraining","prf_hrzones_karvonen")
+			 zones = getZones()			#TODO Huh, what is supposed to happen here???
+			 karvonen_method = self.profile.configuration.getValue("pytraining","prf_hrzones_karvonen")
 			 self.windowmain.actualize_hrview(record_list,zones,karvonen_method)
 		logging.debug('<<')
 			 
@@ -496,8 +478,8 @@ class pyTrainer:
 		logging.debug('>>')
 		logging.info('Checking database integrity')
 		self.ddbb.checkDBIntegrity()
-		logging.info('Checking configuration file integrity')
-		self.profile.checkProfile()
+		#logging.info('Checking configuration file integrity')
+		#self.profile.checkProfile()
 		logging.info('Setting DB version to: ' + str(self.DB_version))
-		self.configuration.setValue("pytraining","DB_version", str(self.DB_version))
+		self.profile.configuration.setValue("pytraining","DB_version", str(self.DB_version))
 		logging.debug('<<')

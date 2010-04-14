@@ -21,15 +21,15 @@ import sys
 import logging
 
 from lib.xmlUtils import XMLParser
-from lib.system import checkConf
+#from lib.system import checkConf
 
 from gui.windowplugins import WindowPlugins
 
 class Plugins:
 	def __init__(self, data_path = None, parent = None):
 		self.data_path=data_path
-		self.conf = checkConf()
-		self.parent = parent
+		#self.conf = checkConf()
+		self.pytrainer_main = parent
 	
 	def getActivePlugins(self):
 		retorno = []
@@ -61,34 +61,12 @@ class Plugins:
 		pluginMain = getattr(module, plugin_classname)
 		logging.debug('<<')
 		#Only validate files if enabled at startup 
-		if self.parent.validate:
+		if self.pytrainer_main.startup_options.validate:
 			validate_inputfiles=True
 			print "validating plugin input files enabled"
 		else:
 			validate_inputfiles=False
 		return pluginMain(self, validate_inputfiles) 
-
-
-
-	#def runPlugin(self,pathPlugin):
-		"""
-		logging.debug('>>')
-		info = XMLParser(pathPlugin+"/conf.xml")
-		bin = info.getValue("pytrainer-plugin","executable")
-		binary = pathPlugin+"/"+bin
-		params = ""
-		for opt in self.getPluginConfParams(pathPlugin):
-			if opt[0]!="status":
-				params += " --%s %s" %(opt[0],opt[1])
-		logging.debug('Executing '+binary+' '+params)
-		gpxfile = os.popen("%s %s" %(binary,params)).read()
-		gpxfile = gpxfile.replace("\n","")
-		gpxfile = gpxfile.replace("\r","")
-		logging.debug('<<')
-		if gpxfile == "0":
-			return False
-		return gpxfile"""
-
 
 	def managePlugins(self):
 		pluginsList = self.getPluginsList()
@@ -114,7 +92,7 @@ class Plugins:
 		name = info.getValue("pytrainer-plugin","name")
 		description = info.getValue("pytrainer-plugin","description")
 		code = info.getValue("pytrainer-plugin","plugincode")
-		plugindir = self.conf.getValue("plugindir")
+		plugindir = self.pytrainer_main.profile.plugindir
 		if not os.path.isfile(plugindir+"/"+code+"/conf.xml"):
 			status = 0
 		else:

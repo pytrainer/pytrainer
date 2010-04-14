@@ -22,26 +22,28 @@
 import logging
 import traceback
 import commands, os
-from system import checkConf
+#from system import checkConf
 from pytrainer.lib.date import Date
 
 class DDBB:
-	def __init__(self, configuration):
+	def __init__(self, configuration, pytrainer_main=None):
+		self.pytrainer_main = pytrainer_main
+		self.configuration = configuration
 		self.ddbb_type = configuration.getValue("pytraining","prf_ddbb")
 		if self.ddbb_type == "mysql": #TODO no longer supported?
 			from mysqlUtils import Sql
 		else:
 			from sqliteUtils import Sql
 		
-		self.conf = checkConf()
-		self.confdir = self.conf.getValue("confdir")
+		#self.conf = checkConf()
+		self.confdir = configuration.confdir
 		self.ddbb_path = "%s/pytrainer.ddbb" %self.confdir
 		
 		ddbb_host = configuration.getValue("pytraining","prf_ddbbhost")
 		ddbb = configuration.getValue("pytraining","prf_ddbbname")
 		ddbb_user = configuration.getValue("pytraining","prf_ddbbuser")
 		ddbb_pass = configuration.getValue("pytraining","prf_ddbbpass")
-		self.ddbbObject = Sql(ddbb_host,ddbb,ddbb_user,ddbb_pass)
+		self.ddbbObject = Sql(ddbb_host,ddbb,ddbb_user,ddbb_pass,configuration)
 		
 	def connect(self):
 		#si devolvemos 1 ha ido todo con exito 		: return 1 if all successful
@@ -196,7 +198,7 @@ class DDBB:
 		logging.debug("Found %d records in DB without date_time_local field populated" % (len(listOfRecords) ) )
 		for record in listOfRecords:
 			try:
-				gpxfile = self.conf.getValue("gpxdir")+"/%s.gpx"%(record[0])
+				gpxfile = configuration.gpxdir+"/%s.gpx"%(record[0])
 				dateFromUTC = Date().getDateTime(record[2])
 				if os.path.isfile(gpxfile) : #GPX file exists for this record - probably not a manual record
 					date_time_local = str(dateFromUTC[1])

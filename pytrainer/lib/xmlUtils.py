@@ -38,6 +38,7 @@ class XMLParser:
 		self._load()
 
 	def _load(self):
+		logging.debug("Loading %s" % self.filename)
 		try: 
 			self.xmldoc = xml.dom.minidom.parse(self.filename) 
 		except:
@@ -48,7 +49,7 @@ class XMLParser:
 		self.createXMLFile(self,"pytraining",list_item)
 
 	def getOptions(self):
-		self._load()
+		#self._load()
 		root = self.xmldoc.getElementsByTagName("pytraining")[0]
 		list_options = {}
 		list_keys = root.attributes.keys()
@@ -74,7 +75,7 @@ class XMLParser:
 		self._saveFile(content)
 
 	def getValue(self,tagname,variable):
-		self._load()
+		#self._load()
 		try:
 			root = self.xmldoc.getElementsByTagName(tagname)[0]
 			value = root.attributes[variable].value
@@ -83,7 +84,7 @@ class XMLParser:
 		return value
 	
 	def getAllValues(self,tagname):	
-		self._load()
+		#self._load()
 		root = self.xmldoc.getElementsByTagName(tagname)
 		retorno = []
 		for i in root:
@@ -108,79 +109,3 @@ class XMLParser:
 		out = open(self.filename, 'w')
 		out.write(xmlcontent)
 		out.close()
-
-	def shortFromGPS(self, gtrnctrFile, getSport=True):
-		"""23.03.2008 - dgranda
-		Retrieves sport, date and start time from each entry coming from GPS
-		args:
-			gtrnctrFile: file with data from GPS file (garmin format)
-			getSport: indicates if sport info should be added
-		returns: list with dictionaries (just a list in case of sport is not retrieved) SPORT|DATE_STARTTIME"""
-		logging.debug('>>')
-		listTracksGPS = []
-		# http://gnosis.cx/publish/programming/parser-benchmarks.png
-		# Using ElementTree -> http://effbot.org/zone/element-index.htm
-		# cElementTree -> http://mike.hostetlerhome.com/present_files/pyxml.html
-		logging.debug('parsing '+gtrnctrFile)
-		if getSport is True:
-			logging.debug('Retrieving sport info')
-		else:
-			logging.debug('Discarding sport info')
-		listTracksGPS = []
-		tree = xml.etree.cElementTree.parse(gtrnctrFile).getroot()
-		history = tree.findall(".//History")
-		for sport in history:
-			#print "Element: "+sport.tag
-			if sport.getchildren():
-				for child in sport:
-					#print "\tSport found: "+child.tag
-					if child.getchildren():
-						for entry in child:
-							logging.debug("Entry found: "+entry.tag)
-							tracks = entry.findall(".//Track")
-							num_tracks = len(tracks)
-							#print 'Tracks found: '+str(num_tracks)
-							if num_tracks>0:
-								for track in tracks:
-									# we are looking for date and time for the first trackpoint
-									date_time = track.findtext(".//Time") #returns first instance found
-									track_sport = entry.tag
-									logging.info('Found: '+track_sport+' | '+date_time)
-									if getSport is True:
-										listTracksGPS.append((track_sport,date_time))
-									else:
-										listTracksGPS.append(date_time)
-					else:
-						logging.debug("No entry found for "+child.tag)
-		logging.debug('Retrieved info: '+str(listTracksGPS))
-		logging.debug('<<')
-		return listTracksGPS
-		
-		
-	def getTrackFromDates(self, source_file , entry , isGpx):
-		"""23.03.2008 - dgranda
-		Retrieves track given sport, date and start time
-		args:
-			- source_file: absolute path to source file
-			- entry: dictionary with SPORT|DATE_START_TIME
-			- isGpx: 1 if source file is GPX, 0 if garmin format
-		returns: path to selected entry file"""
-		logging.debug('>>')
-		selectedEntry = ""
-		# 23.03.2008 Only source from garmin files are supported right now (isGpx = 0)
-		# this is intended to work in the future with variables instead of hardcoded field names
-		#dom = xml.dom.minidom.parse(source_file)
-		trks = self.xmldoc.getElementsByTagName("Track")
-		for trk in trks:
-			trkpoints = trk.getElementsByTagName("Trackpoint")
-			# we just need to check first one's date
-			date_time = trkpoints[0].getElementsByTagName("Time")[0].firstChild.data
-			if date_time == entry[1]:
-				#this is the track we are looking for
-				selectedEntry = "/tmp/track"+date_time
-				logging.debug('Writing selected track to '+selectedEntry)
-				f = open(selectedEntry,'w')
-				f.write(trk.toxml())
-				f.close()
-		logging.debug('<<')
-		return selectedEntry

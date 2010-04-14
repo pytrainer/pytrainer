@@ -20,15 +20,16 @@ import os, sys
 import logging
 
 from lib.xmlUtils import XMLParser
-from lib.system import checkConf
+#from lib.system import checkConf
 
 from gui.windowextensions import WindowExtensions
 
 class Extension:
 	def __init__(self, data_path = None, parent = None):
 		self.data_path=data_path
-		self.conf = checkConf()
+		#self.conf = checkConf()
 		self.parent = parent
+		self.pytrainer_main = parent
 	
 	def getActiveExtensions(self):
 		retorno = []
@@ -61,7 +62,7 @@ class Extension:
 		name = info.getValue("pytrainer-extension","name")
 		description = info.getValue("pytrainer-extension","description")
 		code = info.getValue("pytrainer-extension","extensioncode")
-		extensiondir = self.conf.getValue("extensiondir")
+		extensiondir = self.pytrainer_main.profile.extensiondir
 		helpfile = pathExtension+"/"+info.getValue("pytrainer-extension","helpfile")
 		type = info.getValue("pytrainer-extension","type")
 	

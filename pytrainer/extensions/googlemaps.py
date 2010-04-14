@@ -21,7 +21,7 @@ import os
 import re
 import logging
 
-from pytrainer.lib.system import checkConf
+#from pytrainer.lib.system import checkConf
 from pytrainer.lib.gpx import Gpx
 import pytrainer.lib.points as Points 
 from pytrainer.lib.fileUtils import fileUtils
@@ -31,15 +31,14 @@ class Googlemaps:
 	def __init__(self, data_path = None, vbox = None, waypoint = None, pytrainer_main=None):
 		logging.debug(">>")
 		self.data_path = data_path
-		self.conf = checkConf()
-		gtkmozembed.set_profile_path("/tmp", "foobar") # http://faq.pygtk.org/index.py?req=show&file=faq19.018.htp
+		self.waypoint=waypoint
+		self.pytrainer_main = pytrainer_main
+		gtkmozembed.set_profile_path("/tmp", "foobar") # http://faq.pygtk.org/index.py?req=show&file=faq19.018.htp  #TODO FIX???
 		self.moz = gtkmozembed.MozEmbed()
 		vbox.pack_start(self.moz, True, True)
 		vbox.show_all()
-		self.htmlfile = "%s/index.html" % (self.conf.getValue("tmpdir")) 
-		self.waypoint=waypoint
-		self.pytrainer_main = pytrainer_main
-		self.record = Record()
+		self.htmlfile = "%s/index.html" % (self.pytrainer_main.profile.tmpdir) 
+		
 		logging.debug("<<")
 	
 	def drawMap(self,id_record):
@@ -51,7 +50,7 @@ class Googlemaps:
 		'''
 		logging.debug(">>")
 		code = "googlemapsviewer"
-		extensiondir = self.conf.getValue("extensiondir")+"/"+code
+		extensiondir = self.pytrainer_main.profile.extensiondir+"/"+code
 		if not os.path.isdir(extensiondir):
             		os.mkdir(extensiondir)
 		points = []
@@ -59,7 +58,7 @@ class Googlemaps:
 		pointlist = []
 		polyline = []
 		
-		gpxfile = "%s/%s.gpx" % (self.conf.getValue("gpxdir"), id_record)
+		gpxfile = "%s/%s.gpx" % (self.pytrainer_main.profile.gpxdir, id_record)
 		if os.path.isfile(gpxfile):
 			gpx = Gpx(self.data_path,gpxfile)
 			list_values = gpx.getTrackList()
@@ -79,13 +78,13 @@ class Googlemaps:
 				logging.debug("minlon: %s, maxlon: %s" % (minlon, maxlon))
 				points,levels = Points.encodePoints(pointlist)
 				points = points.replace("\\","\\\\")
-				if self.pytrainer_main.gm3:
+				if self.pytrainer_main.startup_options.gm3:
 					logging.debug("Using Google Maps version 3 API")
 					#laps = gpx.getLaps() # [](elapsedTime, lat, lon, calories, distance)
 					#"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories",  
-					laps = self.record.getLaps(id_record)
+					laps = self.pytrainer_main.record.getLaps(id_record)
 					#"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats"
-					info = self.record.getrecordInfo(id_record)
+					info = self.pytrainer_main.record.getrecordInfo(id_record)
 					timeHours = int(info[0][3]) / 3600
 					timeMin = (float(info[0][3]) / 3600.0 - timeHours) * 60
 					time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
@@ -218,7 +217,7 @@ class Googlemaps:
 			except:
 				#Error processing lap lat or lon
 				#dont show this lap
-				print "Error processing lap "+ str(lapNumber) + " id: " + lap(lap[0]) + " (lat,lon) ( " + str(lap[6]) + "," +str (lap[7]) + ")"
+				print "Error processing lap "+ str(lapNumber) + " id: " + str(lap[0]) + " (lat,lon) ( " + str(lap[6]) + "," +str (lap[7]) + ")"
 
 		content += '''
 

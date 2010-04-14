@@ -34,17 +34,10 @@ class Record:
 	def __init__(self, data_path = None, parent = None):
 		logging.debug('>>') 
 		self.parent = parent
+		self.pytrainer_main = parent
 		self.data_path = data_path
 		logging.debug('setting date...')
 		self.date = Date()
-		logging.debug('Checking current configuration...')
-		self.conf = checkConf()									#TODO change to reference main versions of these
-		self.filename = self.conf.getValue("conffile")			#
-		logging.debug('Retrieving data from '+ self.filename)	#
-		self.configuration = XMLParser(self.filename)			#
-		self.ddbb = DDBB(self.configuration)					#
-		logging.debug('connecting to DDBB')						#
-		self.ddbb.connect()										#
 		logging.debug('<<')
 
 	def newRecord(self, list_sport, date, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None):
@@ -64,10 +57,9 @@ class Record:
 
 	def editRecord(self,id_record,list_sport):
 		logging.debug('>>')
-		#record = self.ddbb.select("records", "*", "id_record=\"%s\"" %id_record)
-		record = self.ddbb.select("records", "id_record, date, sport, distance, time, beats, average, calories, comments, gpslog, title, upositive, unegative, maxspeed, maxpace, pace, maxbeats, date_time_utc, date_time_local", "id_record=\"%s\"" %id_record)
+		record = self.pytrainer_main.ddbb.select("records", "id_record, date, sport, distance, time, beats, average, calories, comments, gpslog, title, upositive, unegative, maxspeed, maxpace, pace, maxbeats, date_time_utc, date_time_local", "id_record=\"%s\"" %id_record)
 		logging.debug('retrieving data from DB: '+str(record))
-		gpxfile = self.conf.getValue("gpxdir")+"/%d.gpx"%int(id_record)
+		gpxfile = self.pytrainer_main.profile.gpxdir+"/%d.gpx"%int(id_record)
 		logging.debug('gpx file associated: '+gpxfile)
 		self.recordwindow = WindowRecord(self.data_path, list_sport,self, None, windowTitle=_("Edit Entry"))
 		if os.path.isfile(gpxfile):
@@ -82,10 +74,10 @@ class Record:
 	
 	def removeRecord(self,id_record):
 		logging.debug('>>')
-		record = self.ddbb.delete("records", "id_record=\"%s\"" %id_record)
-		laps = self.ddbb.delete("laps", "record=\"%s\"" %id_record)
+		record = self.pytrainer_main.ddbb.delete("records", "id_record=\"%s\"" %id_record)
+		laps = self.pytrainer_main.ddbb.delete("laps", "record=\"%s\"" %id_record)
 		logging.debug('removed record '+str(id_record)+' (and associated laps) from DB')
-		gpxfile = self.conf.getValue("gpxdir")+"/%d.gpx"%int(id_record)
+		gpxfile = self.pytrainer_main.profile.gpxdir+"/%d.gpx"%int(id_record)
 		if os.path.isfile(gpxfile):
 			os.remove(gpxfile)
 			logging.debug('removed gpxfile '+gpxfile)
@@ -100,7 +92,7 @@ class Record:
 			list_options["rcd_beats"] = 0
 		
 		#calculate the sport id
-		sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %list_options["rcd_sport"])[0][0]
+		sport_id = self.pytrainer_main.ddbb.select("sports","id_sports","name=\"%s\"" %list_options["rcd_sport"])[0][0]
 
 		values= (
 			list_options["rcd_date"],
@@ -167,9 +159,9 @@ class Record:
 			return None
 		logging.debug('list_options: '+str(list_options))
 		cells,values = self._formatRecordNew(list_options)
-		self.ddbb.insert("records",cells,values)
+		self.pytrainer_main.ddbb.insert("records",cells,values)
 		logging.debug('DB updated: '+str(cells)+' | '+str(values))
-		id_record = self.ddbb.lastRecord("records")
+		id_record = self.pytrainer_main.ddbb.lastRecord("records")
 		#Create entry(s) for activity in laps table
 		if laps is not None:
 			for lap in laps:
@@ -179,13 +171,13 @@ class Record:
 				self.insertLaps(lap_keys,lap.values())
 		gpxOrig = list_options["rcd_gpxfile"]
 		if os.path.isfile(gpxOrig):
-			gpxDest = self.conf.getValue("gpxdir")
+			gpxDest = self.pytrainer_main.profile.gpxdir
 			gpxNew = gpxDest+"/%d.gpx"%id_record
 			shutil.move(gpxOrig, gpxNew)
 			logging.debug('Moving '+gpxOrig+' to '+gpxNew)
 		#self.parent.refreshListRecords()
 		logging.debug('<<')
-		return self.ddbb.lastRecord("records")
+		return self.pytrainer_main.ddbb.lastRecord("records")
 		
 	def insertNewRecord(self, gpxOrig, entry): #TODO consolidate with insertRecord
 		"""29.03.2008 - dgranda
@@ -272,7 +264,7 @@ class Record:
 
 	def updateRecord(self, list_options, id_record):
 		logging.debug('>>')
-		gpxfile = self.conf.getValue("gpxdir")+"/%d.gpx"%int(id_record)
+		gpxfile = self.pytrainer_main.profile.gpxdir+"/%d.gpx"%int(id_record)
 		gpxOrig = list_options["rcd_gpxfile"]
 		if os.path.isfile(gpxOrig):
 			if gpxfile != gpxOrig:
@@ -282,7 +274,7 @@ class Record:
 				logging.debug('removing gpxfile') # ein?
 				logging.debug('updating bbdd') #ein?
 		cells,values = self._formatRecord(list_options)
-		self.ddbb.update("records",cells,values," id_record=%d" %int(id_record))
+		self.pytrainer_main.ddbb.update("records",cells,values," id_record=%d" %int(id_record))
 		self.parent.refreshListView()
 		logging.debug('<<')
 
@@ -298,24 +290,24 @@ class Record:
 				
 	def getrecordInfo(self,id_record):
 		logging.debug('--')
-		return self.ddbb.select("records,sports",
+		return self.pytrainer_main.ddbb.select("records,sports",
 					"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc,date_time_local",
 					"id_record=\"%s\" and records.sport=sports.id_sports" %id_record)
 	
 	def getrecordList(self,date):
 		logging.debug('--')
-		return self.ddbb.select("records,sports",
+		return self.pytrainer_main.ddbb.select("records,sports",
 					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local",
 					"date=\"%s\" and records.sport=sports.id_sports" %date)
 
 	def getLaps(self, id_record):
 		logging.debug('--')
-		laps = self.ddbb.select("laps", 
+		laps = self.pytrainer_main.ddbb.select("laps", 
 					"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number",
 					"record=\"%s\"" % id_record)
 		if laps is None or laps == []:  #No laps stored - update DB
 			logging.debug("No laps in DB for record %d" % id_record)
-			gpx_dest = self.conf.getValue("gpxdir")
+			gpx_dest = self.pytrainer_main.profile.gpxdir
 			gpxfile = gpx_dest+"/%d.gpx"%id_record
 			gpx = Gpx(self.data_path,gpxfile)
 			laps = self.lapsFromGPX(gpx)
@@ -326,7 +318,7 @@ class Record:
 					lap_values = lap.values()
 					self.insertLaps(lap_keys,lap.values())
 			#Try to get lap info again #TODO? refactor				
-			laps = self.ddbb.select("laps", 
+			laps = self.pytrainer_main.ddbb.select("laps", 
 					"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number",
 					"record=\"%s\"" % id_record)
 		return laps 
@@ -334,7 +326,7 @@ class Record:
 	def insertLaps(self, cells, values):
 		logging.debug('--')
 		logging.debug("Adding lap information: " + ", ".join(map(str, values)))
-		self.ddbb.insert("laps",cells,values)
+		self.pytrainer_main.ddbb.insert("laps",cells,values)
 		
 	def getrecordPeriod(self,date_ini, date_end, sport=None):
 		#TODO This is essentially the same as getrecordPeriodSport (except date ranges) - need to look at merging the two
@@ -344,7 +336,7 @@ class Record:
 		else:
 			condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports and sports.name=\"%s\"" %(date_ini,date_end, sport)
 	
-		return self.ddbb.select(tables,"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats, sports.name", condition)
+		return self.pytrainer_main.ddbb.select(tables,"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats, sports.name", condition)
 	
 	def getrecordPeriodSport(self,date_ini, date_end,sport):
 		if not sport:
@@ -354,17 +346,17 @@ class Record:
 			tables = "records,sports"
 			condition = "date>\"%s\" and date<\"%s\" and records.sport=sports.id_sports and sports.name=\"%s\"" %(date_ini,date_end,sport)
 		
-		return self.ddbb.select(tables,
+		return self.pytrainer_main.ddbb.select(tables,
 					"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats",
 					condition)
 
 	def getSportMet(self,sport):
 		logging.debug('--')
-		return self.ddbb.select("sports","met","name=\"%s\"" %(sport))[0][0]
+		return self.pytrainer_main.ddbb.select("sports","met","name=\"%s\"" %(sport))[0][0]
 	
 	def getSportWeight(self,sport):
 		logging.debug('--')
-		return self.ddbb.select("sports","weight","name=\"%s\"" %(sport))[0][0]
+		return self.pytrainer_main.ddbb.select("sports","weight","name=\"%s\"" %(sport))[0][0]
 		
 	def getSportId(self,sport,add=None):
 		"""31.08.2008 - dgranda
@@ -378,7 +370,7 @@ class Record:
 		if sport == "" or sport is None:
 			return sport_id
 		try:
-			sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))[0][0]
+			sport_id = self.pytrainer_main.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))[0][0]
 		except:
 			logging.error('Error retrieving id_sports from '+ str(sport))
 			#traceback.print_last()
@@ -401,24 +393,24 @@ class Record:
 		logging.debug(">>")
 		logging.debug("Adding new sport: "+sport+"|"+weight+"|"+met)
 		sportT = [sport,met,weight]
-		self.ddbb.insert("sports","name,met,weight",sportT)
-		sport_id = self.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))[0][0]
+		self.pytrainer_main.ddbb.insert("sports","name,met,weight",sportT)
+		sport_id = self.pytrainer_main.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))[0][0]
 		logging.debug("<<")
 		return sport_id
 	
 	def getAllrecord(self):
 		logging.debug('--')
-		return self.ddbb.select("records", "date,distance,time,beats,comments,average,calories")
+		return self.pytrainer_main.ddbb.select("records", "date,distance,time,beats,comments,average,calories")
 	
 	def getAllRecordList(self):
 		logging.debug('--')
-		return self.ddbb.select("records,sports", 
+		return self.pytrainer_main.ddbb.select("records,sports", 
 			"date,distance,average,title,sports.name,id_record,time,beats,calories",
 			"sports.id_sports = records.sport order by date desc")
 	
 	def getRecordListByCondition(self,condition):
 		logging.debug('--')
-		return self.ddbb.select("records,sports", 
+		return self.pytrainer_main.ddbb.select("records,sports", 
 			"date,distance,average,title,sports.name,id_record,time,beats,calories",
 			"sports.id_sports = records.sport and %s" %condition)
 
@@ -427,7 +419,7 @@ class Record:
 		year,month,day = date.split("-")
 		logging.debug('Retrieving data for '+year+'.'+month+'.'+day)
 		# Why is looking for all days of the same month?
-		records = self.ddbb.select("records","date","date LIKE '"+year+"-"+month+"-%'")
+		records = self.pytrainer_main.ddbb.select("records","date","date LIKE '"+year+"-"+month+"-%'")
 		logging.debug('Found '+str(len(records))+' entries')
 		day_list = []
 		for i in records:
@@ -526,128 +518,3 @@ class Record:
 				logging.info("Entry %d has been added" % entry_id)
 		logging.debug('<<')
 		return entry_id
-
-	#def importFromGTRNCTR(self,gtrnctrFile): #TODO remove
-		"""22.03.2008 - dgranda
-		Retrieves sport, date and start time from each entry coming from GPS
-		and compares with what is stored locally, just to import new entries
-		31.08.2008 - dgranda - Only checks start time, discarding sport info
-		args: file with data from GPS file (garmin format)
-		returns: none"""
-		"""
-		logging.debug('>>')
-		logging.info('Retrieving data from '+gtrnctrFile)
-		xmlParser=XMLParser(gtrnctrFile)
-		listTracksGPS = xmlParser.shortFromGPS(gtrnctrFile, True)
-		logging.info('GPS: '+str(len(listTracksGPS))+' entries found')
-		if len(listTracksGPS)>0:
-			listTracksLocal = self.shortFromLocalDB(True)
-			logging.info('Local: '+str(len(listTracksLocal))+' entries found')
-			listNewTracks=self.compareTracks(listTracksGPS,listTracksLocal,False)
-			newTracks = len(listNewTracks)
-			# empty constructor for Gpx 
-			gpx = Gpx()
-			i=0
-			for entry in listNewTracks:
-				i=i+1
-				logging.debug('Entry summary to import: '+str(entry))
-				newGPX=gpx.retrieveDataFromGTRNCTR(gtrnctrFile, entry)
-				entry_id = self.insertNewRecord(newGPX, entry)
-				logging.info('Entry '+str(entry_id)+' has been added ('+str(i)+'/'+str(newTracks)+')')
-		else:
-			logging.info('No tracks found in GPS device')
-		logging.debug('<<')
-		"""
-		
-	#def shortFromLocal(self): #TODO remove
-		"""25.03.2008 - dgranda
-		Retrieves sport, date and start time from each entry stored locally
-		12.07.2008 - dgranda - Added id_record for each one
-		returns: list with lists: SPORT|DATE_START_TIME|ID_RECORD
-		31.08.2008 - dgranda - Only available due to migration purposes from Main class"""
-		'''logging.debug('>>')
-		listTracksGPX = []
-		sport = "Run" #hardcoded - 25.03.2008 (no info stored in gpx files yet)
-		# looking in configuration for storing directory
-		gpxDir = self.conf.getValue("gpxdir")
-		# retrieving how many files are there
-		for gpxFile in os.listdir(gpxDir):
-			#logging.debug('File: '+gpxFile)
-			gpx = Gpx()
-			date_time = gpx.getStartTimeFromGPX(gpxDir+"/"+gpxFile)[0]
-			if date_time != 0:
-				logging.debug('File: '+gpxFile+' | Date: '+date_time)
-				id_record = gpxFile.partition('.')[0]
-				listTracksGPX.append((sport,date_time,id_record))
-			else:
-				logging.error('Skipping '+gpxFile+' because of wrong format')
-		logging.debug('<<')
-		return listTracksGPX'''
-		
-	#def shortFromLocalDB(self, getSport=True): #TODO remove
-		"""12.07.2008 - dgranda
-		Retrieves sport, date and start time from local database
-		returns: list with lists: SPORT|DATE_START_TIME"""
-		'''logging.debug('>>')
-		# Retrieving sport (optional) and date_time (UTC) for each entry in DB
-		# ToDo: replace id_sports with name
-		listTracksGPX = self.ddbb.shortFromLocal(getSport)
-		# There is an issue when retrieving data without sport info:
-		# record|shortFromLocalDB|Retrieved info: [(None,), (u'2008-01-15T11:35:50Z',), (u'2008-01-16T11:05:53Z',)...
-		# ToDo: check sqliteUtils.freeExec(self,sql)
-		# Just a dirty workaround to make comparison work
-		if getSport is not True:
-			tempList = []
-			for entry in listTracksGPX:
-				tempList.append(entry[0])
-			listTracksGPX = tempList
-		logging.debug('Retrieved info: '+str(listTracksGPX))
-		logging.debug('<<')
-		return listTracksGPX'''
-		
-	#def removeSportFromList(self, list1): #TODO remove
-		'''resultList = []
-		for entry in list1:
-			resultList.append(entry[1])
-		return resultList'''
-		
-	#def compareLists(self,list1,list2): #TODO remove
-		'''# Optimizing comparison - 26042008
-		# http://mail.python.org/pipermail/python-list/2002-May/141458.html
-		tempDict = dict(zip(list1,list1))
-		return [x for x in list2 if x not in tempDict]'''
-		
-	#def compareTracks(self,listTracksGPS,listTracksLocal,checkSport=True): #TODO remove
-		"""22.03.2008 - dgranda
-		Compares tracks retrieved from GPS with already locally stored
-		args:
-			listTracksGPS: gps track list with lists -> (SPORT)|DATE_START_TIME
-			listTracksLocal: local track list with lists -> (SPORT)|DATE_START_TIME
-			checkSport (02.09.2008): indicates if sport data is included when comparing 
-		returns: tracks which are not present locally (list with lists)"""
-		'''logging.debug('>>')
-		if checkSport is True:
-			logging.info('Comparing sport info')
-			listGPS = listTracksGPS[:]
-			listLocal = listTracksLocal[:]
-		else:
-			logging.info('Discarding sport info')
-			listGPS = self.removeSportFromList(listTracksGPS)
-			listLocal = self.removeSportFromList(listTracksLocal)
-		
-		resultList = self.compareLists(listLocal,listGPS)
-		
-		if len(resultList)>0 and checkSport is not True: # sport info is added to resultList
-			tempList = []
-			for entry in resultList:
-				for x in listTracksGPS:
-					if x[1] is entry:
-						tempList.append(x)
-						break
-			resultList = tempList[:]
-		
-		logging.info('Tracks to be imported: '+str(len(resultList)))
-		logging.debug('Tracks summary: '+str(resultList))
-		logging.debug('<<')
-		return resultList '''
-		
