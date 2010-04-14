@@ -273,7 +273,7 @@ class DrawArea:
 
 		logging.debug('<<')
 
-	def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None,xzones=None, ylimits=None):
+	def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None,xzones=None, ylimits=None, y1_linewidth=None):
 		logging.debug('>>')  
 		logging.debug("Type: plot | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
 		logging.debug('xlabel: '+str(xlabel)+' | ylabel: '+str(ylabel)+' | title: '+str(title))
@@ -284,7 +284,10 @@ class DrawArea:
 		for value in xvalues:
 			if i<1:
 				axis = figure.add_subplot(111)
-				axis.plot(xvalues[i],yvalues[i], color=color[i])
+				line = axis.plot(xvalues[i],yvalues[i], color=color[i])
+				if y1_linewidth is not None:
+					line[0].set_linewidth(y1_linewidth)
+				linewidth = line[0].get_linewidth()
 					
 				axis.grid(True)
 				for tl in axis.get_yticklabels():
@@ -334,7 +337,7 @@ class DrawArea:
 			logging.debug('Child available: '+str(child))
 		
 		logging.debug('<<')
-		return (ylim_min, ylim_max)
+		return {'y1_min': ylim_min, 'y1_max': ylim_max, 'y1_linewidth': linewidth}
 	
 	def drawPie(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
 		logging.debug('>>')

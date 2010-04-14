@@ -55,6 +55,9 @@ class Main(SimpleGladeApp):
 		self.gpxDir = gpxDir
 		self.record_list = None
 		self.laps = None
+		self.y1_limits = None
+		self.y1_color = None
+		self.y1_linewidth = 1
 
 	def new(self):
 		self.testimport = self.pytrainer_main.startup_options.testimport
@@ -809,10 +812,10 @@ class Main(SimpleGladeApp):
 	def createWaypointEditor(self,WaypointEditor,waypoint, parent=None):
 		self.waypointeditor = WaypointEditor(self.data_path, self.waypointvbox,waypoint,parent)
 		
-	def zoom_graph(self, ylimits=None):
+	def zoom_graph(self, y1limits=None, y1color=None, y1_linewidth=1):
 		logging.debug(">>")
-		logging.debug("Reseting graph Y axis with ylimits: %s" % str(ylimits) )
-		self.drawarearecord.drawgraph(self.record_list,self.laps, ylimits=ylimits)
+		logging.debug("Reseting graph Y axis with ylimits: %s" % str(y1limits) )
+		self.drawarearecord.drawgraph(self.record_list,self.laps, y1limits=y1limits, y1color=y1color, y1_linewidth=y1_linewidth)
 		logging.debug("<<")
 
 	######################
@@ -820,18 +823,34 @@ class Main(SimpleGladeApp):
 	######################
 	
 	def on_spinbuttonY1_value_changed(self, widget):
-		ymin = self.spinbuttonY1Min.get_value()
-		ymax = self.spinbuttonY1Max.get_value()
+		y1min = self.spinbuttonY1Min.get_value()
+		y1max = self.spinbuttonY1Max.get_value()
 		#Check to see if the min and max have the same...
-		if ymin == ymax: 
+		if y1min == y1max: 
 			if widget.get_name() == "spinbuttonY1Min": #User was changing the min spinbutton, so move max up
-				ymax += 1
+				y1max += 1
 			else:	#Move min down
-				ymin -= 1
-		self.zoom_graph(ylimits=(ymin, ymax))
+				y1min -= 1
+		self.y1_limits=(y1min, y1max)
+		self.zoom_graph(y1limits=self.y1_limits, y1color=self.y1_color, y1_linewidth=self.y1_linewidth)
 	
 	def on_buttonResetGraph_clicked(self, widget):
+		#self.zoom_graph()
+		#Reset stored values
+		self.y1_limits = None
+		self.y1_color = None
+		self.y1_linewidth = 1
 		self.zoom_graph()
+		
+	def on_colorbuttonY1LineColor_color_set(self, widget):
+		y1color = widget.get_color()
+		cs = y1color.to_string()
+		self.y1_color = cs[0:3] + cs[5:7] + cs[9:11]
+		self.drawarearecord.drawgraph(self.record_list,self.laps, y1limits=self.y1_limits, y1color=self.y1_color, y1_linewidth=self.y1_linewidth)
+		
+	def on_spinbuttonY1LineWeight_value_changed(self, widget):
+		self.y1_linewidth = self.spinbuttonY1LineWeight.get_value_as_int()
+		self.drawarearecord.drawgraph(self.record_list,self.laps, y1limits=self.y1_limits, y1color=self.y1_color, y1_linewidth=self.y1_linewidth)
 
 	def on_edit_clicked(self,widget):
 		selected,iter = self.recordTreeView.get_selection().get_selected()

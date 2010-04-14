@@ -30,7 +30,7 @@ class RecordGraph:
 		self.config_table = tableConfig
 		logging.debug("<<")
 
-	def drawgraph(self,values,laps=None, ylimits=None):
+	def drawgraph(self,values,laps=None, y1limits=None, y1color=None, y1_linewidth=1):
 		logging.debug(">>")
 		#Get the config options 
 		for child in self.config_table.get_children():
@@ -38,6 +38,11 @@ class RecordGraph:
 				spinbuttonY1Max = child
 			elif child.get_name() == "spinbuttonY1Min":
 				spinbuttonY1Min = child
+			elif child.get_name() == "colorbuttonY1LineColor":
+				colorbuttonY1LineColor = child
+			elif child.get_name() == "spinbuttonY1LineWeight":
+				spinbuttonY1LineWeight = child
+				
 		xval = []
 		yval = []
 		xlab = []
@@ -72,6 +77,11 @@ class RecordGraph:
 		max_yvalue = max(yvalues)
 		min_yvalue = min(yvalues)
 		xlabel,ylabel,title,color = self.get_value_params(value_selected)
+		if y1color is not None:
+			_color = gtk.gdk.Color(y1color)
+			color = y1color
+		else:
+			_color = gtk.gdk.Color(color)
 
 		xval.append(xvalues)
 		yval.append(yvalues)
@@ -82,6 +92,9 @@ class RecordGraph:
 		ylab.append(ylabel)
 		tit.append(title)
 		col.append(color)
+		
+		#_color = gtk.gdk.Color(color)
+		colorbuttonY1LineColor.set_color(_color)
 		
 		if value_selected2 > 0:
 			value_selected2 = value_selected2-1
@@ -97,7 +110,10 @@ class RecordGraph:
 			col.append(color)		
 		logging.info("To show: tit: "+str(tit)+" | col: "+str(col)+" | xlab: "+str(xlab)+" | ylab: "+str(ylab))
 		#self.drawPlot(xvalues,yvalues,xlabel,ylabel,title,color,zones)
-		ymin, ymax = self.drawarea.drawPlot(xval,yval,xlab,ylab,tit,col,None,lapValues, ylimits=ylimits)
+		plot_stats = self.drawarea.drawPlot(xval,yval,xlab,ylab,tit,col,None,lapValues, ylimits=y1limits, y1_linewidth=y1_linewidth)
+		ymin = plot_stats['y1_min']
+		ymax = plot_stats['y1_max']
+		y1_linewidth = plot_stats['y1_linewidth']
 		
 		max_yvalue = max(max_yvalue, ymax)
 		min_yvalue = min(min_yvalue, ymin)
@@ -107,6 +123,8 @@ class RecordGraph:
 		spinbuttonY1Max.set_adjustment(adjY1Max)
 		spinbuttonY1Min.set_value(ymin)
 		spinbuttonY1Max.set_value(ymax)
+		spinbuttonY1LineWeight.set_value(y1_linewidth)
+		
 		logging.debug("<<")
 
 	def get_value_params(self,value):
