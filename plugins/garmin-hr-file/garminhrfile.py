@@ -37,7 +37,7 @@ class garminhrfile():
 	"""
 	def __init__(self, parent = None, validate=False):
 		self.parent = parent
-		self.tmpdir = self.parent.conf.getValue("tmpdir")
+		self.tmpdir = self.parent.profile.tmpdir
 		self.data_path = os.path.dirname(__file__)
 		self.validate = validate
 		self.sport = self.getConfValue("Force_sport_to")

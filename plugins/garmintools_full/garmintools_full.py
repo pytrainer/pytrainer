@@ -43,8 +43,8 @@ class garmintools_full():
 	"""
 	def __init__(self, parent = None, validate=False):
 		self.parent = parent
-		self.confdir = self.parent.conf.getValue("confdir")
-		self.tmpdir = self.parent.conf.getValue("tmpdir")
+		self.confdir = self.parent.profile.confdir
+		self.tmpdir = self.parent.conf.profile.tmpdir
 		# Tell garmintools where to save retrieved data from GPS device
 		os.environ['GARMIN_SAVE_RUNS']=self.tmpdir
 		self.data_path = os.path.dirname(__file__)

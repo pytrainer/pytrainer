@@ -29,7 +29,7 @@ class googleearth():
 		self.parent = parent
 		self.validate = validate
 		self.data_path = os.path.dirname(__file__)
-		self.tmpdir = self.parent.conf.getValue("tmpdir")
+		self.tmpdir = self.parent.profile.tmpdir
 
 	def run(self):
 		logging.debug(">>")

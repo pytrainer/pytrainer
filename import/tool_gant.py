@@ -24,13 +24,12 @@ from lxml import etree
 import dateutil.parser
 from dateutil.tz import * # for tzutc()
 
-from pytrainer.lib.system import checkConf
 
 class gant():
 	def __init__(self, parent = None, data_path = None):
 		self.parent = parent
-		self.conf = checkConf()
-		self.tmpdir = self.conf.getValue("tmpdir")
+		self.pytrainer_main = parent.parent
+		self.tmpdir = self.pytrainer_main.profile.tmpdir
 		self.main_data_path = data_path
 		self.data_path = os.path.dirname(__file__)
 

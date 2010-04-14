@@ -23,14 +23,12 @@ from lxml import etree
 from pytrainer.lib.date import Date
 
 from pytrainer.lib.xmlUtils import XMLParser
-from pytrainer.lib.system import checkConf
-#from pytrainer.gui.dialogs import fileChooserDialog, guiFlush
 
 class garmintcxv2():
 	def __init__(self, parent = None, data_path = None):
 		self.parent = parent
-		self.conf = checkConf()
-		self.tmpdir = self.conf.getValue("tmpdir")
+		self.pytrainer_main = parent.parent
+		self.tmpdir = self.pytrainer_main.profile.tmpdir
 		self.main_data_path = data_path
 		self.data_path = os.path.dirname(__file__)
 		self.xmldoc = None
