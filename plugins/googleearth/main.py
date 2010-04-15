@@ -27,9 +27,10 @@ from pytrainer.gui.dialogs import fileChooserDialog, guiFlush
 class googleearth():
 	def __init__(self, parent = None, validate=False):
 		self.parent = parent
+		self.pytrainer_main = parent.pytrainer_main
 		self.validate = validate
 		self.data_path = os.path.dirname(__file__)
-		self.tmpdir = self.parent.profile.tmpdir
+		self.tmpdir = self.pytrainer_main.profile.tmpdir
 
 	def run(self):
 		logging.debug(">>")

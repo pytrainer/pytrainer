@@ -33,7 +33,8 @@ class garmingpx():
 	"""
 	def __init__(self, parent = None, validate=False):
 		self.parent = parent
-		self.tmpdir = self.parent.profile.tmpdir
+		self.pytrainer_main = parent.pytrainer_main
+		self.tmpdir = self.pytrainer_main.profile.tmpdir
 		self.validate = validate
 		self.data_path = os.path.dirname(__file__)
 		self.sport = self.getConfValue("Force_sport_to")
@@ -41,7 +42,7 @@ class garmingpx():
 	def getConfValue(self, confVar):
 		info = XMLParser(self.data_path+"/conf.xml")
 		code = info.getValue("pytrainer-plugin","plugincode")
-		plugindir = self.parent.conf.getValue("plugindir")
+		plugindir = self.pytrainer_main.profile.plugindir
 		if not os.path.isfile(plugindir+"/"+code+"/conf.xml"):
 			value = None
 		else:
@@ -77,8 +78,8 @@ class garmingpx():
 			return True
 		else:
 			#To validate GPX as used for pytrainer must test against both Topograpfix and Cluetrust
-			topografixXSLfile = os.path.realpath(self.parent.parent.data_path)+ "/schemas/Topografix_gpx11.xsd"
-			cluetrustXSLfile = os.path.realpath(self.parent.parent.data_path)+ "/schemas/Cluetrust_gpxdata10.xsd"
+			topografixXSLfile = os.path.realpath(self.pytrainer_main.data_path)+ "/schemas/Topografix_gpx11.xsd"
+			cluetrustXSLfile = os.path.realpath(self.pytrainer_main.data_path)+ "/schemas/Cluetrust_gpxdata10.xsd"
 			from lib.xmlValidation import xmlValidator
 			validator = xmlValidator()
 			return validator.validateXSL(filename, topografixXSLfile) and validator.validateXSL(filename, cluetrustXSLfile)
@@ -89,7 +90,7 @@ class garmingpx():
 			only valid for GPX files with a single activity 
 		"""
 		time = self.detailsFromGPX(filename)
-		if self.parent.parent.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
+		if self.pytrainer_main.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
 			return True
 		else:
 			return False
@@ -110,5 +111,3 @@ class garmingpx():
 			return None
 		else:
 			return timeElement.text
-
-		

@@ -33,7 +33,8 @@ class garminhr():
 	"""
 	def __init__(self, parent = None, validate=False):
 		self.parent = parent
-		self.tmpdir = self.parent.profile.tmpdir
+		self.pytrainer_main = parent.pytrainer_main
+		self.tmpdir = self.pytrainer_main.profile.tmpdir
 		self.data_path = os.path.dirname(__file__)
 		self.validate = validate
 		self.input_dev = self.getConfValue("device")
@@ -42,7 +43,7 @@ class garminhr():
 	def getConfValue(self, confVar):
 		info = XMLParser(self.data_path+"/conf.xml")
 		code = info.getValue("pytrainer-plugin","plugincode")
-		plugindir = self.parent.conf.getValue("plugindir")
+		plugindir = self.pytrainer_main.profile.plugindir
 		if not os.path.isfile(plugindir+"/"+code+"/conf.xml"):
 			value = None
 		else:
@@ -124,7 +125,7 @@ class garminhr():
 			logging.debug("Not validating %s" % (filename) )
 			return True
 		else: #Validate TCXv1, note are validating against gpsbabels 'broken' result...
-			xslfile = os.path.realpath(self.parent.parent.data_path)+ "/schemas/GarminTrainingCenterDatabase_v1-gpsbabel.xsd"
+			xslfile = os.path.realpath(self.pytrainer_main.data_path)+ "/schemas/GarminTrainingCenterDatabase_v1-gpsbabel.xsd"
 			from lib.xmlValidation import xmlValidator
 			validator = xmlValidator()
 			return validator.validateXSL(filename, xslfile)
@@ -157,7 +158,7 @@ class garminhr():
 		else:
 			time = timeElement.text	
 			#comparing date and start time (sport may have been changed in DB after import)
-			if self.parent.parent.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
+			if self.pytrainer_main.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
 				logging.debug("Not importing track for time %s" % (time))
 				return False
 			else:
