@@ -1211,15 +1211,14 @@ Cadence
                                                     <property name="visible">True</property>
                                                     <property name="left_padding">10</property>
                                                     <child>
-                                                      <widget class="GtkTable" id="tableConfig">
+                                                      <widget class="GtkTable" id="tableConfigY1">
                                                         <property name="visible">True</property>
-                                                        <property name="n_rows">4</property>
+                                                        <property name="n_rows">5</property>
                                                         <property name="n_columns">3</property>
                                                         <child>
                                                           <widget class="GtkLabel" id="labelY1AxisLimits">
                                                             <property name="visible">True</property>
                                                             <property name="xalign">1</property>
-                                                            <property name="xpad">1</property>
                                                             <property name="label" translatable="yes">&lt;small&gt;Limits&lt;/small&gt;</property>
                                                             <property name="use_markup">True</property>
                                                           </widget>
@@ -1293,7 +1292,7 @@ Cadence
                                                           <widget class="GtkLabel" id="labelY1LineColor">
                                                             <property name="visible">True</property>
                                                             <property name="xalign">1</property>
-                                                            <property name="label" translatable="yes">&lt;small&gt;Line Color&lt;/small&gt;</property>
+                                                            <property name="label" translatable="yes">&lt;small&gt;Color&lt;/small&gt;</property>
                                                             <property name="use_markup">True</property>
                                                           </widget>
                                                           <packing>
@@ -1313,7 +1312,7 @@ Cadence
                                                           </widget>
                                                           <packing>
                                                             <property name="left_attach">1</property>
-                                                            <property name="right_attach">3</property>
+                                                            <property name="right_attach">2</property>
                                                             <property name="top_attach">2</property>
                                                             <property name="bottom_attach">3</property>
                                                             <property name="x_options">GTK_SHRINK</property>
@@ -1324,7 +1323,7 @@ Cadence
                                                           <widget class="GtkLabel" id="labelY1LineWeight">
                                                             <property name="visible">True</property>
                                                             <property name="xalign">1</property>
-                                                            <property name="label" translatable="yes">&lt;small&gt;Line Weight&lt;/small&gt;</property>
+                                                            <property name="label" translatable="yes">&lt;small&gt;Weight&lt;/small&gt;</property>
                                                             <property name="use_markup">True</property>
                                                           </widget>
                                                           <packing>
@@ -1339,17 +1338,64 @@ Cadence
                                                             <property name="can_focus">True</property>
                                                             <property name="max_length">2</property>
                                                             <property name="invisible_char">&#x25CF;</property>
-                                                            <property name="adjustment">1 0 10 1 1 0</property>
+                                                            <property name="adjustment">1 1 10 1 1 0</property>
                                                             <signal name="value_changed" handler="on_spinbuttonY1LineWeight_value_changed"/>
                                                           </widget>
                                                           <packing>
                                                             <property name="left_attach">1</property>
-                                                            <property name="right_attach">3</property>
+                                                            <property name="right_attach">2</property>
                                                             <property name="top_attach">3</property>
                                                             <property name="bottom_attach">4</property>
                                                             <property name="x_options">GTK_SHRINK</property>
                                                             <property name="y_options">GTK_SHRINK</property>
                                                           </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkLabel" id="labelY1">
+                                                            <property name="visible">True</property>
+                                                            <property name="label" translatable="yes">Y1</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="y_options"></property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkLabel" id="labelY1LineSmoothing">
+                                                            <property name="visible">True</property>
+                                                            <property name="sensitive">False</property>
+                                                            <property name="xalign">1</property>
+                                                            <property name="label" translatable="yes">&lt;small&gt;Smoothing&lt;/small&gt;</property>
+                                                            <property name="use_markup">True</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="top_attach">4</property>
+                                                            <property name="bottom_attach">5</property>
+                                                            <property name="y_options"></property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkSpinButton" id="spinbuttonY1LineSmoothing">
+                                                            <property name="visible">True</property>
+                                                            <property name="sensitive">False</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="max_length">2</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
+                                                            <property name="adjustment">1 0 10 1 1 0</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="left_attach">1</property>
+                                                            <property name="right_attach">2</property>
+                                                            <property name="top_attach">4</property>
+                                                            <property name="bottom_attach">5</property>
+                                                            <property name="x_options">GTK_SHRINK</property>
+                                                            <property name="y_options">GTK_SHRINK</property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <placeholder/>
+                                                        </child>
+                                                        <child>
+                                                          <placeholder/>
                                                         </child>
                                                         <child>
                                                           <placeholder/>
@@ -1359,17 +1405,14 @@ Cadence
                                                   </widget>
                                                 </child>
                                                 <child>
-                                                  <widget class="GtkLabel" id="labelY1Axis">
-                                                    <property name="visible">True</property>
-                                                    <property name="label" translatable="yes">&lt;small&gt;Y1 Axis&lt;/small&gt;</property>
-                                                    <property name="use_markup">True</property>
-                                                  </widget>
+                                                  <placeholder/>
                                                   <packing>
                                                     <property name="type">label_item</property>
                                                   </packing>
                                                 </child>
                                               </widget>
                                               <packing>
+                                                <property name="expand">False</property>
                                                 <property name="position">1</property>
                                               </packing>
                                             </child>
@@ -1383,26 +1426,25 @@ Cadence
                                                     <property name="visible">True</property>
                                                     <property name="left_padding">10</property>
                                                     <child>
-                                                      <widget class="GtkTable" id="tableConfig1">
+                                                      <widget class="GtkTable" id="tableConfigY2">
                                                         <property name="visible">True</property>
-                                                        <property name="n_rows">3</property>
+                                                        <property name="n_rows">5</property>
                                                         <property name="n_columns">3</property>
                                                         <child>
-                                                          <widget class="GtkLabel" id="labelY1AxisLimits1">
+                                                          <widget class="GtkLabel" id="labelY2AxisLimits">
                                                             <property name="visible">True</property>
-                                                            <property name="xalign">0</property>
+                                                            <property name="xalign">1</property>
                                                             <property name="label" translatable="yes">&lt;small&gt;Limits&lt;/small&gt;</property>
                                                             <property name="use_markup">True</property>
                                                           </widget>
                                                           <packing>
                                                             <property name="top_attach">1</property>
                                                             <property name="bottom_attach">2</property>
-                                                            <property name="x_options"></property>
                                                             <property name="y_options"></property>
                                                           </packing>
                                                         </child>
                                                         <child>
-                                                          <widget class="GtkLabel" id="labelYMin1">
+                                                          <widget class="GtkLabel" id="labelY2Min">
                                                             <property name="visible">True</property>
                                                             <property name="label" translatable="yes">&lt;small&gt;Min&lt;/small&gt;</property>
                                                             <property name="use_markup">True</property>
@@ -1414,7 +1456,7 @@ Cadence
                                                           </packing>
                                                         </child>
                                                         <child>
-                                                          <widget class="GtkLabel" id="labelYMax1">
+                                                          <widget class="GtkLabel" id="labelY2Max">
                                                             <property name="visible">True</property>
                                                             <property name="label" translatable="yes">&lt;small&gt;Max&lt;/small&gt;</property>
                                                             <property name="use_markup">True</property>
@@ -1426,7 +1468,7 @@ Cadence
                                                           </packing>
                                                         </child>
                                                         <child>
-                                                          <widget class="GtkSpinButton" id="spinbuttonY1Min2">
+                                                          <widget class="GtkSpinButton" id="spinbuttonY2Min">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">&#x25CF;</property>
@@ -1443,7 +1485,203 @@ Cadence
                                                           </packing>
                                                         </child>
                                                         <child>
-                                                          <widget class="GtkSpinButton" id="spinbuttonY1Max2">
+                                                          <widget class="GtkSpinButton" id="spinbuttonY2Max">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
+                                                            <property name="width_chars">4</property>
+                                                            <property name="adjustment">1 -500 1000 1 10 0</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="left_attach">2</property>
+                                                            <property name="right_attach">3</property>
+                                                            <property name="top_attach">1</property>
+                                                            <property name="bottom_attach">2</property>
+                                                            <property name="x_options">GTK_SHRINK</property>
+                                                            <property name="y_options">GTK_SHRINK</property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkLabel" id="labelY2">
+                                                            <property name="visible">True</property>
+                                                            <property name="label" translatable="yes">Y2</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="y_options"></property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkLabel" id="labelY2LineColor">
+                                                            <property name="visible">True</property>
+                                                            <property name="xalign">1</property>
+                                                            <property name="label" translatable="yes">&lt;small&gt;Color&lt;/small&gt;</property>
+                                                            <property name="use_markup">True</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="top_attach">2</property>
+                                                            <property name="bottom_attach">3</property>
+                                                            <property name="y_options"></property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkLabel" id="labelY2LineWeight">
+                                                            <property name="visible">True</property>
+                                                            <property name="xalign">1</property>
+                                                            <property name="label" translatable="yes">&lt;small&gt;Weight&lt;/small&gt;</property>
+                                                            <property name="use_markup">True</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="top_attach">3</property>
+                                                            <property name="bottom_attach">4</property>
+                                                            <property name="y_options"></property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkColorButton" id="colorbuttonY2LineColor">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="receives_default">True</property>
+                                                            <property name="xalign">0</property>
+                                                            <property name="color">#000000000000</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="left_attach">1</property>
+                                                            <property name="right_attach">2</property>
+                                                            <property name="top_attach">2</property>
+                                                            <property name="bottom_attach">3</property>
+                                                            <property name="x_options">GTK_SHRINK</property>
+                                                            <property name="y_options">GTK_SHRINK</property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkSpinButton" id="spinbuttonY2LineWeight">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="max_length">2</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
+                                                            <property name="adjustment">1 0 10 1 1 0</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="left_attach">1</property>
+                                                            <property name="right_attach">2</property>
+                                                            <property name="top_attach">3</property>
+                                                            <property name="bottom_attach">4</property>
+                                                            <property name="x_options">GTK_SHRINK</property>
+                                                            <property name="y_options">GTK_SHRINK</property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <placeholder/>
+                                                        </child>
+                                                        <child>
+                                                          <placeholder/>
+                                                        </child>
+                                                        <child>
+                                                          <placeholder/>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkLabel" id="labelY2LineSmoothing">
+                                                            <property name="visible">True</property>
+                                                            <property name="sensitive">False</property>
+                                                            <property name="xalign">1</property>
+                                                            <property name="label" translatable="yes">&lt;small&gt;Smoothing&lt;/small&gt;</property>
+                                                            <property name="use_markup">True</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="top_attach">4</property>
+                                                            <property name="bottom_attach">5</property>
+                                                            <property name="y_options"></property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkSpinButton" id="spinbuttonY2LineSmoothing">
+                                                            <property name="visible">True</property>
+                                                            <property name="sensitive">False</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="max_length">2</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
+                                                            <property name="adjustment">1 0 10 1 1 0</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="left_attach">1</property>
+                                                            <property name="right_attach">2</property>
+                                                            <property name="top_attach">4</property>
+                                                            <property name="bottom_attach">5</property>
+                                                            <property name="x_options">GTK_SHRINK</property>
+                                                            <property name="y_options">GTK_SHRINK</property>
+                                                          </packing>
+                                                        </child>
+                                                      </widget>
+                                                    </child>
+                                                  </widget>
+                                                </child>
+                                                <child>
+                                                  <placeholder/>
+                                                  <packing>
+                                                    <property name="type">label_item</property>
+                                                  </packing>
+                                                </child>
+                                              </widget>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="position">2</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkFrame" id="frameXAxis">
+                                                <property name="visible">True</property>
+                                                <property name="sensitive">False</property>
+                                                <property name="label_xalign">0</property>
+                                                <child>
+                                                  <widget class="GtkAlignment" id="alignment6">
+                                                    <property name="visible">True</property>
+                                                    <property name="left_padding">12</property>
+                                                    <child>
+                                                      <widget class="GtkTable" id="tableConfigX">
+                                                        <property name="visible">True</property>
+                                                        <property name="n_rows">4</property>
+                                                        <property name="n_columns">3</property>
+                                                        <child>
+                                                          <widget class="GtkLabel" id="labelX">
+                                                            <property name="visible">True</property>
+                                                            <property name="label" translatable="yes">X</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="y_options"></property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkLabel" id="labelXAxisLimits">
+                                                            <property name="visible">True</property>
+                                                            <property name="xalign">1</property>
+                                                            <property name="label" translatable="yes">&lt;small&gt;Limits&lt;/small&gt;</property>
+                                                            <property name="use_markup">True</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="top_attach">1</property>
+                                                            <property name="bottom_attach">2</property>
+                                                            <property name="y_options"></property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkSpinButton" id="spinbuttonXMin">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
+                                                            <property name="width_chars">4</property>
+                                                            <property name="adjustment">0 -500 1000 1 10 0</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="left_attach">1</property>
+                                                            <property name="right_attach">2</property>
+                                                            <property name="top_attach">1</property>
+                                                            <property name="bottom_attach">2</property>
+                                                            <property name="x_options">GTK_SHRINK</property>
+                                                            <property name="y_options">GTK_SHRINK</property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkSpinButton" id="spinbuttonXMax">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="invisible_char">&#x25CF;</property>
@@ -1460,7 +1698,57 @@ Cadence
                                                           </packing>
                                                         </child>
                                                         <child>
-                                                          <placeholder/>
+                                                          <widget class="GtkLabel" id="labelXMin">
+                                                            <property name="visible">True</property>
+                                                            <property name="label" translatable="yes">&lt;small&gt;Min&lt;/small&gt;</property>
+                                                            <property name="use_markup">True</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="left_attach">1</property>
+                                                            <property name="right_attach">2</property>
+                                                            <property name="y_options"></property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkLabel" id="labelXMax">
+                                                            <property name="visible">True</property>
+                                                            <property name="label" translatable="yes">&lt;small&gt;Max&lt;/small&gt;</property>
+                                                            <property name="use_markup">True</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="left_attach">2</property>
+                                                            <property name="right_attach">3</property>
+                                                            <property name="y_options"></property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkLabel" id="labelXAxisDistance">
+                                                            <property name="visible">True</property>
+                                                            <property name="xalign">1</property>
+                                                            <property name="label" translatable="yes">&lt;small&gt;Distance&lt;/small&gt;</property>
+                                                            <property name="use_markup">True</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="top_attach">2</property>
+                                                            <property name="bottom_attach">3</property>
+                                                            <property name="y_options"></property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkRadioButton" id="radiobuttonDistance">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="receives_default">False</property>
+                                                            <property name="active">True</property>
+                                                            <property name="draw_indicator">True</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="left_attach">1</property>
+                                                            <property name="right_attach">2</property>
+                                                            <property name="top_attach">2</property>
+                                                            <property name="bottom_attach">3</property>
+                                                            <property name="x_options">GTK_EXPAND</property>
+                                                          </packing>
                                                         </child>
                                                         <child>
                                                           <placeholder/>
@@ -1469,25 +1757,49 @@ Cadence
                                                           <placeholder/>
                                                         </child>
                                                         <child>
-                                                          <placeholder/>
+                                                          <widget class="GtkLabel" id="labelXAxisTime">
+                                                            <property name="visible">True</property>
+                                                            <property name="xalign">1</property>
+                                                            <property name="label" translatable="yes">&lt;small&gt;Time&lt;/small&gt;</property>
+                                                            <property name="use_markup">True</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="top_attach">3</property>
+                                                            <property name="bottom_attach">4</property>
+                                                            <property name="y_options"></property>
+                                                          </packing>
+                                                        </child>
+                                                        <child>
+                                                          <widget class="GtkRadioButton" id="radiobuttonTime">
+                                                            <property name="visible">True</property>
+                                                            <property name="can_focus">True</property>
+                                                            <property name="receives_default">False</property>
+                                                            <property name="draw_indicator">True</property>
+                                                            <property name="group">radiobuttonDistance</property>
+                                                          </widget>
+                                                          <packing>
+                                                            <property name="left_attach">1</property>
+                                                            <property name="right_attach">2</property>
+                                                            <property name="top_attach">3</property>
+                                                            <property name="bottom_attach">4</property>
+                                                            <property name="x_options">GTK_EXPAND</property>
+                                                          </packing>
                                                         </child>
                                                       </widget>
                                                     </child>
                                                   </widget>
                                                 </child>
                                                 <child>
-                                                  <widget class="GtkLabel" id="labelY2Axis">
-                                                    <property name="visible">True</property>
-                                                    <property name="label" translatable="yes">&lt;small&gt;Y2 Axis&lt;/small&gt;</property>
-                                                    <property name="use_markup">True</property>
-                                                  </widget>
+                                                  <placeholder/>
                                                   <packing>
                                                     <property name="type">label_item</property>
                                                   </packing>
                                                 </child>
                                               </widget>
                                               <packing>
-                                                <property name="position">2</property>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">4</property>
                                               </packing>
                                             </child>
                                             <child>

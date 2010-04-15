@@ -140,7 +140,7 @@ class Main(SimpleGladeApp):
 		self.parent.runExtension(extension,id)
 
 	def createGraphs(self,RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph):
-		self.drawarearecord = RecordGraph(self.record_graph_vbox, self.window1, self.record_combovalue, self.record_combovalue2, self.btnShowLaps, self.tableConfig)
+		self.drawarearecord = RecordGraph(self.record_graph_vbox, self.window1, self.record_combovalue, self.record_combovalue2, self.btnShowLaps, self.tableConfigY1)
 		self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox, self.window1, self.heartrate_vbox2, pytrainer_main=self.pytrainer_main)
 		#self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
 		self.day_vbox.hide()
@@ -822,11 +822,15 @@ class Main(SimpleGladeApp):
 	## Lista de eventos ##
 	######################
 	
+	def on_hpaned1_move_handle(self, widget):
+		print "Handler"
+		print widget
+	
 	def on_spinbuttonY1_value_changed(self, widget):
 		y1min = self.spinbuttonY1Min.get_value()
 		y1max = self.spinbuttonY1Max.get_value()
 		#Check to see if the min and max have the same...
-		if y1min == y1max: 
+		if y1min == y1max:
 			if widget.get_name() == "spinbuttonY1Min": #User was changing the min spinbutton, so move max up
 				y1max += 1
 			else:	#Move min down
