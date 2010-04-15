@@ -31,7 +31,8 @@ class WindowProfile(SimpleGladeApp):
 		self.pytrainer_main = pytrainer_main
 		self.data_path = data_path
 		SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
-		self.conf_options = [
+		self.conf_options = parent.profile_options
+		''''self.conf_options = [
 			"prf_name",
 			"prf_gender",
 			"prf_weight",
@@ -46,7 +47,7 @@ class WindowProfile(SimpleGladeApp):
 			"prf_minhr",
 			"prf_hrzones_karvonen",
 			"prf_us_system"
-			]
+			]'''
 
 	def new(self):
 		self.gender_options = {
@@ -76,10 +77,13 @@ class WindowProfile(SimpleGladeApp):
 					       
 		
 	def setValues(self,list_options):
-		for i in self.conf_options:
+		for i in self.conf_options.keys():
 			if not list_options.has_key(i):
 				continue
-			var = getattr(self,i)
+			try:
+				var = getattr(self,i)
+			except AttributeError as e:
+				continue
 			if i != "prf_gender" and i != "prf_ddbb" and i !="prf_hrzones_karvonen" and i!="prf_us_system":
 				var.set_text(list_options[i])
 			elif i == "prf_hrzones_karvonen" or i == "prf_us_system":
@@ -99,18 +103,25 @@ class WindowProfile(SimpleGladeApp):
 							self._ddbb_value_active()
 	
 	def saveOptions(self):
-		list_options = []
-		for i in self.conf_options:
-			var = getattr(self,i)
+		list_options = {}
+		for i in self.conf_options.keys():
+			try:
+				var = getattr(self,i)
+			except AttributeError as e:
+				continue
 			if i != "prf_gender" and i != "prf_ddbb" and i != "prf_hrzones_karvonen" and i != "prf_us_system":
-				list_options.append((i,var.get_text()))
+				#list_options.append((i,var.get_text()))
+				list_options[i] = var.get_text()
 			elif i == "prf_hrzones_karvonen" or i == "prf_us_system":
 				if var.get_active():
-					list_options.append((i,"True"))
+					#list_options.append((i,"True"))
+					list_options[i] = "True"
 				else:
-					list_options.append((i,"False"))
+					#list_options.append((i,"False"))
+					list_options[i] = "False"
 			else:
-				list_options.append((i,var.get_active_text()))
+				#list_options.append((i,var.get_active_text()))
+				list_options[i] = var.get_active_text()
 		self.parent.setProfile(list_options)
 	
 	def on_calendar_clicked(self,widget):

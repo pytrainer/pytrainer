@@ -103,7 +103,7 @@ class Plugins:
 	def getPluginConfParams(self,pathPlugin):
 		info = XMLParser(pathPlugin+"/conf.xml")
 		code = info.getValue("pytrainer-plugin","plugincode")
-		plugindir = self.conf.getValue("plugindir")
+		plugindir = self.pytrainer_main.profile.plugindir
 		if not os.path.isfile(plugindir+"/"+code+"/conf.xml"):
 			params = info.getAllValues("conf-values")
 			params.append(("status","0"))
@@ -119,7 +119,7 @@ class Plugins:
 	def setPluginConfParams(self,pathPlugin,savedOptions):
 		info = XMLParser(pathPlugin+"/conf.xml")
 		code = info.getValue("pytrainer-plugin","plugincode")
-		plugindir = self.conf.getValue("plugindir")+"/"+code
+		plugindir = self.pytrainer_main.profile.plugindir+"/"+code
 		if not os.path.isdir(plugindir):
 			os.mkdir(plugindir)
 		if not os.path.isfile(plugindir+"/conf.xml"):
@@ -129,6 +129,6 @@ class Plugins:
 		info.createXMLFile("pytrainer-plugin",savedOptions)
 
 	def getCodeConfValue(self,code,value):
-		plugindir = self.conf.getValue("plugindir")
+		plugindir = self.pytrainer_main.profile.plugindir
 		info = XMLParser(plugindir+"/"+code+"/conf.xml")
 		return info.getValue("pytrainer-plugin",value)

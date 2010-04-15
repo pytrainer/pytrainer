@@ -31,7 +31,8 @@ from pytrainer.gui.dialogs import fileChooserDialog, guiFlush
 class garmintools():
 	def __init__(self, parent = None, validate=False):
 		self.parent = parent
-		self.tmpdir = self.parent.profile.tmpdir
+		self.pytrainer_main = parent.pytrainer_main
+		self.tmpdir = self.pytrainer_main.profile.tmpdir
 		self.data_path = os.path.dirname(__file__)
 		self.validate = validate
 		self.sport = self.getConfValue("Force_sport_to")
@@ -39,7 +40,7 @@ class garmintools():
 	def getConfValue(self, confVar):
 		info = XMLParser(self.data_path+"/conf.xml")
 		code = info.getValue("pytrainer-plugin","plugincode")
-		plugindir = self.parent.conf.getValue("plugindir")
+		plugindir = self.pytrainer_main.profile.plugindir
 		if not os.path.isfile(plugindir+"/"+code+"/conf.xml"):
 			value = None
 		else:
@@ -93,7 +94,7 @@ class garmintools():
 	def inDatabase(self, tree):
 		#comparing date and start time (sport may have been changed in DB after import)
 		time = self.detailsFromFile(tree)
-		if self.parent.parent.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
+		if self.pytrainer_main.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
 			return True
 		else:
 			return False

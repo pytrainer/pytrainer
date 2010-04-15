@@ -43,8 +43,9 @@ class garmintools_full():
 	"""
 	def __init__(self, parent = None, validate=False):
 		self.parent = parent
-		self.confdir = self.parent.profile.confdir
-		self.tmpdir = self.parent.conf.profile.tmpdir
+		self.pytrainer_main = parent.pytrainer_main
+		self.confdir = self.pytrainer_main.profile.confdir
+		self.tmpdir = self.pytrainer_main.profile.tmpdir
 		# Tell garmintools where to save retrieved data from GPS device
 		os.environ['GARMIN_SAVE_RUNS']=self.tmpdir
 		self.data_path = os.path.dirname(__file__)
@@ -64,7 +65,7 @@ class garmintools_full():
 	def getConfValue(self, confVar):
 		info = XMLParser(self.data_path+"/conf.xml")
 		code = info.getValue("pytrainer-plugin","plugincode")
-		plugindir = self.parent.conf.getValue("plugindir")
+		plugindir = self.pytrainer_main.profile.plugindir
 		if not os.path.isfile(plugindir+"/"+code+"/conf.xml"):
 			value = None
 		else:
@@ -93,7 +94,7 @@ class garmintools_full():
 					if len(selectedFiles) > 0:
 						logging.info("Dumping "+str(len(selectedFiles))+" binary files found")
 						dumpFiles = self.dumpBinaries(selectedFiles)
-						self.listStringDBUTC = self.parent.parent.ddbb.select("records","date_time_utc")
+						self.listStringDBUTC = self.pytrainer_main.ddbb.select("records","date_time_utc")
 						if self.maxGap > 0:
 							logging.info("Starting import. Comparison will be made with "+str(self.maxGap)+" seconds interval")
 						else:
