@@ -21,14 +21,12 @@ import sys
 import logging
 
 from lib.xmlUtils import XMLParser
-#from lib.system import checkConf
 
 from gui.windowplugins import WindowPlugins
 
 class Plugins:
 	def __init__(self, data_path = None, parent = None):
 		self.data_path=data_path
-		#self.conf = checkConf()
 		self.pytrainer_main = parent
 	
 	def getActivePlugins(self):

@@ -22,7 +22,6 @@
 import logging
 import traceback
 import commands, os
-#from system import checkConf
 from pytrainer.lib.date import Date
 
 class DDBB:
@@ -35,7 +34,6 @@ class DDBB:
 		else:
 			from sqliteUtils import Sql
 		
-		#self.conf = checkConf()
 		self.confdir = configuration.confdir
 		self.ddbb_path = "%s/pytrainer.ddbb" %self.confdir
 		

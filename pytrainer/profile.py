@@ -20,8 +20,6 @@
 import os, sys
 import logging
 
-#from lib.system import checkConf
-#from lib.xmlUtils import XMLParser
 from lxml import etree
 from lib.ddbb import DDBB
 
@@ -38,7 +36,7 @@ class Profile:
 		self.gpxdir = None
 		self.extensiondir = None
 		self.plugindir = None
-		#Set configuration parameters - old system.checkConf()
+		#Set configuration parameters 
 		self._setHome()
 		self._setConfFiles()
 		self._setTempDir()

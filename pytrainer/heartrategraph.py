@@ -17,8 +17,6 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from gui.drawArea import DrawArea
-from lib.system import checkConf
-from lib.xmlUtils import XMLParser
 from lib.heartrate import *
 import logging
 
@@ -56,4 +54,3 @@ class HeartRateGraph:
 			return float(value)
 		except:
 			return float(0)
-

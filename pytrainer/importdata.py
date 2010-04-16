@@ -18,9 +18,6 @@
 
 import os
 
-#from lib.xmlUtils import XMLParser
-#from lib.system import checkConf
-
 from gui.windowimportdata import WindowImportdata
 
 class Importdata:
@@ -28,7 +25,6 @@ class Importdata:
 		self.data_path=data_path
 		self.parent = parent
 		self.pytrainer_main = parent
-		#self.conf = checkConf()
 		self.configuration = config
 	
 	def runImportdata(self):

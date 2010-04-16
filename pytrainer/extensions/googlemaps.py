@@ -21,7 +21,6 @@ import os
 import re
 import logging
 
-#from pytrainer.lib.system import checkConf
 from pytrainer.lib.gpx import Gpx
 import pytrainer.lib.points as Points 
 from pytrainer.lib.fileUtils import fileUtils

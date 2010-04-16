@@ -29,7 +29,6 @@ from popupmenu import PopupMenu
 from aboutdialog import About
 
 from pytrainer.lib.date import Date
-#from pytrainer.lib.system import checkConf
 from pytrainer.lib.xmlUtils import XMLParser
 from pytrainer.lib.gpx import Gpx
 from pytrainer.lib.unitsconversor import *
@@ -75,7 +74,6 @@ class Main(SimpleGladeApp):
 		#create the columns for the waypoints treeview
 		column_names=[_("id"),_("Waypoint")]
 		self.create_treeview(self.waypointTreeView,column_names)
-		#conf = checkConf()
 		self.fileconf = self.pytrainer_main.profile.confdir+"/listviewmenu.xml"
 		if not os.path.isfile(self.fileconf):
 			self._createXmlListView(self.fileconf)

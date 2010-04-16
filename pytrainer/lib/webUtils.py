@@ -16,35 +16,8 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
 from threading import Thread
-from pytrainer.lib.system import checkConf
 import webbrowser
-
-class MyHandler(BaseHTTPRequestHandler):
-    	def do_GET(self):
-		self.conf = checkConf()
-		tmpdir = self.conf.getValue("tmpdir")
-		f = open(tmpdir+"/waypointeditor.html")
-        	self.send_response(200)
-                self.send_header('Content-type','text/html')
-                self.end_headers()
-                self.wfile.write(f.read())
-                f.close()
-		print "un GET"
-                return
-
-class webServer(Thread):
-	def __init__(self):
-        	self.server = HTTPServer(('localhost', 7988), MyHandler)
-		Thread.__init__ ( self )
-
-	def run(self):
-		#while 1==1:
-        	self.server.serve_forever()
-		#	print "molaaaaa"
-		#	time.sleep(1)
-		#print "Iniciamos3"
 
 def open_url_in_browser(url):
     """

@@ -20,14 +20,12 @@ import os, sys
 import logging
 
 from lib.xmlUtils import XMLParser
-#from lib.system import checkConf
 
 from gui.windowextensions import WindowExtensions
 
 class Extension:
 	def __init__(self, data_path = None, parent = None):
 		self.data_path=data_path
-		#self.conf = checkConf()
 		self.parent = parent
 		self.pytrainer_main = parent
 	
@@ -77,7 +75,7 @@ class Extension:
 	def getExtensionConfParams(self,pathExtension):
 		info = XMLParser(pathExtension+"/conf.xml")
 		code = info.getValue("pytrainer-extension","extensioncode")
-		extensiondir = self.conf.getValue("extensiondir")
+		extensiondir = self.pytrainer_main.profile.extensiondir
 		params = {}
 		if not os.path.isfile(extensiondir+"/"+code+"/conf.xml"):
 			prefs = info.getAllValues("conf-values")
@@ -96,7 +94,7 @@ class Extension:
 	def setExtensionConfParams(self,pathExtension,savedOptions):
 		info = XMLParser(pathExtension+"/conf.xml")
 		code = info.getValue("pytrainer-extension","extensioncode")
-		extensiondir = self.conf.getValue("extensiondir")+"/"+code
+		extensiondir = self.pytrainer_main.profile.extensiondir+"/"+code
 		if not os.path.isdir(extensiondir):
 			os.mkdir(extensiondir)
 		if not os.path.isfile(extensiondir+"/conf.xml"):
@@ -114,7 +112,7 @@ class Extension:
 	
 
 	def getCodeConfValue(self,code,value):
-		extensiondir = self.conf.getValue("extensiondir")
+		extensiondir = self.pytrainer_main.profile.extensiondir
 		info = XMLParser(extensiondir+"/"+code+"/conf.xml")
 		return info.getValue("pytrainer-extension",value)
 		
@@ -135,26 +133,4 @@ class Extension:
 		module = __import__(extension_filename)
 		extensionMain = getattr(module, extension_classname)
 		logging.debug('<<')
-		return extensionMain(parent=self, pytrainer_main=self.parent, conf_dir=self.conf.getValue("confdir"), options=options) 
-	
-	#def runExtension(self,pathExtension,id):
-		#info = XMLParser(pathExtension+"/conf.xml")
-		#bin = info.getValue("pytrainer-extension","executable")
-		#extensiontype = info.getValue("pytrainer-extension","type")
-		#binnary = pathExtension+"/"+bin
-		#params = ""
-		#for opt in self.getExtensionConfParams(pathExtension):
-		#	if opt[0]!="status" and opt[1]!="":
-		#		params += "--%s %s " %(opt[0],opt[1])
-		#if extensiontype=="record":
-		#	params += "--gpxfile %s/gpx/%s.gpx " %(self.conf.getValue("confdir"),id)
-		#	params += "--idrecord %s " %id
-		#bin = info.getValue("pytrainer-extension","executable")
-		#print params
-		#alert = os.popen("%s %s" %(binnary,params)).read()
-		
-		#from gui.warning import Warning
-		#warning = Warning(self.data_path)
-        #        warning.set_text(alert)
-        #        warning.run()
-
+		return extensionMain(parent=self, pytrainer_main=self.parent, conf_dir=self.pytrainer_main.profile.confdir, options=options)
