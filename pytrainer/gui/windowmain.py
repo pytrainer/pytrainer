@@ -968,11 +968,13 @@ class Main(SimpleGladeApp):
 	def on_classicview_activate(self,widget):
 		self.waypointarea.hide()
 		self.listarea.hide()
+		self.selected_view = "record"
 		self.classicarea.show()
 	
 	def on_listview_activate(self,widget):
 		self.waypointarea.hide()
 		self.classicarea.hide()
+		self.selected_view = "listview"
 		self.parent.refreshListView()
 		self.listarea.show()
 	

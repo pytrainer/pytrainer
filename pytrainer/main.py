@@ -59,7 +59,7 @@ from lib.heartrate import *
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.2_svn#568"
+		self.version ="1.7.2_svn#569"
 		self.DB_version = 3
 		#Process command line options
 		self.startup_options = self.get_options()
@@ -264,6 +264,9 @@ class pyTrainer:
 			 record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport)
 			 self.windowmain.actualize_yearview(record_list, year)
 			 self.windowmain.actualize_yeargraph(record_list)
+		elif view=="listview":
+			logging.debug('list view')
+			self.refreshListView()
 		else:
 			print "Unknown view %s" % view
 		logging.debug('<<')
@@ -322,6 +325,9 @@ class pyTrainer:
 
 	def refreshListRecords(self):
 		logging.debug('>>')
+		#Refresh list view
+		self.refreshListView()
+		#Refresh list records
 		date = self.date.getDate()
 		record_list = self.record.getrecordList(date)
 		self.windowmain.actualize_recordTreeView(record_list)

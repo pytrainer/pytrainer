@@ -189,19 +189,23 @@ class Profile:
 			return None
 		return self.configuration[variable]
 		
-	def setValue(self, tag, variable, value):
+	def setValue(self, tag, variable, value, delay_write=False):
 		logging.debug(">>")
 		if tag != "pytraining":
 			print "ERROR - pytraining is the only profile tag supported"
-		self.xml_tree.getroot().set(variable, value)  
+		logging.debug("Setting %s to %s" % (variable, value))  
+		self.xml_tree.getroot().set(variable, value)
+		if not delay_write:
+			logging.debug("Writting...")
+			self.xml_tree.write(self.config_file, xml_declaration=True)
 		logging.debug("<<")
 
 	def setProfile(self,list_options):
 		logging.debug(">>")
 		for option, value in list_options.items():
 			logging.debug("Adding "+option+"|"+value)
-			self.setValue("pytraining",option,value)
-		self.xml_tree.write(self.config_file, xml_declaration=True)
+			self.setValue("pytraining",option,value,delay_write=True)
+		self.xml_tree.write(self.config_file, xml_declaration=True) 
 		logging.debug("<<")
 
 	def getSportList(self):
