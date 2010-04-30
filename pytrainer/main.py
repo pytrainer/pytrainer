@@ -59,7 +59,7 @@ from lib.heartrate import *
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.2_svn#569"
+		self.version ="1.7.2_svn#571"
 		self.DB_version = 3
 		#Process command line options
 		self.startup_options = self.get_options()
@@ -124,7 +124,7 @@ class pyTrainer:
 		For more help on valid options try:
 		   %prog -h '''
 		parser = OptionParser(usage=usage)
-		parser.set_defaults(log_level=logging.ERROR, validate=False, gm3=True, testimport=False)
+		parser.set_defaults(log_level=logging.ERROR, validate=False, gm3=True, testimport=False, equip=False)
 		parser.add_option("-d", "--debug", action="store_const", const=logging.DEBUG, dest="log_level", help="enable logging at debug level")
 		parser.add_option("-i", "--info", action="store_const", const=logging.INFO, dest="log_level", help="enable logging at info level")
 		parser.add_option("-w", "--warn", action="store_const", const=logging.WARNING, dest="log_level", help="enable logging at warning level")
@@ -132,6 +132,7 @@ class pyTrainer:
 		parser.add_option("--check", action="store_true", dest="check", help="triggers database (only sqlite based) and configuration file sanity checks, adding fields if necessary. Backup of database is done before any change. Details at info or debug logging level")
 		parser.add_option("--gmaps2", action="store_false", dest="gm3", help="Use old Google Maps API version (v2)")
 		parser.add_option("--testimport", action="store_true", dest="testimport", help="EXPERIMENTAL: show new import functionality - for testing only USE AT YOUR OWN RISK")
+		parser.add_option("--equip", action="store_false", dest="equip", help="EXPERIMENTAL: enable equipment management")
 		(options, args) = parser.parse_args()
 		return options
 
