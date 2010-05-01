@@ -6,6 +6,7 @@
     <property name="visible">True</property>
     <property name="title" translatable="yes">Preferences</property>
     <property name="icon">logo_mini.png</property>
+    <signal name="destroy" handler="quit"/>
     <child>
       <widget class="GtkVBox" id="vbox4">
         <property name="visible">True</property>
@@ -173,7 +174,7 @@
                             <child>
                               <widget class="GtkComboBoxEntry" id="prf_ddbb">
                                 <property name="visible">True</property>
-                                <property name="items" translatable="yes"></property>
+                                <property name="items" translatable="no"></property>
                                 <signal name="changed" handler="on_prf_ddbb_changed"/>
                               </widget>
                               <packing>
@@ -403,7 +404,7 @@
                         <child>
                           <widget class="GtkComboBoxEntry" id="prf_gender">
                             <property name="visible">True</property>
-                            <property name="items" translatable="yes"></property>
+                            <property name="items" translatable="no"></property>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
@@ -1037,7 +1038,7 @@ Continue?</property>
                         </child>
                         <child>
                           <widget class="GtkLabel" id="sportnamedel">
-                            <property name="label" translatable="yes">label-2147483648</property>
+                            <property name="label" translatable="no">label-2147483648</property>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -1661,7 +1662,7 @@ Debug</property>
                         </child>
                         <child>
                           <widget class="GtkCheckButton" id="checkbuttonValidate">
-                            <property name="label" translatable="yes">--valid</property>
+                            <property name="label" translatable="no">--valid</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
@@ -1707,7 +1708,7 @@ Debug</property>
                         </child>
                         <child>
                           <widget class="GtkCheckButton" id="checkbuttonCheck">
-                            <property name="label" translatable="yes">--check</property>
+                            <property name="label" translatable="no">--check</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
@@ -1753,7 +1754,7 @@ Debug</property>
                         </child>
                         <child>
                           <widget class="GtkCheckButton" id="checkbuttonGM3">
-                            <property name="label" translatable="yes">--gmaps2*</property>
+                            <property name="label" translatable="no">--gmaps2*</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
@@ -1800,7 +1801,7 @@ Debug</property>
                         </child>
                         <child>
                           <widget class="GtkCheckButton" id="checkbuttonUnifiedImport">
-                            <property name="label" translatable="yes">--testimport</property>
+                            <property name="label" translatable="no">--testimport</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
@@ -1846,7 +1847,7 @@ Debug</property>
                         </child>
                         <child>
                           <widget class="GtkCheckButton" id="checkbuttonEquip">
-                            <property name="label" translatable="yes">--equip</property>
+                            <property name="label" translatable="no">--equip</property>
                             <property name="visible">True</property>
                             <property name="sensitive">False</property>
                             <property name="can_focus">False</property>

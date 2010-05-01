@@ -6,6 +6,7 @@
     <property name="visible">True</property>
     <property name="title" translatable="no">window1</property>
     <property name="icon">logo_mini.png</property>
+    <signal name="destroy" handler="quit"/>
     <child>
       <widget class="GtkNotebook" id="notebook7">
         <property name="visible">True</property>
