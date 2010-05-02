@@ -153,7 +153,8 @@ class Profile:
 		else:
 			logging.debug("Attempting to parse content from "+ config_file)
 			try:
-				self.xml_tree = etree.ElementTree(file=config_file)
+				parser = etree.XMLParser(encoding='UTF8')
+				self.xml_tree = etree.parse(config_file, parser=parser)
 				#TODO check here for empty file....
 				# Checks if configuration file is empty
 				#if self.configuration.xmldoc is None:
