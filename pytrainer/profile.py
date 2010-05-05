@@ -153,7 +153,7 @@ class Profile:
 		else:
 			logging.debug("Attempting to parse content from "+ config_file)
 			try:
-				parser = etree.XMLParser(encoding='UTF8')
+				parser = etree.XMLParser(encoding='UTF8', recover=True)
 				self.xml_tree = etree.parse(config_file, parser=parser)
 				#TODO check here for empty file....
 				# Checks if configuration file is empty
@@ -195,7 +195,7 @@ class Profile:
 		if tag != "pytraining":
 			print "ERROR - pytraining is the only profile tag supported"
 		logging.debug("Setting %s to %s" % (variable, value))  
-		self.xml_tree.getroot().set(variable, value)
+		self.xml_tree.getroot().set(variable, value.decode('utf-8'))
 		if not delay_write:
 			logging.debug("Writting...")
 			self.xml_tree.write(self.config_file, xml_declaration=True)
