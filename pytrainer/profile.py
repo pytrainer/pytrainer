@@ -198,7 +198,7 @@ class Profile:
 		self.xml_tree.getroot().set(variable, value.decode('utf-8'))
 		if not delay_write:
 			logging.debug("Writting...")
-			self.xml_tree.write(self.config_file, xml_declaration=True)
+			self.xml_tree.write(self.config_file, xml_declaration=True, encoding='UTF-8')
 		logging.debug("<<")
 
 	def setProfile(self,list_options):
@@ -206,7 +206,7 @@ class Profile:
 		for option, value in list_options.items():
 			logging.debug("Adding "+option+"|"+value)
 			self.setValue("pytraining",option,value,delay_write=True)
-		self.xml_tree.write(self.config_file, xml_declaration=True) 
+		self.xml_tree.write(self.config_file, xml_declaration=True, encoding='UTF-8') 
 		logging.debug("<<")
 
 	def getSportList(self):
