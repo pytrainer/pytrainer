@@ -59,7 +59,7 @@ from lib.heartrate import *
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.2_svn#573"
+		self.version ="1.7.2_svn#577"
 		self.DB_version = 3
 		#Process command line options
 		self.startup_options = self.get_options()
@@ -78,7 +78,7 @@ class pyTrainer:
 			self.prf_us_system = True
 		else:
 			self.prf_us_system = False
-		self.ddbb = DDBB(self.profile) #TODO set this up so other modules can reference this and not have to duplicate this
+		self.ddbb = DDBB(self.profile)
 		logging.debug('connecting to DDBB')
 		self.ddbb.connect()		
 

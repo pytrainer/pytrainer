@@ -216,7 +216,7 @@ class Googlemaps:
 			except:
 				#Error processing lap lat or lon
 				#dont show this lap
-				print "Error processing lap "+ str(lapNumber) + " id: " + str(lap[0]) + " (lat,lon) ( " + str(lap[6]) + "," +str (lap[7]) + ")"
+				logging.debug( "Error processing lap "+ str(lapNumber) + " id: " + str(lap[0]) + " (lat,lon) ( " + str(lap[6]) + "," +str (lap[7]) + ")" )
 
 		content += '''
 

@@ -56,6 +56,7 @@ import os
 import xmlrpclib
 import datetime
 import time
+import logging
 
 class WordPressException(exceptions.Exception):
 	"""Custom exception for WordPress client operations
@@ -223,7 +224,7 @@ class WordPressClient:
 		"""
 		blogContent = {
 			'title' : post.title,
-			'description' : post.description	
+			'description' : "<![CDATA["+post.description+"]]>"	
 		}
 		
 		# add categories
@@ -237,6 +238,8 @@ class WordPressClient:
 	
 		# insert new post
 		idNewPost = int(self._server.metaWeblog.newPost(self.blogId, self.user, self.password, blogContent, 0))
+		logging.debug("idNewPost: %d" % idNewPost)
+		logging.debug(blogContent)
 		
 		# set categories for new post
 		self.setPostCategories(idNewPost, categories)

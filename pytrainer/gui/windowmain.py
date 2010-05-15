@@ -83,6 +83,10 @@ class Main(SimpleGladeApp):
 
 		#Disable import menu item unless specified on startup
 		self.set_unified_import(self.testimport)
+		
+		#Set correct map viewer
+		#self.radiobuttonOSM.set_active(0)
+		self.radiobuttonGMap.set_active(1)
 			
 	def set_unified_import(self, status=False):
 		self.menu_importdata.set_sensitive(status)
@@ -392,9 +396,19 @@ class Main(SimpleGladeApp):
 	
 	def actualize_map(self,id_record, full_screen=False):
 		logging.debug(">>")
+		#Check which type of map viewer to use
+		if self.radiobuttonOSM.get_active():
+			map_view = "OSM"
+		elif self.radiobuttonGMap.get_active():
+			map_view = "GMAP"
+		else:
+			map_view = "GMAP"
+		print map_view
+		
 		if full_screen:
 			self.googlemaps_old.drawMap(id_record)
 		else:
+
 			self.googlemaps.drawMap(id_record)
 		logging.debug("<<")
 	
@@ -820,6 +834,17 @@ class Main(SimpleGladeApp):
 	## Lista de eventos ##
 	######################
 	
+	def on_buttonRedrawMap_clicked(self, widget):
+		print 'on_buttonRedrawMap_clicked'
+		self.parent.refreshMapView()
+	
+	def on_radiobuttonMap_toggled(self, widget):
+		#Ignore the deselected toggle event
+		if widget.get_active() == False:
+			return
+		logging.debug( 'on_radiobuttonMap_toggled '+ widget.get_name()+ ' activated')
+		self.parent.refreshMapView()
+			
 	def on_hpaned1_move_handle(self, widget):
 		print "Handler"
 		print widget

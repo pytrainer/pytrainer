@@ -1,10 +1,31 @@
-#!/usr/bin/env python
-from optparse import OptionParser
+# -*- coding: iso-8859-1 -*-
+
+#Copyright (C) Fiz Vazquez vud1@sindominio.net
+
+#This program is free software; you can redistribute it and/or
+#modify it under the terms of the GNU General Public License
+#as published by the Free Software Foundation; either version 2
+#of the License, or (at your option) any later version.
+
+#This program is distributed in the hope that it will be useful,
+#but WITHOUT ANY WARRANTY; without even the implied warranty of
+#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#GNU General Public License for more details.
+
+#You should have received a copy of the GNU General Public License
+#along with this program; if not, write to the Free Software
+#Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
 import os
 import sys
+import shutil
+import logging
 
-import wordpresslib
-import googlemaps
+import gtk
+import httplib2
+
+import wordpresslib 	#TODO remove need for this library
+import googlemaps   	#TODO remove this separate googlemaps class
 import pytrainer.lib.points as Points
 from pytrainer.lib.date import Date
 
@@ -17,56 +38,122 @@ class wordpress:
 		self.conf_dir = conf_dir
 
 	def run(self, id):
+		#Show user something is happening
+		msg = _("Posting to Wordpress blog")
+		md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_NONE, msg)
+		md.set_title(_("Wordpress Extension Processing"))
+		md.set_modal(True)
+		md.show()
+		while gtk.events_pending():	# This allows the GUI to update 
+			gtk.main_iteration()	# before completion of this entire action
+		logging.debug("before request posting")
 		options = self.options
 		self.wordpressurl = options["wordpressurl"]
 		self.user = options["wordpressuser"]
 		self.password = options["wordpresspass"]
-		self.gpxfile = "%s/gpx/%s.gpx " %(self.conf_dir,id)
+		self.gpxfile = "%s/gpx/%s.gpx" %(self.conf_dir,id)
 		self.googlekey = options["googlekey"]
 		self.idrecord = id #options.idrecord
 		self.wordpresscategory = options["wordpresscategory"]
-		print self.wordpressurl, self.user, self.password, self.gpxfile, self.googlekey, self.googlekey, self.idrecord, self.wordpresscategory
-		
+		debug_msg = "%s, %s, %s, %s, %s, %s" % (self.wordpressurl, self.user, self.gpxfile, self.googlekey, self.idrecord, self.wordpresscategory) 
+		logging.debug(debug_msg)
 		try: 
-			self.wp = wordpresslib.WordPressClient(self.wordpressurl, self.user, self.password)
+			self.wp = wordpresslib.WordPressClient(self.wordpressurl, self.user, self.password)	#TODO remove need for wordpresslib??
 			self.error = False
 		except:
 			self.error = True
 			self.log = "Url, user or pass are incorrect. Please, check your configuration"
 		self.loadRecordInfo()
-		blog_title = self.createTitle()
-		blog_category = self.createCategory()
+		if self.title is None:
+			self.title = "No Title"
+		blog_route = self.createRoute()
+		blog_body = self.createBody()
+		blog_table = self.createTable()
+		blog_figureHR = self.createFigureHR()
+		blog_figureStage = self.createFigureStage()
+		blog_foot = self.createFoot()
+		
+		self.description = "<![CDATA["+blog_body+blog_table+blog_route+blog_figureHR+blog_figureStage+blog_foot+"]]>"
+		xmlstuff = '''<methodCall> 
+<methodName>metaWeblog.newPost</methodName> 
+<params> 
+<param> 
+<value> 
+<string>MyBlog</string> 
+</value> 
+</param> 
+<param> 
+<value>%s</value> 
+</param> 
+<param> 
+<value> 
+<string>%s</string> 
+</value> 
+</param> 
+<param> 
+<struct> 
+<member> 
+<name>categories</name> 
+<value> 
+<array> 
+<data>
+<value>%s</value> 
+</data> 
+</array> 
+</value> 
+</member> 
+<member> 
+<name>description</name> 
+<value>%s</value>
+</member> 
+<member> 
+<name>title</name> 
+<value>%s</value> 
+</member> 
+</struct> 
+</param> 
+<param>
+ <value>
+  <boolean>1</boolean>
+ </value>
+</param> 
+</params> 
+</methodCall>
+''' % (self.user, self.password, self.wordpresscategory,  self.description, self.title)
 
-		if self.error == False:
-			blog_route = self.createRoute()
-			blog_body = self.createBody()
-			blog_table = self.createTable()
-			blog_figureHR = self.createFigureHR()
-			blog_figureStage = self.createFigureStage()
-			blog_foot = self.createFoot()
-			self.wp.selectBlog(0)
-	
-			post = wordpresslib.WordPressPost()
-			post.title = blog_title
-			post.description = blog_body+blog_table+blog_route+blog_figureHR+blog_figureStage+blog_foot
-			post.categories = blog_category
-			idNewPost = self.wp.newPost(post, True)
-			print "The post has been submited" #TODO Notification to user
-        				
+		#POST request to Wordpress blog
+		h = httplib2.Http()
+		res, content = h.request(self.wordpressurl, 'POST', body=xmlstuff)
+		logging.debug("after request posting")
+		logging.debug("Got response status: %s, reason: %s, content: %s" % (res.status, res.reason, content))
+		if res.reason == 'OK':
+			res_msg = "Successfully posted to Wordpress."
 		else:
-			print self.log
+			res_msg = "Some error occured\nGot a status %s, reason %s\nContent was: %s" % (res.status, res.reason, content)
+		#Close 'Please wait' dialog
+		md.destroy()
+		#Show the user the result
+		md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, res_msg)
+		md.set_title(_("Wordpress Extension Upload Complete"))
+		md.set_modal(False)
+		md.run()
+		md.destroy()
 	
 	def createRoute(self):
+		gpxpath = "/tmp/gpstrace.gpx.txt"
 		htmlpath = "/tmp/index.html" 	#TODO fix to use correct tmp dir
-		kmlpath = "/tmp/gps.kml"		#TODO fix to use correct tmp dir
+		kmlpath = "/tmp/gps.kml.txt"		#TODO fix to use correct tmp dir
 		description_route = ''
 		if os.path.isfile(self.gpxfile):
+			#copy gpx file to new name
+			shutil.copy(self.gpxfile, gpxpath)
 			#create the html file
 			googlemaps.drawMap(self.gpxfile,self.googlekey,htmlpath)	#TODO fix to use main googlemaps and remove extensions copy
 			#create the kml file
 			os.system("gpsbabel -t -i gpx -f %s -o kml,points=0,line_color=ff0000ff -F %s" %(self.gpxfile,kmlpath))	#TODO fix to remove gpsbabel 
 			
-			gfile = self.wp.newMediaObject(self.gpxfile)
+			#gfile = self.wp.newMediaObject(self.gpxfile)
+			gfile = self.wp.newMediaObject(gpxpath)
 			hfile = self.wp.newMediaObject(htmlpath)
 			kfile = self.wp.newMediaObject(kmlpath)
 
