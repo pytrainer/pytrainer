@@ -59,7 +59,7 @@ from lib.heartrate import *
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.2_svn#577"
+		self.version ="1.7.2_svn#578"
 		self.DB_version = 3
 		#Process command line options
 		self.startup_options = self.get_options()
@@ -318,6 +318,10 @@ class pyTrainer:
 			 
 	def refreshMapView(self, full_screen=False):
 		logging.debug('>>')
+		if self.windowmain is None:
+			logging.debug('Called before windowmain initialisation')
+			logging.debug('<<')
+			return
 		selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
 		id_record = selected.get_value(iter,0)
 		logging.debug('Trying to show map for record '+str(id_record))

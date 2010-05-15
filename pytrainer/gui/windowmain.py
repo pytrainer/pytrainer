@@ -85,8 +85,10 @@ class Main(SimpleGladeApp):
 		self.set_unified_import(self.testimport)
 		
 		#Set correct map viewer
-		#self.radiobuttonOSM.set_active(0)
-		self.radiobuttonGMap.set_active(1)
+		if self.pytrainer_main.profile.getValue("pytraining","default_viewer") == "1":
+			self.radiobuttonOSM.set_active(1)
+		else:
+			self.radiobuttonGMap.set_active(1)
 			
 	def set_unified_import(self, status=False):
 		self.menu_importdata.set_sensitive(status)
@@ -398,18 +400,19 @@ class Main(SimpleGladeApp):
 		logging.debug(">>")
 		#Check which type of map viewer to use
 		if self.radiobuttonOSM.get_active():
-			map_view = "OSM"
+			#Use OSM to draw map
+			logging.debug("Using OSM to draw map....")
+			self.googlemaps.drawMap(-9999) #TODO placeholder for OSM code 
 		elif self.radiobuttonGMap.get_active():
-			map_view = "GMAP"
+			#Use Google to draw map
+			logging.debug("Using Google to draw map")
+			if full_screen:
+				self.googlemaps_old.drawMap(id_record)	#TODO - sort this to be more generic, maybe pass map target?
+			else:
+				self.googlemaps.drawMap(id_record)		#TODO - sort this to be more generic, maybe pass map target?
 		else:
-			map_view = "GMAP"
-		print map_view
-		
-		if full_screen:
-			self.googlemaps_old.drawMap(id_record)
-		else:
-
-			self.googlemaps.drawMap(id_record)
+			#Unknown map type...
+			logging.error("Unknown map viewer requested")
 		logging.debug("<<")
 	
 	def actualize_weekview(self, record_list, date_ini, date_end):
@@ -835,7 +838,7 @@ class Main(SimpleGladeApp):
 	######################
 	
 	def on_buttonRedrawMap_clicked(self, widget):
-		print 'on_buttonRedrawMap_clicked'
+		logging.debug('on_buttonRedrawMap_clicked')
 		self.parent.refreshMapView()
 	
 	def on_radiobuttonMap_toggled(self, widget):

@@ -32,22 +32,6 @@ class WindowProfile(SimpleGladeApp):
 		self.data_path = data_path
 		SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
 		self.conf_options = parent.profile_options
-		''''self.conf_options = [
-			"prf_name",
-			"prf_gender",
-			"prf_weight",
-			"prf_height",
-			"prf_age",
-			"prf_ddbb",
-			"prf_ddbbhost",
-			"prf_ddbbname",
-			"prf_ddbbuser",
-			"prf_ddbbpass",
-			"prf_maxhr",
-			"prf_minhr",
-			"prf_hrzones_karvonen",
-			"prf_us_system"
-			]'''
 
 	def new(self):
 		self.gender_options = {
@@ -64,7 +48,7 @@ class WindowProfile(SimpleGladeApp):
 		for i in self.gender_options:
 			self.prf_gender.insert_text(i,self.gender_options[i])
 		
-		#hacemos lo propio para el combobox ddbb
+		#hacemos lo propio para el combobox ddbb 
 		for i in self.ddbb_type:
 			self.prf_ddbb.insert_text(i,self.ddbb_type[i])
 
@@ -73,55 +57,66 @@ class WindowProfile(SimpleGladeApp):
 		for column_index, column_name in enumerate(column_names):
 			column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
 			column.set_resizable(True)
-			self.sportTreeView.append_column(column)
-					       
+			self.sportTreeView.append_column(column)		       
 		
 	def setValues(self,list_options):
 		for i in self.conf_options.keys():
 			if not list_options.has_key(i):
+				print 'no list options for: ' + i
 				continue
-			try:
-				var = getattr(self,i)
-			except AttributeError as e:
-				continue
-			if i != "prf_gender" and i != "prf_ddbb" and i !="prf_hrzones_karvonen" and i!="prf_us_system":
-				var.set_text(list_options[i])
-			elif i == "prf_hrzones_karvonen" or i == "prf_us_system":
-				if list_options[i]=="True":
-					var.set_active(True)
-			elif i == "prf_gender":
-				for j in self.gender_options:
-					if self.gender_options[j]==list_options[i]:
-						var.set_active(j)
-			elif i == "prf_ddbb":
-				for j in self.ddbb_type:
-					if self.ddbb_type[j]==list_options[i]:
-						var.set_active(j)
-						if j==0:
-							self._ddbb_value_deactive()
-						else:
-							self._ddbb_value_active()
+			if i == "default_viewer":
+				if list_options[i] == "1":
+					logging.debug("Setting defult map viewer to OSM")
+					self.radiobuttonDefaultOSM.set_active(1)
+				else:
+					logging.debug("Setting defult map viewer to Google")
+					self.radiobuttonDefaultGMap.set_active(1)
+			else:
+				try:
+					var = getattr(self,i)
+				except AttributeError as e:
+					continue				
+				if i == "prf_hrzones_karvonen" or i == "prf_us_system":
+					if list_options[i]=="True":
+						var.set_active(True)
+	
+				elif i == "prf_gender":
+					for j in self.gender_options:
+						if self.gender_options[j]==list_options[i]:
+							var.set_active(j)
+				elif i == "prf_ddbb":
+					for j in self.ddbb_type:
+						if self.ddbb_type[j]==list_options[i]:
+							var.set_active(j)
+							if j==0:
+								self._ddbb_value_deactive()
+							else:
+								self._ddbb_value_active()
+				else:
+					var.set_text(list_options[i])
 	
 	def saveOptions(self):
 		list_options = {}
 		for i in self.conf_options.keys():
-			try:
-				var = getattr(self,i)
-			except AttributeError as e:
-				continue
-			if i != "prf_gender" and i != "prf_ddbb" and i != "prf_hrzones_karvonen" and i != "prf_us_system":
-				#list_options.append((i,var.get_text()))
-				list_options[i] = var.get_text()
-			elif i == "prf_hrzones_karvonen" or i == "prf_us_system":
-				if var.get_active():
-					#list_options.append((i,"True"))
-					list_options[i] = "True"
+			if i == "default_viewer":
+				if self.radiobuttonDefaultOSM.get_active():
+					list_options[i] = "1"
 				else:
-					#list_options.append((i,"False"))
-					list_options[i] = "False"
+					list_options[i] = "0"
 			else:
-				#list_options.append((i,var.get_active_text()))
-				list_options[i] = var.get_active_text()
+				try:
+					var = getattr(self,i)
+				except AttributeError as e:
+					continue
+				if i == "prf_hrzones_karvonen" or i == "prf_us_system":
+					if var.get_active():
+						list_options[i] = "True"
+					else:
+						list_options[i] = "False"
+				elif i == "prf_gender" or i == "prf_ddbb":
+					list_options[i] = var.get_active_text()
+				else:
+					list_options[i] = var.get_text()
 		self.parent.setProfile(list_options)
 	
 	def on_calendar_clicked(self,widget):

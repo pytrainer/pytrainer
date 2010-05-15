@@ -68,6 +68,7 @@ class Profile:
 			"prf_minhr":"",
 			"auto_launch_file_selection":"False",
 			"import_default_tab":"0",
+			"default_viewer":"0",
 			}
 
 		#Parse pytrainer configuration file
