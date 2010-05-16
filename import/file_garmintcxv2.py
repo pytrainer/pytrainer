@@ -162,5 +162,5 @@ class garmintcxv2():
 		#xml_doc = etree.parse(filename)
 		xml_doc = activity
 		result_tree = transform(xml_doc)
-		result_tree.write(gpxfile, xml_declaration=True)
+		result_tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')
 

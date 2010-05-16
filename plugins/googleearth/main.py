@@ -43,7 +43,7 @@ class googleearth():
 			if self.valid_input_file(filename):
 				if not self.inDatabase(filename):
 					sport = self.getSport(filename) #TODO Fix sport determination
-					gpxfile = "%s/googleearth-%d.gpx" % (self.tmpdir, len(importfiles))	
+					gpxfile = "%s/googleearth-%d.gpx" % (self.tmpdir, len(importfiles))
 					outgps = commands.getstatusoutput("gpsbabel -t -i kml -f %s -o gpx -F %s" % (filename, gpxfile) )
 					#self.createGPXfile(gpxfile, filename) #TODO Fix processing so not dependant on the broken gpsbabel
 					importfiles.append((gpxfile, sport))
@@ -66,7 +66,7 @@ class googleearth():
 			#from pytrainer.lib.xmlValidation import xmlValidator
 			#validator = xmlValidator()
 			#return validator.validateXSL(filename, xslfile)
-	
+
 	def inDatabase(self, filename):
 		""" Function to determine if a given file has already been imported into the database
 		    only compares date and start time (sport may have been changed in DB after import)
@@ -76,11 +76,11 @@ class googleearth():
 		#	return True
 		#else:
 		return False
-			
+
 	def getSport(self, filename):
 		#TODO Fix sport determination
 		return "Run"
-		
+
 	def detailsFromKML(self, filename):
 		""" Function to return the first time element from a KML file """
 		#TODO
@@ -91,7 +91,7 @@ class googleearth():
 		#	return None
 		#else:
 		#	return timeElement.text
-		
+
 	def createGPXfile(self, gpxfile, filename):
 		''' Function to transform a GPSBabel kml file to a valid GPX+ file
 		'''
@@ -99,5 +99,5 @@ class googleearth():
 		xslt_doc = etree.parse(self.data_path+"/translate.xsl")
 		transform = etree.XSLT(xslt_doc)
 		result_tree = transform(filename)
-		result_tree.write(gpxfile, xml_declaration=True)
+		result_tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')
 

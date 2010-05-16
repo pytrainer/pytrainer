@@ -67,9 +67,9 @@ class garmintools():
 				tree = etree.parse(fileString)
 				if not self.inDatabase(tree):
 					sport = self.getSport(tree)
-					gpxfile = "%s/garmintools-%d.gpx" % (self.tmpdir, len(importfiles))					
+					gpxfile = "%s/garmintools-%d.gpx" % (self.tmpdir, len(importfiles))
 					self.createGPXfile(gpxfile, tree)
-					importfiles.append((gpxfile, sport))					
+					importfiles.append((gpxfile, sport))
 				else:
 					logging.debug("%s already in database. Skipping import." % (filename,) )
 			else:
@@ -129,5 +129,5 @@ class garmintools():
 		xslt_doc = etree.parse(self.data_path+"/translate.xsl")
 		transform = etree.XSLT(xslt_doc)
 		result_tree = transform(tree)
-		result_tree.write(gpxfile, xml_declaration=True)
+		result_tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')
 

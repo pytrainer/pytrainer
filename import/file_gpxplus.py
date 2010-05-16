@@ -62,10 +62,10 @@ class gpxplus():
 				duration  = self.getDetails(xmldoc, startTime)
 				distance = ""
 				self.activitiesSummary.append( (0,
-												indatabase, 
-												startTime[1].strftime("%Y-%m-%dT%H:%M:%S"), 
-												distance , 
-												str(duration), 
+												indatabase,
+												startTime[1].strftime("%Y-%m-%dT%H:%M:%S"),
+												distance ,
+												str(duration),
 												sport,
 												) )
 				return True
@@ -73,7 +73,7 @@ class gpxplus():
 			#Not gpx file
 			return False
 		return False
-	
+
 	def getDateTime(self, time_):
 		return Date().getDateTime(time_)
 
@@ -122,5 +122,5 @@ class gpxplus():
 		return sport, gpxFile
 
 	def createGPXfile(self, gpxfile, tree):
-		tree.write(gpxfile, xml_declaration=True)
+		tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')
 

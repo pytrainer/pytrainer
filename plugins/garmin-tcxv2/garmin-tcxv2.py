@@ -59,9 +59,9 @@ class garminTCXv2():
 				for activity in activities:
 					if not self.inDatabase(activity):
 						sport = self.getSport(activity)
-						gpxfile = "%s/garmin-tcxv2-%d.gpx" % (self.tmpdir, len(importfiles))					
+						gpxfile = "%s/garmin-tcxv2-%d.gpx" % (self.tmpdir, len(importfiles))
 						self.createGPXfile(gpxfile, activity)
-						importfiles.append((gpxfile, sport))					
+						importfiles.append((gpxfile, sport))
 					else:
 						logging.debug("File:%s activity %d already in database. Skipping import." % (filename, activities.index(activity)) )
 			else:
@@ -121,4 +121,4 @@ class garminTCXv2():
 		#xml_doc = etree.parse(filename)
 		xml_doc = activity
 		result_tree = transform(xml_doc)
-		result_tree.write(gpxfile, xml_declaration=True)
+		result_tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')

@@ -84,17 +84,17 @@ class garmintcxv1():
 						distance = ""
 						index = "%d:%d" % (self.activities.index((sport, activities)), activities.index(activity))
 						self.activitiesSummary.append( (index,
-														inDatabase, 
-														startTime[1].strftime("%Y-%m-%dT%H:%M:%S"), 
-														distance , 
-														str(duration), 
+														inDatabase,
+														startTime[1].strftime("%Y-%m-%dT%H:%M:%S"),
+														distance ,
+														str(duration),
 														sport,
 														) )
 				#print self.activitiesSummary
 				return True
 		except:
 			#Not valid file
-			return False 
+			return False
 		return False
 
 	def getActivities(self, tree):
@@ -160,5 +160,5 @@ class garmintcxv1():
 		#xml_doc = etree.parse(filename)
 		xml_doc = activity
 		result_tree = transform(xml_doc)
-		result_tree.write(gpxfile, xml_declaration=True)
+		result_tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')
 

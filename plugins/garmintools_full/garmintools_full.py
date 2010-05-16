@@ -81,7 +81,7 @@ class garmintools_full():
 			if numError >= 0:
 				#TODO Remove Zenity below
 				outgps = commands.getstatusoutput("garmin_save_runs | zenity --progress --pulsate --text='Loading Data' auto-close")
-				if outgps[0]==0: 
+				if outgps[0]==0:
 					# now we should have a lot of gmn (binary) files under $GARMIN_SAVE_RUNS
 					foundFiles = self.searchFiles(self.tmpdir, "gmn")
 					logging.info("Retrieved "+str(len(foundFiles))+" entries from GPS device")
@@ -109,7 +109,7 @@ class garmintools_full():
 				if numError == -1:
 					os.popen("zenity --error --text='No Garmin device found\nCheck your configuration'");
 				elif numError == -2:
-					os.popen("zenity --error --text='Can not find garmintools binaries\nCheck your configuration'")			
+					os.popen("zenity --error --text='Can not find garmintools binaries\nCheck your configuration'")
 		else: #No garmin device found
 				#TODO Remove Zenity below
 				os.popen("zenity --error --text='Can not handle Garmin device (wrong module loaded)\nCheck your configuration'");
@@ -150,7 +150,7 @@ class garmintools_full():
 				#if not self.inDatabase(tree, filename):
 				if not self.entryExists(tree, filename):
 					sport = self.getSport(tree)
-					gpxfile = "%s/garmintools-%d.gpx" % (self.tmpdir, len(importfiles))					
+					gpxfile = "%s/garmintools-%d.gpx" % (self.tmpdir, len(importfiles))
 					self.createGPXfile(gpxfile, tree)
 					importfiles.append((gpxfile, sport))
 				else:
@@ -208,7 +208,7 @@ class garmintools_full():
 			stringStartDate = stringStartUTC[0:10]
 			for entry in listStringStartUTC:
 				#logging.debug("start: "+str(startDatetime)+" | entry: "+str(entry)+" | gap: "+str(datetimePlusDelta))
-				if entry[0] is not None:		
+				if entry[0] is not None:
 					if str(entry[0]).startswith(stringStartDate):
 						deltaGap = timedelta(seconds=gap)
 						datetimeStartUTC = datetime.strptime(stringStartUTC,"%Y-%m-%dT%H:%M:%SZ")
@@ -220,7 +220,7 @@ class garmintools_full():
 							break
 		else:
 			if (stringStartUTC,) in listStringStartUTC: # strange way to store results from DB
-				found = True		
+				found = True
 		logging.debug("<<")
 		return found
 
@@ -252,7 +252,7 @@ class garmintools_full():
 		xslt_doc = etree.parse(self.data_path+"/translate.xsl")
 		transform = etree.XSLT(xslt_doc)
 		result_tree = transform(tree)
-		result_tree.write(gpxfile, xml_declaration=True)
+		result_tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')
 
 	def dumpBinaries(self, listFiles):
 		logging.debug(">>")

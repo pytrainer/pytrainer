@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: iso-8859-1 -*-
 
-#Copyright (C) 
+#Copyright (C)
 
 #Based on plugin by Fiz Vazquez vud1@sindominio.net
 
@@ -102,7 +102,7 @@ class garminhrfile():
 			logging.debug("Error no time found in track")
 			return False
 		else:
-			time = timeElement.text	
+			time = timeElement.text
 			#comparing date and start time (sport may have been changed in DB after import)
 			if self.pytrainer_main.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
 				logging.debug("Not importing track for time %s" % (time))
@@ -132,4 +132,4 @@ class garminhrfile():
 		xslt_doc = etree.parse(self.data_path+"/translate.xsl")
 		transform = etree.XSLT(xslt_doc)
 		result_tree = transform(track)
-		result_tree.write(gpxfile, xml_declaration=True)
+		result_tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')

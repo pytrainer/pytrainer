@@ -69,10 +69,10 @@ class garmintools():
 				distance, duration  = self.getDetails(xmldoc, startTime)
 				distance = distance / 1000.0
 				self.activitiesSummary.append( (0,
-												indatabase, 
-												startTime[1].strftime("%Y-%m-%dT%H:%M:%S"), 
-												"%0.2f" % distance , 
-												str(duration), 
+												indatabase,
+												startTime[1].strftime("%Y-%m-%dT%H:%M:%S"),
+												"%0.2f" % distance ,
+												str(duration),
 												sport,
 												) )
 				return True
@@ -80,7 +80,7 @@ class garmintools():
 			#Not garmintools dump file
 			return False
 		return False
-	
+
 	def getDateTime(self, time_):
 		return Date().getDateTime(time_)
 
@@ -154,5 +154,5 @@ class garmintools():
 		xslt_doc = etree.parse(self.data_path+"/translate_garmintools.xsl")
 		transform = etree.XSLT(xslt_doc)
 		result_tree = transform(tree)
-		result_tree.write(gpxfile, xml_declaration=True)
+		result_tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')
 
