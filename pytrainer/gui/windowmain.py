@@ -837,6 +837,19 @@ class Main(SimpleGladeApp):
 	## Lista de eventos ##
 	######################
 	
+	def on_buttonShowOptions_clicked(self, widget):
+		position_set = self.hpaned1.get_property('position-set')
+		if position_set:
+			#Currently not showing options - show them
+			self.hpaned1.set_property('position-set', False)
+			self.buttonShowOptions.set_tooltip_text(_('Hide graph display options') ) 
+		else:
+			#Hide options
+			self.hpaned1.set_position(0)
+			self.buttonShowOptions.set_tooltip_text(_('Show graph display options') ) 
+		logging.debug('Position: %d' % self.hpaned1.get_position() )
+		logging.debug('Position set: %s' % self.hpaned1.get_property('position-set') )
+	
 	def on_buttonRedrawMap_clicked(self, widget):
 		logging.debug('on_buttonRedrawMap_clicked')
 		self.parent.refreshMapView()

@@ -1081,11 +1081,23 @@
                                         <property name="border_width">5</property>
                                         <property name="spacing">8</property>
                                         <child>
-                                          <widget class="GtkLabel" id="label162">
+                                          <widget class="GtkButton" id="buttonShowOptions">
                                             <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="tooltip" translatable="yes">Show graph display options</property>
+                                            <signal name="clicked" handler="on_buttonShowOptions_clicked"/>
+                                            <child>
+                                              <widget class="GtkImage" id="image4">
+                                                <property name="visible">True</property>
+                                                <property name="stock">gtk-preferences</property>
+                                              </widget>
+                                            </child>
                                           </widget>
                                           <packing>
-                                            <property name="position">0</property>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">1</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -1100,7 +1112,7 @@ Cadence</property>
                                           </widget>
                                           <packing>
                                             <property name="expand">False</property>
-                                            <property name="position">1</property>
+                                            <property name="position">2</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -1111,7 +1123,7 @@ Cadence</property>
                                           <packing>
                                             <property name="expand">False</property>
                                             <property name="fill">False</property>
-                                            <property name="position">2</property>
+                                            <property name="position">3</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -1129,29 +1141,11 @@ Cadence
                                           <packing>
                                             <property name="expand">False</property>
                                             <property name="fill">False</property>
-                                            <property name="position">3</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <widget class="GtkCheckButton" id="btnShowLaps">
-                                            <property name="label" translatable="yes">Show Laps</property>
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
-                                            <property name="receives_default">False</property>
-                                            <property name="draw_indicator">True</property>
-                                            <signal name="toggled" handler="on_btnShowLaps_toggled"/>
-                                          </widget>
-                                          <packing>
                                             <property name="position">4</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <widget class="GtkLabel" id="label-2147483645">
-                                            <property name="visible">True</property>
-                                          </widget>
-                                          <packing>
-                                            <property name="position">5</property>
-                                          </packing>
+                                          <placeholder/>
                                         </child>
                                         <child>
                                           <widget class="GtkButton" id="button27">
@@ -1169,7 +1163,8 @@ Cadence
                                           <packing>
                                             <property name="expand">False</property>
                                             <property name="fill">False</property>
-                                            <property name="position">6</property>
+                                            <property name="pack_type">end</property>
+                                            <property name="position">0</property>
                                           </packing>
                                         </child>
                                       </widget>
@@ -1408,7 +1403,7 @@ Cadence
                                               </widget>
                                               <packing>
                                                 <property name="expand">False</property>
-                                                <property name="position">1</property>
+                                                <property name="position">2</property>
                                               </packing>
                                             </child>
                                             <child>
@@ -1619,7 +1614,7 @@ Cadence
                                               </widget>
                                               <packing>
                                                 <property name="expand">False</property>
-                                                <property name="position">2</property>
+                                                <property name="position">3</property>
                                               </packing>
                                             </child>
                                             <child>
@@ -1798,6 +1793,56 @@ Cadence
                                               </packing>
                                             </child>
                                             <child>
+                                              <widget class="GtkHBox" id="hbox5">
+                                                <property name="visible">True</property>
+                                                <child>
+                                                  <widget class="GtkLabel" id="label16">
+                                                    <property name="visible">True</property>
+                                                  </widget>
+                                                  <packing>
+                                                    <property name="position">0</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <widget class="GtkCheckButton" id="btnShowLaps">
+                                                    <property name="label" translatable="yes">Show Laps</property>
+                                                    <property name="visible">True</property>
+                                                    <property name="can_focus">True</property>
+                                                    <property name="receives_default">False</property>
+                                                    <property name="draw_indicator">True</property>
+                                                    <signal name="toggled" handler="on_btnShowLaps_toggled"/>
+                                                  </widget>
+                                                  <packing>
+                                                    <property name="expand">False</property>
+                                                    <property name="fill">False</property>
+                                                    <property name="padding">5</property>
+                                                    <property name="position">1</property>
+                                                  </packing>
+                                                </child>
+                                                <child>
+                                                  <widget class="GtkLabel" id="label17">
+                                                    <property name="visible">True</property>
+                                                  </widget>
+                                                  <packing>
+                                                    <property name="position">2</property>
+                                                  </packing>
+                                                </child>
+                                              </widget>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">5</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkLabel" id="label18">
+                                                <property name="visible">True</property>
+                                              </widget>
+                                              <packing>
+                                                <property name="position">6</property>
+                                              </packing>
+                                            </child>
+                                            <child>
                                               <widget class="GtkButton" id="buttonResetGraph">
                                                 <property name="label" translatable="yes">Reset Graph</property>
                                                 <property name="visible">True</property>
@@ -1811,7 +1856,7 @@ Cadence
                                                 <property name="expand">False</property>
                                                 <property name="fill">False</property>
                                                 <property name="pack_type">end</property>
-                                                <property name="position">3</property>
+                                                <property name="position">1</property>
                                               </packing>
                                             </child>
                                           </widget>

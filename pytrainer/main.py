@@ -59,7 +59,7 @@ from lib.heartrate import *
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None): 
 		#Version constants
-		self.version ="1.7.2_svn#578"
+		self.version ="1.7.2_svn#579"
 		self.DB_version = 3
 		#Process command line options
 		self.startup_options = self.get_options()
