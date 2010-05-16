@@ -31,12 +31,15 @@ class Activity:
 	'''
 	def __init__(self, pytrainer_main = None, id = None):
 		logging.debug(">>")
+		self.id = id
+		#It is an error to try to initialise with no id
+		if self.id is None:
+			return
 		#It is an error to try to initialise with no reference to pytrainer_main
 		if pytrainer_main is None:
 			print("Error - must initialise with a reference to the main pytrainer class")
-			return None
+			return
 		self.pytrainer_main = pytrainer_main
-		self.id = id
 		self.tracks = None
 		self.laps = None
 		self.tree = None
@@ -149,7 +152,7 @@ class Activity:
 		for lap in gpxLaps:
 			lap_number = gpxLaps.index(lap)
 			tmp_lap = {}
-			tmp_lap['record'] = ""
+			tmp_lap['record'] = self.id
 			tmp_lap['lap_number'] = lap_number
 			tmp_lap['elapsed_time'] = lap[0]
 			tmp_lap['distance'] = lap[4]
@@ -159,17 +162,11 @@ class Activity:
 			tmp_lap['end_lon'] = lap[2]
 			tmp_lap['calories'] = lap[3]
 			laps.append(tmp_lap)
-		'''if laps is not None:
+		if laps is not None:
 			for lap in laps:
-				lap['record'] = id_record #Add reference to entry in record table
 				lap_keys = ", ".join(map(str, lap.keys()))
 				lap_values = lap.values()
-				self.insertLaps(lap_keys,lap.values())
-		#Try to get lap info again #TODO? refactor
-		laps = self.pytrainer_main.ddbb.select("laps",
-				"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number",
-				"record=\"%s\"" % id_record)
-		'''
+				self.pytrainer_main.record.insertLaps(lap_keys,lap.values())
 		logging.debug("<<")
 		return laps
 

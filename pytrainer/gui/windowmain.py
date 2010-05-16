@@ -189,6 +189,11 @@ class Main(SimpleGladeApp):
 
 	def actualize_recordview(self,activity):
 		logging.debug(">>")
+		if activity.id is None:
+			self.recordview.set_current_page(0)
+			self.recordview.set_sensitive(0)
+			logging.debug("<<")
+			return
 		#Set the units for the activity results, e.g. km, km/h etc
 		self.r_distance_unit.set_text(activity.distance_unit)
 		self.r_speed_unit.set_text(activity.speed_unit)
@@ -232,7 +237,7 @@ class Main(SimpleGladeApp):
 		else:
 			self.recordview.set_current_page(0)
 			self.recordview.set_sensitive(0)
-		logging.debug(">>")
+		logging.debug("<<")
 
 	def actualize_recordgraph(self,activity):
 		logging.debug(">>")

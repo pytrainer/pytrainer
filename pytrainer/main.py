@@ -59,7 +59,7 @@ from lib.ddbb import DDBB
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
 		#Version constants
-		self.version ="1.7.2_svn#583"
+		self.version ="1.7.2_svn#584"
 		self.DB_version = 3
 		#Process command line options
 		self.startup_options = self.get_options()
@@ -280,6 +280,7 @@ class pyTrainer:
 			id_record = selected.get_value(iter,0)
 		else:
 			id_record = None
+			view="info"
 		activity = self.activitypool.get_activity(id_record)
 		if view=="info":
 			self.windowmain.actualize_recordview(activity)

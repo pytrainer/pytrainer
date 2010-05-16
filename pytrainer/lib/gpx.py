@@ -150,6 +150,7 @@ class Gpx:
 		#date = tree.findtext(timeTag)
 		#startTime = self.getDateTime(date)
 		laps = tree.findall(lapTag)
+		logging.debug("Found %d laps" % len(laps))
 		for lap in laps:
 			endPoint = lap.find(endPointTag)
 			lat = endPoint.get("lat")
@@ -169,6 +170,7 @@ class Gpx:
 			distance = lap.findtext(distanceTag)
 			logging.debug("Found time: %s, lat: %s lon: %s cal: %s dist: %s " % (elapsedTime, lat, lon, calories, distance))
 			lapInfo.append((elapsedTime, lat, lon, calories, distance, stLat, stLon))
+		logging.debug("<<")
 		return lapInfo
 
 	def _getValues(self):
