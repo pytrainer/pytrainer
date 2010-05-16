@@ -32,18 +32,27 @@ class ActivityPool:
 			print("Error - must initialise with a reference to the main pytrainer class")
 			return None
 		self.pytrainer_main = pytrainer_main
+		self.max_size = size
 		self.pool = {}
 		self.pool_queue = []
-		print("Initialising ActivityPool to size: %d" % size)
+		logging.debug("Initialising ActivityPool to size: %d" % size)
 		logging.debug("<<")
 
 	def get_activity(self, id):
 		sid = str(id)
 		if sid in self.pool.keys():
-			print("Found activity in pool, returning....")
+			logging.debug("Found activity in pool")
+			self.pool_queue.remove(sid)
+			self.pool_queue.append(sid)
 		else:
-			print("Activity NOT found in pool, initing and returning....")
+			logging.debug("Activity NOT found in pool")
 			self.pool[sid] = Activity(pytrainer_main = self.pytrainer_main, id = id)
 			self.pool_queue.append(sid)
+		if len(self.pool_queue) > self.max_size:
+			sid_to_remove = self.pool_queue.pop(0)
+			logging.debug("Removing activity: %s" % sid_to_remove)
+			del self.pool[sid_to_remove]
+		logging.debug("ActivityPool queue length: %d" % len(self.pool_queue))
+		logging.debug("ActivityPool queue: %s" % str(self.pool_queue))
 		return self.pool[sid]
-		print("ActivityPool queue length: %d" % len(self.pool_queue))
+
