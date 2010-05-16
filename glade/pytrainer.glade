@@ -7,6 +7,7 @@
     <property name="title">window1</property>
     <property name="icon">logo_mini.png</property>
     <signal name="destroy" handler="quit"/>
+    <signal name="configure_event" handler="on_window1_configure_event"/>
     <child>
       <widget class="GtkNotebook" id="notebook7">
         <property name="visible">True</property>

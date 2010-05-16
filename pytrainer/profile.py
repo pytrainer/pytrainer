@@ -36,18 +36,18 @@ class Profile:
 		self.gpxdir = None
 		self.extensiondir = None
 		self.plugindir = None
-		#Set configuration parameters 
+		#Set configuration parameters
 		self._setHome()
 		self._setConfFiles()
 		self._setTempDir()
 		self._setExtensionDir()
 		self._setPluginDir()
 		self._setGpxDir()
-		
+
 		#Clear temp dir
 		logging.debug("clearing tmp directory %s" % self.tmpdir)
 		self._clearTempDir()
-		
+
 		#Profile Options and Defaults
 		self.profile_options = {
 			"prf_name":"default",
@@ -69,6 +69,7 @@ class Profile:
 			"auto_launch_file_selection":"False",
 			"import_default_tab":"0",
 			"default_viewer":"0",
+			"window_size":"800, 640",
 			}
 
 		#Parse pytrainer configuration file
@@ -87,7 +88,7 @@ class Profile:
 			print "Unsupported sys.platform: %s." % sys.platform
 			sys.exit(1)
 		self.home = os.environ[variable]
-    
+
 	def _setTempDir(self):
 		self.tmpdir = self.confdir+"/tmp"
 		if not os.path.isdir(self.tmpdir):
@@ -105,7 +106,7 @@ class Profile:
 				fullname = (os.path.join(self.tmpdir, name))
 				if os.path.isfile(fullname):
 					os.remove(os.path.join(self.tmpdir, name))
-   
+
 	def _setConfFiles(self):
 		if sys.platform == "win32":
 			self.confdir = self.home+"/pytrainer"
@@ -117,17 +118,17 @@ class Profile:
 		self.conffile = self.confdir+"/conf.xml"
 		if not os.path.isdir(self.confdir):
 			os.mkdir(self.confdir)
-	
+
 	def _setGpxDir(self):
 		self.gpxdir = self.confdir+"/gpx"
 		if not os.path.isdir(self.gpxdir):
 			os.mkdir(self.gpxdir)
-	
+
 	def _setExtensionDir(self):
 		self.extensiondir = self.confdir+"/extensions"
 		if not os.path.isdir(self.extensiondir):
 			os.mkdir(self.extensiondir)
-	
+
 	def _setPluginDir(self):
 		self.plugindir = self.confdir+"/plugins"
 		if not os.path.isdir(self.plugindir):
@@ -142,7 +143,7 @@ class Profile:
 	def _parse_config_file(self, config_file):
 		'''
 		Parse the xml configuration file and convert to a dict
-		
+
 		returns: dict with option as key
 		'''
 		if config_file is None:
@@ -170,10 +171,10 @@ class Profile:
 					value = pytraining_tag.get(key)
 					#If property is not found, set it to the default
 					if value is None:
-						config_needs_update = True 
+						config_needs_update = True
 						value = default
 					config[key] = value
-				#Added a property, so update config 
+				#Added a property, so update config
 				if config_needs_update:
 					self.setProfile(config)
 				return config
@@ -182,7 +183,7 @@ class Profile:
 				logging.error(str(e))
 		logging.error("Fatal error, exiting")
 		exit(-3)
-		
+
 	def getValue(self, tag, variable):
 		if tag != "pytraining":
 			print "ERROR - pytraining is the only profile tag supported"
@@ -190,12 +191,12 @@ class Profile:
 		elif not self.configuration.has_key(variable):
 			return None
 		return self.configuration[variable]
-		
+
 	def setValue(self, tag, variable, value, delay_write=False):
 		logging.debug(">>")
 		if tag != "pytraining":
 			print "ERROR - pytraining is the only profile tag supported"
-		logging.debug("Setting %s to %s" % (variable, value))  
+		logging.debug("Setting %s to %s" % (variable, value))
 		self.xml_tree.getroot().set(variable, value.decode('utf-8'))
 		if not delay_write:
 			logging.debug("Writting...")
@@ -207,7 +208,7 @@ class Profile:
 		for option, value in list_options.items():
 			logging.debug("Adding "+option+"|"+value)
 			self.setValue("pytraining",option,value,delay_write=True)
-		self.xml_tree.write(self.config_file, xml_declaration=True, encoding='UTF-8') 
+		self.xml_tree.write(self.config_file, xml_declaration=True, encoding='UTF-8')
 		logging.debug("<<")
 
 	def getSportList(self):
@@ -223,7 +224,7 @@ class Profile:
 		"""31.08.2008 - dgranda
 		It adds a new sport.
 		arguments:
-			sport: sport's name 
+			sport: sport's name
 			met:
 			weight:
 		returns: id_sports from new sport"""
@@ -234,7 +235,7 @@ class Profile:
 		sport_id = self.pytrainer_main.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))
 		logging.debug("<<")
 		return sport_id
-		
+
 	def delSport(self,sport):
 		logging.debug(">>")
 		condition = "name=\"%s\"" %sport
@@ -243,15 +244,15 @@ class Profile:
 		self.pytrainer_main.ddbb.delete("records","sport=\"%d\""%id_sport)
 		self.pytrainer_main.ddbb.delete("sports","id_sports=\"%d\""%id_sport)
 		logging.debug("<<")
-		
+
 	def updateSport(self,oldnamesport,newnamesport,newmetsport,newweightsport):
 		logging.debug("--")
 		self.pytrainer_main.ddbb.update("sports","name,met,weight",[newnamesport,newmetsport,newweightsport],"name=\"%s\""%oldnamesport)
-	
+
 	def getSportInfo(self,namesport):
 		logging.debug("--")
 		return self.pytrainer_main.ddbb.select("sports","name,met,weight","name=\"%s\""%namesport)[0]
-	
+
 	def build_ddbb(self):
 		logging.debug("--")
 		self.pytrainer_main.ddbb.build_ddbb()
@@ -267,7 +268,7 @@ class Profile:
 		profilewindow.setValues(self.configuration)
 		profilewindow.run()
 		logging.debug("<<")
-		
+
 	def actualize_mainsportlist(self):
 		logging.debug("--")
 		self.pytrainer_main.refreshMainSportList()

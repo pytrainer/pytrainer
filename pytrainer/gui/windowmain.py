@@ -63,6 +63,11 @@ class Main(SimpleGladeApp):
 		self.menublocking = 0
 		self.selected_view="day"
 		self.window1.set_title ("pyTrainer %s" % self.version)
+		try:
+			width, height = self.pytrainer_main.profile.getValue("pytraining","window_size").split(',')
+			self.window1.resize(int(width), int(height))
+		except:
+			pass
 		self.record_list = []
 		#create the columns for the listdayrecord
 		column_names=[_("id"),_("Start"), _("Sport"),_("Kilometer")]
@@ -83,17 +88,17 @@ class Main(SimpleGladeApp):
 
 		#Disable import menu item unless specified on startup
 		self.set_unified_import(self.testimport)
-		
+
 		#Set correct map viewer
 		if self.pytrainer_main.profile.getValue("pytraining","default_viewer") == "1":
 			self.radiobuttonOSM.set_active(1)
 		else:
 			self.radiobuttonGMap.set_active(1)
-			
+
 	def set_unified_import(self, status=False):
 		self.menu_importdata.set_sensitive(status)
 		self.parent.testimport = status
-			
+
 	def _createXmlListView(self,file):
 		menufile = XMLParser(file)
 		savedOptions = []
@@ -106,13 +111,13 @@ class Main(SimpleGladeApp):
 		savedOptions.append(("time","False"))
 		savedOptions.append(("beats","False"))
 		savedOptions.append(("calories","False"))
-		menufile.createXMLFile("listviewmenu",savedOptions)	
+		menufile.createXMLFile("listviewmenu",savedOptions)
 
 	def removeImportPlugin(self, plugin):
 		for widget in self.menuitem1_menu:
 			if widget.get_name() == plugin[1]:
 				self.menuitem1_menu.remove(widget)
-				
+
 	def removeExtension(self, extension):
 		for widget in self.recordbuttons_hbox:
 			if widget.get_name() == extension[1]:
@@ -151,12 +156,12 @@ class Main(SimpleGladeApp):
 		self.drawareaweek = WeekGraph(self.weekview, self.window1, self.week_combovalue, self.week_combovalue2)
 		self.drawareamonth = MonthGraph(self.month_vbox, self.window1, self.month_combovalue,self.month_combovalue2)
 		self.drawareayear = YearGraph(self.year_vbox, self.window1, self.year_combovalue,self.year_combovalue2)
-	
+
 	def createMap(self,Googlemaps,waypoint):
 		self.googlemaps = Googlemaps(self.data_path, self.map_vbox,waypoint, pytrainer_main=self.parent)
 		self.googlemaps_old = Googlemaps(self.data_path, self.map_vbox_old,waypoint, pytrainer_main=self.parent)
 
-	def updateSportList(self,listSport): 
+	def updateSportList(self,listSport):
 		logging.debug(">>")
 		liststore =  self.sportlist.get_model()
 		if self.sportlist.get_active() is not 0:
@@ -181,7 +186,7 @@ class Main(SimpleGladeApp):
 			column.set_sort_column_id(i)
 			treeview.append_column(column)
 			i+=1
-	
+
 	def actualize_recordview(self,record_list):
 		logging.debug(">>")
 		if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
@@ -203,7 +208,7 @@ class Main(SimpleGladeApp):
 
 		if len(record_list)>0:
 			record_list=record_list[0]
-			
+
 			self.recordview.set_sensitive(1)
 			sport = record_list[0]
 			date = record_list[1]
@@ -219,7 +224,7 @@ class Main(SimpleGladeApp):
 			maxpace = self.parseFloat(record_list[13])
 
 			#Get datetime from DB, use local time if available otherwise use date_time_utc and create a local datetime...
-			#TODO get data from date_time_local and parse 
+			#TODO get data from date_time_local and parse
 			date_time_local = record_list[17]
 			date_time_utc = record_list[16]
 			if date_time_local is not None: #Have a local time stored in DB
@@ -231,7 +236,7 @@ class Main(SimpleGladeApp):
 			recordDate = dateTime.strftime("%x")
 			recordTime = dateTime.strftime("%X")
 			recordDateTimeOffset = dateTime.strftime("%z")
-			
+
 			if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 				self.record_distance.set_text("%0.2f" %km2miles(distance))
 				self.record_upositive.set_text("%0.2f" %m2feet(upositive))
@@ -240,7 +245,7 @@ class Main(SimpleGladeApp):
 				self.record_maxspeed.set_text("%0.2f" %km2miles(maxspeed))
 				self.record_pace.set_text("%0.2f" %pacekm2miles(pace))
 				self.record_maxpace.set_text("%0.2f" %pacekm2miles(maxpace))
-		
+
 			else:
 				self.record_distance.set_text("%0.2f" %distance)
 				self.record_upositive.set_text("%0.2f" %upositive)
@@ -249,7 +254,7 @@ class Main(SimpleGladeApp):
 				self.record_maxspeed.set_text("%0.2f" %maxspeed)
 				self.record_pace.set_text("%0.2f" %pace)
 				self.record_maxpace.set_text("%0.2f" %maxpace)
-			
+
 			self.record_sport.set_text(sport)
 			#self.record_date.set_text(str(date))
 			self.record_date.set_text(recordDate)
@@ -290,7 +295,7 @@ class Main(SimpleGladeApp):
 					self.record_vbox.remove(child)
 			self.record_vbox.set_sensitive(0)
 		logging.debug("<<")
-	
+
 	def actualize_heartrategraph(self,record_list):
 		logging.debug(">>")
 		self.drawareaheartrate.drawgraph(record_list)
@@ -354,12 +359,12 @@ class Main(SimpleGladeApp):
 					maxspeed = self.parseFloat(record[9])
 				if record[10] > maxbeats:
 					maxbeats = self.parseFloat(record[10])
-			
+
 			if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 				distance = km2miles(distance)
 				maxspeed = km2miles(maxspeed)
-			
-			if tbeats > 0:		
+
+			if tbeats > 0:
 				tbeats = tbeats/(timeinseconds/60/60)
 			if distance > 0:
 				average = distance/(timeinseconds/60/60)
@@ -367,7 +372,7 @@ class Main(SimpleGladeApp):
 				maxpace = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 			if average > 0:
 				pace = "%d.%02d" %((3600/average)/60,(3600/average)%60)
-			
+
 			self.dayview.set_sensitive(1)
 			self.day_distance.set_text("%0.2f" %distance)
 			hour,min,sec=self.parent.date.second2time(timeinseconds)
@@ -382,11 +387,11 @@ class Main(SimpleGladeApp):
 			self.day_maxpace.set_text(maxpace)
 			self.day_calories.set_text("%0.0f" %calories)
 			self.day_topic.set_text(str(record[1]))
-			
+
 		else:
 			self.dayview.set_sensitive(0)
 		logging.debug("<<")
-	
+
 	def actualize_daygraph(self,record_list):
 		logging.debug(">>")
 		if len(record_list)>0:
@@ -395,14 +400,14 @@ class Main(SimpleGladeApp):
 			self.day_vbox.set_sensitive(0)
 		self.drawareaday.drawgraph(record_list)
 		logging.debug("<<")
-	
+
 	def actualize_map(self,id_record, full_screen=False):
 		logging.debug(">>")
 		#Check which type of map viewer to use
 		if self.radiobuttonOSM.get_active():
 			#Use OSM to draw map
 			logging.debug("Using OSM to draw map....")
-			self.googlemaps.drawMap(-9999) #TODO placeholder for OSM code 
+			self.googlemaps.drawMap(-9999) #TODO placeholder for OSM code
 		elif self.radiobuttonGMap.get_active():
 			#Use Google to draw map
 			logging.debug("Using Google to draw map")
@@ -414,7 +419,7 @@ class Main(SimpleGladeApp):
 			#Unknown map type...
 			logging.error("Unknown map viewer requested")
 		logging.debug("<<")
-	
+
 	def actualize_weekview(self, record_list, date_ini, date_end):
 		logging.debug(">>")
 		date_s = datetime.datetime.strptime(date_ini, "%Y-%m-%d")
@@ -430,7 +435,7 @@ class Main(SimpleGladeApp):
 		pace = "0.00"
 		maxpace = "0.00"
 		maxbeats = 0
-		
+
 		if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 			self.w_distance_unit.set_text(_("miles"))
 			self.w_speed_unit.set_text(_("miles/h"))
@@ -458,24 +463,24 @@ class Main(SimpleGladeApp):
 					maxspeed = self.parseFloat(record[7])
 				if record[8] > maxbeats:
 					maxbeats = self.parseFloat(record[8])
-			
+
 			if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 				km = km2miles(km)
 				maxspeed = km2miles(maxspeed)
-			
+
 			if time_in_min > 0:
-				tbeats = tbeats/time_in_min		
+				tbeats = tbeats/time_in_min
 			else:
 				tbeats = 0
 			average = (km/(time/3600))
-		
+
 			if maxspeed > 0:
 				#maxpace = 60/maxspeed
 				maxpace = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 			if average > 0:
 				#pace = 60/average
 				pace = "%d.%02d" %((3600/average)/60,(3600/average)%60)
-		
+
 			self.weeka_distance.set_text("%0.2f" %km)
 			hour,min,sec = self.parent.date.second2time(time)
 			self.weeka_hour.set_text("%d" %hour)
@@ -505,7 +510,7 @@ class Main(SimpleGladeApp):
 		pace = "0.00"
 		maxpace = "0.00"
 		maxbeats = 0
-		
+
 		if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 			self.m_distance_unit.set_text(_("miles"))
 			self.m_speed_unit.set_text(_("miles/h"))
@@ -518,7 +523,7 @@ class Main(SimpleGladeApp):
 			self.m_maxspeed_unit.set_text(_("km/h"))
 			self.m_pace_unit.set_text(_("min/km"))
 			self.m_maxpace_unit.set_text(_("min/km"))
-	
+
 		if num_records>0:
 			for record in record_list:
 				km += self.parseFloat(record[1])
@@ -533,24 +538,24 @@ class Main(SimpleGladeApp):
 					maxspeed = self.parseFloat(record[7])
 				if record[8] > maxbeats:
 					maxbeats = self.parseFloat(record[8])
-			
+
 			if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 				km = km2miles(km)
 				maxspeed = km2miles(maxspeed)
-			
+
 			if time_in_min > 0:
-				tbeats = tbeats/time_in_min		
+				tbeats = tbeats/time_in_min
 			else:
 				tbeats = 0
 			average = (km/(time/3600))
-		
+
 			if maxspeed > 0:
 				#maxpace = 60/maxspeed
 				maxpace = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 			if average > 0:
 				#pace = 60/average
 				pace = "%d.%02d" %((3600/average)/60,(3600/average)%60)
-		
+
 			self.montha_distance.set_text("%0.2f" %km)
 			hour,min,sec = self.parent.date.second2time(time)
 			self.montha_hour.set_text("%d" %hour)
@@ -572,7 +577,7 @@ class Main(SimpleGladeApp):
 		logging.debug(">>")
 		self.drawareamonth.drawgraph(record_list, daysInMonth)
 		logging.debug("<<")
-	
+
 	def actualize_yearview(self,record_list, year):
 		logging.debug(">>")
 		self.year_date.set_text("%d" %int(year))
@@ -599,11 +604,11 @@ class Main(SimpleGladeApp):
 				if record[8] > maxbeats:
 					maxbeats = self.parseFloat(record[8])
 			if time_in_min > 0:
-				tbeats = tbeats/time_in_min		
+				tbeats = tbeats/time_in_min
 			else:
 				tbeats = 0
 			average = (km/(time/3600))
-			
+
 			if maxspeed > 0:
 				#maxpace = 60/maxspeed
 				maxpace = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
@@ -628,7 +633,7 @@ class Main(SimpleGladeApp):
 			self.yearview.set_sensitive(0)
 			self.drawareayear.drawgraph([])
 		logging.debug("<<")
-	
+
 	def actualize_yeargraph(self,record_list):
 		logging.debug(">>")
 		self.drawareayear.drawgraph(record_list)
@@ -718,7 +723,7 @@ class Main(SimpleGladeApp):
 			self.waypointeditor.createHtml(default_waypoint)
 			self.waypointeditor.drawMap()
 		logging.debug("<<")
-	
+
 	def set_waypoint_type(self, type):
 		x = 0
 		tree_model = self.waypoint_type.get_model()
@@ -733,8 +738,8 @@ class Main(SimpleGladeApp):
 		self.waypoint_type.insert_text(0, type)
 		self.waypoint_type.set_active(0)
 		return
-			
-	
+
+
 	def on_waypointTreeView_button_press(self, treeview, event):
 		x = int(event.x)
 		y = int(event.y)
@@ -749,7 +754,7 @@ class Main(SimpleGladeApp):
 				id_waypoint=selected.get_value(iter,0)
 				self.parent.refreshWaypointView(id_waypoint)
 		return False
-	
+
 	def on_listareasearch_clicked(self,widget):
 		lisOpt = {
 			_("Title"):"title",
@@ -759,12 +764,12 @@ class Main(SimpleGladeApp):
 			_("Time"):"time",
 			_("Beats"):"beats",
 			_("Average"):"average",
-			_("Calories"):"calories" 
+			_("Calories"):"calories"
 			}
 		search_string = self.lsa_searchvalue.get_text()
 		#ddbb_field = lisOpt[self.lsa_searchoption.get_active_text()]
-		self.parent.searchListView("title like '%"+search_string+"%'")	
-	
+		self.parent.searchListView("title like '%"+search_string+"%'")
+
 	def create_menulist(self,column_names):
 		i=0
 		for name in column_names:
@@ -775,7 +780,7 @@ class Main(SimpleGladeApp):
 				self.menulistviewOptions.append(item)
 			i+=1
 		self.menulistviewOptions.show_all()
-	
+
 	def on_menulistview_activate(self,widget,widget2,widget_position):
 		listMenus = {
 			0:"title",
@@ -786,7 +791,7 @@ class Main(SimpleGladeApp):
 			5:"beats",
 			6:"average",
 			7:"calories" }
-		
+
 		items = self.menulistviewOptions.get_children()
 		if items[widget_position-1].get_active():
 			newValue = "False"
@@ -795,7 +800,7 @@ class Main(SimpleGladeApp):
 		menufile = XMLParser(self.fileconf)
 		menufile.setValue("listviewmenu",listMenus[widget_position-1],newValue)
 		self.showAllRecordTreeViewColumns()
-	
+
 	def showAllRecordTreeViewColumns(self):
 		menufile = XMLParser(self.fileconf)
 		listMenus = {
@@ -823,10 +828,10 @@ class Main(SimpleGladeApp):
 			if numcolumn != 0 and self.menublocking != 1:
 				menuItems[numcolumn-1].set_active(visible)
 		self.menublocking = 1
-	
+
 	def createWaypointEditor(self,WaypointEditor,waypoint, parent=None):
 		self.waypointeditor = WaypointEditor(self.data_path, self.waypointvbox,waypoint,parent)
-		
+
 	def zoom_graph(self, y1limits=None, y1color=None, y1_linewidth=1):
 		logging.debug(">>")
 		logging.debug("Reseting graph Y axis with ylimits: %s" % str(y1limits) )
@@ -836,35 +841,40 @@ class Main(SimpleGladeApp):
 	######################
 	## Lista de eventos ##
 	######################
-	
+
+	def on_window1_configure_event(self, widget, event):
+		#print widget #window widget
+		#print event # resize event
+		self.size = self.window1.get_size()
+
 	def on_buttonShowOptions_clicked(self, widget):
 		position_set = self.hpaned1.get_property('position-set')
 		if position_set:
 			#Currently not showing options - show them
 			self.hpaned1.set_property('position-set', False)
-			self.buttonShowOptions.set_tooltip_text(_('Hide graph display options') ) 
+			self.buttonShowOptions.set_tooltip_text(_('Hide graph display options') )
 		else:
 			#Hide options
 			self.hpaned1.set_position(0)
-			self.buttonShowOptions.set_tooltip_text(_('Show graph display options') ) 
+			self.buttonShowOptions.set_tooltip_text(_('Show graph display options') )
 		logging.debug('Position: %d' % self.hpaned1.get_position() )
 		logging.debug('Position set: %s' % self.hpaned1.get_property('position-set') )
-	
+
 	def on_buttonRedrawMap_clicked(self, widget):
 		logging.debug('on_buttonRedrawMap_clicked')
 		self.parent.refreshMapView()
-	
+
 	def on_radiobuttonMap_toggled(self, widget):
 		#Ignore the deselected toggle event
 		if widget.get_active() == False:
 			return
 		logging.debug( 'on_radiobuttonMap_toggled '+ widget.get_name()+ ' activated')
 		self.parent.refreshMapView()
-			
+
 	def on_hpaned1_move_handle(self, widget):
 		print "Handler"
 		print widget
-	
+
 	def on_spinbuttonY1_value_changed(self, widget):
 		y1min = self.spinbuttonY1Min.get_value()
 		y1max = self.spinbuttonY1Max.get_value()
@@ -876,7 +886,7 @@ class Main(SimpleGladeApp):
 				y1min -= 1
 		self.y1_limits=(y1min, y1max)
 		self.zoom_graph(y1limits=self.y1_limits, y1color=self.y1_color, y1_linewidth=self.y1_linewidth)
-	
+
 	def on_buttonResetGraph_clicked(self, widget):
 		#self.zoom_graph()
 		#Reset stored values
@@ -884,13 +894,13 @@ class Main(SimpleGladeApp):
 		self.y1_color = None
 		self.y1_linewidth = 1
 		self.zoom_graph()
-		
+
 	def on_colorbuttonY1LineColor_color_set(self, widget):
 		y1color = widget.get_color()
 		cs = y1color.to_string()
 		self.y1_color = cs[0:3] + cs[5:7] + cs[9:11]
 		self.drawarearecord.drawgraph(self.record_list,self.laps, y1limits=self.y1_limits, y1color=self.y1_color, y1_linewidth=self.y1_linewidth)
-		
+
 	def on_spinbuttonY1LineWeight_value_changed(self, widget):
 		self.y1_linewidth = self.spinbuttonY1LineWeight.get_value_as_int()
 		self.drawarearecord.drawgraph(self.record_list,self.laps, y1limits=self.y1_limits, y1color=self.y1_color, y1_linewidth=self.y1_linewidth)
@@ -904,19 +914,19 @@ class Main(SimpleGladeApp):
 		selected,iter = self.recordTreeView.get_selection().get_selected()
 		id_record = selected.get_value(iter,0)
 		self.parent.removeRecord(id_record)
-	
+
 	def on_export_csv_activate(self,widget):
 		self.parent.exportCsv()
-	
+
 	def on_newrecord_clicked(self,widget):
 		self.parent.newRecord()
-	
+
 	def on_edituser_activate(self,widget):
 		self.parent.editProfile()
-	
+
 	def on_calendar_doubleclick(self,widget):
 		self.parent.newRecord()
-	
+
 	def on_sportlist_changed(self,widget):
 		logging.debug("--")
 		if self.sportlist.get_active() != self.activeSport:
@@ -924,7 +934,7 @@ class Main(SimpleGladeApp):
 			self.parent.refreshGraphView(self.selected_view)
 		else:
 			logging.debug("on_sportlist_changed called with no change")
-	
+
 	def on_page_change(self,widget,gpointer,page):
 		logging.debug("--")
 		if page == 0:
@@ -938,7 +948,7 @@ class Main(SimpleGladeApp):
 		elif page == 4:
 			self.selected_view="year"
 		self.parent.refreshGraphView(self.selected_view)
-	
+
 	def on_recordpage_change(self,widget,gpointer,page):
 		if page == 0:
 			selected_view="info"
@@ -949,12 +959,12 @@ class Main(SimpleGladeApp):
 		elif page == 3:
 			selected_view="heartrate"
 		self.parent.refreshRecordGraphView(selected_view)
-	
+
 	def on_showmap_clicked(self,widget):
 		self.infoarea.hide()
 		self.maparea.show()
 		self.parent.refreshMapView(full_screen=True)
-	
+
 	def on_hidemap_clicked(self,widget):
 		self.maparea.hide()
 		self.infoarea.show()
@@ -962,11 +972,11 @@ class Main(SimpleGladeApp):
 	def on_btnShowLaps_toggled(self,widget):
 		logging.debug("--")
 		self.parent.refreshGraphView(self.selected_view)
-	
+
 	def on_day_combovalue_changed(self,widget):
 		logging.debug("--")
 		self.parent.refreshGraphView(self.selected_view)
-	
+
 	def on_week_combovalue_changed(self,widget):
 		logging.debug("--")
 		self.parent.refreshGraphView(self.selected_view)
@@ -974,11 +984,11 @@ class Main(SimpleGladeApp):
 	def on_month_combovalue_changed(self,widget):
 		logging.debug("--")
 		self.parent.refreshGraphView(self.selected_view)
-	
+
 	def on_year_combovalue_changed(self,widget):
 		logging.debug("--")
 		self.parent.refreshGraphView(self.selected_view)
-	
+
 	def on_calendar_selected(self,widget):
 		logging.debug("--")
 		if self.block:
@@ -997,7 +1007,7 @@ class Main(SimpleGladeApp):
 		self.selected_view="month"
 		self.parent.refreshListRecords()
 		self.parent.refreshGraphView(self.selected_view)
-	
+
 	def on_calendar_next_year(self,widget):
 		logging.debug("--")
 		self.block = True
@@ -1005,20 +1015,20 @@ class Main(SimpleGladeApp):
 		self.selected_view="year"
 		self.parent.refreshListRecords()
 		self.parent.refreshGraphView(self.selected_view)
-	
+
 	def on_classicview_activate(self,widget):
 		self.waypointarea.hide()
 		self.listarea.hide()
 		self.selected_view = "record"
 		self.classicarea.show()
-	
+
 	def on_listview_activate(self,widget):
 		self.waypointarea.hide()
 		self.classicarea.hide()
 		self.selected_view = "listview"
 		self.parent.refreshListView()
 		self.listarea.show()
-	
+
 	def on_waypointsview_activate(self,widget):
 		self.listarea.hide()
 		self.classicarea.hide()
@@ -1027,14 +1037,14 @@ class Main(SimpleGladeApp):
 
 	def on_menu_importdata_activate(self,widget):
 		self.parent.importData()
-	
+
 	def on_extensions_activate(self,widget):
 		self.parent.editExtensions()
 
 	def on_gpsplugins_activate(self,widget):
 		self.parent.editGpsPlugins()
 	#hasta aqui revisado
-	
+
 	def on_allRecordTreeView_button_press(self, treeview, event):
 		logging.debug(">>")
 		#print "on_allRecordTreeView_"
@@ -1059,7 +1069,7 @@ class Main(SimpleGladeApp):
 				self.parent.refreshGraphView("record")
 		logging.debug("<<")
 		return False
-	
+
 	def actualize_recordTreeView(self, record_list):
 		logging.debug(">>")
 		iterOne = False
@@ -1070,7 +1080,7 @@ class Main(SimpleGladeApp):
 			gobject.TYPE_STRING,		#Distance
 			object)
 		for i in record_list:
-			#Get lap info 
+			#Get lap info
 			id_record = i[8]
 			laps = self.parent.record.getLaps(id_record)
 			iter = store.append(None)
@@ -1090,12 +1100,12 @@ class Main(SimpleGladeApp):
 				)
 			if laps is not None:
 				for lap in laps:
-					#"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number",  
-					lapNumber = "%s%d" % ( _("lap"), int(lap[9])+1 ) 
+					#"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number",
+					lapNumber = "%s%d" % ( _("lap"), int(lap[9])+1 )
 					distance = "%0.2f" % (float(lap[3]) / 1000.0)
 					timeHours = int(float(lap[2]) / 3600)
 					timeMin = int((float(lap[2]) / 3600.0 - timeHours) * 60)
-					timeSec = float(lap[2]) - (timeHours * 3600) - (timeMin * 60) 
+					timeSec = float(lap[2]) - (timeHours * 3600) - (timeMin * 60)
 					if timeHours > 0:
 						duration = "%d%s%02d%s%02d%s" % (timeHours, _("h"), timeMin, _("m"), timeSec, _("s"))
 					else:
@@ -1114,7 +1124,7 @@ class Main(SimpleGladeApp):
 			self.recordTreeView.get_selection().select_iter(iterOne)
 		logging.debug("<<")
 		#if len(record_list)>0:
-	
+
 	def parseFloat(self,string):
 		try:
 			return float(string)
@@ -1140,6 +1150,9 @@ class Main(SimpleGladeApp):
 			return None
 
 	def quit(self, *args):
+		window_size = "%d, %d" % self.size
+
+		self.pytrainer_main.profile.setValue("pytraining","window_size", window_size)
 		self.parent.quit()
 		#sys.exit("Exit!")
 		#self.parent.webservice.stop()
@@ -1149,7 +1162,7 @@ class Main(SimpleGladeApp):
 		self.notebook.set_current_page(2)
 		self.selected_view="year"
 		self.actualize_yearview()
-	
+
 	def on_recordTree_clicked(self,widget,num,num2):
 		selected,iter = self.recordTreeView.get_selection().get_selected()
 		self.parent.editRecord(selected.get_value(iter,0))
@@ -1164,16 +1177,16 @@ class Main(SimpleGladeApp):
 		desc = self.waypoint_description.get_text()
 		sym = self.waypoint_type.get_active_text()
 		self.parent.updateWaypoint(id_waypoint,lat,lon,name,desc,sym)
-	
+
 	def on_removewaypoint_clicked(self,widget):
 		selected,iter = self.waypointTreeView.get_selection().get_selected()
 		id_waypoint = selected.get_value(iter,0)
 		self.parent.removeWaypoint(id_waypoint)
 
 	def on_hrpiebutton_clicked(self,widget):
-		self.heartrate_vbox2.show()	
-		self.heartrate_vbox.hide()	
-	
+		self.heartrate_vbox2.show()
+		self.heartrate_vbox.hide()
+
 	def on_hrplotbutton_clicked(self,widget):
-		self.heartrate_vbox.show()	
-		self.heartrate_vbox2.hide()	
+		self.heartrate_vbox.show()
+		self.heartrate_vbox2.hide()

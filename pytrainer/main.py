@@ -57,9 +57,9 @@ from lib.ddbb import DDBB
 from lib.heartrate import *
 
 class pyTrainer:
-	def __init__(self,filename = None, data_path = None): 
+	def __init__(self,filename = None, data_path = None):
 		#Version constants
-		self.version ="1.7.2_svn#580"
+		self.version ="1.7.2_svn#581"
 		self.DB_version = 3
 		#Process command line options
 		self.startup_options = self.get_options()
@@ -80,18 +80,18 @@ class pyTrainer:
 			self.prf_us_system = False
 		self.ddbb = DDBB(self.profile)
 		logging.debug('connecting to DDBB')
-		self.ddbb.connect()		
+		self.ddbb.connect()
 
 		#Get user's DB version
 		currentDB_version = self.profile.getValue("pytraining","DB_version")
 		logging.debug("Current DB version: "+str(currentDB_version))
-		# DB check can be triggered either via new version (mandatory) or as runtime parameter (--check)		
+		# DB check can be triggered either via new version (mandatory) or as runtime parameter (--check)
 		if self.startup_options.check: # User requested check
-			self.sanityCheck() 
+			self.sanityCheck()
 		elif currentDB_version is None: # No stored DB version - check DB etc
-			self.sanityCheck() 
+			self.sanityCheck()
 		elif self.DB_version > int(currentDB_version): # DB version expected is newer than user's version - check DB etc
-			self.sanityCheck() 
+			self.sanityCheck()
 		else:
 			logging.info('No sanity check requested')
 		self.record = Record(data_path,self)
@@ -108,19 +108,19 @@ class pyTrainer:
 		self.windowmain.createMap(Googlemaps,self.waypoint)
 		self.windowmain.createWaypointEditor(WaypointEditor,self.waypoint, parent=self)
 		self.windowmain.on_calendar_selected(None)
-		self.refreshMainSportList()	 
+		self.refreshMainSportList()
 		self.windowmain.run()
-		logging.debug('<<') 
+		logging.debug('<<')
 
-	
+
 	def get_options(self):
 		'''
 		Define usage and accepted options for command line startup
-		
+
 		returns: options - dict with option: value pairs
 		'''
 		usage = '''usage: %prog [options]
-		
+
 		For more help on valid options try:
 		   %prog -h '''
 		parser = OptionParser(usage=usage)
@@ -147,13 +147,13 @@ class pyTrainer:
 		rotHandler.setFormatter(formatter)
 		logging.getLogger('').addHandler(rotHandler)
 		self.set_logging_level(self.startup_options.log_level)
-		
+
 	def set_logging_level(self, level):
 		'''Set level of information written to log'''
 		logging.debug("Setting logger to level: "+ str(level))
 		logging.getLogger('').setLevel(level)
 
-	def quit(self): 
+	def quit(self):
 		logging.debug('--')
 		logging.info("Exit!")
 		#self.webservice.stop()
@@ -171,7 +171,7 @@ class pyTrainer:
 				txtbutton = self.plugins.loadPlugin(plugin)
 				self.windowmain.addImportPlugin(txtbutton)
 		logging.debug('<<')
-	 
+
 	def loadExtensions(self):
 		logging.debug('>>')
 		activeextensions = self.extension.getActiveExtensions()
@@ -188,8 +188,8 @@ class pyTrainer:
 		self.pluginClass = self.plugins.importClass(pathPlugin)
 		pluginFiles = self.pluginClass.run()
 		if pluginFiles is not None:
-			logging.debug("Plugin returned %d files" % (len(pluginFiles)) )	
-			#process returned GPX files	
+			logging.debug("Plugin returned %d files" % (len(pluginFiles)) )
+			#process returned GPX files
 			for (pluginFile, sport) in pluginFiles:
 				if os.path.isfile(pluginFile):
 					logging.info('File exists. Size: %d. Sport: %s' % (os.path.getsize(pluginFile), sport))
@@ -213,13 +213,13 @@ class pyTrainer:
 		#	alert = self.extension.runExtension(pathExtension,id)
 
 		logging.debug('<<')
-	 
+
 	def refreshMainSportList(self):
 		logging.debug('>>')
 		listSport = self.profile.getSportList()
 		self.windowmain.updateSportList(listSport)
 		logging.debug('<<')
-		
+
 	def refreshGraphView(self, view, sport=None):
 		logging.debug('>>')
 		if self.windowmain is None:
@@ -271,7 +271,7 @@ class pyTrainer:
 		else:
 			print "Unknown view %s" % view
 		logging.debug('<<')
-	 
+
 	def refreshRecordGraphView(self, view):
 		logging.debug('>>')
 		logging.info('Working on '+view+' graph')
@@ -315,7 +315,7 @@ class pyTrainer:
 			 karvonen_method = self.profile.getValue("pytraining","prf_hrzones_karvonen")
 			 self.windowmain.actualize_hrview(record_list,zones,karvonen_method)
 		logging.debug('<<')
-			 
+
 	def refreshMapView(self, full_screen=False):
 		logging.debug('>>')
 		if self.windowmain is None:
@@ -345,19 +345,19 @@ class pyTrainer:
 		record_list = self.record.getAllRecordList()
 		self.windowmain.actualize_listview(record_list)
 		logging.debug('<<')
-	 
+
 	def refreshWaypointView(self,default_waypoint=None,redrawmap=1):
 		logging.debug('>>')
 		waypoint_list = self.waypoint.getAllWaypoints()
 		self.windowmain.actualize_waypointview(waypoint_list,default_waypoint,redrawmap)
 		logging.debug('<<')
-	 
+
 	def searchListView(self,condition):
 		logging.debug('>>')
 		record_list = self.record.getRecordListByCondition(condition)
 		self.windowmain.actualize_listview(record_list)
 		logging.debug('<<')
-		
+
 	def editExtensions(self):
 		logging.debug('>>')
 		before = self.extension.getActiveExtensions()
@@ -375,8 +375,8 @@ class pyTrainer:
 		self.setMenuPlugins(activeplugins_before, activeplugins_after)
 		self.refreshListRecords()
 		self.refreshGraphView(self.windowmain.selected_view)
-		logging.debug('<<')		
-		
+		logging.debug('<<')
+
 	def editGpsPlugins(self):
 		logging.debug('>>')
 		activeplugins_before = self.plugins.getActivePlugins()
@@ -385,7 +385,7 @@ class pyTrainer:
 		#Need to check for plugins that have been disabled (were active and now are not)
 		self.setMenuPlugins(activeplugins_before, activeplugins_after)
 		logging.debug('<<')
-		
+
 	def setMenuPlugins(self, activeplugins_before, activeplugins_after):
 		logging.debug('>>')
 		#Need to check for plugins that have been disabled (were active and now are not)
@@ -401,7 +401,7 @@ class pyTrainer:
 				txtbutton = self.plugins.loadPlugin(plugin)
 				self.windowmain.addImportPlugin(txtbutton)
 		logging.debug('<<')
-		
+
 	def setExtensions(self, before, after):
 		logging.debug('>>')
 		#Need to check for extensions that have been disabled (were active and now are not)
@@ -449,7 +449,7 @@ class pyTrainer:
 			 warning.run()
 		self.refreshListRecords()
 		logging.debug('<<')
-	 
+
 	def removeWaypoint(self,id_waypoint, confirm = False):
 		logging.debug('>>')
 		if confirm:
@@ -468,14 +468,14 @@ class pyTrainer:
 		self.waypoint.updateWaypoint(id_waypoint,lat,lon,name,desc,sym)
 		self.refreshWaypointView(id_waypoint)
 		logging.debug('<<')
-	 
+
 	def exportCsv(self):
 		logging.debug('>>')
 		from save import Save
 		save = Save(self.data_path, self.record)
 		save.run()
-		logging.debug('<<')	 
-	 
+		logging.debug('<<')
+
 	def editProfile(self):
 		logging.debug('>>')
 		self.profile.editProfile()
@@ -483,7 +483,7 @@ class pyTrainer:
 
 	def sanityCheck(self):
 		"""23.11.2009 - dgranda
-		Checks database and configuration file 
+		Checks database and configuration file
 		args: none
 		returns: none"""
 		logging.debug('>>')
