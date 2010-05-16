@@ -33,16 +33,16 @@ class DDBB:
 			from mysqlUtils import Sql
 		else:
 			from sqliteUtils import Sql
-		
+
 		self.confdir = configuration.confdir
 		self.ddbb_path = "%s/pytrainer.ddbb" %self.confdir
-		
+
 		ddbb_host = configuration.getValue("pytraining","prf_ddbbhost")
 		ddbb = configuration.getValue("pytraining","prf_ddbbname")
 		ddbb_user = configuration.getValue("pytraining","prf_ddbbuser")
 		ddbb_pass = configuration.getValue("pytraining","prf_ddbbpass")
 		self.ddbbObject = Sql(ddbb_host,ddbb,ddbb_user,ddbb_pass,configuration)
-		
+
 	def connect(self):
 		#si devolvemos 1 ha ido todo con exito 		: return 1 if all successful
 		#con 0 es que no estaba la bbdd creada		: 0 is DB not created
@@ -67,16 +67,39 @@ class DDBB:
 	def select(self,table,cells,condition=None):
 		return self.ddbbObject.select(table,cells,condition)
 
+	def select_dict(self,table,cells,condition=None):
+		'''
+		Function to query DB
+		-- inputs
+		---- table - string tablename(s)
+		---- cells - list of cells to select
+		---- condition - string to fit SQL where clause or None
+		-- returns
+		---- list of dicts with cells as keys
+		'''
+		return_value = []
+		#Only query db if table and cells are supplied
+		if table is not None and cells is not None:
+			cellString = ','.join(cells) #create cell list string
+			results = self.ddbbObject.select(table,cellString,condition)
+			for result in results:
+				dict = {}
+				#Loop through cells and create dict of results
+				for i, cell in enumerate(cells):
+					dict[cell] = result[i]
+				return_value.append(dict)
+		return return_value
+
 	def insert(self,table,cells,values):
 		self.ddbbObject.insert(table,cells,values)
-	
+
 	def delete(self,table,condition):
 		self.ddbbObject.delete(table,condition)
 
 	def update(self,table,cells,value,condition):
 		self.ddbbObject.update(table,cells,value,condition)
-	
-	def lastRecord(self,table): 
+
+	def lastRecord(self,table):
 		id = "id_" + table[:-1] #prune 's' of table name and pre-pend 'id_' to get id column
 		sql = "select %s from %s order by %s Desc limit 0,1" %(id,table,id)
 		ret_val = self.ddbbObject.freeExec(sql)
@@ -105,17 +128,17 @@ class DDBB:
 										"gpslog":"varchar(200)",
 										"title":"varchar(200)",
 										"upositive":"float",
-										"unegative":"float", 
-										"maxspeed":"float", 
-										"maxpace":"float", 
-										"pace":"float", 
-										"maxbeats":"float", 
+										"unegative":"float",
+										"maxspeed":"float",
+										"maxpace":"float",
+										"pace":"float",
+										"maxbeats":"float",
 										"date_time_local":"varchar2(20)",
 										"date_time_utc":"varchar2(20)",
 										},
-						"sports":{		"id_sports":"integer primary key autoincrement", 
+						"sports":{		"id_sports":"integer primary key autoincrement",
 										"name":"varchar(100)",
-										"weight":"float", 
+										"weight":"float",
 										"met":"float",
 										},
 						"waypoints":{	"id_waypoint":"integer primary key autoincrement",
@@ -136,7 +159,7 @@ class DDBB:
 										"start_lon": "float",
 										"end_lat": "float",
 										"end_lon": "float",
-										"calories": "int", 
+										"calories": "int",
 										},
 						}
 		try:
@@ -152,7 +175,7 @@ class DDBB:
 		logging.debug('Found '+ str(len(tablesDB))+' tables in DB: '+ str(tablesDB))
 
 		# Create a compressed copy of current DB
-		try: 
+		try:
 			self.createDatabaseBackup()
 		except:
 			logging.error('Not able to make a copy of current DB. Printing traceback and exiting')
@@ -209,7 +232,7 @@ class DDBB:
 						#date field OK, just update date_time_local
 						logging.debug("Updating record id: %s with date_time_local: %s" % (record[0], date_time_local) )
 						self.ddbbObject.update("records","date_time_local",[date_time_local], "id_record = %d" %record[0])
-				else: #Manual entry?	
+				else: #Manual entry?
 					#For manual entries, the UTC time is the local time
 					#TODO figure out a way to correct this...
 					pass

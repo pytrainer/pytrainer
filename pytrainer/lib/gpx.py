@@ -21,7 +21,7 @@ import string
 import math
 import re
 import os
- 
+
 import time
 from datetime import datetime
 import logging
@@ -51,6 +51,7 @@ distanceTag = gpxdataNS.substitute(tag="distance")
 class Gpx:
 	def __init__(self, data_path = None, filename = None, trkname = None):
 		logging.debug(">>")
+		print("GPX init-ing")
 		global mainNS, timeTag, trackTag, trackPointTag, trackPointTagLast,	trackSegTag, elevationTag, nameTag
 		self.data_path = data_path
 		self.filename = filename
@@ -93,18 +94,18 @@ class Gpx:
 				trackSegTag = mainNS.substitute(tag="trkseg")
 				elevationTag = mainNS.substitute(tag="ele")
 				nameTag = mainNS.substitute(tag="name")
-				
+
 			logging.debug("getting values...")
 			self.Values = self._getValues()
 		logging.debug("<<")
 
 	def getMaxValues(self):
 		return self.total_dist, self.total_time, self.maxvel, self.maxhr
-	
+
 	def getDate(self):
 		return self.date
 
-	def getTrackRoutes(self):	
+	def getTrackRoutes(self):
 		trks = self.tree.findall(trackTag)
 		tracks = []
 		retorno = []
@@ -127,10 +128,10 @@ class Gpx:
 
 	def getDateTime(self, time_):
 		return Date().getDateTime(time_)
-		
+
 	def getUnevenness(self):
-		return self.upositive,self.unegative 
-	
+		return self.upositive,self.unegative
+
 	def getTrackList(self):
 		return self.Values
 
@@ -169,8 +170,8 @@ class Gpx:
 			logging.debug("Found time: %s, lat: %s lon: %s cal: %s dist: %s " % (elapsedTime, lat, lon, calories, distance))
 			lapInfo.append((elapsedTime, lat, lon, calories, distance, stLat, stLon))
 		return lapInfo
-	
-	def _getValues(self): 
+
+	def _getValues(self):
 		'''
 		Migrated to eTree XML processing 26 Nov 2009 - jblance
 		'''
@@ -202,7 +203,7 @@ class Gpx:
 			logging.debug( "No trkpoints found in file")
 			return retorno
 		logging.debug("%d trkpoints in file" % len(trkpoints))
-		
+
 		date_ = tree.find(timeTag).text
 		#mk_time = self.getDateTime(date_)[0] #UTC Date
 		mk_time = self.getDateTime(date_)[1] #Local Date
@@ -221,11 +222,11 @@ class Gpx:
 			if hrResult is not None:
 				hr = int(hrResult.text)
 				len_validhrpoints += 1
-			else: 
+			else:
 				hr = 0
 			#get the cadence (if present)
 			cadResult = trkpoint.find(cadTag)
-			if cadResult is not None:				
+			if cadResult is not None:
 				cadence = int(cadResult.text)
 			else:
 				cadence = 0
@@ -241,26 +242,26 @@ class Gpx:
 			eleResult = trkpoint.find(elevationTag)
 			if eleResult is not None:
 				ele = eleResult.text
-			else: 
+			else:
 				ele = None
 			#chequeamos que la altura sea correcta / check that the height is correct
 			if ele is not None:
 				if len(ele)<15:
-					tmp_alt = int(float(ele)) #Why convert to int? ele are like "156.3515625"	
+					tmp_alt = int(float(ele)) #Why convert to int? ele are like "156.3515625"
 				else:
 					print "ele len >= 15" + ele
 			else:
 				tmp_alt= 0
 				#print "tmp_alt:" + str(tmp_alt)
-			
+
 			#evitamos los puntos blancos / we avoid the white points
 			if (float(lat) < -0.000001) or (float(lat) > 0.0000001):
 				#Convert lat and lon from degrees to radians
 				tmp_lat = float(lat)*0.01745329252  #0.01745329252 = number of radians in a degree
 				tmp_lon = float(lon)*0.01745329252  #57.29577951 = 1/0.01745329252 or degrees per radian
 				#tmp_time = int(time_)
-		
-				#Para las vueltas diferentes a la primera / For the returns different from first	
+
+				#Para las vueltas diferentes a la primera / For the returns different from first
 				if last_lat is not None:
 					#time_ = tmp_time - last_time
 					#if time_>0:
@@ -329,7 +330,7 @@ class Gpx:
 					#elif rel_alt < 0:
 					#	self.unegative -= rel_alt
 					#retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr,cadence))
-				
+
 				last_lat = tmp_lat
 				last_lon = tmp_lon
 				last_alt = tmp_alt
@@ -343,7 +344,7 @@ class Gpx:
 		self.total_dist = total_dist
 		logging.debug("<<")
 		return retorno
-	
+
 	def _calculate_velocity(self,velocity, arr_velocity, numToAverage): #TODO Check & make generic
 		'''Function to calculate moving average for speed'''
 		arr_velocity.append(velocity)
@@ -359,10 +360,10 @@ class Gpx:
 			vel+= v
 		vel /= numToAverage
 		return vel,arr_velocity
-		
+
 	def getStartTimeFromGPX(self, gpxFile):
 		"""03.05.2008 - dgranda
-		Retrieves start time from a given gpx file 
+		Retrieves start time from a given gpx file
 		args:
 			- gpxFile: path to xml file (gpx format)
 		returns: string with start time - 2008-03-22T12:17:43Z

@@ -52,9 +52,9 @@ from gui.windowimportdata import WindowImportdata
 from gui.windowmain import Main
 from gui.warning import Warning
 from lib.date import Date
-from lib.gpx import Gpx
+#from lib.gpx import Gpx
+from activitypool import ActivityPool
 from lib.ddbb import DDBB
-from lib.heartrate import *
 
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
@@ -96,6 +96,7 @@ class pyTrainer:
 			logging.info('No sanity check requested')
 		self.record = Record(data_path,self)
 		#preparamos la ventana principal
+		self.activitypool = ActivityPool(self, size=10)
 		self.windowmain = Main(data_path,self,self.version, gpxDir=self.profile.gpxdir)
 		self.date = Date(self.windowmain.calendar)
 		self.waypoint = Waypoint(data_path,self)
@@ -241,7 +242,7 @@ class pyTrainer:
 			 logging.debug('day view')
 			 record_list = self.record.getrecordList(date_selected)
 			 self.windowmain.actualize_dayview(record_list)
-			 selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+			 #selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
 		elif view=="week":
 			 logging.debug('week view')
 			 date_ini, date_end = self.date.getWeekInterval(date_selected, self.prf_us_system)
@@ -253,7 +254,6 @@ class pyTrainer:
 			 date_ini, date_end = self.date.getMonthInterval(date_selected)
 			 sport = self.windowmain.getSportSelected()
 			 record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport)
-			 #logging.debug('record list: '+record_list)
 			 nameMonth, daysInMonth = self.date.getNameMonth(date_selected)
 			 self.windowmain.actualize_monthview(record_list, nameMonth)
 			 self.windowmain.actualize_monthgraph(record_list, daysInMonth)
@@ -275,45 +275,21 @@ class pyTrainer:
 	def refreshRecordGraphView(self, view):
 		logging.debug('>>')
 		logging.info('Working on '+view+' graph')
+		selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+		if iter:
+			id_record = selected.get_value(iter,0)
+		else:
+			id_record = None
+		activity = self.activitypool.get_activity(id_record)
 		if view=="info":
-			 selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
-			 record_list=[]
-			 if iter:
-				id_record = selected.get_value(iter,0)
-				record_list = self.record.getrecordInfo(id_record)
-			 self.windowmain.actualize_recordview(record_list)
-
+			self.windowmain.actualize_recordview(activity)
 		if view=="graphs":
-			selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
-			gpx_tracklist = []
-			gpx_laps = None
-			if iter:
-				id_record = selected.get_value(iter,0)
-				gpxfile = self.profile.gpxdir+"/%s.gpx" %id_record
-				if os.path.isfile(gpxfile):
-					gpx = Gpx(self.data_path,gpxfile)
-					gpx_tracklist = gpx.getTrackList()
-					gpx_laps = self.record.getLaps(id_record)
-			self.windowmain.actualize_recordgraph(gpx_tracklist, gpx_laps)
-
+			self.windowmain.actualize_recordgraph(activity)
 		if view=="map":
 			 self.refreshMapView()
-
 		if view=="heartrate":
-			 selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
-			 gpx_tracklist = []
-			 record_list=[]
-			 if iter:
-				id_record = selected.get_value(iter,0)
-				record_list = self.record.getrecordInfo(id_record)
-				gpxfile = self.profile.gpxdir+"/%s.gpx" %id_record
-				if os.path.isfile(gpxfile):
-					 gpx = Gpx(self.data_path,gpxfile)
-					 gpx_tracklist = gpx.getTrackList()
-			 self.windowmain.actualize_heartrategraph(gpx_tracklist)
-			 zones = getZones(self)			#TODO from lib/heartrate.py import - can this file be consolidated?
-			 karvonen_method = self.profile.getValue("pytraining","prf_hrzones_karvonen")
-			 self.windowmain.actualize_hrview(record_list,zones,karvonen_method)
+			 self.windowmain.actualize_heartrategraph(activity)
+			 self.windowmain.actualize_hrview(activity)
 		logging.debug('<<')
 
 	def refreshMapView(self, full_screen=False):
@@ -324,8 +300,9 @@ class pyTrainer:
 			return
 		selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
 		id_record = selected.get_value(iter,0)
+		activity = self.activitypool.get_activity(id_record)
 		logging.debug('Trying to show map for record '+str(id_record))
-		self.windowmain.actualize_map(id_record, full_screen)
+		self.windowmain.actualize_map(activity, full_screen)
 		logging.debug('<<')
 
 	def refreshListRecords(self):

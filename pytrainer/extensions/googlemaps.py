@@ -21,10 +21,10 @@ import os
 import re
 import logging
 
-from pytrainer.lib.gpx import Gpx
-import pytrainer.lib.points as Points 
+#from pytrainer.lib.gpx import Gpx
+import pytrainer.lib.points as Points
 from pytrainer.lib.fileUtils import fileUtils
-from pytrainer.record import Record
+#from pytrainer.record import Record
 
 class Googlemaps:
 	def __init__(self, data_path = None, vbox = None, waypoint = None, pytrainer_main=None):
@@ -36,12 +36,12 @@ class Googlemaps:
 		self.moz = gtkmozembed.MozEmbed()
 		vbox.pack_start(self.moz, True, True)
 		vbox.show_all()
-		self.htmlfile = "%s/index.html" % (self.pytrainer_main.profile.tmpdir) 
-		
+		self.htmlfile = "%s/index.html" % (self.pytrainer_main.profile.tmpdir)
+
 		logging.debug("<<")
-	
-	def drawMap(self,id_record):
-		'''Draw google map 
+
+	def drawMap(self,activity):
+		'''Draw google map
 			create html file using Google API version??
 			render using embedded Mozilla
 
@@ -56,11 +56,9 @@ class Googlemaps:
 		levels = []
 		pointlist = []
 		polyline = []
-		
-		gpxfile = "%s/%s.gpx" % (self.pytrainer_main.profile.gpxdir, id_record)
-		if os.path.isfile(gpxfile):
-			gpx = Gpx(self.data_path,gpxfile)
-			list_values = gpx.getTrackList()
+
+		list_values = activity.tracks
+		if list_values != []:
 			if len(list_values) > 0:
 				minlat, minlon = float(list_values[0][4]),float(list_values[0][5])
 				maxlat=minlat
@@ -79,16 +77,12 @@ class Googlemaps:
 				points = points.replace("\\","\\\\")
 				if self.pytrainer_main.startup_options.gm3:
 					logging.debug("Using Google Maps version 3 API")
-					#laps = gpx.getLaps() # [](elapsedTime, lat, lon, calories, distance)
-					#"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories",  
-					laps = self.pytrainer_main.record.getLaps(id_record)
-					#"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats"
-					info = self.pytrainer_main.record.getrecordInfo(id_record)
-					timeHours = int(info[0][3]) / 3600
-					timeMin = (float(info[0][3]) / 3600.0 - timeHours) * 60
+					laps = activity.laps
+					timeHours = int(activity.time) / 3600
+					timeMin = (float(activity.time) / 3600.0 - timeHours) * 60
 					time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
-					startinfo = "<div class='info_content'>%s: %s</div>" % (info[0][0], info[0][9])
-					finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), info[0][2], _("km"))
+					startinfo = "<div class='info_content'>%s: %s</div>" % (activity.sport_name, activity.title)
+					finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), activity.distance, activity.distance_unit)
 					startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
 					finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
 					self.createHtml_api3(polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps)
@@ -101,10 +95,10 @@ class Googlemaps:
 			self.createErrorHtml()
 		self.moz.load_url("file://%s" % (self.htmlfile))
 		logging.debug("<<")
-	
+
 	def createHtml_api3(self,polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps):
 		'''
-		Generate a Google maps html file using the v3 api 
+		Generate a Google maps html file using the v3 api
 			documentation at http://code.google.com/apis/maps/documentation/v3
 		'''
 		logging.debug(">>")
@@ -165,15 +159,15 @@ class Googlemaps:
 
 		    var map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 			var startmarker = new google.maps.Marker({
-		      position: startlatlng, 
-		      map: map, 
-			  icon: startimage, 
-		      title:"Start"}); 
+		      position: startlatlng,
+		      map: map,
+			  icon: startimage,
+		      title:"Start"});
 
 			var finishmarker = new google.maps.Marker({
-		      position: endlatlng, 
-			  icon: finishimage, 
-		      map: map, 
+		      position: endlatlng,
+			  icon: finishimage,
+		      map: map,
 		      title:"End"}); \n
 
 			//Add an infowindows
@@ -193,30 +187,30 @@ class Googlemaps:
 			  finishinfo.open(map,finishmarker);
 			});\n'''
 
-		#"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number",  
+		#"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number",
 		for lap in laps:
-			lapNumber = int(lap[9])+1
-			elapsedTime = float(lap[2])
+			lapNumber = int(lap['lap_number'])+1
+			elapsedTime = float(lap['elapsed_time'])
 			elapsedTimeHours = int(elapsedTime/3600)
 			elapsedTimeMins = int((elapsedTime - (elapsedTimeHours * 3600)) / 60)
 			elapsedTimeSecs = elapsedTime - (elapsedTimeHours * 3600) - (elapsedTimeMins * 60)
 			if elapsedTimeHours > 0:
-				strElapsedTime = "%0.0dh:%0.2dm:%0.2fs" % (elapsedTimeHours, elapsedTimeMins, elapsedTimeSecs) 
+				strElapsedTime = "%0.0dh:%0.2dm:%0.2fs" % (elapsedTimeHours, elapsedTimeMins, elapsedTimeSecs)
 			elif elapsedTimeMins > 0:
-				strElapsedTime = "%0.0dm:%0.2fs" % (elapsedTimeMins, elapsedTimeSecs) 
+				strElapsedTime = "%0.0dm:%0.2fs" % (elapsedTimeMins, elapsedTimeSecs)
 			else:
-				strElapsedTime = "%0.0fs" % (elapsedTimeSecs) 
+				strElapsedTime = "%0.0fs" % (elapsedTimeSecs)
 			#process lat and lon for this lap
 			try:
-				lapLat = float(lap[6])
-				lapLon = float(lap[7])
+				lapLat = float(lap['end_lat'])
+				lapLon = float(lap['end_lon'])
 				content += "var lap%dmarker = new google.maps.Marker({position: new google.maps.LatLng(%f, %f), icon: lapimage, map: map,  title:\"Lap%d\"}); \n " % (lapNumber, lapLat, lapLon, lapNumber)
 				content += "var lap%d = new google.maps.InfoWindow({content: \"<div class='info_content'>End of lap:%s<br>Elapsed time:%s<br>Distance:%0.2f km<br>Calories:%s</div>\" });\n" % (lapNumber, lapNumber, strElapsedTime, float(lap[3])/1000, lap[8])
 				content += "google.maps.event.addListener(lap%dmarker, 'click', function() { lap%d.open(map,lap%dmarker); });\n" % (lapNumber,lapNumber,lapNumber)
 			except:
 				#Error processing lap lat or lon
 				#dont show this lap
-				logging.debug( "Error processing lap "+ str(lapNumber) + " id: " + str(lap[0]) + " (lat,lon) ( " + str(lap[6]) + "," +str (lap[7]) + ")" )
+				logging.debug( "Error processing lap "+ str(lap) )
 
 		content += '''
 
@@ -281,7 +275,7 @@ class Googlemaps:
 		var id = waypoint[5];
 		var name = waypoint[2];
 		var description = waypoint[3];
-		
+
 		var point = new GLatLng(lat,lon);
 		var text = "<b>"+waypoint[2]+"</b><br/>"+waypoint[3];
 
@@ -295,8 +289,8 @@ class Googlemaps:
 		icon.iconSize = new GSize(32, 32);
 		icon.iconAnchor = new GPoint(16, 16);
 		icon.infoWindowAnchor = new GPoint(5, 1);
-		
-		var markerD = new GMarker(point, {icon:icon, draggable: false}); 
+
+		var markerD = new GMarker(point, {icon:icon, draggable: false});
 		GEvent.addListener(markerD, "click", function() {
             		markerD.openInfoWindowHtml("<b>" + name + "</b><br/>"+description);
           		});
@@ -340,11 +334,11 @@ class Googlemaps:
   		content += "	<body onload=\"load()\" onunload=\"GUnload()\">\n"
     		content += "		<div id=\"map\" style=\"width: 520px; height: 480px\"></div>\n"
   		content += "	</body>\n"
-		content += "</html>\n" 
+		content += "</html>\n"
 		file = fileUtils(self.htmlfile,content)
 		file.run()
 		logging.debug("<<")
-		
+
 	def createErrorHtml(self):
 		logging.debug(">>")
 		content = '''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">

@@ -17,7 +17,6 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from gui.drawArea import DrawArea
-from lib.heartrate import *
 import logging
 
 class HeartRateGraph:
@@ -30,7 +29,7 @@ class HeartRateGraph:
 
 	def drawgraph(self,values):
 		logging.debug('>>')
-		zones = getZones(self.pytrainer_main)	 #TODO from lib/heartrate.py import - can this file be consolidated?
+		zones = self.pytrainer_main.profile.getZones()	 #TODO from lib/heartrate.py import - can this file be consolidated?
 		xvalues, yvalues = self.get_values(values)
 		#logging.debug('xvalues: '+str(xvalues))
 		#logging.debug('yvalues: '+str(yvalues))
@@ -48,7 +47,7 @@ class HeartRateGraph:
 			yvalue.append(value[6])
 		logging.debug('<<')
 		return xvalue,yvalue
-	
+
 	def getFloatValue(self, value):
 		try:
 			return float(value)

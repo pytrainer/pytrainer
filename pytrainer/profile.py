@@ -77,6 +77,7 @@ class Profile:
 		self.configuration = self._parse_config_file(self.config_file)
 		logging.debug("Configuration retrieved: "+str(self.configuration))
 		self.pytrainer_main.ddbb = DDBB(self, pytrainer_main=self.pytrainer_main)
+		self._setZones()
 		logging.debug("<<")
 
 	def _setHome(self):
@@ -133,6 +134,36 @@ class Profile:
 		self.plugindir = self.confdir+"/plugins"
 		if not os.path.isdir(self.plugindir):
 			os.mkdir(self.plugindir)
+
+	def _setZones(self):
+		maxhr = int(self.getValue("pytraining","prf_maxhr"))
+		resthr = int(self.getValue("pytraining","prf_minhr"))
+
+		if self.getValue("pytraining","prf_hrzones_karvonen")=="True":
+			#karvonen method
+			targethr1 = ((maxhr - resthr) * 0.50) + resthr
+			targethr2 = ((maxhr - resthr) * 0.60) + resthr
+			targethr3 = ((maxhr - resthr) * 0.70) + resthr
+			targethr4 = ((maxhr - resthr) * 0.80) + resthr
+			targethr5 = ((maxhr - resthr) * 0.90) + resthr
+			targethr6 = maxhr
+		else:
+			#not karvonen method
+			targethr1 = maxhr * 0.50
+			targethr2 = maxhr * 0.60
+			targethr3 = maxhr * 0.70
+			targethr4 = maxhr * 0.80
+			targethr5 = maxhr * 0.90
+			targethr6 = maxhr
+
+		self.zone1 = (targethr1,targethr2,"#ffff99",_("Moderate activity"))
+		self.zone2 = (targethr2,targethr3,"#ffcc00",_("Weight Control"))
+		self.zone3 = (targethr3,targethr4,"#ff9900",_("Aerobic"))
+		self.zone4 = (targethr4,targethr5,"#ff6600",_("Anaerobic"))
+		self.zone5 = (targethr5,targethr6,"#ff0000",_("VO2 MAX"))
+
+	def getZones(self):
+		return self.zone5,self.zone4,self.zone3,self.zone2,self.zone1
 
 	def getConfFile(self):
 		if not os.path.isfile(self.conffile):
@@ -272,4 +303,5 @@ class Profile:
 	def actualize_mainsportlist(self):
 		logging.debug("--")
 		self.pytrainer_main.refreshMainSportList()
+
 

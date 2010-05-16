@@ -30,7 +30,7 @@ from aboutdialog import About
 
 from pytrainer.lib.date import Date
 from pytrainer.lib.xmlUtils import XMLParser
-from pytrainer.lib.gpx import Gpx
+#from pytrainer.lib.gpx import Gpx
 from pytrainer.lib.unitsconversor import *
 
 class Main(SimpleGladeApp):
@@ -187,102 +187,60 @@ class Main(SimpleGladeApp):
 			treeview.append_column(column)
 			i+=1
 
-	def actualize_recordview(self,record_list):
+	def actualize_recordview(self,activity):
 		logging.debug(">>")
-		if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
-			self.r_distance_unit.set_text(_("miles"))
-			self.r_speed_unit.set_text(_("miles/h"))
-			self.r_maxspeed_unit.set_text(_("miles/h"))
-			self.r_pace_unit.set_text(_("min/mile"))
-			self.r_maxpace_unit.set_text(_("min/mile"))
-			self.r_ascent_unit.set_text(_("feet"))
-			self.r_descent_unit.set_text(_("feet"))
-		else:
-			self.r_distance_unit.set_text(_("km"))
-			self.r_speed_unit.set_text(_("km/h"))
-			self.r_maxspeed_unit.set_text(_("km/h"))
-			self.r_pace_unit.set_text(_("min/km"))
-			self.r_maxpace_unit.set_text(_("min/km"))
-			self.r_ascent_unit.set_text(_("m"))
-			self.r_descent_unit.set_text(_("m"))
+		#Set the units for the activity results, e.g. km, km/h etc
+		self.r_distance_unit.set_text(activity.distance_unit)
+		self.r_speed_unit.set_text(activity.speed_unit)
+		self.r_maxspeed_unit.set_text(activity.speed_unit)
+		self.r_pace_unit.set_text(activity.pace_unit)
+		self.r_maxpace_unit.set_text(activity.pace_unit)
+		self.r_ascent_unit.set_text(activity.height_unit)
+		self.r_descent_unit.set_text(activity.height_unit)
 
-		if len(record_list)>0:
-			record_list=record_list[0]
-
+		if activity.has_data:
 			self.recordview.set_sensitive(1)
-			sport = record_list[0]
-			date = record_list[1]
-			distance = self.parseFloat(record_list[2])
-			average = self.parseFloat(record_list[6])
-			calories = self.parseFloat(record_list[7])
-			upositive = self.parseFloat(record_list[10])
-			unegative = self.parseFloat(record_list[11])
-			title = str(record_list[9])
-			comments = str(record_list[5])
-			pace = self.parseFloat(record_list[14]) #to review
-			maxspeed = self.parseFloat(record_list[12]) #to review
-			maxpace = self.parseFloat(record_list[13])
 
-			#Get datetime from DB, use local time if available otherwise use date_time_utc and create a local datetime...
-			#TODO get data from date_time_local and parse
-			date_time_local = record_list[17]
-			date_time_utc = record_list[16]
-			if date_time_local is not None: #Have a local time stored in DB
-				dateTime = dateutil.parser.parse(date_time_local)
-			else: #No local time in DB
-				tmpDateTime = dateutil.parser.parse(date_time_utc)
-				dateTime = tmpDateTime.astimezone(tzlocal()) #datetime with localtime offset (using value from OS)
+			dateTime = activity.date_time
 			recordDateTime = dateTime.strftime("%Y-%m-%d %H:%M:%S")
 			recordDate = dateTime.strftime("%x")
 			recordTime = dateTime.strftime("%X")
 			recordDateTimeOffset = dateTime.strftime("%z")
 
-			if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
-				self.record_distance.set_text("%0.2f" %km2miles(distance))
-				self.record_upositive.set_text("%0.2f" %m2feet(upositive))
-				self.record_unegative.set_text("%0.2f" %m2feet(unegative))
-				self.record_average.set_text("%0.2f" %km2miles(average))
-				self.record_maxspeed.set_text("%0.2f" %km2miles(maxspeed))
-				self.record_pace.set_text("%0.2f" %pacekm2miles(pace))
-				self.record_maxpace.set_text("%0.2f" %pacekm2miles(maxpace))
+			self.record_distance.set_text("%0.2f" %activity.distance)
+			self.record_upositive.set_text("%0.2f" %activity.upositive)
+			self.record_unegative.set_text("%0.2f" %activity.unegative)
+			self.record_average.set_text("%0.2f" %activity.average)
+			self.record_maxspeed.set_text("%0.2f" %activity.maxspeed)
+			self.record_pace.set_text("%0.2f" %activity.pace)
+			self.record_maxpace.set_text("%0.2f" %activity.maxpace)
 
-			else:
-				self.record_distance.set_text("%0.2f" %distance)
-				self.record_upositive.set_text("%0.2f" %upositive)
-				self.record_unegative.set_text("%0.2f" %unegative)
-				self.record_average.set_text("%0.2f" %average)
-				self.record_maxspeed.set_text("%0.2f" %maxspeed)
-				self.record_pace.set_text("%0.2f" %pace)
-				self.record_maxpace.set_text("%0.2f" %maxpace)
-
-			self.record_sport.set_text(sport)
+			self.record_sport.set_text(activity.sport_name)
 			#self.record_date.set_text(str(date))
 			self.record_date.set_text(recordDate)
 			self.record_time.set_text(recordTime)
-			hour,min,sec=self.parent.date.second2time(int(record_list[3]))
+			hour,min,sec=self.parent.date.second2time(int(activity.time))
 			self.record_hour.set_text("%d" %hour)
 			self.record_minute.set_text("%02d" %min)
 			self.record_second.set_text("%02d" %sec)
-			self.record_calories.set_text("%0.0f" %calories)
-			#self.record_datetime.set_text(recordDateTime)
-			#self.record_datetime_offset.set_text(recordDateTimeOffset)
-			self.record_title.set_text(title)
+			self.record_calories.set_text("%0.0f" %activity.calories)
+			self.record_title.set_text(activity.title)
 			buffer = self.record_comments.get_buffer()
 			start,end = buffer.get_bounds()
-			buffer.set_text(comments)
+			buffer.set_text(activity.comments)
 
 		else:
 			self.recordview.set_current_page(0)
 			self.recordview.set_sensitive(0)
 		logging.debug(">>")
 
-	def actualize_recordgraph(self,record_list,laps=None):
+	def actualize_recordgraph(self,activity):
 		logging.debug(">>")
-		self.record_list = record_list
-		self.laps = laps
-		if len(record_list)>0:
+		self.record_list = activity.tracks
+		self.laps = activity.laps
+		if len(self.record_list)>0:
 			self.record_vbox.set_sensitive(1)
-			self.drawarearecord.drawgraph(record_list,laps)
+			self.drawarearecord.drawgraph(self.record_list,self.laps)
 		else:
 			#Remove graph
 			vboxChildren = self.record_vbox.get_children()
@@ -296,13 +254,16 @@ class Main(SimpleGladeApp):
 			self.record_vbox.set_sensitive(0)
 		logging.debug("<<")
 
-	def actualize_heartrategraph(self,record_list):
+	def actualize_heartrategraph(self,activity):
 		logging.debug(">>")
-		self.drawareaheartrate.drawgraph(record_list)
+		self.drawareaheartrate.drawgraph(activity.tracks)
 		logging.debug("<<")
 
-	def actualize_hrview(self,record_list,zones,is_karvonen_method):
+	def actualize_hrview(self,activity):
 		logging.debug(">>")
+		zones = self.pytrainer_main.profile.getZones()
+		record_list = activity.tracks
+		is_karvonen_method = self.pytrainer_main.profile.getValue("pytraining","prf_hrzones_karvonen")
 		if len(record_list)>0:
 			record_list=record_list[0]
 			self.record_zone1.set_text("%s-%s" %(zones[4][0],zones[4][1]))
@@ -310,8 +271,8 @@ class Main(SimpleGladeApp):
 			self.record_zone3.set_text("%s-%s" %(zones[2][0],zones[2][1]))
 			self.record_zone4.set_text("%s-%s" %(zones[1][0],zones[1][1]))
 			self.record_zone5.set_text("%s-%s" %(zones[0][0],zones[0][1]))
-			beats = self.parseFloat(record_list[4])
-			maxbeats = self.parseFloat(record_list[15])
+			beats = activity.beats
+			maxbeats = activity.maxbeats
 			self.record_beats.set_text("%0.2f" %beats)
 			self.record_maxbeats.set_text("%0.2f" %maxbeats)
 			if is_karvonen_method=="True":
