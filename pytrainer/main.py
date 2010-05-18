@@ -45,7 +45,9 @@ from monthgraph import MonthGraph
 from yeargraph import YearGraph
 from heartrategraph import HeartRateGraph
 
-from extensions.googlemaps import Googlemaps
+from extensions.googlemaps import Googlemaps	#TODO
+from extensions.osm import Osm					#
+from extensions.mapviewer import MapViewer		#
 from extensions.waypointeditor import WaypointEditor
 
 from gui.windowimportdata import WindowImportdata
@@ -59,7 +61,7 @@ from lib.ddbb import DDBB
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
 		#Version constants
-		self.version ="1.7.2_svn#584"
+		self.version ="1.7.2_svn#585"
 		self.DB_version = 3
 		#Process command line options
 		self.startup_options = self.get_options()
@@ -106,7 +108,7 @@ class pyTrainer:
 		self.loadPlugins()
 		self.loadExtensions()
 		self.windowmain.createGraphs(RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph)
-		self.windowmain.createMap(Googlemaps,self.waypoint)
+		self.windowmain.createMap(MapViewer,self.waypoint)
 		self.windowmain.createWaypointEditor(WaypointEditor,self.waypoint, parent=self)
 		self.windowmain.on_calendar_selected(None)
 		self.refreshMainSportList()

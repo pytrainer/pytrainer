@@ -22,7 +22,7 @@ import gtk
 
 class RecordGraph:
 	def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None, btnShowLaps = None, tableConfig = None):
-		logging.debug(">>")		
+		logging.debug(">>")
 		self.drawarea = DrawArea(vbox, window)
 		self.combovalue = combovalue
 		self.combovalue2 = combovalue2
@@ -32,7 +32,7 @@ class RecordGraph:
 
 	def drawgraph(self,values,laps=None, y1limits=None, y1color=None, y1_linewidth=1):
 		logging.debug(">>")
-		#Get the config options 
+		#Get the config options
 		for child in self.config_table.get_children():
 			if child.get_name() == "spinbuttonY1Max":
 				spinbuttonY1Max = child
@@ -42,7 +42,7 @@ class RecordGraph:
 				colorbuttonY1LineColor = child
 			elif child.get_name() == "spinbuttonY1LineWeight":
 				spinbuttonY1LineWeight = child
-				
+
 		xval = []
 		yval = []
 		xlab = []
@@ -59,7 +59,7 @@ class RecordGraph:
 		if laps is not None and showLaps:
 			lapValues = []
 			lastPoint = 0.0
-			for lap in laps: #"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories",   
+			for lap in laps: #"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories",
 				thisPoint = float(lap[3])/1000.0 + lastPoint
 				lapValues.append((lastPoint, thisPoint))
 				lastPoint = thisPoint
@@ -69,7 +69,7 @@ class RecordGraph:
 		if value_selected < 0:
 			self.combovalue.set_active(0)
 			value_selected = 0
-		
+
 		if value_selected2 < 0:
 			self.combovalue2.set_active(0)
 			value_selected2 = 0
@@ -92,10 +92,10 @@ class RecordGraph:
 		ylab.append(ylabel)
 		tit.append(title)
 		col.append(color)
-		
+
 		#_color = gtk.gdk.Color(color)
 		colorbuttonY1LineColor.set_color(_color)
-		
+
 		if value_selected2 > 0:
 			value_selected2 = value_selected2-1
 			xlabel,ylabel,title,color = self.get_value_params(value_selected2)
@@ -107,14 +107,14 @@ class RecordGraph:
 			xlab.append(xlabel)
 			ylab.append(ylabel)
 			tit.append("")
-			col.append(color)		
+			col.append(color)
 		logging.info("To show: tit: "+str(tit)+" | col: "+str(col)+" | xlab: "+str(xlab)+" | ylab: "+str(ylab))
 		#self.drawPlot(xvalues,yvalues,xlabel,ylabel,title,color,zones)
 		plot_stats = self.drawarea.drawPlot(xval,yval,xlab,ylab,tit,col,None,lapValues, ylimits=y1limits, y1_linewidth=y1_linewidth)
 		ymin = plot_stats['y1_min']
 		ymax = plot_stats['y1_max']
 		y1_linewidth = plot_stats['y1_linewidth']
-		
+
 		max_yvalue = max(max_yvalue, ymax)
 		min_yvalue = min(min_yvalue, ymin)
 		adjY1Min = gtk.Adjustment(value=ymin, lower=min_yvalue,upper=max_yvalue, step_incr=1, page_incr=10)
@@ -124,7 +124,7 @@ class RecordGraph:
 		spinbuttonY1Min.set_value(ymin)
 		spinbuttonY1Max.set_value(ymax)
 		spinbuttonY1LineWeight.set_value(y1_linewidth)
-		
+
 		logging.debug("<<")
 
 	def get_value_params(self,value):
@@ -161,7 +161,7 @@ class RecordGraph:
 					yvalue.append(value[7])
 		logging.debug("<<")
 		return xvalue,yvalue
-	
+
 	def getFloatValue(self, value):
 		try:
 			return float(value)

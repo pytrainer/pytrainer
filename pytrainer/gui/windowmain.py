@@ -31,6 +31,8 @@ from aboutdialog import About
 from pytrainer.lib.date import Date
 from pytrainer.lib.xmlUtils import XMLParser
 #from pytrainer.lib.gpx import Gpx
+from pytrainer.extensions.googlemaps import Googlemaps
+from pytrainer.extensions.osm import Osm
 from pytrainer.lib.unitsconversor import *
 
 class Main(SimpleGladeApp):
@@ -157,9 +159,13 @@ class Main(SimpleGladeApp):
 		self.drawareamonth = MonthGraph(self.month_vbox, self.window1, self.month_combovalue,self.month_combovalue2)
 		self.drawareayear = YearGraph(self.year_vbox, self.window1, self.year_combovalue,self.year_combovalue2)
 
-	def createMap(self,Googlemaps,waypoint):
-		self.googlemaps = Googlemaps(self.data_path, self.map_vbox,waypoint, pytrainer_main=self.parent)
-		self.googlemaps_old = Googlemaps(self.data_path, self.map_vbox_old,waypoint, pytrainer_main=self.parent)
+	def createMap(self,MapViewer,waypoint):
+		self.waypoint = waypoint
+		self.mapviewer = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox)
+		self.mapviewer_fs = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox_old)
+		#self.googlemaps = Googlemaps(self.data_path, self.map_vbox,waypoint, pytrainer_main=self.parent)
+		#self.osm = Osm(self.data_path, self.map_vbox,waypoint, pytrainer_main=self.parent)
+		#self.googlemaps_old = Googlemaps(self.data_path, self.map_vbox_old,waypoint, pytrainer_main=self.parent)
 
 	def updateSportList(self,listSport):
 		logging.debug(">>")
@@ -367,23 +373,28 @@ class Main(SimpleGladeApp):
 		self.drawareaday.drawgraph(record_list)
 		logging.debug("<<")
 
-	def actualize_map(self,id_record, full_screen=False):
+	def actualize_map(self,activity, full_screen=False):
 		logging.debug(">>")
 		#Check which type of map viewer to use
 		if self.radiobuttonOSM.get_active():
 			#Use OSM to draw map
 			logging.debug("Using OSM to draw map....")
-			self.googlemaps.drawMap(-9999) #TODO placeholder for OSM code
+			htmlfile = Osm(data_path=self.data_path, waypoint=self.waypoint, pytrainer_main=self.parent).drawMap(activity)
 		elif self.radiobuttonGMap.get_active():
 			#Use Google to draw map
 			logging.debug("Using Google to draw map")
-			if full_screen:
-				self.googlemaps_old.drawMap(id_record)	#TODO - sort this to be more generic, maybe pass map target?
-			else:
-				self.googlemaps.drawMap(id_record)		#TODO - sort this to be more generic, maybe pass map target?
+			htmlfile = Googlemaps(data_path=self.data_path, waypoint=self.waypoint, pytrainer_main=self.parent).drawMap(activity)
 		else:
 			#Unknown map type...
 			logging.error("Unknown map viewer requested")
+			htmlfile = self.mapviewer.createErrorHtml()
+		logging.debug("Displaying htmlfile: %s" % htmlfile)
+		if full_screen:
+			logging.debug("Displaying in full screen mode")
+			self.mapviewer_fs.display_map(htmlfile=htmlfile)
+		else:
+			logging.debug("Displaying in embedded mode")
+			self.mapviewer.display_map(htmlfile=htmlfile)
 		logging.debug("<<")
 
 	def actualize_weekview(self, record_list, date_ini, date_end):

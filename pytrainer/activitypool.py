@@ -17,7 +17,6 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
-
 from lib.activity import Activity
 
 class ActivityPool:
@@ -30,7 +29,7 @@ class ActivityPool:
 		#It is an error to try to initialise with no reference to pytrainer_main
 		if pytrainer_main is None:
 			print("Error - must initialise with a reference to the main pytrainer class")
-			return None
+			return
 		self.pytrainer_main = pytrainer_main
 		self.max_size = size
 		self.pool = {}
@@ -42,6 +41,7 @@ class ActivityPool:
 		sid = str(id)
 		if sid in self.pool.keys():
 			logging.debug("Found activity in pool")
+			#Have accessed this activity, place at end of queue
 			self.pool_queue.remove(sid)
 			self.pool_queue.append(sid)
 		else:
@@ -55,4 +55,3 @@ class ActivityPool:
 		logging.debug("ActivityPool queue length: %d" % len(self.pool_queue))
 		logging.debug("ActivityPool queue: %s" % str(self.pool_queue))
 		return self.pool[sid]
-

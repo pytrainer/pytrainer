@@ -27,17 +27,12 @@ from pytrainer.lib.fileUtils import fileUtils
 #from pytrainer.record import Record
 
 class Googlemaps:
-	def __init__(self, data_path = None, vbox = None, waypoint = None, pytrainer_main=None):
+	def __init__(self, data_path = None, waypoint = None, pytrainer_main=None):
 		logging.debug(">>")
 		self.data_path = data_path
 		self.waypoint=waypoint
 		self.pytrainer_main = pytrainer_main
-		gtkmozembed.set_profile_path("/tmp", "foobar") # http://faq.pygtk.org/index.py?req=show&file=faq19.018.htp  #TODO FIX???
-		self.moz = gtkmozembed.MozEmbed()
-		vbox.pack_start(self.moz, True, True)
-		vbox.show_all()
-		self.htmlfile = "%s/index.html" % (self.pytrainer_main.profile.tmpdir)
-
+		self.htmlfile = "%s/googlemaps.html" % (self.pytrainer_main.profile.tmpdir)
 		logging.debug("<<")
 
 	def drawMap(self,activity):
@@ -48,10 +43,6 @@ class Googlemaps:
 			info at http://www.pygtk.org/pygtkmozembed/class-gtkmozembed.html
 		'''
 		logging.debug(">>")
-		code = "googlemapsviewer"
-		extensiondir = self.pytrainer_main.profile.extensiondir+"/"+code
-		if not os.path.isdir(extensiondir):
-            		os.mkdir(extensiondir)
 		points = []
 		levels = []
 		pointlist = []
@@ -93,7 +84,7 @@ class Googlemaps:
 				self.createErrorHtml()
 		else:
 			self.createErrorHtml()
-		self.moz.load_url("file://%s" % (self.htmlfile))
+		return self.htmlfile
 		logging.debug("<<")
 
 	def createHtml_api3(self,polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps):
