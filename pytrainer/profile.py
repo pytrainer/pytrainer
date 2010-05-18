@@ -17,8 +17,9 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import os, sys
+import os, sys, stat
 import logging
+from StringIO import StringIO
 
 from lxml import etree
 from lib.ddbb import DDBB
@@ -136,8 +137,15 @@ class Profile:
 			os.mkdir(self.plugindir)
 
 	def _setZones(self):
-		maxhr = int(self.getValue("pytraining","prf_maxhr"))
-		resthr = int(self.getValue("pytraining","prf_minhr"))
+		maxhr = self.getValue("pytraining","prf_maxhr")
+		resthr = self.getValue("pytraining","prf_minhr")
+		try:
+			maxhr = int(self.getValue("pytraining","prf_maxhr"))
+			resthr = int(self.getValue("pytraining","prf_minhr"))
+		except Exception as e:
+			logging.debug(str(e))
+			maxhr = 220
+			resthr = 65
 
 		if self.getValue("pytraining","prf_hrzones_karvonen")=="True":
 			#karvonen method
@@ -179,41 +187,46 @@ class Profile:
 		'''
 		if config_file is None:
 			logging.error("Configuration file value not set")
-		elif not os.path.isfile(config_file):
+			logging.error("Fatal error, exiting")
+			exit(-3)
+		if not os.path.isfile(config_file):
 			logging.error("Configuration '%s' file does not exist" % config_file)
 			logging.info("No profile found. Creating default one")
 			self.setProfile(self.profile_options)
-		else:
-			logging.debug("Attempting to parse content from "+ config_file)
-			try:
-				parser = etree.XMLParser(encoding='UTF8', recover=True)
-				self.xml_tree = etree.parse(config_file, parser=parser)
-				#TODO check here for empty file....
-				# Checks if configuration file is empty
-				#if self.configuration.xmldoc is None:
-				#	logging.error("Seems no data available in local configuration file: "+self.filename+", please check")
-				#	logging.error("Fatal error, exiting")
-				#	exit(-3)
-				#Have a populated xml tree, get pytraining node (root) and convert it to a dict
-				pytraining_tag = self.xml_tree.getroot()
-				config = {}
-				config_needs_update = False
-				for key, default in self.profile_options.items():
-					value = pytraining_tag.get(key)
-					#If property is not found, set it to the default
-					if value is None:
-						config_needs_update = True
-						value = default
-					config[key] = value
-				#Added a property, so update config
-				if config_needs_update:
-					self.setProfile(config)
-				return config
-			except Exception as e:
-				logging.error("Error parsing file: %s. Exiting" % config_file)
-				logging.error(str(e))
-		logging.error("Fatal error, exiting")
-		exit(-3)
+		if os.stat(config_file)[stat.ST_SIZE] == 0:
+			logging.error("Configuration '%s' file is empty" % config_file)
+			logging.info("Creating default profile")
+			self.setProfile(self.profile_options)
+		logging.debug("Attempting to parse content from "+ config_file)
+		try:
+			parser = etree.XMLParser(encoding='UTF8', recover=True)
+			self.xml_tree = etree.parse(config_file, parser=parser)
+			#TODO check here for empty file....
+			# Checks if configuration file is empty
+			#if self.configuration.xmldoc is None:
+			#	logging.error("Seems no data available in local configuration file: "+self.filename+", please check")
+			#	logging.error("Fatal error, exiting")
+			#	exit(-3)
+			#Have a populated xml tree, get pytraining node (root) and convert it to a dict
+			pytraining_tag = self.xml_tree.getroot()
+			config = {}
+			config_needs_update = False
+			for key, default in self.profile_options.items():
+				value = pytraining_tag.get(key)
+				#If property is not found, set it to the default
+				if value is None:
+					config_needs_update = True
+					value = default
+				config[key] = value
+			#Added a property, so update config
+			if config_needs_update:
+				self.setProfile(config)
+			return config
+		except Exception as e:
+			logging.error("Error parsing file: %s. Exiting" % config_file)
+			logging.error(str(e))
+			logging.error("Fatal error, exiting")
+			exit(-3)
 
 	def getValue(self, tag, variable):
 		if tag != "pytraining":
@@ -228,6 +241,9 @@ class Profile:
 		if tag != "pytraining":
 			print "ERROR - pytraining is the only profile tag supported"
 		logging.debug("Setting %s to %s" % (variable, value))
+		if self.xml_tree is None:
+			#new config file....
+			self.xml_tree = etree.parse(StringIO('''<?xml version='1.0' encoding='UTF-8'?><pytraining />'''))
 		self.xml_tree.getroot().set(variable, value.decode('utf-8'))
 		if not delay_write:
 			logging.debug("Writting...")
