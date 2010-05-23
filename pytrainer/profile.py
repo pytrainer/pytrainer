@@ -71,6 +71,7 @@ class Profile:
 			"import_default_tab":"0",
 			"default_viewer":"0",
 			"window_size":"800, 640",
+			"activitypool_size": "10",
 			}
 
 		#Parse pytrainer configuration file
@@ -189,11 +190,11 @@ class Profile:
 			logging.error("Configuration file value not set")
 			logging.error("Fatal error, exiting")
 			exit(-3)
-		if not os.path.isfile(config_file):
+		if not os.path.isfile(config_file): #File not found
 			logging.error("Configuration '%s' file does not exist" % config_file)
 			logging.info("No profile found. Creating default one")
 			self.setProfile(self.profile_options)
-		if os.stat(config_file)[stat.ST_SIZE] == 0:
+		if os.stat(config_file)[stat.ST_SIZE] == 0: #File is empty
 			logging.error("Configuration '%s' file is empty" % config_file)
 			logging.info("Creating default profile")
 			self.setProfile(self.profile_options)
@@ -201,12 +202,6 @@ class Profile:
 		try:
 			parser = etree.XMLParser(encoding='UTF8', recover=True)
 			self.xml_tree = etree.parse(config_file, parser=parser)
-			#TODO check here for empty file....
-			# Checks if configuration file is empty
-			#if self.configuration.xmldoc is None:
-			#	logging.error("Seems no data available in local configuration file: "+self.filename+", please check")
-			#	logging.error("Fatal error, exiting")
-			#	exit(-3)
 			#Have a populated xml tree, get pytraining node (root) and convert it to a dict
 			pytraining_tag = self.xml_tree.getroot()
 			config = {}
@@ -227,6 +222,22 @@ class Profile:
 			logging.error(str(e))
 			logging.error("Fatal error, exiting")
 			exit(-3)
+
+	def getIntValue(self, tag, variable, default=0):
+		''' Function to return conf value as int
+			returns
+			-- default if cannot convert to int
+			-- None if variable not found
+		'''
+		result = self.getValue(tag, variable)
+		if result is None:
+			return None
+		try:
+			result = int(result)
+		except Exception as e:
+			logging.debug(str(e))
+			result = default
+		return result
 
 	def getValue(self, tag, variable):
 		if tag != "pytraining":

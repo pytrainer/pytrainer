@@ -45,23 +45,19 @@ from monthgraph import MonthGraph
 from yeargraph import YearGraph
 from heartrategraph import HeartRateGraph
 
-from extensions.googlemaps import Googlemaps	#TODO
-from extensions.osm import Osm					#
-from extensions.mapviewer import MapViewer		#
+from extensions.mapviewer import MapViewer
 from extensions.waypointeditor import WaypointEditor
-
 from gui.windowimportdata import WindowImportdata
 from gui.windowmain import Main
 from gui.warning import Warning
 from lib.date import Date
-#from lib.gpx import Gpx
 from activitypool import ActivityPool
 from lib.ddbb import DDBB
 
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
 		#Version constants
-		self.version ="1.7.2_svn#587"
+		self.version ="1.7.2_svn#589"
 		self.DB_version = 3
 		#Process command line options
 		self.startup_options = self.get_options()
@@ -97,8 +93,9 @@ class pyTrainer:
 		else:
 			logging.info('No sanity check requested')
 		self.record = Record(data_path,self)
+		pool_size = self.profile.getIntValue("pytraining","activitypool_size", default=1)
+		self.activitypool = ActivityPool(self, size=pool_size)
 		#preparamos la ventana principal
-		self.activitypool = ActivityPool(self, size=10)
 		self.windowmain = Main(data_path,self,self.version, gpxDir=self.profile.gpxdir)
 		self.date = Date(self.windowmain.calendar)
 		self.waypoint = Waypoint(data_path,self)
