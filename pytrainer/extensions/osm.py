@@ -1,6 +1,6 @@
-# Testing OpenStreetMaps integration
+# Open Street Map
 # TODO: store OpenLayers.js locally (1MB file)
-# TODO: Add start/finish/lap markers + info popups on click with full details
+# TODO: Add google satelite images layers ?
 
 import gtkmozembed
 import os
@@ -16,7 +16,7 @@ class Osm:
 	def __init__(self, data_path = None, waypoint = None, pytrainer_main=None):
 		logging.debug(">>")
 		self.data_path = data_path
-		self.waypoint=waypoint
+		self.waypoint = waypoint
 		self.pytrainer_main = pytrainer_main
 		self.htmlfile = "%s/osm.html" % (self.pytrainer_main.profile.tmpdir)
 		logging.debug("<<")
@@ -57,7 +57,6 @@ class Osm:
 				self.createErrorHtml()
 		else:
 			self.createErrorHtml()
-		#self.moz.load_url("file://%s" % (self.htmlfile))
 		return self.htmlfile
 		logging.debug("<<")
 
@@ -65,9 +64,8 @@ class Osm:
 		'''
 		Generate OSM map html file using MapLayers
 		'''
-		logging.debug(">> OSM start createHtml")
-		content = '''
-		<html>
+		logging.debug(">>")
+		content = '''<html>
 		<head>
 			<!-- bring in the OpenLayers javascript library
 				 (here we bring it from the remote site, but you could
@@ -84,13 +82,44 @@ class Osm:
 
 				//icons data object
 				var icons = {
-					start : { url : "/start.png", coordinates : %s, popupInfo : "%s" },
+					iconSize : new OpenLayers.Size(30,30)'''
+
+		# If have laps data insert markers here
+		try:
+			lapsContent=''
+			for lap in laps[:500]:  # OpenLayers with firefox is limited to 500 markers -> TODO: Transfer to a constant somewhere ?
+				lapNumber = int(lap['lap_number'])+1
+				elapsedTime = float(lap['elapsed_time'])
+				elapsedTimeHours = int(elapsedTime/3600)
+				elapsedTimeMins = int((elapsedTime - (elapsedTimeHours * 3600)) / 60)
+				elapsedTimeSecs = elapsedTime - (elapsedTimeHours * 3600) - (elapsedTimeMins * 60)
+				if elapsedTimeHours > 0:
+					strElapsedTime = "%0.0dh:%0.2dm:%0.2fs" % (elapsedTimeHours, elapsedTimeMins, elapsedTimeSecs)
+				elif elapsedTimeMins > 0:
+					strElapsedTime = "%0.0dm:%0.2fs" % (elapsedTimeMins, elapsedTimeSecs)
+				else:
+					strElapsedTime = "%0.0fs" % (elapsedTimeSecs)
+				#process lat and lon for this lap
+				lapLat = float(lap['end_lat'])
+				lapLon = float(lap['end_lon'])
+				#build laps content string
+				lapsContent+=',\n'
+				lapsContent+='\t\t\t\t\tlap%d: { url : "/waypoint.png", coordinates : [%f,%f], popupInfo: "%s" }' % \
+						(lapNumber, lapLon, lapLat, \
+						"<div class='info_content'>End of lap:%d<br>Elapsed time:%s<br>Distance:%0.2f km<br>Calories:%s</div>" % \
+							(lapNumber, strElapsedTime, float(lap['distance'])/1000, lap['calories'])
+						)
+			content+=lapsContent
+		except Exception as e:
+			# If something breaks here just skip laps data
+			logging.error('Error formating laps data: ' + str(e))
+		# Insert start/finish track markers
+		content+=''',\n		start : { url : "/start.png", coordinates : %s, popupInfo : "%s" },
 					finish : { url : "/finish.png", coordinates : %s, popupInfo : "%s" },
-					lap : { url : "/lap.png" },
-					url : "file://%s/glade",
-				 	iconSize : new OpenLayers.Size(30,30)
-					};''' % (polyline[0], startinfo, polyline[-1], finishinfo, os.path.abspath(self.data_path))
-		content+='''\n
+					url : "file://%s/glade"''' \
+					% (polyline[0], startinfo, polyline[-1], finishinfo, os.path.abspath(self.data_path))
+
+		content+='''};\n
 				function init() {
 
 				// for transforming WGS 1984 to Spherical Mercator Projection
@@ -130,13 +159,10 @@ class Osm:
 					{
 						"type":"LineString",
 						"coordinates":
-							[\n'''
-		#Insert track points - all but last one
-		for point in polyline[:-1]:
-			content+="%s," % (point)
-		#Insert last point without comma so the javascript syntax stays correct
-		content+="%s\n" % (polyline[-1])
-		content+='''				]
+							['''
+		#Insert track points here
+		content+=",".join(polyline);
+		content+=''']
 					},
 					"crs":
 						{
