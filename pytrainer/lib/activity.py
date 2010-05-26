@@ -28,6 +28,38 @@ from pytrainer.lib.unitsconversor import *
 class Activity:
 	'''
 	Class that knows everything about a particular activity
+
+	tracks			- (list) tracklist from gpx
+	tracklist		- (list of dict) trackpoint data from gpx
+	laps			- (list of dict) lap list
+	tree			- (ElementTree) parsed xml of gpx file
+	us_system		- (bool) True: imperial measurement False: metric measurement
+	distance_unit	- (string) unit to use for distance
+	speed_unit		- (string) unit to use for speed
+	height_unit		- (string) unit to use for height
+	gpx_file		- (string) gpx file name
+	gpx				- (Gpx class) actual gpx instance
+	sport_name		- (string) sport name
+	sport_id		- (string) id for sport in sports table
+	title			- (string) title of activity
+	date			- (string) date of activity
+	time			- (int) activity duration in seconds
+	beats			- (int) average heartrate for activity
+	maxbeats 		- (int) maximum heartrate for activity
+	comments		- (string) activity comments
+	calories		- (int) calories of activity
+	id_record		- (string) id for activity in records table
+	date_time_local	- (string) date and time of activity in local timezone
+	date_time_utc	- (string) date and time of activity in UTC timezone
+	date_time		- (datetime) date and time of activity in local timezone
+	distance 		- (float) activity distance
+	average			- (float) average speed of activity
+	upositive 		- (float) height climbed during activity
+	unegative		- (float) height decended during activity
+	maxspeed 		- (float) maximum speed obtained during activity
+	maxpace 		- (float) maxium pace obtained during activity
+	pace			- (float) average pace for activity
+	has_data		- (bool) true if gpx processed and instance has data populated
 	'''
 	def __init__(self, pytrainer_main = None, id = None):
 		logging.debug(">>")
@@ -77,9 +109,11 @@ class Activity:
 		'''
 		logging.debug(">>")
 		#Parse GPX file
+		print "Activity initing GPX.. ",
 		self.gpx = Gpx(filename = self.gpx_file) #TODO change GPX code to do less....
 		self.tree = self.gpx.tree
-		self.tracks = self.gpx.getTrackList() #TODO fix
+		self.tracks = self.gpx.getTrackList() #TODO fix - this should removed and replaced with self.tracklist functionality
+		self.tracklist = self.gpx.trkpoints
 		logging.debug("<<")
 
 	def _init_from_db(self):
@@ -99,12 +133,12 @@ class Activity:
 			self.sport_id = dict['id_sports']
 			self.title = dict['title']
 			self.date = dict['date']
-			self.time = dict['time']
-			self.beats = dict['beats']
+			self.time = self._int(dict['time'])
+			self.beats = self._int(dict['beats'])
 			self.comments = dict['comments']
-			self.calories = dict['calories']
+			self.calories = self._int(dict['calories'])
 			self.id_record = dict['id_record']
-			self.maxbeats = dict['maxbeats']
+			self.maxbeats = self._int(dict['maxbeats'])
 			#Sort time....
 			# ... use local time if available otherwise use date_time_utc and create a local datetime...
 			self.date_time_local = dict['date_time_local']
@@ -175,4 +209,11 @@ class Activity:
 			result = float(value)
 		except:
 			result = 0.0
+		return result
+
+	def _int(self, value):
+		try:
+			result = int(value)
+		except:
+			result = 0
 		return result

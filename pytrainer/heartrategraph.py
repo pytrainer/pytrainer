@@ -29,7 +29,7 @@ class HeartRateGraph:
 
 	def drawgraph(self,values):
 		logging.debug('>>')
-		zones = self.pytrainer_main.profile.getZones()	 #TODO from lib/heartrate.py import - can this file be consolidated?
+		zones = self.pytrainer_main.profile.getZones()
 		xvalues, yvalues = self.get_values(values)
 		#logging.debug('xvalues: '+str(xvalues))
 		#logging.debug('yvalues: '+str(yvalues))

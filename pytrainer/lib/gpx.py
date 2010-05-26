@@ -57,6 +57,8 @@ class Gpx:
 		self.filename = filename
 		self.trkname = trkname
 		logging.debug(str(data_path)+"|"+str(filename)+"|"+str(trkname))
+		self.trkpoints = []
+		self.vel_array = []
 		self.total_dist = 0
 		self.total_time = 0
 		self.upositive = 0
@@ -147,8 +149,6 @@ class Gpx:
 		if self.tree is None:
 			return lapInfo
 		tree  = self.tree
-		#date = tree.findtext(timeTag)
-		#startTime = self.getDateTime(date)
 		laps = tree.findall(lapTag)
 		logging.debug("Found %d laps" % len(laps))
 		for lap in laps:
@@ -213,133 +213,125 @@ class Gpx:
 		waiting_points = []
 
 
-		for trkpoint in trkpoints:
-			lat = trkpoint.get("lat")
-			lon = trkpoint.get("lon")
-			if lat is None or lat == "" or lon is None or lon == "":
-				logging.debug("lat or lon is blank")
+		for i, trkpoint in enumerate(trkpoints):
+			#Get data from trkpoint
+			try:
+				lat = float(trkpoint.get("lat"))
+				lon = float(trkpoint.get("lon"))
+			except Exception as e:
+				logging.debug(str(e))
+				lat = lon = None
+			if lat is None or lat == "" or lat == 0 or lon is None or lon == "" or lon == 0:
+				logging.debug("lat or lon is blank or zero")
 				continue
 			#get the heart rate value from the gpx extended format file
 			hrResult = trkpoint.find(hrTag)
 			if hrResult is not None:
 				hr = int(hrResult.text)
 				len_validhrpoints += 1
+				total_hr += hr 			#TODO fix
+				if hr>self.maxhr:
+					self.maxhr = hr
 			else:
-				hr = 0
+				hr = None
 			#get the cadence (if present)
 			cadResult = trkpoint.find(cadTag)
 			if cadResult is not None:
 				cadence = int(cadResult.text)
 			else:
-				cadence = 0
+				cadence = None
 			#get the time
 			timeResult = trkpoint.find(timeTag)
 			if timeResult is not None:
 				date_ = timeResult.text
 				mk_time = self.getDateTime(date_)[0]
 				time_ = time.mktime(mk_time.timetuple()) #Convert date to seconds
+				if i == 0:
+					time_elapsed = 0
+				else:
+					time_elapsed = time_ - self.trkpoints[i-1]['time'] if self.trkpoints[i-1]['time'] is not None else 0
+					self.total_time += time_elapsed
 			else:
 				time_ = None
+				time_elapsed = None
 			#get the elevation
 			eleResult = trkpoint.find(elevationTag)
+			rel_alt = 0
 			if eleResult is not None:
-				ele = eleResult.text
+				try:
+					ele = float(eleResult.text)
+					#Calculate elevation change
+					if i != 0:
+						rel_alt = ele - self.trkpoints[i-1]['ele'] if self.trkpoints[i-1]['ele'] is not None else 0
+				except Exception as e:
+					logging.debug(str(e))
+					ele = None
 			else:
 				ele = None
-			#chequeamos que la altura sea correcta / check that the height is correct
-			if ele is not None:
-				if len(ele)<15:
-					tmp_alt = int(float(ele)) #Why convert to int? ele are like "156.3515625"
-				else:
-					print "ele len >= 15" + ele
+
+			#Calculate climb or decent amount
+			#Allow for some 'jitter' in height here
+			JITTER_VALUE = 0  #Elevation changes less than this value are not counted in +-
+			if abs(rel_alt) < JITTER_VALUE:
+				rel_alt = 0
+			if rel_alt > 0:
+				self.upositive += rel_alt
+			elif rel_alt < 0:
+				self.unegative -= rel_alt
+
+			#Calculate distance between two points
+			if i == 0: #First point
+				dist = None
 			else:
-				tmp_alt= 0
-				#print "tmp_alt:" + str(tmp_alt)
+				dist = self._distance_between_points(lat1=self.trkpoints[i-1]['lat'], lon1=self.trkpoints[i-1]['lon'], lat2=lat, lon2=lon)
 
-			#evitamos los puntos blancos / we avoid the white points
-			if (float(lat) < -0.000001) or (float(lat) > 0.0000001):
-				#Convert lat and lon from degrees to radians
-				tmp_lat = float(lat)*0.01745329252  #0.01745329252 = number of radians in a degree
-				tmp_lon = float(lon)*0.01745329252  #57.29577951 = 1/0.01745329252 or degrees per radian
-				#tmp_time = int(time_)
+			#Accumulate distances
+			if dist is not None:
+				dist_elapsed += dist #TODO fix
+				total_dist += dist
 
-				#Para las vueltas diferentes a la primera / For the returns different from first
-				if last_lat is not None:
-					#time_ = tmp_time - last_time
-					#if time_>0:
-					#Caqlculate diference betwen last and new point
-					#tempnum=(math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon))
-					#try:
-					#Pasamos la distancia de radianes a metros..  creo / We convert the distance from radians to meters
-					#David no me mates que esto lo escribi hace anhos / Do not kill me this was written ages ago
-					#http://faculty.washington.edu/blewis/ocn499/EXER04.htm equation for the distance between 2 points on a spherical earth
-					try:
-						#dist=math.acos(tempnum)*111.302*57.29577951
-						dist=math.acos((math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon)))*111.302*57.29577951
-					except:
-						dist=0
-					dist_elapsed += dist
-					total_dist += dist
-					total_hr += hr
-					if hr>self.maxhr:
-						self.maxhr = hr
-					#if time_>0:
-					#	#dividimos kilometros por hora (no por segundo) / Calculate kilometers per hour (not including seconds)
-					#	tmp_vel = dist/((time_)/3600.0)
-					#	vel,his_vel = self._calculate_velocity(tmp_vel,his_vel, 3)
-					#	#si la velocidad es menor de 90 lo damos por bueno / if speed is greater than 90 or time greater than 100 we exclude the result
-					#	if vel<90 and time_ <100:
-					#		if vel>self.maxvel:
-					#			self.maxvel=vel
-					#		self.total_time += time_
-					if time_ is not None:
-						tmp_time = int(time_)
-						time_elapsed = tmp_time - last_time if last_time is not None else 0
-						if time_elapsed>0:
-							#Caqlculate diference betwen last and new point
-							#tempnum=(math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon))
-							#try:
-							#Pasamos la distancia de radianes a metros..  creo / We convert the distance from radians to meters
-							#David no me mates que esto lo escribi hace anhos / Do not kill me this was written ages ago
-							#http://faculty.washington.edu/blewis/ocn499/EXER04.htm equation for the distance between 2 points on a spherical earth
-							#dividimos kilometros por hora (no por segundo) / Calculate kilometers per hour (not including seconds)
-							tmp_vel = dist_elapsed/((time_elapsed)/3600.0)
-							vel,his_vel = self._calculate_velocity(tmp_vel,his_vel, 3)
-							#si la velocidad es menor de 90 lo damos por bueno / if speed is greater than 90 we exclude the result
-							self.total_time += time_elapsed
-							if vel<90:
-								if vel>self.maxvel:
-									self.maxvel=vel
-								for ((w_total_dist, w_dist, w_alt, w_total_time, w_lat, w_lon, w_hr, w_cadence)) in waiting_points:
-									w_time = (w_dist/dist_elapsed) * time_elapsed
-									w_vel = w_dist/((w_time)/3600.0)
-									w_total_time += w_time
-									retorno.append((w_total_dist, w_alt, w_total_time, w_vel, w_lat, w_lon, w_hr, w_cadence))
-								waiting_points = []
-								retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr,cadence))
-								rel_alt = tmp_alt - last_alt #Could allow for some 'jitter' in height here
-								if rel_alt > 0:
-									self.upositive += rel_alt
-								elif rel_alt < 0:
-									self.unegative -= rel_alt
-							dist_elapsed = 0
-					else:
-						waiting_points.append((total_dist, dist_elapsed, tmp_alt, self.total_time, lat, lon, hr, cadence))
-					#	vel = 0
-					#rel_alt = tmp_alt - last_alt #Could allow for some 'jitter' in height here
-					#if rel_alt > 0:
-					#	self.upositive += rel_alt
-					#elif rel_alt < 0:
-					#	self.unegative -= rel_alt
-					#retorno.append((total_dist,tmp_alt, self.total_time,vel,lat,lon,hr,cadence))
+			#Calculate speed...
+			vel = self._calculate_speed(dist, time_elapsed, smoothing_factor=3)
+			if vel>self.maxvel:
+				self.maxvel=vel
 
-				last_lat = tmp_lat
-				last_lon = tmp_lon
-				last_alt = tmp_alt
-				#last_time = tmp_time
-				if time_ is not None:
-					last_time = int(time_)
+			#The waiting point stuff....
+			#This 'fills in' the data for situations where some times are missing from the GPX file
+			if time_ is not None:
+				if len(waiting_points) > 0:
+					for ((w_total_dist, w_dist, w_alt, w_total_time, w_lat, w_lon, w_hr, w_cadence)) in waiting_points:
+						w_time = (w_dist/dist_elapsed) * time_elapsed
+						w_vel = w_dist/((w_time)/3600.0)
+						w_total_time += w_time
+						retorno.append((w_total_dist, w_alt, w_total_time, w_vel, w_lat, w_lon, w_hr, w_cadence))
+					waiting_points = []
+					dist_elapsed = 0
+				else:
+					retorno.append((total_dist,ele, self.total_time,vel,lat,lon,hr,cadence))
+					dist_elapsed = 0
+			else: # time_ is None
+				waiting_points.append((total_dist, dist_elapsed, ele, self.total_time, lat, lon, hr, cadence))
 
+			#Add to dict of values to trkpoint list
+			self.trkpoints.append({	'id': i,
+									'lat':lat,
+									'lon':lon,
+									'hr':hr,
+									'cadence':cadence,
+									'time':time_,
+									'time_since_previous': time_elapsed,
+									'time_elapsed': self.total_time,
+									'ele':ele,
+									'ele_change': rel_alt,
+									'distance_from_previous': dist,
+									'elapsed_distance': total_dist,
+									'velocity':vel,
+
+								})
+
+		#end of for trkpoint in trkpoints loop
+
+		#Calculate averages etc
 		self.hr_average = 0
 		if len_validhrpoints > 0:
 			self.hr_average = total_hr/len_validhrpoints
@@ -347,29 +339,72 @@ class Gpx:
 		logging.debug("<<")
 		return retorno
 
-	def _calculate_velocity(self,velocity, arr_velocity, numToAverage): #TODO Check & make generic
+	def _distance_between_points(self, lat1, lon1, lat2, lon2):
+		'''
+		Function to calculate the distance between two lat, lon points on the earths surface
+
+		History of this function is unknown....
+		-- David "no me mates que esto lo escribi hace anhos"
+		-- http://faculty.washington.edu/blewis/ocn499/EXER04.htm equation for the distance between 2 points on a spherical earth
+		-- 0.01745329252 = number of radians in a degree
+		-- 57.29577951 = 1/0.01745329252 or degrees per radian
+		requires
+			- start lat and lon as floats
+			- finish lat and lon as floats
+
+		returns
+			- distance between points in kilometers if successful
+			- None if any error situation occurs
+		'''
+		RADIANS_PER_DEGREE = 0.01745329252
+		DEGREES_PER_RADIAN = 57.29577951
+		#Check for invalid variables
+		for var in (lat1, lon1, lat2, lon2):
+			if var is None or var == 0 or var == "":   #TODO Need this?? if (float(lat) < -0.000001) or (float(lat) > 0.0000001):
+				return None
+			if type(var) is not type(float()):
+				return None
+		#Convert lat and lon from degrees to radians
+		last_lat = lat1*RADIANS_PER_DEGREE
+		last_lon = lon1*RADIANS_PER_DEGREE
+		tmp_lat = lat2*RADIANS_PER_DEGREE
+		tmp_lon = lon2*RADIANS_PER_DEGREE
+		#Pasamos la distancia de radianes a metros..  creo / We convert the distance from radians to meters
+		try:
+			dist=math.acos((math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon)))*111.302*DEGREES_PER_RADIAN
+		except Exception as e:
+			logging.debug(str(e))
+			dist=None
+		return dist
+
+	def _calculate_speed(self, dist_elapsed, time_elapsed, smoothing_factor=3):
 		'''Function to calculate moving average for speed'''
-		arr_velocity.append(velocity)
-		if len(arr_velocity)>numToAverage:
-			arr_velocity.pop(0)
-		if len(arr_velocity)<numToAverage:
+
+		if dist_elapsed is None or dist_elapsed == 0 or time_elapsed is None or time_elapsed == 0:
+			velocity = 0
+		else:
+			velocity = (dist_elapsed/time_elapsed) * 3600 # 3600 to convert km/sec to km/hour
+		self.vel_array.append(velocity)
+		if len(self.vel_array)>smoothing_factor:
+			self.vel_array.pop(0)
+		if len(self.vel_array)<smoothing_factor:
 			#Got too few numbers to average
 			#Pad with duplicates
-			for x in range(len(arr_velocity), numToAverage):
-				arr_velocity.append(velocity)
+			for x in range(len(self.vel_array), smoothing_factor):
+				self.vel_array.append(velocity)
 		vel = 0
-		for v in arr_velocity:
+		for v in self.vel_array:
 			vel+= v
-		vel /= numToAverage
-		return vel,arr_velocity
+		vel /= smoothing_factor
+		return vel
 
 	def getStartTimeFromGPX(self, gpxFile):
-		"""03.05.2008 - dgranda
+		'''03.05.2008 - dgranda
 		Retrieves start time from a given gpx file
 		args:
 			- gpxFile: path to xml file (gpx format)
-		returns: string with start time - 2008-03-22T12:17:43Z
-		"""
+		returns: tuple (string with start time as UTC timezone - 2008-03-22T12:17:43Z, datetime of time in local timezone)
+		'''
 		logging.debug(">>")
 		date_time = self.tree.find(timeTag) #returns first instance found
 		if date_time is None:
