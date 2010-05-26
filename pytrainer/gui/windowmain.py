@@ -286,6 +286,7 @@ class Main(SimpleGladeApp):
 			maxbeats = activity.maxbeats
 			self.record_beats.set_text("%0.2f" %beats)
 			self.record_maxbeats.set_text("%0.2f" %maxbeats)
+			self.record_calories2.set_text("%0.0f" %activity.calories)
 			if is_karvonen_method=="True":
 				self.record_zonesmethod.set_text(_("Karvonen method"))
 			else:
