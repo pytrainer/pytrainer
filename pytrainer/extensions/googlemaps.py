@@ -196,12 +196,13 @@ class Googlemaps:
 				lapLat = float(lap['end_lat'])
 				lapLon = float(lap['end_lon'])
 				content += "var lap%dmarker = new google.maps.Marker({position: new google.maps.LatLng(%f, %f), icon: lapimage, map: map,  title:\"Lap%d\"}); \n " % (lapNumber, lapLat, lapLon, lapNumber)
-				content += "var lap%d = new google.maps.InfoWindow({content: \"<div class='info_content'>End of lap:%s<br>Elapsed time:%s<br>Distance:%0.2f km<br>Calories:%s</div>\" });\n" % (lapNumber, lapNumber, strElapsedTime, float(lap[3])/1000, lap[8])
+				content += "var lap%d = new google.maps.InfoWindow({content: \"<div class='info_content'>End of lap:%s<br>Elapsed time:%s<br>Distance:%0.2f km<br>Calories:%s</div>\" });\n" % (lapNumber, lapNumber, strElapsedTime, float(lap['distance'])/1000, lap['calories'])
 				content += "google.maps.event.addListener(lap%dmarker, 'click', function() { lap%d.open(map,lap%dmarker); });\n" % (lapNumber,lapNumber,lapNumber)
-			except:
+			except Exception as e:
 				#Error processing lap lat or lon
 				#dont show this lap
 				logging.debug( "Error processing lap "+ str(lap) )
+				logging.debug(str(e))
 
 		content += '''
 
