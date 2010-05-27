@@ -129,7 +129,7 @@ class RecordGraph:
 
 	def get_value_params(self,value):
 		if value == 0:
-			return _("Distance (km)"),_("Height (m)"),_("Stage Profile"),"#ff0000"
+			return _("Distance (km)"),_("Height (m)"),_("Stage Profile"),"#000000"
 		if value == 1:
 			return _("Distance (km)"),_("Speed (Km/h)"),_("Speed"),"#00ff00"
 		if value == 2:
@@ -137,7 +137,7 @@ class RecordGraph:
 		if value == 3:
 			return _("Distance (km)"),_("Beats (bpm)"),_("Heart Rate"),"#ff0000"
 		if value == 4:
-			return _("Distance (km)"),_("Cadence (rpm)"),_("Cadence"),"#ff0000"
+			return _("Distance (km)"),_("Cadence (rpm)"),_("Cadence"),"#7B3F00"
 
 
 	def get_values(self,values, value_selected):
