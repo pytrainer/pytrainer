@@ -244,6 +244,7 @@
                               <widget class="GtkTreeView" id="recordTreeView">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="rubber_banding">True</property>
                                 <signal name="button_press_event" handler="on_allRecordTreeView_button_press"/>
                                 <signal name="row_activated" handler="on_recordTree_clicked"/>
                               </widget>
@@ -5653,7 +5654,7 @@ Summit</property>
     </child>
     <child>
       <widget class="GtkImageMenuItem" id="show_in_classic_view1">
-        <property name="label">Show graph in classic view</property>
+        <property name="label" translatable="yes">Show graph in classic view</property>
         <property name="visible">True</property>
         <property name="use_stock">False</property>
         <signal name="activate" handler="on_showclassic_activate"/>
@@ -5661,6 +5662,21 @@ Summit</property>
           <widget class="GtkImage" id="image2">
             <property name="visible">True</property>
             <property name="stock">gtk-find</property>
+          </widget>
+        </child>
+      </widget>
+    </child>
+    <child>
+      <widget class="GtkImageMenuItem" id="merge_tracks">
+        <property name="label" translatable="yes">Merge tracks</property>
+        <property name="visible">True</property>
+        <property name="sensitive">False</property>
+        <property name="use_stock">False</property>
+        <signal name="activate" handler="on_multiple_merge_ToDo"/>
+        <child internal-child="image">
+          <widget class="GtkImage" id="image2">
+            <property name="visible">True</property>
+            <property name="icon_name">document-properties</property>
           </widget>
         </child>
       </widget>
