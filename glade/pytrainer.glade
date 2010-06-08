@@ -5070,7 +5070,66 @@ Calories</property>
                             <child>
                               <widget class="GtkVBox" id="equipview">
                                 <property name="visible">True</property>
-                                <property name="sensitive">False</property>
+                                <property name="sensitive">True</property>
+                                <child>
+                                  <widget class="GtkHBox" id="hbox6">
+                                    <property name="visible">True</property>
+                                    <property name="border_width">5</property>
+                                    <property name="spacing">8</property>
+                                    <child>
+                                      <widget class="GtkLabel" id="label19">
+                                        <property name="visible">True</property>
+                                        <property name="label" translatable="yes">Category:</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkComboBoxEntry" id="record_combovalue1">
+                                        <property name="visible">True</property>
+                                        <property name="sensitive">True</property>
+                                        <property name="items" translatable="yes">Running shoes
+GPS watch
+T-shirts
+Tyres
+Socks</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkButton" id="button3">
+                                        <property name="label" translatable="yes">New equipment</property>
+                                        <property name="visible">True</property>
+                                        <property name="sensitive">False</property>
+                                        <property name="can_focus">True</property>
+                                        <property name="receives_default">True</property>
+                                        <property name="image_position">right</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="fill">False</property>
+                                        <property name="position">3</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="fill">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
                                 <child>
                                   <placeholder/>
                                 </child>
@@ -5081,7 +5140,7 @@ Calories</property>
                             </child>
                             <child>
                               <widget class="GtkLabel" id="label15">
-                                <property name="sensitive">False</property>
+                                <property name="visible">True</property>
                                 <property name="label" translatable="yes">Equipment</property>
                               </widget>
                               <packing>
