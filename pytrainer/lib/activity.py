@@ -23,6 +23,7 @@ import dateutil.parser
 from dateutil.tz import * # for tzutc()
 
 from pytrainer.lib.gpx import Gpx
+from pytrainer.lib.graphdata import GraphData
 from pytrainer.lib.unitsconversor import *
 
 class Activity:
@@ -89,6 +90,7 @@ class Activity:
 		if self.gpx_file is not None:
 			self._init_from_gpx_file()
 		self._init_from_db()
+		self._init_graph_data()
 		logging.debug("<<")
 
 	def _set_units(self):
@@ -203,6 +205,68 @@ class Activity:
 				self.pytrainer_main.record.insertLaps(lap_keys,lap.values())
 		logging.debug("<<")
 		return laps
+
+	def _init_graph_data(self):
+		logging.debug(">>")
+		self.distance_data = {}
+		self.time_data = {}
+		#Profile
+		title=_("Elevation v Distance")
+		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
+		ylabel="%s (%s)" % (_('Elevation'), self.height_unit)
+		self.distance_data['elevation'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+		title=_("Elevation v Time")
+		xlabel=_("Time (hours)")
+		self.time_data['elevation'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
+		#Speed
+		title=_("Speed v Distance")
+		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
+		ylabel="%s (%s)" % (_('Speed'), self.speed_unit)
+		self.distance_data['speed'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+		#Pace
+		title=_("Pace v Distance")
+		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
+		ylabel="%s (%s)" % (_('Pace'), self.pace_unit)
+		self.distance_data['pace'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+		#Heartrate
+		title=_("Heart Rate v Distance")
+		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
+		ylabel="%s (%s)" % (_('Heart Rate'), _('bpm'))
+		self.distance_data['hr'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+		#Cadence
+		title=_("Cadence v Distance")
+		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
+		ylabel="%s (%s)" % (_('Cadence'), _('rpm'))
+		self.distance_data['cadence'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+		for track in self.tracklist:
+			try:
+				pace = 60/track['velocity']
+			except:
+				pace = 0
+			if self.us_system:
+				self.distance_data['elevation'].addPoints(x=km2miles(track['elapsed_distance']), y=m2feet(track['ele']))
+				self.distance_data['speed'].addPoints(x=km2miles(track['elapsed_distance']), y=km2miles(track['velocity']))
+				self.distance_data['pace'].addPoints(x=km2miles(track['elapsed_distance']), y=pacekm2miles(pace))
+				self.distance_data['hr'].addPoints(x=km2miles(track['elapsed_distance']), y=track['hr'])
+				self.distance_data['cadence'].addPoints(x=km2miles(track['elapsed_distance']), y=track['cadence'])
+				self.time_data['elevation'].addPoints(x=track['time_elapsed'], y=m2feet(track['ele']))
+			else:
+				self.distance_data['elevation'].addPoints(x=track['elapsed_distance'], y=track['ele'])
+				self.distance_data['speed'].addPoints(x=track['elapsed_distance'], y=track['velocity'])
+				self.distance_data['pace'].addPoints(x=track['elapsed_distance'], y=pace)
+				self.distance_data['hr'].addPoints(x=track['elapsed_distance'], y=track['hr'])
+				self.distance_data['cadence'].addPoints(x=track['elapsed_distance'], y=track['cadence'])
+				self.time_data['elevation'].addPoints(x=track['time_elapsed'], y=track['ele'])
+		#Remove data with no values
+		for item in self.distance_data.keys():
+			if len(self.distance_data[item]) == 0:
+				print "No values for %s. Removing...." % item
+				del self.distance_data[item]
+		for item in self.time_data.keys():
+			if len(self.time_data[item]) == 0:
+				print "No values for %s. Removing...." % item
+				del self.time_data[item]
+		logging.debug("<<")
 
 	def _float(self, value):
 		try:
