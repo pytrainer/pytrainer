@@ -38,15 +38,7 @@ from extension import Extension
 from importdata import Importdata
 from plugins import Plugins
 from profile import Profile
-#from recordgraph import RecordGraph
-#from daygraph import DayGraph
-#from weekgraph import WeekGraph
-#from monthgraph import MonthGraph
-#from yeargraph import YearGraph
-#from heartrategraph import HeartRateGraph
 
-#from extensions.mapviewer import MapViewer
-#from extensions.waypointeditor import WaypointEditor
 from gui.windowimportdata import WindowImportdata
 from gui.windowmain import Main
 from gui.warning import Warning
@@ -57,7 +49,7 @@ from lib.ddbb import DDBB
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
 		#Version constants
-		self.version ="1.7.2_svn#600"
+		self.version ="1.7.2_svn#601"
 		self.DB_version = 3
 		#Process command line options
 		self.startup_options = self.get_options()
@@ -71,11 +63,6 @@ class pyTrainer:
 		logging.debug('Checking configuration and profile...')
 		self.profile = Profile(self.data_path,self)
 		self.windowmain = None
-
-		#if self.profile.getValue("pytraining","prf_us_system") == "True": #TODO perhaps move to use dict?
-		#	self.prf_us_system = True
-		#else:
-		#	self.prf_us_system = False
 		self.ddbb = DDBB(self.profile)
 		logging.debug('connecting to DDBB')
 		self.ddbb.connect()
@@ -105,9 +92,6 @@ class pyTrainer:
 		self.loadPlugins()
 		self.loadExtensions()
 		self.windowmain.setup()
-		#self.windowmain.createGraphs(RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph)
-		#self.windowmain.createMap(MapViewer,self.waypoint)
-		#self.windowmain.createWaypointEditor(WaypointEditor,self.waypoint, parent=self)
 		self.windowmain.on_calendar_selected(None)
 		self.refreshMainSportList()
 		self.windowmain.run()
@@ -206,9 +190,11 @@ class pyTrainer:
 
 	def runExtension(self,extension,id):
 		logging.debug('>>')
+		print("Extension id: %s" % str(id))
+		activity = self.activitypool.get_activity(id)
 		txtbutton,pathExtension,type = extension
 		self.extensionClass = self.extension.importClass(pathExtension)
-		self.extensionClass.run(id)
+		self.extensionClass.run(id, activity)
 		#if type == "record":
 		#	#Si es record le tenemos que crear el googlemaps, el gpx y darle el id de la bbdd
 		#	alert = self.extension.runExtension(pathExtension,id)
@@ -469,8 +455,6 @@ class pyTrainer:
 		logging.debug('>>')
 		logging.info('Checking database integrity')
 		self.ddbb.checkDBIntegrity()
-		#logging.info('Checking configuration file integrity')
-		#self.profile.checkProfile()
 		logging.info('Setting DB version to: ' + str(self.DB_version))
 		self.profile.setValue("pytraining","DB_version", str(self.DB_version))
 		logging.debug('<<')

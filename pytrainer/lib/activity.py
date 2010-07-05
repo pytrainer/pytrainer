@@ -22,6 +22,7 @@ from lxml import etree
 import dateutil.parser
 from dateutil.tz import * # for tzutc()
 
+from pytrainer.lib.date import Date
 from pytrainer.lib.gpx import Gpx
 from pytrainer.lib.graphdata import GraphData
 from pytrainer.lib.unitsconversor import *
@@ -38,6 +39,7 @@ class Activity:
 	distance_unit	- (string) unit to use for distance
 	speed_unit		- (string) unit to use for speed
 	height_unit		- (string) unit to use for height
+	pace_unit		- (string) unit to use for pace
 	gpx_file		- (string) gpx file name
 	gpx				- (Gpx class) actual gpx instance
 	sport_name		- (string) sport name
@@ -45,6 +47,7 @@ class Activity:
 	title			- (string) title of activity
 	date			- (string) date of activity
 	time			- (int) activity duration in seconds
+	time_tuple		- (tuple) activity duration as hours, min, secs tuple
 	beats			- (int) average heartrate for activity
 	maxbeats 		- (int) maximum heartrate for activity
 	comments		- (string) activity comments
@@ -136,6 +139,7 @@ class Activity:
 			self.title = dict['title']
 			self.date = dict['date']
 			self.time = self._int(dict['time'])
+			self.time_tuple = Date().second2time(self.time)
 			self.beats = self._int(dict['beats'])
 			self.comments = dict['comments']
 			self.calories = self._int(dict['calories'])

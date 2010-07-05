@@ -37,14 +37,14 @@ class wordpress:
 		self.options = options
 		self.conf_dir = conf_dir
 
-	def run(self, id):
+	def run(self, id, activity=None):
 		#Show user something is happening
 		msg = _("Posting to Wordpress blog")
 		md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_NONE, msg)
 		md.set_title(_("Wordpress Extension Processing"))
 		md.set_modal(True)
 		md.show()
-		while gtk.events_pending():	# This allows the GUI to update 
+		while gtk.events_pending():	# This allows the GUI to update
 			gtk.main_iteration()	# before completion of this entire action
 		logging.debug("before request posting")
 		options = self.options
@@ -53,11 +53,12 @@ class wordpress:
 		self.password = options["wordpresspass"]
 		self.gpxfile = "%s/gpx/%s.gpx" %(self.conf_dir,id)
 		self.googlekey = options["googlekey"]
-		self.idrecord = id #options.idrecord
+		self.idrecord = id
+		self.activity = activity
 		self.wordpresscategory = options["wordpresscategory"]
-		debug_msg = "%s, %s, %s, %s, %s, %s" % (self.wordpressurl, self.user, self.gpxfile, self.googlekey, self.idrecord, self.wordpresscategory) 
+		debug_msg = "%s, %s, %s, %s, %s, %s" % (self.wordpressurl, self.user, self.gpxfile, self.googlekey, self.idrecord, self.wordpresscategory)
 		logging.debug(debug_msg)
-		try: 
+		try:
 			self.wp = wordpresslib.WordPressClient(self.wordpressurl, self.user, self.password)	#TODO remove need for wordpresslib??
 			self.error = False
 		except:
@@ -66,58 +67,59 @@ class wordpress:
 		self.loadRecordInfo()
 		if self.title is None:
 			self.title = "No Title"
+		blog_table = self.createTable()
 		blog_route = self.createRoute()
 		blog_body = self.createBody()
-		blog_table = self.createTable()
+
 		blog_figureHR = self.createFigureHR()
 		blog_figureStage = self.createFigureStage()
 		blog_foot = self.createFoot()
-		
+
 		self.description = "<![CDATA["+blog_body+blog_table+blog_route+blog_figureHR+blog_figureStage+blog_foot+"]]>"
-		xmlstuff = '''<methodCall> 
-<methodName>metaWeblog.newPost</methodName> 
-<params> 
-<param> 
-<value> 
-<string>MyBlog</string> 
-</value> 
-</param> 
-<param> 
-<value>%s</value> 
-</param> 
-<param> 
-<value> 
-<string>%s</string> 
-</value> 
-</param> 
-<param> 
-<struct> 
-<member> 
-<name>categories</name> 
-<value> 
-<array> 
-<data>
-<value>%s</value> 
-</data> 
-</array> 
-</value> 
-</member> 
-<member> 
-<name>description</name> 
+		xmlstuff = '''<methodCall>
+<methodName>metaWeblog.newPost</methodName>
+<params>
+<param>
+<value>
+<string>MyBlog</string>
+</value>
+</param>
+<param>
 <value>%s</value>
-</member> 
-<member> 
-<name>title</name> 
-<value>%s</value> 
-</member> 
-</struct> 
-</param> 
+</param>
+<param>
+<value>
+<string>%s</string>
+</value>
+</param>
+<param>
+<struct>
+<member>
+<name>categories</name>
+<value>
+<array>
+<data>
+<value>%s</value>
+</data>
+</array>
+</value>
+</member>
+<member>
+<name>description</name>
+<value>%s</value>
+</member>
+<member>
+<name>title</name>
+<value>%s</value>
+</member>
+</struct>
+</param>
 <param>
  <value>
   <boolean>1</boolean>
  </value>
-</param> 
-</params> 
+</param>
+</params>
 </methodCall>
 ''' % (self.user, self.password, self.wordpresscategory,  self.description, self.title)
 
@@ -138,7 +140,7 @@ class wordpress:
 		md.set_modal(False)
 		md.run()
 		md.destroy()
-	
+
 	def createRoute(self):
 		gpxpath = "/tmp/gpstrace.gpx.txt"
 		htmlpath = "/tmp/index.html" 	#TODO fix to use correct tmp dir
@@ -150,8 +152,8 @@ class wordpress:
 			#create the html file
 			googlemaps.drawMap(self.gpxfile,self.googlekey,htmlpath)	#TODO fix to use main googlemaps and remove extensions copy
 			#create the kml file
-			os.system("gpsbabel -t -i gpx -f %s -o kml,points=0,line_color=ff0000ff -F %s" %(self.gpxfile,kmlpath))	#TODO fix to remove gpsbabel 
-			
+			os.system("gpsbabel -t -i gpx -f %s -o kml,points=0,line_color=ff0000ff -F %s" %(self.gpxfile,kmlpath))	#TODO fix to remove gpsbabel
+
 			#gfile = self.wp.newMediaObject(self.gpxfile)
 			gfile = self.wp.newMediaObject(gpxpath)
 			hfile = self.wp.newMediaObject(htmlpath)
@@ -163,28 +165,33 @@ class wordpress:
 		return description_route
 
 	def loadRecordInfo(self):
-		date = Date()
-		record = self.pytrainer_main.record.getrecordInfo(self.idrecord)[0]
+		#date = Date()
+		#record = self.pytrainer_main.record.getrecordInfo(self.idrecord)[0]
 		#"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc,date_time_local",
-		self.sport = record[0]
-		self.date = record[1]
-		self.distance = record[2]
-		self.time = date.second2time(float(record[3]))
-		self.beats = record[4]
-		self.comments = record[5]
-		self.average = record[6]
-		self.calories = record[7]
-		self.title = record[9]
-		self.upositive = record[10]
-		self.unegative = record[11]
-		self.maxspeed = record[12]
-		self.maxpace = record[13]
-		self.pace = record[14]
-		self.maxbeats = record[15]
+		self.sport = self.activity.sport_name
+		self.date = self.activity.date
+		self.distance = self.activity.distance
+		self.time = "%d:%02d:%02d" % (self.activity.time_tuple)
+		print self.time
+		self.beats = self.activity.beats
+		self.comments = self.activity.comments
+		self.average = self.activity.average
+		self.calories = self.activity.calories
+		self.title = self.activity.title
+		self.upositive = self.activity.upositive
+		self.unegative = self.activity.unegative
+		self.maxspeed = self.activity.maxspeed
+		self.maxpace = self.activity.maxpace
+		self.pace = self.activity.pace
+		self.maxbeats = self.activity.maxbeats
+		self.distance_unit = self.activity.distance_unit
+		self.speed_unit = self.activity.speed_unit
+		self.pace_unit = self.activity.pace_unit
+		self.height_unit = self.activity.height_unit
 
 	def createBody(self):
-		return '''<b> Description: </b><br/>%s<br/>''' %self.comments
-	
+		return '''<b> Description: </b><br/>%s<br/>''' %self.activity.comments
+
 	def createTable(self):
 		description_table = '''
 			<br/>
@@ -196,22 +203,22 @@ class wordpress:
 					<td>%s</td>
 				</tr>
 				<tr>
-					<td><strong>Distance:</strong></td>
-					<td>%s</td>
-					<td><strong>Time (hh, mm, ss):</strong></td>
-					<td>%s</td>
-				</tr>
-				<tr>
-					<td><strong>Max speed:</strong></td>
-					<td>%s</td>
-					<td><strong>Avg speed (km/h):</strong></td>
+					<td><strong>Distance (%s):</strong></td>
+					<td>%.2f</td>
+					<td><strong>Time (hh:mm:ss):</strong></td>
 					<td>%s</td>
 				</tr>
 				<tr>
-					<td><strong>Max pace (min/km):</strong></td>
-					<td>%s</td>
-					<td><strong>Avg pace (min/km):</strong></td>
-					<td>%s</td>
+					<td><strong>Max speed (%s):</strong></td>
+					<td>%.2f</td>
+					<td><strong>Avg speed (%s):</strong></td>
+					<td>%.2f</td>
+				</tr>
+				<tr>
+					<td><strong>Max pace (%s):</strong></td>
+					<td>%.2f</td>
+					<td><strong>Avg pace (%s):</strong></td>
+					<td>%.2f</td>
 				</tr>
 				<tr>
 					<td><strong>Max pulse:</strong></td>
@@ -220,13 +227,16 @@ class wordpress:
 					<td>%s</td>
 				</tr>
 				<tr>
-					<td><strong>Acc elevation +:</strong></td>
-					<td>%s</td>
-					<td><strong>Acc elevation -:</strong></td>
-					<td>%s</td>
+					<td><strong>Acc elevation (+%s):</strong></td>
+					<td>%.2f</td>
+					<td><strong>Acc elevation (-%s):</strong></td>
+					<td>%.2f</td>
 				</tr>
-			</table>					
-			''' %(self.sport,self.date,self.distance,self.time,self.maxspeed,self.average,self.maxpace,self.pace,self.maxbeats,self.beats,self.upositive,self.unegative)
+			</table>
+			''' %(	self.sport, self.date, self.distance_unit, self.distance, self.time, self.speed_unit, self.maxspeed,
+					self.speed_unit, self.average, self.pace_unit, self.maxpace,self.pace_unit, self.pace,
+					self.maxbeats, self.beats, self.height_unit, self.upositive, self.height_unit, self.unegative)
+		print description_table
 		return description_table
 
 	def createFigureHR(self):
@@ -251,13 +261,13 @@ class wordpress:
 
 	def createFoot(self):
 		return ''' <br/><center>Powered by <a href='http://sourceforge.net/projects/pytrainer/'>Pytrainer</a></center>'''
-	
+
 	def createTitle(self):
 		if self.title==None:
 			self.error = True
 			self.log = "A Title must be defined. Please, configure the record properly"
 		return self.title
-	
+
 	def createCategory(self):
 		if self.wordpresscategory==None:
 			self.error = True

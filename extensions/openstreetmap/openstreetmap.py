@@ -19,7 +19,7 @@ class openstreetmap:
 		self.tags = ""
 		self.visibility = "private"
 
-	def run(self, id):
+	def run(self, id, activity=None):  #TODO Convert to use activity...
 		logging.debug(">>")
 		uri = "http://api.openstreetmap.org/api/0.6/gpx/create" #URI for uploading traces to OSM
 		if 'username' not in self.options or self.options['username'] == "" or 'password' not in self.options or self.options['password'] == "":
@@ -50,7 +50,7 @@ class openstreetmap:
 			self.display_options_window()
 			fields = (("description",self.description), ("tags",self.tags), ("visibility",self.visibility))
 			logging.debug("Added fields: %s" % str(fields))
-			#Multipart encode the request 
+			#Multipart encode the request
 			boundary, body = self.multipart_encode(fields=fields, files=(("file", f),))
 			content_type = 'multipart/form-data; boundary=%s' % boundary
 			#Finished with the file so close it
@@ -68,7 +68,7 @@ class openstreetmap:
 			md.set_title(_("Openstreetmap Extension Processing"))
 			md.set_modal(True)
 			md.show()
-			while gtk.events_pending():	# This allows the GUI to update 
+			while gtk.events_pending():	# This allows the GUI to update
 				gtk.main_iteration()	# before completion of this entire action
 			logging.debug("before request posting")
 			#POST request to OSM
@@ -91,44 +91,44 @@ class openstreetmap:
 		else:
 			logging.error("GPX file: %s NOT found!!!" % (gpx_file))
 		logging.debug("<<")
-		
+
 	def display_options_window(self):
 		self.prefwindow = gtk.Dialog(title=_("Please add any additional information for this upload"), parent=None, flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 		self.prefwindow.set_modal(False)
 		table = gtk.Table(1,2)
 		self.entryList = []
-		#Add description 
+		#Add description
 		label = gtk.Label("<b>Description</b>")
 		label.set_use_markup(True)
 		entry = gtk.Entry()
 		self.entryList.append(entry)
-		table.attach(label,0,1,0,1)	
+		table.attach(label,0,1,0,1)
 		table.attach(entry,1,2,0,1)
 		#Add tags
 		label = gtk.Label("<b>Tags</b>")
 		label.set_use_markup(True)
 		entry = gtk.Entry()
-		self.entryList.append(entry)	
+		self.entryList.append(entry)
 		table.attach(label,0,1,1,2)
 		table.attach(entry,1,2,1,2)
 		#Add visibility
 		label = gtk.Label("<b>Visibility</b>")
 		label.set_use_markup(True)
 		combobox = gtk.combo_box_new_text()
-		combobox.append_text("private")	
+		combobox.append_text("private")
 		combobox.append_text("public")
-		combobox.append_text("trackable")	
+		combobox.append_text("trackable")
 		combobox.append_text("identifiable")
 		combobox.set_active(0)
 		table.attach(combobox,1,2,2,3)
-		self.entryList.append(combobox)	
+		self.entryList.append(combobox)
 		table.attach(label,0,1,2,3)
 		#Buld dialog and show
 		self.prefwindow.vbox.pack_start(table)
 		self.prefwindow.show_all()
 		self.prefwindow.connect("response", self.on_options_ok_clicked)
 		self.prefwindow.run()
-		
+
 	def on_options_ok_clicked(self, widget, response_id):
 		widget.destroy()
 		self.description = self.entryList[0].get_text()
@@ -138,7 +138,7 @@ class openstreetmap:
 		self.tags = self.entryList[1].get_text()
 		self.visibility = self.entryList[2].get_active_text()
 		logging.debug("Description: %s, tags: %s, visibility: %s" % ( self.description, self.tags, self.visibility) )
-		
+
 	def multipart_encode(self, fields, files, boundary = None, buffer = None):
 		'''
 			Multipart encode data for posting
