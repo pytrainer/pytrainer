@@ -80,7 +80,7 @@ class garmintools_full():
 			numError = self.getDeviceInfo()
 			if numError >= 0:
 				#TODO Remove Zenity below
-				outgps = commands.getstatusoutput("garmin_save_runs | zenity --progress --pulsate --text='Loading Data' auto-close")
+				outgps = commands.getstatusoutput("garmin_save_runs -v| zenity --progress --pulsate --text='Loading Data' --auto-close")
 				if outgps[0]==0:
 					# now we should have a lot of gmn (binary) files under $GARMIN_SAVE_RUNS
 					foundFiles = self.searchFiles(self.tmpdir, "gmn")
