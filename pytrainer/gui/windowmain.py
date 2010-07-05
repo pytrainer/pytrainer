@@ -35,6 +35,15 @@ from pytrainer.extensions.googlemaps import Googlemaps
 from pytrainer.extensions.osm import Osm
 from pytrainer.lib.unitsconversor import *
 
+from pytrainer.recordgraph import RecordGraph
+from pytrainer.daygraph import DayGraph
+from pytrainer.weekgraph import WeekGraph
+from pytrainer.monthgraph import MonthGraph
+from pytrainer.yeargraph import YearGraph
+from pytrainer.heartrategraph import HeartRateGraph
+from pytrainer.extensions.mapviewer import MapViewer
+from pytrainer.extensions.waypointeditor import WaypointEditor
+
 class Main(SimpleGladeApp):
 	def __init__(self, data_path = None, parent = None, version = None, gpxDir = None):
 		def url_hook(dialog, url):
@@ -96,6 +105,13 @@ class Main(SimpleGladeApp):
 			self.radiobuttonOSM.set_active(1)
 		else:
 			self.radiobuttonGMap.set_active(1)
+
+	def setup(self):
+		self.createGraphs(RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph)
+		self.createMap(MapViewer,self.pytrainer_main.waypoint)
+		self.createWaypointEditor(WaypointEditor,self.pytrainer_main.waypoint, parent=self.pytrainer_main)
+		page = self.notebook.get_current_page()
+		self.on_page_change(None,None,page)
 
 	def set_unified_import(self, status=False):
 		self.menu_importdata.set_sensitive(status)

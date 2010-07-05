@@ -37,6 +37,13 @@ class ActivityPool:
 		logging.debug("Initialising ActivityPool to size: %d" % size)
 		logging.debug("<<")
 
+	def clear_pool(self):
+		logging.debug(">>")
+		logging.debug("Clearing ActivityPool")
+		self.pool = {}
+		self.pool_queue = []
+		logging.debug("<<")
+
 	def get_activity(self, id):
 		sid = str(id)
 		if sid in self.pool.keys():

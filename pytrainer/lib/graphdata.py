@@ -44,7 +44,7 @@ class GraphData:
 
 	def addPoints(self, x=None, y=None):
 		if x is None or y is None:
-			logging.debug("Must supply both x and y data points, got x:'%s' y:'%s'" % (str(x), str(y)))
+			#logging.debug("Must supply both x and y data points, got x:'%s' y:'%s'" % (str(x), str(y)))
 			return
 		#print('Adding point: %s %s' % (str(x), str(y)))
 		self.x_values.append(x)

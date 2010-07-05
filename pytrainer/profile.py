@@ -216,6 +216,8 @@ class Profile:
 			#Added a property, so update config
 			if config_needs_update:
 				self.setProfile(config)
+			#Set shorthand var for units of measurement
+			self.prf_us_system = True if config["prf_us_system"] == "True" else False
 			return config
 		except Exception as e:
 			logging.error("Error parsing file: %s. Exiting" % config_file)
@@ -325,6 +327,7 @@ class Profile:
 		logging.debug("setting data values")
 		profilewindow.setValues(self.configuration)
 		profilewindow.run()
+		self.configuration = self._parse_config_file(self.config_file)
 		logging.debug("<<")
 
 	def actualize_mainsportlist(self):

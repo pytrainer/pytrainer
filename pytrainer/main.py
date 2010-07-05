@@ -38,15 +38,15 @@ from extension import Extension
 from importdata import Importdata
 from plugins import Plugins
 from profile import Profile
-from recordgraph import RecordGraph
-from daygraph import DayGraph
-from weekgraph import WeekGraph
-from monthgraph import MonthGraph
-from yeargraph import YearGraph
-from heartrategraph import HeartRateGraph
+#from recordgraph import RecordGraph
+#from daygraph import DayGraph
+#from weekgraph import WeekGraph
+#from monthgraph import MonthGraph
+#from yeargraph import YearGraph
+#from heartrategraph import HeartRateGraph
 
-from extensions.mapviewer import MapViewer
-from extensions.waypointeditor import WaypointEditor
+#from extensions.mapviewer import MapViewer
+#from extensions.waypointeditor import WaypointEditor
 from gui.windowimportdata import WindowImportdata
 from gui.windowmain import Main
 from gui.warning import Warning
@@ -57,7 +57,7 @@ from lib.ddbb import DDBB
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
 		#Version constants
-		self.version ="1.7.2_svn#598"
+		self.version ="1.7.2_svn#600"
 		self.DB_version = 3
 		#Process command line options
 		self.startup_options = self.get_options()
@@ -72,10 +72,10 @@ class pyTrainer:
 		self.profile = Profile(self.data_path,self)
 		self.windowmain = None
 
-		if self.profile.getValue("pytraining","prf_us_system") == "True": #TODO perhaps move to use dict?
-			self.prf_us_system = True
-		else:
-			self.prf_us_system = False
+		#if self.profile.getValue("pytraining","prf_us_system") == "True": #TODO perhaps move to use dict?
+		#	self.prf_us_system = True
+		#else:
+		#	self.prf_us_system = False
 		self.ddbb = DDBB(self.profile)
 		logging.debug('connecting to DDBB')
 		self.ddbb.connect()
@@ -104,9 +104,10 @@ class pyTrainer:
 		self.importdata = Importdata(data_path, self, self.profile)
 		self.loadPlugins()
 		self.loadExtensions()
-		self.windowmain.createGraphs(RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph)
-		self.windowmain.createMap(MapViewer,self.waypoint)
-		self.windowmain.createWaypointEditor(WaypointEditor,self.waypoint, parent=self)
+		self.windowmain.setup()
+		#self.windowmain.createGraphs(RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph)
+		#self.windowmain.createMap(MapViewer,self.waypoint)
+		#self.windowmain.createWaypointEditor(WaypointEditor,self.waypoint, parent=self)
 		self.windowmain.on_calendar_selected(None)
 		self.refreshMainSportList()
 		self.windowmain.run()
@@ -244,7 +245,7 @@ class pyTrainer:
 			 #selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
 		elif view=="week":
 			 logging.debug('week view')
-			 date_ini, date_end = self.date.getWeekInterval(date_selected, self.prf_us_system)
+			 date_ini, date_end = self.date.getWeekInterval(date_selected, self.profile.prf_us_system)
 			 sport = self.windowmain.getSportSelected()
 			 record_list = self.record.getrecordPeriod(date_ini, date_end, sport)
 			 self.windowmain.actualize_weekview(record_list, date_ini, date_end)
@@ -456,6 +457,8 @@ class pyTrainer:
 	def editProfile(self):
 		logging.debug('>>')
 		self.profile.editProfile()
+		self.activitypool.clear_pool()
+		self.windowmain.setup()
 		logging.debug('<<')
 
 	def sanityCheck(self):
