@@ -236,7 +236,6 @@ class wordpress:
 			''' %(	self.sport, self.date, self.distance_unit, self.distance, self.time, self.speed_unit, self.maxspeed,
 					self.speed_unit, self.average, self.pace_unit, self.maxpace,self.pace_unit, self.pace,
 					self.maxbeats, self.beats, self.height_unit, self.upositive, self.height_unit, self.unegative)
-		print description_table
 		return description_table
 
 	def createFigureHR(self):
