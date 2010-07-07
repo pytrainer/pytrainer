@@ -135,6 +135,17 @@
                           </widget>
                         </child>
                         <child>
+                          <widget class="GtkRadioMenuItem" id="athleteview_item">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes"> _Athlete Data</property>
+                            <property name="use_underline">True</property>
+                            <property name="draw_as_radio">True</property>
+                            <property name="group">classicview_item</property>
+                            <signal name="activate" handler="on_athleteview_activate"/>
+                            <accelerator key="a" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                          </widget>
+                        </child>
+                        <child>
                           <widget class="GtkRadioMenuItem" id="waipointsview_item">
                             <property name="visible">True</property>
                             <property name="label" translatable="yes"> _Waypoints Editor</property>
@@ -5070,7 +5081,6 @@ Calories</property>
                             <child>
                               <widget class="GtkVBox" id="equipview">
                                 <property name="visible">True</property>
-                                <property name="sensitive">True</property>
                                 <child>
                                   <widget class="GtkHBox" id="hbox6">
                                     <property name="visible">True</property>
@@ -5090,7 +5100,6 @@ Calories</property>
                                     <child>
                                       <widget class="GtkComboBoxEntry" id="record_combovalue1">
                                         <property name="visible">True</property>
-                                        <property name="sensitive">True</property>
                                         <property name="items" translatable="yes">Running shoes
 GPS watch
 T-shirts
@@ -5162,12 +5171,8 @@ Socks</property>
                   </widget>
                 </child>
                 <child>
-                  <widget class="GtkLabel" id="label154">
-                    <property name="visible">True</property>
-                    <property name="label">label154</property>
-                  </widget>
+                  <placeholder/>
                   <packing>
-                    <property name="tab_fill">False</property>
                     <property name="type">tab</property>
                   </packing>
                 </child>
@@ -5287,13 +5292,8 @@ Socks</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkLabel" id="llllll">
-                    <property name="visible">True</property>
-                    <property name="label">label155</property>
-                  </widget>
+                  <placeholder/>
                   <packing>
-                    <property name="position">1</property>
-                    <property name="tab_fill">False</property>
                     <property name="type">tab</property>
                   </packing>
                 </child>
@@ -5570,13 +5570,227 @@ Summit</property>
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkLabel" id="label-46">
+                  <placeholder/>
+                  <packing>
+                    <property name="type">tab</property>
+                  </packing>
+                </child>
+                <child>
+                  <widget class="GtkHBox" id="athletearea">
                     <property name="visible">True</property>
-                    <property name="label">label-2147483648</property>
+                    <child>
+                      <widget class="GtkVBox" id="vbox1">
+                        <property name="visible">True</property>
+                        <child>
+                          <widget class="GtkFrame" id="frame3">
+                            <property name="visible">True</property>
+                            <property name="label_xalign">0</property>
+                            <child>
+                              <widget class="GtkAlignment" id="alignment9">
+                                <property name="visible">True</property>
+                                <property name="left_padding">12</property>
+                                <child>
+                                  <widget class="GtkTable" id="table2">
+                                    <property name="visible">True</property>
+                                    <property name="n_rows">2</property>
+                                    <property name="n_columns">4</property>
+                                    <child>
+                                      <widget class="GtkLabel" id="label21">
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1</property>
+                                        <property name="label" translatable="yes">Name:</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="x_options">GTK_FILL</property>
+                                        <property name="x_padding">5</property>
+                                        <property name="y_padding">5</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkLabel" id="label22">
+                                        <property name="visible">True</property>
+                                        <property name="xalign">1</property>
+                                        <property name="label" translatable="yes">Date of birth:</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="top_attach">1</property>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="x_options">GTK_FILL</property>
+                                        <property name="x_padding">5</property>
+                                        <property name="y_padding">5</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkLabel" id="label23">
+                                        <property name="visible">True</property>
+                                        <property name="label" translatable="yes">Height:</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="left_attach">2</property>
+                                        <property name="right_attach">3</property>
+                                        <property name="top_attach">1</property>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="x_options">GTK_FILL</property>
+                                        <property name="x_padding">5</property>
+                                        <property name="y_padding">5</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkLabel" id="labelName">
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0</property>
+                                        <property name="xpad">5</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">4</property>
+                                        <property name="x_options">GTK_FILL</property>
+                                        <property name="x_padding">10</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkLabel" id="labelDOB">
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0</property>
+                                        <property name="xpad">5</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="left_attach">1</property>
+                                        <property name="right_attach">2</property>
+                                        <property name="top_attach">1</property>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="x_options">GTK_FILL</property>
+                                        <property name="x_padding">10</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkLabel" id="labelHeight">
+                                        <property name="visible">True</property>
+                                        <property name="xalign">0</property>
+                                        <property name="xpad">5</property>
+                                      </widget>
+                                      <packing>
+                                        <property name="left_attach">3</property>
+                                        <property name="right_attach">4</property>
+                                        <property name="top_attach">1</property>
+                                        <property name="bottom_attach">2</property>
+                                        <property name="x_options">GTK_FILL</property>
+                                        <property name="x_padding">10</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                </child>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label20">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">&lt;b&gt;Athlete Details&lt;/b&gt;</property>
+                                <property name="use_markup">True</property>
+                              </widget>
+                              <packing>
+                                <property name="type">label_item</property>
+                              </packing>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="padding">6</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkFrame" id="frame6">
+                            <property name="visible">True</property>
+                            <property name="label_xalign">0</property>
+                            <child>
+                              <widget class="GtkAlignment" id="alignment13">
+                                <property name="visible">True</property>
+                                <property name="left_padding">12</property>
+                                <child>
+                                  <widget class="GtkHBox" id="hbox7">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkHBox" id="boxAthleteGraph">
+                                        <property name="visible">True</property>
+                                        <child>
+                                          <placeholder/>
+                                        </child>
+                                      </widget>
+                                      <packing>
+                                        <property name="position">1</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                </child>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label25">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">&lt;b&gt;Detail&lt;/b&gt;</property>
+                                <property name="use_markup">True</property>
+                              </widget>
+                              <packing>
+                                <property name="type">label_item</property>
+                              </packing>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="padding">5</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkFrame" id="frame5">
+                            <property name="visible">True</property>
+                            <property name="label_xalign">0</property>
+                            <child>
+                              <widget class="GtkAlignment" id="alignment12">
+                                <property name="visible">True</property>
+                                <property name="left_padding">12</property>
+                                <child>
+                                  <widget class="GtkVBox" id="boxAthleteHistory">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <placeholder/>
+                                    </child>
+                                  </widget>
+                                </child>
+                              </widget>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label24">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">&lt;b&gt;History&lt;/b&gt;</property>
+                                <property name="use_markup">True</property>
+                              </widget>
+                              <packing>
+                                <property name="type">label_item</property>
+                              </packing>
+                            </child>
+                          </widget>
+                          <packing>
+                            <property name="padding">5</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </widget>
+                      <packing>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
                   </widget>
                   <packing>
-                    <property name="position">2</property>
-                    <property name="tab_fill">False</property>
+                    <property name="position">3</property>
+                  </packing>
+                </child>
+                <child>
+                  <placeholder/>
+                  <packing>
                     <property name="type">tab</property>
                   </packing>
                 </child>
@@ -5733,7 +5947,7 @@ Summit</property>
         <property name="use_stock">False</property>
         <signal name="activate" handler="on_multiple_merge_ToDo"/>
         <child internal-child="image">
-          <widget class="GtkImage" id="image2">
+          <widget class="GtkImage" id="image3">
             <property name="visible">True</property>
             <property name="icon_name">document-properties</property>
           </widget>

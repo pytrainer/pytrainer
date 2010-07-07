@@ -245,6 +245,7 @@ class Activity:
 		for track in self.tracklist:
 			try:
 				pace = 60/track['velocity']
+				#pace = 0 if pace > 90 else pace
 			except:
 				pace = 0
 			if self.us_system:

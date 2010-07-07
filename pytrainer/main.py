@@ -49,7 +49,7 @@ from lib.ddbb import DDBB
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
 		#Version constants
-		self.version ="1.7.2_svn#603"
+		self.version ="1.7.2_svn#606"
 		self.DB_version = 3
 		#Process command line options
 		self.startup_options = self.get_options()
@@ -302,6 +302,15 @@ class pyTrainer:
 		self.windowmain.actualize_recordTreeView(record_list)
 		record_list = self.record.getRecordDayList(date)
 		self.windowmain.actualize_calendar(record_list)
+		logging.debug('<<')
+
+	def refreshAthleteView(self):
+		logging.debug('>>')
+		athletedata = {}
+		athletedata['prf_name'] = self.profile.getValue("pytraining","prf_name")
+		athletedata['prf_age'] = self.profile.getValue("pytraining","prf_age")
+		athletedata['prf_height'] = self.profile.getValue("pytraining","prf_height")
+		self.windowmain.actualize_athleteview(athletedata)
 		logging.debug('<<')
 
 	def refreshListView(self):

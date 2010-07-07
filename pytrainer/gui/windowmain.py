@@ -44,6 +44,8 @@ from pytrainer.heartrategraph import HeartRateGraph
 from pytrainer.extensions.mapviewer import MapViewer
 from pytrainer.extensions.waypointeditor import WaypointEditor
 
+from pytrainer.gui.drawGraph import DrawGraph
+
 class Main(SimpleGladeApp):
 	def __init__(self, data_path = None, parent = None, version = None, gpxDir = None):
 		def url_hook(dialog, url):
@@ -633,6 +635,23 @@ class Main(SimpleGladeApp):
 		self.drawareayear.drawgraph(record_list)
 		logging.debug("<<")
 
+	def actualize_athleteview(self, athletedata):
+		logging.debug(">>")
+		self.labelName.set_text(athletedata["prf_name"])
+		self.labelDOB.set_text(athletedata["prf_age"])
+		self.labelHeight.set_text(athletedata["prf_height"]+" cm")
+		#TODO
+		self.grapher = DrawGraph(self, self.pytrainer_main)
+		from pytrainer.lib.graphdata import GraphData
+		datalist = GraphData(title="Weight", xlabel="Date", ylabel="kg")
+		datalist.addPoints(x=1, y=67)
+		datalist.addPoints(x=2, y=92)
+		datalist.addPoints(x=3, y=90)
+		datalist.addPoints(x=4, y=76)
+		self.grapher.drawPlot(datalist=datalist, box=self.boxAthleteGraph)
+		#TODO
+		logging.debug("<<")
+
 	def actualize_listview(self,record_list):
 		logging.debug(">>")
 		#recod list tiene:
@@ -851,7 +870,7 @@ class Main(SimpleGladeApp):
 			#Hide options
 			self.hpaned1.set_position(0)
 			self.buttonShowOptions.set_tooltip_text(_('Show graph display options') )
-		logging.debug('Position: %d' % self.hpaned1.get_position() )
+		#logging.debug('Position: %d' % self.hpaned1.get_position() )
 		logging.debug('Position set: %s' % self.hpaned1.get_property('position-set') )
 
 	def on_buttonRedrawMap_clicked(self, widget):
@@ -1013,19 +1032,29 @@ class Main(SimpleGladeApp):
 	def on_classicview_activate(self,widget):
 		self.waypointarea.hide()
 		self.listarea.hide()
+		self.athletearea.hide()
 		self.selected_view = "record"
 		self.classicarea.show()
 
 	def on_listview_activate(self,widget):
 		self.waypointarea.hide()
 		self.classicarea.hide()
+		self.athletearea.hide()
 		self.selected_view = "listview"
 		self.parent.refreshListView()
 		self.listarea.show()
 
+	def on_athleteview_activate(self,widget):
+		self.waypointarea.hide()
+		self.classicarea.hide()
+		self.listarea.hide()
+		self.parent.refreshAthleteView()
+		self.athletearea.show()
+
 	def on_waypointsview_activate(self,widget):
 		self.listarea.hide()
 		self.classicarea.hide()
+		self.athletearea.hide()
 		self.parent.refreshWaypointView()
 		self.waypointarea.show()
 
