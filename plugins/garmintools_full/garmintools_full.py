@@ -146,15 +146,19 @@ class garmintools_full():
 					xmlString = f.read()
 				fileString = StringIO.StringIO("<root>"+xmlString+"</root>")
 				#parse string as xml
-				tree = etree.parse(fileString)
-				#if not self.inDatabase(tree, filename):
-				if not self.entryExists(tree, filename):
-					sport = self.getSport(tree)
-					gpxfile = "%s/garmintools-%d.gpx" % (self.tmpdir, len(importfiles))
-					self.createGPXfile(gpxfile, tree)
-					importfiles.append((gpxfile, sport))
-				else:
-					logging.debug("%s already present. Skipping import." % (filename,) )
+				try:
+					tree = etree.parse(fileString)
+					#if not self.inDatabase(tree, filename):
+					if not self.entryExists(tree, filename):
+						sport = self.getSport(tree)
+						gpxfile = "%s/garmintools-%d.gpx" % (self.tmpdir, len(importfiles))
+						self.createGPXfile(gpxfile, tree)
+						importfiles.append((gpxfile, sport))
+					else:
+						logging.debug("%s already present. Skipping import." % (filename,) )
+				except:
+					logging.error('Error parsing entry '+ str(filename))
+					traceback.print_exc()
 			else:
 				logging.error("File %s failed validation" % (filename))
 		logging.debug("<<")
