@@ -47,7 +47,11 @@ class openstreetmap:
 				f.close() 					#Close
 				f = open(gpx_file, 'r') 	#Reopen in readonly mode
 			#Get extra info from user
-			self.display_options_window()
+			response=self.display_options_window()
+			if not response==gtk.RESPONSE_ACCEPT:
+				f.close()
+				logging.debug("User abort")
+				return
 			fields = (("description",self.description), ("tags",self.tags), ("visibility",self.visibility))
 			logging.debug("Added fields: %s" % str(fields))
 			#Multipart encode the request
@@ -93,7 +97,7 @@ class openstreetmap:
 		logging.debug("<<")
 
 	def display_options_window(self):
-		self.prefwindow = gtk.Dialog(title=_("Please add any additional information for this upload"), parent=None, flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+		self.prefwindow = gtk.Dialog(title=_("Please add any additional information for this upload"), parent=None, flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
 		self.prefwindow.set_modal(False)
 		table = gtk.Table(1,2)
 		self.entryList = []
@@ -127,10 +131,13 @@ class openstreetmap:
 		self.prefwindow.vbox.pack_start(table)
 		self.prefwindow.show_all()
 		self.prefwindow.connect("response", self.on_options_ok_clicked)
-		self.prefwindow.run()
+		response=self.prefwindow.run()
+		self.prefwindow.destroy()
+		return response
 
 	def on_options_ok_clicked(self, widget, response_id):
-		widget.destroy()
+		if not response_id == gtk.RESPONSE_ACCEPT:
+			return response_id
 		self.description = self.entryList[0].get_text()
 		if self.description == "":
 			logging.debug("A description is required - setting to default")
