@@ -92,6 +92,9 @@ class Main(SimpleGladeApp):
 		#create the columns for the waypoints treeview
 		column_names=[_("id"),_("Waypoint")]
 		self.create_treeview(self.waypointTreeView,column_names)
+		#create the columns for the history treeview
+		column_names=[_("id"),_("Date"),_("Weight"),_("Body Fat %"),_("Resting HR"),_("Max HR")]
+		self.create_treeview(self.athleteTreeView,column_names)
 		self.fileconf = self.pytrainer_main.profile.confdir+"/listviewmenu.xml"
 		if not os.path.isfile(self.fileconf):
 			self._createXmlListView(self.fileconf)
@@ -640,16 +643,37 @@ class Main(SimpleGladeApp):
 		self.labelName.set_text(athletedata["prf_name"])
 		self.labelDOB.set_text(athletedata["prf_age"])
 		self.labelHeight.set_text(athletedata["prf_height"]+" cm")
-		#TODO
+		#Setup graph
 		self.grapher = DrawGraph(self, self.pytrainer_main)
 		from pytrainer.lib.graphdata import GraphData
 		datalist = GraphData(title="Weight", xlabel="Date", ylabel="kg")
-		datalist.addPoints(x=1, y=67)
-		datalist.addPoints(x=2, y=92)
-		datalist.addPoints(x=3, y=90)
-		datalist.addPoints(x=4, y=76)
-		self.grapher.drawPlot(datalist=datalist, box=self.boxAthleteGraph)
 		#TODO
+		#Create history treeview
+		history_store = gtk.ListStore(
+			gobject.TYPE_INT, 		#index
+			gobject.TYPE_STRING, 	#date
+			gobject.TYPE_STRING, 	#weight
+			gobject.TYPE_STRING, 	#body fat %
+			gobject.TYPE_INT, 		#resting HR
+			gobject.TYPE_INT 		#max HR
+			)
+		for data_index, data in enumerate(athletedata['history']):
+			weight = float(data['Weight'])
+			date = dateutil.parser.parse(data['Date']).date()
+
+			iter = history_store.append()
+			history_store.set (
+				iter,
+				0, data_index, 		
+				1, date,			#TODO need to sort date graphing...
+				2, "%0.2f" % weight,
+				3, "%0.2f" % float(data['BF']),
+				4, int(data['RestingHR']),
+				5, int(data['MaxHR']),
+				)
+			datalist.addPoints(x=date, y=weight)
+		self.athleteTreeView.set_model(history_store)
+		self.grapher.drawPlot(datalist=datalist, box=self.boxAthleteGraph)
 		logging.debug("<<")
 
 	def actualize_listview(self,record_list):
@@ -850,10 +874,47 @@ class Main(SimpleGladeApp):
 		logging.debug("Reseting graph Y axis with ylimits: %s" % str(y1limits) )
 		self.drawarearecord.drawgraph(self.record_list,self.laps, y1limits=y1limits, y1color=y1color, y1_linewidth=y1_linewidth)
 		logging.debug("<<")
+		
+	def update_athlete_item(self, idx, date, weight, bf, restingHR, maxHR):
+		logging.debug(">>")
+		#Prepare vars
+		idx = str(idx)
+		date = str(date)
+		weight = str(weight)
+		bf = str(bf)
+		restingHR = str(restingHR)
+		maxHR = str(maxHR)
+		#Set vars
+		self.labelAthleteIdx.set_text(idx)
+		self.entryAthleteDate.set_text(date)
+		self.entryAthleteWeight.set_text(weight)
+		self.entryAthleteBF.set_text(bf)
+		self.entryAthleteRestingHR.set_text(restingHR)
+		self.entryAthleteMaxHR.set_text(maxHR)
+		logging.debug("<<")
 
 	######################
 	## Lista de eventos ##
 	######################
+	
+	def on_athleteTreeView_button_press_event(self, treeview, event):
+		x = int(event.x)
+		y = int(event.y)
+		time = event.time
+		pthinfo = treeview.get_path_at_pos(x, y)
+		if pthinfo is not None:
+			path, col, cellx, celly = pthinfo
+			treeview.grab_focus()
+			treeview.set_cursor(path, col, 0)
+			selected,iter = treeview.get_selection().get_selected()
+			idx = selected.get_value(iter,0)
+			date = selected.get_value(iter,1)
+			weight = selected.get_value(iter,2)
+			bf = selected.get_value(iter,3)
+			restingHR = selected.get_value(iter,4)
+			maxHR = selected.get_value(iter,5)
+			self.update_athlete_item(idx, date, weight, bf, restingHR, maxHR)
+		#print path, col, cellx, celly
 
 	def on_window1_configure_event(self, widget, event):
 		#print widget #window widget

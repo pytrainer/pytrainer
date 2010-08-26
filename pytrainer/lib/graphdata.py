@@ -41,6 +41,27 @@ class GraphData:
 		if self.x_values is None:
 			return None
 		return len(self.x_values)
+		
+	def __str__(self):
+		return '''
+Title: %s
+ylabel: %s
+xlabel: %s
+linewidth: %d
+linecolor: %s
+x min max: %s %s
+y min max: %s %s
+x values: %s
+y values: %s''' % (self.title,
+	self.ylabel,
+	self.xlabel,
+	self.linewidth,
+	self.linecolor,
+	str(self.min_x_value), str(self.max_x_value),
+	str(self.min_y_value), str(self.max_y_value),
+	str(self.x_values),
+	str(self.y_values)
+	)
 
 	def addPoints(self, x=None, y=None):
 		if x is None or y is None:
@@ -49,11 +70,11 @@ class GraphData:
 		#print('Adding point: %s %s' % (str(x), str(y)))
 		self.x_values.append(x)
 		self.y_values.append(y)
-		if x > self.max_x_value:
+		if self.max_x_value is None or x > self.max_x_value:
 			self.max_x_value = x
 		if self.min_x_value is None or x < self.min_x_value:
 			self.min_x_value = x
-		if y > self.max_y_value:
+		if self.max_y_value is None or y > self.max_y_value:
 			self.max_y_value = y
 		if self.min_y_value is None or y < self.min_y_value:
 			self.min_y_value = y

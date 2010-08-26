@@ -49,7 +49,7 @@ from lib.ddbb import DDBB
 class pyTrainer:
 	def __init__(self,filename = None, data_path = None):
 		#Version constants
-		self.version ="1.7.2_svn#606"
+		self.version ="1.7.2_svn#609"
 		self.DB_version = 3
 		#Process command line options
 		self.startup_options = self.get_options()
@@ -310,6 +310,14 @@ class pyTrainer:
 		athletedata['prf_name'] = self.profile.getValue("pytraining","prf_name")
 		athletedata['prf_age'] = self.profile.getValue("pytraining","prf_age")
 		athletedata['prf_height'] = self.profile.getValue("pytraining","prf_height")
+		athletedata['history'] = (
+			{'Date':'2010-01-01', 'Weight':88.8, 'BF':15.0, 'RestingHR':67, 'MaxHR':220},
+			{'Date':'2010-02-01', 'Weight':89.8, 'BF':16.0, 'RestingHR':68, 'MaxHR':221},
+			{'Date':'2010-03-01', 'Weight':99.1, 'BF':13.0, 'RestingHR':65, 'MaxHR':212},
+			{'Date':'2010-04-01', 'Weight':79.5, 'BF':11.0, 'RestingHR':61, 'MaxHR':210},
+			{'Date':'2010-05-01', 'Weight':67.2, 'BF':13.0, 'RestingHR':60, 'MaxHR':205},
+			{'Date':'2010-06-01', 'Weight':83.8, 'BF':16.0, 'RestingHR':56, 'MaxHR':200},
+		)
 		self.windowmain.actualize_athleteview(athletedata)
 		logging.debug('<<')
 

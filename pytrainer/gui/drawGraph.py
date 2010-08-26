@@ -52,20 +52,20 @@ class DrawGraph:
 		#Debug info - to remove
 		print("drawPlot....")
 		#print datalist
-
+		
 		#Set up drawing area
 		figure = plt.figure()
 		canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
 		canvas.show()
-
-		#Plot data
-		data = datalist
-		plt.plot(data.x_values, data.y_values, linewidth=data.linewidth, color=data.linecolor )
-		#Set axis limits
-		plt.axis([0, data.max_x_value, data.min_y_value, data.max_y_value])
 		#Display title etc
-		plt.xlabel(data.xlabel)
-		plt.ylabel(data.ylabel)
+		plt.xlabel(datalist.xlabel)
+		plt.ylabel(datalist.ylabel)
+		plt.title(datalist.title)
+		#Plot data
+		plt.plot(datalist.x_values, datalist.y_values, linewidth=datalist.linewidth, color=datalist.linecolor )
+		#Set axis limits
+		plt.axis([datalist.min_x_value, datalist.max_x_value, datalist.min_y_value, datalist.max_y_value])
+
 		#axis.set_xlim(0, data.max_x_value)
 		#axis.set_ylim(0, data.max_y_value)
 
