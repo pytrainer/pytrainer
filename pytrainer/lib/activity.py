@@ -77,6 +77,7 @@ class Activity:
 			return
 		self.pytrainer_main = pytrainer_main
 		self.tracks = None
+		self.tracklist = None
 		self.laps = None
 		self.tree = None
 		self.has_data = False
@@ -214,6 +215,10 @@ class Activity:
 		logging.debug(">>")
 		self.distance_data = {}
 		self.time_data = {}
+		if self.tracklist is None:
+			logging.debug("No tracklist in activity")
+			logging.debug("<<")
+			return
 		#Profile
 		title=_("Elevation v Distance")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)

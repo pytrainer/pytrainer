@@ -49,39 +49,36 @@ class Googlemaps:
 		polyline = []
 
 		list_values = activity.tracks
-		if list_values != []:
-			if len(list_values) > 0:
-				minlat, minlon = float(list_values[0][4]),float(list_values[0][5])
-				maxlat=minlat
-				maxlon=minlon
-				for i in list_values:
-					lat, lon = float(i[4]), float(i[5])
-					minlat = min(minlat, lat)
-					maxlat = max(maxlat, lat)
-					minlon = min(minlon, lon)
-					maxlon = max(maxlon, lon)
-					pointlist.append((lat,lon))
-					polyline.append("new google.maps.LatLng(%s, %s)" % (lat, lon))
-				logging.debug("minlat: %s, maxlat: %s" % (minlat, maxlat))
-				logging.debug("minlon: %s, maxlon: %s" % (minlon, maxlon))
-				points,levels = Points.encodePoints(pointlist)
-				points = points.replace("\\","\\\\")
-				if self.pytrainer_main.startup_options.gm3:
-					logging.debug("Using Google Maps version 3 API")
-					laps = activity.laps
-					timeHours = int(activity.time) / 3600
-					timeMin = (float(activity.time) / 3600.0 - timeHours) * 60
-					time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
-					startinfo = "<div class='info_content'>%s: %s</div>" % (activity.sport_name, activity.title)
-					finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), activity.distance, activity.distance_unit)
-					startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
-					finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
-					self.createHtml_api3(polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps)
-				else:
-					logging.debug("Using Google Maps version 2 API")
-					self.createHtml(points,levels,pointlist[0])
+		if list_values is not None and list_values != [] and len(list_values) > 0:
+			minlat, minlon = float(list_values[0][4]),float(list_values[0][5])
+			maxlat=minlat
+			maxlon=minlon
+			for i in list_values:
+				lat, lon = float(i[4]), float(i[5])
+				minlat = min(minlat, lat)
+				maxlat = max(maxlat, lat)
+				minlon = min(minlon, lon)
+				maxlon = max(maxlon, lon)
+				pointlist.append((lat,lon))
+				polyline.append("new google.maps.LatLng(%s, %s)" % (lat, lon))
+			logging.debug("minlat: %s, maxlat: %s" % (minlat, maxlat))
+			logging.debug("minlon: %s, maxlon: %s" % (minlon, maxlon))
+			points,levels = Points.encodePoints(pointlist)
+			points = points.replace("\\","\\\\")
+			if self.pytrainer_main.startup_options.gm3:
+				logging.debug("Using Google Maps version 3 API")
+				laps = activity.laps
+				timeHours = int(activity.time) / 3600
+				timeMin = (float(activity.time) / 3600.0 - timeHours) * 60
+				time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
+				startinfo = "<div class='info_content'>%s: %s</div>" % (activity.sport_name, activity.title)
+				finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), activity.distance, activity.distance_unit)
+				startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
+				finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
+				self.createHtml_api3(polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps)
 			else:
-				self.createErrorHtml()
+				logging.debug("Using Google Maps version 2 API")
+				self.createHtml(points,levels,pointlist[0])
 		else:
 			self.createErrorHtml()
 		return self.htmlfile

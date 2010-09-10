@@ -35,26 +35,23 @@ class Osm:
 		polyline = []
 
 		list_values = activity.tracks
-		if list_values != []:
-			if len(list_values) > 0:
-				for i in list_values:
-					lat, lon = float(i[4]), float(i[5])
-					pointlist.append((lat,lon))
-					polyline.append("[%s, %s]" % (lon, lat))
-				points,levels = Points.encodePoints(pointlist)
-				points = points.replace("\\","\\\\")
-				laps = activity.laps
-				timeHours = int(activity.time) / 3600
-				timeMin = (float(activity.time) / 3600.0 - timeHours) * 60
-				time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
-				startinfo = "<div class='info_content'>%s: %s</div>" % (activity.sport_name, activity.title)
-				finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), activity.distance, activity.distance_unit)
-				startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
-				finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
+		if list_values is not None and list_values != [] and len(list_values) > 0:
+			for i in list_values:
+				lat, lon = float(i[4]), float(i[5])
+				pointlist.append((lat,lon))
+				polyline.append("[%s, %s]" % (lon, lat))
+			points,levels = Points.encodePoints(pointlist)
+			points = points.replace("\\","\\\\")
+			laps = activity.laps
+			timeHours = int(activity.time) / 3600
+			timeMin = (float(activity.time) / 3600.0 - timeHours) * 60
+			time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
+			startinfo = "<div class='info_content'>%s: %s</div>" % (activity.sport_name, activity.title)
+			finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), activity.distance, activity.distance_unit)
+			startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
+			finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
 
-				self.createHtml_osm(polyline, startinfo, finishinfo, laps)
-			else:
-				self.createErrorHtml()
+			self.createHtml_osm(polyline, startinfo, finishinfo, laps)
 		else:
 			self.createErrorHtml()
 		return self.htmlfile

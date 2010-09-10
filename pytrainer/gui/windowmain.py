@@ -270,7 +270,7 @@ class Main(SimpleGladeApp):
 		logging.debug(">>")
 		self.record_list = activity.tracks
 		self.laps = activity.laps
-		if len(self.record_list)>0:
+		if self.record_list is not None and len(self.record_list)>0:
 			self.record_vbox.set_sensitive(1)
 			self.drawarearecord.drawgraph(self.record_list,self.laps)
 		else:
@@ -288,7 +288,11 @@ class Main(SimpleGladeApp):
 
 	def actualize_heartrategraph(self,activity):
 		logging.debug(">>")
-		self.drawareaheartrate.drawgraph(activity.tracks)
+		if activity.tracks is not None and len(activity.tracks)>0:
+			self.heartrate_vbox_.set_sensitive(1)
+			self.drawareaheartrate.drawgraph(activity.tracks)
+		else:
+			self.heartrate_vbox_.set_sensitive(0)
 		logging.debug("<<")
 
 	def actualize_hrview(self,activity):
@@ -296,7 +300,7 @@ class Main(SimpleGladeApp):
 		zones = self.pytrainer_main.profile.getZones()
 		record_list = activity.tracks
 		is_karvonen_method = self.pytrainer_main.profile.getValue("pytraining","prf_hrzones_karvonen")
-		if len(record_list)>0:
+		if record_list is not None and len(record_list)>0:
 			record_list=record_list[0]
 			self.record_zone1.set_text("%s-%s" %(zones[4][0],zones[4][1]))
 			self.record_zone2.set_text("%s-%s" %(zones[3][0],zones[3][1]))
@@ -312,8 +316,8 @@ class Main(SimpleGladeApp):
 				self.record_zonesmethod.set_text(_("Karvonen method"))
 			else:
 				self.record_zonesmethod.set_text(_("Percentages method"))
-		else:
-			self.recordview.set_sensitive(0)
+		#else:
+		#	self.recordview.set_sensitive(0)
 		logging.debug("<<")
 
 	def actualize_dayview(self,record_list):
@@ -471,7 +475,10 @@ class Main(SimpleGladeApp):
 				tbeats = tbeats/time_in_min
 			else:
 				tbeats = 0
-			average = (km/(time/3600))
+			if km > 0:
+				average = (km/(time/3600))
+			else:
+				average = 0
 
 			if maxspeed > 0:
 				#maxpace = 60/maxspeed
@@ -546,7 +553,10 @@ class Main(SimpleGladeApp):
 				tbeats = tbeats/time_in_min
 			else:
 				tbeats = 0
-			average = (km/(time/3600))
+			if km > 0:
+				average = (km/(time/3600))
+			else:
+				average = 0
 
 			if maxspeed > 0:
 				#maxpace = 60/maxspeed
@@ -606,7 +616,10 @@ class Main(SimpleGladeApp):
 				tbeats = tbeats/time_in_min
 			else:
 				tbeats = 0
-			average = (km/(time/3600))
+			if km > 0:
+				average = (km/(time/3600))
+			else:
+				average = 0
 
 			if maxspeed > 0:
 				#maxpace = 60/maxspeed
