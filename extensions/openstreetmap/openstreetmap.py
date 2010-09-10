@@ -5,6 +5,9 @@ import sys
 import logging
 import gtk
 
+import string
+from lxml import etree
+
 import httplib, httplib2
 import urllib2
 import mimetools, mimetypes
@@ -38,6 +41,7 @@ class openstreetmap:
 			logging.debug("GPX file: %s found, size: %d" % (gpx_file, os.path.getsize(gpx_file)))
 			f = open(gpx_file, 'r')
 			file_contents = f.read()
+			#TODO Fix to use etree functionality.....
 			if file_contents.find("<?xml version='1.0' encoding='ASCII'?>") != -1:
 				logging.debug("GPX file: %s has ASCII encoding - updating to UTF-8 for OSM support" % gpx_file)
 				f.close() 					#Close readonly file
@@ -172,3 +176,100 @@ class openstreetmap:
 			buffer += '\r\n' + fd.read() + '\r\n'
 		buffer += '--%s--\r\n\r\n' % boundary
 		return boundary, buffer
+		
+	def make_gpx_private(self, gpx_file=None):
+		'''
+		wipes out private data from gpx files
+		converts laps to waypoints
+		'''
+		
+		if gpx_file is None:
+			return None
+		
+		filen = os.path.basename(gpx_file)
+		tmpdir = self.pytrainer_main.profile.tmpdir
+		anon_gpx_file = "%s/%s" % (tmpdir, filen)
+		
+		# Filtered home area, example Berlin
+		# corners NorthEast and SouthWest		
+		#TODO This needs to be a config item....
+		NE_LAT = 52.518
+		NE_LON = 13.408
+		SW_LAT = 52.4
+		SW_LON = 13.3
+
+		# Config parameters, not used yet
+		FILTER_BOX = True
+		ERASE_TIME  = True
+		LAP_TO_WAYPOINT = True
+
+		tree = etree.parse(gpx_file)
+		_xmlns = tree.getroot().nsmap[None]
+		_trkpt_path = '{%s}trk/{%s}trkseg/{%s}trkpt' % (_xmlns, _xmlns, _xmlns)
+		# namespace of gpx files
+		NS = dict(ns='http://www.topografix.com/GPX/1/1')
+
+		myroot =  tree.getroot()
+		gpxdataNS = string.Template(\
+			".//{http://www.cluetrust.com/XML/GPXDATA/1/0}$tag")
+		lapTag = gpxdataNS.substitute(tag="lap")
+		endPointTag = gpxdataNS.substitute(tag="endPoint")
+		triggerTag = gpxdataNS.substitute(tag="trigger")
+		laps = tree.findall(lapTag)
+
+		#new_waypoints=[]
+		mygpx = tree.find('gpx')
+
+		for lap in laps:
+			trigger = lap.find(triggerTag)
+			#  Watch out for manually triggered laps
+			if trigger.text == 'manual':
+				endPoint = lap.find(endPointTag)
+				lat = endPoint.get("lat")
+				lon = endPoint.get("lon")
+				print lat,lon
+				#new_waypoints.append([lat,lon])
+				#add waypoint
+				etree.SubElement(myroot, 'wpt', attrib= {'lat':lat, 'lon':lon})
+
+		etree.strip_attributes(myroot, 'creator')
+
+		# Wipe out home box
+		for trkpt in tree.findall(_trkpt_path):
+			lat = float(trkpt.attrib['lat'])
+			lon = float(trkpt.attrib['lon'])
+			#print lat, lon
+			if (lat < NE_LAT) & (lon < NE_LON) & (lat > SW_LAT) & (lon > SW_LON):
+				#print lat,lon
+				par = trkpt.getparent()
+				par.remove(trkpt)
+
+
+		time = tree.xpath('//ns:trkpt/ns:time', namespaces=NS)
+		for i in time:
+			i.text = '1970-01-01T00:00:00+00:00'
+			# osm regards <time> as mandatory. gnaa.
+
+		ext = tree.xpath('//ns:gpx/ns:extensions', namespaces=NS)
+		for i in ext:
+			par = i.getparent()
+			par.remove(i)
+		meta = tree.xpath('//ns:gpx/ns:metadata', namespaces=NS)
+		for i in meta:
+			par = i.getparent()
+			par.remove(i)
+		ele = tree.xpath('//ns:trkpt/ns:ele', namespaces=NS)
+		for i in ele:
+			par = i.getparent()
+			par.remove(i)
+
+		# test schema on cleaned xml-tree
+		# gpx.xsd from http://www.topografix.com/gpx.asp
+
+		#xmlschema = etree.XMLSchema(etree.parse('gpx.xsd'))
+		#xmlschema.validate(tree)
+
+		# write new gpx file
+		write(anon_gpx_file, pretty_print=False, xml_declaration=True, encoding='UTF-8')
+		return anon_gpx_file
+
