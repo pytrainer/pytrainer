@@ -21,6 +21,7 @@ import logging
 import gtk, gobject
 from SimpleGladeApp import SimpleGladeApp
 from windowcalendar import WindowCalendar
+
 from filechooser import FileChooser
 from pytrainer.lib.date import Date
 import dateutil.parser
@@ -504,8 +505,16 @@ class WindowRecord(SimpleGladeApp):
 		distance = float(self.rcd_distance.get_text())
 		if distance<1:
 			return False
+		#Calc Pace 
 		average = time_in_min/distance
-		self.rcd_pace.set_text("%0.2f" %average)
+		#Tranform pace to mm.ss
+		min = int(average)
+		per_min = average - min
+		sec = float(per_min) * 60 / 100
+		dec_pace = min + sec
+		#Transform pace to mm:ss
+		pace = self.parent.pace_from_float(dec_pace)
+		self.rcd_pace.set_text(pace)
 	
 	def on_calccalories_clicked(self,widget):
 		sport = self.rcd_sport.get_active_text()

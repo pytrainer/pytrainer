@@ -28,6 +28,7 @@ from SimpleGladeApp import *
 from popupmenu import PopupMenu
 from aboutdialog import About
 
+from pytrainer.record import Record
 from pytrainer.lib.date import Date
 from pytrainer.lib.xmlUtils import XMLParser
 #from pytrainer.lib.gpx import Gpx
@@ -244,8 +245,8 @@ class Main(SimpleGladeApp):
 			self.record_unegative.set_text("%0.2f" %activity.unegative)
 			self.record_average.set_text("%0.2f" %activity.average)
 			self.record_maxspeed.set_text("%0.2f" %activity.maxspeed)
-			self.record_pace.set_text("%0.2f" %activity.pace)
-			self.record_maxpace.set_text("%0.2f" %activity.maxpace)
+			self.record_pace.set_text(Record().pace_from_float(activity.pace))
+			self.record_maxpace.set_text(Record().pace_from_float(activity.maxpace))
 
 			self.record_sport.set_text(activity.sport_name)
 			#self.record_date.set_text(str(date))
@@ -344,8 +345,8 @@ class Main(SimpleGladeApp):
 			maxbeats = 0
 			maxspeed = 0
 			average = 0
-			maxpace = "0.00"
-			pace = "0.00"
+			maxpace = "0:00"
+			pace = "0:00"
 			for record in record_list:
 				distance += self.parseFloat(record[2])
 				calories += self.parseFloat(record[7])
@@ -367,9 +368,9 @@ class Main(SimpleGladeApp):
 			if distance > 0:
 				average = distance/(timeinseconds/60/60)
 			if maxspeed > 0:
-				maxpace = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
+				maxpace = "%d:%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 			if average > 0:
-				pace = "%d.%02d" %((3600/average)/60,(3600/average)%60)
+				pace = "%d:%02d" %((3600/average)/60,(3600/average)%60)
 
 			self.dayview.set_sensitive(1)
 			self.day_distance.set_text("%0.2f" %distance)
@@ -381,15 +382,15 @@ class Main(SimpleGladeApp):
 			self.day_maxbeats.set_text("%0.2f" %maxbeats)
 			self.day_average.set_text("%0.2f" %average)
 			self.day_maxspeed.set_text("%0.2f" %maxspeed)
-			self.day_pace.set_text(pace)
-			self.day_maxpace.set_text(maxpace)
+			self.day_pace.set_text("%s" %pace)
+			self.day_maxpace.set_text("%s" %maxpace)
 			self.day_calories.set_text("%0.0f" %calories)
 			self.day_topic.set_text(str(record[1]))
 
 		else:
 			self.dayview.set_sensitive(0)
 		logging.debug("<<")
-
+		
 	def actualize_daygraph(self,record_list):
 		logging.debug(">>")
 		if len(record_list)>0:
@@ -435,8 +436,8 @@ class Main(SimpleGladeApp):
 		time_in_min = 0
 		tbeats = 0
 		maxspeed = 0
-		pace = "0.00"
-		maxpace = "0.00"
+		pace = "0:00"
+		maxpace = "0:00"
 		maxbeats = 0
 
 		if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
@@ -482,10 +483,10 @@ class Main(SimpleGladeApp):
 
 			if maxspeed > 0:
 				#maxpace = 60/maxspeed
-				maxpace = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
+				maxpace = "%d:%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 			if average > 0:
 				#pace = 60/average
-				pace = "%d.%02d" %((3600/average)/60,(3600/average)%60)
+				pace = "%d:%02d" %((3600/average)/60,(3600/average)%60)
 
 			self.weeka_distance.set_text("%0.2f" %km)
 			hour,min,sec = self.parent.date.second2time(time)
@@ -513,8 +514,8 @@ class Main(SimpleGladeApp):
 		time_in_min = 0
 		tbeats = 0
 		maxspeed = 0
-		pace = "0.00"
-		maxpace = "0.00"
+		pace = "0:00"
+		maxpace = "0:00"
 		maxbeats = 0
 
 		if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
@@ -560,10 +561,10 @@ class Main(SimpleGladeApp):
 
 			if maxspeed > 0:
 				#maxpace = 60/maxspeed
-				maxpace = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
+				maxpace = "%d:%02d" %((3600/maxspeed)/60,float(3600/maxspeed)%60)
 			if average > 0:
 				#pace = 60/average
-				pace = "%d.%02d" %((3600/average)/60,(3600/average)%60)
+				pace = "%d:%02d" %((3600/average)/60,float(3600/average)%60)
 
 			self.montha_distance.set_text("%0.2f" %km)
 			hour,min,sec = self.parent.date.second2time(time)
@@ -595,8 +596,8 @@ class Main(SimpleGladeApp):
 		time_in_min = 0
 		tbeats = 0
 		maxspeed = 0
-		pace = "0.00"
-		maxpace = "0.00"
+		pace = "0:00"
+		maxpace = "0:00"
 		maxbeats = 0
 		if num_records>0:
 			for record in record_list:
@@ -623,10 +624,10 @@ class Main(SimpleGladeApp):
 
 			if maxspeed > 0:
 				#maxpace = 60/maxspeed
-				maxpace = "%d.%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
+				maxpace = "%d:%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
 			if average > 0:
 				#pace = 60/average
-				pace = "%d.%02d" %((3600/average)/60,(3600/average)%60)
+				pace = "%d:%02d" %((3600/average)/60,(3600/average)%60)
 
 			self.yeara_distance.set_text("%0.2f" %km)
 			hour,min,sec = self.parent.date.second2time(time)

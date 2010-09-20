@@ -43,7 +43,14 @@ class ActivityPool:
 		self.pool = {}
 		self.pool_queue = []
 		logging.debug("<<")
-
+		
+	def remove_activity(self, id):
+		sid = str(id)
+		if sid in self.pool.keys():
+			logging.debug("Found activity in pool")
+			self.pool_queue.remove(sid)
+			del self.pool[sid]
+			
 	def get_activity(self, id):
 		sid = str(id)
 		if sid in self.pool.keys():

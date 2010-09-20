@@ -107,11 +107,29 @@ class Record:
 			self.parseFloatRecord(list_options["rcd_unegative"]),
 			self.parseFloatRecord(list_options["rcd_maxvel"]),
 			self.parseFloatRecord(list_options["rcd_maxpace"]),
-			self.parseFloatRecord(list_options["rcd_pace"]),
-			self.parseFloatRecord(list_options["rcd_maxbeats"])
+			self.pace_to_float(list_options["rcd_pace"]),
+			self.pace_to_float(list_options["rcd_maxbeats"])
 			)
 		logging.debug('<<')
 		return cells,values
+		
+	def pace_to_float(self, value):
+		'''Take a mm:ss or mm.ss and return float'''
+		value = value.replace(':', '.')
+		try:
+			value = float(value)
+		except ValueError:
+			value = None
+		return value
+	
+	def pace_from_float(self, value):
+		'''Helper to generate mm:ss from float representation mm.ss (or mm,ss?)'''
+		#Check that value supplied is a float
+		try:
+			_value = "%0.2f" % float(value)
+		except ValueError:
+			_value = str(value)
+		return _value.replace('.',':')
 
 	def _formatRecordNew (self, list_options):
 		"""20.07.2008 - dgranda
@@ -141,8 +159,8 @@ class Record:
 			self.parseFloatRecord(list_options["rcd_upositive"]),
 			self.parseFloatRecord(list_options["rcd_unegative"]),
 			self.parseFloatRecord(list_options["rcd_maxvel"]),
-			self.parseFloatRecord(list_options["rcd_maxpace"]),
-			self.parseFloatRecord(list_options["rcd_pace"]),
+			self.pace_to_float(list_options["rcd_maxpace"]),
+			self.pace_to_float(list_options["rcd_pace"]),
 			self.parseFloatRecord(list_options["rcd_maxbeats"]),
 			list_options["date_time_utc"],
 			list_options["date_time_local"],
@@ -263,6 +281,8 @@ class Record:
 
 	def updateRecord(self, list_options, id_record):
 		logging.debug('>>')
+		#Remove activity from pool so data is updated
+		self.pytrainer_main.activitypool.remove_activity(id_record)
 		gpxfile = self.pytrainer_main.profile.gpxdir+"/%d.gpx"%int(id_record)
 		gpxOrig = list_options["rcd_gpxfile"]
 		if os.path.isfile(gpxOrig):
@@ -274,7 +294,7 @@ class Record:
 				logging.debug('updating bbdd') #ein?
 		cells,values = self._formatRecord(list_options)
 		self.pytrainer_main.ddbb.update("records",cells,values," id_record=%d" %int(id_record))
-		self.parent.refreshListView()
+		self.pytrainer_main.refreshListView()
 		logging.debug('<<')
 
 	def parseFloatRecord(self,string):
