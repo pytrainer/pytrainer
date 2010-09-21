@@ -63,7 +63,7 @@ class Activity:
 	maxspeed 		- (float) maximum speed obtained during activity
 	maxpace 		- (float) maxium pace obtained during activity
 	pace			- (float) average pace for activity
-	has_data		- (bool) true if gpx processed and instance has data populated
+	has_data		- (bool) true if instance has data populated
 	'''
 	def __init__(self, pytrainer_main = None, id = None):
 		logging.debug(">>")

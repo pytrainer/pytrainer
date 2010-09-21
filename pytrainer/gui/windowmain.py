@@ -271,19 +271,21 @@ class Main(SimpleGladeApp):
 		logging.debug(">>")
 		self.record_list = activity.tracks
 		self.laps = activity.laps
-		if self.record_list is not None and len(self.record_list)>0:
+		if activity.gpx_file is not None:
+			logging.debug("Activity has GPX data")
 			self.record_vbox.set_sensitive(1)
 			self.drawarearecord.drawgraph(self.record_list,self.laps)
 		else:
+			logging.debug("Activity has no GPX data")
 			#Remove graph
-			vboxChildren = self.record_vbox.get_children()
+			vboxChildren = self.record_graph_vbox.get_children()
 			logging.debug('Vbox has %d children %s' % (len(vboxChildren), str(vboxChildren) ))
 			# ToDo: check why vertical container is shared
 			for child in vboxChildren:
 				#Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
 				if isinstance(child, matplotlib.backends.backend_gtkagg.FigureCanvasGTK) or isinstance(child, matplotlib.backends.backend_gtkagg.NavigationToolbar2GTKAgg):
 					logging.debug('Removing child: '+str(child))
-					self.record_vbox.remove(child)
+					self.record_graph_vbox.remove(child)
 			self.record_vbox.set_sensitive(0)
 		logging.debug("<<")
 
@@ -390,7 +392,7 @@ class Main(SimpleGladeApp):
 		else:
 			self.dayview.set_sensitive(0)
 		logging.debug("<<")
-		
+
 	def actualize_daygraph(self,record_list):
 		logging.debug(">>")
 		if len(record_list)>0:
@@ -678,7 +680,7 @@ class Main(SimpleGladeApp):
 			iter = history_store.append()
 			history_store.set (
 				iter,
-				0, data_index, 		
+				0, data_index,
 				1, date,			#TODO need to sort date graphing...
 				2, "%0.2f" % weight,
 				3, "%0.2f" % float(data['BF']),
@@ -888,7 +890,7 @@ class Main(SimpleGladeApp):
 		logging.debug("Reseting graph Y axis with ylimits: %s" % str(y1limits) )
 		self.drawarearecord.drawgraph(self.record_list,self.laps, y1limits=y1limits, y1color=y1color, y1_linewidth=y1_linewidth)
 		logging.debug("<<")
-		
+
 	def update_athlete_item(self, idx, date, weight, bf, restingHR, maxHR):
 		logging.debug(">>")
 		#Prepare vars
@@ -910,7 +912,7 @@ class Main(SimpleGladeApp):
 	######################
 	## Lista de eventos ##
 	######################
-	
+
 	def on_athleteTreeView_button_press_event(self, treeview, event):
 		x = int(event.x)
 		y = int(event.y)
