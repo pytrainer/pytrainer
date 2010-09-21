@@ -56,6 +56,11 @@ class openstreetmap:
 				f.close()
 				logging.debug("User abort")
 				return
+			if self.makeanon:
+				logging.debug("User requested anonymising of GPX data")
+				f.close()					#Close standard gpxfile
+				gpx_file = self.make_gpx_private(gpx_file)
+				f = open(gpx_file, 'r') 	#Open anonymous gpxfile in readonly mode
 			fields = (("description",self.description), ("tags",self.tags), ("visibility",self.visibility))
 			logging.debug("Added fields: %s" % str(fields))
 			#Multipart encode the request
@@ -131,6 +136,13 @@ class openstreetmap:
 		table.attach(combobox,1,2,2,3)
 		self.entryList.append(combobox)
 		table.attach(label,0,1,2,3)
+		#Add anonymize GPX option
+		label = gtk.Label("<b>Anonymize GPX Data</b>")
+		label.set_use_markup(True)
+		table.attach(label,0,1,3,4)
+		checkbutton = gtk.CheckButton()
+		table.attach(checkbutton,1,2,3,4)
+		self.entryList.append(checkbutton)
 		#Buld dialog and show
 		self.prefwindow.vbox.pack_start(table)
 		self.prefwindow.show_all()
@@ -148,7 +160,8 @@ class openstreetmap:
 			self.description = "Uploaded from pytrainer"
 		self.tags = self.entryList[1].get_text()
 		self.visibility = self.entryList[2].get_active_text()
-		logging.debug("Description: %s, tags: %s, visibility: %s" % ( self.description, self.tags, self.visibility) )
+		self.makeanon = self.entryList[3].get_active()
+		logging.debug("Description: %s, tags: %s, visibility: %s, makeanon: %s" % ( self.description, self.tags, self.visibility, self.makeanon) )
 
 	def multipart_encode(self, fields, files, boundary = None, buffer = None):
 		'''
@@ -182,7 +195,7 @@ class openstreetmap:
 		wipes out private data from gpx files
 		converts laps to waypoints
 		'''
-		
+		logging.debug(">>")
 		if gpx_file is None:
 			return None
 		
@@ -270,6 +283,7 @@ class openstreetmap:
 		#xmlschema.validate(tree)
 
 		# write new gpx file
-		write(anon_gpx_file, pretty_print=False, xml_declaration=True, encoding='UTF-8')
+		tree.write(anon_gpx_file, pretty_print=False, xml_declaration=True, encoding='UTF-8')
+		logging.debug("<<")
 		return anon_gpx_file
 
