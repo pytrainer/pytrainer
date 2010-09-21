@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<pytrainer-extension 
+	name="Elevation correction" 
+	description="Correct the GPX elevation using GDAL"
+	extensionbutton="Fix Elevation" 
+	extensioncode="fixelevation"
+	type="record" 
+	helpfile="README.txt"
+	executable="fixelevation"
+>
+
+</pytrainer-extension>
