@@ -38,6 +38,8 @@ class Activity:
 	us_system		- (bool) True: imperial measurement False: metric measurement
 	distance_unit	- (string) unit to use for distance
 	speed_unit		- (string) unit to use for speed
+	distance_data	- (dict of graphdata classes) contains the graph data with x axis distance
+	time_data		- (dict of graphdata classes) contains the graph data with x axis time
 	height_unit		- (string) unit to use for height
 	pace_unit		- (string) unit to use for pace
 	gpx_file		- (string) gpx file name
@@ -220,30 +222,30 @@ class Activity:
 			logging.debug("<<")
 			return
 		#Profile
-		title=_("Elevation v Distance")
+		title=_("Elevation")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Elevation'), self.height_unit)
 		self.distance_data['elevation'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-		title=_("Elevation v Time")
+		title=_("Elevation")
 		xlabel=_("Time (hours)")
 		self.time_data['elevation'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
 		#Speed
-		title=_("Speed v Distance")
+		title=_("Speed")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Speed'), self.speed_unit)
 		self.distance_data['speed'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
 		#Pace
-		title=_("Pace v Distance")
+		title=_("Pace")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Pace'), self.pace_unit)
 		self.distance_data['pace'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
 		#Heartrate
-		title=_("Heart Rate v Distance")
+		title=_("Heart Rate")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Heart Rate'), _('bpm'))
 		self.distance_data['hr'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
 		#Cadence
-		title=_("Cadence v Distance")
+		title=_("Cadence")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Cadence'), _('rpm'))
 		self.distance_data['cadence'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
@@ -270,11 +272,11 @@ class Activity:
 		#Remove data with no values
 		for item in self.distance_data.keys():
 			if len(self.distance_data[item]) == 0:
-				print "No values for %s. Removing...." % item
+				logging.debug( "No values for %s. Removing...." % item )
 				del self.distance_data[item]
 		for item in self.time_data.keys():
 			if len(self.time_data[item]) == 0:
-				print "No values for %s. Removing...." % item
+				logging.debug( "No values for %s. Removing...." % item )
 				del self.time_data[item]
 		logging.debug("<<")
 

@@ -275,6 +275,38 @@ class Main(SimpleGladeApp):
 			logging.debug("Activity has GPX data")
 			self.record_vbox.set_sensitive(1)
 			self.drawarearecord.drawgraph(self.record_list,self.laps)
+			#Create a frame showing data available for graphing
+			if False: #Still just test code
+				#Build frames and vboxs to hold checkbuttons
+				xFrame = gtk.Frame(label="Show on X Axis")
+				y1Frame = gtk.Frame(label="Show on Y1 Axis")
+				y2Frame = gtk.Frame(label="Show on Y2 Axis")
+				xvbox = gtk.VBox()
+				y1vbox = gtk.VBox()
+				y2vbox = gtk.VBox()
+				#Populate X axis data
+				xdistancebutton = gtk.RadioButton(label="Distance")
+				xdistancebutton.connect("toggled", self.on_xaxischange, "distance")
+				xdistancebutton.set_active(True)
+				xvbox.add(xdistancebutton)
+				xtimebutton = gtk.RadioButton(group=xdistancebutton, label="Time")
+				xtimebutton.connect("toggled", self.on_xaxischange, "time")
+				xvbox.add(xtimebutton)
+				xFrame.add(xvbox)
+				#Populate Y axis data
+				for graphdata in activity.distance_data:
+					y1checkbutton = gtk.CheckButton(label=activity.distance_data[graphdata].title)
+					y1checkbutton.connect("toggled", self.on_y1change, y1vbox)
+					y2checkbutton = gtk.CheckButton(label=activity.distance_data[graphdata].title)
+					y2checkbutton.connect("toggled", self.on_y2change, y2vbox)
+					y1vbox.add(y1checkbutton)
+					y2vbox.add(y2checkbutton)
+				y1Frame.add(y1vbox)
+				y2Frame.add(y2vbox)
+				self.graph_data_hbox.pack_start(xFrame, expand=False, fill=True, padding=0)
+				self.graph_data_hbox.pack_start(y1Frame, expand=False, fill=True, padding=0)
+				self.graph_data_hbox.pack_start(y2Frame, expand=False, fill=True, padding=0)
+				self.graph_data_hbox.show_all()
 		else:
 			logging.debug("Activity has no GPX data")
 			#Remove graph
@@ -912,6 +944,27 @@ class Main(SimpleGladeApp):
 	######################
 	## Lista de eventos ##
 	######################
+
+	def on_xaxischange(self, widget, data=None):
+		'''Handler for record graph axis selection  changes'''
+		if widget.get_active():
+			print data
+
+	def on_y1change(self, widget, box):
+		'''Hander for changes to y1 selection'''
+		print "Y1 selected: ",
+		for child in box.get_children():
+			if child.get_active():
+				print child.get_label(),
+		print
+
+	def on_y2change(self, widget, box):
+		'''Hander for changes to y2 selection'''
+		print "Y2 selected: ",
+		for child in box.get_children():
+			if child.get_active():
+				print child.get_label(),
+		print
 
 	def on_athleteTreeView_button_press_event(self, treeview, event):
 		x = int(event.x)
