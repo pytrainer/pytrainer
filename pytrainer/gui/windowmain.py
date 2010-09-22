@@ -272,11 +272,16 @@ class Main(SimpleGladeApp):
 		self.record_list = activity.tracks
 		self.laps = activity.laps
 		if activity.gpx_file is not None:
-			logging.debug("Activity has GPX data")
-			self.record_vbox.set_sensitive(1)
-			self.drawarearecord.drawgraph(self.record_list,self.laps)
-			#Create a frame showing data available for graphing
-			if False: #Still just test code
+			if True:
+				logging.debug("Activity has GPX data")
+				self.record_vbox.set_sensitive(1)
+				self.drawarearecord.drawgraph(self.record_list,self.laps)
+
+			else: #Still just test code
+				#Create a frame showing data available for graphing
+				#Remove existing frames
+				for child in self.graph_data_hbox.get_children():
+					self.graph_data_hbox.remove(child)
 				#Build frames and vboxs to hold checkbuttons
 				xFrame = gtk.Frame(label="Show on X Axis")
 				y1Frame = gtk.Frame(label="Show on Y1 Axis")
@@ -295,12 +300,12 @@ class Main(SimpleGladeApp):
 				xFrame.add(xvbox)
 				#Populate Y axis data
 				for graphdata in activity.distance_data:
-					y1checkbutton = gtk.CheckButton(label=activity.distance_data[graphdata].title)
-					y1checkbutton.connect("toggled", self.on_y1change, y1vbox)
-					y2checkbutton = gtk.CheckButton(label=activity.distance_data[graphdata].title)
-					y2checkbutton.connect("toggled", self.on_y2change, y2vbox)
-					y1vbox.add(y1checkbutton)
-					y2vbox.add(y2checkbutton)
+					y1button = gtk.CheckButton(label=activity.distance_data[graphdata].title)
+					y1button.connect("toggled", self.on_y1change, y1vbox, activity.distance_data[graphdata])
+					y2button = gtk.CheckButton(label=activity.distance_data[graphdata].title)
+					y2button.connect("toggled", self.on_y2change, y2vbox)
+					y1vbox.add(y1button)
+					y2vbox.add(y2button)
 				y1Frame.add(y1vbox)
 				y2Frame.add(y2vbox)
 				self.graph_data_hbox.pack_start(xFrame, expand=False, fill=True, padding=0)
@@ -950,13 +955,15 @@ class Main(SimpleGladeApp):
 		if widget.get_active():
 			print data
 
-	def on_y1change(self, widget, box):
+	def on_y1change(self, widget, box, data):
 		'''Hander for changes to y1 selection'''
-		print "Y1 selected: ",
+		print "Y1 selected: "
 		for child in box.get_children():
 			if child.get_active():
-				print child.get_label(),
-		print
+				#This check box is active, so display graph...
+				#drawgraph to self.record_graph_vbox with data....
+				print child.get_label(), data
+		#print
 
 	def on_y2change(self, widget, box):
 		'''Hander for changes to y2 selection'''
