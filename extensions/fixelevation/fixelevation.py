@@ -11,7 +11,17 @@ from optparse import OptionParser
 from osgeo import gdal, gdalnumeric
 from lxml import etree
 
-
+"""
+A list of servers providing SRTM data in GeoTIFF 
+"""
+srtm_server_list = [
+               {'url' : 'http://droppr.org/srtm/v4.1/6_5x5_TIFs/', 'ext' : '.zip', 'active' : True },  \
+               {'url' : 'ftp://xftp.jrc.it/pub/srtmV4/tiff/'     , 'ext' : '.zip', 'active' : True }, \
+               {'url' : 'http://srtm.csi.cgiar.org/SRT-ZIP/SRTM_V41/SRTM_Data_GeoTiff/' , 'ext' : '.zip' , 'active' : True }, \
+               {'url' : 'ftp://srtm.csi.cgiar.org/SRTM_V41/SRTM_Data_GeoTiff/' , 'ext' : '.zip' , 'active' : True }, \
+               {'url' : 'http://hypersphere.telascience.org/elevation/cgiar_srtm_v4/tiff/zip/', 'ext' : '.ZIP', 'active' : False }
+              ]
+srtm_server = srtm_server_list[0]
 
 # from gpxtools
 def bilinear_interpolation(tl, tr, bl, br, a, b):
@@ -180,18 +190,19 @@ class SrtmLayer(object):
         #md.set_modal(True)
         #md.show()
         
+        srtm_dir = os.path.expanduser('~/.pytrainer/SRTM_data')
+        if not os.path.isdir(srtm_dir):
+            os.mkdir(srtm_dir)        
+        
         logging.info('Downloading SRTM data file, it may take some time ...')        
-        url = 'http://hypersphere.telascience.org/elevation/cgiar_srtm_v4/tiff/zip/%s.ZIP' % srtm_filename[:-4]
+        #url = 'http://hypersphere.telascience.org/elevation/cgiar_srtm_v4/tiff/zip/%s.ZIP' % srtm_filename[:-4]
+        url = '%s%s%s' % (srtm_server['url'], srtm_filename[:-4],srtm_server['ext'] ) 
         print "Attempting to get URL: %s" % url
         zobj = StringIO()
         zobj.write(urllib2.urlopen(url).read())
         z = zipfile.ZipFile(zobj)
-
-        gpxtools_dir = os.path.expanduser('~/.pytrainer/SRTM_data')
-        if not os.path.isdir(gpxtools_dir):
-            os.mkdir(gpxtools_dir)
         
-        srtm_path = os.path.join(gpxtools_dir, srtm_filename)
+        srtm_path = os.path.join(srtm_dir, srtm_filename)
         out_file = open(srtm_path, 'w')
         out_file.write(z.read(srtm_filename))
         
@@ -210,8 +221,9 @@ class SrtmLayer(object):
         ilon = ceil(colmin / 6000.0)
         ilat = ceil(rowmin / 6000.0)
         
-        return 'srtm_%02d_%02d.TIF' % (ilon, ilat)
-    
+        #return 'srtm_%02d_%02d.TIF' % (ilon, ilat)
+        return 'srtm_%02d_%02d.tif' % (ilon, ilat)
+        
     def get_elevation(self, lat, lon):
         """
         Returns the elevation in metres of point (lat, lon).
@@ -241,8 +253,18 @@ class fixelevation:
         logging.debug(">>")
         gpx_file = "%s/gpx/%s.gpx" % (self.conf_dir, id)
         if os.path.isfile(gpx_file):
+            # Backup original raw data as *.orig.gpx
+            orig_file = open(gpx_file, 'r')
+            orig_data = orig_file.read()
+            orig_file.close()
+            backup_file = open("%s/gpx/%s.orig.gpx" % (self.conf_dir, id), 'w')
+            backup_file.write(orig_data)
+            backup_file.close()
             #GPX file is ok and found, so open it
             logging.debug("ELE GPX file: %s found, size: %d" % (gpx_file, os.path.getsize(gpx_file)))
+
+            
+            
             """
             Parse GPX file to ElementTree instance.
             """
@@ -266,7 +288,7 @@ class fixelevation:
                     ele.text = str(self._srtm.get_elevation(lat, lon))
                     trkpt.append(ele)
             """
-            write out to original *.gpx. Shall original ele-values backuped/stored somewhere ?
+            write out to original *.gpx. 
             """
             self._data.write( gpx_file, 
                                 encoding=self._data.docinfo.encoding, 
