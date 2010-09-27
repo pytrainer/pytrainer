@@ -696,7 +696,6 @@ class Main(SimpleGladeApp):
         #date,distance,average,title,sports.name,id_record,time,beats,caloriesi
         #Laas columnas son:
         #column_names=[_("id"),_("Title"),_("Date"),_("Distance"),_("Sport"),_("Time"),_("Beats"),_("Average"),("Calories")]
-
         date = Date()
         store = gtk.ListStore(
             gobject.TYPE_INT,
@@ -711,19 +710,38 @@ class Main(SimpleGladeApp):
             object)
         for i in record_list:
             hour,min,sec = date.second2time(int(i[6]))
-            time = "%d:%02d:%02d" %(hour,min,sec)
+            _time = "%d:%02d:%02d" %(hour,min,sec)
+            try:
+                _id = int(i[5])
+            except (ValueError, TypeError) as e:
+                logging.debug("Unable to determine id for record: %s" % str(i))
+                logging.debug(str(e))
+                continue
+            _title = str(i[3])
+            _date = str(i[0])
+            _distance = float(i[1])
+            _sport = str(i[4])
+            _average = float(i[2])
+            _calories = int(i[8])
+            try:
+                _beats = round(float(i[7]))
+            except (ValueError, TypeError) as e:
+                logging.debug("Unable to parse beats for %s" % str(i[7]) )
+                logging.debug(str(e))
+                _beats = 0.0
+            
             iter = store.append()
             store.set (
                 iter,
-                0, int(i[5]),           # id 
-                1, str(i[3]),           # title
-                2, str(i[0]),           # date
-                3, float(i[1]),         # distance 
-                4, str(i[4]),           # sport
-                5, time,            
-                6, round(float(i[7])),      # beats
-                7, float(i[2]),             # average
-                8, int(i[8])                # calories
+                0, _id,
+                1, _title,
+                2, _date,
+                3, _distance,
+                4, _sport,
+                5, _time,
+                6, _beats,
+                7, _average,
+                8, _calories
                 )
         #self.allRecordTreeView.set_headers_clickable(True)
         self.allRecordTreeView.set_model(store)
