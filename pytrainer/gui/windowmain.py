@@ -68,6 +68,10 @@ class Main(SimpleGladeApp):
         self.gpxDir = gpxDir
         self.record_list = None
         self.laps = None
+        
+        #Setup graph
+        self.grapher = DrawGraph(self, self.pytrainer_main)
+        
         self.y1_limits = None
         self.y1_color = None
         self.y1_linewidth = 1
@@ -279,6 +283,7 @@ class Main(SimpleGladeApp):
                 self.hbox30.show()
                 #Hide new graph details
                 self.graph_data_hbox.hide()
+                #Enable graph
                 self.record_vbox.set_sensitive(1)
                 self.drawarearecord.drawgraph(self.record_list,self.laps)
             else:
@@ -286,10 +291,20 @@ class Main(SimpleGladeApp):
                 logging.debug("Using the new TEST graphing approach")
                 #Hide current drop down boxes
                 self.hbox30.hide()
+                #Show new graph details
+                self.graph_data_hbox.hide()
+                #Enable graph
+                self.record_vbox.set_sensitive(1)
                 #Create a frame showing data available for graphing
                 #Remove existing frames
                 for child in self.graph_data_hbox.get_children():
                     self.graph_data_hbox.remove(child)
+                #Remove graph
+                #for child in self.record_graph_vbox.get_children():
+                #    #Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
+                #    #if isinstance(child, matplotlib.backends.backend_gtkagg.FigureCanvasGTK) or isinstance(child, matplotlib.backends.backend_gtkagg.NavigationToolbar2GTKAgg):
+                #    print('Removing child: '+str(child))
+                #    self.record_graph_vbox.remove(child)
                 #Build frames and vboxs to hold checkbuttons
                 xFrame = gtk.Frame(label="Show on X Axis")
                 y1Frame = gtk.Frame(label="Show on Y1 Axis")
@@ -309,7 +324,7 @@ class Main(SimpleGladeApp):
                 #Populate Y axis data
                 for graphdata in activity.distance_data:
                     y1button = gtk.CheckButton(label=activity.distance_data[graphdata].title)
-                    y1button.connect("toggled", self.on_y1change, y1vbox, activity.distance_data[graphdata])
+                    y1button.connect("toggled", self.on_y1change, y1vbox, graphdata, activity)
                     y2button = gtk.CheckButton(label=activity.distance_data[graphdata].title)
                     y2button.connect("toggled", self.on_y2change, y2vbox)
                     y1vbox.add(y1button)
@@ -322,8 +337,7 @@ class Main(SimpleGladeApp):
                 self.graph_data_hbox.show_all()
                 
                 #TODO Fix...
-                self.record_vbox.set_sensitive(1)
-                self.drawarearecord.drawgraph(self.record_list,self.laps)
+                #self.drawarearecord.drawgraph(self.record_list,self.laps)
         else:
             logging.debug("Activity has no GPX data")
             #Show drop down boxes
@@ -713,7 +727,7 @@ class Main(SimpleGladeApp):
         self.labelDOB.set_text(athletedata["prf_age"])
         self.labelHeight.set_text(athletedata["prf_height"]+" cm")
         #Setup graph
-        self.grapher = DrawGraph(self, self.pytrainer_main)
+        #self.grapher = DrawGraph(self, self.pytrainer_main)
         from pytrainer.lib.graphdata import GraphData
         datalist = GraphData(title="Weight", xlabel="Date", ylabel="kg")
         #TODO
@@ -989,14 +1003,18 @@ class Main(SimpleGladeApp):
         if widget.get_active(): 
             print data 
             
-    def on_y1change(self, widget, box, data): 
+    def on_y1change(self, widget, box, graphdata, activity): 
         '''Hander for changes to y1 selection''' 
-        print "Y1 selected: "
+        #TODO Need to deal with different x options, ie distance and time...
+        logging.debug("Y1 selection toggled: %s" % graphdata)
+        #Loop through all options at set data correctly
         for child in box.get_children(): 
-            if child.get_active(): 
-                #This check box is active, so display graph...
-                #drawgraph to self.record_graph_vbox with data...
-                print child.get_label(), data
+            for item in activity.distance_data:
+                if activity.distance_data[item].title == child.get_label():
+                    logging.debug( "Setting %s to %s" % (item, str(child.get_active()) ) )
+                    activity.distance_data[item].show_on_y1 = child.get_active()
+        #Plot the activity
+        self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
 
     def on_y2change(self, widget, box): 
         '''Hander for changes to y2 selection''' 

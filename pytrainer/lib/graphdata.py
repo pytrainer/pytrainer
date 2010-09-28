@@ -19,31 +19,32 @@
 import logging
 
 class GraphData:
-	'''
-	Class to hold data and formating for graphing via matplotlib
-	'''
-	def __init__(self, title=None, ylabel=None, xlabel=None):
-		logging.debug('>>')
-		self.title = title
-		self.ylabel = ylabel
-		self.xlabel = xlabel
-		self.x_values = []
-		self.y_values = []
-		self.linewidth = 1
-		self.linecolor = '#ff0000'
-		self.max_x_value = None
-		self.min_x_value = None
-		self.max_y_value = None
-		self.min_y_value = None
-		logging.debug('<<')
+    '''
+    Class to hold data and formating for graphing via matplotlib
+    '''
+    def __init__(self, title=None, ylabel=None, xlabel=None):
+        logging.debug('>>')
+        self.title = title
+        self.ylabel = ylabel
+        self.xlabel = xlabel
+        self.x_values = []
+        self.y_values = []
+        self.linewidth = 1
+        self.linecolor = '#ff0000'
+        self.max_x_value = None
+        self.min_x_value = None
+        self.max_y_value = None
+        self.min_y_value = None
+        self.show_on_y1 = False
+        logging.debug('<<')
 
-	def __len__(self):
-		if self.x_values is None:
-			return None
-		return len(self.x_values)
-		
-	def __str__(self):
-		return '''
+    def __len__(self):
+        if self.x_values is None:
+            return None
+        return len(self.x_values)
+        
+    def __str__(self):
+        return '''
 Title: %s
 ylabel: %s
 xlabel: %s
@@ -53,31 +54,31 @@ x min max: %s %s
 y min max: %s %s
 x values: %s
 y values: %s''' % (self.title,
-	self.ylabel,
-	self.xlabel,
-	self.linewidth,
-	self.linecolor,
-	str(self.min_x_value), str(self.max_x_value),
-	str(self.min_y_value), str(self.max_y_value),
-	str(self.x_values),
-	str(self.y_values)
-	)
+    self.ylabel,
+    self.xlabel,
+    self.linewidth,
+    self.linecolor,
+    str(self.min_x_value), str(self.max_x_value),
+    str(self.min_y_value), str(self.max_y_value),
+    str(self.x_values),
+    str(self.y_values)
+    )
 
-	def addPoints(self, x=None, y=None):
-		if x is None or y is None:
-			#logging.debug("Must supply both x and y data points, got x:'%s' y:'%s'" % (str(x), str(y)))
-			return
-		#print('Adding point: %s %s' % (str(x), str(y)))
-		self.x_values.append(x)
-		self.y_values.append(y)
-		if self.max_x_value is None or x > self.max_x_value:
-			self.max_x_value = x
-		if self.min_x_value is None or x < self.min_x_value:
-			self.min_x_value = x
-		if self.max_y_value is None or y > self.max_y_value:
-			self.max_y_value = y
-		if self.min_y_value is None or y < self.min_y_value:
-			self.min_y_value = y
+    def addPoints(self, x=None, y=None):
+        if x is None or y is None:
+            #logging.debug("Must supply both x and y data points, got x:'%s' y:'%s'" % (str(x), str(y)))
+            return
+        #print('Adding point: %s %s' % (str(x), str(y)))
+        self.x_values.append(x)
+        self.y_values.append(y)
+        if self.max_x_value is None or x > self.max_x_value:
+            self.max_x_value = x
+        if self.min_x_value is None or x < self.min_x_value:
+            self.min_x_value = x
+        if self.max_y_value is None or y > self.max_y_value:
+            self.max_y_value = y
+        if self.min_y_value is None or y < self.min_y_value:
+            self.min_y_value = y
 
 
 
