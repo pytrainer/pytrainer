@@ -49,7 +49,7 @@ from lib.ddbb import DDBB
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.7.2_svn#628"
+        self.version ="1.7.2_svn#629"
         self.DB_version = 3
         #Process command line options
         self.startup_options = self.get_options()

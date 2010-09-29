@@ -57,7 +57,8 @@ class DrawArea:
         logging.debug('>>') 
         logging.debug("Type: bars | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
         self.removeVboxChildren()
-        figure = Figure(figsize=(6,4), dpi=72)
+        #figure = Figure(figsize=(6,4), dpi=72)
+        figure = plt.figure()
         logging.debug("Figure: %s" % str(figure) )
         numCols=len(xvalues[0])
         xmod = 0.4
@@ -198,7 +199,9 @@ class DrawArea:
         if numRows == 0:
             return
         width = .8
-        figure = plt.figure(figsize=(6,4), dpi=72) 
+        #figure = plt.figure(figsize=(6,4), dpi=72) 
+        figure = plt.figure()
+        logging.debug("Figure: %s" % str(figure) )
         axis = plt.subplot(111)
 
         ybottoms = [0] * numCols
@@ -299,22 +302,28 @@ class DrawArea:
         logging.debug("Type: plot | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
         logging.debug('xlabel: '+str(xlabel)+' | ylabel: '+str(ylabel)+' | title: '+str(title))
         self.removeVboxChildren()
-        figure = Figure()
-        figure.clf()
+        figure = plt.Figure()
+        logging.debug("Figure: %s" % str(figure) )
+        #figure.clf()
         i = 0
         for value in xvalues:
             if i<1:
                 axis = figure.add_subplot(111)
+                logging.debug("Axis: %s" % str(axis) )
                 line = axis.plot(xvalues[i],yvalues[i], color=color[i])
+                logging.debug("Axis plotted, Line: %s" % str(line) )
                 if y1_linewidth is not None:
                     line[0].set_linewidth(y1_linewidth)
                 linewidth = line[0].get_linewidth()
                     
                 axis.grid(True)
+                logging.debug("Axis grid on" )
                 for tl in axis.get_yticklabels():
                     tl.set_color('%s' %color[i])
+                logging.debug("Ticklabels color set" )
                 #Draw zones on graph, eg for each lap
                 if xzones is not None:
+                    logging.debug("Setting xzones" )
                     for xzone in xzones:
                         if xzones.index(xzone) % 2:
                             zonecolor='b'
@@ -324,13 +333,17 @@ class DrawArea:
                 maxX = max(xvalues[i])
             if i>=1:
                 ax2 = axis.twinx()
+                logging.debug("Axis2: Axis: %s" % str(ax2) )
                 ax2.plot(xvalues[i], yvalues[i], color=color[i])
+                logging.debug("Axis2: plotted" )
                 for tl in ax2.get_yticklabels():
                     tl.set_color('%s' %color[i])
+                logging.debug("Axis2: Ticklabels color set" )
                 maxXt = max(xvalues[i])
                 if maxXt > maxX:
                     maxX = maxXt
             axis.set_xlabel(xlabel[i])
+            logging.debug("X label set" )
             i+=1
         axis.set_xlim(0, maxX)
 
@@ -349,6 +362,7 @@ class DrawArea:
             axis.set_ylim(ylim_min, ylim_max)
 
         canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
+        logging.debug("Canvas: %s" % str(canvas))
         canvas.show()
         self.vbox.pack_start(canvas, True, True)
         toolbar = NavigationToolbar(canvas, self.window)
@@ -364,7 +378,9 @@ class DrawArea:
         logging.debug('>>')
         logging.debug("Type: pie | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
         self.removeVboxChildren()
-        figure = Figure(figsize=(6,4), dpi=72)
+        #figure = Figure(figsize=(6,4), dpi=72)
+        figure = Figure()
+        logging.debug("Figure: %s" % str(figure) )
         axis = figure.add_subplot(111)
 
         labels = ["rest"]
