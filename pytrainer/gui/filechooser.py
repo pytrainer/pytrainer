@@ -22,33 +22,40 @@ from SimpleGladeApp import SimpleGladeApp
 import gtk
 
 class FileChooser(SimpleGladeApp):
-	def __init__(self,data_path = None, parent = None, method = None, action = None):
-		self.data_path = data_path
-		self.filename = None
-		self.parent = parent
-		self.method = method
-		root="filechooserdialog"
-		SimpleGladeApp.__init__(self, data_path+"glade/filechooserdialog.glade", root, None)
-		if (action == "open"):
-			self.filechooserdialog.set_action(gtk.FILE_CHOOSER_ACTION_OPEN)
-			filter = gtk.FileFilter()
-			filter.set_name("gpx files")
-			filter.add_pattern("*.gpx")
-			self.filechooserdialog.set_filter(filter)
-		else:
-			self.filechooserdialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
-			self.filechooserdialog.set_current_name("*.csv")
+    def __init__(self,data_path = None, parent = None, method = None, action = None):
+        self.data_path = data_path
+        self.filename = None
+        self.parent = parent
+        self.method = method
+        root="filechooserdialog"
+        SimpleGladeApp.__init__(self, data_path+"glade/filechooserdialog.glade", root, None)
+        if (action == "open"):
+            self.filechooserdialog.set_action(gtk.FILE_CHOOSER_ACTION_OPEN)
+            filter = gtk.FileFilter()
+            filter.set_name("gpx files")
+            filter.add_pattern("*.gpx")
+            self.filechooserdialog.set_filter(filter)
+        else:
+            self.button14.set_label("Save")
+            self.filechooserdialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
+            print self.filechooserdialog.get_action()
+            self.filechooserdialog.set_current_name("*.csv")
 
-	def on_accept_clicked(self,widget):
-		self.filename = self.filechooserdialog.get_filename()
-		parentmethod = getattr(self.parent,self.method)
-		parentmethod()
-		self.closewindow()
-	
-	def on_cancel_clicked(self,widget):
-		self.closewindow()
+    def on_accept_clicked(self,widget):
+        try:
+            self.filename = self.filechooserdialog.get_filename()
+        except AttributeError:
+            if self.filename is None:
+                self.quit()
+                return
+        parentmethod = getattr(self.parent,self.method)
+        parentmethod()
+        self.closewindow()
+    
+    def on_cancel_clicked(self,widget):
+        self.closewindow()
 
-	def closewindow(self):
-		self.filechooserdialog.hide()
-		self.filechooserdialog = None
-		self.quit()	
+    def closewindow(self):
+        #self.filechooserdialog.hide()
+        self.filechooserdialog = None
+        self.quit() 

@@ -20,27 +20,38 @@ from lib.fileUtils import fileUtils
 from gui.filechooser import FileChooser
 
 class Save:
-	def __init__(self, data_path = None, record = None):
-		self.record = record
-		self.data_path = data_path
+    def __init__(self, data_path = None, record = None):
+        self.record = record
+        self.data_path = data_path
 
-	def run(self):
-		self.filewindow = FileChooser(self.data_path, self, "savecsvfile")
-		self.filewindow.run()
-	
-	def savecsvfile(self):
-		filename = self.filewindow.filename
-		records = self.record.getAllrecord()
-		content = ""
-		for record in records:
-			line = ""
-			for data in record:
-				data = "%s" %data
-				data.replace(",", " ")
-				line += ", %s" %data
-			content += "%s \n" %line
-		file = fileUtils(filename,content)
-		file.run()
-		
+    def run(self):
+        self.filewindow = FileChooser(self.data_path, self, "savecsvfile")
+        self.filewindow.run()
+    
+    def savecsvfile(self):
+        filename = self.filewindow.filename
+        records = self.record.getAllrecord()
+        # CSV Header
+        content = "date,distance,time,beats,comments,average,calories\n"
+        for record in records:
+            line = ""
+            for i, data in enumerate(record):
+                if i in [1, 3, 5]:
+                    try:
+                        data = round(data, 2)
+                    except:
+                        pass             
+                data = "%s" %data
+                data = data.replace(",", " ")  
+                data = data.replace("\n", " ")             
+                data = data.replace("\r", " ")          
+                if i>0: 
+                    line += ",%s" %data
+                else:
+                    line += "%s" %data      
+            content += "%s\n" %line
+        file = fileUtils(filename,content)
+        file.run()
+        
 
 
