@@ -310,34 +310,66 @@ class Main(SimpleGladeApp):
                 y1Frame = gtk.Frame(label="Show on Y1 Axis")
                 y2Frame = gtk.Frame(label="Show on Y2 Axis")
                 xvbox = gtk.VBox()
-                y1vbox = gtk.VBox()
+                y1box = gtk.Table()
                 y2vbox = gtk.VBox()
                 #Populate X axis data
                 xdistancebutton = gtk.RadioButton(label="Distance")
-                xdistancebutton.connect("toggled", self.on_xaxischange, "distance")
-                xdistancebutton.set_active(True)
-                xvbox.add(xdistancebutton)
                 xtimebutton = gtk.RadioButton(group=xdistancebutton, label="Time")
-                xtimebutton.connect("toggled", self.on_xaxischange, "time")
+                if activity.x_axis == "distance":
+                    xdistancebutton.set_active(True)
+                elif activity.x_axis == "time":
+                    xtimebutton.set_active(True)
+                xdistancebutton.connect("toggled", self.on_xaxischange, "distance", activity)
+                xvbox.add(xdistancebutton)
+                xtimebutton.connect("toggled", self.on_xaxischange, "time", activity)
                 xvbox.add(xtimebutton)
                 xFrame.add(xvbox)
+                
+                row = 0
+                if activity.x_axis == "distance":
+                    data = activity.distance_data
+                elif activity.x_axis == "time":
+                    data = activity.time_data
+                else:
+                    print "x axis is unknown"
                 #Populate Y axis data
-                for graphdata in activity.distance_data:
-                    y1button = gtk.CheckButton(label=activity.distance_data[graphdata].title)
-                    y1button.connect("toggled", self.on_y1change, y1vbox, graphdata, activity)
-                    y2button = gtk.CheckButton(label=activity.distance_data[graphdata].title)
+                for graphdata in data:
+                    #First Y axis...
+                    #Create button
+                    y1button = gtk.CheckButton(label=data[graphdata].title)
+                    #Make button active if this data is to be displayed...
+                    y1button.set_active(data[graphdata].show_on_y1)
+                    #Connect handler for toggle state changes
+                    y1button.connect("toggled", self.on_y1change, y1box, graphdata, activity)
+                    #Attach button to container
+                    y1box.attach(y1button, 0, 1, row, row+1, xoptions=gtk.EXPAND|gtk.FILL)
+                    #Create a color choser
+                    y1color = gtk.ColorButton()
+                    #Set color to current activity color
+                    _color = gtk.gdk.color_parse(data[graphdata].linecolor)
+                    y1color.set_color(_color)
+                    #Connect handler for color state changes
+                    y1color.connect("color-set", self.on_y1colorchange, y1box, graphdata, activity)
+                    #Attach to container
+                    y1box.attach(y1color, 1, 2, row, row+1)
+                                        
+                    #Second Y axis
+                    y2button = gtk.CheckButton(label=data[graphdata].title)
                     y2button.connect("toggled", self.on_y2change, y2vbox)
-                    y1vbox.add(y1button)
                     y2vbox.add(y2button)
-                y1Frame.add(y1vbox)
+                    
+                    row += 1
+                    
+                y1Frame.add(y1box)
                 y2Frame.add(y2vbox)
                 self.graph_data_hbox.pack_start(xFrame, expand=False, fill=True, padding=0)
                 self.graph_data_hbox.pack_start(y1Frame, expand=False, fill=True, padding=0)
                 self.graph_data_hbox.pack_start(y2Frame, expand=False, fill=True, padding=0)
                 self.graph_data_hbox.show_all()
                 
-                #TODO Fix...
-                #self.drawarearecord.drawgraph(self.record_list,self.laps)
+
+                self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
+
         else:
             logging.debug("Activity has no GPX data")
             #Show drop down boxes
@@ -998,22 +1030,40 @@ class Main(SimpleGladeApp):
     ## Lista de eventos ##
     ######################
     
-    def on_xaxischange(self, widget, data=None): 
+    def on_xaxischange(self, widget, data=None, activity=None): 
         '''Handler for record graph axis selection  changes''' 
         if widget.get_active(): 
-            print data 
+            activity.x_axis = data
+            self.actualize_recordgraph(activity)
+
             
+    def on_y1colorchange(self, widget, box, graphdata, activity): 
+        '''Hander for changes to y1 color selection''' 
+        logging.debug("Setting %s to color %s" % (graphdata, widget.get_color() ) )
+        if activity.x_axis == "distance":
+            activity.distance_data[graphdata].set_color(str(widget.get_color()))
+        elif activity.x_axis == "time":
+            activity.time_data[graphdata].set_color(str(widget.get_color()))
+        #Replot the activity
+        self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
+        
     def on_y1change(self, widget, box, graphdata, activity): 
         '''Hander for changes to y1 selection''' 
         #TODO Need to deal with different x options, ie distance and time...
         logging.debug("Y1 selection toggled: %s" % graphdata)
         #Loop through all options at set data correctly
         for child in box.get_children(): 
-            for item in activity.distance_data:
-                if activity.distance_data[item].title == child.get_label():
-                    logging.debug( "Setting %s to %s" % (item, str(child.get_active()) ) )
-                    activity.distance_data[item].show_on_y1 = child.get_active()
-        #Plot the activity
+            if activity.x_axis == "distance":
+                for item in activity.distance_data:
+                    if activity.distance_data[item].title == child.get_label():
+                        logging.debug( "Setting %s to %s" % (item, str(child.get_active()) ) )
+                        activity.distance_data[item].show_on_y1 = child.get_active()
+            elif activity.x_axis == "time":
+                for item in activity.time_data:
+                    if activity.time_data[item].title == child.get_label():
+                        logging.debug( "Setting %s to %s" % (item, str(child.get_active()) ) )
+                        activity.time_data[item].show_on_y1 = child.get_active()
+        #Replot the activity
         self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
 
     def on_y2change(self, widget, box): 
@@ -1257,8 +1307,12 @@ class Main(SimpleGladeApp):
     #hasta aqui revisado
 
     def on_allRecordTreeView_button_press(self, treeview, event):
+        ''' 
+            Handler for clicks on recordview list (list of activities for the day) 
+            
+            event.button = mouse button pressed (i.e. 1 = left, 3 = right)
+        '''
         logging.debug(">>")
-        #print "on_allRecordTreeView_"
         x = int(event.x)
         y = int(event.y)
         time = event.time

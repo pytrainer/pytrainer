@@ -66,6 +66,7 @@ class Activity:
 	maxpace 		- (float) maxium pace obtained during activity
 	pace			- (float) average pace for activity
 	has_data		- (bool) true if instance has data populated
+	x_axis			- (string) distance or time, determines what will be graphed on x axis
 	'''
 	def __init__(self, pytrainer_main = None, id = None):
 		logging.debug(">>")
@@ -97,6 +98,7 @@ class Activity:
 			self._init_from_gpx_file()
 		self._init_from_db()
 		self._init_graph_data()
+		self.x_axis = "distance"
 		logging.debug("<<")
 
 	def _set_units(self):
@@ -226,29 +228,46 @@ class Activity:
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Elevation'), self.height_unit)
 		self.distance_data['elevation'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-		title=_("Elevation")
-		xlabel=_("Time (hours)")
+		self.distance_data['elevation'].set_color('#ff0000')
+		xlabel=_("Time (seconds)")
 		self.time_data['elevation'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
+		self.time_data['elevation'].set_color('#ff0000')
 		#Speed
 		title=_("Speed")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Speed'), self.speed_unit)
 		self.distance_data['speed'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+		self.distance_data['speed'].set_color('#000000')
+		xlabel=_("Time (seconds)")
+		self.time_data['speed'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
+		self.time_data['speed'].set_color('#000000')
 		#Pace
 		title=_("Pace")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Pace'), self.pace_unit)
 		self.distance_data['pace'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+		self.distance_data['pace'].set_color('#0000ff')
+		xlabel=_("Time (seconds)")
+		self.time_data['pace'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
+		self.time_data['pace'].set_color('#0000ff')
 		#Heartrate
 		title=_("Heart Rate")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Heart Rate'), _('bpm'))
 		self.distance_data['hr'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+		self.distance_data['hr'].set_color('#00ff00')
+		xlabel=_("Time (seconds)")
+		self.time_data['hr'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
+		self.time_data['hr'].set_color('#00ff00')
 		#Cadence
 		title=_("Cadence")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Cadence'), _('rpm'))
 		self.distance_data['cadence'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+		self.distance_data['cadence'].set_color('#cc00ff')
+		xlabel=_("Time (seconds)")
+		self.time_data['cadence'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
+		self.time_data['cadence'].set_color('#cc00ff')
 		for track in self.tracklist:
 			try:
 				pace = 60/track['velocity']
@@ -262,6 +281,8 @@ class Activity:
 				self.distance_data['hr'].addPoints(x=km2miles(track['elapsed_distance']), y=track['hr'])
 				self.distance_data['cadence'].addPoints(x=km2miles(track['elapsed_distance']), y=track['cadence'])
 				self.time_data['elevation'].addPoints(x=track['time_elapsed'], y=m2feet(track['ele']))
+				self.time_data['speed'].addPoints(x=track['time_elapsed'], y=km2miles(track['velocity']))
+				self.time_data['pace'].addPoints(x=track['time_elapsed'], y=pacekm2miles(pace))
 			else:
 				self.distance_data['elevation'].addPoints(x=track['elapsed_distance'], y=track['ele'])
 				self.distance_data['speed'].addPoints(x=track['elapsed_distance'], y=track['velocity'])
@@ -269,6 +290,10 @@ class Activity:
 				self.distance_data['hr'].addPoints(x=track['elapsed_distance'], y=track['hr'])
 				self.distance_data['cadence'].addPoints(x=track['elapsed_distance'], y=track['cadence'])
 				self.time_data['elevation'].addPoints(x=track['time_elapsed'], y=track['ele'])
+				self.time_data['speed'].addPoints(x=track['time_elapsed'], y=track['velocity'])
+				self.time_data['pace'].addPoints(x=track['time_elapsed'], y=pace)
+			self.time_data['hr'].addPoints(x=track['time_elapsed'], y=track['hr'])
+			self.time_data['cadence'].addPoints(x=track['time_elapsed'], y=track['cadence'])
 		#Remove data with no values
 		for item in self.distance_data.keys():
 			if len(self.distance_data[item]) == 0:

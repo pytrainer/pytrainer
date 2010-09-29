@@ -32,6 +32,61 @@ class DrawGraph:
         self.pytrainer_main = pytrainer_main
         #self.NEARLY_ZERO = 0.0000000000000000000001
         logging.debug('<<')
+        
+    def draw(self, datalist = None, box = None, figure = None, title = None):
+        '''
+            Draw a graph using supplied information into supplied gtk.box
+            
+            datalist = populated graphdata class (required)
+            box = gtk.box object (required)
+            figure = matplotlib figure (optional) if supplied will add graph to this figure
+            
+            return = figure          
+        '''
+        logging.debug('>>')
+        if box is None:
+            logging.error("Must supply a vbox or hbox to display the graph")
+            return
+        #Check if have a graph object
+        if figure is None:
+            #No figure, so create figure
+            figure = plt.figure()
+        #Remove any existing plots
+        for child in box.get_children():
+            logging.debug('Removing box child: '+str(child))
+            box.remove(child)
+        
+        if datalist is None:
+            logging.debug("drawPlot called with no data")
+            return
+        
+            
+        #Create canvas
+        canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
+        canvas.show()
+        
+        #Display title etc
+        plt.xlabel(datalist.xlabel)
+        plt.title(title)
+        #Removed as now in legend
+        #plt.ylabel(datalist.ylabel)
+
+        #TODO
+        #Determine graph type....
+        #print "Got graphtype: %s" % datalist.graphType
+        #Plot data
+        plt.plot(datalist.x_values, datalist.y_values, linewidth=datalist.linewidth, color=datalist.linecolor, label=datalist.ylabel )
+        #Set axis limits
+        #plt.axis([datalist.min_x_value, datalist.max_x_value, datalist.min_y_value, datalist.max_y_value])
+        plt.legend(loc=0)
+        #axis.set_xlim(0, data.max_x_value)
+        #axis.set_ylim(0, data.max_y_value)
+        
+        #Display plot
+        box.pack_start(canvas, True, True)
+        
+        logging.debug("<<")
+        return figure
 
     def drawPlot(self, datalist = None, box = None):
         '''
@@ -142,44 +197,31 @@ class DrawGraph:
         #TODO Check that datalist is of type dict (and contains has correct items)
         figure = None
         datalist = []
-        #Loop through data items and graph the selected ones
-        #TODO sort for x = time....
-        for item in activity.distance_data:
-            if activity.distance_data[item].show_on_y1:
-                figure = self._drawPlotTrace(activity.distance_data[item], box=box, figure=figure)
+        count = 0
+        if activity.x_axis == "distance":
+            if activity.title is None or activity.title == "":
+                _title = "%s%s of %s on %s" % (str(activity.distance), activity.distance_unit, activity.sport_name, activity.date)
+            else:
+                _title = "%s: %s%s of %s on %s" % (activity.title, str(activity.distance), activity.distance_unit, activity.sport_name, activity.date)
+            
+            #Loop through data items and graph the selected ones
+            #TODO sort for x = time....
+            for item in activity.distance_data:
+                if activity.distance_data[item].show_on_y1:
+                    count += 1
+                    figure = self.draw(activity.distance_data[item], box=box, figure=figure, title=_title)
+
+        elif activity.x_axis == "time":
+            _time = "%d:%02d:%02d" % (activity.time_tuple)
+            if activity.title is None or activity.title == "":
+                _title = "%s of %s on %s" % (_time, activity.sport_name, activity.date)
+            else:
+                _title = "%s: %s of %s on %s" % (activity.title, _time, activity.sport_name, activity.date)
+            for item in activity.time_data:
+                if activity.time_data[item].show_on_y1:
+                    count += 1
+                    figure = self.draw(activity.time_data[item], box=box, figure=figure, title=_title)
+        if count == 0:
+            logging.debug("No items to graph.. Removing graph")
+            figure = self.draw(None, box=box, figure=figure)
         logging.debug('<<')
-        
-    def _drawPlotTrace(self, datalist = None, box = None, figure = None):
-        logging.debug(">>")
-        #Check we got required data
-        if box is None:
-            logging.error("Must supply a vbox or hbox to display the graph")
-            return
-        #Check if have gotten a graph object
-        if figure is None:
-            #No figure, so create figure
-            figure = plt.figure()
-        #Remove any existing plots
-        for child in box.get_children():
-            logging.debug('Removing box child: '+str(child))
-            box.remove(child)
-        #Create canvas
-        canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
-        canvas.show()
-        #Display title etc
-        plt.xlabel(datalist.xlabel)
-        plt.ylabel(datalist.ylabel)
-        plt.title(datalist.title)
-        #Plot data
-        plt.plot(datalist.x_values, datalist.y_values, linewidth=datalist.linewidth, color=datalist.linecolor )
-        #Set axis limits
-        #plt.axis([datalist.min_x_value, datalist.max_x_value, datalist.min_y_value, datalist.max_y_value])
-
-        #axis.set_xlim(0, data.max_x_value)
-        #axis.set_ylim(0, data.max_y_value)
-
-        #Display plot
-        box.pack_start(canvas, True, True)
-        
-        logging.debug("<<")
-        return figure

@@ -17,6 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
+import gtk
 
 class GraphData:
     '''
@@ -35,8 +36,25 @@ class GraphData:
         self.min_x_value = None
         self.max_y_value = None
         self.min_y_value = None
+        self.graphType = "Plot"
         self.show_on_y1 = False
         logging.debug('<<')
+        
+    def set_color(self, color):
+        ''' 
+            Helper function to set the line color
+            need as some gtk.gdk color can be invalid for matplotlib
+        '''
+        try:
+            #Generate 13 digit color string from supplied color
+            col = gtk.gdk.color_parse(color).to_string()
+        except ValueError:
+            logging.debug("Unable to parse color from '%s'" % color)
+            return
+        #Create matplotlib color string
+        _color = "#%s%s%s" % (col[1:3], col[5:7], col[9:11])
+        logging.debug("%s color saved as: %s" % (color, _color))
+        self.linecolor = _color
 
     def __len__(self):
         if self.x_values is None:
@@ -50,6 +68,8 @@ ylabel: %s
 xlabel: %s
 linewidth: %d
 linecolor: %s
+graphType: %s
+show on y1: %s
 x min max: %s %s
 y min max: %s %s
 x values: %s
@@ -58,6 +78,8 @@ y values: %s''' % (self.title,
     self.xlabel,
     self.linewidth,
     self.linecolor,
+    self.graphType,
+    str(self.show_on_y1),
     str(self.min_x_value), str(self.max_x_value),
     str(self.min_y_value), str(self.max_y_value),
     str(self.x_values),
