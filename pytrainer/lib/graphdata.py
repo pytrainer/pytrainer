@@ -29,6 +29,8 @@ class GraphData:
         self.ylabel = ylabel
         self.xlabel = xlabel
         self.x_values = []
+        self.bar_bottoms = []
+        self.bar_widths = []
         self.y_values = []
         self.linewidth = 1
         self.linecolor = '#ff0000'
@@ -36,10 +38,47 @@ class GraphData:
         self.min_x_value = None
         self.max_y_value = None
         self.min_y_value = None
-        self.graphType = "Plot"
+        self.graphType = "plot"
         self.show_on_y1 = False
         logging.debug('<<')
         
+    def addBars(self, x=None, y=None):
+        if x is None or y is None:
+            #logging.debug("Must supply both x and y data points, got x:'%s' y:'%s'" % (str(x), str(y)))
+            return
+        #print('Adding point: %s %s' % (str(x), str(y)))
+        if len(self.x_values) == 0:
+            #First bar, so start a 0
+            self.x_values.append(0)
+        else:
+            #Second or subsequent bar, so start at last point
+            #Which is previous left+width
+            items = len(self.x_values)
+            last_left = self.x_values(items-1)
+            last_width = self.bar_widths(items-1)
+            new_left = last_left+last_width
+            print new_left
+            self.x_values.append(new_left)
+        self.bar_widths.append(x)            
+        self.y_values.append(y)
+        self.bar_bottoms.append(0)
+        
+    def addPoints(self, x=None, y=None):
+        if x is None or y is None:
+            #logging.debug("Must supply both x and y data points, got x:'%s' y:'%s'" % (str(x), str(y)))
+            return
+        #print('Adding point: %s %s' % (str(x), str(y)))
+        self.x_values.append(x)
+        self.y_values.append(y)
+        if self.max_x_value is None or x > self.max_x_value:
+            self.max_x_value = x
+        if self.min_x_value is None or x < self.min_x_value:
+            self.min_x_value = x
+        if self.max_y_value is None or y > self.max_y_value:
+            self.max_y_value = y
+        if self.min_y_value is None or y < self.min_y_value:
+            self.min_y_value = y
+
     def set_color(self, color):
         ''' 
             Helper function to set the line color
@@ -86,22 +125,7 @@ y values: %s''' % (self.title,
     str(self.y_values)
     )
 
-    def addPoints(self, x=None, y=None):
-        if x is None or y is None:
-            #logging.debug("Must supply both x and y data points, got x:'%s' y:'%s'" % (str(x), str(y)))
-            return
-        #print('Adding point: %s %s' % (str(x), str(y)))
-        self.x_values.append(x)
-        self.y_values.append(y)
-        if self.max_x_value is None or x > self.max_x_value:
-            self.max_x_value = x
-        if self.min_x_value is None or x < self.min_x_value:
-            self.min_x_value = x
-        if self.max_y_value is None or y > self.max_y_value:
-            self.max_y_value = y
-        if self.min_y_value is None or y < self.min_y_value:
-            self.min_y_value = y
-
+    
 
 
 

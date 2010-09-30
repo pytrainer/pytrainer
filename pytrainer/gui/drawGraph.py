@@ -74,8 +74,15 @@ class DrawGraph:
         #TODO
         #Determine graph type....
         #print "Got graphtype: %s" % datalist.graphType
-        #Plot data
-        plt.plot(datalist.x_values, datalist.y_values, linewidth=datalist.linewidth, color=datalist.linecolor, label=datalist.ylabel )
+        if datalist.graphType == "plot":
+            #Plot data
+            plt.plot(datalist.x_values, datalist.y_values, linewidth=datalist.linewidth, color=datalist.linecolor, label=datalist.ylabel )
+        elif datalist.graphType == "bar":
+            plt.bar(datalist.x_values, datalist.y_values, datalist.bar_widths, datalist.bar_bottoms, color=datalist.linecolor, label=datalist.ylabel)
+            #return figure
+        else:
+            print "Unknown/unimplemented graph type: %s" % datalist.graphType
+            return figure
         #Set axis limits
         #plt.axis([datalist.min_x_value, datalist.max_x_value, datalist.min_y_value, datalist.max_y_value])
         plt.legend(loc=0)

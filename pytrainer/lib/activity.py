@@ -84,6 +84,8 @@ class Activity:
 		self.laps = None
 		self.tree = None
 		self.has_data = False
+		self.distance_data = {}
+		self.time_data = {}
 		if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 			self.us_system = True
 		else:
@@ -98,6 +100,7 @@ class Activity:
 			self._init_from_gpx_file()
 		self._init_from_db()
 		self._init_graph_data()
+		self._generate_per_lap_graphs()
 		self.x_axis = "distance"
 		logging.debug("<<")
 
@@ -189,6 +192,32 @@ class Activity:
 				laps = self._get_laps_from_gpx()
 		self.laps = laps
 		logging.debug("<<")
+		
+	def _generate_per_lap_graphs(self):
+		'''Build lap based graphs...'''
+		logging.debug(">>")
+		if self.laps is None:
+			logging.debug("No laps to generate graphs from")
+			logging.debug("<<")
+			return
+		#Pace
+		title=_("Pace by Lap")
+		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
+		ylabel="%s (%s)" % (_('Pace'), self.pace_unit)
+		self.distance_data['pace_lap'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+		self.distance_data['pace_lap'].set_color('#99CCFF')
+		self.distance_data['pace_lap'].graphType = "bar"
+		for lap in self.laps:
+			#print lap
+			time = float( lap['elapsed_time'].decode('utf-8') ) # time in sql is a unicode string
+			dist = lap['distance']/1000 #distance in km
+			pace = time/(60*dist) #min/km
+			print "Time: %f, Dist: %f, Pace: %f" % (time, dist, pace)
+			if self.us_system:
+				self.distance_data['pace_lap'].addBars(x=km2miles(dist), y=pacekm2miles(pace))
+			else:
+				self.distance_data['pace_lap'].addBars(x=dist, y=pace)
+		logging.debug("<<")
 
 	def _get_laps_from_gpx(self):
 		logging.debug(">>")
@@ -217,8 +246,6 @@ class Activity:
 
 	def _init_graph_data(self):
 		logging.debug(">>")
-		self.distance_data = {}
-		self.time_data = {}
 		if self.tracklist is None:
 			logging.debug("No tracklist in activity")
 			logging.debug("<<")
