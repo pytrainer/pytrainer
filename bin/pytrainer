@@ -34,8 +34,17 @@ def _max(one, two):
         return two
     elif two is None:
         return one
-    one_v = os.path.basename(one).split('-')[1]
-    two_v = os.path.basename(two).split('-')[1]
+    try:
+        one_v = os.path.basename(one).split('-')[1]
+        two_v = os.path.basename(two).split('-')[1]
+    except IndexError:
+        #Got format that doesnt fit what we expect
+        #Do simple comparison
+        if os.path.basename(one) > os.path.basename(two):
+            return one
+        else:
+            return two
+    
 
     one_v_nos = one_v.split('.')
     two_v_nos = two_v.split('.')
@@ -51,8 +60,7 @@ def _max(one, two):
             pass
     if len(one_v_nos) >= len(two_v_nos):
         return one
-    else: 
-        return two
+    return two
 
 
 bin_path = os.path.realpath(os.path.dirname(__file__)) # directory that the pytrainer script executes from e.g. /usr/bin or /usr/local/bin
@@ -88,7 +96,8 @@ else:
     #Found more than one - need to choose one...
     max_version = None
     for item in xulrunners:
-        max_version = _max(max_version, item)
+        xul_dir = os.path.dirname(item)
+        max_version = _max(max_version, xul_dir)
     xul_env = max_version
 
 print "Using xulrunner dir: %s" % xul_env
