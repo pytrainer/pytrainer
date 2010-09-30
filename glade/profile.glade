@@ -780,7 +780,7 @@
                             <child>
                               <widget class="GtkTable" id="table18">
                                 <property name="visible">True</property>
-                                <property name="n_rows">4</property>
+                                <property name="n_rows">5</property>
                                 <property name="n_columns">3</property>
                                 <property name="column_spacing">5</property>
                                 <property name="row_spacing">5</property>
@@ -884,8 +884,8 @@
                                   </widget>
                                   <packing>
                                     <property name="right_attach">3</property>
-                                    <property name="top_attach">3</property>
-                                    <property name="bottom_attach">4</property>
+                                    <property name="top_attach">4</property>
+                                    <property name="bottom_attach">5</property>
                                     <property name="x_options">GTK_FILL</property>
                                     <property name="y_options"></property>
                                   </packing>
@@ -895,6 +895,36 @@
                                 </child>
                                 <child>
                                   <placeholder/>
+                                </child>
+                                <child>
+                                  <placeholder/>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label-10">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">Maximum Pace:</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="top_attach">3</property>
+                                    <property name="bottom_attach">4</property>
+                                    <property name="x_options">GTK_FILL</property>
+                                    <property name="y_options"></property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkEntry" id="newmaxpace">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">3</property>
+                                    <property name="bottom_attach">4</property>
+                                    <property name="y_options"></property>
+                                  </packing>
                                 </child>
                               </widget>
                               <packing>
@@ -1141,7 +1171,7 @@ Continue?</property>
                             <child>
                               <widget class="GtkTable" id="table17">
                                 <property name="visible">True</property>
-                                <property name="n_rows">4</property>
+                                <property name="n_rows">5</property>
                                 <property name="n_columns">2</property>
                                 <property name="column_spacing">5</property>
                                 <property name="row_spacing">5</property>
@@ -1234,9 +1264,36 @@ Continue?</property>
                                   </widget>
                                   <packing>
                                     <property name="right_attach">2</property>
+                                    <property name="top_attach">4</property>
+                                    <property name="bottom_attach">5</property>
+                                    <property name="x_options">GTK_FILL</property>
+                                    <property name="y_options"></property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label-9">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">Maxiumum Pace</property>
+                                  </widget>
+                                  <packing>
                                     <property name="top_attach">3</property>
                                     <property name="bottom_attach">4</property>
                                     <property name="x_options">GTK_FILL</property>
+                                    <property name="y_options"></property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <widget class="GtkEntry" id="editmaxpace">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">3</property>
+                                    <property name="bottom_attach">4</property>
                                     <property name="y_options"></property>
                                   </packing>
                                 </child>

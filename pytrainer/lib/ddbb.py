@@ -140,6 +140,7 @@ class DDBB:
                                         "name":"varchar(100)",
                                         "weight":"float",
                                         "met":"float",
+                                        "max_pace":"integer",
                                         },
                         "waypoints":{   "id_waypoint":"integer primary key autoincrement",
                                         "lat":"float",

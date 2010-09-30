@@ -67,6 +67,7 @@ class Activity:
 	pace			- (float) average pace for activity
 	has_data		- (bool) true if instance has data populated
 	x_axis			- (string) distance or time, determines what will be graphed on x axis
+	pace_limit		- (int) maximum pace that is valid for this activity
 	'''
 	def __init__(self, pytrainer_main = None, id = None):
 		logging.debug(">>")
@@ -86,6 +87,7 @@ class Activity:
 		self.has_data = False
 		self.distance_data = {}
 		self.time_data = {}
+		self.pace_limit = None
 		if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 			self.us_system = True
 		else:
@@ -138,12 +140,15 @@ class Activity:
 		db_result = self.pytrainer_main.ddbb.select_dict("records,sports",
 					("sports.name","id_sports", "date","distance","time","beats","comments",
 						"average","calories","id_record","title","upositive","unegative",
-						"maxspeed","maxpace","pace","maxbeats","date_time_utc","date_time_local"),
+						"maxspeed","maxpace","pace","maxbeats","date_time_utc","date_time_local", "sports.max_pace"),
 					"id_record=\"%s\" and records.sport=sports.id_sports" %self.id)
 		if len(db_result) == 1:
 			dict = db_result[0]
 			self.sport_name = dict['sports.name']
 			self.sport_id = dict['id_sports']
+			self.pace_limit = dict['sports.max_pace']
+			if self.pace_limit == 0 or self.pace_limit == "":
+				self.pace_limit = None
 			self.title = dict['title']
 			self.date = dict['date']
 			self.time = self._int(dict['time'])
@@ -297,8 +302,11 @@ class Activity:
 		for track in self.tracklist:
 			try:
 				pace = 60/track['velocity']
-				#pace = 0 if pace > 90 else pace
-			except:
+				if self.pace_limit is not None and pace > self.pace_limit:
+					logging.debug("Pace (%s) exceeds limit (%s). Setting to 0" % (str(pace), str(self.pace_limit)))
+					pace = 0  #TODO this should be None when we move to newgraph...
+			except Exception as e:
+				#print type(e), e
 				pace = 0
 			if self.us_system:
 				self.distance_data['elevation'].addPoints(x=km2miles(track['elapsed_distance']), y=m2feet(track['ele']))

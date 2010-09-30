@@ -53,7 +53,7 @@ class WindowProfile(SimpleGladeApp):
             self.prf_ddbb.insert_text(i,self.ddbb_type[i])
 
         #preparamos la lista sports:
-        column_names=[_("Sport"),_("MET"),_("Extra Weight")]
+        column_names=[_("Sport"),_("MET"),_("Extra Weight"), _("Maximum Pace")]
         for column_index, column_name in enumerate(column_names):
             column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
             column.set_resizable(True)
@@ -141,6 +141,7 @@ class WindowProfile(SimpleGladeApp):
                             gobject.TYPE_STRING,
                             gobject.TYPE_STRING,
                             gobject.TYPE_STRING,
+                            gobject.TYPE_STRING,
                             object)
                 for i in sport_list:
                     if not i[1]:
@@ -151,12 +152,22 @@ class WindowProfile(SimpleGladeApp):
                         weight = i[2]
                     else:
                         weight = 0
+                    try:
+                        max_pace = int(i[4])
+                        if max_pace is None or max_pace == 0:
+                            max_pace = ""
+                    except Exception as e:
+                        #print type(e), e
+                        max_pace = ""
+                    
+                    
                     iter = store.append()
                     store.set (
                                 iter,
                                 0, str(i[0]),
-                                1, i[1],
-                                2, i[2]
+                                1, met,
+                                2, weight,
+                                3, max_pace,
                                 )
                 self.sportTreeView.set_model(store)
                 #self.sportlistbutton.hide()
@@ -334,7 +345,8 @@ class WindowProfile(SimpleGladeApp):
         sport = self.newsportentry.get_text()
         met = self.newmetentry.get_text()
         weight = self.newweightentry.get_text()
-        self.parent.addNewSport(sport,met,weight)
+        maxpace = self.newmaxpace.get_text()
+        self.parent.addNewSport(sport,met,weight,maxpace)
         self.parent.actualize_mainsportlist()
         self.on_switch_page(None,None,2)
         self.hidesportsteps()
@@ -364,11 +376,12 @@ class WindowProfile(SimpleGladeApp):
         selected,iter = self.sportTreeView.get_selection().get_selected()
         if iter:
             sport = selected.get_value(iter,0)
-            name,met,weight = self.parent.getSportInfo(sport)
+            name,met,weight,maxpace = self.parent.getSportInfo(sport)
             self.editsportentry.set_text(sport)
             self.sportnameedit.set_text(sport)
             self.editweightentry.set_text(str(weight))
             self.editmetentry.set_text(str(met))
+            self.editmaxpace.set_text(str(maxpace))
             self.hidesportsteps()
             self.editsport.show()
     
@@ -377,7 +390,8 @@ class WindowProfile(SimpleGladeApp):
         newnamesport = self.editsportentry.get_text()
         newmetsport = self.editmetentry.get_text()
         newweightsport = self.editweightentry.get_text()
-        self.parent.updateSport(oldnamesport,newnamesport,newmetsport,newweightsport)
+        newmaxpace = self.editmaxpace.get_text()
+        self.parent.updateSport(oldnamesport,newnamesport,newmetsport,newweightsport, newmaxpace)
         self.parent.actualize_mainsportlist()
         self.on_switch_page(None,None,2)
         self.hidesportsteps()
