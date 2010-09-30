@@ -54,8 +54,8 @@ class GraphData:
             #Second or subsequent bar, so start at last point
             #Which is previous left+width
             items = len(self.x_values)
-            last_left = self.x_values(items-1)
-            last_width = self.bar_widths(items-1)
+            last_left = self.x_values[items-1]
+            last_width = self.bar_widths[items-1]
             new_left = last_left+last_width
             print new_left
             self.x_values.append(new_left)
