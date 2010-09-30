@@ -308,6 +308,7 @@ class DrawArea:
         i = 0
         for value in xvalues:
             if i<1:
+                logging.debug("i: %d, value: (%s) %s %s" % (i, str(value), str(xvalues), str(yvalues)) )
                 axis = figure.add_subplot(111)
                 logging.debug("Axis: %s" % str(axis) )
                 line = axis.plot(xvalues[i],yvalues[i], color=color[i])
