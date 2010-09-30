@@ -49,7 +49,7 @@ from lib.ddbb import DDBB
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.7.2_svn#632"
+        self.version ="1.7.2_svn#634"
         self.DB_version = 3
         #Process command line options
         self.startup_options = self.get_options()
@@ -191,7 +191,7 @@ class pyTrainer:
 
     def runExtension(self,extension,id):
         logging.debug('>>')
-        print("Extension id: %s" % str(id))
+        #print("Extension id: %s" % str(id))
         activity = self.activitypool.get_activity(id)
         txtbutton,pathExtension,type = extension
         self.extensionClass = self.extension.importClass(pathExtension)
