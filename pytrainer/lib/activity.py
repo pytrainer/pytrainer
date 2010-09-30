@@ -122,7 +122,7 @@ class Activity:
 		'''
 		logging.debug(">>")
 		#Parse GPX file
-		print "Activity initing GPX.. ",
+		#print "Activity initing GPX.. ",
 		self.gpx = Gpx(filename = self.gpx_file) #TODO change GPX code to do less....
 		self.tree = self.gpx.tree
 		self.tracks = self.gpx.getTrackList() #TODO fix - this should removed and replaced with self.tracklist functionality
@@ -208,11 +208,10 @@ class Activity:
 		self.distance_data['pace_lap'].set_color('#99CCFF')
 		self.distance_data['pace_lap'].graphType = "bar"
 		for lap in self.laps:
-			#print lap
 			time = float( lap['elapsed_time'].decode('utf-8') ) # time in sql is a unicode string
 			dist = lap['distance']/1000 #distance in km
 			pace = time/(60*dist) #min/km
-			print "Time: %f, Dist: %f, Pace: %f" % (time, dist, pace)
+			logging.debug("Time: %f, Dist: %f, Pace: %f" % (time, dist, pace) )
 			if self.us_system:
 				self.distance_data['pace_lap'].addBars(x=km2miles(dist), y=pacekm2miles(pace))
 			else:

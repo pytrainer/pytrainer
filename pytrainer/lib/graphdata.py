@@ -57,7 +57,6 @@ class GraphData:
             last_left = self.x_values[items-1]
             last_width = self.bar_widths[items-1]
             new_left = last_left+last_width
-            print new_left
             self.x_values.append(new_left)
         self.bar_widths.append(x)            
         self.y_values.append(y)
