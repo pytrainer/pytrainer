@@ -311,18 +311,26 @@ class Main(SimpleGladeApp):
                 y2Frame = gtk.Frame(label="Show on Y2 Axis")
                 xvbox = gtk.VBox()
                 y1box = gtk.Table()
-                y2vbox = gtk.VBox()
+                y2box = gtk.Table()
                 #Populate X axis data
-                xdistancebutton = gtk.RadioButton(label="Distance")
-                xtimebutton = gtk.RadioButton(group=xdistancebutton, label="Time")
+                #Create x axis items
+                xdistancebutton = gtk.RadioButton(label=_("Distance"))
+                xtimebutton = gtk.RadioButton(group=xdistancebutton, label=_("Time"))
+                xlapsbutton = gtk.CheckButton(label=_("Laps"))
+                #Set state of buttons
                 if activity.x_axis == "distance":
                     xdistancebutton.set_active(True)
                 elif activity.x_axis == "time":
                     xtimebutton.set_active(True)
+                xlapsbutton.set_active(activity.show_laps)
+                #Connect handlers to buttons
                 xdistancebutton.connect("toggled", self.on_xaxischange, "distance", activity)
-                xvbox.add(xdistancebutton)
                 xtimebutton.connect("toggled", self.on_xaxischange, "time", activity)
+                xlapsbutton.connect("toggled", self.on_xlapschange, activity)
+                #Add buttons to frame
+                xvbox.add(xdistancebutton)
                 xvbox.add(xtimebutton)
+                xvbox.add(xlapsbutton)
                 xFrame.add(xvbox)
                 
                 row = 0
@@ -355,19 +363,24 @@ class Main(SimpleGladeApp):
                                         
                     #Second Y axis
                     y2button = gtk.CheckButton(label=data[graphdata].title)
-                    y2button.connect("toggled", self.on_y2change, y2vbox)
-                    y2vbox.add(y2button)
-                    
+                    y2button.connect("toggled", self.on_y2change, y2box, graphdata, activity)
+                    y2box.attach(y2button, 0, 1, row, row+1, xoptions=gtk.EXPAND|gtk.FILL)
+                    y2color = gtk.ColorButton()
+                    _color = gtk.gdk.color_parse(data[graphdata].linecolor)
+                    y2color.set_color(_color)
+                    y2color.connect("color-set", self.on_y1colorchange, y2box, graphdata, activity)
+                    #Attach to container
+                    y2box.attach(y2color, 1, 2, row, row+1)
                     row += 1
                     
                 y1Frame.add(y1box)
-                y2Frame.add(y2vbox)
-                self.graph_data_hbox.pack_start(xFrame, expand=False, fill=True, padding=0)
+                y2Frame.add(y2box)
+                self.graph_data_hbox.pack_start(xFrame, expand=False, fill=False, padding=0)
                 self.graph_data_hbox.pack_start(y1Frame, expand=False, fill=True, padding=0)
                 self.graph_data_hbox.pack_start(y2Frame, expand=False, fill=True, padding=0)
+                #expandbutton = gtk.Button(label=_("Hide"))
+                #self.graph_data_hbox.pack_start(expandbutton, expand=False, fill=False, padding=0)
                 self.graph_data_hbox.show_all()
-                
-
                 self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
 
         else:
@@ -1035,7 +1048,13 @@ class Main(SimpleGladeApp):
         if widget.get_active(): 
             activity.x_axis = data
             self.actualize_recordgraph(activity)
-
+            
+    def on_xlapschange(self, widget, activity=None): 
+        if widget.get_active(): 
+            activity.show_laps = True
+        else:
+            activity.show_laps = False
+        self.actualize_recordgraph(activity)
             
     def on_y1colorchange(self, widget, box, graphdata, activity): 
         '''Hander for changes to y1 color selection''' 
@@ -1049,7 +1068,6 @@ class Main(SimpleGladeApp):
         
     def on_y1change(self, widget, box, graphdata, activity): 
         '''Hander for changes to y1 selection''' 
-        #TODO Need to deal with different x options, ie distance and time...
         logging.debug("Y1 selection toggled: %s" % graphdata)
         #Loop through all options at set data correctly
         for child in box.get_children(): 
@@ -1065,14 +1083,14 @@ class Main(SimpleGladeApp):
                         activity.time_data[item].show_on_y1 = child.get_active()
         #Replot the activity
         self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
-
-    def on_y2change(self, widget, box): 
+                
+    def on_y2change(self, widget, box, graphdata, activity):
         '''Hander for changes to y2 selection''' 
         print "Y2 selected: ", 
-        for child in box.get_children(): 
-            if child.get_active(): 
-                print child.get_label(), 
-        print 
+        #for child in box.get_children(): 
+        #    if child.get_active(): 
+        #        print child.get_label(), 
+        #print 
     
     def on_athleteTreeView_button_press_event(self, treeview, event):
         x = int(event.x)

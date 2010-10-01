@@ -66,8 +66,10 @@ class DrawGraph:
         canvas.show()
         
         #Display title etc
-        plt.xlabel(datalist.xlabel)
-        plt.title(title)
+        if datalist.xlabel is not None:
+            plt.xlabel(datalist.xlabel)
+        if title is not None:
+            plt.title(title)
         #Removed as now in legend
         #plt.ylabel(datalist.ylabel)
 
@@ -80,6 +82,12 @@ class DrawGraph:
         elif datalist.graphType == "bar":
             plt.bar(datalist.x_values, datalist.y_values, datalist.bar_widths, datalist.bar_bottoms, color=datalist.linecolor, label=datalist.ylabel)
             #return figure
+        elif datalist.graphType == "vspan":
+            i = 0
+            while i < len(datalist.x_values):
+                #print datalist.x_values[i] , datalist.bar_widths[i]
+                plt.axvspan(datalist.x_values[i], datalist.x_values[i]+datalist.bar_widths[i], alpha=0.15, facecolor=datalist.linecolor)
+                i += 1
         else:
             print "Unknown/unimplemented graph type: %s" % datalist.graphType
             return figure
@@ -205,6 +213,7 @@ class DrawGraph:
         figure = None
         datalist = []
         count = 0
+
         if activity.x_axis == "distance":
             if activity.title is None or activity.title == "":
                 _title = "%s%s of %s on %s" % (str(activity.distance), activity.distance_unit, activity.sport_name, activity.date)
@@ -212,11 +221,13 @@ class DrawGraph:
                 _title = "%s: %s%s of %s on %s" % (activity.title, str(activity.distance), activity.distance_unit, activity.sport_name, activity.date)
             
             #Loop through data items and graph the selected ones
-            #TODO sort for x = time....
             for item in activity.distance_data:
                 if activity.distance_data[item].show_on_y1:
                     count += 1
                     figure = self.draw(activity.distance_data[item], box=box, figure=figure, title=_title)
+            #Display lap divisions if required
+            if activity.show_laps:
+                figure = self.draw(activity.lap_distance, box=box, figure=figure)
 
         elif activity.x_axis == "time":
             _time = "%d:%02d:%02d" % (activity.time_tuple)
@@ -228,6 +239,9 @@ class DrawGraph:
                 if activity.time_data[item].show_on_y1:
                     count += 1
                     figure = self.draw(activity.time_data[item], box=box, figure=figure, title=_title)
+            #Display lap divisions if required
+            if activity.show_laps:
+                figure = self.draw(activity.lap_time, box=box, figure=figure)
         if count == 0:
             logging.debug("No items to graph.. Removing graph")
             figure = self.draw(None, box=box, figure=figure)

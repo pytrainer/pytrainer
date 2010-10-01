@@ -67,6 +67,9 @@ class Activity:
 	pace			- (float) average pace for activity
 	has_data		- (bool) true if instance has data populated
 	x_axis			- (string) distance or time, determines what will be graphed on x axis
+	show_laps		- (bool) display laps on graphs
+	lap_distance	- (graphdata) 
+	lap_time		- (graphdata)
 	pace_limit		- (int) maximum pace that is valid for this activity
 	'''
 	def __init__(self, pytrainer_main = None, id = None):
@@ -104,6 +107,7 @@ class Activity:
 		self._init_graph_data()
 		self._generate_per_lap_graphs()
 		self.x_axis = "distance"
+		self.show_laps = False
 		logging.debug("<<")
 
 	def _set_units(self):
@@ -205,6 +209,13 @@ class Activity:
 			logging.debug("No laps to generate graphs from")
 			logging.debug("<<")
 			return
+		#Lap columns
+		self.lap_distance = GraphData()
+		self.lap_distance.set_color('#CCFF00')
+		self.lap_distance.graphType = "vspan"
+		self.lap_time = GraphData()
+		self.lap_time.set_color('#CCFF00')
+		self.lap_time.graphType = "vspan"
 		#Pace
 		title=_("Pace by Lap")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
@@ -212,15 +223,24 @@ class Activity:
 		self.distance_data['pace_lap'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
 		self.distance_data['pace_lap'].set_color('#99CCFF')
 		self.distance_data['pace_lap'].graphType = "bar"
+		xlabel=_("Time (seconds)")
+		self.time_data['pace_lap'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+		self.time_data['pace_lap'].set_color('#99CCFF')
+		self.time_data['pace_lap'].graphType = "bar"
 		for lap in self.laps:
 			time = float( lap['elapsed_time'].decode('utf-8') ) # time in sql is a unicode string
 			dist = lap['distance']/1000 #distance in km
 			pace = time/(60*dist) #min/km
 			logging.debug("Time: %f, Dist: %f, Pace: %f" % (time, dist, pace) )
+			self.lap_time.addBars(x=time, y=10)
 			if self.us_system:
+				self.lap_distance.addBars(x=km2miles(dist), y=10)
 				self.distance_data['pace_lap'].addBars(x=km2miles(dist), y=pacekm2miles(pace))
+				self.time_data['pace_lap'].addBars(x=time, y=pacekm2miles(pace))
 			else:
+				self.lap_distance.addBars(x=dist, y=10)
 				self.distance_data['pace_lap'].addBars(x=dist, y=pace)
+				self.time_data['pace_lap'].addBars(x=time, y=pace)
 		logging.debug("<<")
 
 	def _get_laps_from_gpx(self):

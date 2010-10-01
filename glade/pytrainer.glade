@@ -1198,6 +1198,9 @@ Cadence
                                         <child>
                                           <placeholder/>
                                         </child>
+                                        <child>
+                                          <placeholder/>
+                                        </child>
                                       </widget>
                                       <packing>
                                         <property name="expand">False</property>
