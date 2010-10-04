@@ -27,7 +27,7 @@
 			<xsd:element name="begin_pos" type="position_type" minOccurs="0" />
 			<xsd:element name="end_pos" type="position_type" minOccurs="0" />
 			<xsd:element name="max_speed" type="xsd:float" minOccurs="0" />
-			<xsd:element name="calories" type="xsd:positiveInteger" minOccurs="0" />
+			<xsd:element name="calories" type="xsd:integer" minOccurs="0" />
 			<xsd:element name="avg_hr" type="xsd:positiveInteger" minOccurs="0" />
 			<xsd:element name="max_hr" type="xsd:positiveInteger" minOccurs="0" />
 			<xsd:element name="intensity" type="xsd:string" minOccurs="0" />

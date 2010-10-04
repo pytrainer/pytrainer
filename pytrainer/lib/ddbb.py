@@ -28,20 +28,20 @@ class DDBB:
     def __init__(self, configuration, pytrainer_main=None):
         self.pytrainer_main = pytrainer_main
         self.configuration = configuration
-        self.ddbb_type = configuration.getValue("pytraining","prf_ddbb")
+        self.ddbb_type = self.configuration.getValue("pytraining","prf_ddbb")
         if self.ddbb_type == "mysql": #TODO no longer supported?
             from mysqlUtils import Sql
         else:
             from sqliteUtils import Sql
 
-        self.confdir = configuration.confdir
+        self.confdir = self.configuration.confdir
         self.ddbb_path = "%s/pytrainer.ddbb" %self.confdir
 
-        ddbb_host = configuration.getValue("pytraining","prf_ddbbhost")
-        ddbb = configuration.getValue("pytraining","prf_ddbbname")
-        ddbb_user = configuration.getValue("pytraining","prf_ddbbuser")
-        ddbb_pass = configuration.getValue("pytraining","prf_ddbbpass")
-        self.ddbbObject = Sql(ddbb_host,ddbb,ddbb_user,ddbb_pass,configuration)
+        ddbb_host = self.configuration.getValue("pytraining","prf_ddbbhost")
+        ddbb = self.configuration.getValue("pytraining","prf_ddbbname")
+        ddbb_user = self.configuration.getValue("pytraining","prf_ddbbuser")
+        ddbb_pass = self.configuration.getValue("pytraining","prf_ddbbpass")
+        self.ddbbObject = Sql(ddbb_host,ddbb,ddbb_user,ddbb_pass,self.configuration)
 
     def connect(self):
         #si devolvemos 1 ha ido todo con exito      : return 1 if all successful
@@ -220,7 +220,7 @@ class DDBB:
         logging.debug("Found %d records in DB without date_time_local field populated" % (len(listOfRecords) ) )
         for record in listOfRecords:
             try:
-                gpxfile = configuration.gpxdir+"/%s.gpx"%(record[0])
+                gpxfile = self.configuration.gpxdir+"/%s.gpx"%(record[0])
                 dateFromUTC = Date().getDateTime(record[2])
                 if os.path.isfile(gpxfile) : #GPX file exists for this record - probably not a manual record
                     date_time_local = str(dateFromUTC[1])
