@@ -68,7 +68,7 @@ class Activity:
 	has_data		- (bool) true if instance has data populated
 	x_axis			- (string) distance or time, determines what will be graphed on x axis
 	show_laps		- (bool) display laps on graphs
-	lap_distance	- (graphdata) 
+	lap_distance	- (graphdata)
 	lap_time		- (graphdata)
 	pace_limit		- (int) maximum pace that is valid for this activity
 	'''
@@ -201,7 +201,7 @@ class Activity:
 				laps = self._get_laps_from_gpx()
 		self.laps = laps
 		logging.debug("<<")
-		
+
 	def _generate_per_lap_graphs(self):
 		'''Build lap based graphs...'''
 		logging.debug(">>")
@@ -280,6 +280,7 @@ class Activity:
 		ylabel="%s (%s)" % (_('Elevation'), self.height_unit)
 		self.distance_data['elevation'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
 		self.distance_data['elevation'].set_color('#ff0000', '#ff0000')
+		self.distance_data['elevation'].show_on_y1 = True #Make graph show elevation vs distance by default
 		xlabel=_("Time (seconds)")
 		self.time_data['elevation'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
 		self.time_data['elevation'].set_color('#ff0000', '#ff0000')
