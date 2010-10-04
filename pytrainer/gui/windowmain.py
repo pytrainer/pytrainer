@@ -366,9 +366,9 @@ class Main(SimpleGladeApp):
                     y2button.connect("toggled", self.on_y2change, y2box, graphdata, activity)
                     y2box.attach(y2button, 0, 1, row, row+1, xoptions=gtk.EXPAND|gtk.FILL)
                     y2color = gtk.ColorButton()
-                    _color = gtk.gdk.color_parse(data[graphdata].linecolor)
+                    _color = gtk.gdk.color_parse(data[graphdata].y2linecolor)
                     y2color.set_color(_color)
-                    y2color.connect("color-set", self.on_y1colorchange, y2box, graphdata, activity)
+                    y2color.connect("color-set", self.on_y2colorchange, y2box, graphdata, activity)
                     #Attach to container
                     y2box.attach(y2color, 1, 2, row, row+1)
                     row += 1
@@ -1066,6 +1066,16 @@ class Main(SimpleGladeApp):
         #Replot the activity
         self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
         
+    def on_y2colorchange(self, widget, box, graphdata, activity): 
+        '''Hander for changes to y2 color selection''' 
+        logging.debug("Setting %s to color %s" % (graphdata, widget.get_color() ) )
+        if activity.x_axis == "distance":
+            activity.distance_data[graphdata].set_color(None, str(widget.get_color()))
+        elif activity.x_axis == "time":
+            activity.time_data[graphdata].set_color(None, str(widget.get_color()))
+        #Replot the activity
+        self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
+        
     def on_y1change(self, widget, box, graphdata, activity): 
         '''Hander for changes to y1 selection''' 
         logging.debug("Y1 selection toggled: %s" % graphdata)
@@ -1086,11 +1096,21 @@ class Main(SimpleGladeApp):
                 
     def on_y2change(self, widget, box, graphdata, activity):
         '''Hander for changes to y2 selection''' 
-        print "Y2 selected: ", 
-        #for child in box.get_children(): 
-        #    if child.get_active(): 
-        #        print child.get_label(), 
-        #print 
+        logging.debug("Y2 selection toggled: %s" % graphdata)
+        #Loop through all options at set data correctly
+        for child in box.get_children(): 
+            if activity.x_axis == "distance":
+                for item in activity.distance_data:
+                    if activity.distance_data[item].title == child.get_label():
+                        logging.debug( "Setting %s to %s" % (item, str(child.get_active()) ) )
+                        activity.distance_data[item].show_on_y2 = child.get_active()
+            elif activity.x_axis == "time":
+                for item in activity.time_data:
+                    if activity.time_data[item].title == child.get_label():
+                        logging.debug( "Setting %s to %s" % (item, str(child.get_active()) ) )
+                        activity.time_data[item].show_on_y2 = child.get_active()
+        #Replot the activity
+        self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
     
     def on_athleteTreeView_button_press_event(self, treeview, event):
         x = int(event.x)

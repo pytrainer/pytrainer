@@ -211,21 +211,21 @@ class Activity:
 			return
 		#Lap columns
 		self.lap_distance = GraphData()
-		self.lap_distance.set_color('#CCFF00')
+		self.lap_distance.set_color('#CCFF00', '#CCFF00')
 		self.lap_distance.graphType = "vspan"
 		self.lap_time = GraphData()
-		self.lap_time.set_color('#CCFF00')
+		self.lap_time.set_color('#CCFF00', '#CCFF00')
 		self.lap_time.graphType = "vspan"
 		#Pace
 		title=_("Pace by Lap")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Pace'), self.pace_unit)
 		self.distance_data['pace_lap'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-		self.distance_data['pace_lap'].set_color('#99CCFF')
+		self.distance_data['pace_lap'].set_color('#99CCFF', '#99CCFF')
 		self.distance_data['pace_lap'].graphType = "bar"
 		xlabel=_("Time (seconds)")
 		self.time_data['pace_lap'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-		self.time_data['pace_lap'].set_color('#99CCFF')
+		self.time_data['pace_lap'].set_color('#99CCFF', '#99CCFF')
 		self.time_data['pace_lap'].graphType = "bar"
 		for lap in self.laps:
 			time = float( lap['elapsed_time'].decode('utf-8') ) # time in sql is a unicode string
@@ -279,46 +279,46 @@ class Activity:
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Elevation'), self.height_unit)
 		self.distance_data['elevation'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-		self.distance_data['elevation'].set_color('#ff0000')
+		self.distance_data['elevation'].set_color('#ff0000', '#ff0000')
 		xlabel=_("Time (seconds)")
 		self.time_data['elevation'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
-		self.time_data['elevation'].set_color('#ff0000')
+		self.time_data['elevation'].set_color('#ff0000', '#ff0000')
 		#Speed
 		title=_("Speed")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Speed'), self.speed_unit)
 		self.distance_data['speed'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-		self.distance_data['speed'].set_color('#000000')
+		self.distance_data['speed'].set_color('#000000', '#000000')
 		xlabel=_("Time (seconds)")
 		self.time_data['speed'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
-		self.time_data['speed'].set_color('#000000')
+		self.time_data['speed'].set_color('#000000', '#000000')
 		#Pace
 		title=_("Pace")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Pace'), self.pace_unit)
 		self.distance_data['pace'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-		self.distance_data['pace'].set_color('#0000ff')
+		self.distance_data['pace'].set_color('#0000ff', '#0000ff')
 		xlabel=_("Time (seconds)")
 		self.time_data['pace'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
-		self.time_data['pace'].set_color('#0000ff')
+		self.time_data['pace'].set_color('#0000ff', '#0000ff')
 		#Heartrate
 		title=_("Heart Rate")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Heart Rate'), _('bpm'))
 		self.distance_data['hr'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-		self.distance_data['hr'].set_color('#00ff00')
+		self.distance_data['hr'].set_color('#00ff00', '#00ff00')
 		xlabel=_("Time (seconds)")
 		self.time_data['hr'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
-		self.time_data['hr'].set_color('#00ff00')
+		self.time_data['hr'].set_color('#00ff00', '#00ff00')
 		#Cadence
 		title=_("Cadence")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
 		ylabel="%s (%s)" % (_('Cadence'), _('rpm'))
 		self.distance_data['cadence'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-		self.distance_data['cadence'].set_color('#cc00ff')
+		self.distance_data['cadence'].set_color('#cc00ff', '#cc00ff')
 		xlabel=_("Time (seconds)")
 		self.time_data['cadence'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
-		self.time_data['cadence'].set_color('#cc00ff')
+		self.time_data['cadence'].set_color('#cc00ff', '#cc00ff')
 		for track in self.tracklist:
 			try:
 				pace = 60/track['velocity']

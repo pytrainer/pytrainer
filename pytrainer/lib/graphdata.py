@@ -34,12 +34,14 @@ class GraphData:
         self.y_values = []
         self.linewidth = 1
         self.linecolor = '#ff0000'
+        self.y2linecolor = '#ff0000'
         self.max_x_value = None
         self.min_x_value = None
         self.max_y_value = None
         self.min_y_value = None
         self.graphType = "plot"
         self.show_on_y1 = False
+        self.show_on_y2 = False
         logging.debug('<<')
         
     def addBars(self, x=None, y=None):
@@ -78,21 +80,35 @@ class GraphData:
         if self.min_y_value is None or y < self.min_y_value:
             self.min_y_value = y
 
-    def set_color(self, color):
-        ''' 
-            Helper function to set the line color
-            need as some gtk.gdk color can be invalid for matplotlib
+    def get_color(self, color):
         '''
+        
+        '''
+        if color is None:
+            return None
         try:
             #Generate 13 digit color string from supplied color
             col = gtk.gdk.color_parse(color).to_string()
         except ValueError:
             logging.debug("Unable to parse color from '%s'" % color)
-            return
+            return None
+                
         #Create matplotlib color string
         _color = "#%s%s%s" % (col[1:3], col[5:7], col[9:11])
-        logging.debug("%s color saved as: %s" % (color, _color))
-        self.linecolor = _color
+        #logging.debug("%s color saved as: %s" % (color, _color))
+        return _color
+        
+    def set_color(self, y1color, y2color = None):
+        ''' 
+            Helper function to set the line color
+            need as some gtk.gdk color can be invalid for matplotlib
+        '''
+        _color = self.get_color(y1color)
+        _color2 = self.get_color(y2color)
+        if _color is not None:
+            self.linecolor = _color
+        if _color2 is not None:
+            self.y2linecolor = _color2
 
     def __len__(self):
         if self.x_values is None:
@@ -108,6 +124,7 @@ linewidth: %d
 linecolor: %s
 graphType: %s
 show on y1: %s
+show on y2: %s
 x min max: %s %s
 y min max: %s %s
 x values: %s
@@ -118,6 +135,7 @@ y values: %s''' % (self.title,
     self.linecolor,
     self.graphType,
     str(self.show_on_y1),
+    str(self.show_on_y2),
     str(self.min_x_value), str(self.max_x_value),
     str(self.min_y_value), str(self.max_y_value),
     str(self.x_values),

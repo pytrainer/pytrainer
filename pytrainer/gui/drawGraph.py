@@ -31,15 +31,19 @@ class DrawGraph:
         self.parent = parent
         self.pytrainer_main = pytrainer_main
         #self.NEARLY_ZERO = 0.0000000000000000000001
+        self.ax1 = None
+        self.ax2 = None
         logging.debug('<<')
         
-    def draw(self, datalist = None, box = None, figure = None, title = None):
+    def draw(self, datalist = None, box = None, figure = None, title = None, y2 = False):
         '''
             Draw a graph using supplied information into supplied gtk.box
             
             datalist = populated graphdata class (required)
             box = gtk.box object (required)
             figure = matplotlib figure (optional) if supplied will add graph to this figure
+            title = 
+            y2 = 
             
             return = figure          
         '''
@@ -51,6 +55,9 @@ class DrawGraph:
         if figure is None:
             #No figure, so create figure
             figure = plt.figure()
+            self.ax1 = plt.axes()
+            #Reset second axis
+            self.ax2 = None
         #Remove any existing plots
         for child in box.get_children():
             logging.debug('Removing box child: '+str(child))
@@ -59,6 +66,9 @@ class DrawGraph:
         if datalist is None:
             logging.debug("drawPlot called with no data")
             return
+            
+        if y2 and self.ax2 is None:
+            self.ax2 = plt.twinx()
         
             
         #Create canvas
@@ -73,27 +83,38 @@ class DrawGraph:
         #Removed as now in legend
         #plt.ylabel(datalist.ylabel)
 
-        #TODO
         #Determine graph type....
         #print "Got graphtype: %s" % datalist.graphType
         if datalist.graphType == "plot":
             #Plot data
-            plt.plot(datalist.x_values, datalist.y_values, linewidth=datalist.linewidth, color=datalist.linecolor, label=datalist.ylabel )
+            if not y2:
+                #plt.plot(datalist.x_values, datalist.y_values, linewidth=datalist.linewidth, color=datalist.linecolor, label=datalist.ylabel )
+                self.ax1.plot(datalist.x_values, datalist.y_values, linewidth=datalist.linewidth, color=datalist.linecolor, label=datalist.ylabel )
+            else:
+                self.ax2.plot(datalist.x_values, datalist.y_values, linewidth=datalist.linewidth, color=datalist.y2linecolor, label=datalist.ylabel )
         elif datalist.graphType == "bar":
-            plt.bar(datalist.x_values, datalist.y_values, datalist.bar_widths, datalist.bar_bottoms, color=datalist.linecolor, label=datalist.ylabel)
-            #return figure
+            if not y2:
+                self.ax1.bar(datalist.x_values, datalist.y_values, datalist.bar_widths, datalist.bar_bottoms, color=datalist.linecolor, label=datalist.ylabel, alpha=0.5)
+            else:
+                self.ax2.bar(datalist.x_values, datalist.y_values, datalist.bar_widths, datalist.bar_bottoms, color=datalist.y2linecolor, label=datalist.ylabel, alpha=0.5)
         elif datalist.graphType == "vspan":
             i = 0
             while i < len(datalist.x_values):
                 #print datalist.x_values[i] , datalist.bar_widths[i]
-                plt.axvspan(datalist.x_values[i], datalist.x_values[i]+datalist.bar_widths[i], alpha=0.15, facecolor=datalist.linecolor)
+                if not y2:
+                    self.ax1.axvspan(datalist.x_values[i], datalist.x_values[i]+datalist.bar_widths[i], alpha=0.15, facecolor=datalist.linecolor)
+                else:
+                    self.ax2.axvspan(datalist.x_values[i], datalist.x_values[i]+datalist.bar_widths[i], alpha=0.15, facecolor=datalist.y2linecolor)
                 i += 1
         else:
             print "Unknown/unimplemented graph type: %s" % datalist.graphType
             return figure
         #Set axis limits
         #plt.axis([datalist.min_x_value, datalist.max_x_value, datalist.min_y_value, datalist.max_y_value])
-        plt.legend(loc=0)
+        if self.ax1 is not None:
+            self.ax1.legend(loc = 'upper left', bbox_to_anchor = (0, 1))
+        if self.ax2 is not None:
+            self.ax2.legend(loc = 'upper right', bbox_to_anchor = (1, 1))
         #axis.set_xlim(0, data.max_x_value)
         #axis.set_ylim(0, data.max_y_value)
         
@@ -212,7 +233,8 @@ class DrawGraph:
         #TODO Check that datalist is of type dict (and contains has correct items)
         figure = None
         datalist = []
-        count = 0
+        y1count = 0
+        y2count = 0
 
         if activity.x_axis == "distance":
             if activity.title is None or activity.title == "":
@@ -223,8 +245,11 @@ class DrawGraph:
             #Loop through data items and graph the selected ones
             for item in activity.distance_data:
                 if activity.distance_data[item].show_on_y1:
-                    count += 1
+                    y1count += 1
                     figure = self.draw(activity.distance_data[item], box=box, figure=figure, title=_title)
+                if activity.distance_data[item].show_on_y2:
+                    y2count += 1
+                    figure = self.draw(activity.distance_data[item], box=box, figure=figure, title=_title, y2=True)
             #Display lap divisions if required
             if activity.show_laps:
                 figure = self.draw(activity.lap_distance, box=box, figure=figure)
@@ -237,12 +262,20 @@ class DrawGraph:
                 _title = "%s: %s of %s on %s" % (activity.title, _time, activity.sport_name, activity.date)
             for item in activity.time_data:
                 if activity.time_data[item].show_on_y1:
-                    count += 1
+                    y1count += 1
                     figure = self.draw(activity.time_data[item], box=box, figure=figure, title=_title)
+                if activity.time_data[item].show_on_y2:
+                    y2count += 1
+                    figure = self.draw(activity.time_data[item], box=box, figure=figure, title=_title, y2=True)
             #Display lap divisions if required
             if activity.show_laps:
                 figure = self.draw(activity.lap_time, box=box, figure=figure)
-        if count == 0:
+                
+        #Sort out graph errors...
+        if y1count == 0 and y2count == 0:
             logging.debug("No items to graph.. Removing graph")
             figure = self.draw(None, box=box, figure=figure)
+        elif y1count == 0:
+            logging.debug("No items on y1 axis... ")
+            #TODO Sort
         logging.debug('<<')
