@@ -286,10 +286,11 @@ class Activity:
 		ylabel="%s (%s)" % (_('Elevation'), self.height_unit)
 		self.distance_data['elevation'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
 		self.distance_data['elevation'].set_color('#ff0000', '#ff0000')
-		self.distance_data['elevation'].show_on_y1 = True #Make graph show elevation vs distance by default
+		self.distance_data['elevation'].show_on_y1 = True #Make graph show elevation by default
 		xlabel=_("Time (seconds)")
 		self.time_data['elevation'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
 		self.time_data['elevation'].set_color('#ff0000', '#ff0000')
+		self.time_data['elevation'].show_on_y1 = True #Make graph show elevation by default
 		#Speed
 		title=_("Speed")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)

@@ -298,7 +298,8 @@ class Main(SimpleGladeApp):
                 #Create a frame showing data available for graphing
                 #Remove existing frames
                 for child in self.graph_data_hbox.get_children():
-                    self.graph_data_hbox.remove(child)
+                    if isinstance(child, gtk.Frame):
+                        self.graph_data_hbox.remove(child)
                 #Remove graph
                 #for child in self.record_graph_vbox.get_children():
                 #    #Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
@@ -363,6 +364,7 @@ class Main(SimpleGladeApp):
                                         
                     #Second Y axis
                     y2button = gtk.CheckButton(label=data[graphdata].title)
+                    y2button.set_active(data[graphdata].show_on_y2)
                     y2button.connect("toggled", self.on_y2change, y2box, graphdata, activity)
                     y2box.attach(y2button, 0, 1, row, row+1, xoptions=gtk.EXPAND|gtk.FILL)
                     y2color = gtk.ColorButton()
@@ -381,6 +383,7 @@ class Main(SimpleGladeApp):
                 #expandbutton = gtk.Button(label=_("Hide"))
                 #self.graph_data_hbox.pack_start(expandbutton, expand=False, fill=False, padding=0)
                 self.graph_data_hbox.show_all()
+                self.buttonGraphShowOptions.hide()
                 self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
 
         else:
@@ -1148,6 +1151,23 @@ class Main(SimpleGladeApp):
             self.buttonShowOptions.set_tooltip_text(_('Show graph display options') )
         #logging.debug('Position: %d' % self.hpaned1.get_position() )
         logging.debug('Position set: %s' % self.hpaned1.get_property('position-set') )
+        
+    def on_buttonGraphHideOptions_clicked(self, widget):
+        logging.debug('on_buttonGraphHideOptions_clicked')
+        self.buttonGraphHideOptions.hide()
+        for child in self.graph_data_hbox.get_children():
+            if isinstance(child, gtk.Frame):
+                child.hide()
+        self.buttonGraphShowOptions.show()
+        
+        
+    def on_buttonGraphShowOptions_clicked(self, widget):
+        logging.debug('on_buttonGraphShowOptions_clicked')
+        self.buttonGraphShowOptions.hide()
+        for child in self.graph_data_hbox.get_children():
+            if isinstance(child, gtk.Frame):
+                child.show()
+        self.buttonGraphHideOptions.show()
 
     def on_buttonRedrawMap_clicked(self, widget):
         logging.debug('on_buttonRedrawMap_clicked')

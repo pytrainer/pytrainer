@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <glade-interface>
   <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-naming-policy toplevel-contextual -->
@@ -1199,7 +1199,51 @@ Cadence
                                           <placeholder/>
                                         </child>
                                         <child>
-                                          <placeholder/>
+                                          <widget class="GtkVBox" id="vbox2">
+                                            <property name="visible">True</property>
+                                            <child>
+                                              <widget class="GtkButton" id="buttonGraphHideOptions">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">True</property>
+                                                <signal name="clicked" handler="on_buttonGraphHideOptions_clicked"/>
+                                                <child>
+                                                  <widget class="GtkImage" id="image5">
+                                                    <property name="visible">True</property>
+                                                    <property name="stock">gtk-goto-top</property>
+                                                  </widget>
+                                                </child>
+                                              </widget>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">0</property>
+                                              </packing>
+                                            </child>
+                                            <child>
+                                              <widget class="GtkButton" id="buttonGraphShowOptions">
+                                                <property name="can_focus">True</property>
+                                                <property name="receives_default">True</property>
+                                                <signal name="clicked" handler="on_buttonGraphShowOptions_clicked"/>
+                                                <child>
+                                                  <widget class="GtkImage" id="image6">
+                                                    <property name="visible">True</property>
+                                                    <property name="stock">gtk-goto-bottom</property>
+                                                  </widget>
+                                                </child>
+                                              </widget>
+                                              <packing>
+                                                <property name="expand">False</property>
+                                                <property name="fill">False</property>
+                                                <property name="position">1</property>
+                                              </packing>
+                                            </child>
+                                          </widget>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="pack_type">end</property>
+                                            <property name="position">0</property>
+                                          </packing>
                                         </child>
                                       </widget>
                                       <packing>
@@ -1281,7 +1325,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonY1Min">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">&#x25CF;</property>
+                                                            <property name="invisible_char">●</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">0 -500 1000 1 10 0</property>
                                                             <signal name="value_changed" handler="on_spinbuttonY1_value_changed"/>
@@ -1299,7 +1343,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonY1Max">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">&#x25CF;</property>
+                                                            <property name="invisible_char">●</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">0 -500 1000 1 10 0</property>
                                                             <signal name="value_changed" handler="on_spinbuttonY1_value_changed"/>
@@ -1362,7 +1406,7 @@ Cadence
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="max_length">2</property>
-                                                            <property name="invisible_char">&#x25CF;</property>
+                                                            <property name="invisible_char">●</property>
                                                             <property name="adjustment">1 1 10 1 1 0</property>
                                                             <signal name="value_changed" handler="on_spinbuttonY1LineWeight_value_changed"/>
                                                           </widget>
@@ -1404,7 +1448,7 @@ Cadence
                                                             <property name="sensitive">False</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="max_length">2</property>
-                                                            <property name="invisible_char">&#x25CF;</property>
+                                                            <property name="invisible_char">●</property>
                                                             <property name="adjustment">1 0 10 1 1 0</property>
                                                           </widget>
                                                           <packing>
@@ -1496,7 +1540,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonY2Min">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">&#x25CF;</property>
+                                                            <property name="invisible_char">●</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">0 -500 1000 1 10 0</property>
                                                           </widget>
@@ -1513,7 +1557,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonY2Max">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">&#x25CF;</property>
+                                                            <property name="invisible_char">●</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">1 -500 1000 1 10 0</property>
                                                           </widget>
@@ -1583,7 +1627,7 @@ Cadence
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="max_length">2</property>
-                                                            <property name="invisible_char">&#x25CF;</property>
+                                                            <property name="invisible_char">●</property>
                                                             <property name="adjustment">1 0 10 1 1 0</property>
                                                           </widget>
                                                           <packing>
@@ -1615,7 +1659,7 @@ Cadence
                                                             <property name="sensitive">False</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="max_length">2</property>
-                                                            <property name="invisible_char">&#x25CF;</property>
+                                                            <property name="invisible_char">●</property>
                                                             <property name="adjustment">1 0 10 1 1 0</property>
                                                           </widget>
                                                           <packing>
@@ -1692,7 +1736,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonXMin">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">&#x25CF;</property>
+                                                            <property name="invisible_char">●</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">0 -500 1000 1 10 0</property>
                                                           </widget>
@@ -1709,7 +1753,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonXMax">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">&#x25CF;</property>
+                                                            <property name="invisible_char">●</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">0 -500 1000 1 10 0</property>
                                                           </widget>
@@ -5223,7 +5267,7 @@ Socks</property>
                           <widget class="GtkEntry" id="lsa_searchvalue">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="invisible_char">&#x25CF;</property>
+                            <property name="invisible_char">●</property>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -5479,7 +5523,7 @@ Summit</property>
                                   <widget class="GtkEntry" id="waypoint_longitude">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">&#x25CF;</property>
+                                    <property name="invisible_char">●</property>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">3</property>
@@ -5494,7 +5538,7 @@ Summit</property>
                                   <widget class="GtkEntry" id="waypoint_description">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">&#x25CF;</property>
+                                    <property name="invisible_char">●</property>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -5509,7 +5553,7 @@ Summit</property>
                                   <widget class="GtkEntry" id="waypoint_latitude">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">&#x25CF;</property>
+                                    <property name="invisible_char">●</property>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">3</property>
@@ -5522,7 +5566,7 @@ Summit</property>
                                   <widget class="GtkEntry" id="waypoint_name">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">&#x25CF;</property>
+                                    <property name="invisible_char">●</property>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -5786,7 +5830,7 @@ Summit</property>
                                           <widget class="GtkEntry" id="entryAthleteDate">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
-                                            <property name="invisible_char">&#x25CF;</property>
+                                            <property name="invisible_char">●</property>
                                           </widget>
                                           <packing>
                                             <property name="left_attach">1</property>
@@ -5799,7 +5843,7 @@ Summit</property>
                                           <widget class="GtkEntry" id="entryAthleteWeight">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
-                                            <property name="invisible_char">&#x25CF;</property>
+                                            <property name="invisible_char">●</property>
                                           </widget>
                                           <packing>
                                             <property name="left_attach">1</property>
@@ -5828,7 +5872,7 @@ Summit</property>
                                           <widget class="GtkEntry" id="entryAthleteBF">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
-                                            <property name="invisible_char">&#x25CF;</property>
+                                            <property name="invisible_char">●</property>
                                           </widget>
                                           <packing>
                                             <property name="left_attach">1</property>
@@ -5843,7 +5887,7 @@ Summit</property>
                                           <widget class="GtkEntry" id="entryAthleteRestingHR">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
-                                            <property name="invisible_char">&#x25CF;</property>
+                                            <property name="invisible_char">●</property>
                                           </widget>
                                           <packing>
                                             <property name="left_attach">1</property>
@@ -5872,7 +5916,7 @@ Summit</property>
                                           <widget class="GtkEntry" id="entryAthleteMaxHR">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
-                                            <property name="invisible_char">&#x25CF;</property>
+                                            <property name="invisible_char">●</property>
                                           </widget>
                                           <packing>
                                             <property name="left_attach">1</property>
