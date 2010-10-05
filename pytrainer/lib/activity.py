@@ -237,6 +237,9 @@ class Activity:
 			time = float( lap['elapsed_time'].decode('utf-8') ) # time in sql is a unicode string
 			dist = lap['distance']/1000 #distance in km
 			pace = time/(60*dist) #min/km
+			if self.pace_limit is not None and pace > self.pace_limit:
+				logging.debug("Pace (%s) exceeds limit (%s). Setting to 0" % (str(pace), str(self.pace_limit)))
+				pace = 0
 			logging.debug("Time: %f, Dist: %f, Pace: %f" % (time, dist, pace) )
 			self.lap_time.addBars(x=time, y=10)
 			if self.us_system:
