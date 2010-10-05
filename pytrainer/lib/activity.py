@@ -111,6 +111,9 @@ class Activity:
 		self._init_graph_data()
 		self._generate_per_lap_graphs()
 		self.x_axis = "distance"
+		self.x_limits = (None, None)
+		self.y1_limits = (None, None)
+		self.y2_limits = (None, None)
 		self.show_laps = False
 		logging.debug("<<")
 

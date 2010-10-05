@@ -34,18 +34,18 @@ class DrawGraph:
         self.ax1 = None
         self.ax2 = None
         logging.debug('<<')
-        
+
     def draw(self, datalist = None, box = None, figure = None, title = None, y2 = False):
         '''
             Draw a graph using supplied information into supplied gtk.box
-            
+
             datalist = populated graphdata class (required)
             box = gtk.box object (required)
             figure = matplotlib figure (optional) if supplied will add graph to this figure
-            title = 
-            y2 = 
-            
-            return = figure          
+            title =
+            y2 =
+
+            return = figure
         '''
         logging.debug('>>')
         if box is None:
@@ -62,19 +62,19 @@ class DrawGraph:
         for child in box.get_children():
             logging.debug('Removing box child: '+str(child))
             box.remove(child)
-        
+
         if datalist is None:
             logging.debug("drawPlot called with no data")
             return
-            
+
         if y2 and self.ax2 is None:
             self.ax2 = plt.twinx()
-        
-            
+
+
         #Create canvas
         canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
         canvas.show()
-        
+
         #Display title etc
         if datalist.xlabel is not None:
             plt.xlabel(datalist.xlabel)
@@ -117,10 +117,10 @@ class DrawGraph:
             self.ax2.legend(loc = 'upper right', bbox_to_anchor = (1, 1))
         #axis.set_xlim(0, data.max_x_value)
         #axis.set_ylim(0, data.max_y_value)
-        
+
         #Display plot
         box.pack_start(canvas, True, True)
-        
+
         logging.debug("<<")
         return figure
 
@@ -144,7 +144,7 @@ class DrawGraph:
         #Debug info - to remove
         print("drawPlot....")
         #print datalist
-        
+
         #Set up drawing area
         figure = plt.figure()
         canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
@@ -219,7 +219,7 @@ class DrawGraph:
 
         logging.debug('<<')
         return {'y1_min': ylim_min, 'y1_max': ylim_max, 'y1_linewidth': linewidth}
-        
+
     def drawMultiPlot(self, activity = None, box = None):
         '''
             Draw a plot style graph with multiple traces on each axis
@@ -230,7 +230,7 @@ class DrawGraph:
             return
         if activity is None:
             logging.error("Must supply data to graph graph")
-            return    
+            return
         #TODO Check that datalist is of type dict (and contains has correct items)
         figure = None
         datalist = []
@@ -242,7 +242,7 @@ class DrawGraph:
                 _title = "%s%s of %s on %s" % (str(activity.distance), activity.distance_unit, activity.sport_name, activity.date)
             else:
                 _title = "%s: %s%s of %s on %s" % (activity.title, str(activity.distance), activity.distance_unit, activity.sport_name, activity.date)
-            
+
             #Loop through data items and graph the selected ones
             for item in activity.distance_data:
                 if activity.distance_data[item].show_on_y1:
@@ -271,7 +271,7 @@ class DrawGraph:
             #Display lap divisions if required
             if activity.show_laps:
                 figure = self.draw(activity.lap_time, box=box, figure=figure)
-                
+
         #Sort out graph errors...
         if y1count == 0 and y2count == 0:
             logging.debug("No items to graph.. Removing graph")
@@ -279,4 +279,16 @@ class DrawGraph:
         elif y1count == 0:
             logging.debug("No items on y1 axis... ")
             #TODO Sort
+        #Get axis limits..
+        if self.ax1 is not None:
+            activity.x_limits = self.ax1.get_xlim()
+            activity.y1_limits = self.ax1.get_ylim()
+        else:
+			activity.y1_limits = (None, None)
+        if self.ax2 is not None:
+            activity.x_limits = self.ax2.get_xlim()
+            activity.y2_limits = self.ax2.get_ylim()
+        else:
+			activity.y2_limits = (None, None)
+        return activity
         logging.debug('<<')

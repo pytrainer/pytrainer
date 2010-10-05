@@ -68,10 +68,10 @@ class Main(SimpleGladeApp):
         self.gpxDir = gpxDir
         self.record_list = None
         self.laps = None
-        
+
         #Setup graph
         self.grapher = DrawGraph(self, self.pytrainer_main)
-        
+
         self.y1_limits = None
         self.y1_color = None
         self.y1_linewidth = 1
@@ -300,19 +300,15 @@ class Main(SimpleGladeApp):
                 for child in self.graph_data_hbox.get_children():
                     if isinstance(child, gtk.Frame):
                         self.graph_data_hbox.remove(child)
-                #Remove graph
-                #for child in self.record_graph_vbox.get_children():
-                #    #Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
-                #    #if isinstance(child, matplotlib.backends.backend_gtkagg.FigureCanvasGTK) or isinstance(child, matplotlib.backends.backend_gtkagg.NavigationToolbar2GTKAgg):
-                #    print('Removing child: '+str(child))
-                #    self.record_graph_vbox.remove(child)
                 #Build frames and vboxs to hold checkbuttons
                 xFrame = gtk.Frame(label="Show on X Axis")
                 y1Frame = gtk.Frame(label="Show on Y1 Axis")
                 y2Frame = gtk.Frame(label="Show on Y2 Axis")
+                limitsFrame = gtk.Frame(label="Axis Limits")
                 xvbox = gtk.VBox()
                 y1box = gtk.Table()
                 y2box = gtk.Table()
+                limitsbox = gtk.Table()
                 #Populate X axis data
                 #Create x axis items
                 xdistancebutton = gtk.RadioButton(label=_("Distance"))
@@ -329,11 +325,39 @@ class Main(SimpleGladeApp):
                 xtimebutton.connect("toggled", self.on_xaxischange, "time", activity)
                 xlapsbutton.connect("toggled", self.on_xlapschange, activity)
                 #Add buttons to frame
-                xvbox.add(xdistancebutton)
-                xvbox.add(xtimebutton)
-                xvbox.add(xlapsbutton)
+                xvbox.pack_start(xdistancebutton, expand=False)
+                xvbox.pack_start(xtimebutton, expand=False)
+                xvbox.pack_start(xlapsbutton, expand=False)
                 xFrame.add(xvbox)
-                
+
+                #Populate axis limits frame
+                #TODO Need to change these to editable objects and redraw graphs if changed....
+                minlabel = gtk.Label("<small>Min</small>")
+                minlabel.set_use_markup(True)
+                maxlabel = gtk.Label("<small>Max</small>")
+                maxlabel.set_use_markup(True)
+                xlimlabel = gtk.Label("X")
+                xminlabel = gtk.Label()
+                xmaxlabel = gtk.Label()
+                y1limlabel = gtk.Label("Y1")
+                y1minlabel = gtk.Label()
+                y1maxlabel = gtk.Label()
+                y2limlabel = gtk.Label("Y2")
+                y2minlabel = gtk.Label()
+                y2maxlabel = gtk.Label()
+                limitsbox.attach(minlabel, 1, 2, 0, 1, yoptions=gtk.SHRINK)
+                limitsbox.attach(maxlabel, 2, 3, 0, 1, yoptions=gtk.SHRINK)
+                limitsbox.attach(xlimlabel, 0, 1, 1, 2, yoptions=gtk.SHRINK)
+                limitsbox.attach(xminlabel, 1, 2, 1, 2, yoptions=gtk.SHRINK, xpadding=5)
+                limitsbox.attach(xmaxlabel, 2, 3, 1, 2, yoptions=gtk.SHRINK, xpadding=5)
+                limitsbox.attach(y1limlabel, 0, 1, 2, 3, yoptions=gtk.SHRINK)
+                limitsbox.attach(y1minlabel, 1, 2, 2, 3, yoptions=gtk.SHRINK, xpadding=5)
+                limitsbox.attach(y1maxlabel, 2, 3, 2, 3, yoptions=gtk.SHRINK, xpadding=5)
+                limitsbox.attach(y2limlabel, 0, 1, 3, 4, yoptions=gtk.SHRINK)
+                limitsbox.attach(y2minlabel, 1, 2, 3, 4, yoptions=gtk.SHRINK, xpadding=5)
+                limitsbox.attach(y2maxlabel, 2, 3, 3, 4, yoptions=gtk.SHRINK, xpadding=5)
+                limitsFrame.add(limitsbox)
+
                 row = 0
                 if activity.x_axis == "distance":
                     data = activity.distance_data
@@ -361,7 +385,7 @@ class Main(SimpleGladeApp):
                     y1color.connect("color-set", self.on_y1colorchange, y1box, graphdata, activity)
                     #Attach to container
                     y1box.attach(y1color, 1, 2, row, row+1)
-                                        
+
                     #Second Y axis
                     y2button = gtk.CheckButton(label=data[graphdata].title)
                     y2button.set_active(data[graphdata].show_on_y2)
@@ -374,18 +398,29 @@ class Main(SimpleGladeApp):
                     #Attach to container
                     y2box.attach(y2color, 1, 2, row, row+1)
                     row += 1
-                    
+
                 y1Frame.add(y1box)
                 y2Frame.add(y2box)
-                self.graph_data_hbox.pack_start(xFrame, expand=False, fill=False, padding=0)
-                self.graph_data_hbox.pack_start(y1Frame, expand=False, fill=True, padding=0)
-                self.graph_data_hbox.pack_start(y2Frame, expand=False, fill=True, padding=0)
-                #expandbutton = gtk.Button(label=_("Hide"))
-                #self.graph_data_hbox.pack_start(expandbutton, expand=False, fill=False, padding=0)
+                self.graph_data_hbox.pack_start(xFrame, expand=False, fill=False, padding=5)
+                self.graph_data_hbox.pack_start(y1Frame, expand=False, fill=False, padding=5)
+                self.graph_data_hbox.pack_start(y2Frame, expand=False, fill=False, padding=5)
+                self.graph_data_hbox.pack_start(limitsFrame, expand=False, fill=True, padding=5)
                 self.graph_data_hbox.show_all()
                 self.buttonGraphShowOptions.hide()
-                self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
-
+                act = self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
+                xmin, xmax = act.x_limits
+                y1min, y1max = act.y1_limits
+                y2min, y2max = act.y2_limits
+                #print y1min, y1max, y2min, y2max
+                if xmin is not None and xmax is not None:
+                    xminlabel.set_text(str(xmin))
+                    xmaxlabel.set_text(str(xmax))
+                if y1min is not None and y1min is not None:
+                    y1minlabel.set_text(str(y1min))
+                    y1maxlabel.set_text(str(y1max))
+                if y2min is not None and y2min is not None:
+                    y2minlabel.set_text(str(y2min))
+                    y2maxlabel.set_text(str(y2max))
         else:
             logging.debug("Activity has no GPX data")
             #Show drop down boxes
@@ -507,7 +542,7 @@ class Main(SimpleGladeApp):
         else:
             self.dayview.set_sensitive(0)
         logging.debug("<<")
-        
+
     def actualize_daygraph(self,record_list):
         logging.debug(">>")
         if len(record_list)>0:
@@ -795,7 +830,7 @@ class Main(SimpleGladeApp):
             iter = history_store.append()
             history_store.set (
                 iter,
-                0, data_index,      
+                0, data_index,
                 1, date,            #TODO need to sort date graphing...
                 2, "%0.2f" % weight,
                 3, "%0.2f" % float(data['BF']),
@@ -846,7 +881,7 @@ class Main(SimpleGladeApp):
                 logging.debug("Unable to parse beats for %s" % str(i[7]) )
                 logging.debug(str(e))
                 _beats = 0.0
-            
+
             iter = store.append()
             store.set (
                 iter,
@@ -1023,7 +1058,7 @@ class Main(SimpleGladeApp):
         logging.debug("Reseting graph Y axis with ylimits: %s" % str(y1limits) )
         self.drawarearecord.drawgraph(self.record_list,self.laps, y1limits=y1limits, y1color=y1color, y1_linewidth=y1_linewidth)
         logging.debug("<<")
-        
+
     def update_athlete_item(self, idx, date, weight, bf, restingHR, maxHR):
         logging.debug(">>")
         #Prepare vars
@@ -1045,45 +1080,47 @@ class Main(SimpleGladeApp):
     ######################
     ## Lista de eventos ##
     ######################
-    
-    def on_xaxischange(self, widget, data=None, activity=None): 
-        '''Handler for record graph axis selection  changes''' 
-        if widget.get_active(): 
+
+    def on_xaxischange(self, widget, data=None, activity=None):
+        '''Handler for record graph axis selection  changes'''
+        if widget.get_active():
             activity.x_axis = data
             self.actualize_recordgraph(activity)
-            
-    def on_xlapschange(self, widget, activity=None): 
-        if widget.get_active(): 
+
+    def on_xlapschange(self, widget, activity=None):
+        if widget.get_active():
             activity.show_laps = True
         else:
             activity.show_laps = False
         self.actualize_recordgraph(activity)
-            
-    def on_y1colorchange(self, widget, box, graphdata, activity): 
-        '''Hander for changes to y1 color selection''' 
+
+    def on_y1colorchange(self, widget, box, graphdata, activity):
+        '''Hander for changes to y1 color selection'''
         logging.debug("Setting %s to color %s" % (graphdata, widget.get_color() ) )
         if activity.x_axis == "distance":
             activity.distance_data[graphdata].set_color(str(widget.get_color()))
         elif activity.x_axis == "time":
             activity.time_data[graphdata].set_color(str(widget.get_color()))
         #Replot the activity
-        self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
-        
-    def on_y2colorchange(self, widget, box, graphdata, activity): 
-        '''Hander for changes to y2 color selection''' 
+        #self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
+        self.actualize_recordgraph(activity)
+
+    def on_y2colorchange(self, widget, box, graphdata, activity):
+        '''Hander for changes to y2 color selection'''
         logging.debug("Setting %s to color %s" % (graphdata, widget.get_color() ) )
         if activity.x_axis == "distance":
             activity.distance_data[graphdata].set_color(None, str(widget.get_color()))
         elif activity.x_axis == "time":
             activity.time_data[graphdata].set_color(None, str(widget.get_color()))
         #Replot the activity
-        self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
-        
-    def on_y1change(self, widget, box, graphdata, activity): 
-        '''Hander for changes to y1 selection''' 
+        #self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
+        self.actualize_recordgraph(activity)
+
+    def on_y1change(self, widget, box, graphdata, activity):
+        '''Hander for changes to y1 selection'''
         logging.debug("Y1 selection toggled: %s" % graphdata)
         #Loop through all options at set data correctly
-        for child in box.get_children(): 
+        for child in box.get_children():
             if activity.x_axis == "distance":
                 for item in activity.distance_data:
                     if activity.distance_data[item].title == child.get_label():
@@ -1095,13 +1132,14 @@ class Main(SimpleGladeApp):
                         logging.debug( "Setting %s to %s" % (item, str(child.get_active()) ) )
                         activity.time_data[item].show_on_y1 = child.get_active()
         #Replot the activity
-        self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
-                
+        #self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
+        self.actualize_recordgraph(activity)
+
     def on_y2change(self, widget, box, graphdata, activity):
-        '''Hander for changes to y2 selection''' 
+        '''Hander for changes to y2 selection'''
         logging.debug("Y2 selection toggled: %s" % graphdata)
         #Loop through all options at set data correctly
-        for child in box.get_children(): 
+        for child in box.get_children():
             if activity.x_axis == "distance":
                 for item in activity.distance_data:
                     if activity.distance_data[item].title == child.get_label():
@@ -1113,8 +1151,9 @@ class Main(SimpleGladeApp):
                         logging.debug( "Setting %s to %s" % (item, str(child.get_active()) ) )
                         activity.time_data[item].show_on_y2 = child.get_active()
         #Replot the activity
-        self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
-    
+        #self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
+        self.actualize_recordgraph(activity)
+
     def on_athleteTreeView_button_press_event(self, treeview, event):
         x = int(event.x)
         y = int(event.y)
@@ -1151,7 +1190,7 @@ class Main(SimpleGladeApp):
             self.buttonShowOptions.set_tooltip_text(_('Show graph display options') )
         #logging.debug('Position: %d' % self.hpaned1.get_position() )
         logging.debug('Position set: %s' % self.hpaned1.get_property('position-set') )
-        
+
     def on_buttonGraphHideOptions_clicked(self, widget):
         logging.debug('on_buttonGraphHideOptions_clicked')
         self.buttonGraphHideOptions.hide()
@@ -1159,8 +1198,8 @@ class Main(SimpleGladeApp):
             if isinstance(child, gtk.Frame):
                 child.hide()
         self.buttonGraphShowOptions.show()
-        
-        
+
+
     def on_buttonGraphShowOptions_clicked(self, widget):
         logging.debug('on_buttonGraphShowOptions_clicked')
         self.buttonGraphShowOptions.hide()
@@ -1365,9 +1404,9 @@ class Main(SimpleGladeApp):
     #hasta aqui revisado
 
     def on_allRecordTreeView_button_press(self, treeview, event):
-        ''' 
-            Handler for clicks on recordview list (list of activities for the day) 
-            
+        '''
+            Handler for clicks on recordview list (list of activities for the day)
+
             event.button = mouse button pressed (i.e. 1 = left, 3 = right)
         '''
         logging.debug(">>")
