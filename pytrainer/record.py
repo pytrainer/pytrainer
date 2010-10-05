@@ -56,6 +56,10 @@ class Record:
 
 	def editRecord(self,id_record,list_sport):
 		logging.debug('>>')
+		activity = self.pytrainer_main.activitypool.get_activity(id_record)
+		self.recordwindow = WindowRecord(self.data_path, list_sport, self, None, windowTitle=_("Edit Entry"))
+		self.recordwindow.setValuesFromActivity(activity)
+		'''
 		record = self.pytrainer_main.ddbb.select("records", "id_record, date, sport, distance, time, beats, average, calories, comments, gpslog, title, upositive, unegative, maxspeed, maxpace, pace, maxbeats, date_time_utc, date_time_local", "id_record=\"%s\"" %id_record)
 		logging.debug('retrieving data from DB: '+str(record))
 		gpxfile = self.pytrainer_main.profile.gpxdir+"/%d.gpx"%int(id_record)
@@ -67,6 +71,7 @@ class Record:
 			self.recordwindow.frameVelocity.set_sensitive(0)	#Greying out options to indicate this to user
 		logging.debug('sending record info to window')
 		self.recordwindow.setValues(record[0])
+		'''
 		logging.debug('launching window')
 		self.recordwindow.run()
 		logging.debug('<<')
@@ -106,9 +111,9 @@ class Record:
 			self.parseFloatRecord(list_options["rcd_upositive"]),
 			self.parseFloatRecord(list_options["rcd_unegative"]),
 			self.parseFloatRecord(list_options["rcd_maxvel"]),
-			self.parseFloatRecord(list_options["rcd_maxpace"]),
+			self.pace_to_float(list_options["rcd_maxpace"]),
 			self.pace_to_float(list_options["rcd_pace"]),
-			self.pace_to_float(list_options["rcd_maxbeats"])
+			self.parseFloatRecord(list_options["rcd_maxbeats"])
 			)
 		logging.debug('<<')
 		return cells,values
@@ -190,8 +195,11 @@ class Record:
 		if os.path.isfile(gpxOrig):
 			gpxDest = self.pytrainer_main.profile.gpxdir
 			gpxNew = gpxDest+"/%d.gpx"%id_record
-			shutil.move(gpxOrig, gpxNew)
-			logging.debug('Moving '+gpxOrig+' to '+gpxNew)
+			#Leave original file in place...
+			#shutil.move(gpxOrig, gpxNew)
+			#logging.debug('Moving '+gpxOrig+' to '+gpxNew)
+			shutil.copy(gpxOrig, gpxNew)
+			logging.debug('Copying '+gpxOrig+' to '+gpxNew)
 		#self.parent.refreshListRecords()
 		logging.debug('<<')
 		return self.pytrainer_main.ddbb.lastRecord("records")

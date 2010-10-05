@@ -58,6 +58,7 @@ class Activity:
 	date_time_local	- (string) date and time of activity in local timezone
 	date_time_utc	- (string) date and time of activity in UTC timezone
 	date_time		- (datetime) date and time of activity in local timezone
+	starttime		- (string)
 	distance 		- (float) activity distance
 	average			- (float) average speed of activity
 	upositive 		- (float) height climbed during activity
@@ -91,6 +92,9 @@ class Activity:
 		self.distance_data = {}
 		self.time_data = {}
 		self.pace_limit = None
+		self.starttime = None
+		#self.upositive = 0
+		#self.unegative = 0
 		if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
 			self.us_system = True
 		else:
@@ -168,9 +172,11 @@ class Activity:
 			self.date_time_utc = dict['date_time_utc']
 			if self.date_time_local is not None: #Have a local time stored in DB
 				self.date_time = dateutil.parser.parse(self.date_time_local)
+				self.starttime = self.date_time.strftime("%X")
 			else: #No local time in DB
 				tmpDateTime = dateutil.parser.parse(self.date_time_utc)
 				self.date_time = tmpDateTime.astimezone(tzlocal()) #datetime with localtime offset (using value from OS)
+				self.starttime = self.date_time.strftime("%X")
 			#Sort data that changes for the US etc
 			if self.us_system:
 				self.distance = km2miles(self._float(dict['distance']))

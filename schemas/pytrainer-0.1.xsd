@@ -1,0 +1,56 @@
+<?xml version = "1.0" encoding = "UTF-8"?>
+<xsd:schema 
+    xmlns="http://sourceforge.net.project/pytrainer/GPX/0/1" schemaLocation="http://sourceforge.net/apps/trac/pytrainer/raw-attachment/wiki/SampleGPX/pytrainer-0.1.xsd"
+    xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:gpx="http://www.topografix.com/GPX/1/1"
+    targetNamespace="http://sourceforge.net.project/pytrainer/GPX/0/1"
+	elementFormDefault="qualified">
+	<xsd:annotation>
+		<xsd:documentation>
+			The pytrainer schema is an mix-in schema for use with the GPX 1.1 schema from Topografix. It holds data exclusively processed by pytrainer. 
+		</xsd:documentation>
+	</xsd:annotation>
+	
+	<xsd:import namespace="http://www.topografix.com/GPX/1/1"
+		schemaLocation="http://www.topografix.com/GPX/1/1/gpx.xsd"/>
+	<xsd:element name="ele" type="eleType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Corrected elevation values.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>	
+	<xsd:complexType name="eleType">
+	    <xsd:simpleContent>
+            <xsd:extension base="xsd:decimal">
+    		    <xsd:attribute name="method" type="xsd:string" use="required"/>
+		    </xsd:extension>
+        </xsd:simpleContent>
+	</xsd:complexType>
+	
+	<xsd:element name="method" type="methodType">
+		<xsd:annotation>
+			<xsd:documentation>
+				Method used for correction or manipulation.
+			</xsd:documentation>
+		</xsd:annotation>
+	</xsd:element>	
+	
+	<xsd:complexType name="methodType">
+	    <xsd:all>
+			<xsd:element name="description" type="xsd:string"/>
+   	    </xsd:all>     
+    	<xsd:attribute name="name" type="xsd:string" use="required"/>
+    	<xsd:attribute name="type" type="methtype" use="required"/> 
+    	<xsd:attribute name="version" type="xsd:string"/>
+    	<xsd:attribute name="date" type="xsd:dateTime"/> 
+	</xsd:complexType>	
+	
+	<xsd:simpleType name="methtype">
+	    <xsd:restriction base="xsd:string">
+            <xsd:enumeration value="ele"/>
+            <!--<xsd:enumeration value="hr"/>-->
+        </xsd:restriction>
+    </xsd:simpleType>	
+	
+</xsd:schema>

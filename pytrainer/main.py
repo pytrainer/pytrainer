@@ -49,7 +49,7 @@ from lib.ddbb import DDBB
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.7.2_svn#640"
+        self.version ="1.7.2_svn#643"
         self.DB_version = 4
         #Process command line options
         self.startup_options = self.get_options()
@@ -407,7 +407,7 @@ class pyTrainer:
         list_sport = self.profile.getSportList()
         if date == None:
              date = self.date.getDate()
-             self.record.newRecord(list_sport, date, title, distance, time, upositive, unegative, bpm, calories, comment)
+        self.record.newRecord(list_sport, date, title, distance, time, upositive, unegative, bpm, calories, comment)
         self.refreshListRecords()
         logging.debug('<<')
 

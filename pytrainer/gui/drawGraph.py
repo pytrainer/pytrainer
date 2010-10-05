@@ -128,6 +128,7 @@ class DrawGraph:
         '''
             Draw a plot style graph
         '''
+        print "drawGraph 131: DEPRECIATED drawPlot called"
         #data = {'linewidth':3, 'x':(1,2,3), 'y':(3,9,1)}
         logging.debug('>>')
         if box is None:
