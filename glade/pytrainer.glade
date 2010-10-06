@@ -1969,7 +1969,7 @@ Cadence
                                 <child>
                                   <widget class="GtkImage" id="image25">
                                     <property name="visible">True</property>
-                                    <property name="pixbuf">path2766.png</property>
+                                    <property name="pixbuf">graph.png</property>
                                   </widget>
                                   <packing>
                                     <property name="position">1</property>
@@ -2070,7 +2070,7 @@ Cadence
                                 <child>
                                   <widget class="GtkImage" id="image26">
                                     <property name="visible">True</property>
-                                    <property name="pixbuf">path2772.png</property>
+                                    <property name="pixbuf">map.png</property>
                                   </widget>
                                   <packing>
                                     <property name="position">2</property>
@@ -2646,7 +2646,7 @@ Cadence
                                 <child>
                                   <widget class="GtkImage" id="image28">
                                     <property name="visible">True</property>
-                                    <property name="pixbuf">heartrate.jpg</property>
+                                    <property name="pixbuf">heartrate.png</property>
                                   </widget>
                                   <packing>
                                     <property name="position">3</property>
