@@ -115,6 +115,16 @@ class Main(SimpleGladeApp):
             self.radiobuttonOSM.set_active(1)
         else:
             self.radiobuttonGMap.set_active(1)
+            
+    def _float_or(self, value, default):
+        '''Function to parse and return a float, or the default if the parsing fails'''
+        try:
+            result = float(value)
+        except Exception as e:
+            #print type(e)
+            #print e
+            result = default
+        return result
 
     def setup(self):
         self.createGraphs(RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph)
@@ -332,19 +342,44 @@ class Main(SimpleGladeApp):
 
                 #Populate axis limits frame
                 #TODO Need to change these to editable objects and redraw graphs if changed....
+                #Create labels etc
                 minlabel = gtk.Label("<small>Min</small>")
                 minlabel.set_use_markup(True)
                 maxlabel = gtk.Label("<small>Max</small>")
                 maxlabel.set_use_markup(True)
                 xlimlabel = gtk.Label("X")
-                xminlabel = gtk.Label()
-                xmaxlabel = gtk.Label()
+                limits = {}
+                xminlabel = gtk.Entry(max=10)
+                xmaxlabel = gtk.Entry(max=10)
+                limits['xminlabel'] = xminlabel
+                limits['xmaxlabel'] = xmaxlabel
+                xminlabel.set_width_chars(5)
+                xminlabel.set_alignment(1.0)
+                xmaxlabel.set_width_chars(5)
+                xmaxlabel.set_alignment(1.0)
                 y1limlabel = gtk.Label("Y1")
-                y1minlabel = gtk.Label()
-                y1maxlabel = gtk.Label()
+                y1minlabel = gtk.Entry(max=10)
+                y1maxlabel = gtk.Entry(max=10)
+                limits['y1minlabel'] = y1minlabel
+                limits['y1maxlabel'] = y1maxlabel
+                y1minlabel.set_width_chars(5)
+                y1minlabel.set_alignment(1.0)
+                y1maxlabel.set_width_chars(5)
+                y1maxlabel.set_alignment(1.0)
                 y2limlabel = gtk.Label("Y2")
-                y2minlabel = gtk.Label()
-                y2maxlabel = gtk.Label()
+                y2minlabel = gtk.Entry(max=10)
+                y2maxlabel = gtk.Entry(max=10)
+                limits['y2minlabel'] = y2minlabel
+                limits['y2maxlabel'] = y2maxlabel
+                y2minlabel.set_width_chars(5)
+                y2minlabel.set_alignment(1.0)
+                y2maxlabel.set_width_chars(5)
+                y2maxlabel.set_alignment(1.0)
+                resetbutton = gtk.Button(_('Reset Limits'))
+                resetbutton.connect("clicked", self.on_setlimits, activity, True, None)
+                setbutton = gtk.Button(_('Set Limits'))
+                setbutton.connect("clicked", self.on_setlimits, activity, False, limits)
+                #Add labels etc to table
                 limitsbox.attach(minlabel, 1, 2, 0, 1, yoptions=gtk.SHRINK)
                 limitsbox.attach(maxlabel, 2, 3, 0, 1, yoptions=gtk.SHRINK)
                 limitsbox.attach(xlimlabel, 0, 1, 1, 2, yoptions=gtk.SHRINK)
@@ -356,6 +391,8 @@ class Main(SimpleGladeApp):
                 limitsbox.attach(y2limlabel, 0, 1, 3, 4, yoptions=gtk.SHRINK)
                 limitsbox.attach(y2minlabel, 1, 2, 3, 4, yoptions=gtk.SHRINK, xpadding=5)
                 limitsbox.attach(y2maxlabel, 2, 3, 3, 4, yoptions=gtk.SHRINK, xpadding=5)
+                limitsbox.attach(setbutton, 0, 3, 4, 5, yoptions=gtk.SHRINK)
+                limitsbox.attach(resetbutton, 0, 3, 5, 6, yoptions=gtk.SHRINK)
                 limitsFrame.add(limitsbox)
 
                 row = 0
@@ -408,17 +445,26 @@ class Main(SimpleGladeApp):
                 self.graph_data_hbox.show_all()
                 self.buttonGraphShowOptions.hide()
                 act = self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
-                xmin, xmax = act.x_limits
-                y1min, y1max = act.y1_limits
-                y2min, y2max = act.y2_limits
+                if act.x_limits_u[0] is not None:
+                    xmin, xmax = act.x_limits_u
+                else:
+                    xmin, xmax = act.x_limits
+                if act.y1_limits_u[0] is not None:
+                    y1min, y1max = act.y1_limits_u
+                else:
+                    y1min, y1max = act.y1_limits
+                if act.y2_limits_u[0] is not None:
+                    y2min, y2max = act.y2_limits_u
+                else:
+                    y2min, y2max = act.y2_limits
                 #print y1min, y1max, y2min, y2max
                 if xmin is not None and xmax is not None:
                     xminlabel.set_text(str(xmin))
                     xmaxlabel.set_text(str(xmax))
-                if y1min is not None and y1min is not None:
+                if y1min is not None and y1max is not None:
                     y1minlabel.set_text(str(y1min))
                     y1maxlabel.set_text(str(y1max))
-                if y2min is not None and y2min is not None:
+                if y2min is not None and y2max is not None:
                     y2minlabel.set_text(str(y2min))
                     y2maxlabel.set_text(str(y2max))
         else:
@@ -1153,6 +1199,32 @@ class Main(SimpleGladeApp):
         #Replot the activity
         #self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
         self.actualize_recordgraph(activity)
+        
+    def on_setlimits(self, widget, activity, reset, data):
+        '''Handler for setting graph limits buttons'''
+        if data is None:
+            logging.debug("Resetting graph limits...")
+            activity.x_limits_u = (None, None)
+            activity.y1_limits_u = (None, None)
+            activity.y2_limits_u = (None, None)
+            #Replot the activity
+            self.actualize_recordgraph(activity)
+        else:
+            #Setting to limits in boxes
+            logging.debug("Setting graph limits...")
+            #Determine contents of boxes...
+            xmin = self._float_or(data['xminlabel'].get_text(), activity.x_limits[0])
+            xmax = self._float_or(data['xmaxlabel'].get_text(), activity.x_limits[1])
+            y1min = self._float_or(data['y1minlabel'].get_text(), activity.y1_limits[0])
+            y1max = self._float_or(data['y1maxlabel'].get_text(), activity.y1_limits[1])
+            y2min = self._float_or(data['y2minlabel'].get_text(), activity.y2_limits[0])
+            y2max = self._float_or(data['y2maxlabel'].get_text(), activity.y2_limits[1])
+            logging.debug("Setting graph limits x: (%s,%s), y1: (%s,%s), y2: (%s,%s)" % (str(xmin), str(xmax), str(y1min), str(y1max), str(y2min), str(y2max)) )
+            activity.x_limits_u = (xmin, xmax)
+            activity.y1_limits_u = (y1min, y1max)
+            activity.y2_limits_u = (y2min, y2max)
+            #Replot the activity
+            self.actualize_recordgraph(activity)
 
     def on_athleteTreeView_button_press_event(self, treeview, event):
         x = int(event.x)

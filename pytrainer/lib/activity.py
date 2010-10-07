@@ -68,6 +68,12 @@ class Activity:
 	pace			- (float) average pace for activity
 	has_data		- (bool) true if instance has data populated
 	x_axis			- (string) distance or time, determines what will be graphed on x axis
+	x_limits		- (tuple of float) start, end limits of x axis (as determined by matplotlib)
+	y1_limits		- (tuple of float) start, end limits of y1 axis (as determined by matplotlib)
+	y2_limits		- (tuple of float) start, end limits of y2 axis (as determined by matplotlib)
+	x_limits_u		- (tuple of float) start, end limits of x axis (as requested by user)
+	y1_limits_u		- (tuple of float) start, end limits of y1 axis (as requested by user)
+	y2_limits_u		- (tuple of float) start, end limits of y2 axis (as requested by user)
 	show_laps		- (bool) display laps on graphs
 	lap_distance	- (graphdata)
 	lap_time		- (graphdata)
@@ -114,6 +120,9 @@ class Activity:
 		self.x_limits = (None, None)
 		self.y1_limits = (None, None)
 		self.y2_limits = (None, None)
+		self.x_limits_u = (None, None)
+		self.y1_limits_u = (None, None)
+		self.y2_limits_u = (None, None)
 		self.show_laps = False
 		logging.debug("<<")
 

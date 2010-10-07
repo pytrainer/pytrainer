@@ -290,5 +290,21 @@ class DrawGraph:
             activity.y2_limits = self.ax2.get_ylim()
         else:
 			activity.y2_limits = (None, None)
+        #Set axis limits if requested
+        #X Axis
+        if activity.x_limits_u[0] is not None:
+            if self.ax1 is not None:
+                self.ax1.set_xlim(activity.x_limits_u)
+            elif self.ax2 is not None:
+                self.ax2.set_xlim(activity.x_limits_u)
+        #Y1 Axis
+        if activity.y1_limits_u[0] is not None:
+            if self.ax1 is not None:
+                self.ax1.set_ylim(activity.y1_limits_u)
+        #Y2 Axis
+        if activity.y2_limits_u[0] is not None:
+            if self.ax2 is not None:
+                self.ax2.set_ylim(activity.y2_limits_u)
+            
         return activity
         logging.debug('<<')
