@@ -862,7 +862,7 @@ class Main(SimpleGladeApp):
         #TODO
         #Create history treeview
         history_store = gtk.ListStore(
-            gobject.TYPE_INT,       #index
+            gobject.TYPE_INT,       #id
             gobject.TYPE_STRING,    #date
             gobject.TYPE_STRING,    #weight
             gobject.TYPE_STRING,    #body fat %
@@ -876,7 +876,7 @@ class Main(SimpleGladeApp):
             iter = history_store.append()
             history_store.set (
                 iter,
-                0, data_index,
+                0, int(data['id_athletestat']),
                 1, date,            #TODO need to sort date graphing...
                 2, "%0.2f" % weight,
                 3, "%0.2f" % float(data['BF']),

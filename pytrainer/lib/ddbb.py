@@ -162,6 +162,14 @@ class DDBB:
                                         "end_lon": "float",
                                         "calories": "int",
                                         },
+                        "athletestats": {
+                                        "id_athletestat": "integer primary key autoincrement",
+                                        "date": "date",
+                                        "weight": "float",
+                                        "bodyfat": "float",
+                                        "restinghr": "integer",
+                                        "maxhr": "integer",
+                                        },
                         }
         try:
             tablesDBT = self.ddbbObject.select("sqlite_master","name", "type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY name")
