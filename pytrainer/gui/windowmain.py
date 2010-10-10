@@ -46,6 +46,7 @@ from pytrainer.extensions.mapviewer import MapViewer
 from pytrainer.extensions.waypointeditor import WaypointEditor
 
 from pytrainer.gui.drawGraph import DrawGraph
+from pytrainer.lib.listview import ListSearch
 
 class Main(SimpleGladeApp):
     def __init__(self, data_path = None, parent = None, version = None, gpxDir = None):
@@ -60,6 +61,7 @@ class Main(SimpleGladeApp):
         glade_path="glade/pytrainer.glade"
         root = "window1"
         domain = None
+        
         SimpleGladeApp.__init__(self, self.data_path+glade_path, root, domain)
 
         self.popup = PopupMenu(data_path,self)
@@ -75,7 +77,9 @@ class Main(SimpleGladeApp):
         self.y1_limits = None
         self.y1_color = None
         self.y1_linewidth = 1
-
+        # setup Search ListView
+        self.mylistsearch = ListSearch(self, self.pytrainer_main)
+        
     def new(self):
         self.testimport = self.pytrainer_main.startup_options.testimport
         self.menublocking = 0
@@ -91,7 +95,9 @@ class Main(SimpleGladeApp):
         column_names=[_("id"),_("Start"), _("Sport"),_("Kilometer")]
         self.create_treeview(self.recordTreeView,column_names)
         #create the columns for the listarea
-        column_names=[_("id"),_("Title"),_("Date"),_("Distance"),_("Sport"),_("Time"),_("Beats"),_("Average"),("Calories")]
+        # different codings for mean see eg http://de.wikipedia.org/wiki/%C3%98#Kodierung
+        #column_names=[_("id"),_("Title"),_("Date"),_("Distance"),_("Sport"),_("Time"),_("Beats"),_("Average"),("Calories")]
+        column_names=[_("id"),_("Title"),_("Date"),_("Distance"),_("Sport"),_("Time"),_(u"\u2300 HR"),_(u"\u2300 Speed"),("Calories")]
         self.create_treeview(self.allRecordTreeView,column_names)
         self.create_menulist(column_names)
         #create the columns for the waypoints treeview
@@ -115,6 +121,8 @@ class Main(SimpleGladeApp):
             self.radiobuttonOSM.set_active(1)
         else:
             self.radiobuttonGMap.set_active(1)
+
+        
             
     def _float_or(self, value, default):
         '''Function to parse and return a float, or the default if the parsing fails'''
@@ -225,6 +233,10 @@ class Main(SimpleGladeApp):
             column.set_resizable(True)
             if i==0:
                 column.set_visible(False)
+            # experimental az
+            if column_name =='time':
+                print 'found Time'
+                column.set_alignment(0)
             column.set_sort_column_id(i)
             treeview.append_column(column)
             i+=1
@@ -908,7 +920,13 @@ class Main(SimpleGladeApp):
             object)
         for i in record_list:
             hour,min,sec = date.second2time(int(i[6]))
-            _time = "%d:%02d:%02d" %(hour,min,sec)
+            _time = "%2d:%02d:%02d" %(hour,min,sec) #original
+            # experimental only
+            if hour >0:
+                _hh = "%2d:%02d:%02d" %(hour, min, sec)
+            else:
+                _hh = "___%2d:%02d" %(min, sec)                
+            #_time =_hh
             try:
                 _id = int(i[5])
             except (ValueError, TypeError) as e:
@@ -943,6 +961,7 @@ class Main(SimpleGladeApp):
                 )
         #self.allRecordTreeView.set_headers_clickable(True)
         self.allRecordTreeView.set_model(store)
+        self.allRecordTreeView.set_rules_hint(True)
         logging.debug("<<")
 
     def actualize_waypointview(self,record_list,default_waypoint,redrawmap = 1):
@@ -1022,7 +1041,7 @@ class Main(SimpleGladeApp):
                 self.parent.refreshWaypointView(id_waypoint)
         return False
 
-    def on_listareasearch_clicked(self,widget):
+    def on_listareasearch_clicked(self, widget):
         lisOpt = {
             _("Title"):"title",
             _("Date"):"date",
@@ -1033,9 +1052,15 @@ class Main(SimpleGladeApp):
             _("Average"):"average",
             _("Calories"):"calories"
             }
-        search_string = self.lsa_searchvalue.get_text()
+        #search_string = self.lsa_searchvalue.get_text()
+        #print widget
+        self.mylistsearch.title = self.lsa_searchvalue.get_text()
+        self.mylistsearch.sport = self.lsa_sport.get_active()
+        self.mylistsearch.past = self.lsa_past.get_active()
+        #print self.mylistsearch.past
+        #search_string2 = "title like '%"+search_string+"%'"
         #ddbb_field = lisOpt[self.lsa_searchoption.get_active_text()]
-        self.parent.searchListView("title like '%"+search_string+"%'")
+        self.parent.searchListView(self.mylistsearch.condition)
 
     def create_menulist(self,column_names):
         i=0

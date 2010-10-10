@@ -296,6 +296,7 @@
                               <widget class="GtkComboBoxEntry" id="sportlist">
                                 <property name="width_request">52</property>
                                 <property name="visible">True</property>
+                                <property name="active">0</property>
                                 <property name="items" translatable="yes">All Sports</property>
                                 <signal name="changed" handler="on_sportlist_changed"/>
                               </widget>
@@ -5299,6 +5300,28 @@ Socks</property>
                           </packing>
                         </child>
                         <child>
+                          <widget class="GtkComboBox" id="lsa_past">
+                            <property name="visible">True</property>
+                            <property name="active">0</property>
+                            <property name="items" translatable="yes">All time
+Last 4 weeks
+Last 6 months
+Last 12 months</property>
+                          </widget>
+                          <packing>
+                            <property name="position">4</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkComboBox" id="lsa_sport">
+                            <property name="visible">True</property>
+                            <property name="items" translatable="yes">All Sports</property>
+                          </widget>
+                          <packing>
+                            <property name="position">5</property>
+                          </packing>
+                        </child>
+                        <child>
                           <widget class="GtkMenuBar" id="listviewOptions">
                             <property name="visible">True</property>
                             <child>
@@ -5315,7 +5338,7 @@ Socks</property>
                           <packing>
                             <property name="expand">False</property>
                             <property name="fill">False</property>
-                            <property name="position">4</property>
+                            <property name="position">6</property>
                           </packing>
                         </child>
                       </widget>
@@ -5326,14 +5349,7 @@ Socks</property>
                       </packing>
                     </child>
                     <child>
-                      <widget class="GtkHSeparator" id="hseparator5">
-                        <property name="visible">True</property>
-                      </widget>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
+                      <placeholder/>
                     </child>
                     <child>
                       <widget class="GtkScrolledWindow" id="listare">
