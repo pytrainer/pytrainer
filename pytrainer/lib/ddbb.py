@@ -64,8 +64,8 @@ class DDBB:
         self.ddbbObject.createTables()
         self.ddbbObject.createTableVersion()
 
-    def select(self,table,cells,condition=None):
-        return self.ddbbObject.select(table,cells,condition)
+    def select(self,table,cells,condition=None, mod=None):
+        return self.ddbbObject.select(table,cells,condition,mod)
 
     def select_dict(self,table,cells,condition=None):
         '''

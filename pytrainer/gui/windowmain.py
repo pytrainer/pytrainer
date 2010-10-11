@@ -46,6 +46,7 @@ from pytrainer.extensions.mapviewer import MapViewer
 from pytrainer.extensions.waypointeditor import WaypointEditor
 
 from pytrainer.gui.drawGraph import DrawGraph
+from pytrainer.gui.windowcalendar import WindowCalendar
 from pytrainer.lib.listview import ListSearch
 
 class Main(SimpleGladeApp):
@@ -456,7 +457,7 @@ class Main(SimpleGladeApp):
                 self.graph_data_hbox.pack_start(limitsFrame, expand=False, fill=True, padding=5)
                 self.graph_data_hbox.show_all()
                 self.buttonGraphShowOptions.hide()
-                act = self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
+                act = self.grapher.drawActivityGraph(activity=activity, box=self.record_graph_vbox)
                 if act.x_limits_u[0] is not None:
                     xmin, xmax = act.x_limits_u
                 else:
@@ -862,42 +863,38 @@ class Main(SimpleGladeApp):
         self.drawareayear.drawgraph(record_list)
         logging.debug("<<")
 
-    def actualize_athleteview(self, athletedata):
+    def actualize_athleteview(self, athlete):
         logging.debug(">>")
-        self.labelName.set_text(athletedata["prf_name"])
-        self.labelDOB.set_text(athletedata["prf_age"])
-        self.labelHeight.set_text(athletedata["prf_height"]+" cm")
-        #Setup graph
-        #self.grapher = DrawGraph(self, self.pytrainer_main)
-        from pytrainer.lib.graphdata import GraphData
-        datalist = GraphData(title="Weight", xlabel="Date", ylabel="kg")
+        self.labelName.set_text(athlete.name)
+        self.labelDOB.set_text(athlete.age)
+        self.labelHeight.set_text(athlete.height+" cm")
+
         #TODO
         #Create history treeview
         history_store = gtk.ListStore(
-            gobject.TYPE_INT,       #id
+            gobject.TYPE_STRING,       #id
             gobject.TYPE_STRING,    #date
             gobject.TYPE_STRING,    #weight
             gobject.TYPE_STRING,    #body fat %
-            gobject.TYPE_INT,       #resting HR
-            gobject.TYPE_INT        #max HR
+            gobject.TYPE_STRING,       #resting HR
+            gobject.TYPE_STRING        #max HR
             )
-        for data_index, data in enumerate(athletedata['history']):
-            weight = float(data['Weight'])
+        for data in athlete.data:
+            weight = (data['Weight'])
             date = dateutil.parser.parse(data['Date']).date()
 
             iter = history_store.append()
             history_store.set (
                 iter,
-                0, int(data['id_athletestat']),
+                0, (data['id_athletestat']),
                 1, date,            #TODO need to sort date graphing...
-                2, "%0.2f" % weight,
-                3, "%0.2f" % float(data['BF']),
-                4, int(data['RestingHR']),
-                5, int(data['MaxHR']),
+                2, weight,
+                3, (data['BF']),
+                4, (data['RestingHR']),
+                5, (data['MaxHR']),
                 )
-            datalist.addPoints(x=date, y=weight)
         self.athleteTreeView.set_model(history_store)
-        self.grapher.drawPlot(datalist=datalist, box=self.boxAthleteGraph)
+        self.grapher.drawAthleteGraph(athlete=athlete, box=self.boxAthleteGraph)
         logging.debug("<<")
 
     def actualize_listview(self,record_list):
@@ -1173,7 +1170,6 @@ class Main(SimpleGladeApp):
         elif activity.x_axis == "time":
             activity.time_data[graphdata].set_color(str(widget.get_color()))
         #Replot the activity
-        #self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
         self.actualize_recordgraph(activity)
 
     def on_y2colorchange(self, widget, box, graphdata, activity):
@@ -1184,7 +1180,6 @@ class Main(SimpleGladeApp):
         elif activity.x_axis == "time":
             activity.time_data[graphdata].set_color(None, str(widget.get_color()))
         #Replot the activity
-        #self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
         self.actualize_recordgraph(activity)
 
     def on_y1change(self, widget, box, graphdata, activity):
@@ -1203,7 +1198,6 @@ class Main(SimpleGladeApp):
                         logging.debug( "Setting %s to %s" % (item, str(child.get_active()) ) )
                         activity.time_data[item].show_on_y1 = child.get_active()
         #Replot the activity
-        #self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
         self.actualize_recordgraph(activity)
 
     def on_y2change(self, widget, box, graphdata, activity):
@@ -1222,7 +1216,6 @@ class Main(SimpleGladeApp):
                         logging.debug( "Setting %s to %s" % (item, str(child.get_active()) ) )
                         activity.time_data[item].show_on_y2 = child.get_active()
         #Replot the activity
-        #self.grapher.drawMultiPlot(activity=activity, box=self.record_graph_vbox)
         self.actualize_recordgraph(activity)
         
     def on_setlimits(self, widget, activity, reset, data):
@@ -1250,25 +1243,6 @@ class Main(SimpleGladeApp):
             activity.y2_limits_u = (y2min, y2max)
             #Replot the activity
             self.actualize_recordgraph(activity)
-
-    def on_athleteTreeView_button_press_event(self, treeview, event):
-        x = int(event.x)
-        y = int(event.y)
-        time = event.time
-        pthinfo = treeview.get_path_at_pos(x, y)
-        if pthinfo is not None:
-            path, col, cellx, celly = pthinfo
-            treeview.grab_focus()
-            treeview.set_cursor(path, col, 0)
-            selected,iter = treeview.get_selection().get_selected()
-            idx = selected.get_value(iter,0)
-            date = selected.get_value(iter,1)
-            weight = selected.get_value(iter,2)
-            bf = selected.get_value(iter,3)
-            restingHR = selected.get_value(iter,4)
-            maxHR = selected.get_value(iter,5)
-            self.update_athlete_item(idx, date, weight, bf, restingHR, maxHR)
-        #print path, col, cellx, celly
 
     def on_window1_configure_event(self, widget, event):
         #print widget #window widget
@@ -1625,6 +1599,71 @@ class Main(SimpleGladeApp):
     def on_recordTree_clicked(self,widget,num,num2):
         selected,iter = self.recordTreeView.get_selection().get_selected()
         self.parent.editRecord(selected.get_value(iter,0))
+        
+    ### athleteview events ###
+    def on_athleteTreeView_button_press_event(self, treeview, event):
+        x = int(event.x)
+        y = int(event.y)
+        time = event.time
+        pthinfo = treeview.get_path_at_pos(x, y)
+        if pthinfo is not None:
+            path, col, cellx, celly = pthinfo
+            treeview.grab_focus()
+            treeview.set_cursor(path, col, 0)
+            selected,iter = treeview.get_selection().get_selected()
+            idx = selected.get_value(iter,0)
+            date = selected.get_value(iter,1)
+            weight = selected.get_value(iter,2)
+            bf = selected.get_value(iter,3)
+            restingHR = selected.get_value(iter,4)
+            maxHR = selected.get_value(iter,5)
+            self.update_athlete_item(idx, date, weight, bf, restingHR, maxHR)
+        #print path, col, cellx, celly
+        
+    def on_buttonAthleteNew_clicked(self, widget):
+        #Reset Fields
+        self.labelAthleteIdx.set_text("")
+        self.entryAthleteDate.set_text("")
+        self.entryAthleteWeight.set_text("")
+        self.entryAthleteBF.set_text("")
+        self.entryAthleteRestingHR.set_text("")
+        self.entryAthleteMaxHR.set_text("")
+        
+    def on_buttonAlthleteSave_clicked(self, widget):
+        #Get data in fields
+        id_athletestat = self.labelAthleteIdx.get_text()
+        date = self.entryAthleteDate.get_text()
+        #Check if valid date supplied
+        try:
+            _date = dateutil.parser.parse(date).date()
+        except (ValueError) as e:
+            #TODO generate error message
+            print type(e)
+            print e
+            return
+        weight = self.entryAthleteWeight.get_text()
+        bodyfat = self.entryAthleteBF.get_text()
+        restinghr = self.entryAthleteRestingHR.get_text()
+        maxhr = self.entryAthleteMaxHR.get_text()
+        #TODO - are any other fields required?
+        
+        #Check if an entry has been edited or is a new one
+        if id_athletestat is None or id_athletestat == "":
+            #New entry
+            logging.debug('Creating new entry with values: date %s, weight %s, bodyfat %s, restinghr %s, maxhr %s' % (date, weight, bodyfat, restinghr, maxhr) )
+            self.parent.athlete.insert_athlete_stats(date, weight, bodyfat, restinghr, maxhr)
+        else:
+            #Edited existing entry
+            logging.debug('Updating id_athletestat:%s with values: date %s, weight %s, bodyfat %s, restinghr %s, maxhr %s' % (id_athletestat, date, weight, bodyfat, restinghr, maxhr) )
+            self.parent.athlete.update_athlete_stats(id_athletestat, date, weight, bodyfat, restinghr, maxhr)
+        self.parent.refreshAthleteView()
+        
+    def on_athletecalendar_clicked(self,widget):
+        calendardialog = WindowCalendar(self.data_path,self)
+        calendardialog.run()
+        
+    def setDate(self,date):
+        self.entryAthleteDate.set_text(date)
 
     ######## waypoints events ##########
     def on_savewaypoint_clicked(self,widget):

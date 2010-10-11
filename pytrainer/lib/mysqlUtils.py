@@ -147,7 +147,7 @@ class Sql:
 		sql = "delete from %s where %s"  %(table,condition)
 		self.db.query(sql)
 
-	def select(self,table,cells,condition):
+	def select(self,table,cells,condition, mod=None):
 		if condition != None:
 			self.db.query("""select %s from %s where %s""" %(cells,table,condition))
 		else:

@@ -65,7 +65,8 @@ class GraphData:
         self.bar_bottoms.append(0)
         
     def addPoints(self, x=None, y=None):
-        if x is None or y is None:
+        #if x is None or y is None or x is "":
+        if not x or not y:
             #logging.debug("Must supply both x and y data points, got x:'%s' y:'%s'" % (str(x), str(y)))
             return
         #print('Adding point: %s %s' % (str(x), str(y)))
