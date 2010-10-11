@@ -24,6 +24,63 @@ import traceback
 import commands, os
 from pytrainer.lib.date import Date
 
+#Define the tables and their columns that should be in the database
+tablesList = {  "records":{     "id_record":"integer primary key autoincrement",
+                                        "date":"date",
+                                        "sport":"integer",
+                                        "distance":"float",
+                                        "time":"varchar(200)",
+                                        "beats":"float",
+                                        "average":"float",
+                                        "calories":"int",
+                                        "comments":"text",
+                                        "gpslog":"varchar(200)",
+                                        "title":"varchar(200)",
+                                        "upositive":"float",
+                                        "unegative":"float",
+                                        "maxspeed":"float",
+                                        "maxpace":"float",
+                                        "pace":"float",
+                                        "maxbeats":"float",
+                                        "date_time_local":"varchar2(20)",
+                                        "date_time_utc":"varchar2(20)",
+                                        },
+                        "sports":{      "id_sports":"integer primary key autoincrement",
+                                        "name":"varchar(100)",
+                                        "weight":"float",
+                                        "met":"float",
+                                        "max_pace":"integer",
+                                        },
+                        "waypoints":{   "id_waypoint":"integer primary key autoincrement",
+                                        "lat":"float",
+                                        "lon":"float",
+                                        "ele":"float",
+                                        "comment":"varchar(240)",
+                                        "time":"date",
+                                        "name":"varchar(200)",
+                                        "sym":"varchar(200)",
+                                        },
+                        "laps":{        "id_lap": "integer primary key autoincrement",
+                                        "record": "integer",
+                                        "lap_number": "integer",
+                                        "elapsed_time": "varchar(20)",
+                                        "distance": "float",
+                                        "start_lat": "float",
+                                        "start_lon": "float",
+                                        "end_lat": "float",
+                                        "end_lon": "float",
+                                        "calories": "int",
+                                        },
+                        "athletestats": {
+                                        "id_athletestat": "integer primary key autoincrement",
+                                        "date": "date",
+                                        "weight": "float",
+                                        "bodyfat": "float",
+                                        "restinghr": "integer",
+                                        "maxhr": "integer",
+                                        },
+                        }
+
 class DDBB:
     def __init__(self, configuration, pytrainer_main=None):
         self.pytrainer_main = pytrainer_main
@@ -110,67 +167,12 @@ class DDBB:
         Retrieves tables and columns from database, checks current ones and adds something if missed. New in version 1.7.0
         args: none
         returns: none"""
+        global tablesList
         logging.debug('>>')
         logging.info('Checking PyTrainer database')
         if self.ddbb_type != "sqlite":
             logging.error('Support for MySQL database is decommissioned, please migrate to SQLite. Exiting check')
             exit(-2)
-        #Define the tables and their columns that should be in the database
-        tablesList = {  "records":{     "id_record":"integer primary key autoincrement",
-                                        "date":"date",
-                                        "sport":"integer",
-                                        "distance":"float",
-                                        "time":"varchar(200)",
-                                        "beats":"float",
-                                        "average":"float",
-                                        "calories":"int",
-                                        "comments":"text",
-                                        "gpslog":"varchar(200)",
-                                        "title":"varchar(200)",
-                                        "upositive":"float",
-                                        "unegative":"float",
-                                        "maxspeed":"float",
-                                        "maxpace":"float",
-                                        "pace":"float",
-                                        "maxbeats":"float",
-                                        "date_time_local":"varchar2(20)",
-                                        "date_time_utc":"varchar2(20)",
-                                        },
-                        "sports":{      "id_sports":"integer primary key autoincrement",
-                                        "name":"varchar(100)",
-                                        "weight":"float",
-                                        "met":"float",
-                                        "max_pace":"integer",
-                                        },
-                        "waypoints":{   "id_waypoint":"integer primary key autoincrement",
-                                        "lat":"float",
-                                        "lon":"float",
-                                        "ele":"float",
-                                        "comment":"varchar(240)",
-                                        "time":"date",
-                                        "name":"varchar(200)",
-                                        "sym":"varchar(200)",
-                                        },
-                        "laps":{        "id_lap": "integer primary key autoincrement",
-                                        "record": "integer",
-                                        "lap_number": "integer",
-                                        "elapsed_time": "varchar(20)",
-                                        "distance": "float",
-                                        "start_lat": "float",
-                                        "start_lon": "float",
-                                        "end_lat": "float",
-                                        "end_lon": "float",
-                                        "calories": "int",
-                                        },
-                        "athletestats": {
-                                        "id_athletestat": "integer primary key autoincrement",
-                                        "date": "date",
-                                        "weight": "float",
-                                        "bodyfat": "float",
-                                        "restinghr": "integer",
-                                        "maxhr": "integer",
-                                        },
-                        }
         try:
             tablesDBT = self.ddbbObject.select("sqlite_master","name", "type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY name")
         except:
@@ -213,6 +215,14 @@ class DDBB:
         else:
             logging.info('Database backup successfully created')
         logging.debug('<<')
+        
+    def checkDBDataValues(self):
+        ''' Check all data in DB and report values that do not match the type '''
+        global tablesList
+        
+        for table in tablesList.keys():
+            pass
+            
 
     def populate_date_time_local(self):
         ''' Populate date_time_local and date from date_time_utc

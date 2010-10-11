@@ -79,7 +79,7 @@ class Main(SimpleGladeApp):
         self.y1_color = None
         self.y1_linewidth = 1
         # setup Search ListView
-        self.mylistsearch = ListSearch(self, self.pytrainer_main)
+        self.listsearch = ListSearch(self, self.pytrainer_main)
         
     def new(self):
         self.testimport = self.pytrainer_main.startup_options.testimport
@@ -1049,15 +1049,12 @@ class Main(SimpleGladeApp):
             _("Average"):"average",
             _("Calories"):"calories"
             }
-        #search_string = self.lsa_searchvalue.get_text()
-        #print widget
-        self.mylistsearch.title = self.lsa_searchvalue.get_text()
-        self.mylistsearch.sport = self.lsa_sport.get_active()
-        self.mylistsearch.past = self.lsa_past.get_active()
-        #print self.mylistsearch.past
-        #search_string2 = "title like '%"+search_string+"%'"
-        #ddbb_field = lisOpt[self.lsa_searchoption.get_active_text()]
-        self.parent.searchListView(self.mylistsearch.condition)
+        self.listsearch.title = self.lsa_searchvalue.get_text()
+        self.listsearch.sport = self.lsa_sport.get_active()
+        self.listsearch.past = self.lsa_past.get_active()
+        self.listsearch.duration = self.lsa_duration.get_active()
+        self.listsearch.distance = self.lsa_distance.get_active()                
+        self.parent.searchListView(self.listsearch.condition)
 
     def create_menulist(self,column_names):
         i=0
