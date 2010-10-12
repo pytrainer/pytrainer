@@ -144,7 +144,7 @@ class Record:
 		logging.debug('>>')
 		time = self.date.time2second(list_options["rcd_time"])
 		average = self.parseFloatRecord(list_options["rcd_average"])
-		keys= "date,sport,distance,time,beats,comments,average,calories,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc,date_time_local"
+		keys= "date,sport,distance,time,beats,comments,average,calories,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc,date_time_local, duration"
 		if (list_options["rcd_beats"] == ""):
 			list_options["rcd_beats"] = 0
 
@@ -169,6 +169,7 @@ class Record:
 			self.parseFloatRecord(list_options["rcd_maxbeats"]),
 			list_options["date_time_utc"],
 			list_options["date_time_local"],
+			time,
 			)
 		logging.debug('<<')
 		return keys,values
@@ -443,6 +444,7 @@ class Record:
 		if condition is None:
 			return self.getAllRecordList()
 		else:
+			print "condition: ", condition
 			return self.pytrainer_main.ddbb.select("records,sports",
 				"date,distance,average,title,sports.name,id_record,time,beats,calories",
 				"sports.id_sports = records.sport and %s" %condition)

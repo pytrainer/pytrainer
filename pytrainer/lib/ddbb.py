@@ -31,6 +31,7 @@ tablesList = {  "records":{     "id_record":"integer primary key autoincrement",
                                         "sport":"integer",
                                         "distance":"float",
                                         "time":"varchar(200)",
+                                        "duration": "integer",
                                         "beats":"float",
                                         "average":"float",
                                         "calories":"int",
@@ -313,6 +314,7 @@ class DDBB:
         #Run any functions to update or correct data
         #These functions _must_ be safe to run at any time (i.e. not be version specfic or only safe to run once)
         self.populate_date_time_local()
+        self.populate_duration_from_time()
         logging.debug('<<')
 
     def createDatabaseBackup(self):
@@ -332,6 +334,23 @@ class DDBB:
         for table in tablesList.keys():
             pass
 
+    def populate_duration_from_time(self):
+        '''
+        Populate duration from time field
+            only for empty durations and where time can be parsed as an int
+        '''
+        logging.debug('--')
+        listOfRecords = self.select_dict("records",('id_record','time'), "duration is NULL")
+        print("Found %d records in DB without date_time_local field populated" % (len(listOfRecords) ) )
+        for record in listOfRecords:
+            try:
+                duration = int(record['time'])
+            except Exception as e:
+                print "Error parsing time (%s) as int for record_id: %s" % (record['time'], record['id_record'])
+                continue
+            print "setting record %s duration to %d" % (record['id_record'], duration)
+            data = {'duration': duration}
+            self.update_dict("records",data ,"id_record = %d"%record['id_record'])
 
     def populate_date_time_local(self):
         ''' Populate date_time_local and date from date_time_utc

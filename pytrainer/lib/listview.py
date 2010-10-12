@@ -72,7 +72,7 @@ class ListSearch(object):
         if self.listDuration[self.duration][1]:
             _dur_min = int(self.listDuration[self.duration][1][0])
             _dur_max = int(self.listDuration[self.duration][1][1])
-            _here = "(time between %s and %s)" % (_dur_min, _dur_max)
+            _here = "(duration between %s and %s)" % (_dur_min, _dur_max)
             if _add_and:
                 _search += " and " + _here
             else:
