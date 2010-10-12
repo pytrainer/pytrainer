@@ -62,7 +62,7 @@ class Main(SimpleGladeApp):
         glade_path="glade/pytrainer.glade"
         root = "window1"
         domain = None
-        
+
         SimpleGladeApp.__init__(self, self.data_path+glade_path, root, domain)
 
         self.popup = PopupMenu(data_path,self)
@@ -80,7 +80,7 @@ class Main(SimpleGladeApp):
         self.y1_linewidth = 1
         # setup Search ListView
         self.listsearch = ListSearch(self, self.pytrainer_main)
-        
+
     def new(self):
         self.testimport = self.pytrainer_main.startup_options.testimport
         self.menublocking = 0
@@ -123,8 +123,8 @@ class Main(SimpleGladeApp):
         else:
             self.radiobuttonGMap.set_active(1)
 
-        
-            
+
+
     def _float_or(self, value, default):
         '''Function to parse and return a float, or the default if the parsing fails'''
         try:
@@ -639,8 +639,8 @@ class Main(SimpleGladeApp):
         logging.debug(">>")
         date_s = datetime.datetime.strptime(date_ini, "%Y-%m-%d")
         date_e = datetime.datetime.strptime(date_end, "%Y-%m-%d")
-        self.week_date.set_text("%s - %s (%d)" % (datetime.datetime.strftime(date_s, "%a %d %b"), datetime.datetime.strftime(date_e, "%a %d %b"), int(datetime.datetime.strftime(date_e, "%W"))+1) )
-
+        #self.week_date.set_text("%s - %s (%d)" % (datetime.datetime.strftime(date_s, "%a %d %b"), datetime.datetime.strftime(date_e, "%a %d %b"), int(datetime.datetime.strftime(date_e, "%W"))+1) )
+        self.week_date.set_text("%s - %s (%d)" % (datetime.datetime.strftime(date_s, "%a %d %b"), datetime.datetime.strftime(date_e, "%a %d %b"), int(datetime.datetime.strftime(date_e, "%V"))) )
         km = calories = time = average = beats = 0
         num_records = len(record_list)
         logging.info("Number of records selected week: "+str(num_records))
@@ -922,7 +922,7 @@ class Main(SimpleGladeApp):
             if hour >0:
                 _hh = "%2d:%02d:%02d" %(hour, min, sec)
             else:
-                _hh = "___%2d:%02d" %(min, sec)                
+                _hh = "___%2d:%02d" %(min, sec)
             #_time =_hh
             try:
                 _id = int(i[5])
@@ -1053,7 +1053,7 @@ class Main(SimpleGladeApp):
         self.listsearch.sport = self.lsa_sport.get_active()
         self.listsearch.past = self.lsa_past.get_active()
         self.listsearch.duration = self.lsa_duration.get_active()
-        self.listsearch.distance = self.lsa_distance.get_active()                
+        self.listsearch.distance = self.lsa_distance.get_active()
         self.parent.searchListView(self.listsearch.condition)
 
     def create_menulist(self,column_names):
@@ -1214,7 +1214,7 @@ class Main(SimpleGladeApp):
                         activity.time_data[item].show_on_y2 = child.get_active()
         #Replot the activity
         self.actualize_recordgraph(activity)
-        
+
     def on_setlimits(self, widget, activity, reset, data):
         '''Handler for setting graph limits buttons'''
         if data is None:
@@ -1566,6 +1566,8 @@ class Main(SimpleGladeApp):
         self.calendar.clear_marks()
         for i in record_list:
             self.calendar.mark_day(int(i))
+        #display_options = self.calendar.get_display_options()
+        #self.calendar.set_display_options(display_options|gtk.CALENDAR_SHOW_WEEK_NUMBERS)
         logging.debug("<<")
 
     def on_about_activate(self,widget):
@@ -1596,7 +1598,7 @@ class Main(SimpleGladeApp):
     def on_recordTree_clicked(self,widget,num,num2):
         selected,iter = self.recordTreeView.get_selection().get_selected()
         self.parent.editRecord(selected.get_value(iter,0))
-        
+
     ### athleteview events ###
     def on_athleteTreeView_button_press_event(self, treeview, event):
         x = int(event.x)
@@ -1633,7 +1635,7 @@ class Main(SimpleGladeApp):
                 self.update_athlete_item(idx, date, weight, bf, restingHR, maxHR)
 
     def on_athleteTreeView_delete(self, widget, data):
-        '''User has opted to delete entry'''        
+        '''User has opted to delete entry'''
         logging.debug(">>")
         msg = _("Delete this database entry?")
         md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_QUESTION, gtk.BUTTONS_OK_CANCEL, msg)
@@ -1647,7 +1649,7 @@ class Main(SimpleGladeApp):
         else:
             logging.debug("User canceled athlete record deletion for id %s" % data)
         logging.debug("<<")
-        
+
     def on_buttonAthleteNew_clicked(self, widget):
         #Reset Fields
         self.labelAthleteIdx.set_text("")
@@ -1656,7 +1658,7 @@ class Main(SimpleGladeApp):
         self.entryAthleteBF.set_text("")
         self.entryAthleteRestingHR.set_text("")
         self.entryAthleteMaxHR.set_text("")
-        
+
     def on_buttonAlthleteSave_clicked(self, widget):
         #Get data in fields
         id_athletestat = self.labelAthleteIdx.get_text()
@@ -1674,7 +1676,7 @@ class Main(SimpleGladeApp):
         restinghr = self.entryAthleteRestingHR.get_text()
         maxhr = self.entryAthleteMaxHR.get_text()
         #TODO - are any other fields required?
-        
+
         #Check if an entry has been edited or is a new one
         if id_athletestat is None or id_athletestat == "":
             #New entry
@@ -1685,11 +1687,11 @@ class Main(SimpleGladeApp):
             logging.debug('Updating id_athletestat:%s with values: date %s, weight %s, bodyfat %s, restinghr %s, maxhr %s' % (id_athletestat, date, weight, bodyfat, restinghr, maxhr) )
             self.parent.athlete.update_athlete_stats(id_athletestat, date, weight, bodyfat, restinghr, maxhr)
         self.parent.refreshAthleteView()
-        
+
     def on_athletecalendar_clicked(self,widget):
         calendardialog = WindowCalendar(self.data_path,self)
         calendardialog.run()
-        
+
     def setDate(self,date):
         self.entryAthleteDate.set_text(date)
 
