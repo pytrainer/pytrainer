@@ -65,7 +65,7 @@ class DrawGraph:
 
         if datalist is None:
             logging.debug("drawPlot called with no data")
-            return
+            return figure
 
         if y2 and self.ax2 is None:
             self.ax2 = plt.twinx()
@@ -111,11 +111,11 @@ class DrawGraph:
                 else:
                     self.ax2.axvspan(datalist.x_values[i], datalist.x_values[i]+datalist.bar_widths[i], alpha=0.15, facecolor=datalist.y2linecolor)
                 i += 1
-        elif datalist.graphType == "fill":
+        elif datalist.graphType == "date":
             if not y2:
-                self.ax1.fill_between(datalist.x_values, datalist.y_values, color=datalist.linecolor, label=datalist.ylabel, alpha=0.5)
+                self.ax1.plot_date(datalist.x_values, datalist.y_values, color=datalist.linecolor, label=datalist.ylabel, alpha=0.5)
             else:
-                self.ax2.fill_between(datalist.x_values, datalist.y_values, color=datalist.y2linecolor, label=datalist.ylabel, alpha=0.5)
+                self.ax2.plot_date(datalist.x_values, datalist.y_values, color=datalist.y2linecolor, label=datalist.ylabel, alpha=0.5)
         else:
             print "Unknown/unimplemented graph type: %s" % datalist.graphType
             return figure
@@ -151,6 +151,7 @@ class DrawGraph:
         #print("drawPlot....")
         for item in athlete.graphdata:
             #print "drawing", item
+            #print athlete.graphdata[item]
             figure = self.draw(athlete.graphdata[item], box=box, figure=figure, title=_("Athlete Data"), y2=athlete.graphdata[item].show_on_y2)
 
     def drawActivityGraph(self, activity = None, box = None):
@@ -217,12 +218,12 @@ class DrawGraph:
             activity.x_limits = self.ax1.get_xlim()
             activity.y1_limits = self.ax1.get_ylim()
         else:
-			activity.y1_limits = (None, None)
+            activity.y1_limits = (None, None)
         if self.ax2 is not None:
             activity.x_limits = self.ax2.get_xlim()
             activity.y2_limits = self.ax2.get_ylim()
         else:
-			activity.y2_limits = (None, None)
+            activity.y2_limits = (None, None)
         #Set axis limits if requested
         #X Axis
         if activity.x_limits_u[0] is not None:
@@ -238,6 +239,6 @@ class DrawGraph:
         if activity.y2_limits_u[0] is not None:
             if self.ax2 is not None:
                 self.ax2.set_ylim(activity.y2_limits_u)
-            
+
         return activity
         logging.debug('<<')

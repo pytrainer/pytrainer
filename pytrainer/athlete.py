@@ -33,12 +33,12 @@ class Athlete:
         self.data = self.get_athlete_stats()
         self.graphdata = self.get_athlete_data()
         logging.debug('<<')
-        
+
     def refresh(self):
         self.init_from_conf()
         self.data = self.get_athlete_stats()
         self.graphdata = self.get_athlete_data()
-        
+
     def init_from_conf(self):
         logging.debug('>>')
         self.name = self.pytrainer_main.profile.getValue("pytraining","prf_name")
@@ -53,7 +53,7 @@ class Athlete:
         else:
             self.weight_unit = _("kg")
         logging.debug('<<')
-        
+
     def get_athlete_stats(self):
         logging.debug('>>')
         results = self.pytrainer_main.ddbb.select_dict("athletestats", ('id_athletestat', 'date', 'weight', 'bodyfat', 'restinghr', 'maxhr'), mod="order by date")
@@ -65,16 +65,16 @@ class Athlete:
         logging.debug('Found %d athlete stats results' % len(results))
         logging.debug('<<')
         return results
-        
+
     def get_athlete_data(self):
         logging.debug('>>')
         graphdata = {}
         graphdata['weight'] = GraphData(title="Weight", xlabel="Date", ylabel="Weight (%s)" % (self.weight_unit))
         graphdata['weight'].set_color('#3300FF', '#3300FF')
-        #graphdata['weight'].graphType = 'fill'
+        #graphdata['weight'].graphType = 'date'
         graphdata['bodyfat'] = GraphData(title="Body Fat", xlabel="Date", ylabel="Body Fat (%s)" % (self.weight_unit))
         graphdata['bodyfat'].set_color('#FF6600', '#FF6600')
-        #graphdata['bf'].graphType = 'fill'
+        #graphdata['bf'].graphType = 'date'
         graphdata['restinghr'] = GraphData(title="Resting Heartrate", xlabel="Date", ylabel="Resting Heartrate (bpm)")
         graphdata['restinghr'].set_color('#660000', '#660000')
         graphdata['restinghr'].show_on_y2 = True
@@ -84,6 +84,8 @@ class Athlete:
         for row in self.data:
             if not 'date' in row or not row['date']:
                 continue
+            else:
+                date = row['date']
             if 'weight' in row and row['weight']:
                 weight = float(row['weight'])
             else:
@@ -92,13 +94,18 @@ class Athlete:
                 bf = float(row['bodyfat']) / 100 * weight
             else:
                 bf = ""
-            graphdata['weight'].addPoints(x=row['date'], y=weight)
-            graphdata['bodyfat'].addPoints(x=row['date'], y=bf)
-            graphdata['restinghr'].addPoints(x=row['date'], y=row['restinghr'])
-            graphdata['maxhr'].addPoints(x=row['date'], y=row['maxhr'])
+            graphdata['weight'].addPoints(x=date, y=weight)
+            graphdata['bodyfat'].addPoints(x=date, y=bf)
+            graphdata['restinghr'].addPoints(x=date, y=row['restinghr'])
+            graphdata['maxhr'].addPoints(x=date, y=row['maxhr'])
+        #Remove empty data
+        for item in graphdata.keys():
+			if len(graphdata[item]) == 0:
+				logging.debug( "No values for %s. Removing...." % item )
+				del graphdata[item]
         return graphdata
-        
-        
+
+
     def update_athlete_stats(self, id_athletestat, date, weight, bodyfat, restinghr, maxhr):
         logging.debug('>>')
         try:
@@ -113,7 +120,7 @@ class Athlete:
         self.pytrainer_main.ddbb.update_dict("athletestats",data, condition)
         #self.pytrainer_main.ddbb.update("athletestats",cells,values," id_athletestat=%d" %int(id_athletestat))
         logging.debug('<<')
-        
+
     def insert_athlete_stats(self, date, weight, bodyfat, restinghr, maxhr):
         logging.debug('>>')
         if not date and not weight and not bodyfat and not restinghr and not maxhr:
@@ -131,7 +138,7 @@ class Athlete:
         data = {'date': date, 'weight': weight, 'bodyfat': bodyfat, 'restinghr': restinghr, 'maxhr': maxhr}
         self.pytrainer_main.ddbb.insert_dict("athletestats",data)
         logging.debug('<<')
-        
+
     def delete_record(self, data):
         logging.debug('>>')
         self.pytrainer_main.ddbb.delete("athletestats","id_athletestat=%d" % int(data))
