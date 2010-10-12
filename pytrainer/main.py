@@ -50,7 +50,7 @@ from lib.ddbb import DDBB
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.7.2_svn#660"
+        self.version ="1.7.2_svn#661"
         self.DB_version = 5
         #Process command line options
         self.startup_options = self.get_options()
@@ -298,7 +298,8 @@ class pyTrainer:
     def refreshListRecords(self):
         logging.debug('>>')
         #Refresh list view
-        self.refreshListView()
+        #self.refreshListView() # old variant
+        self.refreshListView(self.windowmain.listsearch.condition)
         #Refresh list records
         date = self.date.getDate()
         record_list = self.record.getrecordList(date)
@@ -312,23 +313,17 @@ class pyTrainer:
         self.athlete.refresh()
         self.windowmain.actualize_athleteview(self.athlete)
         logging.debug('<<')
-
-    def refreshListView(self):
+    
+    def refreshListView(self,condition=None):
         logging.debug('>>')
-        record_list = self.record.getAllRecordList()
+        record_list = self.record.getRecordListByCondition(condition)
         self.windowmain.actualize_listview(record_list)
         logging.debug('<<')
-
+        
     def refreshWaypointView(self,default_waypoint=None,redrawmap=1):
         logging.debug('>>')
         waypoint_list = self.waypoint.getAllWaypoints()
         self.windowmain.actualize_waypointview(waypoint_list,default_waypoint,redrawmap)
-        logging.debug('<<')
-
-    def searchListView(self,condition):
-        logging.debug('>>')
-        record_list = self.record.getRecordListByCondition(condition)
-        self.windowmain.actualize_listview(record_list)
         logging.debug('<<')
 
     def editExtensions(self):

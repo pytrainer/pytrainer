@@ -1054,7 +1054,7 @@ class Main(SimpleGladeApp):
         self.listsearch.past = self.lsa_past.get_active()
         self.listsearch.duration = self.lsa_duration.get_active()
         self.listsearch.distance = self.lsa_distance.get_active()
-        self.parent.searchListView(self.listsearch.condition)
+        self.parent.refreshListView(self.listsearch.condition)
 
     def create_menulist(self,column_names):
         i=0
@@ -1444,7 +1444,8 @@ class Main(SimpleGladeApp):
         self.classicarea.hide()
         self.athletearea.hide()
         self.selected_view = "listview"
-        self.parent.refreshListView()
+        #self.parent.refreshListView()
+        self.parent.refreshListView(self.listsearch.condition)
         self.listarea.show()
 
     def on_athleteview_activate(self,widget):

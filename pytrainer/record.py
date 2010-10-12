@@ -440,9 +440,12 @@ class Record:
 
 	def getRecordListByCondition(self,condition):
 		logging.debug('--')
-		return self.pytrainer_main.ddbb.select("records,sports",
-			"date,distance,average,title,sports.name,id_record,time,beats,calories",
-			"sports.id_sports = records.sport and %s" %condition)
+		if condition is None:
+			return self.getAllRecordList()
+		else:
+			return self.pytrainer_main.ddbb.select("records,sports",
+				"date,distance,average,title,sports.name,id_record,time,beats,calories",
+				"sports.id_sports = records.sport and %s" %condition)
 
 	def getRecordDayList(self,date):
 		logging.debug('>>')

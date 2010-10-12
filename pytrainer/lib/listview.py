@@ -9,10 +9,12 @@ class ListSearch(object):
     def __init__(self,  parent = None, pytrainer_main = None):
         self.parent = parent    
         self.pytrainer_main = pytrainer_main
+        """ Initialize all query parameters to valid default values""" 
         self.title = ''
         self.sport = 0
-        self.past = None
-        self.duration = None        
+        self.past = 0
+        self.duration = 0
+        self.distance = 0        
         self.listSport = self.pytrainer_main.profile.getSportList()
         self.listPast = [['All Time', -99999], ['Last 4 Weeks', -31],
                          ['Last 6 Months', -183], ['Last 12 Months', -366]]
@@ -20,7 +22,16 @@ class ListSearch(object):
                              ['<1 Hour', [0,3600]],
                              ['1-2 Hours', [3600,7200]],
                              ['>2 Hours', [7200,999999]]]
-                             
+        
+        #if self.pytrainer_main.profile.prf_us_system == True:
+        self.listDistanceUS = [['All Distances', [0.0,999999.9]],
+                             ['<1 mi', [0.0, 1.609344]],
+                             ['1-5 mi', [1.609344, 8.04672]],
+                             ['5-10 mi', [8.04672, 16.09344]],
+                             ['10-20 mi', [16.09344, 32.18688]],
+                             ['20-50 mi', [32.18688, 80.4672]],
+                             ['>50 mi', [80.4672, 999999.9]]]        
+                                                            
         self.listDistance = [['All Distances', [0.0,999999.9]],
                              ['<1 km', [0.0, 1.0]],
                              ['1-5 km', [1.0, 5.0]],
