@@ -117,7 +117,7 @@ class Record:
 			)
 		logging.debug('<<')
 		return cells,values
-		
+
 	def pace_to_float(self, value):
 		'''Take a mm:ss or mm.ss and return float'''
 		value = value.replace(':', '.')
@@ -126,7 +126,7 @@ class Record:
 		except ValueError:
 			value = None
 		return value
-	
+
 	def pace_from_float(self, value):
 		'''Helper to generate mm:ss from float representation mm.ss (or mm,ss?)'''
 		#Check that value supplied is a float
@@ -336,6 +336,7 @@ class Record:
 					"record=\"%s\"" % id_record)
 		if laps is None or laps == []:  #No laps stored - update DB
 			logging.debug("No laps in DB for record %d" % id_record)
+			#print ("No laps in DB for record %d" % id_record)
 			gpx_dest = self.pytrainer_main.profile.gpxdir
 			gpxfile = gpx_dest+"/%d.gpx"%id_record
 			gpx = Gpx(self.data_path,gpxfile)
