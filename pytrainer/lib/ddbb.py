@@ -141,7 +141,20 @@ class DDBB:
         return_value = []
         #Only query db if table and cells are supplied
         if table is not None and cells is not None:
-            if table in tablesList:
+            if table.find(',') != -1:
+                #multiple tables in select
+                #TODO fix so works....
+                print 'TODO fix select_dict to work with multiple tables'
+                cellString = ','.join(cells) #create cell list string
+                results = self.ddbbObject.select(table,cellString,condition,mod)
+                for result in results:
+                    dict = {}
+                    #Loop through cells and create dict of results
+                    for i, cell in enumerate(cells):
+                        #cell_type = tablesList[table][cell]
+                        dict[cell] = result[i]
+                    return_value.append(dict)
+            elif table in tablesList:
                 cellString = ','.join(cells) #create cell list string
                 results = self.ddbbObject.select(table,cellString,condition,mod)
                 for result in results:
@@ -159,7 +172,7 @@ class DDBB:
                 logging.error('select on invalid table name')
         logging.debug("<<")
         return return_value
-    
+
     def parseByCellType(self, value, cell_type):
         '''
         Function to validate that value is of type cell_type
@@ -205,7 +218,7 @@ class DDBB:
 
     def insert(self,table,cells,values):
         self.ddbbObject.insert(table,cells,values)
-        
+
     def insert_dict(self, table, data):
         logging.debug(">>")
         global tablesList
@@ -221,7 +234,7 @@ class DDBB:
             if cell_value is not None:
                 cells.append(cell)
                 values.append(cell_value)
-        #Create string of cell names for sql... 
+        #Create string of cell names for sql...
         #TODO fix sql objects so dont need to join...
         cells_string = ",".join(cells)
         self.ddbbObject.insert(table,cells_string,values)
@@ -232,7 +245,7 @@ class DDBB:
 
     def update(self,table,cells,value,condition):
         self.ddbbObject.update(table,cells,value,condition)
-    
+
     def update_dict(self, table, data, condition):
         logging.debug(">>")
         global tablesList
@@ -248,7 +261,7 @@ class DDBB:
             if cell_value is not None:
                 cells.append(cell)
                 values.append(cell_value)
-        #Create string of cell names for sql... 
+        #Create string of cell names for sql...
         #TODO fix sql objects so dont need to join...
         cells_string = ",".join(cells)
         self.ddbbObject.update(table,cells_string,values,condition)
@@ -313,14 +326,14 @@ class DDBB:
         else:
             logging.info('Database backup successfully created')
         logging.debug('<<')
-        
+
     def checkDBDataValues(self):
         ''' Check all data in DB and report values that do not match the type '''
         global tablesList
-        
+
         for table in tablesList.keys():
             pass
-            
+
 
     def populate_date_time_local(self):
         ''' Populate date_time_local and date from date_time_utc
