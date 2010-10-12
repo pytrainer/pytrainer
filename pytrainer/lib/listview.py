@@ -1,8 +1,8 @@
 import datetime
 import math
 
-LISTPAST = [['All Time', -99999], ['Last 4 Weeks', -31],
-            ['Last 6 Months', -183], ['Last 12 Months', -366]]
+#LISTPAST = [['All Time', -99999], ['Last 4 Weeks', -31],
+#            ['Last 6 Months', -183], ['Last 12 Months', -366]]
 
 class ListSearch(object):
     """ Builds SQLite condition out of search parameters"""
@@ -19,8 +19,15 @@ class ListSearch(object):
         self.listDuration = [['All Durations', [0,999999]],
                              ['<1 Hour', [0,3600]],
                              ['1-2 Hours', [3600,7200]],
-                             ['>2 Hours', [7200,999999]]]                            
-        self.listDistance = self.get_listDistance()
+                             ['>2 Hours', [7200,999999]]]
+                             
+        self.listDistance = [['All Distances', [0.0,999999.9]],
+                             ['<1 km', [0.0, 1.0]],
+                             ['1-5 km', [1.0, 5.0]],
+                             ['5-20 km', [5.0, 20.0]],
+                             ['20-50 km', [20.0, 50.0]],
+                             ['50-100 km', [50.0, 100.0]],
+                             ['>100 km', [100.0, 999999.9]]]
         #print self.listDistance           
         self.setup_lsa_sport()
         self.setup_lsa_past()
@@ -60,9 +67,9 @@ class ListSearch(object):
             else:
                 _search = _here
             _add_and = True                 
-        if self.listDistance[self.sport][self.distance][1]:
-            _dis_min = int(self.listDistance[self.sport][self.distance][1][0])
-            _dis_max = int(self.listDistance[self.sport][self.distance][1][1])
+        if self.listDistance[self.distance][1]:
+            _dis_min = int(self.listDistance[self.distance][1][0])
+            _dis_max = int(self.listDistance[self.distance][1][1])
             _here = "(distance between %s and %s)" % (_dis_min, _dis_max)
             if _add_and:
                 _search += " and " + _here
@@ -132,7 +139,7 @@ class ListSearch(object):
             self.parent.lsa_distance.set_active(0) 
         firstEntry = self.parent.lsa_distance.get_active_text()
         liststore_lsa.clear() #Delete all items        
-        for i in self.listDistance[self.sport]:
+        for i in self.listDistance:
             liststore_lsa.append([i[0]])
         self.parent.lsa_distance.set_active(0)  
         #Add handler manually, so above changes do not trigger recursive loop
