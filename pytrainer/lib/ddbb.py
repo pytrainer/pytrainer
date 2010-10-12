@@ -180,21 +180,19 @@ class DDBB:
         #TODO need to check if multivalue cell type specified
         # eg integer primary key autoincrement
         #print "Checking if %s is of type %s" % (value, cell_type)
-        if not value:
-            return None
-        elif cell_type.startswith('float'):
+        if cell_type.startswith('float'):
             try:
                 result = float(value)
                 return result
             except Exception as e:
-                print "%s not float" % value
+                #print "%s not float" % value
                 return None
         elif cell_type.startswith('int'):
             try:
                 result = int(value)
                 return result
             except Exception as e:
-                print "%s not int" % value
+                #print "%s not int" % value
                 return None
         elif cell_type.startswith('text'):
             #Text so is OK??
@@ -209,9 +207,9 @@ class DDBB:
                 result = dateutil.parser.parse(value).date()
                 return result
             except Exception as e:
-                print type(e)
-                print e
-                print "%s not date" % value
+                #print type(e)
+                #print e
+                #print "%s not date" % value
                 return None
         print "Unknown datatype: (%s) for data (%s)" % (cell_type, value)
         return None
