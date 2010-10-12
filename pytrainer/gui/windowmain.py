@@ -880,8 +880,8 @@ class Main(SimpleGladeApp):
             gobject.TYPE_STRING        #max HR
             )
         for data in athlete.data:
-            weight = (data['Weight'])
-            date = dateutil.parser.parse(data['Date']).date()
+            weight = data['weight']
+            date = data['date']
 
             iter = history_store.append()
             history_store.set (
@@ -889,9 +889,9 @@ class Main(SimpleGladeApp):
                 0, (data['id_athletestat']),
                 1, date,            #TODO need to sort date graphing...
                 2, weight,
-                3, (data['BF']),
-                4, (data['RestingHR']),
-                5, (data['MaxHR']),
+                3, (data['bodyfat']),
+                4, (data['restinghr']),
+                5, (data['maxhr']),
                 )
         self.athleteTreeView.set_model(history_store)
         self.grapher.drawAthleteGraph(athlete=athlete, box=self.boxAthleteGraph)
@@ -1608,14 +1608,45 @@ class Main(SimpleGladeApp):
             treeview.grab_focus()
             treeview.set_cursor(path, col, 0)
             selected,iter = treeview.get_selection().get_selected()
-            idx = selected.get_value(iter,0)
-            date = selected.get_value(iter,1)
-            weight = selected.get_value(iter,2)
-            bf = selected.get_value(iter,3)
-            restingHR = selected.get_value(iter,4)
-            maxHR = selected.get_value(iter,5)
-            self.update_athlete_item(idx, date, weight, bf, restingHR, maxHR)
-        #print path, col, cellx, celly
+            if event.button == 3:
+                #Right mouse button...
+                idx = selected.get_value(iter,0)
+                date = selected.get_value(iter,1)
+                #print "show popup etc (clicked on idx %s, date %s)" % (idx, date)
+                #Show popup menu...
+                popup = gtk.Menu()
+                menuitem = gtk.MenuItem(label=_("Delete Entry"))
+                menuitem.connect("activate", self.on_athleteTreeView_delete, idx)
+                popup.attach(menuitem, 0, 1, 0, 1)
+                popup.show_all()
+                popup.popup( None, None, None, event.button, time)
+                #self.popup.show(selected.get_value(iter,0), event.button, time)
+                #self.popup.popup( None, None, None, event_button, time)
+            else:
+                #Left mouse - so display this row
+                idx = selected.get_value(iter,0)
+                date = selected.get_value(iter,1)
+                weight = selected.get_value(iter,2)
+                bf = selected.get_value(iter,3)
+                restingHR = selected.get_value(iter,4)
+                maxHR = selected.get_value(iter,5)
+                self.update_athlete_item(idx, date, weight, bf, restingHR, maxHR)
+
+    def on_athleteTreeView_delete(self, widget, data):
+        '''User has opted to delete entry'''        
+        logging.debug(">>")
+        msg = _("Delete this database entry?")
+        md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_QUESTION, gtk.BUTTONS_OK_CANCEL, msg)
+        md.set_title(_("Are you sure?"))
+        response = md.run()
+        md.destroy()
+        if response == gtk.RESPONSE_OK:
+            logging.debug("User confirmed deletion of athlete entry with id: %s" % data)
+            self.pytrainer_main.athlete.delete_record(data)
+            self.parent.refreshAthleteView()
+        else:
+            logging.debug("User canceled athlete record deletion for id %s" % data)
+        logging.debug("<<")
         
     def on_buttonAthleteNew_clicked(self, widget):
         #Reset Fields

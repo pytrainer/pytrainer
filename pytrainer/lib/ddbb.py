@@ -22,6 +22,7 @@
 import logging
 import traceback
 import commands, os
+import dateutil
 from pytrainer.lib.date import Date
 
 #Define the tables and their columns that should be in the database
@@ -124,37 +125,134 @@ class DDBB:
     def select(self,table,cells,condition=None, mod=None):
         return self.ddbbObject.select(table,cells,condition,mod)
 
-    def select_dict(self,table,cells,condition=None):
+    def select_dict(self,table,cells,condition=None, mod=None):
         '''
         Function to query DB
         -- inputs
         ---- table - string tablename(s)
         ---- cells - list of cells to select
         ---- condition - string to fit SQL where clause or None
+        ---- mod - string of select clause modifier, eg "order by date"
         -- returns
         ---- list of dicts with cells as keys
         '''
+        logging.debug(">>")
+        global tablesList
         return_value = []
         #Only query db if table and cells are supplied
         if table is not None and cells is not None:
-            cellString = ','.join(cells) #create cell list string
-            results = self.ddbbObject.select(table,cellString,condition)
-            for result in results:
-                dict = {}
-                #Loop through cells and create dict of results
-                for i, cell in enumerate(cells):
-                    dict[cell] = result[i]
-                return_value.append(dict)
+            if table in tablesList:
+                cellString = ','.join(cells) #create cell list string
+                results = self.ddbbObject.select(table,cellString,condition,mod)
+                for result in results:
+                    dict = {}
+                    #Loop through cells and create dict of results
+                    for i, cell in enumerate(cells):
+                        #check result is correct type
+                        if cell not in tablesList[table]:
+                            logging.error('select includes invalid cell (%s) for table %s' % (cell, table))
+                        else:
+                            cell_type = tablesList[table][cell]
+                            dict[cell] = self.parseByCellType(result[i], cell_type)
+                    return_value.append(dict)
+            else:
+                logging.error('select on invalid table name')
+        logging.debug("<<")
         return return_value
+    
+    def parseByCellType(self, value, cell_type):
+        '''
+        Function to validate that value is of type cell_type
+        '''
+        #TODO need to check if multivalue cell type specified
+        # eg integer primary key autoincrement
+        #print "Checking if %s is of type %s" % (value, cell_type)
+        if not value:
+            return None
+        elif cell_type.startswith('float'):
+            try:
+                result = float(value)
+                return result
+            except Exception as e:
+                print "%s not float" % value
+                return None
+        elif cell_type.startswith('int'):
+            try:
+                result = int(value)
+                return result
+            except Exception as e:
+                print "%s not int" % value
+                return None
+        elif cell_type.startswith('text'):
+            #Text so is OK??
+            #TODO anytests required here??
+            return value
+        elif cell_type.startswith('varchar'):
+            #Text so is OK??
+            #TODO check length against spec?
+            return value
+        elif cell_type.startswith('date'):
+            try:
+                result = dateutil.parser.parse(value).date()
+                return result
+            except Exception as e:
+                print type(e)
+                print e
+                print "%s not date" % value
+                return None
+        print "Unknown datatype: (%s) for data (%s)" % (cell_type, value)
+        return None
 
     def insert(self,table,cells,values):
         self.ddbbObject.insert(table,cells,values)
+        
+    def insert_dict(self, table, data):
+        logging.debug(">>")
+        global tablesList
+        if not table or not data or table not in tablesList:
+            print "insert_dict called with invalid table or no data"
+            logging.debug("!<<")
+            return False
+        cells = []
+        values = []
+        for cell in data:
+            cell_type = tablesList[table][cell]
+            cell_value = self.parseByCellType(data[cell], cell_type)
+            if cell_value is not None:
+                cells.append(cell)
+                values.append(cell_value)
+        #Create string of cell names for sql... 
+        #TODO fix sql objects so dont need to join...
+        cells_string = ",".join(cells)
+        self.ddbbObject.insert(table,cells_string,values)
+        logging.debug("<<")
 
     def delete(self,table,condition):
         self.ddbbObject.delete(table,condition)
 
     def update(self,table,cells,value,condition):
         self.ddbbObject.update(table,cells,value,condition)
+    
+    def update_dict(self, table, data, condition):
+        logging.debug(">>")
+        global tablesList
+        if not table or not data or table not in tablesList:
+            print "update_dict called with invalid table or no data"
+            logging.debug("!<<")
+            return False
+        cells = []
+        values = []
+        for cell in data:
+            cell_type = tablesList[table][cell]
+            cell_value = self.parseByCellType(data[cell], cell_type)
+            if cell_value is not None:
+                cells.append(cell)
+                values.append(cell_value)
+        #Create string of cell names for sql... 
+        #TODO fix sql objects so dont need to join...
+        cells_string = ",".join(cells)
+        self.ddbbObject.update(table,cells_string,values,condition)
+        logging.debug("<<")
 
     def lastRecord(self,table):
         id = "id_" + table[:-1] #prune 's' of table name and pre-pend 'id_' to get id column

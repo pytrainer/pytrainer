@@ -50,7 +50,7 @@ from lib.ddbb import DDBB
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.7.2_svn#652"
+        self.version ="1.7.2_svn#653"
         self.DB_version = 5
         #Process command line options
         self.startup_options = self.get_options()

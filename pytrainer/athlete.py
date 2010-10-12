@@ -56,14 +56,15 @@ class Athlete:
         
     def get_athlete_stats(self):
         logging.debug('>>')
-        stats = []
-        results = self.pytrainer_main.ddbb.select("athletestats", "id_athletestat, date, weight, bodyfat, restinghr, maxhr", mod="order by date")
+        results = self.pytrainer_main.ddbb.select_dict("athletestats", ('id_athletestat', 'date', 'weight', 'bodyfat', 'restinghr', 'maxhr'), mod="order by date")
+        #Remove None values
+        for i, row in enumerate(results):
+            for cell in results[i]:
+                if results[i][cell] == None:
+                    results[i][cell] = ""
         logging.debug('Found %d athlete stats results' % len(results))
-        for row in results:
-            date = dateutil.parser.parse(row[1]).date()
-            stats.append({'id_athletestat': row[0], 'Date': row[1], 'Weight':row[2], 'BF': row[3], 'RestingHR':row[4], 'MaxHR':row[5]})        
         logging.debug('<<')
-        return stats
+        return results
         
     def get_athlete_data(self):
         logging.debug('>>')
@@ -71,8 +72,8 @@ class Athlete:
         graphdata['weight'] = GraphData(title="Weight", xlabel="Date", ylabel="Weight (%s)" % (self.weight_unit))
         graphdata['weight'].set_color('#3300FF', '#3300FF')
         #graphdata['weight'].graphType = 'fill'
-        graphdata['bf'] = GraphData(title="Body Fat", xlabel="Date", ylabel="Body Fat (%s)" % (self.weight_unit))
-        graphdata['bf'].set_color('#FF6600', '#FF6600')
+        graphdata['bodyfat'] = GraphData(title="Body Fat", xlabel="Date", ylabel="Body Fat (%s)" % (self.weight_unit))
+        graphdata['bodyfat'].set_color('#FF6600', '#FF6600')
         #graphdata['bf'].graphType = 'fill'
         graphdata['restinghr'] = GraphData(title="Resting Heartrate", xlabel="Date", ylabel="Resting Heartrate (bpm)")
         graphdata['restinghr'].set_color('#660000', '#660000')
@@ -81,32 +82,36 @@ class Athlete:
         graphdata['maxhr'].set_color('#33CC99', '#33CC99')
         graphdata['maxhr'].show_on_y2 = True
         for row in self.data:
-            date = dateutil.parser.parse(row['Date']).date()
-            if row['Weight']:
-                weight = float(row['Weight'])
+            if not 'date' in row or not row['date']:
+                continue
+            if 'weight' in row and row['weight']:
+                weight = float(row['weight'])
             else:
-                weight = None
-            if row['BF']:
-                bf = float(row['BF']) / 100 * weight
+                weight = ""
+            if 'bodyfat' in row and row['bodyfat'] and weight:
+                bf = float(row['bodyfat']) / 100 * weight
             else:
-                bf = None
-            graphdata['weight'].addPoints(x=date, y=weight)
-            graphdata['bf'].addPoints(x=date, y=bf)
-            graphdata['restinghr'].addPoints(x=date, y=row['RestingHR'])
-            graphdata['maxhr'].addPoints(x=date, y=row['MaxHR'])
+                bf = ""
+            graphdata['weight'].addPoints(x=row['date'], y=weight)
+            graphdata['bodyfat'].addPoints(x=row['date'], y=bf)
+            graphdata['restinghr'].addPoints(x=row['date'], y=row['restinghr'])
+            graphdata['maxhr'].addPoints(x=row['date'], y=row['maxhr'])
         return graphdata
         
         
     def update_athlete_stats(self, id_athletestat, date, weight, bodyfat, restinghr, maxhr):
         logging.debug('>>')
         try:
-            date = dateutil.parser.parse(date).date()
+            dateutil.parser.parse(date).date()
+            logging.debug("update_athlete_stats called with invalid date")
+            logging.debug('!<<')
         except ValueError:
             return
-        cells = "date, weight, bodyfat, restinghr, maxhr"
-        values = (date, weight, bodyfat, restinghr, maxhr)
-        #Update database
-        self.pytrainer_main.ddbb.update("athletestats",cells,values," id_athletestat=%d" %int(id_athletestat))
+        #Update DB
+        data = {'date': date, 'weight': weight, 'bodyfat': bodyfat, 'restinghr': restinghr, 'maxhr': maxhr}
+        condition = "id_athletestat=%d" % int(id_athletestat)
+        self.pytrainer_main.ddbb.update_dict("athletestats",data, condition)
+        #self.pytrainer_main.ddbb.update("athletestats",cells,values," id_athletestat=%d" %int(id_athletestat))
         logging.debug('<<')
         
     def insert_athlete_stats(self, date, weight, bodyfat, restinghr, maxhr):
@@ -117,11 +122,17 @@ class Athlete:
             logging.debug('!<<')
             return
         try:
-            date = dateutil.parser.parse(date).date()
+            dateutil.parser.parse(date).date()
         except ValueError:
+            logging.debug("insert_athlete_stats called with invalid date")
+            logging.debug('!<<')
             return
-        cells = "date, weight, bodyfat, restinghr, maxhr"
-        values = (date, weight, bodyfat, restinghr, maxhr)
         #Update DB
-        self.pytrainer_main.ddbb.insert("athletestats",cells,values)
+        data = {'date': date, 'weight': weight, 'bodyfat': bodyfat, 'restinghr': restinghr, 'maxhr': maxhr}
+        self.pytrainer_main.ddbb.insert_dict("athletestats",data)
+        logging.debug('<<')
+        
+    def delete_record(self, data):
+        logging.debug('>>')
+        self.pytrainer_main.ddbb.delete("athletestats","id_athletestat=%d" % int(data))
         logging.debug('<<')
