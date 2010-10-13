@@ -444,7 +444,7 @@ class Record:
 		if condition is None:
 			return self.getAllRecordList()
 		else:
-			print "condition: ", condition
+			logging.debug("condition: %s" % condition)
 			return self.pytrainer_main.ddbb.select("records,sports",
 				"date,distance,average,title,sports.name,id_record,time,beats,calories",
 				"sports.id_sports = records.sport and %s" %condition)

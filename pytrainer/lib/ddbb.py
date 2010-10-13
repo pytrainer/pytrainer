@@ -341,14 +341,14 @@ class DDBB:
         '''
         logging.debug('--')
         listOfRecords = self.select_dict("records",('id_record','time'), "duration is NULL")
-        print("Found %d records in DB without date_time_local field populated" % (len(listOfRecords) ) )
+        logging.debug("Found %d records in DB without date_time_local field populated" % (len(listOfRecords) ) )
         for record in listOfRecords:
             try:
                 duration = int(record['time'])
             except Exception as e:
-                print "Error parsing time (%s) as int for record_id: %s" % (record['time'], record['id_record'])
+                logging.info( "Error parsing time (%s) as int for record_id: %s" % (record['time'], record['id_record']))
                 continue
-            print "setting record %s duration to %d" % (record['id_record'], duration)
+            logging.debug("setting record %s duration to %d" % (record['id_record'], duration))
             data = {'duration': duration}
             self.update_dict("records",data ,"id_record = %d"%record['id_record'])
 

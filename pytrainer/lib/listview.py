@@ -87,7 +87,7 @@ class ListSearch(object):
             else:
                 _search = _here
             _add_and = True                                             
-        print _search
+        #print _search
         return _search
         
     def get_listDistance(self):
@@ -156,4 +156,16 @@ class ListSearch(object):
         #Add handler manually, so above changes do not trigger recursive loop
         self.parent.lsa_distance.connect("changed", self.parent.on_listareasearch_clicked)             
 
+    def reset_lsa(self):
+        """ Reset all query parameters to default values """
+        self.title = ''
+        self.sport = 0
+        self.past = 0
+        self.duration = 0
+        self.distance = 0   
+        self.parent.lsa_searchvalue.set_text('')
+        self.parent.lsa_sport.set_active(0)  
+        self.parent.lsa_past.set_active(0)        
+        self.parent.lsa_duration.set_active(0)
+        self.parent.lsa_distance.set_active(0)
  

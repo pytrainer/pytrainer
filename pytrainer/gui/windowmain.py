@@ -1055,6 +1055,10 @@ class Main(SimpleGladeApp):
         self.listsearch.duration = self.lsa_duration.get_active()
         self.listsearch.distance = self.lsa_distance.get_active()
         self.parent.refreshListView(self.listsearch.condition)
+        
+    def on_listareareset_clicked(self, widget):
+        self.listsearch.reset_lsa()
+        self.parent.refreshListView(self.listsearch.condition)
 
     def create_menulist(self,column_names):
         i=0
