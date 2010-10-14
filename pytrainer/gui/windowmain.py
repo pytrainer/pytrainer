@@ -227,17 +227,41 @@ class Main(SimpleGladeApp):
         self.sportlist.set_active(0)
         logging.debug("<<")
 
+    def render_duration(self, column, cell, model, iter):
+        orig = cell.get_property('text')
+        new = orig
+        if orig[:4] == ' 0:0':
+            new = orig[4:]
+        elif orig[:3] == ' 0:':
+            new = orig[3:]
+        cell.set_property('text', new)
+
     def create_treeview(self,treeview,column_names):
         i=0
         for column_index, column_name in enumerate(column_names):
-            column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
+            #column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
+            column = gtk.TreeViewColumn(column_name)
+            renderer = gtk.CellRendererText()
+            column.pack_start(renderer, expand=False)
+            column.add_attribute(renderer, 'text', column_index)
             column.set_resizable(True)
-            if i==0:
+            column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)            
+            if i in (3,5,6,7,8):
+                renderer.set_property('xalign', 1.0)
+            
+            if i == 0:
                 column.set_visible(False)
-            # experimental az
-            if column_name =='time':
-                print 'found Time'
-                column.set_alignment(0)
+            elif i == 3: # distance to 2 decimals
+                column.set_cell_data_func(renderer, 
+                lambda column, cell, model, iter:cell.set_property('text', '%.2f' % 
+                float(model.get_value(iter,column.get_sort_column_id()))))
+            elif i == 7: # speed to one decimal
+                column.set_cell_data_func(renderer, 
+                lambda column, cell, model, iter:cell.set_property('text', '%.1f' % 
+                float(model.get_value(iter,column.get_sort_column_id()))))
+            elif i == 5: # duration, erase leading zeros
+                column.set_cell_data_func(renderer, self.render_duration)
+
             column.set_sort_column_id(i)
             treeview.append_column(column)
             i+=1
