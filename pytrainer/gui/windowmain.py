@@ -251,7 +251,9 @@ class Main(SimpleGladeApp):
         cell.set_property('text', new)
         
     def render_float(self, column, cell, model, iter, format):
-        orig = cell.get_property('text')
+        #orig = cell.get_property('text')
+        #To deal with floats displayed with a comma instead of a dot
+        orig = model.get_value(iter, column.get_sort_column_id())
         new = format % float(orig)
         cell.set_property('text', new)
 
@@ -1370,7 +1372,11 @@ class Main(SimpleGladeApp):
         self.parent.exportCsv()
 
     def on_newrecord_clicked(self,widget):
-        self.parent.newRecord()
+        if self.selected_view  == 'athlete':
+            #print 'New athlete'
+            self.on_athleteTreeView_edit( None, None)
+        else:
+            self.parent.newRecord()
 
     def on_edituser_activate(self,widget):
         self.parent.editProfile()
