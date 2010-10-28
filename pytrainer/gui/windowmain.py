@@ -93,20 +93,34 @@ class Main(SimpleGladeApp):
             pass
         self.record_list = []
         #create the columns for the listdayrecord
-        column_names=[_("id"),_("Start"), _("Sport"),_("Kilometer")]
-        self.create_treeview(self.recordTreeView,column_names)
+        columns = [{'name':_("id"), 'visible':False},{'name':_("Start"), }, {'name':_("Sport")},{'name':_("Kilometer")}]
+        self.create_treeview(self.recordTreeView,columns)
         #create the columns for the listarea
         # different codings for mean see eg http://de.wikipedia.org/wiki/%C3%98#Kodierung
-        #column_names=[_("id"),_("Title"),_("Date"),_("Distance"),_("Sport"),_("Time"),_("Beats"),_("Average"),("Calories")]
-        column_names=[_("id"),_("Title"),_("Date"),_("Distance"),_("Sport"),_("Time"),_(u"\u2300 HR"),_(u"\u2300 Speed"),("Calories")]
-        self.create_treeview(self.allRecordTreeView,column_names)
-        self.create_menulist(column_names)
+        columns=[   {'name':_("id"), 'visible':False},
+                    {'name':_("Title")},
+                    {'name':_("Date")},
+                    {'name':_("Distance"), 'xalign':1.0, 'format_float':'%.2f'},
+                    {'name':_("Sport")},
+                    {'name':_("Time"), 'xalign':1.0, 'format_duration':True},
+                    {'name':_(u"\u2300 HR"), 'xalign':1.0},
+                    {'name':_(u"\u2300 Speed"), 'xalign':1.0, 'format_float':'%.1f'},
+                    {'name':_("Calories"), 'xalign':1.0}
+                ]
+        self.create_treeview(self.allRecordTreeView,columns)
+        self.create_menulist(columns)
         #create the columns for the waypoints treeview
-        column_names=[_("id"),_("Waypoint")]
-        self.create_treeview(self.waypointTreeView,column_names)
-        #create the columns for the history treeview
-        column_names=[_("id"),_("Date"),_("Weight"),_("Body Fat %"),_("Resting HR"),_("Max HR")]
-        self.create_treeview(self.athleteTreeView,column_names)
+        columns=[{'name':_("id"), 'visible':False},{'name':_("Waypoint")}]
+        self.create_treeview(self.waypointTreeView,columns)
+        #create the columns for the athlete history treeview
+        columns=[   {'name':_("id"), 'visible':False},
+                    {'name':_("Date")},
+                    {'name':_("Weight"), 'xalign':1.0},
+                    {'name':_("Body Fat %"), 'xalign':1.0},
+                    {'name':_("Resting HR"), 'xalign':1.0},
+                    {'name':_("Max HR"), 'xalign':1.0}
+                ]
+        self.create_treeview(self.athleteTreeView,columns)
         self.fileconf = self.pytrainer_main.profile.confdir+"/listviewmenu.xml"
         if not os.path.isfile(self.fileconf):
             self._createXmlListView(self.fileconf)
@@ -235,36 +249,30 @@ class Main(SimpleGladeApp):
         elif orig[:3] == ' 0:':
             new = orig[3:]
         cell.set_property('text', new)
+        
+    def render_float(self, column, cell, model, iter, format):
+        orig = cell.get_property('text')
+        new = format % float(orig)
+        cell.set_property('text', new)
 
-    def create_treeview(self,treeview,column_names):
-        i=0
-        for column_index, column_name in enumerate(column_names):
-            #column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
-            column = gtk.TreeViewColumn(column_name)
+    def create_treeview(self,treeview,columns):
+        for column_index, column_dict in enumerate(columns):
+            column = gtk.TreeViewColumn(column_dict['name'])
             renderer = gtk.CellRendererText()
             column.pack_start(renderer, expand=False)
             column.add_attribute(renderer, 'text', column_index)
             column.set_resizable(True)
-            column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)            
-            if i in (3,5,6,7,8):
-                renderer.set_property('xalign', 1.0)
-            
-            if i == 0:
-                column.set_visible(False)
-            elif i == 3: # distance to 2 decimals
-                column.set_cell_data_func(renderer, 
-                lambda column, cell, model, iter:cell.set_property('text', '%.2f' % 
-                float(model.get_value(iter,column.get_sort_column_id()))))
-            elif i == 7: # speed to one decimal
-                column.set_cell_data_func(renderer, 
-                lambda column, cell, model, iter:cell.set_property('text', '%.1f' % 
-                float(model.get_value(iter,column.get_sort_column_id()))))
-            elif i == 5: # duration, erase leading zeros
+            column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+            if 'xalign' in column_dict:
+                renderer.set_property('xalign', column_dict['xalign'])
+            if 'visible' in column_dict:
+                column.set_visible(column_dict['visible'])
+            if 'format_float' in column_dict:
+                column.set_cell_data_func(renderer, self.render_float, column_dict['format_float'])
+            if 'format_duration' in column_dict and column_dict['format_duration']:
                 column.set_cell_data_func(renderer, self.render_duration)
-
-            column.set_sort_column_id(i)
+            column.set_sort_column_id(column_index)
             treeview.append_column(column)
-            i+=1
 
     def actualize_recordview(self,activity):
         logging.debug(">>")
@@ -893,7 +901,6 @@ class Main(SimpleGladeApp):
         self.labelDOB.set_text(athlete.age)
         self.labelHeight.set_text(athlete.height+" cm")
 
-        #TODO
         #Create history treeview
         history_store = gtk.ListStore(
             gobject.TYPE_STRING,       #id
@@ -911,7 +918,7 @@ class Main(SimpleGladeApp):
             history_store.set (
                 iter,
                 0, (data['id_athletestat']),
-                1, date,            #TODO need to sort date graphing...
+                1, date,         
                 2, weight,
                 3, (data['bodyfat']),
                 4, (data['restinghr']),
@@ -1084,15 +1091,15 @@ class Main(SimpleGladeApp):
         self.listsearch.reset_lsa()
         self.parent.refreshListView(self.listsearch.condition)
 
-    def create_menulist(self,column_names):
-        i=0
-        for name in column_names:
-            if i!=0:
-                item = gtk.CheckMenuItem(name)
+    def create_menulist(self,columns):
+        for i, column_dict in enumerate(columns):
+            if 'visible' in column_dict and not column_dict['visible']:
+                pass
+            else:
+                item = gtk.CheckMenuItem(column_dict['name'])
                 #self.lsa_searchoption.append_text(name)
                 item.connect("button_press_event", self.on_menulistview_activate, i)
                 self.menulistviewOptions.append(item)
-            i+=1
         self.menulistviewOptions.show_all()
 
     def on_menulistview_activate(self,widget,widget2,widget_position):
@@ -1391,6 +1398,12 @@ class Main(SimpleGladeApp):
             self.selected_view="month"
         elif page == 4:
             self.selected_view="year"
+        elif page == 5:
+            self.selected_view="equipment"
+        elif page == 6:
+            self.selected_view="athlete"
+        else:
+            self.selected_view="record"
         self.parent.refreshGraphView(self.selected_view)
 
     def on_recordpage_change(self,widget,gpointer,page):
@@ -1463,30 +1476,30 @@ class Main(SimpleGladeApp):
     def on_classicview_activate(self,widget):
         self.waypointarea.hide()
         self.listarea.hide()
-        self.athletearea.hide()
+        #self.athletearea.hide()
         self.selected_view = "record"
         self.classicarea.show()
 
     def on_listview_activate(self,widget):
         self.waypointarea.hide()
         self.classicarea.hide()
-        self.athletearea.hide()
+        #self.athletearea.hide()
         self.selected_view = "listview"
         #self.parent.refreshListView()
         self.parent.refreshListView(self.listsearch.condition)
         self.listarea.show()
 
-    def on_athleteview_activate(self,widget):
-        self.waypointarea.hide()
-        self.classicarea.hide()
-        self.listarea.hide()
+    def on_athleteview_activate(self,widget=None):
+        #self.waypointarea.hide()
+        #self.classicarea.hide()
+        #self.listarea.hide()
         self.parent.refreshAthleteView()
-        self.athletearea.show()
+        #self.athletearea.show()
 
     def on_waypointsview_activate(self,widget):
         self.listarea.hide()
         self.classicarea.hide()
-        self.athletearea.hide()
+        #self.athletearea.hide()
         self.parent.refreshWaypointView()
         self.waypointarea.show()
 
@@ -1595,8 +1608,8 @@ class Main(SimpleGladeApp):
         self.calendar.clear_marks()
         for i in record_list:
             self.calendar.mark_day(int(i))
-        #display_options = self.calendar.get_display_options()
-        #self.calendar.set_display_options(display_options|gtk.CALENDAR_SHOW_WEEK_NUMBERS)
+        display_options = self.calendar.get_display_options()
+        self.calendar.set_display_options(display_options|gtk.CALENDAR_SHOW_WEEK_NUMBERS)
         logging.debug("<<")
 
     def on_about_activate(self,widget):
@@ -1643,26 +1656,131 @@ class Main(SimpleGladeApp):
                 #Right mouse button...
                 idx = selected.get_value(iter,0)
                 date = selected.get_value(iter,1)
+                weight = selected.get_value(iter,2)
+                bf = selected.get_value(iter,3)
+                restingHR = selected.get_value(iter,4)
+                maxHR = selected.get_value(iter,5)
                 #print "show popup etc (clicked on idx %s, date %s)" % (idx, date)
                 #Show popup menu...
                 popup = gtk.Menu()
+                #Edit Entry Item
+                menuitem = gtk.MenuItem(label=_("Edit Entry"))
+                menuitem.connect("activate", self.on_athleteTreeView_edit, {'id':idx, 'date':date, 'weight':weight, 'bf':bf, 'restingHR':restingHR, 'maxHR':maxHR})
+                popup.attach(menuitem, 0, 1, 0, 1)
+                #New Entry Item
+                menuitem = gtk.MenuItem(label=_("New Entry"))
+                menuitem.connect("activate", self.on_athleteTreeView_edit, None)
+                popup.attach(menuitem, 0, 1, 1, 2)
+                #Separator
+                menuitem = gtk.SeparatorMenuItem()
+                popup.attach(menuitem, 0, 1, 2, 3)
+                #Delete Entry Item
                 menuitem = gtk.MenuItem(label=_("Delete Entry"))
                 menuitem.connect("activate", self.on_athleteTreeView_delete, idx)
-                popup.attach(menuitem, 0, 1, 0, 1)
+                popup.attach(menuitem, 0, 1, 3, 4)
                 popup.show_all()
                 popup.popup( None, None, None, event.button, time)
                 #self.popup.show(selected.get_value(iter,0), event.button, time)
                 #self.popup.popup( None, None, None, event_button, time)
             else:
                 #Left mouse - so display this row
+                pass
+                '''
                 idx = selected.get_value(iter,0)
                 date = selected.get_value(iter,1)
                 weight = selected.get_value(iter,2)
                 bf = selected.get_value(iter,3)
                 restingHR = selected.get_value(iter,4)
                 maxHR = selected.get_value(iter,5)
-                self.update_athlete_item(idx, date, weight, bf, restingHR, maxHR)
+                self.update_athlete_item(idx, date, weight, bf, restingHR, maxHR)'''
+        
+    def on_athleteTreeView_edit(self, widget, data):
+        logging.debug('>>')
+        if data is None:
+            #New entry...
+            logging.debug('New athlete entry')
+            title = _('Create Athlete Entry')
+            data = {'id':None, 'date':"", 'weight':"", 'bf':"", 'restingHR':"", 'maxHR':""}
+        else:
+            logging.debug('Edit existing athlete entry: %s', str(data))
+            title = _('Edit Athlete Entry')
+        dialog = gtk.Dialog(title=title, parent=self.pytrainer_main.windowmain.window1, flags= gtk.DIALOG_DESTROY_WITH_PARENT,
+                     buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
+                      gtk.STOCK_SAVE, gtk.RESPONSE_ACCEPT))
+        dialog.set_has_separator(True)
+        dialog.set_modal(False)
+        #Get Content area of dialog
+        vbox = dialog.get_content_area()
+        
+        #Build data display
+        table = gtk.Table(1,2)
+        self.entryList = []
+        #Add date
+        label = gtk.Label("<b>Date</b>")
+        label.set_use_markup(True)
+        entry = gtk.Entry()
+        entry.set_text(data['date'])
+        self.entryList.append(entry)
+        #Date calander widget
+        cal = gtk.Image()
+        cal.set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_BUTTON)
+        calbut = gtk.Button()
+        calbut.add(cal)
+        calbut.connect("clicked", self.on_athletecalendar_clicked) 
+        table.attach(label,0,1,0,1)
+        table.attach(entry,1,2,0,1)
+        #table.attach(calbut,2,3,0,1) #TODO
+        
+        #Add weight
+        label = gtk.Label("<b>Weight</b>")
+        label.set_use_markup(True)
+        entry = gtk.Entry()
+        entry.set_text(data['weight'])
+        self.entryList.append(entry)
+        table.attach(label,0,1,1,2)
+        table.attach(entry,1,2,1,2)
+        #Add Body fat
+        label = gtk.Label("<b>Body Fat</b>")
+        label.set_use_markup(True)
+        entry = gtk.Entry()
+        entry.set_text(data['bf'])
+        self.entryList.append(entry)
+        table.attach(label,0,1,2,3)
+        table.attach(entry,1,2,2,3)
+        #Add Resting HR
+        label = gtk.Label("<b>Resting Heart Rate</b>")
+        label.set_use_markup(True)
+        entry = gtk.Entry()
+        entry.set_text(data['restingHR'])
+        self.entryList.append(entry)
+        table.attach(label,0,1,3,4)
+        table.attach(entry,1,2,3,4)
+        #Add Max HR
+        label = gtk.Label("<b>Max Heart Rate</b>")
+        label.set_use_markup(True)
+        entry = gtk.Entry()
+        entry.set_text(data['maxHR'])
+        self.entryList.append(entry)
+        table.attach(label,0,1,4,5)
+        table.attach(entry,1,2,4,5)
+        
+        vbox.add(table)
+        vbox.show_all()
+        response = dialog.run()
+        #dialog.destroy()
+        if response == gtk.RESPONSE_ACCEPT:
+            #print "on_athleteTreeView_edit save called", data
+            data['date'] = self.entryList[0].get_text()
+            data['weight'] = self.entryList[1].get_text()
+            data['bf'] = self.entryList[2].get_text()
+            data['restingHR'] = self.entryList[3].get_text()
+            data['maxHR'] = self.entryList[4].get_text()
+            self.on_athleteSave(data)
+            logging.debug('Athlete data saved: %s' % str(data))
+        dialog.destroy()
+        logging.debug('<<')
 
+    
     def on_athleteTreeView_delete(self, widget, data):
         '''User has opted to delete entry'''
         logging.debug(">>")
@@ -1679,19 +1797,10 @@ class Main(SimpleGladeApp):
             logging.debug("User canceled athlete record deletion for id %s" % data)
         logging.debug("<<")
 
-    def on_buttonAthleteNew_clicked(self, widget):
-        #Reset Fields
-        self.labelAthleteIdx.set_text("")
-        self.entryAthleteDate.set_text("")
-        self.entryAthleteWeight.set_text("")
-        self.entryAthleteBF.set_text("")
-        self.entryAthleteRestingHR.set_text("")
-        self.entryAthleteMaxHR.set_text("")
-
-    def on_buttonAlthleteSave_clicked(self, widget):
+    def on_athleteSave(self, data):
         #Get data in fields
-        id_athletestat = self.labelAthleteIdx.get_text()
-        date = self.entryAthleteDate.get_text()
+        id_athletestat = data['id']
+        date = data['date']
         #Check if valid date supplied
         try:
             _date = dateutil.parser.parse(date).date()
@@ -1700,10 +1809,10 @@ class Main(SimpleGladeApp):
             print type(e)
             print e
             return
-        weight = self.entryAthleteWeight.get_text()
-        bodyfat = self.entryAthleteBF.get_text()
-        restinghr = self.entryAthleteRestingHR.get_text()
-        maxhr = self.entryAthleteMaxHR.get_text()
+        weight = data['weight']
+        bodyfat = data['bf']
+        restinghr = data['restingHR']
+        maxhr = data['maxHR']
         #TODO - are any other fields required?
 
         #Check if an entry has been edited or is a new one
@@ -1718,11 +1827,14 @@ class Main(SimpleGladeApp):
         self.parent.refreshAthleteView()
 
     def on_athletecalendar_clicked(self,widget):
+        logging.debug(">>")
         calendardialog = WindowCalendar(self.data_path,self)
         calendardialog.run()
+        logging.debug("<<")
 
     def setDate(self,date):
-        self.entryAthleteDate.set_text(date)
+        print date
+        #self.entryAthleteDate.set_text(date)
 
     ######## waypoints events ##########
     def on_savewaypoint_clicked(self,widget):

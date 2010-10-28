@@ -50,7 +50,7 @@ from lib.ddbb import DDBB
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.7.2_svn#664"
+        self.version ="1.7.2_svn#665"
         self.DB_version = 6
         #Process command line options
         self.startup_options = self.get_options()
@@ -257,6 +257,12 @@ class pyTrainer:
         elif view=="listview":
             logging.debug('list view')
             self.refreshListView()
+        elif view=="equipment":
+            logging.debug('equipment view')
+            print('TODO equipment view')
+        elif view=="athlete":
+            logging.debug('athlete view')
+            self.windowmain.on_athleteview_activate()
         else:
             print "Unknown view %s" % view
         logging.debug('<<')
@@ -417,7 +423,7 @@ class pyTrainer:
              warning.run()
         self.refreshListRecords()
         logging.debug('<<')
-
+        
     def removeWaypoint(self,id_waypoint, confirm = False):
         logging.debug('>>')
         if confirm:
