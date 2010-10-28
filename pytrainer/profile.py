@@ -78,7 +78,7 @@ class Profile:
 		self.config_file = self.conffile
 		self.configuration = self._parse_config_file(self.config_file)
 		logging.debug("Configuration retrieved: "+str(self.configuration))
-		self.pytrainer_main.ddbb = DDBB(self, pytrainer_main=self.pytrainer_main)
+		#self.pytrainer_main.ddbb = DDBB(self, pytrainer_main=self.pytrainer_main)
 		self._setZones()
 		logging.debug("<<")
 
@@ -273,12 +273,12 @@ class Profile:
 
 	def getSportList(self):
 		logging.debug("--")
-		connection = self.pytrainer_main.ddbb.connect()
-		if (connection == 1):
-			logging.debug("retrieving sports info")
-			return self.pytrainer_main.ddbb.select("sports","name,met,weight,id_sports,max_pace",None)
-		else:
-			return connection
+		#connection = self.pytrainer_main.ddbb.connect()
+		#if (connection == 1):
+		logging.debug("retrieving sports info")
+		return self.pytrainer_main.ddbb.select("sports","name,met,weight,id_sports,max_pace",None)
+		#else:
+		#	return connection
 
 	def addNewSport(self,sport,met,weight,maxpace):
 		"""31.08.2008 - dgranda

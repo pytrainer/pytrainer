@@ -44,8 +44,8 @@ tablesList = {  "records":{     "id_record":"integer primary key autoincrement",
                                         "maxpace":"float",
                                         "pace":"float",
                                         "maxbeats":"float",
-                                        "date_time_local":"varchar2(20)",
-                                        "date_time_utc":"varchar2(20)",
+                                        "date_time_local":"varchar(20)",
+                                        "date_time_utc":"varchar(20)",
                                         },
                         "sports":{      "id_sports":"integer primary key autoincrement",
                                         "name":"varchar(100)",
@@ -82,6 +82,8 @@ tablesList = {  "records":{     "id_record":"integer primary key autoincrement",
                                         "maxhr": "integer",
                                         },
                         }
+tablesDefaultData = {  "sports": [({ "name":"Mountain Bike" } ), ( {"name": "Bike"}), ({"name": "Run"}) ]}
+
 
 class DDBB:
     def __init__(self, configuration, pytrainer_main=None):
@@ -103,16 +105,15 @@ class DDBB:
         self.ddbbObject = Sql(ddbb_host,ddbb,ddbb_user,ddbb_pass,self.configuration)
 
     def connect(self):
-        #si devolvemos 1 ha ido todo con exito      : return 1 if all successful
-        #con 0 es que no estaba la bbdd creada      : 0 is DB not created
-        #con -1 imposible conectar a la maquina.    : -1 is impossible to connect to the host
-        var = self.ddbbObject.connect()
-        if var == 0:
-            self.ddbbObject.createDDBB()
-            self.ddbbObject.connect()
-            self.ddbbObject.createTables()
-            var = 1
-        return var
+        connection_ok, connection_msg = self.ddbbObject.connect()
+        if not connection_ok:
+			print "ERROR: Unable to connect to database"
+			print connection_msg
+			sys.exit(connection_ok)
+        #Do a quick check to ensure all tables are present in DB
+        if not self.checkDBTables():
+            #Some tables missing - do DB check
+            self.checkDBIntegrity()
 
     def disconnect(self):
         self.ddbbObject.disconnect()
@@ -271,20 +272,34 @@ class DDBB:
         sql = "select %s from %s order by %s Desc limit 0,1" %(id,table,id)
         ret_val = self.ddbbObject.freeExec(sql)
         return ret_val[0][0]
-
-    def checkDBIntegrity(self):
-        """17.11.2009 - dgranda
-        Retrieves tables and columns from database, checks current ones and adds something if missed. New in version 1.7.0
-        args: none
-        returns: none"""
+        
+    def checkDBTables(self):
+        '''Quick check that all expected tables existing in DB
+            return True if OK, False if any tables are missing
+        '''
         global tablesList
         logging.debug('>>')
+        tablesDB = self.ddbbObject.getTableList()
+        #Check Tables
+        for entry in tablesList:
+            if entry not in tablesDB:
+                return False
+        return True
+
+    def checkDBIntegrity(self):
+        '''17.11.2009 - dgranda
+        Retrieves tables and columns from database, checks current ones and adds something if missed. New in version 1.7.0
+        args: none
+        returns: none'''
+        global tablesList
+        global tablesDefaultData
+        logging.debug('>>')
         logging.info('Checking PyTrainer database')
-        if self.ddbb_type != "sqlite":
-            logging.error('Support for MySQL database is decommissioned, please migrate to SQLite. Exiting check')
-            exit(-2)
+        #if self.ddbb_type != "sqlite":
+        #    logging.error('Support for MySQL database is decommissioned, please migrate to SQLite. Exiting check')
+        #    exit(-2)
         try:
-            tablesDBT = self.ddbbObject.select("sqlite_master","name", "type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY name")
+            tablesDBT = self.ddbbObject.getTableList()
         except:
             logging.error('Not able to retrieve which tables are in DB. Printing traceback')
             traceback.print_exc()
@@ -297,7 +312,7 @@ class DDBB:
 
         # Create a compressed copy of current DB
         try:
-            self.createDatabaseBackup()
+            self.ddbbObject.createDatabaseBackup()
         except:
             logging.error('Not able to make a copy of current DB. Printing traceback and exiting')
             traceback.print_exc()
@@ -308,6 +323,11 @@ class DDBB:
             if entry not in tablesDB:
                 logging.warn('Table '+str(entry)+' does not exist in DB')
                 self.ddbbObject.createTableDefault(entry,tablesList[entry])
+                #Check if this table has default data to add..
+                if entry in tablesDefaultData:
+                    logging.debug("Adding default data to %s" % entry)
+                    for data_dict in tablesDefaultData[entry]:
+                        self.insert_dict(entry, data_dict)
             else:
                 self.ddbbObject.checkTable(entry,tablesList[entry])
 
@@ -315,16 +335,6 @@ class DDBB:
         #These functions _must_ be safe to run at any time (i.e. not be version specfic or only safe to run once)
         self.populate_date_time_local()
         self.populate_duration_from_time()
-        logging.debug('<<')
-
-    def createDatabaseBackup(self):
-        logging.debug('>>')
-        logging.debug('Database path: '+str(self.ddbb_path))
-        result = commands.getstatusoutput('gzip -c '+self.ddbb_path+' > '+self.ddbb_path+'_`date +%Y%m%d_%H%M`.gz')
-        if result[0] != 0:
-            raise Exception, "Copying current database does not work, error #"+str(result[0])
-        else:
-            logging.info('Database backup successfully created')
         logging.debug('<<')
 
     def checkDBDataValues(self):

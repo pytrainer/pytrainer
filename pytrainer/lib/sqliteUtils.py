@@ -19,7 +19,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
-import sys, traceback
+import sys, traceback, commands
 try:
     from sqlite3 import dbapi2 as sqlite
 except ImportError:
@@ -27,89 +27,39 @@ except ImportError:
     from pysqlite2 import dbapi2 as sqlite
     logging.info('Using pysqlite2 module to access DB. Think about upgrading to python 2.5!')
     
-from logs import Log
-
 class Sql:
     def __init__(self,host=None, ddbb = None, user = None, password = None, configuration = None):
         self.db = None
         confdir = configuration.confdir
         self.ddbb = "%s/pytrainer.ddbb" %confdir
-        self.log = Log()
     
     def connect(self):
         #si devolvemos 1 ha ido todo con exito
         self.db = sqlite.connect(self.ddbb)
+        return (True, "OK")
         #probamos si estan las tablas creadas, y sino.. las creamos
-        try: 
+        '''try: 
             self.select("records","id_record","1=1 limit 0,1")
         except:
             self.createTables()
-        return 1
+        return 1'''
 
     def disconnect(self):
         self.db.close()
     
     def createDDBB(self):
         pass
-
-    def createTables(self): #TODO Needs to be fixed to create tables based on definition, perhaps replaced by createTableDefault?
-        cur = self.db.cursor()  
-        #creamos la tabla sports
-        sql = """CREATE TABLE sports (
-            id_sports integer primary key autoincrement, 
-            name varchar (100),
-            weight float,
-            met float
-            );"""
-        cur.execute(sql)
-
-        #creamos la tabla records
-        sql = """CREATE TABLE records (
-            id_record integer primary key autoincrement ,
-            date date,
-            sport integer,
-            distance float,
-            time varchar (200),
-            beats float,
-            average float,
-            calories int,
-            comments text,
-            gpslog varchar(200),
-            title varchar(200),
-            upositive float,
-            unegative float,
-            maxspeed float,
-            maxpace float,
-            pace float,
-            maxbeats float,
-         date_time_utc varchar2(20)
-            ) ;"""
-        cur.execute(sql)
-
-        #creamos la tabla waypoints
-        sql = """CREATE TABLE waypoints (
-            id_waypoint integer primary key autoincrement ,
-            lat float,
-            lon float,
-            ele float,
-            comment varchar (240),
-            time date,
-            name varchar (200),
-            sym varchar (200)
-            ) ;"""
-        cur.execute(sql)
-
-        self.insert("sports","name",["Mountain Bike"]);
-        self.insert("sports","name",["Bike"]);
-        self.insert("sports","name",["Run"]);
+        
+    def getTableList(self):
+        return self.select("sqlite_master","name", "type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY name")
 
     def createTableDefault(self,tableName,columns):
-        """22.11.2009 - dgranda
+        '''22.11.2009 - dgranda
         Creates a new table in database given name and column name and data types. New in version 1.7.0
         args:
             tableName - string with name of the table
             columns - dictionary containing column names and data types coming from definition
-        returns: none"""
+        returns: none'''
         logging.debug('>>')
         logging.info('Creating '+str(tableName)+' table with default values')
         logging.debug('Columns definition: '+str(columns))
@@ -123,21 +73,7 @@ class Sql:
         logging.debug('SQL sentence: '+str(sql))
         cur.execute(sql)
         logging.debug('<<')
-        
-    def addWaipoints2ddbb(self): #TODO Remove?
-        cur = self.db.cursor()  
-        sql = """CREATE TABLE waypoints (
-            id_waypoint integer primary key autoincrement ,
-            lat float,
-            lon float,
-            ele float,
-            comment varchar (240),
-            time date,
-            name varchar (200),
-            sym varchar (200)
-            ) ;"""
-        cur.execute(sql)
-        
+              
     def insert(self,table, cells, values):
         cur = self.db.cursor()  
         val = values
@@ -149,13 +85,11 @@ class Sql:
             string+="""\"%s\"""" %i
             count = count+1
         sql = "insert into %s (%s) values (%s)"  %(table,cells,string)
-        self.log.run(sql)
         cur.execute(sql)
         self.db.commit()
 
     def freeExec(self,sql):
         cur = self.db.cursor()
-        self.log.run(sql)
         cur.execute(sql)
         retorno = []
         for row in cur:
@@ -166,7 +100,6 @@ class Sql:
     def delete(self,table,condition):
         cur = self.db.cursor()  
         sql = "delete from %s where %s"  %(table,condition)
-        self.log.run(sql)
         cur.execute(sql)
         self.db.commit()
 
@@ -183,7 +116,6 @@ class Sql:
 
         string +=" where %s" %condition
         sql = "update %s set %s" %(table,string)
-        self.log.run(sql)
         cur.execute(sql)
         self.db.commit()
 
@@ -198,7 +130,6 @@ class Sql:
             sql = "select %s from %s where %s" %(cells,table,condition)
         else:
             sql = "select %s from %s " %(cells,table)'''
-        self.log.run(sql)
         cur.execute(sql)
         retorno = []
         for row in cur:
@@ -206,19 +137,20 @@ class Sql:
         return retorno
 
     def checkTable(self,tableName,columns):
-        """19.11.2009 - dgranda
+        '''19.11.2009 - dgranda
         Checks column names and values from table and adds something if missed. New in version 1.7.0
         args:
             tableName - string with name of the table
             columns - dictionary containing column names and data types coming from definition
-        returns: none"""
+        returns: none'''
         logging.debug('>>')
         logging.info('Inspecting '+str(tableName)+' table')
         logging.debug('Columns definition: '+str(columns))
 
         # Retrieving data from DB
         tableInfo = self.retrieveTableInfo(tableName)
-        #logging.debug('Raw data retrieved from DB '+str(tableName)+': '+str(tableInfo))
+        logging.debug('Raw data retrieved from DB '+str(tableName)+': '+str(tableInfo))
+        #Raw data retrieved from DB laps: [(0, u'elapsed_time', u'varchar(20)', 0, None, 0), (1, u'record', u'integer', 0, None, 0), (2, u'end_lon', u'float', 0, None, 0), (3, u'lap_number', u'integer', 0, None, 0), (4, u'end_lat', u'float', 0, None, 0), (5, u'distance', u'float', 0, None, 0), (6, u'start_lon', u'float', 0, None, 0), (7, u'id_lap', u'integer', 0, None, 1), (8, u'calories', u'int', 0, None, 0), (9, u'start_lat', u'float', 0, None, 0)]
 
         # Comparing data retrieved from DB with what comes from definition
         columnsDB = {}
@@ -226,7 +158,8 @@ class Sql:
             newField = {field[1]:field[2]}
             columnsDB.update(newField)
         logging.debug('Useful data retrieved from '+str(tableName)+' in DB: '+str(columnsDB))
-
+        #Useful data retrieved from laps in DB: {u'elapsed_time': u'varchar(20)', u'record': u'integer', u'end_lon': u'float', u'start_lon': u'float', u'end_lat': u'float', u'distance': u'float', u'id_lap': u'integer', u'lap_number': u'integer', u'calories': u'int', u'start_lat': u'float'}
+        
         # http://mail.python.org/pipermail/python-list/2002-May/141458.html
         #tempDict = dict(zip(columns,columns))
         tempDict = dict(columns)
@@ -275,3 +208,13 @@ class Sql:
             logging.error('Not able to add/change column '+columnName+' to table '+tableName)
             traceback.print_exc()
 
+
+    def createDatabaseBackup(self):
+        logging.debug('>>')
+        logging.debug('Database path: '+str(self.ddbb))
+        result = commands.getstatusoutput('gzip -c '+self.ddbb+' > '+self.ddbb+'_`date +%Y%m%d_%H%M`.gz')
+        if result[0] != 0:
+            raise Exception, "Copying current database does not work, error #"+str(result[0])
+        else:
+            logging.info('Database backup successfully created')
+        logging.debug('<<')
