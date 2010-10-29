@@ -231,7 +231,7 @@ class pyTrainer:
         elif view=="day":
              logging.debug('day view')
              record_list = self.record.getrecordList(date_selected)
-             self.windowmain.actualize_dayview(record_list)
+             self.windowmain.actualize_dayview(record_list=record_list)
              #selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
         elif view=="week":
              logging.debug('week view')

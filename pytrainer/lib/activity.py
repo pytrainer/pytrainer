@@ -125,6 +125,65 @@ class Activity:
 		self.y2_limits_u = (None, None)
 		self.show_laps = False
 		logging.debug("<<")
+		
+	def __str__(self):
+		return '''
+        tracks (%s)
+		tracklist (%s)
+		laps (%s)
+		tree (%s)
+		us_system (%s)
+		distance_unit (%s)
+		speed_unit (%s)
+		distance_data (%s)
+		time_data (%s)
+		height_unit (%s)
+		pace_unit (%s)
+		gpx_file (%s)
+		gpx (%s)
+		sport_name (%s)
+		sport_id (%s)
+		title (%s)
+		date (%s)
+		time (%s)
+		time_tuple (%s)
+		beats (%s)
+		maxbeats (%s)
+		comments (%s)
+		calories (%s)
+		id_record (%s)
+		date_time_local (%s)
+		date_time_utc (%s)
+		date_time (%s)
+		starttime (%s)
+		distance (%s)
+		average (%s)
+		upositive (%s)
+		unegative (%s)
+		maxspeed (%s)
+		maxpace (%s)
+		pace (%s)
+		has_data (%s)
+		x_axis (%s)
+		x_limits (%s)
+		y1_limits (%s)
+		y2_limits (%s)
+		x_limits_u (%s)
+		y1_limits_u (%s)
+		y2_limits_u (%s)
+		show_laps (%s)
+		lap_distance (%s)
+		lap_time (%s)
+		pace_limit (%s)
+        ''' % ('self.tracks', self.tracklist, self.laps, self.tree, self.us_system,
+			self.distance_unit, self.speed_unit, self.distance_data, self.time_data,
+			self.height_unit, self.pace_unit, self.gpx_file, self.gpx, self.sport_name,
+			self.sport_id, self.title, self.date, self.time, self.time_tuple, self.beats,
+			self.maxbeats, self.comments, self.calories, self.id_record, self.date_time_local, 
+			self.date_time_utc, self.date_time, self.starttime, self.distance, self.average,
+			self.upositive, self.unegative, self.maxspeed, self.maxpace, self.pace, self.has_data,
+			self.x_axis, self.x_limits, self.y1_limits, self.y2_limits, self.x_limits_u, self.y1_limits_u,
+			self.y2_limits_u, self.show_laps, self.lap_distance, self.lap_time, self.pace_limit)
 
 	def _set_units(self):
 		if self.us_system:
@@ -163,25 +222,25 @@ class Activity:
 						"maxspeed","maxpace","pace","maxbeats","date_time_utc","date_time_local", "sports.max_pace"),
 					"id_record=\"%s\" and records.sport=sports.id_sports" %self.id)
 		if len(db_result) == 1:
-			dict = db_result[0]
-			self.sport_name = dict['sports.name']
-			self.sport_id = dict['id_sports']
-			self.pace_limit = dict['sports.max_pace']
+			_dict = db_result[0]
+			self.sport_name = _dict['sports.name']
+			self.sport_id = _dict['id_sports']
+			self.pace_limit = _dict['sports.max_pace']
 			if self.pace_limit == 0 or self.pace_limit == "":
 				self.pace_limit = None
-			self.title = dict['title']
-			self.date = dict['date']
-			self.time = self._int(dict['time'])
+			self.title = _dict['title']
+			self.date = _dict['date']
+			self.time = self._int(_dict['time'])
 			self.time_tuple = Date().second2time(self.time)
-			self.beats = self._int(dict['beats'])
-			self.comments = dict['comments']
-			self.calories = self._int(dict['calories'])
-			self.id_record = dict['id_record']
-			self.maxbeats = self._int(dict['maxbeats'])
+			self.beats = self._int(_dict['beats'])
+			self.comments = _dict['comments']
+			self.calories = self._int(_dict['calories'])
+			self.id_record = _dict['id_record']
+			self.maxbeats = self._int(_dict['maxbeats'])
 			#Sort time....
 			# ... use local time if available otherwise use date_time_utc and create a local datetime...
-			self.date_time_local = dict['date_time_local']
-			self.date_time_utc = dict['date_time_utc']
+			self.date_time_local = _dict['date_time_local']
+			self.date_time_utc = _dict['date_time_utc']
 			if self.date_time_local is not None: #Have a local time stored in DB
 				self.date_time = dateutil.parser.parse(self.date_time_local)
 				self.starttime = self.date_time.strftime("%X")
@@ -191,21 +250,21 @@ class Activity:
 				self.starttime = self.date_time.strftime("%X")
 			#Sort data that changes for the US etc
 			if self.us_system:
-				self.distance = km2miles(self._float(dict['distance']))
-				self.average = km2miles(self._float(dict['average']))
-				self.upositive = m2feet(self._float(dict['upositive']))
-				self.unegative = m2feet(self._float(dict['unegative']))
-				self.maxspeed = km2miles(self._float(dict['maxspeed']))
-				self.maxpace = pacekm2miles(self._float(dict['maxpace']))
-				self.pace = pacekm2miles(self._float(dict['pace']))
+				self.distance = km2miles(self._float(_dict['distance']))
+				self.average = km2miles(self._float(_dict['average']))
+				self.upositive = m2feet(self._float(_dict['upositive']))
+				self.unegative = m2feet(self._float(_dict['unegative']))
+				self.maxspeed = km2miles(self._float(_dict['maxspeed']))
+				self.maxpace = pacekm2miles(self._float(_dict['maxpace']))
+				self.pace = pacekm2miles(self._float(_dict['pace']))
 			else:
-				self.distance = self._float(dict['distance'])
-				self.average = self._float(dict['average'])
-				self.upositive = self._float(dict['upositive'])
-				self.unegative = self._float(dict['unegative'])
-				self.maxspeed = self._float(dict['maxspeed'])
-				self.maxpace = self._float(dict['maxpace'])
-				self.pace = self._float(dict['pace'])
+				self.distance = self._float(_dict['distance'])
+				self.average = self._float(_dict['average'])
+				self.upositive = self._float(_dict['upositive'])
+				self.unegative = self._float(_dict['unegative'])
+				self.maxspeed = self._float(_dict['maxspeed'])
+				self.maxpace = self._float(_dict['maxpace'])
+				self.pace = self._float(_dict['pace'])
 			self.has_data = True
 		else:
 			raise Exception( "Error - multiple results from DB for id: %s" % self.id )
@@ -306,6 +365,15 @@ class Activity:
 		self.time_data['elevation'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
 		self.time_data['elevation'].set_color('#ff0000', '#ff0000')
 		self.time_data['elevation'].show_on_y1 = True #Make graph show elevation by default
+		#Corrected Elevation...
+		title=_("Corrected Elevation")
+		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
+		ylabel="%s (%s)" % (_('Corrected Elevation'), self.height_unit)
+		self.distance_data['cor_elevation'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+		self.distance_data['cor_elevation'].set_color('#993333', '#993333')
+		xlabel=_("Time (seconds)")
+		self.time_data['cor_elevation'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
+		self.time_data['cor_elevation'].set_color('#993333', '#993333')
 		#Speed
 		title=_("Speed")
 		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
@@ -353,20 +421,24 @@ class Activity:
 				pace = 0
 			if self.us_system:
 				self.distance_data['elevation'].addPoints(x=km2miles(track['elapsed_distance']), y=m2feet(track['ele']))
+				self.distance_data['cor_elevation'].addPoints(x=km2miles(track['elapsed_distance']), y=m2feet(track['correctedElevation']))
 				self.distance_data['speed'].addPoints(x=km2miles(track['elapsed_distance']), y=km2miles(track['velocity']))
 				self.distance_data['pace'].addPoints(x=km2miles(track['elapsed_distance']), y=pacekm2miles(pace))
 				self.distance_data['hr'].addPoints(x=km2miles(track['elapsed_distance']), y=track['hr'])
 				self.distance_data['cadence'].addPoints(x=km2miles(track['elapsed_distance']), y=track['cadence'])
 				self.time_data['elevation'].addPoints(x=track['time_elapsed'], y=m2feet(track['ele']))
+				self.time_data['cor_elevation'].addPoints(x=track['time_elapsed'], y=m2feet(track['correctedElevation']))
 				self.time_data['speed'].addPoints(x=track['time_elapsed'], y=km2miles(track['velocity']))
 				self.time_data['pace'].addPoints(x=track['time_elapsed'], y=pacekm2miles(pace))
 			else:
 				self.distance_data['elevation'].addPoints(x=track['elapsed_distance'], y=track['ele'])
+				self.distance_data['cor_elevation'].addPoints(x=track['elapsed_distance'], y=track['correctedElevation'])
 				self.distance_data['speed'].addPoints(x=track['elapsed_distance'], y=track['velocity'])
 				self.distance_data['pace'].addPoints(x=track['elapsed_distance'], y=pace)
 				self.distance_data['hr'].addPoints(x=track['elapsed_distance'], y=track['hr'])
 				self.distance_data['cadence'].addPoints(x=track['elapsed_distance'], y=track['cadence'])
 				self.time_data['elevation'].addPoints(x=track['time_elapsed'], y=track['ele'])
+				self.time_data['cor_elevation'].addPoints(x=track['time_elapsed'], y=track['correctedElevation'])
 				self.time_data['speed'].addPoints(x=track['time_elapsed'], y=track['velocity'])
 				self.time_data['pace'].addPoints(x=track['time_elapsed'], y=pace)
 			self.time_data['hr'].addPoints(x=track['time_elapsed'], y=track['hr'])

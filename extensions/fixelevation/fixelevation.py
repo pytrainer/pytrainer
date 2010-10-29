@@ -15,9 +15,10 @@ class fixelevation:
         self.options = options
         self.conf_dir = conf_dir
 
-    def run(self, id, activity=None):  #TODO Convert to use activity...
+    def run(self, aid, activity=None):  #TODO Convert to use activity...
+        print activity
         logging.debug(">>")
-        gpx_file = "%s/gpx/%s.gpx" % (self.conf_dir, id)
+        gpx_file = "%s/gpx/%s.gpx" % (self.conf_dir, aid)
         ele_fixed = True
         
         if os.path.isfile(gpx_file):
@@ -36,6 +37,9 @@ class fixelevation:
             """
             self._data = etree.parse(gpx_file)
             self._xmlns = self._data.getroot().nsmap[None]
+            nsmap = self._data.getroot().nsmap
+            pyt_ns = "http://sourceforge.net.project/pytrainer/GPX/0/1"
+            PYTRAINER = "{%s}" % pyt_ns
             self._trkpt_path = '{%s}trk/{%s}trkseg/{%s}trkpt' % (self._xmlns, self._xmlns, self._xmlns)
 
             """
@@ -48,16 +52,31 @@ class fixelevation:
             
                 ele = trkpt.find('{%s}ele' % self._xmlns)
                 ele_new = self._srtm.get_elevation(lat, lon)
+                #Add new elevation to extension tag
+                '''
+                <extensions>
+                    <pytrainer:ele method="srtm_bilinear">31.1</pytrainer:ele>
+                </extensions>
+                '''
+                ext = etree.Element("extensions")
+                py_ele = etree.SubElement(ext, PYTRAINER + "ele", method="srtm_bilinear")
+                py_ele.text = str(ele_new)
+                
+                #print etree.tostring(ext)
+                
+                
                 if not ele_new:
                     ele_fixed = False
                     break 
                     
-                if ele is not None:
-                    ele.text = str(ele_new)
-                else:
-                    ele = etree.Element('ele')
-                    ele.text = str(ele_new)
-                    trkpt.append(ele)   
+                #if ele is not None:
+                #    #ele.text = str(ele_new)
+                #    ele.append(ext)
+                #else:
+                #    ele = etree.Element('ele')
+                #    ele.append(py_ele)
+                trkpt.append(ext)
+                
             if ele_fixed:
                 # Write out to original *.gpx.                         
                 self._data.write( gpx_file, 
@@ -65,6 +84,8 @@ class fixelevation:
                                 xml_declaration=True, 
                                 pretty_print=False)
                 res_msg = "Elevation has been fixed."
+                #TODO Expire activity out of pool - so get updated info
+                self.pytrainer_main.activitypool.remove_activity(aid)
             else:
                 res_msg = "Elevation could not be fixed!"
 

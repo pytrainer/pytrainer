@@ -48,6 +48,9 @@ startPointTag = gpxdataNS.substitute(tag="startPoint")
 elapsedTimeTag = gpxdataNS.substitute(tag="elapsedTime")
 distanceTag = gpxdataNS.substitute(tag="distance")
 
+pytrainerNS = string.Template(".//{http://sourceforge.net.project/pytrainer/GPX/0/1}$tag")
+pyt_eleTag = pytrainerNS.substitute(tag="ele")
+
 class Gpx:
     def __init__(self, data_path = None, filename = None, trkname = None):
         logging.debug(">>")
@@ -277,6 +280,18 @@ class Gpx:
                     ele = None
             else:
                 ele = None
+                
+            #Get corrected elevation if it exists
+            correctedEleResult = trkpoint.find(pyt_eleTag)
+            if correctedEleResult is not None:
+                try:
+                    corEle = float(correctedEleResult.text)
+                    #Calculate elevation change
+                except Exception as e:
+                    logging.debug(str(e))
+                    corEle = None
+            else:
+                corEle = None
 
             #Calculate climb or decent amount
             #Allow for some 'jitter' in height here
@@ -308,18 +323,18 @@ class Gpx:
             #This 'fills in' the data for situations where some times are missing from the GPX file
             if time_ is not None:
                 if len(waiting_points) > 0:
-                    for ((w_total_dist, w_dist, w_alt, w_total_time, w_lat, w_lon, w_hr, w_cadence)) in waiting_points:
+                    for ((w_total_dist, w_dist, w_alt, w_total_time, w_lat, w_lon, w_hr, w_cadence, w_corEle)) in waiting_points:
                         w_time = (w_dist/dist_elapsed) * time_elapsed
                         w_vel = w_dist/((w_time)/3600.0)
                         w_total_time += w_time
-                        retorno.append((w_total_dist, w_alt, w_total_time, w_vel, w_lat, w_lon, w_hr, w_cadence))
+                        retorno.append((w_total_dist, w_alt, w_total_time, w_vel, w_lat, w_lon, w_hr, w_cadence, w_corEle))
                     waiting_points = []
                     dist_elapsed = 0
                 else:
-                    retorno.append((total_dist,ele, self.total_time,vel,lat,lon,hr,cadence))
+                    retorno.append((total_dist,ele, self.total_time,vel,lat,lon,hr,cadence,corEle))
                     dist_elapsed = 0
             else: # time_ is None
-                waiting_points.append((total_dist, dist_elapsed, ele, self.total_time, lat, lon, hr, cadence))
+                waiting_points.append((total_dist, dist_elapsed, ele, self.total_time, lat, lon, hr, cadence, corEle))
 
             #Add to dict of values to trkpoint list
             self.trkpoints.append({ 'id': i,
@@ -335,6 +350,7 @@ class Gpx:
                                     'distance_from_previous': dist,
                                     'elapsed_distance': total_dist,
                                     'velocity':vel,
+                                    'correctedElevation':corEle,
 
                                 })
 

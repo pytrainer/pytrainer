@@ -17,25 +17,57 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 def km2miles(kilometers):
-	return kilometers*0.621371192
+    try:
+        km = float(kilometers)
+        return km*0.621371192
+    except Exception as e:
+        return 0.0
 
 def miles2mk(miles):
-	return miles/0.621371192
+    try:
+        m = float(miles)
+        return m/0.621371192
+    except Exception as e:
+        return 0.0
 
 def pacekm2miles(kilometers):
-	return kilometers/0.621371192
+    try:
+        km = float(kilometers)
+        return km/0.621371192
+    except Exception as e:
+        return 0.0
 
 def pacemiles2mk(miles):
-	return miles*0.621371192
+    try:
+        m = float(miles)
+        return m*0.621371192
+    except Exception as e:
+        return 0.0
 
 def m2feet(meter):
-	return meter*3.2808399
+    try:
+        m = float(meter)
+        return m*3.2808399
+    except Exception as e:
+        return 0.0
 
 def feet2m(feet):
-	return feet/3.2808399
+    try:
+        m = float(feet)
+        return m/3.2808399
+    except Exception as e:
+        return 0.0
 
 def kg2pound(kg):
-	return kg*2.20462262
+    try:
+        m = float(kg)
+        return m*2.20462262
+    except Exception as e:
+        return 0.0
 
 def pound2kg(pound):
-	return pound/2.20462262
+    try:
+        m = float(pound)
+        return m/2.20462262
+    except Exception as e:
+        return 0.0

@@ -566,7 +566,7 @@ class Main(SimpleGladeApp):
         #   self.recordview.set_sensitive(0)
         logging.debug("<<")
 
-    def actualize_dayview(self,record_list):
+    def actualize_dayview(self,record_list=None, activity_list=None):
         logging.debug(">>")
         if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
             self.d_distance_unit.set_text(_("miles"))
