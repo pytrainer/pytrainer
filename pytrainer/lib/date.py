@@ -178,13 +178,25 @@ class Date:
         # Time can be in multiple formats
         # - zulu            2009-12-15T09:00Z
         # - local ISO8601   2009-12-15T10:00+01:00
-        dateTime = dateutil.parser.parse(time_)
-        timezone = dateTime.tzname()
-        if timezone == 'UTC': #got a zulu time
+        try:
+            dateTime = dateutil.parser.parse(time_)
+        except ValueError as e:
+            print "Unable to parse '%s' as a date time" % time_
+            print e
+            logging.debug("Unable to parse %s as a date time" % time_)
+            logging.debug(str(e))
+            return (None, None)
+        timezone = dateTime.tzinfo
+        if timezone is None: #got a naive time, so assume is local time
+            #print 'Naive time'
+            local_dateTime = dateTime.replace(tzinfo=tzlocal())
+        elif timezone == tzutc(): #got a zulu time
+            #print 'zulu time'
             local_dateTime = dateTime.astimezone(tzlocal()) #datetime with localtime offset (from OS)
         else:
+            #print 'local time'
             local_dateTime = dateTime #use datetime as supplied
-        utc_dateTime = dateTime.astimezone(tzutc()) #datetime with 00:00 offset
+        utc_dateTime = local_dateTime.astimezone(tzutc()) #datetime with 00:00 offset
         #print utc_dateTime, local_dateTime
         return (utc_dateTime,local_dateTime)
 
