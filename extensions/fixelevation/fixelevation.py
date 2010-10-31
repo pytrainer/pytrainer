@@ -16,7 +16,7 @@ class fixelevation:
         self.conf_dir = conf_dir
 
     def run(self, aid, activity=None):  #TODO Convert to use activity...
-        print activity
+        #print activity
         logging.debug(">>")
         gpx_file = "%s/gpx/%s.gpx" % (self.conf_dir, aid)
         ele_fixed = True
