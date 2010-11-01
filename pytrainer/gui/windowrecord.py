@@ -387,6 +387,7 @@ class WindowRecord(SimpleGladeApp):
         self.activity_data[row]["rcd_starttime"] = start_time
         self.activity_data[row]["date_time_local"] = gpx_summary['date_time_local']
         self.activity_data[row]["date_time_utc"] = gpx_summary['date_time_utc']
+        self.activity_data[row]["rcd_distance"] = gpx_summary["rcd_distance"]
         self.activity_data[row]["rcd_average"] = gpx_summary["rcd_average"]
         self.activity_data[row]["rcd_calories"] = gpx_summary["rcd_calories"]
         self.activity_data[row]["rcd_beats"] = gpx_summary["rcd_beats"]
@@ -447,7 +448,7 @@ class WindowRecord(SimpleGladeApp):
                 gtk.main_iteration()    # before completion of this entire action
             #Get some info from gpx file
             self.update_activity_data(row, gpx_file, sport)
-            
+        self.setValue("rcd_distance",self.activity_data[row]["rcd_distance"], "%s")  
         self.setValue("rcd_date", self.activity_data[row]["rcd_date"], "%s")
         self.setValue("rcd_starttime", self.activity_data[row]["rcd_starttime"], "%s")
         self.setValue("rcd_average",self.activity_data[row]["rcd_average"])

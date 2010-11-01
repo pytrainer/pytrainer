@@ -101,6 +101,7 @@ class Activity:
 		self.time_data = {}
 		self.pace_limit = None
 		self.starttime = None
+		self.gpx_distance = None
 		#self.upositive = 0
 		#self.unegative = 0
 		if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
@@ -210,6 +211,8 @@ class Activity:
 		self.tree = self.gpx.tree
 		self.tracks = self.gpx.getTrackList() #TODO fix - this should removed and replaced with self.tracklist functionality
 		self.tracklist = self.gpx.trkpoints
+		self.gpx_distance = self.gpx.total_dist
+		print "GPX Distance: %s" % self.gpx_distance
 		logging.debug("<<")
 
 	def _init_from_db(self):
@@ -261,6 +264,8 @@ class Activity:
 			#	self.pace = pacekm2miles(self._float(_dict['pace']))
 			#else:
 			self.distance = self._float(_dict['distance'])
+			if not self.distance:
+				self.distance = self.gpx_distance
 			self.average = self._float(_dict['average'])
 			self.upositive = self._float(_dict['upositive'])
 			self.unegative = self._float(_dict['unegative'])
