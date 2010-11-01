@@ -93,7 +93,11 @@ class Main(SimpleGladeApp):
             pass
         self.record_list = []
         #create the columns for the listdayrecord
-        columns = [{'name':_("id"), 'visible':False},{'name':_("Start"), }, {'name':_("Sport")},{'name':_("Kilometer")}]
+        if self.pytrainer_main.profile.prf_us_system:
+            distance_unit = _("Miles")
+        else:
+            distance_unit = _("Km")
+        columns = [{'name':_("id"), 'visible':False},{'name':_("Start"), }, {'name':_("Sport")},{'name':distance_unit}]
         self.create_treeview(self.recordTreeView,columns)
         #create the columns for the listarea
         # different codings for mean see eg http://de.wikipedia.org/wiki/%C3%98#Kodierung
@@ -301,13 +305,13 @@ class Main(SimpleGladeApp):
             recordTime = dateTime.strftime("%X")
             recordDateTimeOffset = dateTime.strftime("%z")
 
-            self.record_distance.set_text("%0.2f" %activity.distance)
-            self.record_upositive.set_text("%0.2f" %activity.upositive)
-            self.record_unegative.set_text("%0.2f" %activity.unegative)
-            self.record_average.set_text("%0.2f" %activity.average)
-            self.record_maxspeed.set_text("%0.2f" %activity.maxspeed)
-            self.record_pace.set_text(Record().pace_from_float(activity.pace))
-            self.record_maxpace.set_text(Record().pace_from_float(activity.maxpace))
+            self.record_distance.set_text("%0.2f" %activity.get_value('distance'))
+            self.record_upositive.set_text("%0.2f" %activity.get_value('upositive'))
+            self.record_unegative.set_text("%0.2f" %activity.get_value('unegative'))
+            self.record_average.set_text("%0.2f" %activity.get_value('average'))
+            self.record_maxspeed.set_text("%0.2f" %activity.get_value('maxspeed'))
+            self.record_pace.set_text(activity.get_value('pace'))
+            self.record_maxpace.set_text(activity.get_value('maxpace'))
 
             self.record_sport.set_text(activity.sport_name)
             #self.record_date.set_text(str(date))
@@ -1559,6 +1563,7 @@ class Main(SimpleGladeApp):
             object)
         for i in record_list:
             #Get lap info
+            #Could get an activity from the pool here, but is slow??
             id_record = i[8]
             laps = self.parent.record.getLaps(id_record)
             iter = store.append(None)
@@ -1569,18 +1574,27 @@ class Main(SimpleGladeApp):
                 localTime = dateutil.parser.parse(dateTime).strftime("%H:%M")
             else:
                 localTime = ""
+            if self.pytrainer_main.profile.prf_us_system:
+                dist = km2miles(i[2])
+            else:
+                dist = i[2]
+            distance = "%0.2f" % (float(dist) )
             store.set (
                 iter,
                 0, int(i[8]),
                 1, str(localTime),
                 2, str(i[0]),
-                3, str(i[2])
+                3, str(distance)  #Needs to be US pref aware....
                 )
             if laps is not None:
                 for lap in laps:
                     #"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number",
                     lapNumber = "%s%d" % ( _("lap"), int(lap[9])+1 )
-                    distance = "%0.2f" % (float(lap[3]) / 1000.0)
+                    if self.pytrainer_main.profile.prf_us_system:
+                        dist = km2miles(lap[3])
+                    else:
+                        dist = lap[3]
+                    distance = "%0.2f" % (float(dist) / 1000.0)
                     timeHours = int(float(lap[2]) / 3600)
                     timeMin = int((float(lap[2]) / 3600.0 - timeHours) * 60)
                     timeSec = float(lap[2]) - (timeHours * 3600) - (timeMin * 60)
@@ -1600,8 +1614,7 @@ class Main(SimpleGladeApp):
         self.recordTreeView.set_model(store)
         if iterOne:
             self.recordTreeView.get_selection().select_iter(iterOne)
-        logging.debug("<<")
-        #if len(record_list)>0:
+        logging.debug("<<")        
 
     def parseFloat(self,string):
         try:
@@ -1612,8 +1625,10 @@ class Main(SimpleGladeApp):
     def actualize_calendar(self,record_list):
         logging.debug(">>")
         self.calendar.clear_marks()
+        #Mark each day that has activity
         for i in record_list:
             self.calendar.mark_day(int(i))
+        #Turn on displaying of week numbers
         display_options = self.calendar.get_display_options()
         self.calendar.set_display_options(display_options|gtk.CALENDAR_SHOW_WEEK_NUMBERS)
         logging.debug("<<")

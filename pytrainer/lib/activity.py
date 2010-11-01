@@ -30,6 +30,8 @@ from pytrainer.lib.unitsconversor import *
 class Activity:
 	'''
 	Class that knows everything about a particular activity
+	
+	All values are stored in the class (and DB) in metric and are converted as needed
 
 	tracks			- (list) tracklist from gpx
 	tracklist		- (list of dict) trackpoint data from gpx
@@ -249,22 +251,22 @@ class Activity:
 				self.date_time = tmpDateTime.astimezone(tzlocal()) #datetime with localtime offset (using value from OS)
 				self.starttime = self.date_time.strftime("%X")
 			#Sort data that changes for the US etc
-			if self.us_system:
-				self.distance = km2miles(self._float(_dict['distance']))
-				self.average = km2miles(self._float(_dict['average']))
-				self.upositive = m2feet(self._float(_dict['upositive']))
-				self.unegative = m2feet(self._float(_dict['unegative']))
-				self.maxspeed = km2miles(self._float(_dict['maxspeed']))
-				self.maxpace = pacekm2miles(self._float(_dict['maxpace']))
-				self.pace = pacekm2miles(self._float(_dict['pace']))
-			else:
-				self.distance = self._float(_dict['distance'])
-				self.average = self._float(_dict['average'])
-				self.upositive = self._float(_dict['upositive'])
-				self.unegative = self._float(_dict['unegative'])
-				self.maxspeed = self._float(_dict['maxspeed'])
-				self.maxpace = self._float(_dict['maxpace'])
-				self.pace = self._float(_dict['pace'])
+			#if self.us_system:
+			#	self.distance = km2miles(self._float(_dict['distance']))
+			#	self.average = km2miles(self._float(_dict['average']))
+			#	self.upositive = m2feet(self._float(_dict['upositive']))
+			#	self.unegative = m2feet(self._float(_dict['unegative']))
+			#	self.maxspeed = km2miles(self._float(_dict['maxspeed']))
+			#	self.maxpace = pacekm2miles(self._float(_dict['maxpace']))
+			#	self.pace = pacekm2miles(self._float(_dict['pace']))
+			#else:
+			self.distance = self._float(_dict['distance'])
+			self.average = self._float(_dict['average'])
+			self.upositive = self._float(_dict['upositive'])
+			self.unegative = self._float(_dict['unegative'])
+			self.maxspeed = self._float(_dict['maxspeed'])
+			self.maxpace = self._float(_dict['maxpace'])
+			self.pace = self._float(_dict['pace'])
 			self.has_data = True
 		else:
 			raise Exception( "Error - multiple results from DB for id: %s" % self.id )
@@ -467,3 +469,109 @@ class Activity:
 		except:
 			result = 0
 		return result
+	
+	def get_value(self, param):
+		''' Function to get the value of various params in this activity instance
+			Automatically returns values converted to imperial if needed
+		'''
+		if param == 'distance':
+			if self.us_system:
+				return km2miles(self.distance)
+			else:
+				return self.distance
+		elif param == 'average':
+			if self.us_system:
+				return km2miles(self.average)
+			else:
+				return self.average
+		elif param == 'upositive':
+			if self.us_system:
+				return m2feet(self.upositive)
+			else:
+				return self.upositive
+		elif param == 'unegative':
+			if self.us_system:
+				return m2feet(self.unegative)
+			else:
+				return self.unegative
+		elif param == 'maxspeed':
+			if self.us_system:
+				return km2miles(self.maxspeed)
+			else:
+				return self.maxspeed
+		elif param == 'maxpace':
+			if self.us_system:
+				return self.pace_from_float(pacekm2miles(self.maxpace))
+			else:
+				return self.pace_from_float(self.maxpace)
+		elif param == 'pace':
+			if self.us_system:
+				return self.pace_from_float(pacekm2miles(self.pace))
+			else:
+				return self.pace_from_float(self.pace)
+		else:
+			print "Unable to provide value for unknown parameter (%s) for activity" % param
+			
+	def set_value(self, param, value):
+		''' Function to set the value of various params in this activity instance
+			Automatically converts from imperial if using them
+		'''
+		_value = _float(value)
+		if param == 'distance':
+			if self.us_system:
+				self.distance = miles2mk(_value)
+			else:
+				self.distance = _value
+		elif param == 'average':
+			if self.us_system:
+				self.average = miles2mk(_value)
+			else:
+				self.average = _value
+		elif param == 'upositive':
+			if self.us_system:
+				self.upositive = feet2m(_value)
+			else:
+				self.upositive = _value
+		elif param == 'unegative':
+			if self.us_system:
+				self.unegative = feet2m(_value)
+			else:
+				self.unegative = _value
+		elif param == 'maxspeed':
+			if self.us_system:
+				self.maxspeed = miles2mk(_value)
+			else:
+				self.maxspeed = _value
+		elif param == 'maxpace':
+			if self.us_system:
+				_maxpace = pacemiles2mk(_value)
+			else:
+				_maxpace = _value
+			self.maxpace = self.pace_to_float(_maxpace)
+		elif param == 'pace':
+			if self.us_system:
+				_pace = pacemiles2mk(_value)
+			else:
+				_pace = _value
+			self.pace = self.pace_to_float(_pace)
+		else:
+			print "Unable to set value (%s) for unknown parameter (%s) for activity" % (str(value), param)
+			
+			
+	def pace_to_float(self, value):
+		'''Take a mm:ss or mm.ss and return float'''
+		value = value.replace(':', '.')
+		try:
+			value = float(value)
+		except ValueError:
+			value = None
+		return value
+
+	def pace_from_float(self, value):
+		'''Helper to generate mm:ss from float representation mm.ss (or mm,ss?)'''
+		#Check that value supplied is a float
+		try:
+			_value = "%0.2f" % float(value)
+		except ValueError:
+			_value = str(value)
+		return _value.replace('.',':')

@@ -50,13 +50,14 @@ from lib.ddbb import DDBB
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.7.2_svn#670"
+        self.version ="1.7.2_svn#672"
         self.DB_version = 6
         #Process command line options
         self.startup_options = self.get_options()
         #Setup logging
         self.set_logging(self.startup_options.log_level)
         logging.debug('>>')
+        logging.debug("PyTrainer version %s, DB version %s" % (self.version, self.DB_version))
         self.data_path = data_path
         self.date = Date()
         self.ddbb = None
@@ -309,8 +310,9 @@ class pyTrainer:
         self.refreshListView(self.windowmain.listsearch.condition)
         #Refresh list records
         date = self.date.getDate()
-        record_list = self.record.getrecordList(date)
-        self.windowmain.actualize_recordTreeView(record_list)
+        record_ids = self.record.getrecordList(date)
+        self.windowmain.actualize_recordTreeView(record_ids)
+        #Mark the monthly calendar to show which days have activity?
         record_list = self.record.getRecordDayList(date)
         self.windowmain.actualize_calendar(record_list)
         logging.debug('<<')
