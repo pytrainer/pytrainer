@@ -50,7 +50,7 @@ from lib.ddbb import DDBB
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.7.2_svn#675"
+        self.version ="1.7.2_svn#676"
         self.DB_version = 6
         #Process command line options
         self.startup_options = self.get_options()
@@ -68,7 +68,7 @@ class pyTrainer:
         self.ddbb = DDBB(self.profile, self)
         logging.debug('connecting to DDBB')
         self.ddbb.connect()
-        
+
 
         #Get user's DB version
         currentDB_version = self.profile.getValue("pytraining","DB_version")
@@ -322,13 +322,13 @@ class pyTrainer:
         self.athlete.refresh()
         self.windowmain.actualize_athleteview(self.athlete)
         logging.debug('<<')
-    
+
     def refreshListView(self,condition=None):
         logging.debug('>>')
         record_list = self.record.getRecordListByCondition(condition)
         self.windowmain.actualize_listview(record_list)
         logging.debug('<<')
-        
+
     def refreshWaypointView(self,default_waypoint=None,redrawmap=1):
         logging.debug('>>')
         waypoint_list = self.waypoint.getAllWaypoints()
@@ -426,7 +426,7 @@ class pyTrainer:
              warning.run()
         self.refreshListRecords()
         logging.debug('<<')
-        
+
     def removeWaypoint(self,id_waypoint, confirm = False):
         logging.debug('>>')
         if confirm:

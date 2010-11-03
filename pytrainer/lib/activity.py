@@ -30,7 +30,7 @@ from pytrainer.lib.unitsconversor import *
 class Activity:
 	'''
 	Class that knows everything about a particular activity
-	
+
 	All values are stored in the class (and DB) in metric and are converted as needed
 
 	tracks			- (list) tracklist from gpx
@@ -128,7 +128,7 @@ class Activity:
 		self.y2_limits_u = (None, None)
 		self.show_laps = False
 		logging.debug("<<")
-		
+
 	def __str__(self):
 		return '''
         tracks (%s)
@@ -182,7 +182,7 @@ class Activity:
 			self.distance_unit, self.speed_unit, self.distance_data, self.time_data,
 			self.height_unit, self.pace_unit, self.gpx_file, self.gpx, self.sport_name,
 			self.sport_id, self.title, self.date, self.time, self.time_tuple, self.beats,
-			self.maxbeats, self.comments, self.calories, self.id_record, self.date_time_local, 
+			self.maxbeats, self.comments, self.calories, self.id_record, self.date_time_local,
 			self.date_time_utc, self.date_time, self.starttime, self.distance, self.average,
 			self.upositive, self.unegative, self.maxspeed, self.maxpace, self.pace, self.has_data,
 			self.x_axis, self.x_limits, self.y1_limits, self.y2_limits, self.x_limits_u, self.y1_limits_u,
@@ -436,13 +436,17 @@ class Activity:
 			except Exception as e:
 				#print type(e), e
 				pace = 0
+			try:
+				hr_p = float(track['hr'])/maxhr*100
+			except:
+				hr_p = 0
 			if self.us_system:
 				self.distance_data['elevation'].addPoints(x=km2miles(track['elapsed_distance']), y=m2feet(track['ele']))
 				self.distance_data['cor_elevation'].addPoints(x=km2miles(track['elapsed_distance']), y=m2feet(track['correctedElevation']))
 				self.distance_data['speed'].addPoints(x=km2miles(track['elapsed_distance']), y=km2miles(track['velocity']))
 				self.distance_data['pace'].addPoints(x=km2miles(track['elapsed_distance']), y=pacekm2miles(pace))
 				self.distance_data['hr'].addPoints(x=km2miles(track['elapsed_distance']), y=track['hr'])
-				self.distance_data['hr_p'].addPoints(x=km2miles(track['elapsed_distance']), y=float(track['hr'])/maxhr*100)
+				self.distance_data['hr_p'].addPoints(x=km2miles(track['elapsed_distance']), y=hr_p)
 				self.distance_data['cadence'].addPoints(x=km2miles(track['elapsed_distance']), y=track['cadence'])
 				self.time_data['elevation'].addPoints(x=track['time_elapsed'], y=m2feet(track['ele']))
 				self.time_data['cor_elevation'].addPoints(x=track['time_elapsed'], y=m2feet(track['correctedElevation']))
@@ -454,14 +458,14 @@ class Activity:
 				self.distance_data['speed'].addPoints(x=track['elapsed_distance'], y=track['velocity'])
 				self.distance_data['pace'].addPoints(x=track['elapsed_distance'], y=pace)
 				self.distance_data['hr'].addPoints(x=track['elapsed_distance'], y=track['hr'])
-				self.distance_data['hr_p'].addPoints(x=track['elapsed_distance'], y=float(track['hr'])/maxhr*100)
+				self.distance_data['hr_p'].addPoints(x=track['elapsed_distance'], y=hr_p)
 				self.distance_data['cadence'].addPoints(x=track['elapsed_distance'], y=track['cadence'])
 				self.time_data['elevation'].addPoints(x=track['time_elapsed'], y=track['ele'])
 				self.time_data['cor_elevation'].addPoints(x=track['time_elapsed'], y=track['correctedElevation'])
 				self.time_data['speed'].addPoints(x=track['time_elapsed'], y=track['velocity'])
 				self.time_data['pace'].addPoints(x=track['time_elapsed'], y=pace)
 			self.time_data['hr'].addPoints(x=track['time_elapsed'], y=track['hr'])
-			self.time_data['hr_p'].addPoints(x=track['time_elapsed'], y=float(track['hr'])/maxhr*100)
+			self.time_data['hr_p'].addPoints(x=track['time_elapsed'], y=hr_p)
 			self.time_data['cadence'].addPoints(x=track['time_elapsed'], y=track['cadence'])
 		#Remove data with no values
 		for item in self.distance_data.keys():
@@ -487,7 +491,7 @@ class Activity:
 		except:
 			result = 0
 		return result
-	
+
 	def get_value(self, param):
 		''' Function to get the value of various params in this activity instance
 			Automatically returns values converted to imperial if needed
@@ -529,7 +533,7 @@ class Activity:
 				return self.pace_from_float(self.pace)
 		else:
 			print "Unable to provide value for unknown parameter (%s) for activity" % param
-			
+
 	def set_value(self, param, value):
 		''' Function to set the value of various params in this activity instance
 			Automatically converts from imperial if using them
@@ -574,8 +578,8 @@ class Activity:
 			self.pace = self.pace_to_float(_pace)
 		else:
 			print "Unable to set value (%s) for unknown parameter (%s) for activity" % (str(value), param)
-			
-			
+
+
 	def pace_to_float(self, value):
 		'''Take a mm:ss or mm.ss and return float'''
 		value = value.replace(':', '.')
