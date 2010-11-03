@@ -200,18 +200,6 @@ class WindowProfile(SimpleGladeApp):
             self.checkbuttonCheck.set_active(True)
         else:
             self.checkbuttonCheck.set_active(False)
-        
-        #Show if using Googlemaps API v3
-        if self.pytrainer_main.startup_options.gm3:
-            self.checkbuttonGM3.set_active(True)
-        else:
-            self.checkbuttonGM3.set_active(False)
-            
-        #Show if unified import activated
-        if self.pytrainer_main.startup_options.testimport:
-            self.checkbuttonUnifiedImport.set_active(True)
-        else:
-            self.checkbuttonUnifiedImport.set_active(False)
             
         #Show if new graph activated
         if self.pytrainer_main.startup_options.newgraph:
@@ -254,32 +242,6 @@ class WindowProfile(SimpleGladeApp):
         else:
             logging.debug("Check deactivated")
             self.pytrainer_main.startup_options.check = False
-            
-    def on_checkbuttonGM3_toggled(self, widget):
-        if self.checkbuttonGM3.get_active():
-            logging.debug("GM3 activated")
-            self.pytrainer_main.startup_options.gm3 = True
-        else:
-            logging.debug("GM3 deactivated")
-            self.pytrainer_main.startup_options.gm3 = False
-    
-    def on_checkbuttonUnifiedImport_toggled(self, widget):
-        if self.checkbuttonUnifiedImport.get_active():
-            logging.debug("Unified Import activated")
-            if self.pytrainer_main.startup_options.testimport is not True:
-                #Need to enable unified import
-                logging.debug("Need to enable unified import")
-                self.pytrainer_main.windowmain.set_unified_import(True)
-            else:
-                #No change 
-                logging.debug("No change to unified import")
-        else:
-            logging.debug("Unified Import deactivated")
-            if self.pytrainer_main.startup_options.testimport is True:
-                logging.debug("Need to deactivate unified import")
-                self.pytrainer_main.windowmain.set_unified_import(False)
-            else:
-                logging.debug("No change to unified import")
                 
     def on_checkbuttonNewGraph_toggled(self, widget):
         if self.checkbuttonNewGraph.get_active():

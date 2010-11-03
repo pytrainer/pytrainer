@@ -1111,7 +1111,9 @@
 Speed
 Pace
 Heart Rate
-Cadence</property>
+Cadence
+Percentage
+Zone</property>
                                             <signal name="changed" handler="on_day_combovalue_changed"/>
                                           </widget>
                                           <packing>

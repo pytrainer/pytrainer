@@ -212,7 +212,7 @@ class Activity:
 		self.tracks = self.gpx.getTrackList() #TODO fix - this should removed and replaced with self.tracklist functionality
 		self.tracklist = self.gpx.trkpoints
 		self.gpx_distance = self.gpx.total_dist
-		print "GPX Distance: %s" % self.gpx_distance
+		logging.debug("GPX Distance: %s" % self.gpx_distance)
 		logging.debug("<<")
 
 	def _init_from_db(self):

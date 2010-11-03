@@ -50,7 +50,7 @@ from lib.ddbb import DDBB
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.7.2_svn#672"
+        self.version ="1.7.2_svn#674"
         self.DB_version = 6
         #Process command line options
         self.startup_options = self.get_options()
@@ -113,14 +113,12 @@ class pyTrainer:
         For more help on valid options try:
            %prog -h '''
         parser = OptionParser(usage=usage)
-        parser.set_defaults(log_level=logging.ERROR, validate=False, gm3=True, testimport=True, equip=False, newgraph=False)
+        parser.set_defaults(log_level=logging.ERROR, validate=False, equip=False, newgraph=False)
         parser.add_option("-d", "--debug", action="store_const", const=logging.DEBUG, dest="log_level", help="enable logging at debug level")
         parser.add_option("-i", "--info", action="store_const", const=logging.INFO, dest="log_level", help="enable logging at info level")
         parser.add_option("-w", "--warn", action="store_const", const=logging.WARNING, dest="log_level", help="enable logging at warning level")
         parser.add_option("--valid", action="store_true", dest="validate", help="enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation")
         parser.add_option("--check", action="store_true", dest="check", help="triggers database (only sqlite based) and configuration file sanity checks, adding fields if necessary. Backup of database is done before any change. Details at info or debug logging level")
-        parser.add_option("--gmaps2", action="store_false", dest="gm3", help="Use old Google Maps API version (v2)")
-        parser.add_option("--testimport", action="store_true", dest="testimport", help="EXPERIMENTAL: show new import functionality - for testing only USE AT YOUR OWN RISK")
         parser.add_option("--equip", action="store_false", dest="equip", help="EXPERIMENTAL: enable equipment management")
         parser.add_option("--newgraph", action="store_true", dest="newgraph", help="EXPERIMENTAL: new graphing approach")
         (options, args) = parser.parse_args()
@@ -231,19 +229,20 @@ class pyTrainer:
                 self.refreshRecordGraphView("heartrate")
         elif view=="day":
              logging.debug('day view')
-             record_list = self.record.getrecordList(date_selected)
+             sport = self.windowmain.activeSport
+             record_list = self.record.getrecordList(date_selected, sport)
              self.windowmain.actualize_dayview(record_list=record_list)
              #selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
         elif view=="week":
              logging.debug('week view')
              date_ini, date_end = self.date.getWeekInterval(date_selected, self.profile.prf_us_system)
-             sport = self.windowmain.getSportSelected()
+             sport = self.windowmain.activeSport
              record_list = self.record.getrecordPeriod(date_ini, date_end, sport)
              self.windowmain.actualize_weekview(record_list, date_ini, date_end)
         elif view=="month":
              logging.debug('month view')
              date_ini, date_end = self.date.getMonthInterval(date_selected)
-             sport = self.windowmain.getSportSelected()
+             sport = self.windowmain.activeSport
              record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport)
              nameMonth, daysInMonth = self.date.getNameMonth(date_selected)
              self.windowmain.actualize_monthview(record_list, nameMonth)
@@ -251,7 +250,7 @@ class pyTrainer:
         elif view=="year":
              logging.debug('year view')
              date_ini, date_end = self.date.getYearInterval(date_selected)
-             sport = self.windowmain.getSportSelected()
+             sport = self.windowmain.activeSport
              year = self.date.getYear(date_selected)
              record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport)
              self.windowmain.actualize_yearview(record_list, year)
@@ -310,10 +309,11 @@ class pyTrainer:
         self.refreshListView(self.windowmain.listsearch.condition)
         #Refresh list records
         date = self.date.getDate()
-        record_ids = self.record.getrecordList(date)
+        id_sport = self.windowmain.activeSport
+        record_ids = self.record.getrecordList(date, id_sport)
         self.windowmain.actualize_recordTreeView(record_ids)
         #Mark the monthly calendar to show which days have activity?
-        record_list = self.record.getRecordDayList(date)
+        record_list = self.record.getRecordDayList(date, id_sport)
         self.windowmain.actualize_calendar(record_list)
         logging.debug('<<')
 

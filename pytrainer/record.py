@@ -324,11 +324,16 @@ class Record:
 					"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc,date_time_local",
 					"id_record=\"%s\" and records.sport=sports.id_sports" %id_record)
 
-	def getrecordList(self,date):
+	def getrecordList(self,date, id_sport=None):
 		logging.debug('--')
-		return self.pytrainer_main.ddbb.select("records,sports",
+		if not id_sport:
+			return self.pytrainer_main.ddbb.select("records,sports",
 					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local",
 					"date=\"%s\" and records.sport=sports.id_sports" %date)
+		else:
+			return self.pytrainer_main.ddbb.select("records,sports",
+					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local",
+					"date=\"%s\" and sports.id_sports=\"%s\" and records.sport=sports.id_sports" %(date,id_sport))
 
 	def getLaps(self, id_record):
 		logging.debug('--')
@@ -449,12 +454,15 @@ class Record:
 				"date,distance,average,title,sports.name,id_record,time,beats,calories",
 				"sports.id_sports = records.sport and %s" %condition)
 
-	def getRecordDayList(self,date):
+	def getRecordDayList(self,date, id_sport=None):
 		logging.debug('>>')
 		year,month,day = date.split("-")
 		logging.debug('Retrieving data for '+year+'.'+month+'.'+day)
 		# Why is looking for all days of the same month?
-		records = self.pytrainer_main.ddbb.select("records","date","date LIKE '"+year+"-"+month+"-%'")
+		if not id_sport:
+			records = self.pytrainer_main.ddbb.select("records","date","date LIKE '"+year+"-"+month+"-%'")
+		else:
+			records = self.ddbb.select("records","date","date LIKE \"%s-%s-%%\" and sport=\"%s\"" %(year,month,id_sport))
 		logging.debug('Found '+str(len(records))+' entries')
 		day_list = []
 		for i in records:

@@ -16,15 +16,12 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import gtkmozembed
 import os
 import re
 import logging
 
-#from pytrainer.lib.gpx import Gpx
 import pytrainer.lib.points as Points
 from pytrainer.lib.fileUtils import fileUtils
-#from pytrainer.record import Record
 
 class Googlemaps:
     def __init__(self, data_path = None, waypoint = None, pytrainer_main=None):
@@ -37,7 +34,7 @@ class Googlemaps:
 
     def drawMap(self,activity):
         '''Draw google map
-            create html file using Google API version??
+            create html file using Google API version3
             render using embedded Mozilla
 
             info at http://www.pygtk.org/pygtkmozembed/class-gtkmozembed.html
@@ -65,20 +62,16 @@ class Googlemaps:
             logging.debug("minlon: %s, maxlon: %s" % (minlon, maxlon))
             points,levels = Points.encodePoints(pointlist)
             points = points.replace("\\","\\\\")
-            if self.pytrainer_main.startup_options.gm3:
-                logging.debug("Using Google Maps version 3 API")
-                laps = activity.laps
-                timeHours = int(activity.time) / 3600
-                timeMin = (float(activity.time) / 3600.0 - timeHours) * 60
-                time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
-                startinfo = "<div class='info_content'>%s: %s</div>" % (activity.sport_name, activity.title)
-                finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), activity.distance, activity.distance_unit)
-                startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
-                finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
-                self.createHtml_api3(polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps)
-            else:
-                logging.debug("Using Google Maps version 2 API")
-                self.createHtml(points,levels,pointlist[0])
+            logging.debug("Using Google Maps version 3 API")
+            laps = activity.laps
+            timeHours = int(activity.time) / 3600
+            timeMin = (float(activity.time) / 3600.0 - timeHours) * 60
+            time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
+            startinfo = "<div class='info_content'>%s: %s</div>" % (activity.sport_name, activity.title)
+            finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), activity.distance, activity.distance_unit)
+            startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
+            finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
+            self.createHtml_api3(polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps)
         else:
             self.createErrorHtml()
         return self.htmlfile
@@ -226,108 +219,6 @@ class Googlemaps:
           <div id="map_canvas" style="width:100%; height:100%"></div>
         </body>
         </html>'''
-        file = fileUtils(self.htmlfile,content)
-        file.run()
-        logging.debug("<<")
-
-    def createHtml(self,points,levels,init_point):
-        logging.debug(">>")
-        if self.waypoint is not None:
-            waypoints = self.waypoint.getAllWaypoints()
-        else:
-            waypoints = []
-        content = "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \n"
-        content += "        \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">\n"
-        content += "    <html xmlns=\"http://www.w3.org/1999/xhtml\"  xmlns:v=\"urn:schemas-microsoft-com:vml\">\n"
-        content += "    <head>\n"
-        content += "        <meta http-equiv=\"content-type\" content=\"text/html; charset=utf-8\"/>\n"
-        content += "        <title>Google Maps JavaScript API Example</title>\n"
-        content += "        <script id=\"googleapiimport\" src=\"http://maps.google.com/maps?file=api&amp;v=2\"\n"
-        content += "            type=\"text/javascript\"></script>\n"
-        content += "        <script type=\"text/javascript\">\n"
-        content += "        //<![CDATA[\n"
-        i = 0
-        arrayjs = ""
-        for point in waypoints:
-            content += "lon = '%f';\n"%point[2]
-            content += "lat = '%f';\n"%point[1]
-            content += "name = '%s';\n"%point[6]
-            content += "description = '%s';\n"%point[4]
-            content += "sym = '%s';\n"%point[7]
-            content += "id = '%d';\n"%point[0]
-            content += """waypoint%d = Array (lon,lat,name,description,sym,id);\n"""%i
-            if i>0:
-                arrayjs+=","
-            arrayjs +="waypoint%d"%i
-            i = i+1
-        content += """waypointList = Array (%s);\n""" %arrayjs
-        content += """
-    function createMarker(waypoint,map) {
-        var lon = waypoint[0];
-        var lat = waypoint[1];
-        var id = waypoint[5];
-        var name = waypoint[2];
-        var description = waypoint[3];
-
-        var point = new GLatLng(lat,lon);
-        var text = "<b>"+waypoint[2]+"</b><br/>"+waypoint[3];
-
-        var icon = new GIcon();
-        if (sym=="Summit") {
-            icon.image = \""""+os.path.abspath(self.data_path)+"""/glade/summit.png\";
-            }
-        else {
-            icon.image = \""""+os.path.abspath(self.data_path)+"""/glade/waypoint.png\";
-            }
-        icon.iconSize = new GSize(32, 32);
-        icon.iconAnchor = new GPoint(16, 16);
-        icon.infoWindowAnchor = new GPoint(5, 1);
-
-        var markerD = new GMarker(point, {icon:icon, draggable: false});
-        GEvent.addListener(markerD, "click", function() {
-                    markerD.openInfoWindowHtml("<b>" + name + "</b><br/>"+description);
-                });
-        map.addOverlay(markerD);
-
-        }"""
-
-        content += "        function load() {\n"
-        content += "            if (GBrowserIsCompatible()) {\n"
-        content += "                var map = new GMap2(document.getElementById(\"map\"));\n"
-        content += "                map.addControl(new GLargeMapControl());\n"
-        content += "                map.addControl(new GMapTypeControl());\n"
-        content += "                map.addControl(new GScaleControl());\n"
-        content += "                map.setCenter(new GLatLng(%f,%f), 11);\n" %(float(init_point[0]),float(init_point[1]))
-        content += "                ovMap=new GOverviewMapControl();\n"
-        content += "                map.addControl(ovMap);\n"
-        content += "                mini=ovMap.getOverviewMap();\n"
-        content += "                //Dibujamos los waypoints\n"
-        content += "                for (i=0; i<waypointList.length; i++){\n"
-        content += "                    createMarker(waypointList[i],map);\n"
-        content += "                    map.enableDragging();\n"
-        content += "                    }\n"
-        content += "                document.getElementById('map').style.top='0px';\n"
-        content += "                document.getElementById('map').style.left='0px';\n"
-        content += "                document.getElementById('map').style.width='100%';\n"
-        content += "                // Add an encoded polyline.\n"
-        content += "                var encodedPolyline = new GPolyline.fromEncoded({\n"
-        content += "                    color: \"#3333cc\",\n"
-        content += "                    weight: 10,\n"
-        content += "                    points: \"%s\",\n" %points
-        content += "                    levels: \"%s\",\n" %levels
-        content += "                    zoomFactor: 32,\n"
-        content += "                    numLevels: 4\n"
-        content += "                    });\n"
-        content += "                map.addOverlay(encodedPolyline);\n"
-        content += "                }\n"
-        content += "            }\n "
-        content += "        //]]>\n"
-        content += "    </script>\n"
-        content += "    </head>\n"
-        content += "    <body onload=\"load()\" onunload=\"GUnload()\">\n"
-        content += "        <div id=\"map\" style=\"width: 520px; height: 480px\"></div>\n"
-        content += "    </body>\n"
-        content += "</html>\n"
         file = fileUtils(self.htmlfile,content)
         file.run()
         logging.debug("<<")

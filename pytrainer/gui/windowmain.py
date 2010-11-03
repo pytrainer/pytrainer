@@ -82,7 +82,6 @@ class Main(SimpleGladeApp):
         self.listsearch = ListSearch(self, self.pytrainer_main)
 
     def new(self):
-        self.testimport = self.pytrainer_main.startup_options.testimport
         self.menublocking = 0
         self.selected_view="day"
         self.window1.set_title ("pyTrainer %s" % self.version)
@@ -132,9 +131,6 @@ class Main(SimpleGladeApp):
         self.allRecordTreeView.set_search_column(1)
         self.notebook.set_current_page(1)
 
-        #Disable import menu item unless specified on startup
-        self.set_unified_import(self.testimport)
-
         #Set correct map viewer
         if self.pytrainer_main.profile.getValue("pytraining","default_viewer") == "1":
             self.radiobuttonOSM.set_active(1)
@@ -159,10 +155,6 @@ class Main(SimpleGladeApp):
         self.createWaypointEditor(WaypointEditor,self.pytrainer_main.waypoint, parent=self.pytrainer_main)
         page = self.notebook.get_current_page()
         self.on_page_change(None,None,page)
-
-    def set_unified_import(self, status=False):
-        self.menu_importdata.set_sensitive(status)
-        self.parent.testimport = status
 
     def _createXmlListView(self,file):
         menufile = XMLParser(file)
@@ -214,7 +206,7 @@ class Main(SimpleGladeApp):
         self.parent.runExtension(extension,id)
 
     def createGraphs(self,RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph):
-        self.drawarearecord = RecordGraph(self.record_graph_vbox, self.window1, self.record_combovalue, self.record_combovalue2, self.btnShowLaps, self.tableConfigY1)
+        self.drawarearecord = RecordGraph(self.record_graph_vbox, self.window1, self.record_combovalue, self.record_combovalue2, self.btnShowLaps, self.tableConfigY1, pytrainer_main=self.pytrainer_main)
         self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox, self.window1, self.heartrate_vbox2, pytrainer_main=self.pytrainer_main)
         #self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
         self.day_vbox.hide()
