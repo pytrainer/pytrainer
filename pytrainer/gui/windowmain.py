@@ -445,8 +445,11 @@ class Main(SimpleGladeApp):
                     data = activity.time_data
                 else:
                     print "x axis is unknown"
+                #Sort data
+                keys = data.keys()
+                keys.sort()
                 #Populate Y axis data
-                for graphdata in data:
+                for graphdata in keys:
                     #First Y axis...
                     #Create button
                     y1button = gtk.CheckButton(label=data[graphdata].title)
