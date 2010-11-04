@@ -199,6 +199,7 @@ class Activity:
 			self.speed_unit = _("km/h")
 			self.pace_unit = _("min/km")
 			self.height_unit = _("m")
+		self.units = { 'distance': self.distance_unit, 'average': self.speed_unit, 'upositive': self.height_unit, 'unegative': self.height_unit, 'maxspeed': self.speed_unit, 'pace': self.pace_unit, 'maxpace': self.pace_unit }
 
 	def _init_from_gpx_file(self):
 		'''
@@ -492,6 +493,25 @@ class Activity:
 			result = 0
 		return result
 
+	def get_value_f(self, param, format=None, with_units=False):
+		''' Function to return a value formated as a string
+			- takes into account US/metric
+			- also appends units if required
+		'''		
+		value = self.get_value(param)
+		if not value:
+			#Return blank string if value is None or 0
+			return ""
+		if format is not None:
+			result = format % value
+		else:
+			result = str(value)
+		if with_units:
+			if param in self.units:
+				result += self.units[param]
+		#print "activity: 509", result
+		return result
+		
 	def get_value(self, param):
 		''' Function to get the value of various params in this activity instance
 			Automatically returns values converted to imperial if needed
@@ -531,8 +551,19 @@ class Activity:
 				return self.pace_from_float(pacekm2miles(self.pace))
 			else:
 				return self.pace_from_float(self.pace)
+		elif param == 'calories':
+			return self.calories
+		elif param == 'time':
+			if not self.time:
+				return ""
+			_hour,_min,_sec=self.pytrainer_main.date.second2time(self.time)
+			if _hour == 0:
+				return "%02d:%02d" % (_min, _sec)
+			else:
+				return "%0d:%02d:%02d" % (_hour, _min, _sec)
 		else:
 			print "Unable to provide value for unknown parameter (%s) for activity" % param
+			return None
 
 	def set_value(self, param, value):
 		''' Function to set the value of various params in this activity instance
@@ -592,6 +623,8 @@ class Activity:
 	def pace_from_float(self, value):
 		'''Helper to generate mm:ss from float representation mm.ss (or mm,ss?)'''
 		#Check that value supplied is a float
+		if not value:
+			return ""
 		try:
 			_value = "%0.2f" % float(value)
 		except ValueError:
