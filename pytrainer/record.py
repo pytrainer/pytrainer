@@ -28,12 +28,14 @@ from lib.ddbb import DDBB
 from lib.xmlUtils import XMLParser
 from lib.date import Date
 from lib.gpx import Gpx
+from pytrainer.equipment import EquipmentService
 
 class Record:
 	def __init__(self, data_path = None, parent = None):
 		logging.debug('>>')
 		self.parent = parent
 		self.pytrainer_main = parent
+		self._equipment_service = EquipmentService(self.pytrainer_main.ddbb)
 		self.data_path = data_path
 		logging.debug('setting date...')
 		self.date = Date()
@@ -41,14 +43,14 @@ class Record:
 
 	def newRecord(self, list_sport, date, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None):
 		logging.debug('>>')
-		self.recordwindow = WindowRecord(self.data_path, list_sport,self, date, title, distance, time, upositive, unegative, bpm, calories, comment)
+		self.recordwindow = WindowRecord(self._equipment_service, self.data_path, list_sport,self, date, title, distance, time, upositive, unegative, bpm, calories, comment)
 		self.recordwindow.run()
 		logging.debug('<<')
 
 	def newMultiRecord(self, activities, list_sport):
 		logging.debug('>>')
 		#activities (activity_id, start_time, distance, duration, sport, gpx_file)
-		self.recordwindow = WindowRecord(self.data_path, list_sport, parent=self, windowTitle="Modify details before importing")
+		self.recordwindow = WindowRecord(self._equipment_service, self._equipment_service, self.data_path, list_sport, parent=self, windowTitle="Modify details before importing")
 		self.recordwindow.populateMultiWindow(activities)
 		self.recordwindow.run()
 		return self.recordwindow.getActivityData()
@@ -57,7 +59,8 @@ class Record:
 	def editRecord(self,id_record,list_sport):
 		logging.debug('>>')
 		activity = self.pytrainer_main.activitypool.get_activity(id_record)
-		self.recordwindow = WindowRecord(self.data_path, list_sport, self, None, windowTitle=_("Edit Entry"))
+		record_equipment = self.get_record_equipment(id_record)
+		self.recordwindow = WindowRecord(self._equipment_service, self.data_path, list_sport, self, None, windowTitle=_("Edit Entry"), equipment=record_equipment)
 		self.recordwindow.setValuesFromActivity(activity)
 		'''
 		record = self.pytrainer_main.ddbb.select("records", "id_record, date, sport, distance, time, beats, average, calories, comments, gpslog, title, upositive, unegative, maxspeed, maxpace, pace, maxbeats, date_time_utc, date_time_local", "id_record=\"%s\"" %id_record)
@@ -174,7 +177,7 @@ class Record:
 		logging.debug('<<')
 		return keys,values
 
-	def insertRecord(self, list_options, laps=None):
+	def insertRecord(self, list_options, laps=None, equipment=None):
 		logging.debug('>>')
 		#Create entry for activity in records table
 		if list_options is None:
@@ -192,6 +195,9 @@ class Record:
 				lap_keys = ", ".join(map(str, lap.keys()))
 				lap_values = lap.values()
 				self.insertLaps(lap_keys,lap.values())
+		if equipment is not None:
+			for equipment_id in equipment:
+				self._insert_record_equipment(id_record, equipment_id)
 		gpxOrig = list_options["rcd_gpxfile"]
 		if os.path.isfile(gpxOrig):
 			gpxDest = self.pytrainer_main.profile.gpxdir
@@ -288,7 +294,7 @@ class Record:
 		logging.debug('<<')
 		return summaryRecord, laps
 
-	def updateRecord(self, list_options, id_record):
+	def updateRecord(self, list_options, id_record, equipment=None):
 		logging.debug('>>')
 		#Remove activity from pool so data is updated
 		self.pytrainer_main.activitypool.remove_activity(id_record)
@@ -303,6 +309,8 @@ class Record:
 				logging.debug('updating bbdd') #ein?
 		cells,values = self._formatRecord(list_options)
 		self.pytrainer_main.ddbb.update("records",cells,values," id_record=%d" %int(id_record))
+		if equipment is not None:
+			self._update_record_equipment(id_record, equipment)
 		self.pytrainer_main.refreshListView()
 		logging.debug('<<')
 
@@ -363,6 +371,23 @@ class Record:
 		logging.debug('--')
 		logging.debug("Adding lap information: " + ", ".join(map(str, values)))
 		self.pytrainer_main.ddbb.insert("laps",cells,values)
+		
+	def _insert_record_equipment(self, record_id, equipment_id):
+		self.pytrainer_main.ddbb.insert("record_equipment", "record_id, equipment_id", [record_id, equipment_id])
+		
+	def _update_record_equipment(self, record_id, equipment_ids):
+		self.pytrainer_main.ddbb.delete("record_equipment", "record_id={0}".format(record_id))
+		for id in equipment_ids:
+			self._insert_record_equipment(record_id, id)
+			
+	def get_record_equipment(self, record_id):
+		record_equipment = []
+		results = self.pytrainer_main.ddbb.select("record_equipment", "equipment_id", "record_id={0}".format(record_id))
+		for row in results:
+			id = row[0]
+			equipment_item = self._equipment_service.get_equipment_item(id)
+			record_equipment.append(equipment_item)
+		return record_equipment
 
 	def getrecordPeriod(self,date_ini, date_end, sport=None):
 		#TODO This is essentially the same as getrecordPeriodSport (except date ranges) - need to look at merging the two
@@ -532,7 +557,7 @@ class Record:
 	def newGpxRecord(self,gpxfile,list_sport): #TODO Not used?
 		logging.debug('>>')
 		logging.debug("opening a new window record "+self.data_path+'|'+gpxfile+'|'+str(list_sport))
-		self.recordwindow = WindowRecord(self.data_path, list_sport,self, None)
+		self.recordwindow = WindowRecord(self._equipment_service, self.data_path, list_sport,self, None)
 		logging.debug('setting text in window '+ gpxfile)
 		self.recordwindow.rcd_gpxfile.set_text(gpxfile)
 		logging.debug('retrieving data from gpx file')

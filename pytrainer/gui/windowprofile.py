@@ -18,6 +18,8 @@
 
 from SimpleGladeApp import SimpleGladeApp
 from windowcalendar import WindowCalendar
+from pytrainer.equipment import EquipmentService
+from pytrainer.gui.equipment import EquipmentUi
 import gtk
 import gobject
 import logging
@@ -57,7 +59,12 @@ class WindowProfile(SimpleGladeApp):
         for column_index, column_name in enumerate(column_names):
             column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
             column.set_resizable(True)
-            self.sportTreeView.append_column(column)               
+            self.sportTreeView.append_column(column)
+
+        #initialise equipment tab:
+        equipment_service = EquipmentService(self.pytrainer_main.ddbb)
+        equipment_ui = EquipmentUi(self.data_path + "/glade", equipment_service)
+        self.equipment_container.add(equipment_ui)            
         
     def setValues(self,list_options):
         for i in self.conf_options.keys():
@@ -172,7 +179,7 @@ class WindowProfile(SimpleGladeApp):
                 self.sportTreeView.set_model(store)
                 #self.sportlistbutton.hide()
                 self.sportlist.show()
-        elif frame == 4: #Startup Parameters page selected
+        elif frame == 5: #Startup Parameters page selected
             self.init_params_tab()
     
     def init_params_tab(self):

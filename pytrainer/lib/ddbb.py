@@ -81,6 +81,20 @@ tablesList = {  "records":{     "id_record":"integer primary key autoincrement",
                                         "restinghr": "integer",
                                         "maxhr": "integer",
                                         },
+                        "equipment": {
+                                      "id": "integer primary key autoincrement" ,
+                                      "description": "varchar (200)",
+                                      "active": "boolean",
+                                      "purchase_price": "int",
+                                      "life_expectancy": "int",
+                                      "prior_usage": "int",
+                                      "notes": "text",
+                                      },
+                        "record_equipment": {
+                                     "id": "integer primary key autoincrement",
+                                     "record_id": "int",
+                                     "equipment_id": "int",
+                                     }
                         }
 tablesDefaultData = {  "sports": [({ "name":"Mountain Bike" } ), ( {"name": "Bike"}), ({"name": "Run"}) ]}
 

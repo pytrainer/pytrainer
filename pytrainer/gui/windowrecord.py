@@ -24,11 +24,12 @@ from windowcalendar import WindowCalendar
 
 from filechooser import FileChooser
 from pytrainer.lib.date import Date
+import pytrainer.record
 import dateutil.parser
 from dateutil.tz import * # for tzutc()
 
 class WindowRecord(SimpleGladeApp):
-    def __init__(self, data_path = None, listSport = None, parent = None, date = None, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None, windowTitle=None):
+    def __init__(self, equipment_service, data_path = None, listSport = None, parent = None, date = None, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None, windowTitle=None, equipment=[]):
         logging.debug(">>")
         self.parent = parent
         self.pytrainer_main = parent.pytrainer_main
@@ -84,8 +85,43 @@ class WindowRecord(SimpleGladeApp):
             self.rcd_unegative.set_text(unegative)
         if calories != None:
             self.rcd_calories.set_text(calories)
+        self._init_equipment(equipment, equipment_service)
         logging.debug("<<")
-            
+        
+    def _init_equipment(self, selected_equipment, equipment_service):
+        equipment = {}
+        for item in equipment_service.get_active_equipment():
+            equipment[item] = False
+        for item in selected_equipment:
+            equipment[item] = True
+        list_store = gtk.ListStore(int, str, bool)
+        for item in equipment:
+            list_store.append((item.id, item.description, equipment[item]))
+        tree_view = self.treeviewRecordEquipment
+        cell_renderer = gtk.CellRendererToggle()
+        cell_renderer.connect('toggled', self._equipment_selection_toggled)
+        tree_view.append_column(gtk.TreeViewColumn("Selected", cell_renderer, active=2))
+        tree_view.append_column(gtk.TreeViewColumn("Equipment Item", gtk.CellRendererText(), text=1))
+        tree_view.set_model(list_store)
+    
+    def _equipment_selection_toggled(self, widget, path):
+        list_store = self.treeviewRecordEquipment.get_model()
+        iter = list_store.get_iter(path)
+        value = list_store.get_value(iter, 2)
+        list_store.set(iter, 2, not value)
+    
+    def _get_selected_equipment_ids(self):
+        selected_ids = []
+        list_store = self.treeviewRecordEquipment.get_model()
+        iter = list_store.get_iter_first()
+        while iter is not None:
+            id = list_store.get_value(iter, 0)
+            selected = list_store.get_value(iter, 2)
+            if selected:
+                selected_ids.append(id)
+            iter = list_store.iter_next(iter)
+        return selected_ids
+    
     def getActivityData(self):
         return self.activity_data
         
@@ -217,6 +253,7 @@ class WindowRecord(SimpleGladeApp):
             start,end = buffer.get_bounds()
             comment = buffer.get_text(start,end, True)
             list_options["rcd_comments"] = comment.replace("\"","'")
+            selected_equipment_ids = self._get_selected_equipment_ids()
 
             if self.mode == "newrecord":
                 logging.debug('Track data: '+str(list_options))
@@ -235,9 +272,9 @@ class WindowRecord(SimpleGladeApp):
                     utc_date = date.astimezone(tzutc()).strftime("%Y-%m-%dT%H:%M:%SZ")
                     list_options["date_time_utc"] = utc_date
                     list_options["date_time_local"] = local_date
-                    self.parent.insertRecord(list_options)
+                    self.parent.insertRecord(list_options, equipment=selected_equipment_ids)
             elif self.mode == "editrecord":
-                self.parent.updateRecord(list_options, self.id_record)
+                self.parent.updateRecord(list_options, self.id_record, equipment=selected_equipment_ids)
         logging.debug("<<")
         self.close_window()
     

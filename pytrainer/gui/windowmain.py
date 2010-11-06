@@ -28,7 +28,7 @@ from SimpleGladeApp import *
 from popupmenu import PopupMenu
 from aboutdialog import About
 
-from pytrainer.record import Record
+import pytrainer.record
 from pytrainer.lib.date import Date
 from pytrainer.lib.xmlUtils import XMLParser
 #from pytrainer.lib.gpx import Gpx
@@ -44,6 +44,7 @@ from pytrainer.yeargraph import YearGraph
 from pytrainer.heartrategraph import HeartRateGraph
 from pytrainer.extensions.mapviewer import MapViewer
 from pytrainer.extensions.waypointeditor import WaypointEditor
+from pytrainer.equipment import EquipmentService
 
 from pytrainer.gui.drawGraph import DrawGraph
 from pytrainer.gui.windowcalendar import WindowCalendar
@@ -334,6 +335,12 @@ class Main(SimpleGladeApp):
             buffer = self.record_comments.get_buffer()
             start,end = buffer.get_bounds()
             buffer.set_text(activity.comments)
+            equipment = self.parent.record.get_record_equipment(activity.id)
+            if len(equipment) > 0:
+                equipment_text = ", ".join(map(lambda(item): item.description, equipment))
+                self.label_record_equipment.set_text(equipment_text)
+            else:
+                self.label_record_equipment.set_markup("<i>None</i>")
 
         else:
             self.recordview.set_current_page(0)
