@@ -31,7 +31,7 @@ class EquipmentStore(gtk.ListStore):
         self.append(self._create_tuple(equipment))
         
     def _create_tuple(self, equipment):
-        usage = self._equipment_service.get_equipment_usage(equipment)
+        usage = self._equipment_service.get_equipment_usage(equipment) + equipment.prior_usage
         return (equipment.id,
                 equipment.description,
                 self._calculate_usage_percent(usage, equipment.life_expectancy),
@@ -113,6 +113,7 @@ class EquipmentUi(gtk.HBox):
     def clear_add_equipment_fields(self):
         self._builder.get_object("entryEquipmentAddDescription").set_text("") 
         self._builder.get_object("entryEquipmentAddLifeExpectancy").set_text("0")
+        self._builder.get_object("entryEquipmentAddPriorUsage").set_text("0")
         self._builder.get_object("checkbuttonEquipmentAddActive").set_active(True)
         self._builder.get_object("textviewEquipmentAddNotes").get_buffer().set_text("")
         
@@ -140,6 +141,7 @@ class EquipmentUi(gtk.HBox):
         #FIXME input validation for numeric fields
         description = self._builder.get_object("entryEquipmentAddDescription").get_text()
         life_expectancy = self._builder.get_object("entryEquipmentAddLifeExpectancy").get_text()
+        prior_usage = self._builder.get_object("entryEquipmentAddPriorUsage").get_text()
         active = self._builder.get_object("checkbuttonEquipmentAddActive").get_active()
         notes_buffer = self._builder.get_object("textviewEquipmentAddNotes").get_buffer()
         notes = notes_buffer.get_text(notes_buffer.get_start_iter(), notes_buffer.get_end_iter())
@@ -147,6 +149,7 @@ class EquipmentUi(gtk.HBox):
         new_equipment.description = unicode(description)
         new_equipment.active = active
         new_equipment.life_expectancy = life_expectancy
+        new_equipment.prior_usage = prior_usage
         new_equipment.notes = unicode(notes)
         self._equipment_store.add_equipment(new_equipment)
         self.show_page_equipment_list()
@@ -155,6 +158,7 @@ class EquipmentUi(gtk.HBox):
         item = self._get_selected_equipment_item()
         self._builder.get_object("entryEquipmentEditDescription").set_text(item.description)
         self._builder.get_object("entryEquipmentEditLifeExpectancy").set_text(str(item.life_expectancy))
+        self._builder.get_object("entryEquipmentEditPriorUsage").set_text(str(item.prior_usage))
         self._builder.get_object("checkbuttonEquipmentEditActive").set_active(item.active)
         if item.notes != None:
             self._builder.get_object("textviewEquipmentEditNotes").get_buffer().set_text(item.notes)
@@ -168,6 +172,7 @@ class EquipmentUi(gtk.HBox):
         description_text = self._builder.get_object("entryEquipmentEditDescription").get_text()
         item.description = unicode(description_text)
         item.life_expectancy = self._builder.get_object("entryEquipmentEditLifeExpectancy").get_text()
+        item.prior_usage = self._builder.get_object("entryEquipmentEditPriorUsage").get_text()
         item.active = self._builder.get_object("checkbuttonEquipmentEditActive").get_active()
         notes_buffer = self._builder.get_object("textviewEquipmentEditNotes").get_buffer()
         notes_text = notes_buffer.get_text(notes_buffer.get_start_iter(), notes_buffer.get_end_iter())

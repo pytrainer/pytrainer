@@ -27,6 +27,7 @@ class Equipment(object):
        self.description = u""
        self.active = True
        self.life_expectancy = 0
+       self.prior_usage = 0
        self.notes = u""
        
    def _get_id(self):
@@ -64,6 +65,14 @@ class Equipment(object):
        self._life_expectancy = int(life_expectancy)
        
    life_expectancy = property(_get_life_expectancy, _set_life_expectancy)
+       
+   def _get_prior_usage(self):
+       return self._prior_usage
+   
+   def _set_prior_usage(self, prior_usage):
+       self._prior_usage = int(prior_usage)
+       
+   prior_usage = property(_get_prior_usage, _set_prior_usage)
    
    def _get_notes(self):
        return self._notes
@@ -89,7 +98,7 @@ class Equipment(object):
 
 _TABLE_NAME = "equipment"
    
-_UPDATE_COLUMNS = "description,active,life_expectancy,notes"
+_UPDATE_COLUMNS = "description,active,life_expectancy,prior_usage,notes"
 
 _ALL_COLUMNS = "id," + _UPDATE_COLUMNS
        
@@ -97,6 +106,7 @@ def _create_row(equipment):
    return [equipment.description,
            1 if equipment.active else 0,
            equipment.life_expectancy,
+           equipment.prior_usage,
            equipment.notes]
 
 class EquipmentServiceException(Exception):
@@ -143,11 +153,12 @@ class EquipmentService(object):
        
    def _create_equipment_item(self, row):
        equipment = Equipment()
-       (id, description, active, life_expectancy, notes) = row
+       (id, description, active, life_expectancy, prior_usage, notes) = row
        equipment.id = id
        equipment.description = description
        equipment.active = bool(active)
        equipment.life_expectancy = life_expectancy
+       equipment.prior_usage = prior_usage
        equipment.notes = notes
        return equipment
        

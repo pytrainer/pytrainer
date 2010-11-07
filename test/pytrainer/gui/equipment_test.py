@@ -56,6 +56,17 @@ class EquipmentStoreTest(TestCase):
         iter = equipment_store.get_iter_first()
         self.assertEquals(50, equipment_store.get_value(iter, 2))
         
+    def test_get_item_usage_percent_prior_usage(self):
+        equipment = Equipment()
+        equipment.id = 1
+        equipment.life_expectancy = 200
+        equipment.prior_usage = 50
+        self.mock_equipment_service.get_all_equipment.return_value = [equipment]
+        self.mock_equipment_service.get_equipment_usage.return_value = 100
+        equipment_store = EquipmentStore(self.mock_equipment_service)
+        iter = equipment_store.get_iter_first()
+        self.assertEquals(75, equipment_store.get_value(iter, 2))
+        
     def test_get_item_usage_percent_zero_usage(self):
         equipment = Equipment()
         equipment.id = 1
@@ -85,6 +96,17 @@ class EquipmentStoreTest(TestCase):
         equipment_store = EquipmentStore(self.mock_equipment_service)
         iter = equipment_store.get_iter_first()
         self.assertEquals("101 / 200", equipment_store.get_value(iter, 3))
+        
+    def test_get_item_usage_text_prior_usage(self):
+        equipment = Equipment()
+        equipment.id = 1
+        equipment.life_expectancy = 200
+        equipment.prior_usage = 50
+        self.mock_equipment_service.get_all_equipment.return_value = [equipment]
+        self.mock_equipment_service.get_equipment_usage.return_value = 100
+        equipment_store = EquipmentStore(self.mock_equipment_service)
+        iter = equipment_store.get_iter_first()
+        self.assertEquals("150 / 200", equipment_store.get_value(iter, 3))
         
     def test_get_item_usage_text_zero_usage(self):
         equipment = Equipment()

@@ -120,6 +120,29 @@ class EquipmentTest(unittest.TestCase):
             pass
         else:
             self.fail("Should not be able to set life expectancy to non numeric value.")
+    
+    def test_prior_usage_defaults_to_zero(self):
+        equipment = Equipment()
+        self.assertEqual(0, equipment.prior_usage)
+            
+    def test_prior_usage_set_to_integer(self):
+        equipment = Equipment()
+        equipment.prior_usage = 2
+        self.assertEquals(2, equipment.prior_usage)
+            
+    def test_prior_usage_set_to_numeric_string(self):
+        equipment = Equipment()
+        equipment.prior_usage = "3"
+        self.assertEquals(3, equipment.prior_usage)
+
+    def test_prior_usage_set_to_non_numeric_string(self):
+        equipment = Equipment()
+        try:
+            equipment.prior_usage = "test"
+        except(ValueError):
+            pass
+        else:
+            self.fail("Should not be able to set life expectancy to non numeric value.")
             
     def test_notes_defaults_to_empty_string(self):
         equipment = Equipment()
@@ -177,12 +200,13 @@ class EquipmentServiceTest(unittest.TestCase):
         pass
     
     def test_get_equipment_item(self):
-        self.mock_ddbb.select.return_value = [(1, u"Test Description", True, 500, u"Test notes.")]
+        self.mock_ddbb.select.return_value = [(1, u"Test Description", True, 500, 200, u"Test notes.")]
         item = self.equipment_service.get_equipment_item(1)
         self.assertEquals(1, item.id)
         self.assertEquals("Test Description", item.description)
         self.assertTrue(item.active)
         self.assertEquals(500, item.life_expectancy)
+        self.assertEquals(200, item.prior_usage)
         self.assertEquals("Test notes.", item.notes)
     
     def test_get_equipment_item_non_existant(self):
@@ -191,20 +215,22 @@ class EquipmentServiceTest(unittest.TestCase):
         self.assertEquals(None, item)
         
     def test_get_all_equipment(self):
-        self.mock_ddbb.select.return_value = [(1, u"Test item 1", True, 500, u"Test notes 1."),
-                                              (2, u"Test item 2", False, 600, u"Test notes 2.")]
+        self.mock_ddbb.select.return_value = [(1, u"Test item 1", True, 500, 200, u"Test notes 1."),
+                                              (2, u"Test item 2", False, 600, 300, u"Test notes 2.")]
         items = self.equipment_service.get_all_equipment()
         item = items[0]
         self.assertEquals(1, item.id)
         self.assertEquals("Test item 1", item.description)
         self.assertTrue(item.active)
         self.assertEquals(500, item.life_expectancy)
+        self.assertEquals(200, item.prior_usage)
         self.assertEquals("Test notes 1.", item.notes)
         item = items[1]
         self.assertEquals(2, item.id)
         self.assertEquals("Test item 2", item.description)
         self.assertFalse(item.active)
         self.assertEquals(600, item.life_expectancy)
+        self.assertEquals(300, item.prior_usage)
         self.assertEquals("Test notes 2.", item.notes)
         
     def test_get_all_equipment_non_existant(self):
@@ -213,26 +239,47 @@ class EquipmentServiceTest(unittest.TestCase):
         self.assertEquals([], items)
         
     def test_get_active_equipment(self):
-        self.mock_ddbb.select.return_value = [(1, u"Test item 1", True, 500, u"Test notes 1."),
-                                              (2, u"Test item 2", True, 600, u"Test notes 2.")]
+        self.mock_ddbb.select.return_value = [(1, u"Test item 1", True, 500, 200, u"Test notes 1."),
+                                              (2, u"Test item 2", True, 600, 300, u"Test notes 2.")]
         items = self.equipment_service.get_active_equipment()
         item = items[0]
         self.assertEquals(1, item.id)
         self.assertEquals("Test item 1", item.description)
         self.assertTrue(item.active)
         self.assertEquals(500, item.life_expectancy)
+        self.assertEquals(200, item.prior_usage)
         self.assertEquals("Test notes 1.", item.notes)
         item = items[1]
         self.assertEquals(2, item.id)
         self.assertEquals("Test item 2", item.description)
         self.assertTrue(item.active)
         self.assertEquals(600, item.life_expectancy)
+        self.assertEquals(300, item.prior_usage)
         self.assertEquals("Test notes 2.", item.notes)
         
     def test_get_active_equipment_non_existant(self):
         self.mock_ddbb.select.return_value = []
         items = self.equipment_service.get_active_equipment()
         self.assertEquals([], items)
+        
+    def test_store_equipment(self):
+        equipment = Equipment()
+        equipment.description = u"test description"
+        equipment_ids = []
+        def mock_select(table, columns, where):
+            if columns == "id":
+                return equipment_ids
+            else:
+                return [(2, u"", 1, 0, 0,u"")]
+        def update_equipment_ids(*args):
+            equipment_ids.append([1])
+        self.mock_ddbb.select = mock.Mock(wraps=mock_select)
+        self.mock_ddbb.insert.side_effect = update_equipment_ids
+        stored_equipment = self.equipment_service.store_equipment(equipment)
+        self.mock_ddbb.insert.assert_called_with("equipment", 
+                                                 "description,active,life_expectancy,prior_usage,notes", 
+                                                 ["test description", 1, 0, 0,"" ])
+        self.assertEquals(2, stored_equipment.id)
         
     def test_store_equipment_duplicate_description(self):
         self.mock_ddbb.select.return_value = [(1,)]
@@ -243,6 +290,18 @@ class EquipmentServiceTest(unittest.TestCase):
             self.fail("Should not be able to store new item with non-unique description.")
         except(EquipmentServiceException):
             pass
+        
+    def test_update_equipment(self):
+        equipment = Equipment()
+        equipment.id = 1
+        equipment.description = u"test description"
+        self.mock_ddbb.select.return_value =  [(2, u"", 1, 0, 0,u"")]
+        stored_equipment = self.equipment_service.store_equipment(equipment)
+        self.mock_ddbb.update.assert_called_with("equipment", 
+                                                 "description,active,life_expectancy,prior_usage,notes", 
+                                                 ["test description", 1, 0, 0,"" ], 
+                                                 "id = 1")
+        self.assertEquals(2, stored_equipment.id)
         
     def test_update_equipment_non_existant(self):
         self.mock_ddbb.select.return_value = []
