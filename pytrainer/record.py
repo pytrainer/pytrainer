@@ -487,7 +487,7 @@ class Record:
 		if not id_sport:
 			records = self.pytrainer_main.ddbb.select("records","date","date LIKE '"+year+"-"+month+"-%'")
 		else:
-			records = self.ddbb.select("records","date","date LIKE \"%s-%s-%%\" and sport=\"%s\"" %(year,month,id_sport))
+			records = self.pytrainer_main.ddbb.select("records","date","date LIKE \"%s-%s-%%\" and sport=\"%s\"" %(year,month,id_sport))
 		logging.debug('Found '+str(len(records))+' entries')
 		day_list = []
 		for i in records:

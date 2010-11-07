@@ -1410,6 +1410,7 @@ class Main(SimpleGladeApp):
         logging.debug("--")
         if self.sportlist.get_active() != self.activeSport:
             self.activeSport = self.sportlist.get_active()
+            self.parent.refreshListRecords()
             self.parent.refreshGraphView(self.selected_view)
         else:
             logging.debug("on_sportlist_changed called with no change")
