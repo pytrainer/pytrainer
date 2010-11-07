@@ -384,8 +384,8 @@ class DrawArea:
         logging.debug("Figure: %s" % str(figure) )
         axis = figure.add_subplot(111)
 
-        labels = ["rest"]
-        colors = ["#ffffff"]
+        labels = []
+        colors = []
         frac0 = 0
         frac1 = 0
         frac2 = 0
@@ -393,25 +393,69 @@ class DrawArea:
         frac4 = 0
         frac5 = 0
         for zone in zones:
-            labels.append(zone[3])
-            colors.append(zone[2])
+            labels.insert(0,zone[3])
+            colors.insert(0,zone[2])
+    
+        labels.insert(0,_("rest"))
+        colors.insert(0,"#ffffff")
     
         for value in yvalues[0]:
-            if value < zones[4][0]:
+            if value <= zones[4][0]:
                 frac0+=1
-            elif value > zones[4][0] and value < zones[4][1]:
+            elif value > zones[4][0] and value <= zones[4][1]:
                 frac1+=1
-            elif value > zones[3][0] and value < zones[3][1]:
+            elif value > zones[3][0] and value <= zones[3][1]:
                 frac2+=1
-            elif value > zones[2][0] and value < zones[2][1]:
+            elif value > zones[2][0] and value <= zones[2][1]:
                 frac3+=1
-            elif value > zones[1][0] and value < zones[1][1]:
+            elif value > zones[1][0] and value <= zones[1][1]:
                 frac4+=1
-            elif value > zones[0][0] and value < zones[0][1]:
+            elif value > zones[0][0] and value <= zones[0][1]:
                 frac5+=1
             
-        fracs = [frac0,frac1,frac2,frac3,frac4, frac5]
-        explode=(0, 0, 0, 0,0,0)
+        fracs = []
+        explode=[]
+        if frac5 == 0:
+            labels.pop(5)
+            colors.pop(5)
+        else:
+            fracs.insert(0, frac5)
+            explode.insert(0, 0)
+
+        if frac4 == 0:
+            labels.pop(4)
+            colors.pop(4)
+        else:
+            fracs.insert(0, frac4)
+            explode.insert(0, 0)
+            
+        if frac3 == 0:
+            labels.pop(3)
+            colors.pop(3)
+        else:
+            fracs.insert(0, frac3)
+            explode.insert(0, 0)
+            
+        if frac2 == 0:
+            labels.pop(2)
+            colors.pop(2)
+        else:
+            fracs.insert(0, frac2)
+            explode.insert(0, 0)
+            
+        if frac1 == 0:
+            labels.pop(1)
+            colors.pop(1)
+        else:
+            fracs.insert(0, frac1)
+            explode.insert(0, 0)
+            
+        if frac0 == 0:
+            labels.pop(0)
+            colors.pop(0)
+        else:
+            fracs.insert(0, frac0)
+            explode.insert(0, 0)
         axis.pie(fracs, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True)
 
         canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
