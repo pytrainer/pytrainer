@@ -24,6 +24,7 @@ from windowcalendar import WindowCalendar
 
 from filechooser import FileChooser
 from pytrainer.lib.date import Date
+from pytrainer.lib.unitsconversor import *
 import pytrainer.record
 import dateutil.parser
 from dateutil.tz import * # for tzutc()
@@ -33,6 +34,8 @@ class WindowRecord(SimpleGladeApp):
         logging.debug(">>")
         self.parent = parent
         self.pytrainer_main = parent.pytrainer_main
+        self.us = self.pytrainer_main.profile.prf_us_system
+        logging.debug("Using US system: "+ str(self.us))
         self.data_path = data_path
         glade_path="glade/newrecord.glade"
         root = "newrecord"
@@ -74,7 +77,8 @@ class WindowRecord(SimpleGladeApp):
         if title != None:
             self.rcd_title.set_text(title)
         if distance != None:
-            self.rcd_distance.set_text(distance)
+            #self.rcd_distance.set_text(distance)
+            myset_text(rcd_distance, 'distance', distance, us=self.us, round=2)
         if time != None:
             self.setTime(time)
         if distance!=None and time!=None:
@@ -85,6 +89,13 @@ class WindowRecord(SimpleGladeApp):
             self.rcd_unegative.set_text(unegative)
         if calories != None:
             self.rcd_calories.set_text(calories)
+        #populate labels with units
+        # test only
+        if self.us:
+            self.label8.set_text('Distance (mi)')
+        else:
+            self.label8.set_text('Distance (km)')
+        
         self._init_equipment(equipment, equipment_service)
         logging.debug("<<")
         
@@ -324,7 +335,8 @@ class WindowRecord(SimpleGladeApp):
         self.rcd_min.set_value(m)
         self.rcd_second.set_value(s)
         self.rcd_date.set_text(activity.date)
-        self.rcd_distance.set_text("%.2f"%activity.distance)
+        #self.rcd_distance.set_text("%.2f"%activity.distance)
+        myset_text(self.rcd_distance, 'distance', activity.distance, us=self.us, round=2)
         self.rcd_average.set_text("%.2f"%activity.average)
         self.rcd_calories.set_text("%s"%activity.calories)
         self.rcd_beats.set_text("%s"%activity.beats)
@@ -643,7 +655,8 @@ class WindowRecord(SimpleGladeApp):
             pass
     
     def set_distance(self,distance):
-        self.rcd_distance.set_text("%0.2f" %distance)
+        #self.rcd_distance.set_text("%0.2f" %distance)
+        myset_text(rcd_distance, 'distance', distance, us=self.us, round=2)
             
     def set_maxspeed(self,vel):
         self.rcd_maxvel.set_text("%0.2f" %vel)
