@@ -315,10 +315,13 @@ class Activity:
 		for lap in self.laps:
 			time = float( lap['elapsed_time'].decode('utf-8') ) # time in sql is a unicode string
 			dist = lap['distance']/1000 #distance in km
-			pace = time/(60*dist) #min/km
+			try:
+				pace = time/(60*dist) #min/km
+			except ZeroDivisionError:
+				pace = 0.0
 			if self.pace_limit is not None and pace > self.pace_limit:
 				logging.debug("Pace (%s) exceeds limit (%s). Setting to 0" % (str(pace), str(self.pace_limit)))
-				pace = 0
+				pace = 0.0
 			logging.debug("Time: %f, Dist: %f, Pace: %f" % (time, dist, pace) )
 			self.lap_time.addBars(x=time, y=10)
 			if self.us_system:
@@ -497,7 +500,7 @@ class Activity:
 		''' Function to return a value formated as a string
 			- takes into account US/metric
 			- also appends units if required
-		'''		
+		'''
 		value = self.get_value(param)
 		if not value:
 			#Return blank string if value is None or 0
@@ -511,7 +514,7 @@ class Activity:
 				result += self.units[param]
 		#print "activity: 509", result
 		return result
-		
+
 	def get_value(self, param):
 		''' Function to get the value of various params in this activity instance
 			Automatically returns values converted to imperial if needed
