@@ -42,7 +42,7 @@ class EquipmentStore(gtk.ListStore):
         if life_expectancy == 0:
             return 0 
         else:
-            return 100.0 * usage / life_expectancy 
+            return min(100, 100.0 * usage / life_expectancy) 
         
     def add_equipment(self, equipment):
         added_equipment = self._equipment_service.store_equipment(equipment)

@@ -77,6 +77,17 @@ class EquipmentStoreTest(TestCase):
         iter = equipment_store.get_iter_first()
         self.assertEquals(0, equipment_store.get_value(iter, 2))
         
+    def test_get_item_usage_percent_usage_exceeds_life_expectancy(self):
+        equipment = Equipment()
+        equipment.id = 1
+        equipment.life_expectancy = 200
+        self.mock_equipment_service.get_all_equipment.return_value = [equipment]
+        self.mock_equipment_service.get_equipment_usage.return_value = 300
+        equipment_store = EquipmentStore(self.mock_equipment_service)
+        iter = equipment_store.get_iter_first()
+        self.assertEquals(100, equipment_store.get_value(iter, 2), "Progress bar cannot exceed 100%.")
+        
+        
     def test_get_item_usage_text(self):
         equipment = Equipment()
         equipment.id = 1
@@ -117,6 +128,16 @@ class EquipmentStoreTest(TestCase):
         equipment_store = EquipmentStore(self.mock_equipment_service)
         iter = equipment_store.get_iter_first()
         self.assertEquals("0 / 200", equipment_store.get_value(iter, 3))
+        
+    def test_get_item_usage_text_usage_exceeds_life_expectancy(self):
+        equipment = Equipment()
+        equipment.id = 1
+        equipment.life_expectancy = 200
+        self.mock_equipment_service.get_all_equipment.return_value = [equipment]
+        self.mock_equipment_service.get_equipment_usage.return_value = 300
+        equipment_store = EquipmentStore(self.mock_equipment_service)
+        iter = equipment_store.get_iter_first()
+        self.assertEquals("300 / 200", equipment_store.get_value(iter, 3))
         
     def test_get_item_active(self):
         equipment = Equipment()
