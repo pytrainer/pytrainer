@@ -752,6 +752,7 @@ class WindowImportdata(SimpleGladeApp):
         self.updateStatusbar(self.statusbarCSVImport, "Got file: " + filename)
         #Enable buttons
         self.buttonCSVProcess.set_sensitive(True)
+        self.buttonCSVImport.set_sensitive(True)
 
     def on_buttonCSVProcess_clicked(self, widget):
         #Get selected file
@@ -770,9 +771,29 @@ class WindowImportdata(SimpleGladeApp):
 
         #Read as delimited file
         csvfile = open(filename, 'rb')
+        #See if file has header row
+        has_header = csv.Sniffer().has_header(csvfile.read(1024))
+        csvfile.seek(0)
         reader = csv.DictReader(csvfile, delimiter=delimiter)
+        #Read file to determine fields (must be a better way of doing this)
         for row in reader:
             pass
-        #print reader.fieldnames
+        #Build array of column names
+        if has_header:
+            #If the file has a header row, use the actual column names
+            columns = reader.fieldnames
+        else:
+            #Otherwise just label them with numbers
+            print len(reader.fieldnames)
+            columns = [_("Column %d") % x for x in range(0, len(reader.fieldnames))]
+        #print columns
+        
+        for column in columns:
+            self.cbCSVDate.append_text(column)
+            self.cbCSVDistance.append_text(column)
+            self.cbCSVDuration.append_text(column)
+        self.cbCSVDate.set_active(0)
+        self.cbCSVDistance.set_active(0)
+        self.cbCSVDuration.set_active(0)
 
 
