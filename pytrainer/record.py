@@ -395,7 +395,7 @@ class Record:
 		if not sport:
 			condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports" %(date_ini,date_end)
 		else:
-			condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports and sports.name=\"%s\"" %(date_ini,date_end, sport)
+			condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports and sports.id_sports=\"%s\"" %(date_ini,date_end, sport)
 
 		return self.pytrainer_main.ddbb.select(tables,"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats, sports.name", condition)
 
@@ -405,7 +405,7 @@ class Record:
 			condition = "date>\"%s\" and date<\"%s\"" %(date_ini,date_end)
 		else :
 			tables = "records,sports"
-			condition = "date>\"%s\" and date<\"%s\" and records.sport=sports.id_sports and sports.name=\"%s\"" %(date_ini,date_end,sport)
+			condition = "date>\"%s\" and date<\"%s\" and records.sport=sports.id_sports and sports.id_sports=\"%s\"" %(date_ini,date_end,sport)
 
 		return self.pytrainer_main.ddbb.select(tables,
 					"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats",
