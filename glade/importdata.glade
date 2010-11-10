@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <glade-interface>
   <!-- interface-requires gtk+ 2.16 -->
   <!-- interface-naming-policy toplevel-contextual -->
@@ -20,7 +20,6 @@
         <child>
           <widget class="GtkVBox" id="vboxImportFromDevice">
             <property name="visible">True</property>
-            <property name="orientation">vertical</property>
             <child>
               <widget class="GtkFrame" id="frameDeviceSelect">
                 <property name="visible">True</property>
@@ -80,7 +79,6 @@ Test 2</property>
                     <child>
                       <widget class="GtkVBox" id="vboxImportTools">
                         <property name="visible">True</property>
-                        <property name="orientation">vertical</property>
                         <child>
                           <placeholder/>
                         </child>
@@ -180,7 +178,6 @@ Test 2</property>
         <child>
           <widget class="GtkVBox" id="vboxImportFromFile">
             <property name="visible">True</property>
-            <property name="orientation">vertical</property>
             <child>
               <widget class="GtkFrame" id="frameSelectFile">
                 <property name="visible">True</property>
@@ -192,7 +189,6 @@ Test 2</property>
                     <child>
                       <widget class="GtkVBox" id="vboxImportfromFileSelectFiles">
                         <property name="visible">True</property>
-                        <property name="orientation">vertical</property>
                         <child>
                           <widget class="GtkScrolledWindow" id="scrolledwindowImportFiles">
                             <property name="visible">True</property>
@@ -401,11 +397,9 @@ Test 2</property>
         <child>
           <widget class="GtkVBox" id="vboxPluginsTab">
             <property name="visible">True</property>
-            <property name="orientation">vertical</property>
             <child>
               <widget class="GtkVBox" id="vboxPlugins">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
                 <child>
                   <placeholder/>
                 </child>
@@ -481,7 +475,6 @@ Test 2</property>
         <child>
           <widget class="GtkVBox" id="vboxOptions">
             <property name="visible">True</property>
-            <property name="orientation">vertical</property>
             <child>
               <widget class="GtkFrame" id="frameDefaultTab">
                 <property name="visible">True</property>
@@ -493,7 +486,6 @@ Test 2</property>
                     <child>
                       <widget class="GtkHBox" id="hboxDefaultTab">
                         <property name="visible">True</property>
-                        <property name="orientation">vertical</property>
                         <child>
                           <widget class="GtkRadioButton" id="radiobuttonTabGPSDevice">
                             <property name="label" translatable="yes">Import from GPS Device</property>
@@ -681,6 +673,192 @@ Test 2</property>
           </widget>
           <packing>
             <property name="position">3</property>
+            <property name="tab_fill">False</property>
+            <property name="type">tab</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkVBox" id="vboxCSVImport">
+            <property name="visible">True</property>
+            <child>
+              <widget class="GtkFrame" id="frameSelectFile1">
+                <property name="visible">True</property>
+                <property name="label_xalign">0</property>
+                <child>
+                  <widget class="GtkAlignment" id="alignment6">
+                    <property name="visible">True</property>
+                    <property name="left_padding">12</property>
+                    <child>
+                      <widget class="GtkFileChooserButton" id="filechooserCSVImport">
+                        <property name="visible">True</property>
+                        <signal name="file_set" handler="on_filechooserCSVImport_file_set"/>
+                      </widget>
+                    </child>
+                  </widget>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="labelSelectFileFrame1">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">&lt;b&gt;Select file to import from&lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
+                    <property name="single_line_mode">True</property>
+                  </widget>
+                  <packing>
+                    <property name="type">label_item</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="padding">5</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <widget class="GtkFrame" id="frameSelectFile2">
+                <property name="visible">True</property>
+                <property name="label_xalign">0</property>
+                <child>
+                  <widget class="GtkAlignment" id="alignment7">
+                    <property name="visible">True</property>
+                    <property name="left_padding">12</property>
+                    <child>
+                      <widget class="GtkHBox" id="hbox3">
+                        <property name="visible">True</property>
+                        <child>
+                          <widget class="GtkRadioButton" id="rbCSVTab">
+                            <property name="label" translatable="yes">Tab</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="active">True</property>
+                            <property name="draw_indicator">True</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="padding">5</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkRadioButton" id="rbCSVComma">
+                            <property name="label" translatable="yes">Comma</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="yalign">0.44999998807907104</property>
+                            <property name="active">True</property>
+                            <property name="draw_indicator">True</property>
+                            <property name="group">rbCSVTab</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="padding">5</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkRadioButton" id="rbCSVOther">
+                            <property name="label" translatable="yes">Other</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">False</property>
+                            <property name="active">True</property>
+                            <property name="draw_indicator">True</property>
+                            <property name="group">rbCSVTab</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkEntry" id="entryCSVOther">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="max_length">5</property>
+                            <property name="invisible_char">•</property>
+                            <property name="width_chars">5</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="position">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkLabel" id="labelSpace">
+                            <property name="visible">True</property>
+                          </widget>
+                          <packing>
+                            <property name="position">4</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <widget class="GtkButton" id="buttonCSVProcess">
+                            <property name="label" translatable="yes">Read File</property>
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="receives_default">True</property>
+                          </widget>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">False</property>
+                            <property name="position">5</property>
+                          </packing>
+                        </child>
+                      </widget>
+                    </child>
+                  </widget>
+                </child>
+                <child>
+                  <widget class="GtkLabel" id="labelCSVFileOptions">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">&lt;b&gt;File delimiter&lt;/b&gt;</property>
+                    <property name="use_markup">True</property>
+                    <property name="single_line_mode">True</property>
+                  </widget>
+                  <packing>
+                    <property name="type">label_item</property>
+                  </packing>
+                </child>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">False</property>
+                <property name="padding">5</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <widget class="GtkStatusbar" id="statusbarCSVImport">
+                <property name="visible">True</property>
+                <property name="spacing">2</property>
+                <property name="has_resize_grip">False</property>
+              </widget>
+              <packing>
+                <property name="expand">False</property>
+                <property name="pack_type">end</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+          </widget>
+          <packing>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <widget class="GtkLabel" id="labelCSVImportPage">
+            <property name="visible">True</property>
+            <property name="label" translatable="yes">&lt;b&gt;Import from CSV&lt;/b&gt;</property>
+            <property name="use_markup">True</property>
+            <property name="single_line_mode">True</property>
+          </widget>
+          <packing>
+            <property name="position">4</property>
             <property name="tab_fill">False</property>
             <property name="type">tab</property>
           </packing>
