@@ -240,10 +240,13 @@ class openstreetmap:
                 lat = endPoint.get("lat")
                 lon = endPoint.get("lon")
                 # Create waypt if not in home box
-                if not ((SW_LAT < float(lat) < NE_LAT) and (SW_LON < float(lon) < NE_LON)):
-                    etree.SubElement(myroot, 'wpt', attrib= {'lat':lat, 'lon':lon})
+                try:
+                    if not ((SW_LAT < float(lat) < NE_LAT) and (SW_LON < float(lon) < NE_LON)):
+                        etree.SubElement(myroot, 'wpt', attrib= {'lat':lat, 'lon':lon})
+                except:
+                    pass
         etree.strip_attributes(myroot, 'creator')
-
+                    
         # Wipe out home box
         for trkpt in tree.findall(_trkpt_path):
             lat = float(trkpt.attrib['lat'])
