@@ -235,11 +235,15 @@ class Activity:
 			if self.pace_limit == 0 or self.pace_limit == "":
 				self.pace_limit = None
 			self.title = _dict['title']
+			if self.title is None:
+				self.title = ""
 			self.date = _dict['date']
 			self.time = self._int(_dict['time'])
 			self.time_tuple = Date().second2time(self.time)
 			self.beats = self._int(_dict['beats'])
 			self.comments = _dict['comments']
+			if self.comments is None:
+				self.comments = ""
 			self.calories = self._int(_dict['calories'])
 			self.id_record = _dict['id_record']
 			self.maxbeats = self._int(_dict['maxbeats'])
