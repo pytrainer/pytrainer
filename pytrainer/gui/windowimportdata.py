@@ -880,6 +880,8 @@ class WindowImportdata(SimpleGladeApp):
             if self.has_header and i==0:
                 #Ignore first row
                 continue
+            if not row:
+                continue
             data = {}
             #Determine dates 
             _date = Date().getDateTime(row[dateCol-1])
@@ -905,7 +907,7 @@ class WindowImportdata(SimpleGladeApp):
                         durationSec = int(h)*3600 + int(m)*60 + int(s)
                     except:
                         logging.debug("Error calculating duration for '%s'" % _duration)
-                        print("Error calculating duration for '%s'" % _duration)
+                        #print("Error calculating duration for '%s'" % _duration)
                         durationSec = None
                 else:
                     try:
@@ -913,7 +915,7 @@ class WindowImportdata(SimpleGladeApp):
                     except:
                         #Unknown duration
                         logging.debug("Could not determine duration for '%s'" % _duration)
-                        print("Could not determine duration for '%s'" % _duration)
+                        #print("Could not determine duration for '%s'" % _duration)
                         durationSec = None
                 if durationSec is not None:
                     data['duration'] = durationSec
@@ -982,7 +984,7 @@ class WindowImportdata(SimpleGladeApp):
                 data['comments'] = row[commentsCol-1] 
             
             #Insert into DB
-            print "Data", data
+            logging.debug("Data", data)
             self.pytrainer_main.ddbb.insert_dict('records', data)
         #Display message....
         self.updateStatusbar(self.statusbarCSVImport, "Import completed. %d rows processed" % i)
