@@ -101,8 +101,11 @@ class WindowRecord(SimpleGladeApp):
         
     def _init_equipment(self, selected_equipment, equipment_service):
         equipment = {}
-        for item in equipment_service.get_active_equipment():
+        active_equipment = equipment_service.get_active_equipment()
+        for item in active_equipment:
             equipment[item] = False
+        if len(active_equipment) == 0:
+            self.noActiveEquipmentMessageContainer.set_visible(True)
         for item in selected_equipment:
             equipment[item] = True
         list_store = gtk.ListStore(int, str, bool)
