@@ -198,7 +198,7 @@ class WindowImportdata(SimpleGladeApp):
             self.checkbuttonAutoLaunch.set_active(1)
         logging.debug("<<")
         return
-        
+
     def init_csvimport_tab(self):
         logging.debug(">>")
         #Populate Force Sport to combobox
@@ -806,7 +806,7 @@ class WindowImportdata(SimpleGladeApp):
             print len(reader.fieldnames)
             columns = [_("Column %d") % x for x in range(0, len(reader.fieldnames))]
         #print columns
-        
+
         for column in columns:
             self.cbCSVDate.append_text(column)
             self.cbCSVDistance.append_text(column)
@@ -843,7 +843,7 @@ class WindowImportdata(SimpleGladeApp):
 
     def on_buttonCSVImport_clicked(self, widget):
         logging.debug('>>')
-        #Determine values 
+        #Determine values
         dateCol = self.cbCSVDate.get_active()
         distanceCol = self.cbCSVDistance.get_active()
         durationCol = self.cbCSVDuration.get_active()
@@ -859,14 +859,14 @@ class WindowImportdata(SimpleGladeApp):
         paceCol = self.cbCSVPace.get_active()
         maxPaceCol = self.cbCSVMaxPace.get_active()
         commentsCol = self.cbCSVComments.get_active()
-        
+
         #print dateCol, distanceCol, durationCol, titleCol, sportCol, avgspeedCol, maxspeedCol, calCol, accCol, desCol, hrCol, maxHRCol, paceCol, maxPaceCol, commentsCol
-                
+
         if dateCol == 0:
             #Error need to have at least a date
             self.updateStatusbar(self.statusbarCSVImport, "ERROR: Must define at least a date column")
             return
-        
+
         #Import...
         #Get selected file
         if not os.path.isfile(self.CSVfilename):
@@ -875,7 +875,7 @@ class WindowImportdata(SimpleGladeApp):
         csvfile = open(self.CSVfilename, 'rb')
         reader = csv.reader(csvfile, delimiter=self.delimiter)
         #Process File
-        
+
         for i, row in enumerate(reader):
             if self.has_header and i==0:
                 #Ignore first row
@@ -883,7 +883,7 @@ class WindowImportdata(SimpleGladeApp):
             if not row:
                 continue
             data = {}
-            #Determine dates 
+            #Determine dates
             _date = Date().getDateTime(row[dateCol-1])
             #year, month, day = date.split("-")
             date = _date[1].strftime("%Y-%m-%d")
@@ -935,56 +935,56 @@ class WindowImportdata(SimpleGladeApp):
                 self.comboCSVForceSport.set_active(0)
                 sport_id = self.pytrainer_main.record.getSportId(self.comboCSVForceSport.get_active_text(),add=True)
                 data['sport'] = sport_id
-            
+
             if avgspeedCol:
                 #
                 try:
-                    data['average'] = locale.atof(row[avgspeedCol-1]) 
+                    data['average'] = locale.atof(row[avgspeedCol-1])
                 except:
                     pass
             if maxspeedCol:
                 try:
-                    data['maxspeed'] = locale.atof(row[maxspeedCol-1]) 
+                    data['maxspeed'] = locale.atof(row[maxspeedCol-1])
                 except:
                     pass
             if calCol:
                 try:
-                    data['calories'] = locale.atoi(row[calCol-1]) 
+                    data['calories'] = locale.atoi(row[calCol-1])
                 except:
                     pass
             if accCol:
                 try:
-                    data['upostive'] = locale.atof(row[accCol-1]) 
+                    data['upositive'] = locale.atof(row[accCol-1])
                 except:
                     pass
             if desCol:
                 try:
-                    data['unegative'] = locale.atof(row[desCol-1]) 
+                    data['unegative'] = locale.atof(row[desCol-1])
                 except:
                     pass
             if hrCol:
                 try:
-                    data['beats'] = locale.atof(row[hrCol-1]) 
+                    data['beats'] = locale.atof(row[hrCol-1])
                 except:
                     pass
             if maxHRCol:
                 try:
-                    data['maxbeats'] = locale.atof(row[maxHRCol-1]) 
+                    data['maxbeats'] = locale.atof(row[maxHRCol-1])
                 except:
                     pass
             if paceCol:
                 try:
-                    data['pace'] = locale.atof(row[paceCol-1]) 
+                    data['pace'] = locale.atof(row[paceCol-1])
                 except:
                     pass
             if maxPaceCol:
                 try:
-                    data['maxpace'] = locale.atof(row[maxPaceCol-1]) 
+                    data['maxpace'] = locale.atof(row[maxPaceCol-1])
                 except:
                     pass
             if commentsCol:
-                data['comments'] = row[commentsCol-1] 
-            
+                data['comments'] = row[commentsCol-1]
+
             #Insert into DB
             logging.debug("Data", data)
             self.pytrainer_main.ddbb.insert_dict('records', data)
@@ -992,5 +992,5 @@ class WindowImportdata(SimpleGladeApp):
         self.updateStatusbar(self.statusbarCSVImport, "Import completed. %d rows processed" % i)
         #Disable import button
         self.buttonCSVImport.set_sensitive(0)
-        
+
         logging.debug('<<')
