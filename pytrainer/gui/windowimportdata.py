@@ -901,7 +901,10 @@ class WindowImportdata(SimpleGladeApp):
                 data['distance'] = 0
             if durationCol:
                 #calculate duration in sec...
-                _duration = row[durationCol-1]
+                try:
+                    _duration = row[durationCol-1]
+                except:
+                    _duration = 0
                 if _duration.count(':') == 2:
                     #Have 00:00:00 duration
                     h, m, s = _duration.split(':')
@@ -923,7 +926,10 @@ class WindowImportdata(SimpleGladeApp):
                     data['duration'] = durationSec
                     data['time'] = str(durationSec)
             if titleCol:
-                data['title'] = row[titleCol-1]
+                try:
+                    data['title'] = row[titleCol-1]
+                except:
+                    pass
             if self.checkbCSVForceSport.get_active():
                 sport_id = self.pytrainer_main.record.getSportId(self.comboCSVForceSport.get_active_text(),add=True)
                 data['sport'] = sport_id
@@ -983,7 +989,10 @@ class WindowImportdata(SimpleGladeApp):
                 except:
                     pass
             if commentsCol:
-                data['comments'] = row[commentsCol-1]
+                try:
+                    data['comments'] = row[commentsCol--1]
+                except:
+                    pass
 
             #Insert into DB
             logging.debug("Data", data)
