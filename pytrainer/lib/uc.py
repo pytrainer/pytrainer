@@ -27,16 +27,12 @@ uc_factors = {'distance' : 0.621371192, 'speed': 0.621371192, 'pace':1.609344,
 
 class UC(Singleton):
     """ 
-    When instantiated first time us is assigned, otherwise not.
-    Can be called with or w/o argument.
+    When instantiated first time us is assigned to False, otherwise not.
       us = False; metric system
       us = True ; imperial system
     """
-    def __init__(self, *args):
+    def __init__(self):
         _us = False
-        if args:
-            if args[0] in [True, False]:
-                _us = args[0]
         if not hasattr(self, 'us'):
             self.us = _us
             
