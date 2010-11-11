@@ -896,7 +896,9 @@ class WindowImportdata(SimpleGladeApp):
                 try:
                     data['distance'] = locale.atof(row[distanceCol-1])
                 except:
-                    pass
+                    data['distance'] = 0
+            else:
+                data['distance'] = 0
             if durationCol:
                 #calculate duration in sec...
                 _duration = row[durationCol-1]
