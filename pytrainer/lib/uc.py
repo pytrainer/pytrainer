@@ -27,7 +27,7 @@ uc_factors = {'distance' : 0.621371192, 'speed': 0.621371192, 'pace':1.609344,
 
 class UC(Singleton):
     """ 
-    When instantiated first time us is assigned to False, otherwise not.
+    When instantiated first time us is assigned to False.
       us = False; metric system
       us = True ; imperial system
     """
@@ -69,5 +69,15 @@ class UC(Singleton):
         if self.us:
             return value / uc_factors[quantity]    
         else:
-            return value   
-            
+            return value
+             
+    def distance(self, value):
+        return self.sys2usr('distance', value)
+    def speed(self, value):
+        return self.sys2usr('speed', value)
+    def pace(self, value):
+        return self.sys2usr('pace', value)
+    def height(self, value):
+        return self.sys2usr('height', value)
+    def weight(self, value):
+        return self.sys2usr('weight', value)              

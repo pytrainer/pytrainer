@@ -23,6 +23,7 @@ from StringIO import StringIO
 
 from lxml import etree
 from lib.ddbb import DDBB
+from lib.uc import UC
 
 class Profile:
     def __init__(self, data_path = None, parent = None):
@@ -37,6 +38,7 @@ class Profile:
         self.gpxdir = None
         self.extensiondir = None
         self.plugindir = None
+        self.uc = UC()
         #Set configuration parameters
         self._setHome()
         self._setConfFiles()
@@ -79,6 +81,7 @@ class Profile:
         self.configuration = self._parse_config_file(self.config_file)
         logging.debug("Configuration retrieved: "+str(self.configuration))
         #self.pytrainer_main.ddbb = DDBB(self, pytrainer_main=self.pytrainer_main)
+        self.uc.set_us(self.prf_us_system)
         self._setZones()
         logging.debug("<<")
 
@@ -277,6 +280,7 @@ class Profile:
             logging.debug("Adding "+option+"|"+value)
             self.setValue("pytraining",option,value,delay_write=True)
         self.xml_tree.write(self.config_file, xml_declaration=True, encoding='UTF-8')
+        self.uc.set_us(list_options['prf_us_system'])
         logging.debug("<<")
 
     def getSportList(self):

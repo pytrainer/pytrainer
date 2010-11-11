@@ -28,6 +28,7 @@ from pytrainer.lib.unitsconversor import *
 import pytrainer.record
 import dateutil.parser
 from dateutil.tz import * # for tzutc()
+from pytrainer.lib.uc import UC
 
 class WindowRecord(SimpleGladeApp):
     def __init__(self, equipment_service, data_path = None, listSport = None, parent = None, date = None, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None, windowTitle=None, equipment=[]):
@@ -35,6 +36,7 @@ class WindowRecord(SimpleGladeApp):
         self.parent = parent
         self.pytrainer_main = parent.pytrainer_main
         self.us = self.pytrainer_main.profile.prf_us_system
+        self.uc = UC()
         logging.debug("Using US system: "+ str(self.us))
         self.data_path = data_path
         glade_path="glade/newrecord.glade"
@@ -91,11 +93,11 @@ class WindowRecord(SimpleGladeApp):
             self.rcd_calories.set_text(calories)
         #populate labels with units
         # test only
-        if self.us:
-            self.label8.set_text('Distance (mi)')
-        else:
-            self.label8.set_text('Distance (km)')
-        
+        #if self.us:
+        #    self.label8.set_text('Distance (mi)')
+        #else:
+        #    self.label8.set_text('Distance (km)')
+        self.label8.set_text('Distance [%s]' %self.uc.unit_distance)
         self._init_equipment(equipment, equipment_service)
         logging.debug("<<")
         
