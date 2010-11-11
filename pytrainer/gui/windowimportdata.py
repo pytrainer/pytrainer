@@ -25,9 +25,11 @@ import logging
 import types
 from lxml import etree
 import csv
+import locale
 
 from pytrainer.plugins import Plugins
 from pytrainer.gui.dialogs import fileChooserDialog
+from pytrainer.lib.date import Date
 
 class WindowImportdata(SimpleGladeApp):
     def __init__(self, data_path = None, parent=None, config=None, pytrainer_main=None):
@@ -68,7 +70,7 @@ class WindowImportdata(SimpleGladeApp):
 
     def init_all_tabs(self):
         logging.debug(">>")
-        tabs = (0,1,2,3)
+        tabs = (0,1,2,3,4)
         for tab in tabs:
             self.init_tab(tab)
 
@@ -88,6 +90,9 @@ class WindowImportdata(SimpleGladeApp):
         elif page == 3:
             #'Options' tab
             self.init_options_tab()
+        elif page == 4:
+            #'CSV Import' tab
+            self.init_csvimport_tab()
         else:
             #unknown tab
             logging.error("Unknown page %d passed to init_tab" % page)
@@ -191,6 +196,19 @@ class WindowImportdata(SimpleGladeApp):
             self.radiobuttonTabGPSDevice.set_active(1)
         if self.auto_launch:
             self.checkbuttonAutoLaunch.set_active(1)
+        logging.debug("<<")
+        return
+        
+    def init_csvimport_tab(self):
+        logging.debug(">>")
+        #Populate Force Sport to combobox
+        sport_list = self.pytrainer_main.profile.getSportList()
+        #Remove placeholder item (needed to ensure correct model for combobox)
+        self.comboCSVForceSport.remove_text(0)
+        for sport in sport_list:
+            logging.debug('Adding sport: %s' % sport[0])
+            self.comboCSVForceSport.append_text(sport[0])
+        self.comboCSVForceSport.set_active(0)
         logging.debug("<<")
         return
 
@@ -755,31 +773,32 @@ class WindowImportdata(SimpleGladeApp):
         self.buttonCSVImport.set_sensitive(True)
 
     def on_buttonCSVProcess_clicked(self, widget):
+        logging.debug('>>')
         #Get selected file
-        filename = self.filechooserCSVImport.get_filename()
-        if not os.path.isfile(filename):
+        self.CSVfilename = self.filechooserCSVImport.get_filename()
+        if not os.path.isfile(self.CSVfilename):
             return
         #Determine delimiter
         if self.rbCSVTab.get_active():
-            delimiter = "\t"
+            self.delimiter = "\t"
         elif self.rbCSVComma.get_active():
-            delimiter = ","
+            self.delimiter = ","
         elif self.rbCSVOther.get_active():
-            delimiter = self.entryCSVOther.get_text()
+            self.delimiter = self.entryCSVOther.get_text()
         else:
-            delimiter = " "
+            self.delimiter = " "
 
         #Read as delimited file
-        csvfile = open(filename, 'rb')
+        csvfile = open(self.CSVfilename, 'rb')
         #See if file has header row
-        has_header = csv.Sniffer().has_header(csvfile.read(1024))
+        self.has_header = csv.Sniffer().has_header(csvfile.read(1024))
         csvfile.seek(0)
-        reader = csv.DictReader(csvfile, delimiter=delimiter)
+        reader = csv.DictReader(csvfile, delimiter=self.delimiter)
         #Read file to determine fields (must be a better way of doing this)
         for row in reader:
             pass
         #Build array of column names
-        if has_header:
+        if self.has_header:
             #If the file has a header row, use the actual column names
             columns = reader.fieldnames
         else:
@@ -792,8 +811,182 @@ class WindowImportdata(SimpleGladeApp):
             self.cbCSVDate.append_text(column)
             self.cbCSVDistance.append_text(column)
             self.cbCSVDuration.append_text(column)
+            self.cbCSVTitle.append_text(column)
+            self.cbCSVSport.append_text(column)
+            self.cbCSVAvgSpeed.append_text(column)
+            self.cbCSVMaxSpeed.append_text(column)
+            self.cbCSVCal.append_text(column)
+            self.cbCSVAccent.append_text(column)
+            self.cbCSVDescent.append_text(column)
+            self.cbCSVHR.append_text(column)
+            self.cbCSVMaxHR.append_text(column)
+            self.cbCSVPace.append_text(column)
+            self.cbCSVMaxPace.append_text(column)
+            self.cbCSVComments.append_text(column)
         self.cbCSVDate.set_active(0)
         self.cbCSVDistance.set_active(0)
         self.cbCSVDuration.set_active(0)
+        self.cbCSVTitle.set_active(0)
+        self.cbCSVSport.set_active(0)
+        self.cbCSVAvgSpeed.set_active(0)
+        self.cbCSVMaxSpeed.set_active(0)
+        self.cbCSVCal.set_active(0)
+        self.cbCSVAccent.set_active(0)
+        self.cbCSVDescent.set_active(0)
+        self.cbCSVHR.set_active(0)
+        self.cbCSVMaxHR.set_active(0)
+        self.cbCSVPace.set_active(0)
+        self.cbCSVMaxPace.set_active(0)
+        self.cbCSVComments.set_active(0)
+        logging.debug('<<')
 
 
+    def on_buttonCSVImport_clicked(self, widget):
+        logging.debug('>>')
+        #Determine values 
+        dateCol = self.cbCSVDate.get_active()
+        distanceCol = self.cbCSVDistance.get_active()
+        durationCol = self.cbCSVDuration.get_active()
+        titleCol = self.cbCSVTitle.get_active()
+        sportCol = self.cbCSVSport.get_active()
+        avgspeedCol = self.cbCSVAvgSpeed.get_active()
+        maxspeedCol = self.cbCSVMaxSpeed.get_active()
+        calCol = self.cbCSVCal.get_active()
+        accCol = self.cbCSVAccent.get_active()
+        desCol = self.cbCSVDescent.get_active()
+        hrCol = self.cbCSVHR.get_active()
+        maxHRCol = self.cbCSVMaxHR.get_active()
+        paceCol = self.cbCSVPace.get_active()
+        maxPaceCol = self.cbCSVMaxPace.get_active()
+        commentsCol = self.cbCSVComments.get_active()
+        
+        #print dateCol, distanceCol, durationCol, titleCol, sportCol, avgspeedCol, maxspeedCol, calCol, accCol, desCol, hrCol, maxHRCol, paceCol, maxPaceCol, commentsCol
+                
+        if dateCol == 0:
+            #Error need to have at least a date
+            self.updateStatusbar(self.statusbarCSVImport, "ERROR: Must define at least a date column")
+            return
+        
+        #Import...
+        #Get selected file
+        if not os.path.isfile(self.CSVfilename):
+            return
+        #Read as delimited file
+        csvfile = open(self.CSVfilename, 'rb')
+        reader = csv.reader(csvfile, delimiter=self.delimiter)
+        #Process File
+        
+        for i, row in enumerate(reader):
+            if self.has_header and i==0:
+                #Ignore first row
+                continue
+            data = {}
+            #Determine dates 
+            _date = Date().getDateTime(row[dateCol-1])
+            #year, month, day = date.split("-")
+            date = _date[1].strftime("%Y-%m-%d")
+            zuluDateTime = _date[0].strftime("%Y-%m-%dT%H:%M:%SZ")
+            localDateTime = str(_date[1])
+            data['date'] = date
+            data['date_time_utc'] = zuluDateTime
+            data['date_time_local'] = localDateTime
+            if distanceCol:
+                try:
+                    data['distance'] = locale.atof(row[distanceCol-1])
+                except:
+                    pass
+            if durationCol:
+                #calculate duration in sec...
+                _duration = row[durationCol-1]
+                if _duration.count(':') == 2:
+                    #Have 00:00:00 duration
+                    h, m, s = _duration.split(':')
+                    try:
+                        durationSec = int(h)*3600 + int(m)*60 + int(s)
+                    except:
+                        logging.debug("Error calculating duration for '%s'" % _duration)
+                        print("Error calculating duration for '%s'" % _duration)
+                        durationSec = None
+                else:
+                    try:
+                        durationSec = locale.atoi(_duration)
+                    except:
+                        #Unknown duration
+                        logging.debug("Could not determine duration for '%s'" % _duration)
+                        print("Could not determine duration for '%s'" % _duration)
+                        durationSec = None
+                if durationSec is not None:
+                    data['duration'] = durationSec
+                    data['time'] = str(durationSec)
+            if titleCol:
+                data['title'] = row[titleCol-1]
+            if self.checkbCSVForceSport.get_active():
+                sport_id = self.pytrainer_main.record.getSportId(self.comboCSVForceSport.get_active_text(),add=True)
+                data['sport'] = sport_id
+            elif sportCol:
+                #retrieving sport id (adding sport if it doesn't exist yet)
+                sport_id = self.pytrainer_main.record.getSportId(row[sportCol-1],add=True)
+                data['sport'] = sport_id
+            else:
+                self.comboCSVForceSport.set_active(0)
+                sport_id = self.pytrainer_main.record.getSportId(self.comboCSVForceSport.get_active_text(),add=True)
+                data['sport'] = sport_id
+            
+            if avgspeedCol:
+                #
+                try:
+                    data['average'] = locale.atof(row[avgspeedCol-1]) 
+                except:
+                    pass
+            if maxspeedCol:
+                try:
+                    data['maxspeed'] = locale.atof(row[maxspeedCol-1]) 
+                except:
+                    pass
+            if calCol:
+                try:
+                    data['calories'] = locale.atoi(row[calCol-1]) 
+                except:
+                    pass
+            if accCol:
+                try:
+                    data['upostive'] = locale.atof(row[accCol-1]) 
+                except:
+                    pass
+            if desCol:
+                try:
+                    data['unegative'] = locale.atof(row[desCol-1]) 
+                except:
+                    pass
+            if hrCol:
+                try:
+                    data['beats'] = locale.atof(row[hrCol-1]) 
+                except:
+                    pass
+            if maxHRCol:
+                try:
+                    data['maxbeats'] = locale.atof(row[maxHRCol-1]) 
+                except:
+                    pass
+            if paceCol:
+                try:
+                    data['pace'] = locale.atof(row[paceCol-1]) 
+                except:
+                    pass
+            if maxPaceCol:
+                try:
+                    data['maxpace'] = locale.atof(row[maxPaceCol-1]) 
+                except:
+                    pass
+            if commentsCol:
+                data['comments'] = row[commentsCol-1] 
+            
+            #Insert into DB
+            print "Data", data
+            self.pytrainer_main.ddbb.insert_dict('records', data)
+        #Display message....
+        self.updateStatusbar(self.statusbarCSVImport, "Import completed. %d rows processed" % i)
+        #Disable import button
+        self.buttonCSVImport.set_sensitive(0)
+        
+        logging.debug('<<')

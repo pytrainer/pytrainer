@@ -971,7 +971,10 @@ class Main(SimpleGladeApp):
             gobject.TYPE_INT,
             object)
         for i in record_list:
-            hour,min,sec = date.second2time(int(i[6]))
+            try:
+                hour,min,sec = date.second2time(int(i[6]))
+            except  (ValueError, TypeError):
+                hour,min,sec = (0,0,0)
             _time = "%2d:%02d:%02d" %(hour,min,sec) #original
             # experimental only
             if hour >0:
@@ -987,10 +990,19 @@ class Main(SimpleGladeApp):
                 continue
             _title = str(i[3])
             _date = str(i[0])
-            _distance = float(i[1])
+            try:
+                _distance = float(i[1])
+            except (ValueError, TypeError):
+                _distance = 0
             _sport = str(i[4])
-            _average = float(i[2])
-            _calories = int(i[8])
+            try:
+                _average = float(i[2])
+            except (ValueError, TypeError):
+                _average = 0
+            try:
+                _calories = int(i[8])
+            except (ValueError, TypeError):
+                _calories = 0
             try:
                 _beats = round(float(i[7]))
             except (ValueError, TypeError) as e:
