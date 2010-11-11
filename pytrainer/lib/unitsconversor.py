@@ -105,8 +105,11 @@ def myset_text(gtkentry, quantity, value, **kwargs):
     # quantity=physical quantitiy like 'distance' or 'speed' 
     # here we should call the universal 'conversion prepare for output' filter
     # need the same for get_text
-    _value = filter_inout(quantity, _value, 'out', us=_us, round=_round_digits)
-    _value = str(_value)
+    try:
+        _value = filter_inout(quantity, _value, 'out', us=_us, round=_round_digits)
+        _value = str(_value)
+    except:
+        _value = ''
     gtkentry.set_text(_value)
 
 def myget_text(gtkentry, quantity, **kwargs):
