@@ -30,6 +30,7 @@
                       <object class="GtkTreeView" id="treeviewEquipmentList">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <signal name="row_activated" handler="equipment_row_activated"/>
                       </object>
                     </child>
                   </object>

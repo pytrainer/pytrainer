@@ -97,6 +97,7 @@ class EquipmentUi(gtk.HBox):
             "cancel_add_equipment_clicked": self._cancel_add_equipment_clicked,
             "confirm_add_equipment_clicked": self._confirm_add_equipment_clicked,
             "edit_equipment_clicked": self._edit_equipment_clicked,
+            "equipment_row_activated": self._edit_equipment_clicked,
             "cancel_edit_equipment_clicked": self._cancel_edit_equipment_clicked,
             "confirm_edit_equipment_clicked": self._confirm_edit_equipment_clicked,
             "delete_equipment_clicked": self._delete_equipment_clicked,
@@ -154,7 +155,7 @@ class EquipmentUi(gtk.HBox):
         self._equipment_store.add_equipment(new_equipment)
         self.show_page_equipment_list()
     
-    def _edit_equipment_clicked(self, widget):
+    def _edit_equipment_clicked(self, widget, *args):
         item = self._get_selected_equipment_item()
         self._builder.get_object("entryEquipmentEditDescription").set_text(item.description)
         self._builder.get_object("entryEquipmentEditLifeExpectancy").set_text(str(item.life_expectancy))
