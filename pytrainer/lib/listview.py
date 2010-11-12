@@ -1,14 +1,26 @@
 import datetime
-import math
 
-#LISTPAST = [['All Time', -99999], ['Last 4 Weeks', -31],
-#            ['Last 6 Months', -183], ['Last 12 Months', -366]]
-
+UC_LISTDISTANCE = {False : [['All Distances', [0.0,999999.9]],
+                            ['<1 km', [0.0, 1.0]],
+                            ['1-5 km', [1.0, 5.0]],
+                            ['5-20 km', [5.0, 20.0]],
+                            ['20-50 km', [20.0, 50.0]],
+                            ['50-100 km', [50.0, 100.0]],
+                            ['>100 km', [100.0, 999999.9]]]  ,
+                    True : [['All Distances', [0.0,999999.9]],
+                            ['<1 mi', [0.0, 1.609344]],
+                            ['1-5 mi', [1.609344, 8.04672]],
+                            ['5-10 mi', [8.04672, 16.09344]],
+                            ['10-20 mi', [16.09344, 32.18688]],
+                            ['20-50 mi', [32.18688, 80.4672]],
+                            ['>50 mi', [80.4672, 999999.9]]] 
+                    }
 class ListSearch(object):
     """ Builds SQLite condition out of search parameters"""
     def __init__(self,  parent = None, pytrainer_main = None):
         self.parent = parent    
         self.pytrainer_main = pytrainer_main
+        self.uc = self.pytrainer_main.uc
         """ Initialize all query parameters to valid default values""" 
         self.title = ''
         self.sport = 0
@@ -16,14 +28,16 @@ class ListSearch(object):
         self.duration = 0
         self.distance = 0        
         self.listSport = self.pytrainer_main.profile.getSportList()
+        
         self.listPast = [['All Time', -99999], ['Last 4 Weeks', -31],
                          ['Last 6 Months', -183], ['Last 12 Months', -366]]
+                         
         self.listDuration = [['All Durations', [0,999999]],
                              ['<1 Hour', [0,3600]],
                              ['1-2 Hours', [3600,7200]],
                              ['>2 Hours', [7200,999999]]]
-        
-        #if self.pytrainer_main.profile.prf_us_system == True:
+       
+        """
         self.listDistanceUS = [['All Distances', [0.0,999999.9]],
                              ['<1 mi', [0.0, 1.609344]],
                              ['1-5 mi', [1.609344, 8.04672]],
@@ -39,6 +53,9 @@ class ListSearch(object):
                              ['20-50 km', [20.0, 50.0]],
                              ['50-100 km', [50.0, 100.0]],
                              ['>100 km', [100.0, 999999.9]]]
+        """
+        
+        self.listDistance = UC_LISTDISTANCE[self.uc.us]
         #print self.listDistance           
         self.setup_lsa_sport()
         self.setup_lsa_past()
@@ -89,19 +106,18 @@ class ListSearch(object):
             _add_and = True                                             
         #print _search
         return _search
-        
+
+    """    
     def get_listDistance(self):
-        """ Not Finished. Eperimentally. Goal: compute distance intervals 
-        for each sport individually from average and standard deviation.
-        """  
+        
         _all = ['All Distances', [0.0, 99999.9]]
         _back = []
         _back.append( [_all] )
         for sp in self.listSport:
             _back.append( [_all] )
         return _back    
+    """
         
-
     condition = property(get_condition)
     #listDuration = property(get_listDuration)
     

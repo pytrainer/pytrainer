@@ -46,11 +46,12 @@ from gui.warning import Warning
 from lib.date import Date
 from activitypool import ActivityPool
 from lib.ddbb import DDBB
+from lib.uc import UC
 
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.7.2_svn#704"
+        self.version ="1.7.2_svn#705"
         self.DB_version = 6
         #Process command line options
         self.startup_options = self.get_options()
@@ -64,6 +65,7 @@ class pyTrainer:
         # Checking profile
         logging.debug('Checking configuration and profile...')
         self.profile = Profile(self.data_path,self)
+        self.uc = UC()
         self.windowmain = None
         self.ddbb = DDBB(self.profile, self)
         logging.debug('connecting to DDBB')

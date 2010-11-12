@@ -49,6 +49,8 @@ from pytrainer.equipment import EquipmentService
 from pytrainer.gui.drawGraph import DrawGraph
 from pytrainer.gui.windowcalendar import WindowCalendar
 from pytrainer.lib.listview import ListSearch
+from pytrainer.lib.uc import UC
+
 
 class Main(SimpleGladeApp):
     def __init__(self, data_path = None, parent = None, version = None, gpxDir = None):
@@ -66,6 +68,7 @@ class Main(SimpleGladeApp):
 
         SimpleGladeApp.__init__(self, self.data_path+glade_path, root, domain)
 
+        self.uc = UC()
         self.popup = PopupMenu(data_path,self)
         self.block = False
         self.activeSport = None
@@ -104,11 +107,11 @@ class Main(SimpleGladeApp):
         columns=[   {'name':_("id"), 'visible':False},
                     {'name':_("Title")},
                     {'name':_("Date")},
-                    {'name':_("Distance"), 'xalign':1.0, 'format_float':'%.2f'},
+                    {'name':_("Distance"), 'xalign':1.0, 'format_float':'%.2f', 'quantity': 'distance'},
                     {'name':_("Sport")},
                     {'name':_("Time"), 'xalign':1.0, 'format_duration':True},
                     {'name':_(u"\u2300 HR"), 'xalign':1.0},
-                    {'name':_(u"\u2300 Speed"), 'xalign':1.0, 'format_float':'%.1f'},
+                    {'name':_(u"\u2300 Speed"), 'xalign':1.0, 'format_float':'%.1f', 'quantity': 'speed'},
                     {'name':_("Calories"), 'xalign':1.0}
                 ]
         self.create_treeview(self.allRecordTreeView,columns)
@@ -247,12 +250,12 @@ class Main(SimpleGladeApp):
             new = orig[3:]
         cell.set_property('text', new)
         
-    def render_float(self, column, cell, model, iter, format):
-        #orig = cell.get_property('text')
-        #To deal with floats displayed with a comma instead of a dot
-        orig = model.get_value(iter, column.get_sort_column_id())
-        new = format % float(orig)
-        cell.set_property('text', new)
+    def render_float(self, column, cell, model, iter, data):
+        _format, _quantity = data
+        _val = model.get_value(iter, column.get_sort_column_id())
+        _val = self.uc.sys2usr(_quantity, _val)
+        _val_str = _format % float(_val)
+        cell.set_property('text', _val_str)
 
     def create_treeview(self,treeview,columns):
         for column_index, column_dict in enumerate(columns):
@@ -267,7 +270,7 @@ class Main(SimpleGladeApp):
             if 'visible' in column_dict:
                 column.set_visible(column_dict['visible'])
             if 'format_float' in column_dict:
-                column.set_cell_data_func(renderer, self.render_float, column_dict['format_float'])
+                column.set_cell_data_func(renderer, self.render_float, [column_dict['format_float'], column_dict['quantity']])
             if 'format_duration' in column_dict and column_dict['format_duration']:
                 column.set_cell_data_func(renderer, self.render_duration)
             column.set_sort_column_id(column_index)
