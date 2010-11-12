@@ -28,13 +28,12 @@ uc_factors = {'distance' : 0.621371192, 'speed': 0.621371192, 'pace':1.609344,
 class UC(Singleton):
     """ 
     When instantiated first time us is assigned to False.
-      us = False; metric system
-      us = True ; imperial system
+      us = False; user system is metric
+      us = True ; user system is imperial
     """
     def __init__(self):
-        _us = False
         if not hasattr(self, 'us'):
-            self.us = _us
+            self.us = False
             
     def __str__(self):
         if self.us:
@@ -43,7 +42,8 @@ class UC(Singleton):
             return 'metric'
         
     def set_us(self, us):
-        self.us = us
+        if type(us) == bool:
+            self.us = us
         
     def get_unit(self, quantity):
         if self.us:
@@ -58,19 +58,28 @@ class UC(Singleton):
     unit_weight = property( lambda self: self.get_unit('weight') )        
     
     def sys2usr(self, quantity, value):
-        """gives value of physical quantity (metric) in users system"""        
+        """ Gives value of physical quantity (metric) in users system"""
+        try:
+            _val = float(value)
+        except ValueError:
+            return None
         if self.us:
-            return value * uc_factors[quantity]
+            return _val * uc_factors[quantity]
         else:
-            return value 
+            return _val 
    
     def usr2sys(self, quantity, value):
-        """takes value (users system) and convert to metric (sys)"""        
+        """ Takes value (users system) and convert to metric (sys)"""
+        try:
+            _val = float(value)
+        except ValueError:
+            return None        
         if self.us:
-            return value / uc_factors[quantity]    
+            return _val / uc_factors[quantity]    
         else:
-            return value
-             
+            return _val
+
+    """ Aliases for sys2usr """         
     def distance(self, value):
         return self.sys2usr('distance', value)
     def speed(self, value):
