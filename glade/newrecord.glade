@@ -216,7 +216,7 @@
                             <property name="column_spacing">5</property>
                             <property name="row_spacing">5</property>
                             <child>
-                              <widget class="GtkLabel" id="label8">
+                              <widget class="GtkLabel" id="label_rcd_distance">
                                 <property name="width_request">120</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
@@ -517,7 +517,7 @@
                             <property name="column_spacing">5</property>
                             <property name="row_spacing">5</property>
                             <child>
-                              <widget class="GtkLabel" id="label134">
+                              <widget class="GtkLabel" id="label_rcd_maxvel">
                                 <property name="width_request">120</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
@@ -543,7 +543,7 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="label133">
+                              <widget class="GtkLabel" id="label_rcd_average">
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">Average (km/h)</property>
@@ -640,7 +640,7 @@
                             <property name="column_spacing">5</property>
                             <property name="row_spacing">5</property>
                             <child>
-                              <widget class="GtkLabel" id="label138">
+                              <widget class="GtkLabel" id="label_rcd_maxpace">
                                 <property name="width_request">110</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
@@ -666,7 +666,7 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="label137">
+                              <widget class="GtkLabel" id="label_rcd_pace">
                                 <property name="width_request">110</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
@@ -748,7 +748,7 @@
                             <property name="column_spacing">5</property>
                             <property name="row_spacing">5</property>
                             <child>
-                              <widget class="GtkLabel" id="label139">
+                              <widget class="GtkLabel" id="label_rcd_upositive">
                                 <property name="width_request">110</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
@@ -774,7 +774,7 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkLabel" id="label140">
+                              <widget class="GtkLabel" id="label_rcd_unegative">
                                 <property name="width_request">110</property>
                                 <property name="visible">True</property>
                                 <property name="xalign">0</property>
@@ -1273,3 +1273,5 @@
     </child>
   </widget>
 </glade-interface>
+
+ 	  	 

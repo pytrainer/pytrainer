@@ -35,9 +35,9 @@ class WindowRecord(SimpleGladeApp):
         logging.debug(">>")
         self.parent = parent
         self.pytrainer_main = parent.pytrainer_main
-        self.us = self.pytrainer_main.profile.prf_us_system
+        #self.us = self.pytrainer_main.profile.prf_us_system #DEPRECATED
         self.uc = UC()
-        logging.debug("Using US system: "+ str(self.us))
+        logging.debug("Using US system: "+ str(self.uc.us))
         self.data_path = data_path
         glade_path="glade/newrecord.glade"
         root = "newrecord"
@@ -80,24 +80,28 @@ class WindowRecord(SimpleGladeApp):
             self.rcd_title.set_text(title)
         if distance != None:
             #self.rcd_distance.set_text(distance)
-            myset_text(rcd_distance, 'distance', distance, us=self.us, round=2)
+            #myset_text(rcd_distance, 'distance', distance, us=self.us, round=2)
+            self.rcd_distance.set_text(self.uc.distance(distance))
         if time != None:
             self.setTime(time)
         if distance!=None and time!=None:
             self.on_calcaverage_clicked(None)
         if upositive != None:
-            self.rcd_upositive.set_text(upositive)
+            self.rcd_upositive.set_text(self.uc.height(upositive))
         if unegative != None:
-            self.rcd_unegative.set_text(unegative)
+            self.rcd_unegative.set_text(self.uc.height(unegative))
         if calories != None:
             self.rcd_calories.set_text(calories)
-        #populate labels with units
-        # test only
-        #if self.us:
-        #    self.label8.set_text('Distance (mi)')
-        #else:
-        #    self.label8.set_text('Distance (km)')
-        self.label8.set_text('Distance [%s]' %self.uc.unit_distance)
+            
+        #populate labels with units        
+        self.label_rcd_distance.set_text('Distance (%s)' %self.uc.unit_distance)
+        self.label_rcd_maxvel.set_text('Max (%s)' %self.uc.unit_speed)
+        self.label_rcd_average.set_text('Average (%s)' %self.uc.unit_speed)
+        self.label_rcd_maxpace.set_text('Max (%s)' %self.uc.unit_pace)
+        self.label_rcd_pace.set_text('Pace (%s)' %self.uc.unit_pace)
+        self.label_rcd_upositive.set_text('Ascent (%s)' %self.uc.unit_height)
+        self.label_rcd_unegative.set_text('Descent (%s)' %self.uc.unit_height)        
+
         self._init_equipment(equipment, equipment_service)
         logging.debug("<<")
         
@@ -252,18 +256,25 @@ class WindowRecord(SimpleGladeApp):
             trackSummary = {}
             list_options["rcd_date"] = self.rcd_date.get_text()
             list_options["rcd_sport"] = self.rcd_sport.get_active_text()
-            list_options["rcd_distance"] = self.rcd_distance.get_text()
+            list_options["rcd_distance"] = self.uc.usr2sys('distance', self.rcd_distance.get_text())
             list_options["rcd_beats"] = self.rcd_beats.get_text()
-            list_options["rcd_average"] = self.rcd_average.get_text()
+            list_options["rcd_average"] = self.uc.usr2sys('speed', self.rcd_average.get_text())
             list_options["rcd_calories"] = self.rcd_calories.get_text()
             list_options["rcd_title"] = self.rcd_title.get_text().replace("\"","'")
             list_options["rcd_gpxfile"] = self.rcd_gpxfile.get_text()
-            list_options["rcd_upositive"] = self.rcd_upositive.get_text()
-            list_options["rcd_unegative"] = self.rcd_unegative.get_text()
+            list_options["rcd_upositive"] = self.uc.usr2sys('height', self.rcd_upositive.get_text())
+            list_options["rcd_unegative"] = self.uc.usr2sys('height', self.rcd_unegative.get_text())
             list_options["rcd_maxbeats"] = self.rcd_maxbeats.get_text()
-            list_options["rcd_pace"] = self.rcd_pace.get_text()
-            list_options["rcd_maxpace"] = self.rcd_maxpace.get_text()
-            list_options["rcd_maxvel"] = self.rcd_maxvel.get_text()
+
+            # tricky for uc as rcd_pace is in min:sec
+            _p1 = self.parent.pace_to_float(self.rcd_pace.get_text())
+            _p2 = self.parent.pace_from_float(self.uc.pace(_p1))
+            list_options["rcd_pace"] = _p2  #self.rcd_pace.get_text()
+            _p1 = self.parent.pace_to_float(self.rcd_maxpace.get_text())
+            _p2 = self.parent.pace_from_float(self.uc.pace(_p1))           
+            list_options["rcd_maxpace"] = _p2#self.rcd_maxpace.get_text()
+            
+            list_options["rcd_maxvel"] = self.uc.usr2sys('speed', self.rcd_maxvel.get_text())
             list_options["rcd_time"] = [self.rcd_hour.get_value_as_int(),self.rcd_min.get_value_as_int(),self.rcd_second.get_value_as_int()]
             buffer = self.rcd_comments.get_buffer()
             start,end = buffer.get_bounds()
@@ -340,16 +351,18 @@ class WindowRecord(SimpleGladeApp):
         self.rcd_min.set_value(m)
         self.rcd_second.set_value(s)
         self.rcd_date.set_text(activity.date)
+        
         #self.rcd_distance.set_text("%.2f"%activity.distance)
-        myset_text(self.rcd_distance, 'distance', activity.distance, us=self.us, round=2)
-        self.rcd_average.set_text("%.2f"%activity.average)
+        #myset_text(self.rcd_distance, 'distance', activity.distance, us=self.us, round=2)
+        self.rcd_distance.set_text("%.2f" %self.uc.distance(activity.distance))        
+        self.rcd_average.set_text("%.2f" %self.uc.speed(activity.average))
         self.rcd_calories.set_text("%s"%activity.calories)
         self.rcd_beats.set_text("%s"%activity.beats)
-        self.rcd_upositive.set_text("%.2f"%activity.upositive)
-        self.rcd_unegative.set_text("%.2f"%activity.unegative)
-        self.rcd_maxvel.set_text("%.2f"%activity.maxspeed)
-        self.rcd_maxpace.set_text("%s"%self.parent.pace_from_float(activity.maxpace))
-        self.rcd_pace.set_text("%s"%self.parent.pace_from_float(activity.pace))
+        self.rcd_upositive.set_text("%.2f" %self.uc.height(activity.upositive))
+        self.rcd_unegative.set_text("%.2f" %self.uc.height(activity.unegative))
+        self.rcd_maxvel.set_text("%.2f" %self.uc.speed(activity.maxspeed))
+        self.rcd_maxpace.set_text("%s" %self.parent.pace_from_float(self.uc.pace(activity.maxpace)))
+        self.rcd_pace.set_text("%s" %self.parent.pace_from_float(self.uc.pace(activity.pace)))
         self.rcd_maxbeats.set_text("%s"%activity.maxbeats)
         self.rcd_title.set_text(activity.title)
         
@@ -361,9 +374,9 @@ class WindowRecord(SimpleGladeApp):
         start,end = buffer.get_bounds()
         buffer.set_text(activity.comments)
         if activity.gpx_file is not None:
-			self.rcd_gpxfile.set_text(activity.gpx_file)
-			self.frameGeneral.set_sensitive(0)		#Currently record values not changed if a GPX file is present
-			self.frameVelocity.set_sensitive(0)	    #Greying out options to indicate this to user
+            self.rcd_gpxfile.set_text(activity.gpx_file)
+            self.frameGeneral.set_sensitive(0)      #Currently record values not changed if a GPX file is present
+            self.frameVelocity.set_sensitive(0)     #Greying out options to indicate this to user
         logging.debug("<<")
         
     def setValues(self,values):
@@ -660,9 +673,9 @@ class WindowRecord(SimpleGladeApp):
             pass
     
     def set_distance(self,distance):
-        #self.rcd_distance.set_text("%0.2f" %distance)
-        myset_text(rcd_distance, 'distance', distance, us=self.us, round=2)
-            
+        self.rcd_distance.set_text("%0.2f" %distance)
+        #myset_text(rcd_distance, 'distance', distance, us=self.us, round=2)
+        
     def set_maxspeed(self,vel):
         self.rcd_maxvel.set_text("%0.2f" %vel)
             
