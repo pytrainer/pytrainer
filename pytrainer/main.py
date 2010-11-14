@@ -121,7 +121,6 @@ class pyTrainer:
         parser.add_option("-w", "--warn", action="store_const", const=logging.WARNING, dest="log_level", help="enable logging at warning level")
         parser.add_option("--valid", action="store_true", dest="validate", help="enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation")
         parser.add_option("--check", action="store_true", dest="check", help="triggers database (only sqlite based) and configuration file sanity checks, adding fields if necessary. Backup of database is done before any change. Details at info or debug logging level")
-        parser.add_option("--equip", action="store_false", dest="equip", help="EXPERIMENTAL: enable equipment management")
         parser.add_option("--newgraph", action="store_true", dest="newgraph", help="EXPERIMENTAL: new graphing approach")
         (options, args) = parser.parse_args()
         return options
