@@ -259,9 +259,6 @@ class pyTrainer:
         elif view=="listview":
             logging.debug('list view')
             self.refreshListView()
-        elif view=="equipment":
-            logging.debug('equipment view')
-            print('TODO equipment view')
         elif view=="athlete":
             logging.debug('athlete view')
             self.windowmain.on_athleteview_activate()
