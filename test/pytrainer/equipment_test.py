@@ -209,6 +209,12 @@ class EquipmentServiceTest(unittest.TestCase):
         self.assertEquals(200, item.prior_usage)
         self.assertEquals("Test notes.", item.notes)
     
+    def test_get_equipment_item_non_unicode(self):
+        self.mock_ddbb.select.return_value = [(1, "Test Description", True, 500, 200, "Test notes.")]
+        item = self.equipment_service.get_equipment_item(1)
+        self.assertEquals("Test Description", item.description)
+        self.assertEquals("Test notes.", item.notes)
+    
     def test_get_equipment_item_non_existant(self):
         self.mock_ddbb.select.return_value = []
         item = self.equipment_service.get_equipment_item(1)

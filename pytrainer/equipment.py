@@ -155,11 +155,11 @@ class EquipmentService(object):
        equipment = Equipment()
        (id, description, active, life_expectancy, prior_usage, notes) = row
        equipment.id = id
-       equipment.description = description
+       equipment.description = unicode(description)
        equipment.active = bool(active)
        equipment.life_expectancy = life_expectancy
        equipment.prior_usage = prior_usage
-       equipment.notes = notes
+       equipment.notes = unicode(notes)
        return equipment
        
    def store_equipment(self, equipment):
