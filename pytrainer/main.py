@@ -32,6 +32,8 @@ import traceback
 
 from os import path
 
+from pytrainer import platform
+from environment import Environment
 from record import Record
 from waypoint import Waypoint
 from extension import Extension
@@ -55,6 +57,8 @@ class pyTrainer:
         self.DB_version = 6
         #Process command line options
         self.startup_options = self.get_options()
+        self.environment = Environment(platform.get_platform(), self.startup_options.conf_dir)
+        self.environment.create_directories()
         #Setup logging
         self.set_logging(self.startup_options.log_level)
         logging.debug('>>')
@@ -64,7 +68,7 @@ class pyTrainer:
         self.ddbb = None
         # Checking profile
         logging.debug('Checking configuration and profile...')
-        self.profile = Profile(self.data_path,self)
+        self.profile = Profile(self.environment, self.data_path,self)
         self.uc = UC()
         self.windowmain = None
         self.ddbb = DDBB(self.profile, self)
@@ -115,23 +119,20 @@ class pyTrainer:
         For more help on valid options try:
            %prog -h '''
         parser = OptionParser(usage=usage)
-        parser.set_defaults(log_level=logging.ERROR, validate=False, equip=False, newgraph=False)
+        parser.set_defaults(log_level=logging.ERROR, validate=False, equip=False, newgraph=False, conf_dir=None)
         parser.add_option("-d", "--debug", action="store_const", const=logging.DEBUG, dest="log_level", help="enable logging at debug level")
         parser.add_option("-i", "--info", action="store_const", const=logging.INFO, dest="log_level", help="enable logging at info level")
         parser.add_option("-w", "--warn", action="store_const", const=logging.WARNING, dest="log_level", help="enable logging at warning level")
         parser.add_option("--valid", action="store_true", dest="validate", help="enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation")
         parser.add_option("--check", action="store_true", dest="check", help="triggers database (only sqlite based) and configuration file sanity checks, adding fields if necessary. Backup of database is done before any change. Details at info or debug logging level")
         parser.add_option("--newgraph", action="store_true", dest="newgraph", help="EXPERIMENTAL: new graphing approach")
+        parser.add_option("--confdir", dest="conf_dir", help="Specify the directory where application configuration will be stored.")
         (options, args) = parser.parse_args()
         return options
 
     def set_logging(self,level):
         '''Setup rotating log file with customized format'''
-        PATH = os.environ['HOME']+"/.pytrainer"
-        if not os.path.exists(PATH):
-            os.mkdir(PATH)
-        LOG_FILENAME = PATH + "/log.out"
-        rotHandler = logging.handlers.RotatingFileHandler(LOG_FILENAME, maxBytes=100000, backupCount=5)
+        rotHandler = logging.handlers.RotatingFileHandler(self.environment.log_file, maxBytes=100000, backupCount=5)
         formatter = logging.Formatter('%(asctime)s|%(levelname)s|%(module)s|%(funcName)s|%(message)s')
         rotHandler.setFormatter(formatter)
         logging.getLogger('').addHandler(rotHandler)
