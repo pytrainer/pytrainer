@@ -25,6 +25,7 @@ import gtk.glade
 import os
 import glob
 import commands
+import platform
 
 def _max(one, two):
     '''Function to determine the max of two versions of format /xx/xxx/????-1.2.3 '''
@@ -62,7 +63,9 @@ def _max(one, two):
 
 
 bin_path = os.path.realpath(os.path.dirname(__file__)) # directory that the pytrainer script executes from e.g. /usr/bin or /usr/local/bin
-base_path = os.path.dirname(bin_path) 
+base_path = os.path.dirname(bin_path)
+#Get the version of the running python interpreter
+ver = platform.python_version_tuple()
 
 if (os.path.exists(base_path + "/INSTALL") 
     and os.path.exists(base_path + "/setup.py") 
@@ -75,7 +78,7 @@ if (os.path.exists(base_path + "/INSTALL")
 else:
     print("running pytrainer from egg installation")
     data_path = base_path + "/share/pytrainer/"
-    site_path = base_path + "/lib/python2.6/site-packages"
+    site_path =  "%s/lib/python%s.%s/site-packages" % (base_path, ver[0], ver[1])
     gettext_path = base_path + "/share/locale"
 
 print "data_path: " + data_path
