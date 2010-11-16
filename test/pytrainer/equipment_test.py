@@ -300,14 +300,13 @@ class EquipmentServiceTest(unittest.TestCase):
     def test_update_equipment(self):
         equipment = Equipment()
         equipment.id = 1
-        equipment.description = u"test description"
-        self.mock_ddbb.select.return_value =  [(2, u"", 1, 0, 0,u"")]
-        stored_equipment = self.equipment_service.store_equipment(equipment)
+        equipment.description = u"new description"
+        self.mock_ddbb.select.return_value =  [(1, u"old description", 1, 0, 0,u"")]
+        self.equipment_service.store_equipment(equipment)
         self.mock_ddbb.update.assert_called_with("equipment", 
                                                  "description,active,life_expectancy,prior_usage,notes", 
-                                                 ["test description", 1, 0, 0,"" ], 
+                                                 ["new description", 1, 0, 0,"" ], 
                                                  "id = 1")
-        self.assertEquals(2, stored_equipment.id)
         
     def test_update_equipment_non_existant(self):
         self.mock_ddbb.select.return_value = []
@@ -316,6 +315,17 @@ class EquipmentServiceTest(unittest.TestCase):
         try:
             self.equipment_service.store_equipment(equipment)
             self.fail("Should not be able to update an item which did not previously exist.")
+        except(EquipmentServiceException):
+            pass
+        
+    def test_update_equipment_duplicate_description(self):
+        self.mock_ddbb.select.return_value = [(1, u"test item", True, 500, 200, u"Test notes.")]
+        equipment = Equipment()
+        equipment.id = 2
+        equipment.description = u"test item"
+        try:
+            self.equipment_service.store_equipment(equipment)
+            self.fail("Should not be able to change item description to non-unique value.")
         except(EquipmentServiceException):
             pass
         

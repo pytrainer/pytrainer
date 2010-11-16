@@ -177,6 +177,7 @@ class EquipmentService(object):
    def _update_equipment(self, equipment):
        logging.debug("Updating existing equipment item.")
        self._assert_exists(equipment)
+       self._assert_unique(equipment)
        self._ddbb.update(_TABLE_NAME, _UPDATE_COLUMNS, _create_row(equipment), "id = {0}".format(equipment.id))
        return equipment.id
    
@@ -194,7 +195,9 @@ class EquipmentService(object):
    def _assert_unique(self, equipment):
        result = self._ddbb.select(_TABLE_NAME, "id", "description = \"{0}\"".format(equipment.description))
        if len(result) > 0:
-           raise EquipmentServiceException("An equipment item already exists with description '{0}'".format(equipment.description))
+           id = result[0][0]
+           if id != equipment.id:
+               raise EquipmentServiceException("An equipment item already exists with description '{0}'".format(equipment.description))
        logging.debug("Asserted description is unique: '{0}'.".format(equipment.description))
    
    def remove_equipment(self, equipment):
