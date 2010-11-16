@@ -16,6 +16,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+from __future__ import division
 from SimpleGladeApp import SimpleGladeApp
 from windowcalendar import WindowCalendar
 from pytrainer.equipment import EquipmentService
@@ -151,14 +152,14 @@ class WindowProfile(SimpleGladeApp):
                             gobject.TYPE_STRING,
                             object)
                 for i in sport_list:
-                    if not i[1]:
-                        met = i[1]
+                    if i[1]:
+                        met = float(i[1])
                     else:
-                        met = 0
-                    if not i[2]:
-                        weight = i[2]
+                        met = 0.0
+                    if i[2]:
+                        weight = float(i[2])
                     else:
-                        weight = 0
+                        weight = 0.0
                     try:
                         max_pace = int(i[4])
                         if max_pace is None or max_pace == 0:

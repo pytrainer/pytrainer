@@ -16,6 +16,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+from __future__ import division
 import os
 import logging
 import gtk, gobject
@@ -636,18 +637,16 @@ class WindowRecord(SimpleGladeApp):
         hour = self.rcd_hour.get_value_as_int()
         min = self.rcd_min.get_value_as_int()
         sec = self.rcd_second.get_value_as_int()
-        hour += min/60 + sec/60/60
+        hour += float(min)/60.0 + float(sec)/(60.0*60.0)
         weight = self.pytrainer_main.profile.getValue("pytraining","prf_weight")
         if weight is None or weight == "" or weight == "None":
-            weight = 0
-        else:
-            weight = float(weight)
-        met = self.parent.getSportMet(sport)
+            weight = 0.0
+        weight = float(weight)
+        met = float(self.parent.getSportMet(sport))
         extraweight = self.parent.getSportWeight(sport)
         if extraweight is None or extraweight == "" or extraweight == "None":
-            extraweight = 0
-        else:
-            extraweight = float(extraweight)
+            extraweight = 0.0
+        extraweight = float(extraweight)
         if met:
             calories = met*(weight+extraweight)*hour
             self.rcd_calories.set_text(str(calories))
