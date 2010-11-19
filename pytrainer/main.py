@@ -53,7 +53,7 @@ from lib.uc import UC
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.7.2_svn#713"
+        self.version ="1.7.2_svn#715"
         self.DB_version = 6
         #Process command line options
         self.startup_options = self.get_options()
@@ -75,16 +75,18 @@ class pyTrainer:
         logging.debug('connecting to DDBB')
         self.ddbb.connect()
 
-
         #Get user's DB version
         currentDB_version = self.profile.getValue("pytraining","DB_version")
         logging.debug("Current DB version: "+str(currentDB_version))
         # DB check can be triggered either via new version (mandatory) or as runtime parameter (--check)
-        if self.startup_options.check: # User requested check
+        if self.startup_options.check:
+            logging.debug("Checking DB as per user's request")
             self.sanityCheck()
-        elif currentDB_version is None: # No stored DB version - check DB etc
+        elif currentDB_version is None:
+            logging.debug("No stored DB version. Checking DB")
             self.sanityCheck()
-        elif self.DB_version > int(currentDB_version): # DB version expected is newer than user's version - check DB etc
+        elif self.DB_version > int(currentDB_version):
+            logging.debug("DB version newer than user's version")
             self.sanityCheck()
         else:
             logging.info('No sanity check requested')

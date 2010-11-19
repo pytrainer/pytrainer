@@ -26,6 +26,7 @@ import dateutil
 from pytrainer.lib.date import Date
 
 #Define the tables and their columns that should be in the database
+#Obviously, this is not a list but a dict -> TODO: ammend name to avoid confusion!!!
 tablesList = {  "records":{     "id_record":"integer primary key autoincrement",
                                         "date":"date",
                                         "sport":"integer",
@@ -293,8 +294,10 @@ class DDBB:
         global tablesList
         logging.debug('>>')
         tablesDB = self.ddbbObject.getTableList()
+        logging.debug('Tables in DB: '+str(tablesDB));
         #Check Tables
         for entry in tablesList:
+            logging.debug("Entry: "+entry)
             if entry not in tablesDB:
                 return False
         return True
@@ -312,15 +315,12 @@ class DDBB:
         #    logging.error('Support for MySQL database is decommissioned, please migrate to SQLite. Exiting check')
         #    exit(-2)
         try:
-            tablesDBT = self.ddbbObject.getTableList()
+            tablesDB = self.ddbbObject.getTableList()
         except:
             logging.error('Not able to retrieve which tables are in DB. Printing traceback')
             traceback.print_exc()
             exit(-1)
 
-        tablesDB = [] # Database retrieves a list with tuples ¿?
-        for entry in tablesDBT:
-            tablesDB.append(entry[0])
         logging.debug('Found '+ str(len(tablesDB))+' tables in DB: '+ str(tablesDB))
 
         # Create a compressed copy of current DB

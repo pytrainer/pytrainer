@@ -51,7 +51,12 @@ class Sql:
         pass
         
     def getTableList(self):
-        return self.select("sqlite_master","name", "type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY name")
+        tmpList = self.select("sqlite_master","name", "type IN ('table','view') AND name NOT LIKE 'sqlite_%' ORDER BY name")
+        # The instruction above returns a list of tuples, going for a simple list
+        newList = []
+        for entry in tmpList:
+            newList.append(entry[0])
+        return newList
 
     def createTableDefault(self,tableName,columns):
         '''22.11.2009 - dgranda
