@@ -42,19 +42,19 @@
                   <object class="GtkHBox" id="hboxEquipmentListButtons">
                     <property name="visible">True</property>
                     <child>
-                      <object class="GtkButton" id="buttonEquipmentDelete">
-                        <property name="label">gtk-delete</property>
+                      <object class="GtkButton" id="buttonEquipmentAdd">
+                        <property name="label">gtk-add</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="use_stock">True</property>
-                        <signal name="clicked" handler="delete_equipment_clicked"/>
+                        <signal name="clicked" handler="add_equipment_clicked"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
                         <property name="pack_type">end</property>
-                        <property name="position">2</property>
+                        <property name="position">0</property>
                       </packing>
                     </child>
                     <child>
@@ -74,19 +74,19 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="buttonEquipmentAdd">
-                        <property name="label">gtk-add</property>
+                      <object class="GtkButton" id="buttonEquipmentDelete">
+                        <property name="label">gtk-delete</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
                         <property name="use_stock">True</property>
-                        <signal name="clicked" handler="add_equipment_clicked"/>
+                        <signal name="clicked" handler="delete_equipment_clicked"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
                         <property name="pack_type">end</property>
-                        <property name="position">0</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                   </object>
