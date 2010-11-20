@@ -30,6 +30,7 @@
                       <object class="GtkTreeView" id="treeviewEquipmentList">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
+                        <signal name="cursor_changed" handler="equipment_cursor_changed"/>
                         <signal name="row_activated" handler="equipment_row_activated"/>
                       </object>
                     </child>
@@ -60,6 +61,7 @@
                     <child>
                       <object class="GtkButton" id="buttonEquipmentEdit">
                         <property name="label">gtk-edit</property>
+                        <property name="sensitive">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
@@ -76,6 +78,7 @@
                     <child>
                       <object class="GtkButton" id="buttonEquipmentDelete">
                         <property name="label">gtk-delete</property>
+                        <property name="sensitive">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>

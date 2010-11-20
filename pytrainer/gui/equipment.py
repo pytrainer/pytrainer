@@ -49,8 +49,11 @@ class EquipmentStore(gtk.ListStore):
         self._append_row(added_equipment)
         
     def get_equipment_item(self, item_path):
-        item_id = self.get_value(self.get_iter(item_path), 0)
-        return self._equipment_service.get_equipment_item(item_id)
+        item = None
+        if item_path is not None:
+            item_id = self.get_value(self.get_iter(item_path), 0)
+            item = self._equipment_service.get_equipment_item(item_id)
+        return item
         
     def edit_equipment(self, item_path, equipment):
         updated_item = self._equipment_service.store_equipment(equipment)
@@ -96,6 +99,7 @@ class EquipmentUi(gtk.HBox):
             "add_equipment_clicked": self._add_equipment_clicked,
             "cancel_add_equipment_clicked": self._cancel_add_equipment_clicked,
             "confirm_add_equipment_clicked": self._confirm_add_equipment_clicked,
+            "equipment_cursor_changed": self._equipment_cursor_changed,
             "edit_equipment_clicked": self._edit_equipment_clicked,
             "equipment_row_activated": self._edit_equipment_clicked,
             "cancel_edit_equipment_clicked": self._cancel_edit_equipment_clicked,
@@ -154,6 +158,11 @@ class EquipmentUi(gtk.HBox):
         new_equipment.notes = unicode(notes)
         self._equipment_store.add_equipment(new_equipment)
         self.show_page_equipment_list()
+        
+    def _equipment_cursor_changed(self, widget, *args):
+        item_selected = self._get_selected_equipment_item() != None
+        self._builder.get_object("buttonEquipmentEdit").set_sensitive(item_selected)
+        self._builder.get_object("buttonEquipmentDelete").set_sensitive(item_selected)
     
     def _edit_equipment_clicked(self, widget, *args):
         item = self._get_selected_equipment_item()
