@@ -111,6 +111,15 @@ class DrawGraph:
                 else:
                     self.ax2.axvspan(datalist.x_values[i], datalist.x_values[i]+datalist.bar_widths[i], alpha=0.15, facecolor=datalist.y2linecolor)
                 i += 1
+        elif datalist.graphType == "hspan":
+            i = 0
+            while i < len(datalist.x_values):
+                #print datalist.x_values[i] , datalist.y_values[i], datalist.labels[i], datalist.colors[i]
+                if not y2:
+                    self.ax1.axhspan(datalist.x_values[i], datalist.y_values[i], alpha=0.25, facecolor=datalist.colors[i], label=datalist.labels[i])
+                else:
+                    self.ax2.axhspan(datalist.x_values[i], datalist.y_values[i], alpha=0.25, facecolor=datalist.colors[i], label=datalist.labels[i])
+                i += 1
         elif datalist.graphType == "date":
             if not y2:
                 self.ax1.plot_date(datalist.x_values, datalist.y_values, color=datalist.linecolor, label=datalist.ylabel, alpha=0.5)

@@ -28,6 +28,8 @@ class GraphData:
         self.title = title
         self.ylabel = ylabel
         self.xlabel = xlabel
+        self.labels = []
+        self.colors = []
         self.x_values = []
         self.bar_bottoms = []
         self.bar_widths = []
@@ -43,7 +45,7 @@ class GraphData:
         self.show_on_y1 = False
         self.show_on_y2 = False
         logging.debug('<<')
-        
+            
     def addBars(self, x=None, y=None):
         if x is None or y is None:
             #logging.debug("Must supply both x and y data points, got x:'%s' y:'%s'" % (str(x), str(y)))
@@ -64,7 +66,7 @@ class GraphData:
         self.y_values.append(y)
         self.bar_bottoms.append(0)
         
-    def addPoints(self, x=None, y=None):
+    def addPoints(self, x=None, y=None, label=None, color=None):
         #if x is None or y is None or x is "":
         if not x or not y:
             #logging.debug("Must supply both x and y data points, got x:'%s' y:'%s'" % (str(x), str(y)))
@@ -72,6 +74,10 @@ class GraphData:
         #print('Adding point: %s %s' % (str(x), str(y)))
         self.x_values.append(x)
         self.y_values.append(y)
+        if label is not None:
+            self.labels.append(label)
+        if color is not None:
+            self.colors.append(color)
         if self.max_x_value is None or x > self.max_x_value:
             self.max_x_value = x
         if self.min_x_value is None or x < self.min_x_value:
@@ -106,10 +112,10 @@ class GraphData:
         '''
         _color = self.get_color(y1color)
         _color2 = self.get_color(y2color)
-        if _color is not None:
-            self.linecolor = _color
-        if _color2 is not None:
-            self.y2linecolor = _color2
+        #if _color is not None:
+        self.linecolor = _color
+        #if _color2 is not None:
+        self.y2linecolor = _color2
 
     def __len__(self):
         if self.x_values is None:

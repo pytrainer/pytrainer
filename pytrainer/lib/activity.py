@@ -316,6 +316,17 @@ class Activity:
 		self.time_data['pace_lap'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
 		self.time_data['pace_lap'].set_color('#99CCFF', '#99CCFF')
 		self.time_data['pace_lap'].graphType = "bar"
+		#Speed
+		title=_("Speed by Lap")
+		xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
+		ylabel="%s (%s)" % (_('Speed'), self.speed_unit)
+		self.distance_data['speed_lap'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+		self.distance_data['speed_lap'].set_color('#336633', '#336633')
+		self.distance_data['speed_lap'].graphType = "bar"
+		xlabel=_("Time (seconds)")
+		self.time_data['speed_lap'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+		self.time_data['speed_lap'].set_color('#336633', '#336633')
+		self.time_data['speed_lap'].graphType = "bar"
 		for lap in self.laps:
 			time = float( lap['elapsed_time'].decode('utf-8') ) # time in sql is a unicode string
 			dist = lap['distance']/1000 #distance in km
@@ -323,19 +334,27 @@ class Activity:
 				pace = time/(60*dist) #min/km
 			except ZeroDivisionError:
 				pace = 0.0
+			try:
+				avg_speed = dist/(time/3600) # km/hr
+			except:
+				avg_speed = 0.0
 			if self.pace_limit is not None and pace > self.pace_limit:
 				logging.debug("Pace (%s) exceeds limit (%s). Setting to 0" % (str(pace), str(self.pace_limit)))
 				pace = 0.0
-			logging.debug("Time: %f, Dist: %f, Pace: %f" % (time, dist, pace) )
+			logging.debug("Time: %f, Dist: %f, Pace: %f, Speed: %f" % (time, dist, pace, avg_speed) )
 			self.lap_time.addBars(x=time, y=10)
 			if self.us_system:
 				self.lap_distance.addBars(x=km2miles(dist), y=10)
 				self.distance_data['pace_lap'].addBars(x=km2miles(dist), y=pacekm2miles(pace))
 				self.time_data['pace_lap'].addBars(x=time, y=pacekm2miles(pace))
+				self.distance_data['speed_lap'].addBars(x=km2miles(dist), y=km2miles(avg_speed))
+				self.time_data['speed_lap'].addBars(x=time, y=km2miles(avg_speed))
 			else:
 				self.lap_distance.addBars(x=dist, y=10)
 				self.distance_data['pace_lap'].addBars(x=dist, y=pace)
 				self.time_data['pace_lap'].addBars(x=time, y=pace)
+				self.distance_data['speed_lap'].addBars(x=dist, y=avg_speed)
+				self.time_data['speed_lap'].addBars(x=time, y=avg_speed)
 		logging.debug("<<")
 
 	def _get_laps_from_gpx(self):
@@ -485,6 +504,21 @@ class Activity:
 				logging.debug( "No values for %s. Removing...." % item )
 				del self.time_data[item]
 		logging.debug("<<")
+		#Add Heartrate zones graphs
+		if 'hr' in self.distance_data:
+			zones = self.pytrainer_main.profile.getZones()		
+			title=_("Heart Rate zone")
+			xlabel="%s (%s)" % (_('Distance'), self.distance_unit)
+			ylabel="%s (%s)" % (_('Heart Rate'), _('bpm'))
+			self.distance_data['hr_z'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+			self.distance_data['hr_z'].graphType = "hspan"
+			self.distance_data['hr_z'].set_color(None, None)
+			xlabel=_("Time (seconds)")
+			self.time_data['hr_z'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
+			self.time_data['hr_z'].set_color(None, None)
+			for zone in zones:
+				self.distance_data['hr_z'].addPoints(x=zone[0], y=zone[1], label=zone[3], color=zone[2])
+				self.time_data['hr_z'].addPoints(x=zone[0], y=zone[1], label=zone[3], color=zone[2])
 
 	def _float(self, value):
 		try:

@@ -485,27 +485,35 @@ class Main(SimpleGladeApp):
                     y1button.connect("toggled", self.on_y1change, y1box, graphdata, activity)
                     #Attach button to container
                     y1box.attach(y1button, 0, 1, row, row+1, xoptions=gtk.EXPAND|gtk.FILL)
-                    #Create a color choser
-                    y1color = gtk.ColorButton()
-                    #Set color to current activity color
-                    _color = gtk.gdk.color_parse(data[graphdata].linecolor)
-                    y1color.set_color(_color)
-                    #Connect handler for color state changes
-                    y1color.connect("color-set", self.on_y1colorchange, y1box, graphdata, activity)
-                    #Attach to container
-                    y1box.attach(y1color, 1, 2, row, row+1)
+                    if data[graphdata].linecolor is not None:
+                        #Create a color choser
+                        y1color = gtk.ColorButton()
+                        #Set color to current activity color
+                        _color = gtk.gdk.color_parse(data[graphdata].linecolor)
+                        y1color.set_color(_color)
+                        #Connect handler for color state changes
+                        y1color.connect("color-set", self.on_y1colorchange, y1box, graphdata, activity)
+                        #Attach to container
+                        y1box.attach(y1color, 1, 2, row, row+1)
+                    else:
+                        blanklabel = gtk.Label("")
+                        y1box.attach(blanklabel, 1, 2, row, row+1)
 
                     #Second Y axis
                     y2button = gtk.CheckButton(label=data[graphdata].title)
                     y2button.set_active(data[graphdata].show_on_y2)
                     y2button.connect("toggled", self.on_y2change, y2box, graphdata, activity)
                     y2box.attach(y2button, 0, 1, row, row+1, xoptions=gtk.EXPAND|gtk.FILL)
-                    y2color = gtk.ColorButton()
-                    _color = gtk.gdk.color_parse(data[graphdata].y2linecolor)
-                    y2color.set_color(_color)
-                    y2color.connect("color-set", self.on_y2colorchange, y2box, graphdata, activity)
-                    #Attach to container
-                    y2box.attach(y2color, 1, 2, row, row+1)
+                    if data[graphdata].y2linecolor is not None:
+                        y2color = gtk.ColorButton()
+                        _color = gtk.gdk.color_parse(data[graphdata].y2linecolor)
+                        y2color.set_color(_color)
+                        y2color.connect("color-set", self.on_y2colorchange, y2box, graphdata, activity)
+                        #Attach to container
+                        y2box.attach(y2color, 1, 2, row, row+1)
+                    else:
+                        blanklabel = gtk.Label("")
+                        y2box.attach(blanklabel, 1, 2, row, row+1)
                     row += 1
 
                 y1Frame.add(y1box)
