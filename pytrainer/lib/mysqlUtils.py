@@ -76,7 +76,11 @@ class Sql:
         self.db.query("create database %s" %self.ddbb)
         
     def getTableList(self):
-        return self.freeExec('show tables')
+        tables = []
+        result = self.freeExec('show tables')
+        for row in result:
+            tables.append(row[0])
+        return tables
         
     def createTableDefault(self,tableName,columns):
         '''
