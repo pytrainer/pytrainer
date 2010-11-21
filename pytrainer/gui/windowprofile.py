@@ -152,14 +152,14 @@ class WindowProfile(SimpleGladeApp):
                             gobject.TYPE_STRING,
                             object)
                 for i in sport_list:
-                    if i[1]:
+                    try:
                         met = float(i[1])
-                    else:
-                        met = 0.0
-                    if i[2]:
+                    except:
+                        met = ""
+                    try:
                         weight = float(i[2])
-                    else:
-                        weight = 0.0
+                    except:
+                        weight = ""
                     try:
                         max_pace = int(i[4])
                         if max_pace is None or max_pace == 0:
@@ -349,9 +349,18 @@ class WindowProfile(SimpleGladeApp):
             name,met,weight,maxpace = self.parent.getSportInfo(sport)
             self.editsportentry.set_text(sport)
             self.sportnameedit.set_text(sport)
-            self.editweightentry.set_text(str(weight))
-            self.editmetentry.set_text(str(met))
-            self.editmaxpace.set_text(str(maxpace))
+            if weight is not None:
+                self.editweightentry.set_text(str(weight))
+            else:
+                self.editweightentry.set_text("")
+            if met is not None:
+                self.editmetentry.set_text(str(met))
+            else:
+                self.editmetentry.set_text("")
+            if maxpace is not None:
+                self.editmaxpace.set_text(str(maxpace))
+            else:
+                self.editmaxpace.set_text("")
             self.hidesportsteps()
             self.editsport.show()
     
