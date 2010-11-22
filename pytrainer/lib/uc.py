@@ -61,7 +61,7 @@ class UC(Singleton):
         """ Gives value of physical quantity (metric) in users system"""
         try:
             _val = float(value)
-        except ValueError:
+        except (ValueError, TypeError):
             return None
         if self.us:
             return _val * uc_factors[quantity]
@@ -72,7 +72,7 @@ class UC(Singleton):
         """ Takes value (users system) and convert to metric (sys)"""
         try:
             _val = float(value)
-        except ValueError:
+        except (ValueError, TypeError):
             return None        
         if self.us:
             return _val / uc_factors[quantity]    

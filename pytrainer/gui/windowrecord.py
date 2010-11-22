@@ -348,7 +348,10 @@ class WindowRecord(SimpleGladeApp):
         
         #self.rcd_distance.set_text("%.2f"%activity.distance)
         #myset_text(self.rcd_distance, 'distance', activity.distance, us=self.us, round=2)
-        self.rcd_distance.set_text("%.2f" %self.uc.distance(activity.distance))        
+        if activity.distance is not None:
+            self.rcd_distance.set_text("%.2f" %self.uc.distance(activity.distance))        
+        else:
+            self.rcd_distance.set_text("")
         self.rcd_average.set_text("%.2f" %self.uc.speed(activity.average))
         self.rcd_calories.set_text("%s"%activity.calories)
         self.rcd_beats.set_text("%s"%activity.beats)
