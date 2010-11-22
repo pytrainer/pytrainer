@@ -178,6 +178,7 @@ class WindowProfile(SimpleGladeApp):
                                 3, max_pace,
                                 )
                 self.sportTreeView.set_model(store)
+                self.sportTreeView.set_cursor(0)
                 #self.sportlistbutton.hide()
                 self.sportlist.show()
         elif frame == 5: #Startup Parameters page selected
@@ -342,9 +343,9 @@ class WindowProfile(SimpleGladeApp):
         self.sportlist.show()
     
     def on_editsport_clicked(self,widget):
-        self.buttonbox.set_sensitive(0)
         selected,iter = self.sportTreeView.get_selection().get_selected()
         if iter:
+            self.buttonbox.set_sensitive(0)
             sport = selected.get_value(iter,0)
             name,met,weight,maxpace = self.parent.getSportInfo(sport)
             self.editsportentry.set_text(sport)
