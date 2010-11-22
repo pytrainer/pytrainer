@@ -1350,18 +1350,20 @@ class Main(SimpleGladeApp):
     def on_buttonGraphHideOptions_clicked(self, widget):
         logging.debug('on_buttonGraphHideOptions_clicked')
         self.buttonGraphHideOptions.hide()
-        for child in self.graph_data_hbox.get_children():
-            if isinstance(child, gtk.Frame):
-                child.hide()
+        self.scrolledwindowGraphOptions.hide()
+        #for child in self.graph_data_hbox.get_children():
+        #    if isinstance(child, gtk.Frame):
+        #        child.hide()
         self.buttonGraphShowOptions.show()
 
 
     def on_buttonGraphShowOptions_clicked(self, widget):
         logging.debug('on_buttonGraphShowOptions_clicked')
         self.buttonGraphShowOptions.hide()
-        for child in self.graph_data_hbox.get_children():
-            if isinstance(child, gtk.Frame):
-                child.show()
+        #for child in self.graph_data_hbox.get_children():
+        #    if isinstance(child, gtk.Frame):
+        #        child.show()
+        self.scrolledwindowGraphOptions.show()
         self.buttonGraphHideOptions.show()
 
     def on_buttonRedrawMap_clicked(self, widget):
