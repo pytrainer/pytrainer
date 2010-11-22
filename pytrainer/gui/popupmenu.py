@@ -31,7 +31,7 @@ class PopupMenu(SimpleGladeApp):
 		self.popup.popup( None, None, None, event_button, time)
 
 	def on_editrecord_activate(self,widget):
-		self.parent.parent.editRecord(self.id_record)
+		self.parent.parent.editRecord(self.id_record, self.parent.selected_view)
 
 	def on_showclassic_activate(self,widget):
 		self.parent.classicview_item.set_active(True)

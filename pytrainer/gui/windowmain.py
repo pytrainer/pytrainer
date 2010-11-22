@@ -641,9 +641,9 @@ class Main(SimpleGladeApp):
                 distance = km2miles(distance)
                 maxspeed = km2miles(maxspeed)
 
-            if tbeats > 0:
+            if tbeats > 0 and timeinseconds > 0:
                 tbeats = tbeats/(timeinseconds/60/60)
-            if distance > 0:
+            if distance > 0 and timeinseconds > 0:
                 average = distance/(timeinseconds/60/60)
             if maxspeed > 0:
                 maxpace = "%d:%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
@@ -656,9 +656,15 @@ class Main(SimpleGladeApp):
             self.day_hour.set_text("%d" %hour)
             self.day_minute.set_text("%02d" %min)
             self.day_second.set_text("%02d" %sec)
-            self.day_beats.set_text("%0.2f" %tbeats)
+            if tbeats:
+                self.day_beats.set_text("%0.2f" %tbeats)
+            else:
+                self.day_beats.set_text("")
             self.day_maxbeats.set_text("%0.2f" %maxbeats)
-            self.day_average.set_text("%0.2f" %average)
+            if average:
+                self.day_average.set_text("%0.2f" %average)
+            else:
+                self.day_average.set_text("")
             self.day_maxspeed.set_text("%0.2f" %maxspeed)
             self.day_pace.set_text("%s" %pace)
             self.day_maxpace.set_text("%s" %maxpace)
@@ -1406,7 +1412,7 @@ class Main(SimpleGladeApp):
     def on_edit_clicked(self,widget):
         selected,iter = self.recordTreeView.get_selection().get_selected()
         id_record = selected.get_value(iter,0)
-        self.parent.editRecord(id_record)
+        self.parent.editRecord(id_record, self.selected_view)
 
     def on_remove_clicked(self,widget):
         selected,iter = self.recordTreeView.get_selection().get_selected()
@@ -1700,7 +1706,7 @@ class Main(SimpleGladeApp):
 
     def on_recordTree_clicked(self,widget,num,num2):
         selected,iter = self.recordTreeView.get_selection().get_selected()
-        self.parent.editRecord(selected.get_value(iter,0))
+        self.parent.editRecord(selected.get_value(iter,0), self.selected_view)
 
     ### athleteview events ###
     def on_athleteTreeView_button_press_event(self, treeview, event):

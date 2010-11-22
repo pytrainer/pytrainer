@@ -53,7 +53,7 @@ from lib.uc import UC
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.7.2_svn#724"
+        self.version ="1.7.2_svn#725"
         self.DB_version = 6
         #Process command line options
         self.startup_options = self.get_options()
@@ -407,12 +407,14 @@ class pyTrainer:
         self.refreshListRecords()
         logging.debug('<<')
 
-    def editRecord(self, id_record):
+    def editRecord(self, id_record, view=None):
         logging.debug('>>')
         list_sport = self.profile.getSportList()
         logging.debug('id_record: '+str(id_record)+' | list_sport: '+str(list_sport))
         self.record.editRecord(id_record,list_sport)
         self.refreshListRecords()
+        if view is not None:
+			self.refreshGraphView(view)
         logging.debug('<<')
 
     def removeRecord(self, id_record, confirm = False):
