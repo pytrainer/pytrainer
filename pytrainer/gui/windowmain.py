@@ -370,7 +370,6 @@ class Main(SimpleGladeApp):
                 logging.debug("Using the new TEST graphing approach")
                 #Hide current drop down boxes
                 self.hbox30.hide()
-                #Show new graph details
                 self.graph_data_hbox.hide()
                 #Enable graph
                 self.record_vbox.set_sensitive(1)
@@ -547,6 +546,11 @@ class Main(SimpleGladeApp):
                 if y2min is not None and y2max is not None:
                     y2minlabel.set_text(str(y2min))
                     y2maxlabel.set_text(str(y2max))
+                    
+                #Default to showing options
+                self.buttonGraphShowOptions.hide()
+                self.scrolledwindowGraphOptions.show()
+                self.buttonGraphHideOptions.show()
         else:
             logging.debug("Activity has no GPX data")
             #Show drop down boxes
