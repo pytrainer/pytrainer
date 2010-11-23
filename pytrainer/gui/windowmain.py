@@ -1439,8 +1439,8 @@ class Main(SimpleGladeApp):
 
     def on_sportlist_changed(self,widget):
         logging.debug("--")
-        if self.sportlist.get_active() != self.activeSport:
-            self.activeSport = self.sportlist.get_active()
+        if self.sportlist.get_active_text() != self.activeSport:
+            self.activeSport = self.sportlist.get_active_text()
             self.parent.refreshListRecords()
             self.parent.refreshGraphView(self.selected_view)
         else:

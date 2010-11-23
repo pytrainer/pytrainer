@@ -427,7 +427,7 @@ class Record:
 			add: attribute to add or not the sport to db
 		returns: id_sports from provided sport"""
 		logging.debug('>>')
-		sport_id=1
+		sport_id=None
 		if sport == "" or sport is None:
 			return sport_id
 		try:

@@ -53,7 +53,7 @@ from lib.uc import UC
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.7.2_svn#727"
+        self.version ="1.7.2_svn#728"
         self.DB_version = 6
         #Process command line options
         self.startup_options = self.get_options()
@@ -235,20 +235,23 @@ class pyTrainer:
         elif view=="day":
              logging.debug('day view')
              sport = self.windowmain.activeSport
-             record_list = self.record.getrecordList(date_selected, sport)
+             sport_id = self.record.getSportId(sport)
+             record_list = self.record.getrecordList(date_selected, sport_id)
              self.windowmain.actualize_dayview(record_list=record_list)
              #selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
         elif view=="week":
              logging.debug('week view')
              date_ini, date_end = self.date.getWeekInterval(date_selected, self.profile.prf_us_system)
              sport = self.windowmain.activeSport
-             record_list = self.record.getrecordPeriod(date_ini, date_end, sport)
+             sport_id = self.record.getSportId(sport)
+             record_list = self.record.getrecordPeriod(date_ini, date_end, sport_id)
              self.windowmain.actualize_weekview(record_list, date_ini, date_end)
         elif view=="month":
              logging.debug('month view')
              date_ini, date_end = self.date.getMonthInterval(date_selected)
              sport = self.windowmain.activeSport
-             record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport)
+             sport_id = self.record.getSportId(sport)
+             record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport_id)
              nameMonth, daysInMonth = self.date.getNameMonth(date_selected)
              self.windowmain.actualize_monthview(record_list, nameMonth)
              self.windowmain.actualize_monthgraph(record_list, daysInMonth)
@@ -256,8 +259,9 @@ class pyTrainer:
              logging.debug('year view')
              date_ini, date_end = self.date.getYearInterval(date_selected)
              sport = self.windowmain.activeSport
+             sport_id = self.record.getSportId(sport)
              year = self.date.getYear(date_selected)
-             record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport)
+             record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport_id)
              self.windowmain.actualize_yearview(record_list, year)
              self.windowmain.actualize_yeargraph(record_list)
         elif view=="listview":
@@ -311,7 +315,8 @@ class pyTrainer:
         self.refreshListView(self.windowmain.listsearch.condition)
         #Refresh list records
         date = self.date.getDate()
-        id_sport = self.windowmain.activeSport
+        sport = self.windowmain.activeSport
+        id_sport = self.record.getSportId(sport)
         record_ids = self.record.getrecordList(date, id_sport)
         self.windowmain.actualize_recordTreeView(record_ids)
         #Mark the monthly calendar to show which days have activity?
