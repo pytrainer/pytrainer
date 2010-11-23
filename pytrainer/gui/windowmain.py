@@ -1429,7 +1429,7 @@ class Main(SimpleGladeApp):
             #print 'New athlete'
             self.on_athleteTreeView_edit( None, None)
         else:
-            self.parent.newRecord()
+            self.parent.newRecord(view=self.selected_view)
 
     def on_edituser_activate(self,widget):
         self.parent.editProfile()

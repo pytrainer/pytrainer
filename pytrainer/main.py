@@ -53,7 +53,7 @@ from lib.uc import UC
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.7.2_svn#728"
+        self.version ="1.7.2_svn#729"
         self.DB_version = 6
         #Process command line options
         self.startup_options = self.get_options()
@@ -404,13 +404,15 @@ class pyTrainer:
                 self.windowmain.addExtension(txtbutton)
         logging.debug('<<')
 
-    def newRecord(self,title=None,distance=None,time=None,upositive=None,unegative=None,bpm=None,calories=None,date=None,comment=None):
+    def newRecord(self,title=None,distance=None,time=None,upositive=None,unegative=None,bpm=None,calories=None,date=None,comment=None,view=None):
         logging.debug('>>')
         list_sport = self.profile.getSportList()
         if date == None:
              date = self.date.getDate()
         self.record.newRecord(list_sport, date, title, distance, time, upositive, unegative, bpm, calories, comment)
         self.refreshListRecords()
+        if view is not None:
+			self.refreshGraphView(view)
         logging.debug('<<')
 
     def editRecord(self, id_record, view=None):
@@ -423,7 +425,7 @@ class pyTrainer:
 			self.refreshGraphView(view)
         logging.debug('<<')
 
-    def removeRecord(self, id_record, confirm = False):
+    def removeRecord(self, id_record, confirm = False, view=None):
         logging.debug('>>')
         if confirm:
              self.record.removeRecord(id_record)
@@ -434,6 +436,8 @@ class pyTrainer:
              warning.set_text(msg)
              warning.run()
         self.refreshListRecords()
+        if view is not None:
+			self.refreshGraphView(view)
         logging.debug('<<')
 
     def removeWaypoint(self,id_waypoint, confirm = False):
