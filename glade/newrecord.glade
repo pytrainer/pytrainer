@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <glade-interface>
   <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-naming-policy toplevel-contextual -->
@@ -10,7 +10,6 @@
     <child>
       <widget class="GtkVBox" id="vbox2">
         <property name="visible">True</property>
-        <property name="orientation">vertical</property>
         <child>
           <widget class="GtkScrolledWindow" id="scrolledwindowEntries">
             <property name="can_focus">True</property>
@@ -36,7 +35,6 @@
             <child>
               <widget class="GtkVBox" id="vbox27">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkFrame" id="frame19">
                     <property name="visible">True</property>
@@ -71,7 +69,7 @@
                               <widget class="GtkEntry" id="rcd_title">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="invisible_char">●</property>
                                 <signal name="changed" handler="on_rcd_title_changed"/>
                               </widget>
                               <packing>
@@ -98,7 +96,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="editable">False</property>
-                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="invisible_char">●</property>
                               </widget>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -532,7 +530,7 @@
                               <widget class="GtkEntry" id="rcd_maxvel">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
                               </widget>
                               <packing>
@@ -575,7 +573,7 @@
                               <widget class="GtkEntry" id="rcd_average">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
                               </widget>
                               <packing>
@@ -621,7 +619,6 @@
             <child>
               <widget class="GtkVBox" id="vbox26">
                 <property name="visible">True</property>
-                <property name="orientation">vertical</property>
                 <child>
                   <widget class="GtkFrame" id="frame20">
                     <property name="visible">True</property>
@@ -654,8 +651,9 @@
                             <child>
                               <widget class="GtkEntry" id="rcd_maxpace">
                                 <property name="visible">True</property>
+                                <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
-                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
                               </widget>
                               <packing>
@@ -682,8 +680,9 @@
                             <child>
                               <widget class="GtkEntry" id="rcd_pace">
                                 <property name="visible">True</property>
+                                <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
-                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
                               </widget>
                               <packing>
@@ -763,7 +762,7 @@
                               <widget class="GtkEntry" id="rcd_upositive">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
                               </widget>
                               <packing>
@@ -791,7 +790,7 @@
                               <widget class="GtkEntry" id="rcd_unegative">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
                               </widget>
                               <packing>
@@ -873,7 +872,7 @@
                               <widget class="GtkEntry" id="rcd_maxbeats">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
                               </widget>
                               <packing>
@@ -913,7 +912,7 @@
                               <widget class="GtkEntry" id="rcd_calories">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
                               </widget>
                               <packing>
@@ -1273,5 +1272,3 @@
     </child>
   </widget>
 </glade-interface>
-
- 	  	 
