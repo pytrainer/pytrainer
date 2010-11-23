@@ -1462,7 +1462,7 @@ class Main(SimpleGladeApp):
             self.selected_view="month"
         elif page == 4:
             self.selected_view="year"
-        elif page == 6:
+        elif page == 5:
             self.selected_view="athlete"
         else:
             self.selected_view="record"
