@@ -477,7 +477,7 @@ class Record:
 			logging.debug("condition: %s" % condition)
 			return self.pytrainer_main.ddbb.select("records,sports",
 				"date,distance,average,title,sports.name,id_record,time,beats,calories",
-				"sports.id_sports = records.sport and %s" %condition)
+				"sports.id_sports = records.sport and %s order by date desc" %condition)
 
 	def getRecordDayList(self,date, id_sport=None):
 		logging.debug('>>')
