@@ -607,8 +607,8 @@ class Main(SimpleGladeApp):
             self.record_zone5.set_text("%s-%s" %(zones[0][0],zones[0][1]))
             beats = activity.beats
             maxbeats = activity.maxbeats
-            self.record_beats.set_text("%0.2f" %beats)
-            self.record_maxbeats.set_text("%0.2f" %maxbeats)
+            self.record_beats.set_text("%0.0f" %beats)
+            self.record_maxbeats.set_text("%0.0f" %maxbeats)
             self.record_calories2.set_text("%0.0f" %activity.calories)
             if is_karvonen_method=="True":
                 self.record_zonesmethod.set_text(_("Karvonen method"))
@@ -676,10 +676,10 @@ class Main(SimpleGladeApp):
             self.day_minute.set_text("%02d" %min)
             self.day_second.set_text("%02d" %sec)
             if tbeats:
-                self.day_beats.set_text("%0.2f" %tbeats)
+                self.day_beats.set_text("%0.0f" %tbeats)
             else:
                 self.day_beats.set_text("")
-            self.day_maxbeats.set_text("%0.2f" %maxbeats)
+            self.day_maxbeats.set_text("%0.0f" %maxbeats)
             if average:
                 self.day_average.set_text("%0.2f" %average)
             else:
@@ -796,8 +796,8 @@ class Main(SimpleGladeApp):
             self.weeka_hour.set_text("%d" %hour)
             self.weeka_minute.set_text("%02d" %min)
             self.weeka_second.set_text("%02d" %sec)
-            self.weeka_maxbeats.set_text("%0.2f" %(maxbeats))
-            self.weeka_beats.set_text("%0.2f" %(tbeats))
+            self.weeka_maxbeats.set_text("%0.0f" %(maxbeats))
+            self.weeka_beats.set_text("%0.0f" %(tbeats))
             self.weeka_average.set_text("%0.2f" %average)
             self.weeka_maxspeed.set_text("%0.2f" %maxspeed)
             self.weeka_pace.set_text(pace)
@@ -874,8 +874,8 @@ class Main(SimpleGladeApp):
             self.montha_hour.set_text("%d" %hour)
             self.montha_minute.set_text("%02d" %min)
             self.montha_second.set_text("%02d" %sec)
-            self.montha_maxbeats.set_text("%0.2f" %(maxbeats))
-            self.montha_beats.set_text("%0.2f" %(tbeats))
+            self.montha_maxbeats.set_text("%0.0f" %(maxbeats))
+            self.montha_beats.set_text("%0.0f" %(tbeats))
             self.montha_average.set_text("%0.2f" %average)
             self.montha_maxspeed.set_text("%0.2f" %maxspeed)
             self.montha_pace.set_text(pace)
@@ -937,8 +937,8 @@ class Main(SimpleGladeApp):
             self.yeara_hour.set_text("%d" %hour)
             self.yeara_minute.set_text("%02d" %min)
             self.yeara_second.set_text("%02d" %sec)
-            self.yeara_beats.set_text("%0.2f" %tbeats)
-            self.yeara_maxbeats.set_text("%0.2f" %(maxbeats))
+            self.yeara_beats.set_text("%0.0f" %tbeats)
+            self.yeara_maxbeats.set_text("%0.0f" %(maxbeats))
             self.yeara_average.set_text("%0.2f" %average)
             self.yeara_maxspeed.set_text("%0.2f" %maxspeed)
             self.yeara_pace.set_text(pace)
