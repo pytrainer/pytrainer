@@ -360,14 +360,17 @@ class DDBB:
     def populate_duration_from_time(self):
         '''
         Populate duration from time field
-            only for empty durations and where time can be parsed as an int
+            only for time can be parsed as an int
+            
+            also check pace value
         '''
         logging.debug('--')
         #listOfRecords = self.select_dict("records",('id_record','time'), "duration is NULL")
         #logging.debug("Found %d records in DB without date_time_local field populated" % (len(listOfRecords) ) )
-        listOfRecords = self.select_dict("records",('id_record','time', 'duration'))
+        listOfRecords = self.select_dict("records",('id_record','time', 'duration', 'pace', 'average', 'maxspeed', 'maxpace'))
         logging.debug("Found %d records in DB" % (len(listOfRecords) ) )
         for record in listOfRecords:
+            data = {}
             try:
                 duration = int(record['time'])
             except Exception as e:
@@ -375,7 +378,32 @@ class DDBB:
                 continue
             if duration != record['duration']:
                 logging.debug("setting record %s duration to %d" % (record['id_record'], duration))
-                data = {'duration': duration}
+                data['duration'] = duration
+            #Check pace
+            try:
+                db_avg_speed = float(record['average']) #km/hr
+                db_pace = float(record['pace']) #min/km
+                db_max_speed = float(record['maxspeed'])
+                db_max_pace = float(record['maxpace'])
+                calc_pace = 60 / db_avg_speed
+                calc_max_pace = 60 / db_max_speed
+                #Update DB if db_pace != calc_pace 
+                if "%.2f" % db_pace != "%.2f" % calc_pace:
+                    print "DB Pace: %.2f, Calc: %.2f" % (db_pace, calc_pace)
+                    #data['pace'] = calc_pace
+                else:
+                    print "Pace ok: %.2f" % db_pace
+                #Update DB if db_max_pace != calc_max_pace 
+                if "%.2f" % db_max_pace != "%.2f" % calc_max_pace:
+                    print "DB Max Pace: %.2f, Calc: %.2f" % (db_max_pace, calc_max_pace)
+                    #data['max_pace'] = calc_max_pace
+                else:
+                    print "Max pace ok: %.2f" % db_max_pace
+            except Exception as e:
+                #print type(e), e
+                logging.debug("Error with converting pace (%s), average speed(%s), max speed (%s), max pace(%s)" % (record['pace'], record['average'], record['maxspeed'], record['maxpace']))
+            #Update DB if any changes
+            if len(data) > 0:
                 self.update_dict("records",data ,"id_record = %d"%record['id_record'])
 
     def populate_date_time_local(self):
