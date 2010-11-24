@@ -1619,7 +1619,7 @@ class Main(SimpleGladeApp):
                 selected,iter = treeview.get_selection().get_selected()
                 #Por si hay un registro (malo) sin fecha, pa poder borrarlo
                 try:
-                    date = self.parent.date.setDate(selected.get_value(iter,2))
+                    date = self.parent.date.getDate(selected.get_value(iter,2))
                 except:
                     pass
                 self.popup.show(selected.get_value(iter,0), event.button, time)
