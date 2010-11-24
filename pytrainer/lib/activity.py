@@ -126,6 +126,9 @@ class Activity:
 		self.x_limits_u = (None, None)
 		self.y1_limits_u = (None, None)
 		self.y2_limits_u = (None, None)
+		self.y1_grid = False
+		self.y2_grid = False
+		self.x_grid = False
 		self.show_laps = False
 		logging.debug("<<")
 

@@ -362,6 +362,7 @@ class Main(SimpleGladeApp):
                 self.hbox30.show()
                 #Hide new graph details
                 self.graph_data_hbox.hide()
+                self.hboxGraphOptions.hide()
                 #Enable graph
                 self.record_vbox.set_sensitive(1)
                 self.drawarearecord.drawgraph(self.record_list,self.laps)
@@ -392,20 +393,32 @@ class Main(SimpleGladeApp):
                 xdistancebutton = gtk.RadioButton(label=_("Distance"))
                 xtimebutton = gtk.RadioButton(group=xdistancebutton, label=_("Time"))
                 xlapsbutton = gtk.CheckButton(label=_("Laps"))
+                y1gridbutton = gtk.CheckButton(label=_("Left Axis Grid"))
+                y2gridbutton = gtk.CheckButton(label=_("Right Axis Grid"))
+                xgridbutton = gtk.CheckButton(label=_("X Axis Grid"))
                 #Set state of buttons
                 if activity.x_axis == "distance":
                     xdistancebutton.set_active(True)
                 elif activity.x_axis == "time":
                     xtimebutton.set_active(True)
                 xlapsbutton.set_active(activity.show_laps)
+                y1gridbutton.set_active(activity.y1_grid)
+                y2gridbutton.set_active(activity.y2_grid)
+                xgridbutton.set_active(activity.x_grid)
                 #Connect handlers to buttons
                 xdistancebutton.connect("toggled", self.on_xaxischange, "distance", activity)
                 xtimebutton.connect("toggled", self.on_xaxischange, "time", activity)
                 xlapsbutton.connect("toggled", self.on_xlapschange, activity)
+                y1gridbutton.connect("toggled", self.on_gridchange, "y1", activity)
+                y2gridbutton.connect("toggled", self.on_gridchange, "y2", activity)
+                xgridbutton.connect("toggled", self.on_gridchange, "x", activity)
                 #Add buttons to frame
                 xvbox.pack_start(xdistancebutton, expand=False)
                 xvbox.pack_start(xtimebutton, expand=False)
                 xvbox.pack_start(xlapsbutton, expand=False)
+                xvbox.pack_start(y1gridbutton, expand=False)
+                xvbox.pack_start(y2gridbutton, expand=False)
+                xvbox.pack_start(xgridbutton, expand=False)
                 xFrame.add(xvbox)
 
                 #Populate axis limits frame
@@ -521,8 +534,8 @@ class Main(SimpleGladeApp):
                 self.graph_data_hbox.pack_start(y1Frame, expand=False, fill=False, padding=5)
                 self.graph_data_hbox.pack_start(y2Frame, expand=False, fill=False, padding=5)
                 self.graph_data_hbox.pack_start(limitsFrame, expand=False, fill=True, padding=5)
-                self.graph_data_hbox.show_all()
-                self.buttonGraphShowOptions.hide()
+                #self.graph_data_hbox.show_all()
+                self.hboxGraphOptions.show_all()
                 act = self.grapher.drawActivityGraph(activity=activity, box=self.record_graph_vbox)
                 if act.x_limits_u[0] is not None:
                     xmin, xmax = act.x_limits_u
@@ -546,7 +559,8 @@ class Main(SimpleGladeApp):
                 if y2min is not None and y2max is not None:
                     y2minlabel.set_text(str(y2min))
                     y2maxlabel.set_text(str(y2max))
-                    
+                
+                
                 #Default to showing options
                 self.buttonGraphShowOptions.hide()
                 self.scrolledwindowGraphOptions.show()
@@ -557,6 +571,7 @@ class Main(SimpleGladeApp):
             self.hbox30.show()
             #Hide new graph details
             self.graph_data_hbox.hide()
+            self.hboxGraphOptions.hide()
             #Remove graph
             vboxChildren = self.record_graph_vbox.get_children()
             logging.debug('Vbox has %d children %s' % (len(vboxChildren), str(vboxChildren) ))
@@ -1249,6 +1264,16 @@ class Main(SimpleGladeApp):
             activity.show_laps = True
         else:
             activity.show_laps = False
+        self.actualize_recordgraph(activity)
+        
+    def on_gridchange(self, widget, axis=None, activity=None):
+        '''Handler for record graph grid selection changes'''
+        if axis == 'y1':
+            activity.y1_grid = not activity.y1_grid
+        elif axis == 'y2':
+            activity.y2_grid = not activity.y2_grid
+        elif axis == 'x':
+            activity.x_grid = not activity.x_grid
         self.actualize_recordgraph(activity)
 
     def on_y1colorchange(self, widget, box, graphdata, activity):

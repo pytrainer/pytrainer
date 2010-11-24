@@ -35,7 +35,7 @@ class DrawGraph:
         self.ax2 = None
         logging.debug('<<')
 
-    def draw(self, datalist = None, box = None, figure = None, title = None, y2 = False):
+    def draw(self, datalist=None, box=None, figure=None, title=None, y2=False, xgrid=False, ygrid=False):
         '''
             Draw a graph using supplied information into supplied gtk.box
 
@@ -80,6 +80,12 @@ class DrawGraph:
             plt.xlabel(datalist.xlabel)
         if title is not None:
             plt.title(title)
+        #Display grid
+        if y2 and ygrid:
+            self.ax2.grid(True)
+        elif self.ax1 and ygrid:
+            self.ax1.grid(True)
+        plt.gca().xaxis.grid(xgrid)
         #Removed as now in legend
         #plt.ylabel(datalist.ylabel)
 
@@ -190,10 +196,10 @@ class DrawGraph:
             for item in activity.distance_data:
                 if activity.distance_data[item].show_on_y1:
                     y1count += 1
-                    figure = self.draw(activity.distance_data[item], box=box, figure=figure, title=_title)
+                    figure = self.draw(activity.distance_data[item], box=box, figure=figure, title=_title, xgrid=activity.x_grid, ygrid=activity.y1_grid)
                 if activity.distance_data[item].show_on_y2:
                     y2count += 1
-                    figure = self.draw(activity.distance_data[item], box=box, figure=figure, title=_title, y2=True)
+                    figure = self.draw(activity.distance_data[item], box=box, figure=figure, title=_title, y2=True, xgrid=activity.x_grid, ygrid=activity.y2_grid)
             #Display lap divisions if required
             if activity.show_laps:
                 figure = self.draw(activity.lap_distance, box=box, figure=figure)
@@ -207,10 +213,10 @@ class DrawGraph:
             for item in activity.time_data:
                 if activity.time_data[item].show_on_y1:
                     y1count += 1
-                    figure = self.draw(activity.time_data[item], box=box, figure=figure, title=_title)
+                    figure = self.draw(activity.time_data[item], box=box, figure=figure, title=_title, xgrid=activity.x_grid, ygrid=activity.y1_grid)
                 if activity.time_data[item].show_on_y2:
                     y2count += 1
-                    figure = self.draw(activity.time_data[item], box=box, figure=figure, title=_title, y2=True)
+                    figure = self.draw(activity.time_data[item], box=box, figure=figure, title=_title, y2=True, xgrid=activity.x_grid, ygrid=activity.y2_grid)
             #Display lap divisions if required
             if activity.show_laps:
                 figure = self.draw(activity.lap_time, box=box, figure=figure)
