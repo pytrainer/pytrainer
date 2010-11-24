@@ -25,6 +25,31 @@ uc_units = {'distance' : ['km','mi'] , 'speed' : ['km/h', 'mph'],
 uc_factors = {'distance' : 0.621371192, 'speed': 0.621371192, 'pace':1.609344, 
               'height': 3.2808399, 'weight': 2.204624}
 
+def pace2float(pace_str):
+    if pace_str.count(':') != 1:
+        return 0.0
+    else:
+        _prts = pace_str.split(':')
+        try:
+            _p_min = int(_prts[0])
+            _p_sec = int(_prts[1])
+            return float( _p_min + (_p_sec/60.0))                   
+        except:
+            return 0.0
+
+def float2pace(pace_flt):
+    try:
+        _pace = float(pace_flt)
+    except:
+        return ""
+    _p_int = int(_pace)
+    _p_frc = round((_pace - _p_int) * 60.0)
+    if _p_frc == 60:
+        _p_int += 1
+        _p_frc = 0
+    _pace_str = "%d:%02d" % (_p_int, _p_frc)  
+    return _pace_str
+
 class UC(Singleton):
     """ 
     When instantiated first time us is assigned to False.
@@ -80,15 +105,24 @@ class UC(Singleton):
             return _val
 
     def usr2sys_str(self, quantity, val_str):
-        """ Similar to usr2sys but I/O is string representing a float"""
+        """ Similar to usr2sys but I/O is string representing a float.
+            Necessary until we have proper input validation in windowrecord.
+            Escpecially pace fix here should be eliminated asap. 
+        """
         if not self.us:
             return val_str
+            
+        if quantity == 'pace':
+            _pace_dec = pace2float(val_str)
+            _pace_uc = self.usr2sys('pace', _pace_dec)
+            return float2pace(_pace_uc)
         else:
             try:
                 _val = float(val_str)
             except (ValueError, TypeError):
                 return ""
             return str( self.usr2sys(quantity, _val))
+    
 
     """ Aliases for sys2usr """         
     def distance(self, value):
