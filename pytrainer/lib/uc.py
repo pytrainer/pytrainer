@@ -79,6 +79,17 @@ class UC(Singleton):
         else:
             return _val
 
+    def usr2sys_str(self, quantity, val_str):
+        """ Similar to usr2sys but I/O is string representing a float"""
+        if not self.us:
+            return val_str
+        else:
+            try:
+                _val = float(val_str)
+            except (ValueError, TypeError):
+                return ""
+            return str( self.usr2sys(quantity, _val))
+
     """ Aliases for sys2usr """         
     def distance(self, value):
         return self.sys2usr('distance', value)
