@@ -363,17 +363,20 @@ class DDBB:
             only for empty durations and where time can be parsed as an int
         '''
         logging.debug('--')
-        listOfRecords = self.select_dict("records",('id_record','time'), "duration is NULL")
-        logging.debug("Found %d records in DB without date_time_local field populated" % (len(listOfRecords) ) )
+        #listOfRecords = self.select_dict("records",('id_record','time'), "duration is NULL")
+        #logging.debug("Found %d records in DB without date_time_local field populated" % (len(listOfRecords) ) )
+        listOfRecords = self.select_dict("records",('id_record','time', 'duration'))
+        logging.debug("Found %d records in DB" % (len(listOfRecords) ) )
         for record in listOfRecords:
             try:
                 duration = int(record['time'])
             except Exception as e:
                 logging.info( "Error parsing time (%s) as int for record_id: %s" % (record['time'], record['id_record']))
                 continue
-            logging.debug("setting record %s duration to %d" % (record['id_record'], duration))
-            data = {'duration': duration}
-            self.update_dict("records",data ,"id_record = %d"%record['id_record'])
+            if duration != record['duration']:
+                logging.debug("setting record %s duration to %d" % (record['id_record'], duration))
+                data = {'duration': duration}
+                self.update_dict("records",data ,"id_record = %d"%record['id_record'])
 
     def populate_date_time_local(self):
         ''' Populate date_time_local and date from date_time_utc
