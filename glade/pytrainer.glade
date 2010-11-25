@@ -246,7 +246,7 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="rubber_banding">True</property>
-                                <signal name="button_press_event" handler="on_allRecordTreeView_button_press"/>
+                                <signal name="button_press_event" handler="on_recordTreeView_button_press_event"/>
                                 <signal name="row_activated" handler="on_recordTree_clicked"/>
                               </widget>
                             </child>

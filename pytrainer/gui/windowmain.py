@@ -1600,10 +1600,8 @@ class Main(SimpleGladeApp):
         self.parent.editGpsPlugins()
     #hasta aqui revisado
 
-    def on_allRecordTreeView_button_press(self, treeview, event):
-        '''
-            Handler for clicks on recordview list (list of activities for the day)
-
+    def on_recordTreeView_button_press_event(self, treeview, event):
+        ''' Handler for clicks on recordTreeview list (all records for a day)
             event.button = mouse button pressed (i.e. 1 = left, 3 = right)
         '''
         logging.debug(">>")
@@ -1619,7 +1617,34 @@ class Main(SimpleGladeApp):
                 selected,iter = treeview.get_selection().get_selected()
                 #Por si hay un registro (malo) sin fecha, pa poder borrarlo
                 try:
-                    date = self.parent.date.getDate(selected.get_value(iter,2))
+                    date = self.parent.date.getDate()
+                except:
+                    date = None
+                self.popup.show(selected.get_value(iter,0), event.button, time, date)
+            elif event.button == 1:
+                self.notebook.set_current_page(0)
+                self.parent.refreshGraphView("record")
+        logging.debug("<<")
+        return False
+        
+    def on_allRecordTreeView_button_press(self, treeview, event):
+        ''' Handler for clicks on listview list 
+            event.button = mouse button pressed (i.e. 1 = left, 3 = right)
+        '''
+        logging.debug(">>")
+        x = int(event.x)
+        y = int(event.y)
+        time = event.time
+        pthinfo = treeview.get_path_at_pos(x, y)
+        if pthinfo is not None:
+            path, col, cellx, celly = pthinfo
+            treeview.grab_focus()
+            treeview.set_cursor(path, col, 0)
+            if event.button == 3:
+                selected,iter = treeview.get_selection().get_selected()
+                #Por si hay un registro (malo) sin fecha, pa poder borrarlo
+                try:
+                    date = self.parent.date.getDate()
                 except:
                     pass
                 self.popup.show(selected.get_value(iter,0), event.button, time, selected.get_value(iter,2))
