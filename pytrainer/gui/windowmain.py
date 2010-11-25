@@ -1622,7 +1622,7 @@ class Main(SimpleGladeApp):
                     date = self.parent.date.getDate(selected.get_value(iter,2))
                 except:
                     pass
-                self.popup.show(selected.get_value(iter,0), event.button, time)
+                self.popup.show(selected.get_value(iter,0), event.button, time, selected.get_value(iter,2))
             elif event.button == 1:
                 self.notebook.set_current_page(0)
                 self.parent.refreshGraphView("record")

@@ -642,15 +642,20 @@ class WindowRecord(SimpleGladeApp):
         sec = self.rcd_second.get_value_as_int()
         hour += float(min)/60.0 + float(sec)/(60.0*60.0)
         weight = self.pytrainer_main.profile.getValue("pytraining","prf_weight")
-        if weight is None or weight == "" or weight == "None":
+        try:
+            weight = float(weight)
+        except:
             weight = 0.0
-        weight = float(weight)
-        met = float(self.parent.getSportMet(sport))
-        extraweight = self.parent.getSportWeight(sport)
-        if extraweight is None or extraweight == "" or extraweight == "None":
+        try:
+            met = float(self.parent.getSportMet(sport))
+        except:
+            met = None
+        try:
+            extraweight = self.parent.getSportWeight(sport)
+            extraweight = float(extraweight)
+        except:
             extraweight = 0.0
-        extraweight = float(extraweight)
-        if met:
+        if met is not None:
             calories = met*(weight+extraweight)*hour
             self.rcd_calories.set_text(str(calories))
 

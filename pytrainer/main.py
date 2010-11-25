@@ -53,7 +53,7 @@ from lib.uc import UC
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.7.2_svn#742"
+        self.version ="1.7.2_svn#745"
         self.DB_version = 6
         #Process command line options
         self.startup_options = self.get_options()
@@ -274,15 +274,24 @@ class pyTrainer:
             print "Unknown view %s" % view
         logging.debug('<<')
 
-    def refreshRecordGraphView(self, view):
+    def refreshRecordGraphView(self, view, id_record=None):
         logging.debug('>>')
         logging.info('Working on '+view+' graph')
-        selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
-        if iter:
-            id_record = selected.get_value(iter,0)
+        if id_record is not None:
+			#Refresh called for a specific record
+            #Select correct record in treeview
+            model = self.windowmain.recordTreeView.get_model()
+            #Loop through all records in treeview looking for the correct one to highlight
+            for i,row in enumerate(model):
+				if row[0] == id_record:
+					self.windowmain.recordTreeView.set_cursor(i)
         else:
-            id_record = None
-            view="info"
+            selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+            if iter:
+                id_record = selected.get_value(iter,0)
+            else:
+                id_record = None
+                view="info"
         activity = self.activitypool.get_activity(id_record)
         if view=="info":
             self.windowmain.actualize_recordview(activity)
@@ -412,7 +421,7 @@ class pyTrainer:
         self.record.newRecord(list_sport, date, title, distance, time, upositive, unegative, bpm, calories, comment)
         self.refreshListRecords()
         if view is not None:
-			self.refreshGraphView(view)
+            self.refreshGraphView(view)
         logging.debug('<<')
 
     def editRecord(self, id_record, view=None):
@@ -422,7 +431,7 @@ class pyTrainer:
         self.record.editRecord(id_record,list_sport)
         self.refreshListRecords()
         if view is not None:
-			self.refreshGraphView(view)
+            self.refreshGraphView(view)
         logging.debug('<<')
 
     def removeRecord(self, id_record, confirm = False, view=None):
@@ -437,7 +446,7 @@ class pyTrainer:
              warning.run()
         self.refreshListRecords()
         if view is not None:
-			self.refreshGraphView(view)
+            self.refreshGraphView(view)
         logging.debug('<<')
 
     def removeWaypoint(self,id_waypoint, confirm = False):
