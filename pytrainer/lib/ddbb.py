@@ -160,7 +160,7 @@ class DDBB:
             if table.find(',') != -1:
                 #multiple tables in select
                 #TODO fix so works....
-                print 'TODO fix select_dict to work with multiple tables'
+                logging.info('TODO fix select_dict to work with multiple tables')
                 cellString = ','.join(cells) #create cell list string
                 results = self.ddbbObject.select(table,cellString,condition,mod)
                 for result in results:

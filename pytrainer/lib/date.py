@@ -91,7 +91,7 @@ class Date:
             day_delta = datetime.timedelta(days=int(results[0]) - 1)
             base_date = dateutil.parser.parse(results[1])
             first_day = base_date + day_delta
-            print "First day of week based on locale is:", first_day.strftime("%A")
+            logging.debug("First day of week based on locale is:", first_day.strftime("%A"))
             return first_day
         except Exception as e:
             print type(e)
