@@ -25,6 +25,7 @@ import datetime
 import dateutil.parser
 from dateutil.tz import * # for tzutc()
 from subprocess import Popen, PIPE
+import logging
 
 class Date:
     def __init__(self, calendar=None):
@@ -91,7 +92,8 @@ class Date:
             day_delta = datetime.timedelta(days=int(results[0]) - 1)
             base_date = dateutil.parser.parse(results[1])
             first_day = base_date + day_delta
-            logging.debug("First day of week based on locale is:", first_day.strftime("%A"))
+            msg = "First day of week based on locale is:", first_day.strftime("%A")
+            logging.debug(msg)
             return first_day
         except Exception as e:
             print type(e)
