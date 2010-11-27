@@ -1011,13 +1011,7 @@ class Main(SimpleGladeApp):
                 hour,min,sec = date.second2time(int(i[6]))
             except  (ValueError, TypeError):
                 hour,min,sec = (0,0,0)
-            _time = "%2d:%02d:%02d" %(hour,min,sec) #original
-            # experimental only
-            if hour >0:
-                _hh = "%2d:%02d:%02d" %(hour, min, sec)
-            else:
-                _hh = "___%2d:%02d" %(min, sec)
-            #_time =_hh
+            _time = "%2d:%02d:%02d" %(hour,min,sec)
             try:
                 _id = int(i[5])
             except (ValueError, TypeError) as e:
