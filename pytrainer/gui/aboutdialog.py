@@ -39,7 +39,7 @@ class About:
 		about_dialog.set_destroy_with_parent(True)
 		about_dialog.set_name("pyTrainer")
 		about_dialog.set_version(self.version)
-		about_dialog.set_copyright("Copyright \xc2\xa9 2005-10 Fiz Vázquez")
+		about_dialog.set_copyright("Copyright \xc2\xa9 2005-09 Fiz Vázquez")
 		about_dialog.set_website("http://sourceforge.net/projects/pytrainer")
 		about_dialog.set_website_label("http://sourceforge.net/projects/pytrainer")
 		about_dialog.set_comments("The free sport tracking center")

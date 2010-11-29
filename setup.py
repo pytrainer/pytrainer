@@ -15,10 +15,10 @@ def install_extension(extension_name):
 	return "share/pytrainer/extensions/%s"%extension_name, glob("extensions/%s/*"%extension_name) 
 
 setup( 	name="pytrainer",
-	version="1.7.2",
+	version="1.8.0",
 	description="The free sport tracking center",
 	long_description="Pytrainer is a tool to log all your sport excursion coming from GPS devices (with a focus on ForeRunner 205, 305 and 405) or GPX (http://www.topografix.com) files. Pytrainer supports GPS track files and displays it in graphs, maps... ",
-	author="Fiz Vazquez, John Blance, David Garcia Granda",
+	author="Fiz Vazquez, John Blance, David Garcia Granda, Arnd Zapletal, Nathan Jones",
 	maintainer_email="pytrainer-devel@lists.sourceforge.net",
 	url="http://sourceforge.net/projects/pytrainer/",
 	license="GNU General Public License (GPL)",

@@ -1,5 +1,70 @@
 See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/pytrainer/roadmap
 
+- PyTrainer changes for 1.8.0:
+
+* New functionality
+    - Equipment management (thx to Nathan) [571] [572] [573] [598] [678] [679] [680] [685] [698] [699] [707] [708] [711] [717] [718] #12
+    - OpenStreetMap added as route map viewer (user selectable) - thanks to Druzee [578] [585] [590]
+    - Anonymous data for OSM, cancel button (thx to Druzee, Arnd) [608] [611] [626]
+    - Changes to graphing to allow user to change limits, color, line width etc [563] [567] [579] [599]
+    - Remember size of main screen [581]
+    - Function to merge tracks (work in progress) [597]
+    - New Activity and ActivityPool classes to hold all info about an activity [582] [583] [584] [587] [589] [591] [677] [694]
+    - Management of athlete data [605] [609] [649] [651] [653] [655] [656] [665] [668] [731] #13
+    - New graphic approach [616] [617] [622] [624] [628] [638] [639] [640] [642] [644] [646] [648] [674] [675] [721] [726] [727] [730] [733]
+    - Added support for Nokia exported GPX files [673]
+    - Added support for new formats (csv, delimited file) in unified import [688] [689] [690] [692] [693] [695] [697] [701] 
+
+* Fixes
+    - Variables and configuration refactored to be 'global' (reused and not re-instantiated by each class) [561] [562] [564] [565] [566] [568] #28
+    - Config file accepting non ascii characters [574] [575] [576]
+    - Config file handling fixed to not fail with empty or missing file [586] #48
+    - Fix list view to update after edit, delete, import. Added filters and improvements (tnx Arnd) [569] [650] [652] [658] [661] [663] [664] [735] [742] [745] [746]
+    - Localization updates (thanks to Pierre, David) [570] [588] [595] [715] [737] [744] [747]
+    - Fix wordpress extension to work with newer wordpress codebase and support US measurement [577] [601] [602] #45 #51
+    - Update plugins to write UTF8 not ASCII GPX files [580] #47
+    - Fix googlemaps lap data display [592] [632] [633]
+    - Fix calories display in heartrate tab [593]
+    - Fix html in map generation (thanks to Druzee) [594]
+    - Change default graph colors [596]
+    - Improve handling of US units [600] [669] [672] [683] [687] [696] [700] [702] [703] [704] [705] [710] [738] [739]
+    - Fix bug in plugins where ESC during file open dialog causes error [603]
+    - Fix to garmintools_full plugin to make progress bar work (thanks to Druzee) [604]
+    - Avoid exiting when parsing problem is found, entry skipped [607] #
+    - Activites without GPX data don't break application [610] [615]
+    - Improvements (show and calculation) to pace and elevation as suggested by Arnd [612] [618] [619] [623] [627] [741]
+    - Better troubleshooting for graphics issues and minor fixes [625] [629] [636]
+    - Fixes to csv export (thx Arnd) [630]
+    - Fixes to startup script to better handling different environments [631] [637] [713] [714]
+    - Updates to wordpress extension - removed separate googlemaps [634]
+    - Allowing zero calories entries [641]
+    - Fixes to edit record [643] [647]
+    - Fixing confusion with dates (start day of the week, week number) [654] [655] [657] [670] [750] #57
+    - Fix for GPX files with no lap info [660]
+    - Correction to date handling to work for mysql and sqlite [667]
+    - Improving logging output [671] [748] [749]
+    - Fix for HR percent graph so does not error in hr is None - thanks to Arnd [676]
+    - Bug fixes for sports filtering from Patrick [681]
+    - Updates for heartrate pie chart from Patrick [682]
+    - Fixes in lap generation (divide by zero, empty laps) - thanks to Arnd [684] [686]
+    - Fixes for record filtering from Patrick [691]
+    - Tolerate non-unicode strings returned from DB for better MySQL support [706]
+    - Add program argument for specifying config directory [709] #67
+    - Better handling of floats and division. Thx to Martin [712]
+    - Retrieving a real list with DB tables, comparison was failing [716]
+    - Remove redundant Port option in preferences [719] #80
+    - Fix to display blank sport properties correctly (not as None) [720] #78
+    - Fix mysql code to match changes to sqlite tablelist handling [722]
+    - Stop preferences sport list edit button disabling dialog buttons if no sport is selected [723] #75
+    - Fix to stop crash on editing record with empty distance [724] #73
+    - Update record summary after edit [725] #79
+    - Fix sport filtering to work with non consecutive sport_ids [728]
+    - Fix summary screens to update correctly with record add and deletes [729]
+    - Make pace read only [732]
+    - Display heartrate as integer in day, week, month and year views [734]
+    - Update DB check to ensure time == duration [736]
+    - Updating credits [740] [743] 
+
 - PyTrainer changes for 1.7.2:
 
     * Lap DB table created and code changed to populate and use the table [507] [508] [509]
@@ -26,31 +91,31 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
     * Minor cosmetic changes [552] [553] [554]
     * Added check for early detection of empty local configuration file [555]
     * EXPERIMENTAL Unified Import GUI modifications (disabled by default, enabled on startup with --testimport) [526]
-          o file import supports multiple files at once [510] [511]
-          o option to have file import window automatically start with a file selection dialog [519]
-          o activities can be edited before import [514] [517] [521] [522] [534] [537] [538]
-          o kml file import support [523] [525]
-          o plugins tab added - provides alternative way of viewing and running import plugins [512]
-          o device import NOT functional 
+    - file import supports multiple files at once [510] [511]
+    - option to have file import window automatically start with a file selection dialog [519]
+    - activities can be edited before import [514] [517] [521] [522] [534] [537] [538]
+    - kml file import support [523] [525]
+    - plugins tab added - provides alternative way of viewing and running import plugins [512]
+    - device import NOT functional 
 
 - PyTrainer changes for 1.7.1:
 
     * New import plugin - Garmintools - svn [430], [431], [436], [452], [453], [459], [460], [461], [463], [464], [486], [487], [488]
-          o both file (dump file) and device import implemented
-          o smart import from device to cater for different start times compared to GPSBabel (to reduce duplicated activities) 
+    - both file (dump file) and device import implemented
+    - smart import from device to cater for different start times compared to GPSBabel (to reduce duplicated activities) 
     * Move to Google maps API version 3 - svn [477]
     * Add lap functionality - svn [433], [447], [448], [451], [454], [455]
-          o display individual laps under activity on treeview
-          o visually display lap duration on record graphs (user selectable)
-          o display lap markers on route map 
+    - display individual laps under activity on treeview
+    - visually display lap duration on record graphs (user selectable)
+    - display lap markers on route map 
     * Improve check functionality - svn [437], [438], [439], [475], [478], [479], [480], [482]
-          o Can be initiated by command line option --check
-          o Will be initiated if DB version in code is newer than user's DB version
-          o DB migration checks refactored and improved 
+    - Can be initiated by command line option --check
+    - Will be initiated if DB version in code is newer than user's DB version
+    - DB migration checks refactored and improved 
     * Timezone support - svn [434], [440], [442], [483]
-          o DB updated with new field date_time_local
-          o field populated on import (or when DB check is run)
-          o field used in preference to UTC if present for display 
+    - DB updated with new field date_time_local
+    - field populated on import (or when DB check is run)
+    - field used in preference to UTC if present for display 
     * Cadence / RPM support and graph added (tcx v2 file import only) - svn [432]
     * Improved install process and remove unneeded files - svn [445], [446], [462], [467], [472], [473]
     * Bug fix to TCX v2 to cater for multiple activities per file - svn [435]
@@ -61,10 +126,10 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
     * Updated localizations (es, fr) - svn [494], [495], [497]
     * Separate some GUI elements into separate files to ease development - svn [443], [457], [465]
     * EXPERIMENTAL Unified Import GUI begun (for testing/feedback only) - svn [458], [466], [468], [469], [470], [471], [476], [481], [489]
-          o disabled by default
-          o enabled on startup with --testimport
-          o file import functional
-          o device import NOT functional 
+    - disabled by default
+    - enabled on startup with --testimport
+    - file import functional
+    - device import NOT functional 
 
 - PyTrainer changes for 1.7.0:
 
