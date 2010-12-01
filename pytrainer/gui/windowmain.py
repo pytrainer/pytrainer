@@ -84,6 +84,8 @@ class Main(SimpleGladeApp):
         self.y1_linewidth = 1
         # setup Search ListView
         self.listsearch = ListSearch(self, self.pytrainer_main)
+        
+        self.aboutwindow = None
 
     def new(self):
         self.menublocking = 0
@@ -1730,8 +1732,11 @@ class Main(SimpleGladeApp):
         logging.debug("<<")
 
     def on_about_activate(self,widget):
-        aboutwindow = About(self.data_path, self.version)
-        aboutwindow.run()
+        if self.aboutwindow is None:
+            self.aboutwindow = About(self.data_path, self.version)
+            self.aboutwindow.run()
+        else:
+            self.aboutwindow.present()
 
     def getSportSelected(self):
         sport = self.sportlist.get_active()

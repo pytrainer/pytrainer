@@ -67,6 +67,9 @@ class WindowProfile(SimpleGladeApp):
         equipment_ui = EquipmentUi(self.data_path + "/glade", equipment_service)
         self.equipment_container.add(equipment_ui)            
         
+    def present(self):
+        self.newprofile.present()
+        
     def setValues(self,list_options):
         for i in self.conf_options.keys():
             if not list_options.has_key(i):

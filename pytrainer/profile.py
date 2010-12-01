@@ -39,6 +39,7 @@ class Profile:
         self.extensiondir = environment.extension_dir
         self.plugindir = environment.plugin_dir
         self.uc = UC()
+        self.profilewindow = None
         
         environment.clear_temp_dir()
 
@@ -271,10 +272,15 @@ class Profile:
         logging.debug("retrieving configuration data")
         #Refresh configuration
         self.configuration = self._parse_config_file(self.config_file)
-        profilewindow = WindowProfile(self.data_path, self, pytrainer_main=self.pytrainer_main)
-        logging.debug("setting data values")
-        profilewindow.setValues(self.configuration)
-        profilewindow.run()
+        if self.profilewindow is None:
+            self.profilewindow = WindowProfile(self.data_path, self, pytrainer_main=self.pytrainer_main)
+            logging.debug("setting data values")
+            self.profilewindow.setValues(self.configuration)
+            self.profilewindow.run()
+            self.profilewindow = None
+        else:
+            self.profilewindow.setValues(self.configuration)
+            self.profilewindow.present()
         self.configuration = self._parse_config_file(self.config_file)
         logging.debug("<<")
 
