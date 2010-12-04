@@ -152,7 +152,7 @@ class pyTrainer:
         #self.webservice.stop()
         self.windowmain.gtk_main_quit()
         logging.shutdown()
-        sys.exit() # Any nonzero value is considered “abnormal termination” by shells and the like
+        sys.exit() # Any nonzero value is considered "abnormal termination" by shells and the like
 
     def loadPlugins(self):
         logging.debug('>>')
