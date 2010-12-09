@@ -60,7 +60,7 @@ class pyTrainer:
         self.environment = Environment(platform.get_platform(), self.startup_options.conf_dir)
         self.environment.create_directories()
         #Setup logging
-        self.set_logging(self.startup_options.log_level)
+        self.set_logging(self.startup_options.log_level, self.startup_options.log_type)
         logging.debug('>>')
         logging.debug("PyTrainer version %s, DB version %s" % (self.version, self.DB_version))
         self.data_path = data_path
@@ -121,7 +121,7 @@ class pyTrainer:
         For more help on valid options try:
            %prog -h '''
         parser = OptionParser(usage=usage)
-        parser.set_defaults(log_level=logging.ERROR, validate=False, equip=False, newgraph=True, conf_dir=None)
+        parser.set_defaults(log_level=logging.ERROR, validate=False, equip=False, newgraph=True, conf_dir=None, log_type="file")
         parser.add_option("-d", "--debug", action="store_const", const=logging.DEBUG, dest="log_level", help="enable logging at debug level")
         parser.add_option("-i", "--info", action="store_const", const=logging.INFO, dest="log_level", help="enable logging at info level")
         parser.add_option("-w", "--warn", action="store_const", const=logging.WARNING, dest="log_level", help="enable logging at warning level")
@@ -130,15 +130,19 @@ class pyTrainer:
         parser.add_option("--oldgraph", action="store_false", dest="newgraph", help="Turn off new graphing approach")
         parser.add_option("--newgraph", action="store_true", dest="newgraph", help="Deprecated Option: Turn on new graphing approach")
         parser.add_option("--confdir", dest="conf_dir", help="Specify the directory where application configuration will be stored.")
+        parser.add_option("--logtype", dest="log_type", metavar="TYPE",  type="choice" , choices=["file", "console"], help="Specify where logging should be output to. TYPE is one of 'file' (default), or 'console'.")
         (options, args) = parser.parse_args()
         return options
 
-    def set_logging(self,level):
+    def set_logging(self, level, log_type):
         '''Setup rotating log file with customized format'''
-        rotHandler = logging.handlers.RotatingFileHandler(self.environment.log_file, maxBytes=100000, backupCount=5)
+        if("console" == log_type):
+            handler = logging.StreamHandler(sys.stdout)
+        else:
+            handler = logging.handlers.RotatingFileHandler(self.environment.log_file, maxBytes=100000, backupCount=5)
         formatter = logging.Formatter('%(asctime)s|%(levelname)s|%(module)s|%(funcName)s|%(message)s')
-        rotHandler.setFormatter(formatter)
-        logging.getLogger('').addHandler(rotHandler)
+        handler.setFormatter(formatter)
+        logger = logging.getLogger('').addHandler(handler)
         self.set_logging_level(self.startup_options.log_level)
 
     def set_logging_level(self, level):
