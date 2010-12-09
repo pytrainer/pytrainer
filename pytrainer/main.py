@@ -142,7 +142,7 @@ class pyTrainer:
             handler = logging.handlers.RotatingFileHandler(self.environment.log_file, maxBytes=100000, backupCount=5)
         formatter = logging.Formatter('%(asctime)s|%(levelname)s|%(module)s|%(funcName)s|%(message)s')
         handler.setFormatter(formatter)
-        logger = logging.getLogger('').addHandler(handler)
+        logging.getLogger('').addHandler(handler)
         self.set_logging_level(self.startup_options.log_level)
 
     def set_logging_level(self, level):
