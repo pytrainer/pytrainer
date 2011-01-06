@@ -56,6 +56,7 @@ setup( 	name="pytrainer",
 		(install_locale("no")),
 		(install_locale("pl")),
 		(install_locale("ru")),
+		(install_locale("sv")),
 		('share/pixmaps/',['pytrainer.png']),
 		('share/applications/',['pytrainer.desktop'])
 		],
