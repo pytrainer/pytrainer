@@ -192,13 +192,18 @@ class Gpx:
         logging.debug(">>")
         tree  = self.tree
         # Calories data comes within laps. Maybe more than one, adding them together - dgranda 20100114
+        # Distance data comes within laps where present as well - dgranda 20110204
         laps = tree.findall(lapTag)
         if laps is not None and laps != "":
+            totalDistance = 0
             for lap in laps:
-                lapCalories = lap.findtext(calorieTag)
-                logging.debug("Lap calories: "+str(lapCalories))
+                lapCalories = lap.findtext(calorieTag)                
                 self.calories += int(lapCalories)
-            logging.debug("Calories: "+str(self.calories))
+                lapDistance = int(float(lap.findtext(distanceTag)))
+                totalDistance += lapDistance
+                logging.debug("Lap distance: " + str(lapDistance) + " | calories (kcal): "+str(lapCalories))
+            self.total_dist = float(totalDistance/1000.0) # Returning km
+            logging.debug("Distance: " + str(self.total_dist) + " | calories (kcal): "+str(self.calories))
         else:
             laps = []
 
@@ -360,7 +365,9 @@ class Gpx:
         self.hr_average = 0
         if len_validhrpoints > 0:
             self.hr_average = total_hr/len_validhrpoints
-        self.total_dist = total_dist
+        # In case there is no other way to calculate distance, we rely on trackpoints (number of trackpoints is configurable!)
+        if self.total_dist is None or self.total_dist == 0:
+            self.total_dist = total_dist
         logging.debug("<<")
         return retorno
 
