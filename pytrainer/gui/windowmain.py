@@ -297,6 +297,7 @@ class Main(SimpleGladeApp):
             #self.record_second.set_text("")
             self.record_calories.set_text("")
             self.record_title.set_text("")
+            self.label_record_equipment.set_text("")
             com_buffer = self.record_comments.get_buffer()
             start,end = com_buffer.get_bounds()
             com_buffer.set_text("")
