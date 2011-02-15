@@ -26,7 +26,17 @@ class EquipmentStore(gtk.ListStore):
         self._equipment_service = equipment_service
         for equipment in equipment_service.get_all_equipment():
             self._append_row(equipment)
+        self.set_default_sort_func(self._sort)
+        self.set_sort_column_id(-1, gtk.SORT_ASCENDING)
         
+    def _sort(self, store, x, y):
+        if self.get_value(x, 4) != self.get_value(y, 4):
+            return self.get_value(y, 4)-self.get_value(x, 4)
+        elif self.get_value(x, 2) == self.get_value(y, 2):
+            return 0
+        else:
+            return self.get_value(y, 2)*100-self.get_value(x, 2)*100
+    
     def _append_row(self, equipment):
         self.append(self._create_tuple(equipment))
         
