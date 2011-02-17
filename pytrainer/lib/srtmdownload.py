@@ -46,6 +46,7 @@ class DownloadLoop:
         self.progressbar = progressbar
         self.label = label
         self.tile_name = tile_name
+        print tile_name
     
     def run(self):
         logging.debug(">>")
@@ -58,7 +59,13 @@ class DownloadLoop:
             os.mkdir(self.srtm_dir)             
         
         urlfile = self.get_urlfile()
-        size_total = int(urlfile.info().getheader('Content-Length').strip())
+        if not urlfile:
+            return False
+        
+        try:
+            size_total = int(urlfile.info().getheader('Content-Length').strip())
+        except:
+            size_total = 0
 
         if size_total == 0:
             loopActive = False
