@@ -19,6 +19,8 @@
 import os
 import re
 import logging
+import colorsys
+import math
 
 import pytrainer.lib.points as Points
 from pytrainer.lib.fileUtils import fileUtils
@@ -31,6 +33,34 @@ class Googlemaps:
         self.pytrainer_main = pytrainer_main
         self.htmlfile = "%s/googlemaps.html" % (self.pytrainer_main.profile.tmpdir)
         logging.debug("<<")
+        
+    def colorLine(self, polyline, average, variance):
+        stdev = math.sqrt(variance)
+        for i in polyline:
+            speed = i[1]
+            speed = (speed - (average - 2*stdev))/(4*stdev)
+            speed = min(max(speed,0), 1)
+            rgb_tuple = colorsys.hsv_to_rgb(0.66-(speed*0.66), 1, 0.8)
+            rgb_tuple = (rgb_tuple[0] * 255,rgb_tuple[1] * 255,rgb_tuple[2] * 255)
+            i[2] = '#%02x%02x%02x' % rgb_tuple
+            
+    def colorLineAbs(self, polyline):
+        for i in polyline:
+            speed = i[1]
+            if 0 <= speed < 7.5: #walk
+                rgb_tuple = colorsys.hsv_to_rgb(0.66, 1, (speed/7.5)*0.6)
+            elif 7.5 <= speed < 15: #jog-run
+                speed = ((speed-7.5)/7.5)
+                rgb_tuple = colorsys.hsv_to_rgb(0.66-speed*0.66, 1, 0.6+speed*0.2)
+            elif 15 <= speed < 40: #cycle
+                speed = ((speed-15)/25.0)
+                rgb_tuple = colorsys.hsv_to_rgb(1-speed, 1, 0.8+speed*0.2)
+            else: # fast cycle
+                rgb_tuple = colorsys.hsv_to_rgb(0, 1, 1)
+            
+            rgb_tuple = (rgb_tuple[0] * 255,rgb_tuple[1] * 255,rgb_tuple[2] * 255)
+            i[2] = '#%02x%02x%02x' % rgb_tuple
+                
 
     def drawMap(self,activity):
         '''Draw google map
@@ -50,14 +80,38 @@ class Googlemaps:
             minlat, minlon = float(list_values[0][4]),float(list_values[0][5])
             maxlat=minlat
             maxlon=minlon
+            
+            pre = 0
+            av_sum = 0
+            variance_sum = 0
+            n = 0
+            
             for i in list_values:
+                if pre:
+                    speed = (i[0]-pre[0])/((i[2]-pre[2])/3600)
+                else:
+                    speed = (list_values[1][0]-list_values[0][0])/((list_values[1][2]-list_values[0][2])/3600)
+                    
+                variance_sum += (speed)**2
+                av_sum += speed
+                n += 1
+                
                 lat, lon = float(i[4]), float(i[5])
                 minlat = min(minlat, lat)
                 maxlat = max(maxlat, lat)
                 minlon = min(minlon, lon)
                 maxlon = max(maxlon, lon)
                 pointlist.append((lat,lon))
-                polyline.append("new google.maps.LatLng(%s, %s)" % (lat, lon))
+                polyline.append(["new google.maps.LatLng(%s, %s)" % (lat, lon), speed, ""])
+                pre = i
+                
+            av_speed = av_sum / float(n)
+            variance = (variance_sum / float(n)) - av_speed**2
+            variance = max(variance, 16)
+
+            self.colorLine(polyline, av_speed, variance)
+            #self.colorLineAbs(polyline)
+            
             logging.debug("minlat: %s, maxlat: %s" % (minlat, maxlat))
             logging.debug("minlon: %s, maxlon: %s" % (minlon, maxlon))
             points,levels = Points.encodePoints(pointlist)
@@ -98,9 +152,9 @@ class Googlemaps:
         <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
         <script type="text/javascript">
           function initialize() {\n'''
-        content += "            var startlatlng = %s ;\n" % (polyline[0])
+        content += "            var startlatlng = %s ;\n" % (polyline[0][0])
         content += "            var centerlatlng = new google.maps.LatLng(%f, %f);\n" % ((minlat+maxlat)/2., (minlon+maxlon)/2.)
-        content += "            var endlatlng = %s;\n" % (polyline[-1])
+        content += "            var endlatlng = %s;\n" % (polyline[-1][0])
         content += "            var swlatlng = new google.maps.LatLng(%f, %f);\n" % (minlat,minlon)
         content += "            var nelatlng = new google.maps.LatLng(%f, %f);\n" % (maxlat,maxlon)
         content += "            var startcontent = \"%s\";\n" % (startinfo)
@@ -198,19 +252,36 @@ class Googlemaps:
         content += '''
 
             var boundsBox = new google.maps.LatLngBounds(swlatlng, nelatlng );\n
-            map.fitBounds(boundsBox);\n
-            var polylineCoordinates = [\n'''
+            map.fitBounds(boundsBox);\n'''
+            
+        pre = 0
         for point in polyline:
-            content += "                                       %s,\n" % (point)
-        content += '''            ];\n
-            // Add a polyline.\n
-            var polyline = new google.maps.Polyline({\n
-                    path: polylineCoordinates,\n
-                    strokeColor: \"#3333cc\",\n
-                    strokeOpacity: 0.6,\n
-                    strokeWeight: 5,\n
-                    });\n
-            polyline.setMap(map);\n
+            if pre:
+                content += '''var polylineCoordinates = [\n'''
+                content += "                                       %s,\n" % (pre[0])
+                content += "                                       %s,\n" % (point[0])
+                content += '''            ];\n
+                    // Add a polyline.\n
+                    var polyline = new google.maps.Polyline({\n
+                            path: polylineCoordinates,\n
+                            strokeColor: \"%s\",\n
+                            strokeOpacity: 0.9,\n
+                            strokeWeight: 5,\n
+                            });\n
+                polyline.setMap(map);\n''' % point[2]
+                
+                content += '''
+                    google.maps.event.addListener(polyline, 'click', function(event) {
+                        var marker = new google.maps.InfoWindow({
+                          position: event.latLng, 
+                          content: "Speed: %0.1f km/h"
+                        });
+                        marker.setMap(map);
+                    });
+                    ''' % point[1]
+            pre = point
+        
+        content += '''
           }
 
         </script>
