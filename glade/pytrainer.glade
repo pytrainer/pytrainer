@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <glade-interface>
   <!-- interface-requires gtk+ 2.6 -->
   <!-- interface-naming-policy toplevel-contextual -->
@@ -1316,7 +1316,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonY1Min">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">0 -500 1000 1 10 0</property>
                                                             <signal name="value_changed" handler="on_spinbuttonY1_value_changed"/>
@@ -1334,7 +1334,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonY1Max">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">0 -500 1000 1 10 0</property>
                                                             <signal name="value_changed" handler="on_spinbuttonY1_value_changed"/>
@@ -1397,7 +1397,7 @@ Cadence
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="max_length">2</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="adjustment">1 1 10 1 1 0</property>
                                                             <signal name="value_changed" handler="on_spinbuttonY1LineWeight_value_changed"/>
                                                           </widget>
@@ -1439,7 +1439,7 @@ Cadence
                                                             <property name="sensitive">False</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="max_length">2</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="adjustment">1 0 10 1 1 0</property>
                                                           </widget>
                                                           <packing>
@@ -1531,7 +1531,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonY2Min">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">0 -500 1000 1 10 0</property>
                                                           </widget>
@@ -1548,7 +1548,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonY2Max">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">1 -500 1000 1 10 0</property>
                                                           </widget>
@@ -1618,7 +1618,7 @@ Cadence
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="max_length">2</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="adjustment">1 0 10 1 1 0</property>
                                                           </widget>
                                                           <packing>
@@ -1650,7 +1650,7 @@ Cadence
                                                             <property name="sensitive">False</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="max_length">2</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="adjustment">1 0 10 1 1 0</property>
                                                           </widget>
                                                           <packing>
@@ -1727,7 +1727,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonXMin">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">0 -500 1000 1 10 0</property>
                                                           </widget>
@@ -1744,7 +1744,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonXMax">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">0 -500 1000 1 10 0</property>
                                                           </widget>
@@ -1985,6 +1985,32 @@ Cadence
                                           <packing>
                                             <property name="expand">False</property>
                                             <property name="fill">False</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkLabel" id="labelMapLineType">
+                                            <property name="visible">True</property>
+                                            <property name="xalign">1</property>
+                                            <property name="label" translatable="yes">&lt;small&gt;Show:&lt;/small&gt;</property>
+                                            <property name="use_markup">True</property>
+                                          </widget>
+                                          <packing>
+                                            <property name="padding">5</property>
+                                            <property name="position">2</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <widget class="GtkComboBoxEntry" id="comboMapLineType">
+                                            <property name="visible">True</property>
+                                            <property name="items" translatable="yes">None
+Speed
+Heart rate
+Cadence</property>
+                                            <signal name="changed" handler="on_comboMapLineType_changed"/>
+                                          </widget>
+                                          <packing>
+                                            <property name="expand">False</property>
                                             <property name="position">3</property>
                                           </packing>
                                         </child>
@@ -1997,8 +2023,7 @@ Cadence
                                           </widget>
                                           <packing>
                                             <property name="padding">5</property>
-                                            <property name="pack_type">end</property>
-                                            <property name="position">2</property>
+                                            <property name="position">4</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -2015,7 +2040,7 @@ Cadence
                                             <property name="expand">False</property>
                                             <property name="fill">False</property>
                                             <property name="pack_type">end</property>
-                                            <property name="position">1</property>
+                                            <property name="position">5</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -5356,6 +5381,297 @@ Calories</property>
                                 <property name="type">tab</property>
                               </packing>
                             </child>
+                            <child>
+                              <widget class="GtkHBox" id="statsarea">
+                                <property name="visible">True</property>
+                                <child>
+                                  <widget class="GtkVBox" id="vbox3">
+                                    <property name="visible">True</property>
+                                    <child>
+                                      <widget class="GtkFrame" id="frame9">
+                                        <property name="visible">True</property>
+                                        <property name="label_xalign">0</property>
+                                        <child>
+                                          <widget class="GtkAlignment" id="alignment10">
+                                            <property name="visible">True</property>
+                                            <property name="left_padding">12</property>
+                                            <child>
+                                              <widget class="GtkTreeView" id="statsTreeView">
+                                                <property name="visible">True</property>
+                                                <property name="can_focus">True</property>
+                                                <signal name="button_press_event" handler="on_sportstatsTreeView_button_press"/>
+                                              </widget>
+                                              <packing>
+                                              </packing>
+                                            </child>
+                                          </widget>
+                                        </child>
+		                                <child>
+		                                  <widget class="GtkLabel" id="label27">
+		                                    <property name="visible">True</property>
+		                                    <property name="label" translatable="yes">&lt;b&gt;Sports&lt;/b&gt;</property>
+		                                    <property name="use_markup">True</property>
+		                                  </widget>
+		                                  <packing>
+		                                    <property name="type">label_item</property>
+		                                  </packing>
+		                                </child>
+                                      </widget>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="padding">6</property>
+                                        <property name="position">0</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <widget class="GtkFrame" id="frame1123">
+                                        <property name="visible">True</property>
+                                        <property name="label_xalign">0</property>
+                                        <child>
+                                          <widget class="GtkAlignment" id="alignment101">
+                                            <property name="visible">True</property>
+                                            <property name="left_padding">12</property>
+		                                    <child>
+					                          <widget class="GtkHBox" id="total_vbox">
+					                            <property name="height_request">650</property>
+					                            <property name="visible">True</property>
+					                            <property name="border_width">5</property>
+					                            <property name="spacing">8</property>
+					                            <child>
+					                              <widget class="GtkVBox" id="vbox123">
+					                                <property name="visible">True</property>
+								                        <child>
+								                          <widget class="GtkComboBoxEntry" id="total_combovalue">
+								                            <property name="visible">True</property>
+								                            <property name="items" translatable="yes">Distance
+Time
+Average Heart Rate
+Average Speed
+Calories</property>
+								                            <signal name="changed" handler="on_total_combovalue_changed"/>
+								                          </widget>
+								                          <packing>
+								                            <property name="expand">False</property>
+								                            <property name="position">0</property>
+								                          </packing>
+								                        </child>
+								                        <child>
+								                          <widget class="GtkLabel" id="label-37">
+								                            <property name="visible">True</property>
+								                            <property name="label" translatable="yes">Versus</property>
+								                          </widget>
+								                          <packing>
+								                            <property name="expand">False</property>
+								                            <property name="fill">False</property>
+								                            <property name="position">1</property>
+								                          </packing>
+								                        </child>
+								                        <child>
+								                          <widget class="GtkComboBoxEntry" id="total_combovalue2">
+								                            <property name="visible">True</property>
+								                            <property name="items" translatable="yes">None
+Distance
+Time
+Average Heart Rate
+Average Speed
+Calories</property>
+								                            <signal name="changed" handler="on_total_combovalue_changed"/>
+								                          </widget>
+								                          <packing>
+								                            <property name="expand">False</property>
+								                            <property name="position">2</property>
+								                          </packing>
+								                        </child>
+						                                <child>
+						                                  <widget class="GtkTable" id="table3">
+						                                    <property name="visible">True</property>
+						                                    <property name="n_rows">4</property>
+						                                    <property name="n_columns">2</property>
+						                                    <child>
+						                                      <widget class="GtkLabel" id="label15">
+						                                        <property name="visible">True</property>
+						                                        <property name="xalign">1</property>
+						                                        <property name="yalign">0</property>
+						                                        <property name="label" translatable="yes">Total distance:</property>
+						                                      </widget>
+						                                      <packing>
+						                                        <property name="x_options">GTK_FILL</property>
+						                                        <property name="x_padding">10</property>
+						                                        <property name="y_padding">10</property>
+						                                        <property name="y_options">GTK_SHRINK</property>
+						                                      </packing>
+						                                    </child>
+						                                    <child>
+						                                      <widget class="GtkLabel" id="label19">
+						                                        <property name="visible">True</property>
+						                                        <property name="xalign">1</property>
+						                                        <property name="yalign">0</property>
+						                                        <property name="label" translatable="yes">Total duration:</property>
+						                                      </widget>
+						                                      <packing>
+						                                        <property name="top_attach">1</property>
+						                                        <property name="bottom_attach">2</property>
+						                                        <property name="x_options">GTK_FILL</property>
+						                                        <property name="x_padding">10</property>
+						                                        <property name="y_padding">10</property>
+						                                        <property name="y_options">GTK_SHRINK</property>
+						                                      </packing>
+						                                    </child>
+						                                    <child>
+						                                      <widget class="GtkLabel" id="labelTotalDistance">
+						                                        <property name="visible">True</property>
+						                                        <property name="xalign">0</property>
+						                                        <property name="yalign">0</property>
+						                                        <property name="xpad">5</property>
+						                                      </widget>
+						                                      <packing>
+						                                        <property name="top_attach">0</property>
+						                                        <property name="left_attach">1</property>
+						                                        <property name="right_attach">2</property>
+						                                        <property name="x_options">GTK_FILL</property>
+						                                        <property name="x_padding">10</property>
+						                                        <property name="y_padding">10</property>
+						                                        <property name="y_options">GTK_SHRINK</property>
+						                                      </packing>
+						                                    </child>
+						                                    <child>
+						                                      <widget class="GtkLabel" id="labelTotalDuration">
+						                                        <property name="visible">True</property>
+						                                        <property name="xalign">0</property>
+						                                        <property name="yalign">0</property>
+						                                        <property name="xpad">5</property>
+						                                      </widget>
+						                                      <packing>
+						                                        <property name="top_attach">1</property>
+						                                        <property name="left_attach">1</property>
+						                                        <property name="right_attach">2</property>
+						                                        <property name="top_attach">1</property>
+						                                        <property name="x_options">GTK_FILL</property>
+						                                        <property name="x_padding">10</property>
+						                                        <property name="y_padding">10</property>
+						                                        <property name="y_options">GTK_SHRINK</property>
+						                                      </packing>
+						                                    </child>
+						                                    <child>
+						                                      <widget class="GtkLabel" id="label21a">
+						                                        <property name="visible">True</property>
+						                                        <property name="xalign">1</property>
+						                                        <property name="yalign">0</property>
+						                                        <property name="label" translatable="yes">Start date:</property>
+						                                      </widget>
+						                                      <packing>
+						                                        <property name="top_attach">3</property>
+						                                        <property name="left_attach">0</property>
+						                                        <property name="x_options">GTK_FILL</property>
+						                                        <property name="x_padding">10</property>
+						                                        <property name="y_padding">10</property>
+						                                        <property name="y_options">GTK_SHRINK</property>
+						                                      </packing>
+						                                    </child>
+						                                    <child>
+						                                      <widget class="GtkLabel" id="label22a">
+						                                        <property name="visible">True</property>
+						                                        <property name="xalign">1</property>
+						                                        <property name="yalign">0</property>
+						                                        <property name="label" translatable="yes">End date:</property>
+						                                      </widget>
+						                                      <packing>
+						                                        <property name="left_attach">0</property>
+						                                        <property name="top_attach">4</property>
+						                                        <property name="x_options">GTK_FILL</property>
+						                                        <property name="x_padding">10</property>
+						                                        <property name="y_padding">10</property>
+						                                        <property name="y_options">GTK_SHRINK</property>
+						                                      </packing>
+						                                    </child>
+						                                    <child>
+						                                      <widget class="GtkLabel" id="labelStartDate">
+						                                        <property name="visible">True</property>
+						                                        <property name="xalign">0</property>
+						                                        <property name="yalign">0</property>
+						                                        <property name="xpad">5</property>
+						                                      </widget>
+						                                      <packing>
+						                                        <property name="top_attach">3</property>
+						                                        <property name="left_attach">1</property>
+						                                        <property name="right_attach">4</property>
+						                                        <property name="x_options">GTK_FILL</property>
+						                                        <property name="x_padding">10</property>
+						                                        <property name="y_padding">10</property>
+						                                        <property name="y_options">GTK_SHRINK</property>
+						                                      </packing>
+						                                    </child>
+						                                    <child>
+						                                      <widget class="GtkLabel" id="labelEndDate">
+						                                        <property name="visible">True</property>
+						                                        <property name="xalign">0</property>
+						                                        <property name="yalign">0</property>
+						                                        <property name="xpad">5</property>
+						                                      </widget>
+						                                      <packing>
+						                                        <property name="left_attach">1</property>
+						                                        <property name="right_attach">4</property>
+						                                        <property name="top_attach">4</property>
+						                                        <property name="x_options">GTK_FILL</property>
+						                                        <property name="x_padding">10</property>
+						                                        <property name="y_padding">10</property>
+						                                        <property name="y_options">GTK_SHRINK</property>
+						                                      </packing>
+						                                    </child>
+						                                  </widget>
+						                                </child>
+
+
+						                          </widget>
+						                          <packing>
+						                            <property name="expand">False</property>
+						                            <property name="position">0</property>
+						                          </packing>
+						                        </child>
+				                              </widget>
+				                              <packing>
+				                              </packing>
+				                            </child>
+                                          </widget>
+                                        </child>
+		                                <child>
+		                                  <widget class="GtkLabel" id="label271">
+		                                    <property name="visible">True</property>
+		                                    <property name="label" translatable="yes">&lt;b&gt;All&lt;/b&gt;</property>
+		                                    <property name="use_markup">True</property>
+		                                  </widget>
+		                                  <packing>
+		                                    <property name="type">label_item</property>
+		                                  </packing>
+		                                </child>
+                                      </widget>
+                                      <packing>
+                                        <property name="expand">False</property>
+                                        <property name="padding">6</property>
+                                        <property name="position">3</property>
+                                      </packing>
+                                    </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                              </widget>
+                              <packing>
+                                <property name="position">6</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkLabel" id="label28">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Totals</property>
+                              </widget>
+                              <packing>
+                                <property name="position">7</property>
+                                <property name="tab_fill">False</property>
+                                <property name="type">tab</property>
+                              </packing>
+                            </child>
                           </widget>
                           <packing>
                             <property name="position">1</property>
@@ -5399,7 +5715,7 @@ Calories</property>
                           <widget class="GtkEntry" id="lsa_searchvalue">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="invisible_char">●</property>
+                            <property name="invisible_char">&#x25CF;</property>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -5545,13 +5861,13 @@ Last 12 months</property>
                   <widget class="GtkVBox" id="waypointarea">
                     <property name="visible">True</property>
                     <child>
-                      <widget class="GtkFrame" id="frame10">
+                      <widget class="GtkFrame" id="frame12">
                         <property name="visible">True</property>
                         <property name="border_width">9</property>
                         <property name="label_xalign">0</property>
                         <property name="shadow_type">in</property>
                         <child>
-                          <widget class="GtkAlignment" id="alignment10">
+                          <widget class="GtkAlignment" id="alignment15">
                             <property name="visible">True</property>
                             <property name="left_padding">12</property>
                             <child>
@@ -5701,7 +6017,7 @@ Summit</property>
                                   <widget class="GtkEntry" id="waypoint_longitude">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
+                                    <property name="invisible_char">&#x25CF;</property>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">3</property>
@@ -5716,7 +6032,7 @@ Summit</property>
                                   <widget class="GtkEntry" id="waypoint_description">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
+                                    <property name="invisible_char">&#x25CF;</property>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -5731,7 +6047,7 @@ Summit</property>
                                   <widget class="GtkEntry" id="waypoint_latitude">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
+                                    <property name="invisible_char">&#x25CF;</property>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">3</property>
@@ -5744,7 +6060,7 @@ Summit</property>
                                   <widget class="GtkEntry" id="waypoint_name">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
+                                    <property name="invisible_char">&#x25CF;</property>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -5846,7 +6162,7 @@ Summit</property>
           </widget>
         </child>
         <child>
-          <widget class="GtkLabel" id="label15">
+          <widget class="GtkLabel" id="label29">
             <property name="visible">True</property>
             <property name="label">label162</property>
           </widget>

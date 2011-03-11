@@ -62,7 +62,7 @@ class Googlemaps:
             i[2] = '#%02x%02x%02x' % rgb_tuple
                 
 
-    def drawMap(self,activity):
+    def drawMap(self,activity, linetype):
         '''Draw google map
             create html file using Google API version3
             render using embedded Mozilla
@@ -85,15 +85,21 @@ class Googlemaps:
             av_sum = 0
             variance_sum = 0
             n = 0
-            
             for i in list_values:
-                if pre:
-                    speed = (i[0]-pre[0])/((i[2]-pre[2])/3600)
+                if linetype==1:
+                    if pre:
+                        val = (i[0]-pre[0])/((i[2]-pre[2])/3600)
+                    else:
+                        val = (list_values[1][0]-list_values[0][0])/((list_values[1][2]-list_values[0][2])/3600)
+                elif linetype==2:
+                	val = i[6] if i[6] else 0
+                elif linetype==3:
+                	val =i[7] if i[7]!=None else 1
                 else:
-                    speed = (list_values[1][0]-list_values[0][0])/((list_values[1][2]-list_values[0][2])/3600)
+                    val = 1
                     
-                variance_sum += (speed)**2
-                av_sum += speed
+                variance_sum += (val)**2
+                av_sum += val
                 n += 1
                 
                 lat, lon = float(i[4]), float(i[5])
@@ -102,7 +108,7 @@ class Googlemaps:
                 minlon = min(minlon, lon)
                 maxlon = max(maxlon, lon)
                 pointlist.append((lat,lon))
-                polyline.append(["new google.maps.LatLng(%s, %s)" % (lat, lon), speed, ""])
+                polyline.append(["new google.maps.LatLng(%s, %s)" % (lat, lon), val, ""])
                 pre = i
                 
             av_speed = av_sum / float(n)
@@ -125,13 +131,13 @@ class Googlemaps:
             finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), activity.distance, activity.distance_unit)
             startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
             finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
-            self.createHtml_api3(polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps)
+            self.createHtml_api3(polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps, linetype)
         else:
             self.createErrorHtml()
         return self.htmlfile
         logging.debug("<<")
 
-    def createHtml_api3(self,polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps):
+    def createHtml_api3(self,polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps, linetype):
         '''
         Generate a Google maps html file using the v3 api
             documentation at http://code.google.com/apis/maps/documentation/v3
@@ -270,15 +276,22 @@ class Googlemaps:
                             });\n
                 polyline.setMap(map);\n''' % point[2]
                 
+                contenttemplate = [
+                	"%s",
+                	"Speed: %0.1f km/h",
+                	"HR: %d bpm",
+                	"Cadence: %d",
+                ]
+                
                 content += '''
                     google.maps.event.addListener(polyline, 'click', function(event) {
                         var marker = new google.maps.InfoWindow({
                           position: event.latLng, 
-                          content: "Speed: %0.1f km/h"
+                          content: "%s"
                         });
                         marker.setMap(map);
                     });
-                    ''' % point[1]
+                    ''' % contenttemplate[linetype] % point[1]
             pre = point
         
         content += '''

@@ -16,22 +16,31 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from gui.drawArea import DrawArea
 import calendar
+import datetime
+from timegraph import TimeGraph
 
-class YearGraph:
+class YearGraph(TimeGraph):
+
+    value_params = [
+        (_("month"),_("Distance (km)"),_("Monthly Distance"),"y"),
+        (_("month"),_("Time (hours)"), _("Monthly Time"),"b"),
+        (_("month"),_("Average Heart Rate (bpm)"), _("Monthly Average Heart Rate"),"r"),
+        (_("month"),_("Average Speed (km/h)"), _("Monthly Average Speed"),"g"),
+        (_("month"),_("Calories"), _("Monthly Calories"),"b"),
+    ]
+
     def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None):
-        self.drawarea = DrawArea(vbox, window)
+        TimeGraph.__init__(self, vbox=vbox, window=window)
         self.combovalue = combovalue
         self.combovalue2 = combovalue2
+        self.KEY_FORMAT = "%m"
 
     def drawgraph(self,values):
-        xval = []
-        yval = []
-        xlab = []
-        ylab = []
-        tit = []
-        col = []
+        TimeGraph.drawgraph(self, values, x_func=lambda x: ["%02d" % m for m in xrange(1,13)])
+
+    def drawgraph2(self,values):
+        
         value_selected = self.combovalue.get_active()
         value_selected2 = self.combovalue2.get_active()
         if value_selected < 0:
@@ -65,19 +74,7 @@ class YearGraph:
             col.append(color)
         self.drawarea.stadistics("bars",xval,yval,xlab,ylab,tit,col)
 
-    def get_value_params(self,value):
-        if value == 0:
-            return 12,_("month"),_("Distance (km)"),_("Monthly Distance"),"y"
-        elif value == 1:
-            return 12,_("month"),_("Time (hours)"), _("Monthly Time"),"b"
-        elif value == 2:
-            return 12,_("month"),_("Average Heart Rate (bpm)"), _("Monthly Average Heart Rate"),"r"
-        elif value == 3:
-            return 12,_("month"),_("Average Speed (km/h)"), _("Monthly Average Speed"),"g"
-        elif value == 4:
-            return 12,_("month"),_("Calories"), _("Monthly Calories"),"b"
-
-    def get_values(self,values,value_selected,monthsnumber):
+    def get_values2(self,values,value_selected,monthsnumber):
         #hacemos una relacion entre el value_selected y los values
         conv = {
             0: 1, #value 0 es kilometros (1)
@@ -130,9 +127,5 @@ class YearGraph:
                 if list_average[value]>0:
                     yunits[value-1] = list_values[value]/list_average[value]
         return xunits,yunits
-    
-    def getFloatValue(self, value):
-        try:
-            return float(value)
-        except:
-            return float(0)
+
+

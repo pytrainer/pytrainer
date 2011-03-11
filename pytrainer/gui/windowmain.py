@@ -41,6 +41,7 @@ from pytrainer.daygraph import DayGraph
 from pytrainer.weekgraph import WeekGraph
 from pytrainer.monthgraph import MonthGraph
 from pytrainer.yeargraph import YearGraph
+from pytrainer.totalgraph import TotalGraph
 from pytrainer.heartrategraph import HeartRateGraph
 from pytrainer.extensions.mapviewer import MapViewer
 from pytrainer.extensions.waypointeditor import WaypointEditor
@@ -130,6 +131,19 @@ class Main(SimpleGladeApp):
                     {'name':_("Max HR"), 'xalign':1.0}
                 ]
         self.create_treeview(self.athleteTreeView,columns)
+        #create the columns for the stats treeview
+        columns=[   {'name':_("id"), 'visible':False},
+                    {'name':_("Sport")},
+                    {'name':_("Total duration"), 'xalign':1.0, 'format_duration':True},
+                    {'name':_("Total distance"), 'xalign':1.0, 'format_float':'%.1f', 'quantity':'distance'},
+                    {'name':_("Avg speed"), 'format_float':'%.2f', 'quantity':'maxspeed'},
+                    {'name':_("Max speed"), 'format_float':'%.2f', 'quantity':'maxspeed'},
+                    {'name':_("Max HR"), 'xalign':1.0},
+                    {'name':_("Max duration"), 'xalign':1.0, 'format_duration':True},
+                    {'name':_("Max distance"), 'xalign':1.0, 'format_float':'%.1f', 'quantity':'distance'},
+                ]
+        self.create_treeview(self.statsTreeView,columns)
+        
         self.fileconf = self.pytrainer_main.profile.confdir+"/listviewmenu.xml"
         if not os.path.isfile(self.fileconf):
             self._createXmlListView(self.fileconf)
@@ -142,8 +156,7 @@ class Main(SimpleGladeApp):
             self.radiobuttonOSM.set_active(1)
         else:
             self.radiobuttonGMap.set_active(1)
-
-
+        self.comboMapLineType.set_active(0)
 
     def _float_or(self, value, default):
         '''Function to parse and return a float, or the default if the parsing fails'''
@@ -156,7 +169,7 @@ class Main(SimpleGladeApp):
         return result
 
     def setup(self):
-        self.createGraphs(RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph)
+        self.createGraphs()
         self.createMap(MapViewer,self.pytrainer_main.waypoint)
         self.createWaypointEditor(WaypointEditor,self.pytrainer_main.waypoint, parent=self.pytrainer_main)
         page = self.notebook.get_current_page()
@@ -211,7 +224,7 @@ class Main(SimpleGladeApp):
             id = selected.get_value(iter,0)
         self.parent.runExtension(extension,id)
 
-    def createGraphs(self,RecordGraph,DayGraph,WeekGraph, MonthGraph,YearGraph,HeartRateGraph):
+    def createGraphs(self):
         self.drawarearecord = RecordGraph(self.record_graph_vbox, self.window1, self.record_combovalue, self.record_combovalue2, self.btnShowLaps, self.tableConfigY1, pytrainer_main=self.pytrainer_main)
         self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox, self.window1, self.heartrate_vbox2, pytrainer_main=self.pytrainer_main)
         #self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
@@ -219,11 +232,13 @@ class Main(SimpleGladeApp):
         self.drawareaweek = WeekGraph(self.weekview, self.window1, self.week_combovalue, self.week_combovalue2)
         self.drawareamonth = MonthGraph(self.month_vbox, self.window1, self.month_combovalue,self.month_combovalue2)
         self.drawareayear = YearGraph(self.year_vbox, self.window1, self.year_combovalue,self.year_combovalue2)
+        self.drawareatotal = TotalGraph(self.total_vbox, self.window1, self.total_combovalue,self.total_combovalue2)
 
     def createMap(self,MapViewer,waypoint):
         self.waypoint = waypoint
-        self.mapviewer = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox)
-        self.mapviewer_fs = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox_old)
+        if not getattr(self, 'mapviewer', None):
+            self.mapviewer = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox)
+            self.mapviewer_fs = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox_old)
         #self.googlemaps = Googlemaps(self.data_path, self.map_vbox,waypoint, pytrainer_main=self.parent)
         #self.osm = Osm(self.data_path, self.map_vbox,waypoint, pytrainer_main=self.parent)
         #self.googlemaps_old = Googlemaps(self.data_path, self.map_vbox_old,waypoint, pytrainer_main=self.parent)
@@ -245,7 +260,11 @@ class Main(SimpleGladeApp):
 
     def render_duration(self, column, cell, model, iter):
         orig = cell.get_property('text')
-        new = orig
+        if not ':' in orig:
+            h,m,s = self.parent.date.second2time(int(orig))
+            new = '%d:%02d:%02d' % (h,m,s)
+        else:
+            new = orig
         if orig[:4] == ' 0:0':
             new = orig[4:]
         elif orig[:3] == ' 0:':
@@ -347,6 +366,13 @@ class Main(SimpleGladeApp):
                 self.label_record_equipment.set_text(equipment_text)
             else:
                 self.label_record_equipment.set_markup("<i>None</i>")
+                
+            for lap in activity.laps:
+#                print lap
+                t = float(lap['elapsed_time'])
+                m = lap['distance']
+                s = m / t * 3.6
+#                print t,m,s, lap['calories']
 
         else:
             self.recordview.set_current_page(0)
@@ -712,11 +738,11 @@ class Main(SimpleGladeApp):
         if self.radiobuttonOSM.get_active():
             #Use OSM to draw map
             logging.debug("Using OSM to draw map....")
-            htmlfile = Osm(data_path=self.data_path, waypoint=self.waypoint, pytrainer_main=self.parent).drawMap(activity)
+            htmlfile = Osm(data_path=self.data_path, waypoint=self.waypoint, pytrainer_main=self.parent).drawMap(activity, self.comboMapLineType.get_active())
         elif self.radiobuttonGMap.get_active():
             #Use Google to draw map
             logging.debug("Using Google to draw map")
-            htmlfile = Googlemaps(data_path=self.data_path, waypoint=self.waypoint, pytrainer_main=self.parent).drawMap(activity)
+            htmlfile = Googlemaps(data_path=self.data_path, waypoint=self.waypoint, pytrainer_main=self.parent).drawMap(activity, self.comboMapLineType.get_active())
         else:
             #Unknown map type...
             logging.error("Unknown map viewer requested")
@@ -809,7 +835,7 @@ class Main(SimpleGladeApp):
             self.weekview.set_sensitive(1)
         else:
             self.weekview.set_sensitive(0)
-        self.drawareaweek.drawgraph(record_list, date_ini, date_end)
+        self.drawareaweek.drawgraph(record_list, date_ini)
         logging.debug("<<")
 
     def actualize_monthview(self,record_list, nameMonth):
@@ -991,6 +1017,51 @@ class Main(SimpleGladeApp):
         self.grapher.drawAthleteGraph(athlete=athlete, box=self.boxAthleteGraph)
         logging.debug("<<")
 
+    def actualize_statsview(self, stats, record_list):
+        logging.debug(">>")
+        self.labelTotalDistance.set_text(str(stats.data['total_distance']) + " km")
+        self.labelTotalDuration.set_text(str(stats.data['total_duration'] / 3600) + " hours")
+        self.labelStartDate.set_text(stats.data['start_date'].strftime('%Y-%m-%d'))
+        self.labelEndDate.set_text(stats.data['end_date'].strftime('%Y-%m-%d'))
+        
+        data = self.parent.stats.data
+        
+        store = gtk.ListStore(
+            gobject.TYPE_INT,
+            gobject.TYPE_STRING,
+            gobject.TYPE_INT,
+            gobject.TYPE_FLOAT,
+            gobject.TYPE_FLOAT,
+            gobject.TYPE_FLOAT,
+            gobject.TYPE_INT,
+            gobject.TYPE_INT,
+            gobject.TYPE_FLOAT
+            )
+        for s in data['sports'].values():
+            iter = store.append()
+            
+            c = 0
+            store.set (iter, c, c)
+            c += 1
+            store.set (iter, c, s['name'])
+            for f in data['fields'][2:]:
+                c += 1
+                store.set (iter, c, s['total_'+f])
+            c += 1
+            store.set (iter, c, s['total_distance'] / s['total_duration'] * 3600.)
+            for f in data['fields']:
+                c += 1
+                store.set (iter, c, s[f])
+
+        self.statsTreeView.set_model(store)
+        self.statsTreeView.set_rules_hint(True)
+        
+        store.set_sort_column_id(2, gtk.SORT_DESCENDING)
+
+        self.drawareatotal.drawgraph(record_list)
+
+        logging.debug("<<")    
+    
     def actualize_listview(self,record_list):
         logging.debug(">>")
         #recod list tiene:
@@ -1403,6 +1474,10 @@ class Main(SimpleGladeApp):
         logging.debug( 'on_radiobuttonMap_toggled '+ widget.get_name()+ ' activated')
         self.parent.refreshMapView()
 
+    def on_comboMapLineType_changed(self, widget):
+        logging.debug( 'on_comboMapLineType_changed '+ widget.get_name()+ ' = ' + str(+ widget.get_active()))
+        self.parent.refreshMapView()
+
     def on_hpaned1_move_handle(self, widget):
         print "Handler"
         print widget
@@ -1486,6 +1561,8 @@ class Main(SimpleGladeApp):
             self.selected_view="year"
         elif page == 5:
             self.selected_view="athlete"
+        elif page == 6:
+            self.selected_view="stats"
         else:
             self.selected_view="record"
         self.parent.refreshGraphView(self.selected_view)
@@ -1527,6 +1604,10 @@ class Main(SimpleGladeApp):
         self.parent.refreshGraphView(self.selected_view)
 
     def on_year_combovalue_changed(self,widget):
+        logging.debug("--")
+        self.parent.refreshGraphView(self.selected_view)
+
+    def on_total_combovalue_changed(self,widget):
         logging.debug("--")
         self.parent.refreshGraphView(self.selected_view)
 
@@ -1579,6 +1660,9 @@ class Main(SimpleGladeApp):
         #self.listarea.hide()
         self.parent.refreshAthleteView()
         #self.athletearea.show()
+
+    def on_statsview_activate(self,widget=None):
+        self.parent.refreshStatsView()
 
     def on_waypointsview_activate(self,widget):
         self.listarea.hide()

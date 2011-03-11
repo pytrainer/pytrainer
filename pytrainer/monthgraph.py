@@ -16,68 +16,30 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from gui.drawArea import DrawArea
 import dateutil
+import datetime
+from timegraph import TimeGraph
 
-class MonthGraph:
+class MonthGraph(TimeGraph):
+
+    value_params = [
+        (_("day"),_("Distance (km)"),_("Daily Distance"),"y"),
+        (_("day"),_("Time (hours)"), _("Daily Time"),"b"),
+        (_("day"),_("Average Heart Rate (bpm)"), _("Daily Average Heart Rate"),"r"),
+        (_("day"),_("Average Speed (km/h)"), _("Daily Average Speed"),"g"),
+        (_("day"),_("Calories"), _("Daily Calories"),"b"),
+    ]
+
     def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None):
-        self.drawarea = DrawArea(vbox, window)
+        TimeGraph.__init__(self, vbox=vbox, window=window)
         self.combovalue = combovalue
         self.combovalue2 = combovalue2
-
-    def drawgraph(self,values, daysInMonth):
-        xval = []
-        yval = []
-        xlab = []
-        ylab = []
-        tit = []
-        col = []
-        value_selected = self.combovalue.get_active()
-        value_selected2 = self.combovalue2.get_active()
-        if value_selected < 0:
-            self.combovalue.set_active(0)
-            value_selected = 0
-        xlabel,ylabel,title,color = self.get_value_params(value_selected)
-        xvalues,yvalues = self.get_values(values,value_selected,daysInMonth)
-
-        xval.append(xvalues)
-        yval.append(yvalues)
-        if value_selected2 < 0:
-            xlab.append("")
-        else:
-            xlab.append(xlabel)
-        ylab.append(ylabel)
-        tit.append(title)
-        col.append(color)
+        self.KEY_FORMAT = "%d"
         
-        if value_selected2 < 0:
-            self.combovalue2.set_active(0)
-            value_selected2 = 0
-        if value_selected2 > 0:
-            value_selected2 = value_selected2-1
-            xlabel,ylabel,title,color = self.get_value_params(value_selected2)
-            xvalues,yvalues = self.get_values(values,value_selected2,daysInMonth)
-            xval.append(xvalues)
-            yval.append(yvalues)
-            xlab.append(xlabel)
-            ylab.append(ylabel)
-            tit.append(title)
-            col.append(color)
-        self.drawarea.stadistics("bars",xval,yval,xlab,ylab,tit,col)
+    def drawgraph(self,values, daysInMonth):
+        TimeGraph.drawgraph(self, values, x_func=lambda x: list([u'%02d' % d for d in xrange(1,daysInMonth+1)]))
 
-    def get_value_params(self,value):
-        if value == 0:
-            return _("day"),_("Distance (km)"),_("Daily Distance"),"y"
-        elif value == 1:
-            return _("day"),_("Time (hours)"), _("Daily Time"),"b"
-        elif value == 2:
-            return _("day"),_("Average Heart Rate (bpm)"), _("Daily Average Heart Rate"),"r"
-        elif value == 3:
-            return _("day"),_("Average Speed (km/h)"), _("Daily Average Speed"),"g"
-        elif value == 4:
-            return _("day"),_("Calories"), _("Daily Calories"),"b"
-
-    def get_values(self,values,value_selected,daysInMonth):
+    def get_values2(self,values,value_selected,daysInMonth):
         #hacemos una relacion entre el value_selected y los values / we make a relation between value_selected and the values
         conv = {
             0: 1, #value 0 es kilometros (1)
@@ -131,9 +93,3 @@ class MonthGraph:
 
         return xunits,yunits
     
-    def getFloatValue(self, value):
-        try:
-            return float(value)
-        except:
-            return float(0)
-

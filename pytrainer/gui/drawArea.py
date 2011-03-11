@@ -212,6 +212,7 @@ class DrawArea:
         self.showGraph=False
 
         #Display first axis
+        xticks = []
         for key in keys:
             logging.debug("Day of the week: %s", str(key))
             for ind in inds:
@@ -237,6 +238,8 @@ class DrawArea:
         if len(xvalues) == 1:
             plt.title(title[0])
             axis.legend(loc=0)
+            
+        axis.set_xlim(0,numCols)
 
         logging.debug("X values first axis: %s", str(xvals))
         logging.debug("Y values first axis: %s", str(yheights))
@@ -276,6 +279,7 @@ class DrawArea:
                     ax2.bar(xvals, [0]*numCols, bottom=[0]*numCols, width=barWidth, color=color,  align='edge', label=key)
                     pass
             ax2.set_xticklabels('' * len(xvalues[1]))
+            ax2.set_xlim(0,numCols)
             ax2.set_ylabel(ylabel[1])
             ax2.legend(loc=0)
             plt.title("%s vs %s" %(title[0],title[1]))

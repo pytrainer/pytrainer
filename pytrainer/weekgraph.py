@@ -20,136 +20,28 @@ from gui.drawArea import DrawArea
 import logging
 import datetime
 import calendar
+from timegraph import TimeGraph
 
-class WeekGraph:
+class WeekGraph(TimeGraph):
+
+	value_params = [
+		(None, _("Distance (km)"),_("Daily Distance"), None),
+		(None, _("Time (hours)"), _("Daily Time"), None),
+		(None, _("Average Heart Rate (bpm)"), _("Daily Average Heart Rate"), None),
+		(None, _("Average Speed (km/h)"), _("Daily Average Speed"), None),
+		(None, _("Calories"), _("Daily Calories"), None),
+	]
+
 	def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None):
-		self.drawarea = DrawArea(vbox, window)
+		TimeGraph.__init__(self, vbox=vbox, window=window)
 		self.combovalue = combovalue
 		self.combovalue2 = combovalue2
+		self.KEY_FORMAT = "%a"
 
-	def drawgraph(self,values, date_ini, date_end):
-		logging.debug(">>")
-		yval = []
-		xlab = []
-		ylab = []
-		tit = []
-		valsAreTime = []
+	def drawgraph(self,values, date_ini):
+		TimeGraph.drawgraph(self, values, x_func=lambda x: getDays(date_ini))
 
-		logging.debug("Values: "+str(values))
+def getDays(date_ini):
+	#TODO look at using calendar.day_abbr for this
+	return [(datetime.datetime.strptime(date_ini, "%Y-%m-%d")+datetime.timedelta(x)).strftime("%a") for x in xrange(0,7)]
 
-		#Reset the comboboxes if nothing selected
-		value_selected = self.combovalue.get_active()
-		if value_selected < 0:
-			self.combovalue.set_active(0)
-			value_selected = 0
-		value_selected2 = self.combovalue2.get_active()
-		if value_selected2 < 0:
-			self.combovalue2.set_active(0)
-			value_selected2 = 0
-
-		#build localised days list
-		days = self.getDays(date_ini)
-
-		ylabel,title = self.get_value_params(value_selected)
-		ylab.append(ylabel)
-		tit.append(title)
-		
-		#TODO
-		yvalues, valuesAreTime = self.get_values(values,value_selected)
-		logging.debug("yvalues: "+str(yvalues))
-		logging.debug("valuesAreTime: "+str(valuesAreTime))
-		yval.append(yvalues)
-		xlab.append(days)
-		valsAreTime.append(valuesAreTime)
-		
-		#Second combobox used
-		if value_selected2 > 0:
-			value_selected2 = value_selected2-1
-			ylabel,title = self.get_value_params(value_selected2)
-			ylab.append(ylabel)
-			tit.append(title)
-			yvalues, valuesAreTime = self.get_values(values,value_selected2)
-			yval.append(yvalues)
-			xlab.append(days)
-			valsAreTime.append(valuesAreTime)
-
-		#Draw chart
-		self.drawarea.drawStackedBars(xlab,yval,ylab,tit,valsAreTime)
-		logging.debug("<<")
-
-	def get_values(self, values, value_selected):
-		valueDict = {} #Stores the totals
-		valueCount = {} #Counts the totals to allow for averaging if needed
-
-		for record in values:
-			day = unicode(datetime.datetime.strptime(record[0], "%Y-%m-%d").strftime("%a")) # Gives Sun, Mon etc for this record
-			sport = record[9]
-			value = self.getValue(record, value_selected)
-			if sport in valueDict: #Already got this sport
-				if day in valueDict[sport]: #Already got this sport on this day
-					valueDict[sport][day] += value
-					valueCount[sport][day] += 1
-				else: #New day for this sport
-					valueDict[sport][day] = value
-					valueCount[sport][day] = 1
-			else: #New sport
-				valueDict[sport] = {day: value}
-				valueCount[sport] = {day: 1}
-
-		if value_selected == 2 or value_selected == 3:
-			for sport in valueDict.keys():
-				for day in valueDict[sport].keys():
-					logging.debug("averaging values: before %s (count %s)" % (valueDict[sport][day],valueCount[sport][day]))
-					if valueCount[sport][day] > 1: #Only average if 2 or more entries on this day
-						valueDict[sport][day] /= valueCount[sport][day]
-					logging.debug("averaging values: after %s" % valueDict[sport][day])
-		if value_selected == 1: #Values are of time type
-			valuesAreTime=True
-		else:
-			valuesAreTime=False
-
-		return valueDict, valuesAreTime
-
-	def get_value_params(self,value):
-		if value == 0:
-			return _("Distance (km)"),_("Daily Distance")
-		elif value == 1:
-			return _("Time (hours)"), _("Daily Time")
-		elif value == 2:
-			return _("Average Heart Rate (bpm)"), _("Daily Average Heart Rate")
-		elif value == 3:
-			return _("Average Speed (km/h)"), _("Daily Average Speed")
-		elif value == 4:
-			return _("Calories"), _("Daily Calories")
-
-	def getValue(self,record,value_selected):
-		#hacemos una relacion entre el value_selected y los values / we make a relation between value_selected and the values
-		conv = {
-			0: 1, #value 0 es kilometros (1)
-			1: 2, #value 1 es tiempo (2)
-			2: 3, #value 2 es pulsaciones(3)
-			3: 5, #value 3 es media(5)
-			4: 6 #value 4 es calorias(6)
-			}
-		value_sel = conv[value_selected]
-		#si la opcion es tiempo lo pasamos a horas / if the option is time we passed it to hours
-		if (value_sel == 2):
-			return self.getFloatValue(record[value_sel])/3600
-		else:
-			return self.getFloatValue(record[value_sel])
-	
-	def getFloatValue(self, value):
-		try:
-			return float(value)
-		except:
-			return float(0)
-
-	def getDays(self, date_ini):
-		#TODO look at using calendar.day_abbr for this
-		days = []
-		for day in range(0, 7):
-			dateTemp = datetime.datetime.strptime(date_ini, "%Y-%m-%d")
-			incrementDay = datetime.timedelta(days=day)
-			dateToUse = dateTemp + incrementDay
-			days.append( unicode(dateToUse.strftime("%a")) )
-		return days

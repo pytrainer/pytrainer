@@ -16,11 +16,11 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from gui.drawArea import DrawArea
+from timegraph import TimeGraph
 
-class DayGraph:
+class DayGraph(TimeGraph):
 	def __init__(self, vbox = None, combovalue = None):
-		self.drawarea = DrawArea(vbox)
+		TimeGraph.__init__(self, vbox=vbox, window=window)
 		self.combovalue = combovalue
 
 	def drawgraph(self,values):
@@ -67,10 +67,4 @@ class DayGraph:
 			if value_selected==2:
 				yvalue.append(value[5])
 		return xvalue,yvalue
-	
-	def getFloatValue(self, value):
-		try:
-			return float(value)
-		except:
-			return float(0)
 

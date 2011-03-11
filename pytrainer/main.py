@@ -41,6 +41,7 @@ from importdata import Importdata
 from plugins import Plugins
 from profile import Profile
 from athlete import Athlete
+from stats import Stats
 
 from gui.windowimportdata import WindowImportdata
 from gui.windowmain import Main
@@ -92,6 +93,7 @@ class pyTrainer:
             logging.info('No sanity check requested')
         self.record = Record(data_path,self)
         self.athlete = Athlete(data_path,self)
+        self.stats = Stats(data_path,self)
         pool_size = self.profile.getIntValue("pytraining","activitypool_size", default=1)
         self.activitypool = ActivityPool(self, size=pool_size)
         #preparamos la ventana principal
@@ -255,7 +257,8 @@ class pyTrainer:
              date_ini, date_end = self.date.getMonthInterval(date_selected)
              sport = self.windowmain.activeSport
              sport_id = self.record.getSportId(sport)
-             record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport_id)
+#             record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport_id)
+             record_list = self.record.getrecordPeriod(date_ini, date_end, sport_id)
              nameMonth, daysInMonth = self.date.getNameMonth(date_selected)
              self.windowmain.actualize_monthview(record_list, nameMonth)
              self.windowmain.actualize_monthgraph(record_list, daysInMonth)
@@ -265,7 +268,8 @@ class pyTrainer:
              sport = self.windowmain.activeSport
              sport_id = self.record.getSportId(sport)
              year = self.date.getYear(date_selected)
-             record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport_id)
+#             record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport_id)
+             record_list = self.record.getrecordPeriod(date_ini, date_end, sport_id)
              self.windowmain.actualize_yearview(record_list, year)
              self.windowmain.actualize_yeargraph(record_list)
         elif view=="listview":
@@ -274,6 +278,9 @@ class pyTrainer:
         elif view=="athlete":
             logging.debug('athlete view')
             self.windowmain.on_athleteview_activate()
+        elif view=="stats":
+            logging.debug('stats view')
+            self.windowmain.on_statsview_activate()
         else:
             print "Unknown view %s" % view
         logging.debug('<<')
@@ -341,6 +348,12 @@ class pyTrainer:
         logging.debug('>>')
         self.athlete.refresh()
         self.windowmain.actualize_athleteview(self.athlete)
+        logging.debug('<<')
+
+    def refreshStatsView(self):
+        logging.debug('>>')
+        self.stats.refresh()
+        self.windowmain.actualize_statsview(self.stats, self.record.getAllRecordList())
         logging.debug('<<')
 
     def refreshListView(self,condition=None):

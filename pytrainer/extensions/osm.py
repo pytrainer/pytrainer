@@ -21,7 +21,7 @@ class Osm:
 		self.htmlfile = "%s/osm.html" % (self.pytrainer_main.profile.tmpdir)
 		logging.debug("<<")
 
-	def drawMap(self,activity):
+	def drawMap(self, activity, linetype):
 		'''Draw osm map
 			create html file using Open Layers and Open Street Map
 			render using embedded Mozilla
@@ -33,6 +33,7 @@ class Osm:
 		levels = []
 		pointlist = []
 		polyline = []
+		attrlist = []
 
 		list_values = activity.tracks
 		if list_values is not None and list_values != [] and len(list_values) > 0:
@@ -40,6 +41,7 @@ class Osm:
 				lat, lon = float(i[4]), float(i[5])
 				pointlist.append((lat,lon))
 				polyline.append("[%s, %s]" % (lon, lat))
+				attrlist.append((i[3],i[6])) # (Speed, HR)
 			points,levels = Points.encodePoints(pointlist)
 			points = points.replace("\\","\\\\")
 			laps = activity.laps
@@ -51,13 +53,13 @@ class Osm:
 			startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
 			finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
 
-			self.createHtml_osm(polyline, startinfo, finishinfo, laps)
+			self.createHtml_osm(polyline, startinfo, finishinfo, laps, attrlist, linetype)
 		else:
 			self.createErrorHtml()
 		return self.htmlfile
 		logging.debug("<<")
 
-	def createHtml_osm(self, polyline, startinfo, finishinfo, laps):
+	def createHtml_osm(self, polyline, startinfo, finishinfo, laps, attrlist, linetype):
 		'''
 		Generate OSM map html file using MapLayers
 		'''
