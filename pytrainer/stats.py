@@ -65,8 +65,12 @@ class Stats:
                     data['sports'][r['sport']]['total_'+f] = 0
             for f in fields:
                 data['sports'][r['sport']][f] = max(data['sports'][r['sport']][f], r[f])
-                data['sports'][r['sport']]['total_'+f] += r[f]
-                data[f] = max(data[f], r[f])
+                if r[f] is not None:
+                    data['sports'][r['sport']]['total_'+f] += r[f]
+                    data[f] = max(data[f], r[f])
+                else:
+                    logging.info('Skipping null values')
+                
                 
             data['total_duration'] += r['duration']
             data['total_distance'] += r['distance']
