@@ -320,6 +320,14 @@ class WindowProfile(SimpleGladeApp):
         met = self.newmetentry.get_text()
         weight = self.newweightentry.get_text()
         maxpace = self.newmaxpace.get_text()
+        if sport.lower() in [s[0].lower() for s in self.parent.getSportList()]:
+            msg = "Sport '%s' already exists" % sport
+            logging.error(msg)
+            md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, _(msg))
+            md.set_title(_("Sport Creation Error"))
+            md.run()
+            md.destroy()
+            return
         self.parent.addNewSport(sport,met,weight,maxpace)
         self.parent.actualize_mainsportlist()
         self.on_switch_page(None,None,2)
