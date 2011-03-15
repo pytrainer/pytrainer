@@ -150,7 +150,7 @@ class Main(SimpleGladeApp):
                     {'name':_("Distance"), 'xalign':1.0, 'format_float':'%.1f', 'quantity':'distance'},
                     {'name':_("Time"), 'xalign':1.0, 'format_duration':True},
                     {'name':_("Avg speed"), 'format_float':'%.2f', 'quantity':'speed'},
-                    {'name':_("Avg pace"), 'format_float':'%.2f', 'quantity':'pace'},
+                    {'name':_("Avg pace"), 'xalign':1.0, 'quantity':'pace'},
                     {'name':_("Calories"), 'xalign':1.0},
                 ]
         self.create_treeview(self.lapsTreeView,columns)
@@ -385,15 +385,17 @@ class Main(SimpleGladeApp):
                     gobject.TYPE_FLOAT,
                     gobject.TYPE_STRING,
                     gobject.TYPE_FLOAT,
-                    gobject.TYPE_FLOAT,
+                    gobject.TYPE_STRING,
                     gobject.TYPE_INT,
                     )
                 for lap in activity.laps:
                     t = lap['elapsed_time']
                     m = lap['distance']
                     s = m / float(t) * 3.6
+                    if s > 0:
+                        pace = "%d:%02d" %((3600/s)/60,(3600/s)%60)
                     iter = store.append()
-                    store.set(iter, 0, lap['lap_number']+1, 1, m/1000, 2, str(int(float(t))), 3, s, 4, 60/s, 5, lap['calories'])
+                    store.set(iter, 0, lap['lap_number']+1, 1, m/1000, 2, str(int(float(t))), 3, s, 4, pace, 5, lap['calories'])
                 self.lapsTreeView.set_model(store)
                 self.lapsTreeView.set_rules_hint(True)
                 self.frame_laps.show()
