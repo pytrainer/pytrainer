@@ -147,7 +147,7 @@ class Main(SimpleGladeApp):
         #create the columns for the laps treeview
         columns=[ 
                     {'name':_("Lap")},
-                    {'name':_("Distance"), 'xalign':1.0, 'format_float':'%.1f', 'quantity':'distance'},
+                    {'name':_("Distance"), 'xalign':1.0, 'format_float':'%.2f', 'quantity':'distance'},
                     {'name':_("Time"), 'xalign':1.0, 'format_duration':True},
                     {'name':_("Avg speed"), 'format_float':'%.2f', 'quantity':'speed'},
                     {'name':_("Avg pace"), 'xalign':1.0, 'quantity':'pace'},
@@ -391,6 +391,10 @@ class Main(SimpleGladeApp):
                 for lap in activity.laps:
                     t = lap['elapsed_time']
                     m = lap['distance']
+                    
+                    if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
+                        m = km2miles(m)
+                    
                     s = m / float(t) * 3.6
                     if s > 0:
                         pace = "%d:%02d" %((3600/s)/60,(3600/s)%60)
