@@ -147,7 +147,7 @@ class Main(SimpleGladeApp):
         #create the columns for the laps treeview
         columns=[ 
                     {'name':_("Lap")},
-                    {'name':_(""), 'xalign':0, 'pixbuf':True},
+                    {'name':_(" "), 'xalign':0, 'pixbuf':True},
                     {'name':_("Distance"), 'xalign':1.0, 'format_float':'%.2f', 'quantity':'distance'},
                     {'name':_("Time"), 'xalign':1.0, 'format_duration':True},
                     {'name':_("Avg speed"), 'format_float':'%.2f', 'quantity':'speed'},
