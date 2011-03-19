@@ -147,11 +147,17 @@ class Main(SimpleGladeApp):
         #create the columns for the laps treeview
         columns=[ 
                     {'name':_("Lap")},
+                    {'name':_(""), 'xalign':0, 'pixbuf':True},
                     {'name':_("Distance"), 'xalign':1.0, 'format_float':'%.2f', 'quantity':'distance'},
                     {'name':_("Time"), 'xalign':1.0, 'format_duration':True},
                     {'name':_("Avg speed"), 'format_float':'%.2f', 'quantity':'speed'},
+                    {'name':_("Max speed"), 'format_float':'%.2f', 'quantity':'speed'},
                     {'name':_("Avg pace"), 'xalign':1.0, 'quantity':'pace'},
+                    {'name':_("Max pace"), 'xalign':1.0, 'quantity':'pace'},
+                    {'name':_("Avg HR"), 'xalign':1.0},
+                    {'name':_("Max HR"), 'xalign':1.0},
                     {'name':_("Calories"), 'xalign':1.0},
+                    {'name':_("Intensity"), 'visible':False},
                 ]
         self.create_treeview(self.lapsTreeView,columns)
         
@@ -291,10 +297,16 @@ class Main(SimpleGladeApp):
 
     def create_treeview(self,treeview,columns):
         for column_index, column_dict in enumerate(columns):
+            if 'pixbuf' in column_dict:
+	            renderer = gtk.CellRendererPixbuf()
+            else:
+	            renderer = gtk.CellRendererText()
             column = gtk.TreeViewColumn(column_dict['name'])
-            renderer = gtk.CellRendererText()
             column.pack_start(renderer, expand=False)
-            column.add_attribute(renderer, 'text', column_index)
+            if 'pixbuf' in column_dict:
+                column.add_attribute(renderer, 'pixbuf', column_index)
+            else:
+                column.add_attribute(renderer, 'text', column_index)
             column.set_resizable(True)
             column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
             if 'xalign' in column_dict:
@@ -382,11 +394,17 @@ class Main(SimpleGladeApp):
             if len(activity.laps)>1:
                 store = gtk.ListStore(
                     gobject.TYPE_INT,
+                    gtk.gdk.Pixbuf,
                     gobject.TYPE_FLOAT,
                     gobject.TYPE_STRING,
                     gobject.TYPE_FLOAT,
+                    gobject.TYPE_FLOAT,
+                    gobject.TYPE_STRING,
                     gobject.TYPE_STRING,
                     gobject.TYPE_INT,
+                    gobject.TYPE_INT,
+                    gobject.TYPE_INT,
+                    gobject.TYPE_STRING,
                     )
                 for lap in activity.laps:
                     t = lap['elapsed_time']
@@ -396,12 +414,29 @@ class Main(SimpleGladeApp):
                         m = km2miles(m)
                     
                     s = m / float(t) * 3.6
+                    max_speed = lap['max_speed'] * 3.6
                     if s > 0:
                         pace = "%d:%02d" %((3600/s)/60,(3600/s)%60)
+                        max_pace = "%d:%02d" %((3600/max_speed)/60,(3600/max_speed)%60)
+                        
+                    color = {
+                        'active' : '#000000',
+                        'rest' : '#808080',
+                    }
+                    
+                    pic = gtk.gdk.pixbuf_new_from_file(self.data_path+"glade/trigger_%s.png" % lap['trigger'])
+                        
                     iter = store.append()
-                    store.set(iter, 0, lap['lap_number']+1, 1, m/1000, 2, str(int(float(t))), 3, s, 4, pace, 5, lap['calories'])
+                    store.set(iter, 0, lap['lap_number']+1, 1, pic, 2, m/1000, 3, str(int(float(t))), 4, s, 5, max_speed, 6, pace, 7, max_pace, 8, lap['avg_hr'], 9, lap['max_hr'], 10, lap['calories'], 11, color[lap['intensity']])
                 self.lapsTreeView.set_model(store)
                 self.lapsTreeView.set_rules_hint(True)
+                
+                # Use grey color for "rest" laps
+                for c in self.lapsTreeView.get_columns()[:-1]:
+                	for cr in c.get_cell_renderers():
+                		if type(cr)==gtk.CellRendererText:
+	                		c.add_attribute(cr, 'foreground', 11)
+                		
                 self.frame_laps.show()
             else:
                 self.frame_laps.hide()

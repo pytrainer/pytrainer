@@ -47,6 +47,9 @@ endPointTag = gpxdataNS.substitute(tag="endPoint")
 startPointTag = gpxdataNS.substitute(tag="startPoint")
 elapsedTimeTag = gpxdataNS.substitute(tag="elapsedTime")
 distanceTag = gpxdataNS.substitute(tag="distance")
+intensityTag = gpxdataNS.substitute(tag="intensity")
+triggerTag = gpxdataNS.substitute(tag="trigger")
+summaryTag = gpxdataNS.substitute(tag="summary")
 
 pytrainerNS = string.Template(".//{http://sourceforge.net.project/pytrainer/GPX/0/1}$tag")
 pyt_eleTag = pytrainerNS.substitute(tag="ele")
@@ -99,6 +102,7 @@ class Gpx:
                 trackSegTag = mainNS.substitute(tag="trkseg")
                 elevationTag = mainNS.substitute(tag="ele")
                 nameTag = mainNS.substitute(tag="name")
+                intensityTag = mainNS.substitute(tag="intensity")
 
             logging.debug("getting values...")
             self.Values = self._getValues()
@@ -161,7 +165,7 @@ class Gpx:
             lat = self.trkpoints[-1]['lat']
             lon = self.trkpoints[-1]['lon']
             #print ((self.total_time, lat, lon, self.calories, self.total_dist, stLat, stLon))
-            lapInfo.append((self.total_time, lat, lon, self.calories, self.total_dist*1000, stLat, stLon))
+            lapInfo.append((self.total_time, lat, lon, self.calories, self.total_dist*1000, stLat, stLon, "active", self.hr_average, self.maxhr, self.maxvel, "manual"))
         else:
             for lap in laps:
                 endPoint = lap.find(endPointTag)
@@ -180,8 +184,14 @@ class Gpx:
                     #print elapsedTime
                 calories = lap.findtext(calorieTag)
                 distance = lap.findtext(distanceTag)
+                intensity = lap.findtext(intensityTag)
+                trigger = lap.findtext(triggerTag)
+                summary = lap.find(summaryTag)
+                max_speed = summary.findtext(mainNS.substitute(tag="MaximumSpeed"))
+                avg_hr = summary.findtext(mainNS.substitute(tag="AverageHeartRateBpm"))
+                max_hr =  summary.findtext(mainNS.substitute(tag="MaximumHeartRateBpm"))
                 logging.debug("Found time: %s, lat: %s lon: %s cal: %s dist: %s " % (elapsedTime, lat, lon, calories, distance))
-                lapInfo.append((elapsedTime, lat, lon, calories, distance, stLat, stLon))
+                lapInfo.append((elapsedTime, lat, lon, calories, distance, stLat, stLon, intensity, avg_hr, max_hr, max_speed, trigger))
         logging.debug("<<")
         return lapInfo
 

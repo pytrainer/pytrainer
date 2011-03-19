@@ -116,7 +116,7 @@ class Sql:
         for val in values:
             if count>0:
                 string+=","
-            string += """%s="%s" """ %(cells[count],values[count])
+            string += """%s=%s """ %(cells[count],values[count] if type(values[count]) not in [str, unicode] else "'%s'" % values[count])
             count = count+1
 
         string +=" where %s" %condition
