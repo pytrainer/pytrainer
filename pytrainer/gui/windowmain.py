@@ -427,7 +427,7 @@ class Main(SimpleGladeApp):
                     pic = gtk.gdk.pixbuf_new_from_file(self.data_path+"glade/trigger_%s.png" % lap['trigger'])
                         
                     iter = store.append()
-                    store.set(iter, 0, lap['lap_number']+1, 1, pic, 2, m/1000, 3, str(int(float(t))), 4, s, 5, max_speed, 6, pace, 7, max_pace, 8, lap['avg_hr'], 9, lap['max_hr'], 10, lap['calories'], 11, color[lap['intensity']])
+                    store.set(iter, 0, lap['lap_number']+1, 1, pic, 2, m/1000, 3, str(int(float(t))), 4, s, 5, max_speed, 6, pace, 7, max_pace, 8, lap['avg_hr'] if lap['avg_hr'] else 0, 9, lap['max_hr'] if lap['max_hr'] else 0, 10, lap['calories'], 11, color[lap['intensity']])
                 self.lapsTreeView.set_model(store)
                 self.lapsTreeView.set_rules_hint(True)
                 
