@@ -55,7 +55,7 @@ class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
         self.version ="1.8.0-svn#774"
-        self.DB_version = 7
+        self.DB_version = 8
         #Process command line options
         self.startup_options = self.get_options()
         self.environment = Environment(platform.get_platform(), self.startup_options.conf_dir)

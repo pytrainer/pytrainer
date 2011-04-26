@@ -171,7 +171,7 @@ class DrawArea:
         else:
             return '%1.1f' % x
 
-    def drawStackedBars(self,xvalues,yvalues,ylabel,title, valuesAreTime=False):
+    def drawStackedBars(self,xvalues,yvalues,ylabel,title, valuesAreTime=False, colors={}):
         '''function to draw stacked bars
             xvalues needs to be a list of lists of strings, e.g. [0]["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
             yvalues needs to be a list of dicts e.g. [0]{'Kayak': {'Tue': 10.08, 'Fri': 17.579999999999998, 'Thu': 15.66, 'Sat': 30.619999999999997}, {'Run': {'Mon': 9.65, 'Sun': 15.59}}
@@ -218,7 +218,9 @@ class DrawArea:
             for ind in inds:
                 ybottoms[ind] += yheights[ind]
                 yheights[ind] = 0 #Zero heights
-            color = self.getColor(keys.index(key))
+            color = "#"+colors.get(key, '')
+            if len(color)<2:
+                color = self.getColor(keys.index(key))
             for xvalue in xvalues[0]:
                 index = xvalues[0].index(xvalue)
                 if xvalue in yvalues[0][key]:
@@ -255,7 +257,9 @@ class DrawArea:
                 for ind in inds:
                     ybottoms[ind] += yheights[ind]
                     yheights[ind] = 0.0 #Zero heights
-                color = self.getColor(keys.index(key))
+                color = "#"+colors.get(key, '')
+                if len(color)<2:
+                    color = self.getColor(keys.index(key))
                 for xvalue in xvalues[0]:
                     index = xvalues[0].index(xvalue)
                     if xvalue in yvalues[1][key]:

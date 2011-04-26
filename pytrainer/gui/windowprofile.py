@@ -35,6 +35,7 @@ class WindowProfile(SimpleGladeApp):
         self.data_path = data_path
         SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
         self.conf_options = parent.profile_options
+        self.stored_color = "000000"
 
     def new(self):
         self.gender_options = {
@@ -56,9 +57,18 @@ class WindowProfile(SimpleGladeApp):
             self.prf_ddbb.insert_text(i,self.ddbb_type[i])
 
         #preparamos la lista sports:
-        column_names=[_("Sport"),_("MET"),_("Extra Weight"), _("Maximum Pace")]
+        column_names=[_("Sport"),_("MET"),_("Extra Weight"), _("Maximum Pace"), _("Color")]
         for column_index, column_name in enumerate(column_names):
-            column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
+            if column_index==4:
+                renderer = gtk.CellRendererPixbuf()
+            else:
+                renderer = gtk.CellRendererText()
+            column = gtk.TreeViewColumn(column_name, text=column_index)
+            column.pack_start(renderer, expand=False)
+            if column_index==4:
+                column.add_attribute(renderer, 'pixbuf', column_index)
+            else:
+                column.add_attribute(renderer, 'text', column_index)
             column.set_resizable(True)
             self.sportTreeView.append_column(column)
 
@@ -153,6 +163,7 @@ class WindowProfile(SimpleGladeApp):
                             gobject.TYPE_STRING,
                             gobject.TYPE_STRING,
                             gobject.TYPE_STRING,
+                            gtk.gdk.Pixbuf,
                             object)
                 for i in sport_list:
                     try:
@@ -171,6 +182,8 @@ class WindowProfile(SimpleGladeApp):
                         #print type(e), e
                         max_pace = ""
                     
+                    colorPixBuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, 25, 15)
+                    colorPixBuf.fill(0 if i[5] in (None,'') else long(i[5]+'00',16))
                     
                     iter = store.append()
                     store.set (
@@ -179,6 +192,7 @@ class WindowProfile(SimpleGladeApp):
                                 1, met,
                                 2, weight,
                                 3, max_pace,
+                                4, colorPixBuf,
                                 )
                 self.sportTreeView.set_model(store)
                 self.sportTreeView.set_cursor(0)
@@ -328,7 +342,7 @@ class WindowProfile(SimpleGladeApp):
             md.run()
             md.destroy()
             return
-        self.parent.addNewSport(sport,met,weight,maxpace)
+        self.parent.addNewSport(sport,met,weight,maxpace,self.stored_color)
         self.parent.actualize_mainsportlist()
         self.on_switch_page(None,None,2)
         self.hidesportsteps()
@@ -358,7 +372,7 @@ class WindowProfile(SimpleGladeApp):
         if iter:
             self.buttonbox.set_sensitive(0)
             sport = selected.get_value(iter,0)
-            name,met,weight,maxpace = self.parent.getSportInfo(sport)
+            name,met,weight,maxpace,color = self.parent.getSportInfo(sport)
             self.editsportentry.set_text(sport)
             self.sportnameedit.set_text(sport)
             if weight is not None:
@@ -373,8 +387,39 @@ class WindowProfile(SimpleGladeApp):
                 self.editmaxpace.set_text(str(maxpace))
             else:
                 self.editmaxpace.set_text("")
+            if color == None:
+                color = "0000"
+                
+            colorPixBuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, 250, 20)
+            colorPixBuf.fill(long("0x%s00" % color, 16))
+            self.editcolor.set_from_pixbuf(colorPixBuf)
+                
             self.hidesportsteps()
             self.editsport.show()
+            
+    def on_editcolor_clicked(self, widget):
+        selected,iter = self.sportTreeView.get_selection().get_selected()
+        if iter:
+            sport = selected.get_value(iter,0)
+            name,met,weight,maxpace,color = self.parent.getSportInfo(sport)
+            if color==None:
+                color = "000000"
+            colorseldlg = gtk.ColorSelectionDialog("test")
+            colorseldlg.colorsel.set_has_palette(True)
+            colorseldlg.colorsel.set_current_color(gtk.gdk.color_parse("#"+color))
+            colorseldlg.run()
+            col = colorseldlg.colorsel.get_current_color()
+            self.stored_color = ("%02x" % col.red)[:2] + ("%02x" % col.green)[:2] + ("%02x" % col.blue)[:2]
+
+            colorPixBuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, 250, 20)
+            colorPixBuf.fill(long("0x%s00" % self.stored_color, 16))
+            self.newcolor.set_from_pixbuf(colorPixBuf)
+            self.editcolor.set_from_pixbuf(colorPixBuf)
+            
+            colorseldlg.hide()
+            
+    def on_sporttreeview_row_activated(self, widget, path, column):
+        self.on_editsport_clicked(None)
     
     def on_editsport_accept_clicked(self,widget):
         oldnamesport = self.sportnameedit.get_text()
@@ -382,7 +427,7 @@ class WindowProfile(SimpleGladeApp):
         newmetsport = self.editmetentry.get_text()
         newweightsport = self.editweightentry.get_text()
         newmaxpace = self.editmaxpace.get_text()
-        self.parent.updateSport(oldnamesport,newnamesport,newmetsport,newweightsport, newmaxpace)
+        self.parent.updateSport(oldnamesport,newnamesport,newmetsport,newweightsport, newmaxpace, self.stored_color)
         self.parent.actualize_mainsportlist()
         self.on_switch_page(None,None,2)
         self.hidesportsteps()

@@ -591,6 +591,7 @@
                                   <widget class="GtkTreeView" id="sportTreeView">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
+                                    <signal name="row_activated" handler="on_sporttreeview_row_activated"/>
                                   </widget>
                                 </child>
                               </widget>
@@ -808,8 +809,8 @@
                                   </widget>
                                   <packing>
                                     <property name="right_attach">3</property>
-                                    <property name="top_attach">4</property>
-                                    <property name="bottom_attach">5</property>
+                                    <property name="top_attach">5</property>
+                                    <property name="bottom_attach">6</property>
                                     <property name="x_options">GTK_FILL</property>
                                     <property name="y_options"></property>
                                   </packing>
@@ -838,6 +839,42 @@
                                     <property name="right_attach">2</property>
                                     <property name="top_attach">3</property>
                                     <property name="bottom_attach">4</property>
+                                    <property name="y_options"></property>
+                                  </packing>
+                                </child>
+		                        <child>
+		                          <widget class="GtkHBox" id="hboxcolor">
+		                            <property name="visible">True</property>
+		                            <child>
+		                              <widget class="GtkImage" id="newcolor">
+		                                <property name="visible">True</property>
+		                                <property name="can_focus">True</property>
+		                                <property name="receives_default">False</property>
+		                              </widget>
+		                              <packing>
+		                              </packing>
+		                            </child>
+		                            <child>
+		                              <widget class="GtkButton" id="buttoncolor">
+		                                <property name="label">gtk-edit</property>
+		                                <property name="visible">True</property>
+		                                <property name="can_focus">True</property>
+		                                <property name="receives_default">False</property>
+		                                <property name="use_stock">True</property>
+		                                <signal name="clicked" handler="on_editcolor_clicked"/>
+		                              </widget>
+		                              <packing>
+		                                <property name="expand">False</property>
+		                                <property name="fill">False</property>
+		                                <property name="position">1</property>
+		                              </packing>
+		                            </child>
+                                  </widget>
+                                  <packing>
+                                    <property name="left_attach">1</property>
+                                    <property name="right_attach">2</property>
+                                    <property name="top_attach">4</property>
+                                    <property name="bottom_attach">5</property>
                                     <property name="y_options"></property>
                                   </packing>
                                 </child>
@@ -1188,8 +1225,8 @@ Continue?</property>
                                   </widget>
                                   <packing>
                                     <property name="right_attach">2</property>
-                                    <property name="top_attach">4</property>
-                                    <property name="bottom_attach">5</property>
+                                    <property name="top_attach">5</property>
+                                    <property name="bottom_attach">6</property>
                                     <property name="x_options">GTK_FILL</property>
                                     <property name="y_options"></property>
                                   </packing>
@@ -1198,7 +1235,7 @@ Continue?</property>
                                   <widget class="GtkLabel" id="label-9">
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">Maxiumum Pace</property>
+                                    <property name="label" translatable="yes">Maximum Pace</property>
                                   </widget>
                                   <packing>
                                     <property name="top_attach">3</property>
@@ -1221,6 +1258,55 @@ Continue?</property>
                                     <property name="y_options"></property>
                                   </packing>
                                 </child>
+                                <child>
+                                  <widget class="GtkLabel" id="label-10">
+                                    <property name="visible">True</property>
+                                    <property name="xalign">0</property>
+                                    <property name="label" translatable="yes">Color</property>
+                                  </widget>
+                                  <packing>
+                                    <property name="top_attach">4</property>
+                                    <property name="bottom_attach">5</property>
+                                    <property name="x_options">GTK_FILL</property>
+                                    <property name="y_options"></property>
+                                  </packing>
+                                </child>
+		                        <child>
+		                          <widget class="GtkHBox" id="hboxcolor">
+		                            <property name="visible">True</property>
+		                            <child>
+		                              <widget class="GtkImage" id="editcolor">
+		                                <property name="visible">True</property>
+		                                <property name="can_focus">True</property>
+		                                <property name="receives_default">False</property>
+		                              </widget>
+		                              <packing>
+		                              </packing>
+		                            </child>
+		                            <child>
+		                              <widget class="GtkButton" id="buttoncolor">
+		                                <property name="label">gtk-edit</property>
+		                                <property name="visible">True</property>
+		                                <property name="can_focus">True</property>
+		                                <property name="receives_default">False</property>
+		                                <property name="use_stock">True</property>
+		                                <signal name="clicked" handler="on_editcolor_clicked"/>
+		                              </widget>
+		                              <packing>
+		                                <property name="expand">False</property>
+		                                <property name="fill">False</property>
+		                                <property name="position">1</property>
+		                              </packing>
+		                            </child>
+		                          </widget>
+		                          <packing>
+		                            <property name="left_attach">1</property>
+		                            <property name="right_attach">2</property>
+		                            <property name="top_attach">4</property>
+		                            <property name="bottom_attach">5</property>
+		                            <property name="y_options"></property>
+		                          </packing>
+		                        </child>
                               </widget>
                               <packing>
                                 <property name="position">0</property>

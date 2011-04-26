@@ -20,9 +20,10 @@ import datetime, calendar
 from gui.drawArea import DrawArea
 
 class TimeGraph(object):
-    def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None):
+    def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None, main = None):
         self.drawarea = DrawArea(vbox, window)
         self.SPORT_FIELD = 9
+        self.sportlist = dict([(s[0],s[5]) for s in main.profile.getSportList()])
 
     def getFloatValue(self, value):
         try:
@@ -49,6 +50,7 @@ class TimeGraph(object):
     def get_values(self, values, value_selected, key_format, sportfield=9):
         valueDict = {} #Stores the totals
         valueCount = {} #Counts the totals to allow for averaging if needed
+        sportColors = {}
 
         for record in values:
             day = unicode(datetime.datetime.strptime(record[0], "%Y-%m-%d").strftime(key_format)) # Gives year for this record
@@ -118,8 +120,7 @@ class TimeGraph(object):
             xlab.append(xvalues)
             valsAreTime.append(valuesAreTime)
         #Draw chart
-        
-        self.drawarea.drawStackedBars(xlab,yval,ylab,tit,valsAreTime)
+        self.drawarea.drawStackedBars(xlab,yval,ylab,tit,valsAreTime, colors = self.sportlist)
 
     def get_value_params(self,value):
         return self.value_params[value]

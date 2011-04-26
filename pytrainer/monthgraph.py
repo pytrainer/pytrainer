@@ -30,8 +30,8 @@ class MonthGraph(TimeGraph):
         (_("day"),_("Calories"), _("Daily Calories"),"b"),
     ]
 
-    def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None):
-        TimeGraph.__init__(self, vbox=vbox, window=window)
+    def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None, main = None):
+        TimeGraph.__init__(self, vbox=vbox, window=window, main=main)
         self.combovalue = combovalue
         self.combovalue2 = combovalue2
         self.KEY_FORMAT = "%d"

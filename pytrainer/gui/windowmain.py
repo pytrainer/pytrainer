@@ -246,10 +246,10 @@ class Main(SimpleGladeApp):
         self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox, self.window1, self.heartrate_vbox2, pytrainer_main=self.pytrainer_main)
         #self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
         self.day_vbox.hide()
-        self.drawareaweek = WeekGraph(self.weekview, self.window1, self.week_combovalue, self.week_combovalue2)
-        self.drawareamonth = MonthGraph(self.month_vbox, self.window1, self.month_combovalue,self.month_combovalue2)
-        self.drawareayear = YearGraph(self.year_vbox, self.window1, self.year_combovalue,self.year_combovalue2)
-        self.drawareatotal = TotalGraph(self.total_vbox, self.window1, self.total_combovalue,self.total_combovalue2)
+        self.drawareaweek = WeekGraph(self.weekview, self.window1, self.week_combovalue, self.week_combovalue2, self.pytrainer_main)
+        self.drawareamonth = MonthGraph(self.month_vbox, self.window1, self.month_combovalue,self.month_combovalue2, self.pytrainer_main)
+        self.drawareayear = YearGraph(self.year_vbox, self.window1, self.year_combovalue,self.year_combovalue2, self.pytrainer_main)
+        self.drawareatotal = TotalGraph(self.total_vbox, self.window1, self.total_combovalue,self.total_combovalue2, self.pytrainer_main)
 
     def createMap(self,MapViewer,waypoint):
         self.waypoint = waypoint
@@ -298,9 +298,9 @@ class Main(SimpleGladeApp):
     def create_treeview(self,treeview,columns):
         for column_index, column_dict in enumerate(columns):
             if 'pixbuf' in column_dict:
-	            renderer = gtk.CellRendererPixbuf()
+                renderer = gtk.CellRendererPixbuf()
             else:
-	            renderer = gtk.CellRendererText()
+                renderer = gtk.CellRendererText()
             column = gtk.TreeViewColumn(column_dict['name'])
             column.pack_start(renderer, expand=False)
             if 'pixbuf' in column_dict:
@@ -433,10 +433,10 @@ class Main(SimpleGladeApp):
                 
                 # Use grey color for "rest" laps
                 for c in self.lapsTreeView.get_columns()[:-1]:
-                	for cr in c.get_cell_renderers():
-                		if type(cr)==gtk.CellRendererText:
-	                		c.add_attribute(cr, 'foreground', 11)
-                		
+                    for cr in c.get_cell_renderers():
+                        if type(cr)==gtk.CellRendererText:
+                            c.add_attribute(cr, 'foreground', 11)
+                        
                 self.frame_laps.show()
             else:
                 self.frame_laps.hide()

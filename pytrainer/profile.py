@@ -225,11 +225,11 @@ class Profile:
         #connection = self.pytrainer_main.ddbb.connect()
         #if (connection == 1):
         logging.debug("retrieving sports info")
-        return self.pytrainer_main.ddbb.select("sports","name,met,weight,id_sports,max_pace",None)
+        return self.pytrainer_main.ddbb.select("sports","name,met,weight,id_sports,max_pace,color",None)
         #else:
         #   return connection
 
-    def addNewSport(self,sport,met,weight,maxpace):
+    def addNewSport(self,sport,met,weight,maxpace,color):
         """31.08.2008 - dgranda
         It adds a new sport.
         arguments:
@@ -238,9 +238,9 @@ class Profile:
             weight:
         returns: id_sports from new sport"""
         logging.debug(">>")
-        logging.debug("Adding new sport: "+sport+"|"+weight+"|"+met+"|"+maxpace)
-        sport = [sport,met,weight,maxpace]
-        self.pytrainer_main.ddbb.insert("sports","name,met,weight,max_pace",sport)
+        logging.debug("Adding new sport: "+sport+"|"+weight+"|"+met+"|"+maxpace+"|"+str(color))
+        sport = [sport,met,weight,maxpace,color]
+        self.pytrainer_main.ddbb.insert("sports","name,met,weight,max_pace,color",sport)
         sport_id = self.pytrainer_main.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))
         logging.debug("<<")
         return sport_id
@@ -254,13 +254,13 @@ class Profile:
         self.pytrainer_main.ddbb.delete("sports","id_sports=\"%d\""%id_sport)
         logging.debug("<<")
 
-    def updateSport(self,oldnamesport,newnamesport,newmetsport,newweightsport,newmaxpace=None):
+    def updateSport(self,oldnamesport,newnamesport,newmetsport,newweightsport,newmaxpace=None,newcolor=None):
         logging.debug("--")
-        self.pytrainer_main.ddbb.update("sports","name,met,weight,max_pace",[newnamesport,newmetsport,newweightsport, newmaxpace],"name=\"%s\""%oldnamesport)
+        self.pytrainer_main.ddbb.update("sports","name,met,weight,max_pace,color",[newnamesport,newmetsport,newweightsport, newmaxpace, newcolor],"name=\"%s\""%oldnamesport)
 
     def getSportInfo(self,namesport):
         logging.debug("--")
-        return self.pytrainer_main.ddbb.select("sports","name,met,weight,max_pace","name=\"%s\""%namesport)[0]
+        return self.pytrainer_main.ddbb.select("sports","name,met,weight,max_pace,color","name=\"%s\""%namesport)[0]
 
     def build_ddbb(self):
         logging.debug("--")
