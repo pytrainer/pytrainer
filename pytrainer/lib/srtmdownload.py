@@ -46,7 +46,6 @@ class DownloadLoop:
         self.progressbar = progressbar
         self.label = label
         self.tile_name = tile_name
-        print tile_name
     
     def run(self):
         logging.debug(">>")
