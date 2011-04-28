@@ -390,7 +390,7 @@ class Main(SimpleGladeApp):
                 self.label_record_equipment.set_text(equipment_text)
             else:
                 self.label_record_equipment.set_markup("<i>None</i>")
-                
+            runTime = 0.0;	
             if len(activity.laps)>1:
                 store = gtk.ListStore(
                     gobject.TYPE_INT,
@@ -408,6 +408,7 @@ class Main(SimpleGladeApp):
                     )
                 for lap in activity.laps:
                     t = lap['elapsed_time']
+                    runTime += float(t) 
                     m = lap['distance']
                     
                     if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
@@ -440,10 +441,15 @@ class Main(SimpleGladeApp):
                 self.frame_laps.show()
             else:
                 self.frame_laps.hide()
+                runTime += float(activity.laps[0]['elapsed_time']) 
 
         else:
             self.recordview.set_current_page(0)
             self.recordview.set_sensitive(0)
+        pauseTime = activity.time - runTime
+        hrun,mrun,srun = self.pytrainer_main.date.second2time(runTime)
+        hpause,mpause,spause = self.pytrainer_main.date.second2time(pauseTime)
+        self.record_runrest.set_text("%d:%d:%d / %d:%d:%d" %(hrun,mrun,srun,hpause,mpause,spause) )	
         logging.debug("<<")
 
     def actualize_recordgraph(self,activity):
@@ -740,11 +746,15 @@ class Main(SimpleGladeApp):
             average = 0
             maxpace = "0:00"
             pace = "0:00"
+            totalascent = 0 
+            totaldescent = 0
             for record in record_list:
                 distance += self.parseFloat(record[2])
                 calories += self.parseFloat(record[7])
                 timeinseconds += self.parseFloat(record[3])
                 beats = self.parseFloat(record[4])
+                totalascent += self.parseFloat(record[13]) 
+                totaldescent += self.parseFloat(record[14]) 
                 if float(beats)>0:
                     tbeats += beats*(self.parseFloat(record[3])/60/60)
                 if record[9] > maxspeed:
@@ -783,6 +793,7 @@ class Main(SimpleGladeApp):
             self.day_maxspeed.set_text("%0.2f" %maxspeed)
             self.day_pace.set_text("%s" %pace)
             self.day_maxpace.set_text("%s" %maxpace)
+            self.day_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
             self.day_calories.set_text("%0.0f" %calories)
             self.day_topic.set_text(str(record[1]))
 
@@ -838,7 +849,8 @@ class Main(SimpleGladeApp):
         pace = "0:00"
         maxpace = "0:00"
         maxbeats = 0
-
+        totalascent = 0
+        totaldescent = 0
         if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
             self.w_distance_unit.set_text(_("miles"))
             self.w_speed_unit.set_text(_("miles/h"))
@@ -859,6 +871,8 @@ class Main(SimpleGladeApp):
                 average += self.parseFloat(record[5])
                 calories += self.parseFloat(record[6])
                 beats = self.parseFloat(record[3])
+                totalascent += self.parseFloat(record[10])
+                totaldescent += self.parseFloat(record[11])
                 if float(beats) > 0:
                     time_in_min += time/60
                     tbeats += beats*(time/60)
@@ -898,6 +912,7 @@ class Main(SimpleGladeApp):
             self.weeka_maxspeed.set_text("%0.2f" %maxspeed)
             self.weeka_pace.set_text(pace)
             self.weeka_maxpace.set_text(maxpace)
+            self.weeka_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
             self.weeka_calories.set_text("%0.0f" %calories)
             self.weekview.set_sensitive(1)
         else:
@@ -916,7 +931,8 @@ class Main(SimpleGladeApp):
         pace = "0:00"
         maxpace = "0:00"
         maxbeats = 0
-
+        totalascent = 0
+        totaldescent = 0
         if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
             self.m_distance_unit.set_text(_("miles"))
             self.m_speed_unit.set_text(_("miles/h"))
@@ -937,6 +953,8 @@ class Main(SimpleGladeApp):
                 average += self.parseFloat(record[5])
                 calories += self.parseFloat(record[6])
                 beats = self.parseFloat(record[3])
+                totalascent += self.parseFloat(record[10])
+                totaldescent += self.parseFloat(record[11])
                 if float(beats) > 0:
                     time_in_min += time/60
                     tbeats += beats*(time/60)
@@ -976,6 +994,7 @@ class Main(SimpleGladeApp):
             self.montha_maxspeed.set_text("%0.2f" %maxspeed)
             self.montha_pace.set_text(pace)
             self.montha_maxpace.set_text(maxpace)
+            self.montha_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
             self.montha_calories.set_text("%0.0f" %calories)
             self.monthview.set_sensitive(1)
         else:
@@ -998,6 +1017,8 @@ class Main(SimpleGladeApp):
         pace = "0:00"
         maxpace = "0:00"
         maxbeats = 0
+        totalascent = 0 
+        totaldescent = 0
         if num_records>0:
             for record in record_list:
                 km += self.parseFloat(record[1])
@@ -1005,6 +1026,8 @@ class Main(SimpleGladeApp):
                 average += self.parseFloat(record[5])
                 calories += self.parseFloat(record[6])
                 beats = self.parseFloat(record[3])
+                totalascent += self.parseFloat(record[10])
+                totaldescent += self.parseFloat(record[11])
                 if float(beats) > 0:
                     time_in_min += time/60
                     tbeats += beats*(time/60)
@@ -1039,6 +1062,7 @@ class Main(SimpleGladeApp):
             self.yeara_maxspeed.set_text("%0.2f" %maxspeed)
             self.yeara_pace.set_text(pace)
             self.yeara_maxpace.set_text(maxpace)
+            self.yeara_ascdesc.set_text("%d/%d " %(totalascent,totaldescent))
             self.yeara_calories.set_text("%0.0f" %calories)
             self.yearview.set_sensitive(1)
         else:

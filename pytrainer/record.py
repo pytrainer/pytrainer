@@ -341,11 +341,11 @@ class Record:
 		logging.debug('--')
 		if not id_sport:
 			return self.pytrainer_main.ddbb.select("records,sports",
-					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local",
+					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
 					"date=\"%s\" and records.sport=sports.id_sports" %date)
 		else:
 			return self.pytrainer_main.ddbb.select("records,sports",
-					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local",
+					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
 					"date=\"%s\" and sports.id_sports=\"%s\" and records.sport=sports.id_sports" %(date,id_sport))
 
 	def getLaps(self, id_record):
@@ -402,7 +402,7 @@ class Record:
 		else:
 			condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports and sports.id_sports=\"%s\"" %(date_ini,date_end, sport)
 
-		return self.pytrainer_main.ddbb.select(tables,"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats, sports.name", condition)
+		return self.pytrainer_main.ddbb.select(tables,"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats, sports.name,upositive,unegative", condition)
 
 	def getrecordPeriodSport(self,date_ini, date_end,sport):
 		if not sport:
@@ -413,7 +413,7 @@ class Record:
 			condition = "date>\"%s\" and date<\"%s\" and records.sport=sports.id_sports and sports.id_sports=\"%s\"" %(date_ini,date_end,sport)
 
 		return self.pytrainer_main.ddbb.select(tables,
-					"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats",
+					"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats,upositive,unegative",
 					condition)
 
 	def getSportMet(self,sport):
