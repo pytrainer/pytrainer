@@ -161,6 +161,15 @@ class Main(SimpleGladeApp):
                 ]
         self.create_treeview(self.lapsTreeView,columns)
         
+        #create the columns for the projected times treeview
+        columns=[ 
+                    {'name':_("id"), 'visible':False},
+                    {'name':_("Race"), 'xalign':1.0},
+                    {'name':_("Distance"), 'xalign':1.0, 'format_float':'%.2f', 'quantity':'distance'},
+                    {'name':_("Time"), 'xalign':1.0, 'format_duration':True},
+                ]
+        self.create_treeview(self.analyticsTreeView,columns,sortable=False)
+        
         self.fileconf = self.pytrainer_main.profile.confdir+"/listviewmenu.xml"
         if not os.path.isfile(self.fileconf):
             self._createXmlListView(self.fileconf)
@@ -290,12 +299,14 @@ class Main(SimpleGladeApp):
         
     def render_float(self, column, cell, model, iter, data):
         _format, _quantity = data
-        _val = model.get_value(iter, column.get_sort_column_id())
+        col = column.get_sort_column_id()
+        if col == -1: col = 0
+        _val = model.get_value(iter, col)
         _val = self.uc.sys2usr(_quantity, _val)
         _val_str = _format % float(_val)
         cell.set_property('text', _val_str)
 
-    def create_treeview(self,treeview,columns):
+    def create_treeview(self,treeview,columns,sortable=True):
         for column_index, column_dict in enumerate(columns):
             if 'pixbuf' in column_dict:
                 renderer = gtk.CellRendererPixbuf()
@@ -317,7 +328,8 @@ class Main(SimpleGladeApp):
                 column.set_cell_data_func(renderer, self.render_float, [column_dict['format_float'], column_dict['quantity']])
             if 'format_duration' in column_dict and column_dict['format_duration']:
                 column.set_cell_data_func(renderer, self.render_duration)
-            column.set_sort_column_id(column_index)
+            if sortable:
+	            column.set_sort_column_id(column_index)
             treeview.append_column(column)
 
     def actualize_recordview(self,activity):
@@ -441,7 +453,7 @@ class Main(SimpleGladeApp):
                 self.frame_laps.show()
             else:
                 self.frame_laps.hide()
-                runTime += float(activity.laps[0]['elapsed_time']) 
+                runTime = activity.time
 
         else:
             self.recordview.set_current_page(0)
@@ -719,6 +731,73 @@ class Main(SimpleGladeApp):
         #else:
         #   self.recordview.set_sensitive(0)
         logging.debug("<<")
+        
+    def actualize_analytics(self,activity):
+        logging.debug(">>")
+        record_list = activity.tracks
+            
+        def project(d,a):
+            return int(a.time * (d / a.distance)**1.06)
+            
+        DISTANCES = {
+            .8    : _("800 m"),
+            1.5   : _("1500 m"),
+            5     : _("5K"),
+            7     : _("7K"),
+            10    : _("10K"),
+            21.1  : _("Half marathon"),
+            42.195  : _("Marathon"),
+            100   : _("100K"),
+        }
+        
+        projected_store = gtk.ListStore(
+            gobject.TYPE_STRING,       #id
+            gobject.TYPE_STRING,    #name
+            gobject.TYPE_STRING,    #distance
+            gobject.TYPE_STRING,       #time
+            )
+
+        ds = DISTANCES.keys()
+        ds = sorted(ds)
+        for d in ds:
+            v = DISTANCES[d]
+            iter = projected_store.append()
+            projected_store.set (
+                iter,
+                0, str(d),
+                1, v,         
+                2, str(d),
+                3, str(project(d, activity)),
+                )
+        self.analyticsTreeView.set_model(projected_store)
+            
+        self.analytics_activity = activity
+        self.on_change_rank_percentage()
+
+        logging.debug("<<")
+
+    def on_change_rank_percentage(self, widget=None):
+    
+        activity = self.analytics_activity
+        if widget:
+            percentage = widget.get_value() / 100
+        else:
+            percentage = .05
+        records = self.pytrainer_main.ddbb.select_dict("records", ["distance","time"], "distance > %f AND distance < %f AND sport=%d" % (activity.distance * (1-percentage), activity.distance * (1+percentage), activity.sport_id))
+        
+        count = 1
+        for r in records:
+            if r['distance']/int(r['time']) > activity.distance/activity.time:
+                count += 1
+
+        import numpy
+        speeds = [r['distance']/int(r['time'])*3600 for r in records]
+        self.label_ranking_range.set_text("%.2f - %.2f" % (activity.distance * (1-percentage), activity.distance * (1+percentage)))
+        self.label_ranking_rank.set_text("%s/%s" % (count, len(records)))
+        self.label_ranking_avg.set_text("%.4f" % numpy.average(speeds))
+        self.label_ranking_speed.set_text("%.4f" % (activity.distance/activity.time*3600))
+        self.label_ranking_stddev.set_text("%.4f" % numpy.std(speeds))
+        self.label_ranking_dev.set_text("%+f" % ((activity.distance/activity.time*3600 - numpy.average(speeds)) / numpy.std(speeds)))
 
     def actualize_dayview(self,record_list=None, activity_list=None):
         logging.debug(">>")
@@ -1667,6 +1746,8 @@ class Main(SimpleGladeApp):
             selected_view="map"
         elif page == 3:
             selected_view="heartrate"
+        elif page == 4:
+            selected_view="analytics"
         self.parent.refreshRecordGraphView(selected_view)
 
     def on_showmap_clicked(self,widget):

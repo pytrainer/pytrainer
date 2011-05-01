@@ -238,6 +238,8 @@ class pyTrainer:
                 self.refreshRecordGraphView("map")
              elif self.windowmain.recordview.get_current_page()==3:
                 self.refreshRecordGraphView("heartrate")
+             elif self.windowmain.recordview.get_current_page()==4:
+                self.refreshRecordGraphView("analytics")
         elif view=="day":
              logging.debug('day view')
              sport = self.windowmain.activeSport
@@ -313,6 +315,8 @@ class pyTrainer:
         if view=="heartrate":
              self.windowmain.actualize_heartrategraph(activity)
              self.windowmain.actualize_hrview(activity)
+        if view=="analytics":
+             self.windowmain.actualize_analytics(activity)
         logging.debug('<<')
 
     def refreshMapView(self, full_screen=False):
