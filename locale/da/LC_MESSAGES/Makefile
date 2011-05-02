@@ -1,7 +1,7 @@
 default:
-	msgfmt pytrainer_dk.po -o ./pytrainer.mo
+	msgfmt pytrainer_da.po -o ./pytrainer.mo
 
 merge:
-	msgmerge pytrainer_dk.po pytrainer_dk.po_new > pytrainer_dk.po.tmp
-	mv pytrainer_de.pk.tmp pytrainer_dk.po
-	rm pytrainer_dk.po_new
+	msgmerge pytrainer_da.po pytrainer_da.po_new > pytrainer_da.po.tmp
+	mv pytrainer_da.po.tmp pytrainer_da.po
+	rm pytrainer_da.po_new
