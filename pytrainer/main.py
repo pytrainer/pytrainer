@@ -54,7 +54,7 @@ from lib.uc import UC
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.8.0-svn#781"
+        self.version ="1.8.0-svn#784"
         self.DB_version = 8
         #Process command line options
         self.startup_options = self.get_options()

@@ -1,6 +1,7 @@
 # -*- coding: iso-8859-1 -*-
 
 #Copyright (C) Nathan Jones ncjones@users.sourceforge.net
+#modified by dgranda on behalf of Debian bug #587997 (trac ticket #120)
 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -20,12 +21,12 @@ import os
 import sys
     
 def get_platform():
-    if sys.platform == "linux2":
-        return _Linux()
-    elif sys.platform == "win32":
+    if os.name == "posix":
+        return _Linux() #although not true, not changing original return name to avoid side effects
+    elif os.name == "nt":
         return _Windows()
     else:
-        print "Unsupported sys.platform: %s." % sys.platform
+        print "Unsupported os.name: %s." % os.name
         sys.exit(1)
         
 class _Platform(object):
