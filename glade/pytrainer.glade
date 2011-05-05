@@ -2800,7 +2800,7 @@ Cadence</property>
 				                                    <property name="left_padding">12</property>
 			                                        <child>
 			                                          <widget class="GtkVBox" id="vbox_ranking">
-		                                <property name="visible">True</property>
+						                                <property name="visible">True</property>
 					                                    <child>
 					                                      <widget class="GtkLabel" id="label11125">
 					                                        <property name="visible">True</property>
@@ -2809,190 +2809,213 @@ Cadence</property>
 					                                        <property name="use_markup">True</property>
 					                                      </widget>
 					                                    </child>
-					                                    <child>
-					                                      <widget class="GtkHScale" id="slider_ranking">
-					                                        <property name="visible">True</property>
-					                                        <property name="sensitive">True</property>
-															<property name="adjustment">5 0 20 1 0 0</property>
-						                                    <signal name="value-changed" handler="on_change_rank_percentage"/>
-									                      </widget>
-					                                      <packing>
-					                                        <property name="expand">False</property>
-					                                      </packing>
-					                                    </child>
-					                                    <child>
-					                                      <widget class="GtkTable" id="table_ranking">
-					                                        <property name="visible">True</property>
-						                                    <property name="border_width">10</property>
-						                                    <property name="n_rows">5</property>
-						                                    <property name="n_columns">2</property>
-						                                    <property name="column_spacing">3</property>
-						                                    <property name="row_spacing">5</property>
-						                                    <child>
-						                                      <widget class="GtkLabel" id="label11125">
-						                                        <property name="visible">True</property>
-						                                        <property name="xalign">0</property>
-						                                        <property name="label" translatable="yes">&lt;b&gt;Range:&lt;/b&gt;</property>
-						                                        <property name="use_markup">True</property>
-						                                      </widget>
-						                                      <packing>
-						                                        <property name="top_attach">0</property>
-						                                        <property name="x_options">GTK_FILL</property>
-						                                        <property name="y_options"></property>
-						                                      </packing>
-						                                    </child>
-						                                    <child>
-						                                      <widget class="GtkLabel" id="label11125">
-						                                        <property name="visible">True</property>
-						                                        <property name="xalign">0</property>
-						                                        <property name="label" translatable="yes">&lt;b&gt;Rank:&lt;/b&gt;</property>
-						                                        <property name="use_markup">True</property>
-						                                      </widget>
-						                                      <packing>
-						                                        <property name="top_attach">1</property>
-						                                        <property name="x_options">GTK_FILL</property>
-						                                        <property name="y_options"></property>
-						                                      </packing>
-						                                    </child>
-						                                    <child>
-						                                      <widget class="GtkLabel" id="label11127">
-						                                        <property name="visible">True</property>
-						                                        <property name="xalign">0</property>
-						                                        <property name="label" translatable="yes">&lt;b&gt;Speed: &lt;/b&gt;</property>
-						                                        <property name="use_markup">True</property>
-						                                      </widget>
-						                                      <packing>
-						                                        <property name="top_attach">2</property>
-						                                        <property name="x_options">GTK_FILL</property>
-						                                        <property name="y_options"></property>
-						                                      </packing>
-						                                    </child>
-						                                    <child>
-						                                      <widget class="GtkLabel" id="wssdadadsada">
-						                                        <property name="visible">True</property>
-						                                        <property name="xalign">0</property>
-						                                        <property name="label" translatable="yes">&lt;b&gt;Avg speed:&lt;/b&gt;</property>
-						                                        <property name="use_markup">True</property>
-						                                      </widget>
-						                                      <packing>
-						                                        <property name="top_attach">3</property>
-						                                        <property name="x_options">GTK_FILL</property>
-						                                        <property name="y_options"></property>
-						                                      </packing>
-						                                    </child>
-						                                    <child>
-						                                      <widget class="GtkLabel" id="label-2">
-						                                        <property name="visible">True</property>
-						                                        <property name="xalign">0</property>
-						                                        <property name="label" translatable="yes">&lt;b&gt;Standard deviation:&lt;/b&gt;</property>
-						                                        <property name="use_markup">True</property>
-						                                      </widget>
-						                                      <packing>
-						                                        <property name="top_attach">4</property>
-						                                        <property name="x_options">GTK_FILL</property>
-						                                        <property name="y_options"></property>
-						                                      </packing>
-						                                    </child>
-						                                    <child>
-						                                      <widget class="GtkLabel" id="label-3">
-						                                        <property name="width_request">90</property>
-						                                        <property name="visible">True</property>
-						                                        <property name="xalign">0</property>
-						                                        <property name="label" translatable="yes">&lt;b&gt;Deviation:&lt;/b&gt;</property>
-						                                        <property name="use_markup">True</property>
-						                                      </widget>
-						                                      <packing>
-						                                        <property name="top_attach">5</property>
-						                                        <property name="x_options">GTK_FILL</property>
-						                                        <property name="y_options"></property>
-						                                      </packing>
-						                                    </child>
-						                                    <child>
-						                                      <widget class="GtkLabel" id="label_ranking_range">
-						                                        <property name="visible">True</property>
-						                                        <property name="xalign">0</property>
-						                                        <property name="xpad">5</property>
-						                                        <property name="label"></property>
-						                                      </widget>
-						                                      <packing>
-						                                        <property name="left_attach">1</property>
-						                                        <property name="top_attach">0</property>
-						                                        <property name="x_options">GTK_FILL</property>
-						                                        <property name="y_options"></property>
-						                                      </packing>
-						                                    </child>
-						                                    <child>
-						                                      <widget class="GtkLabel" id="label_ranking_rank">
-						                                        <property name="visible">True</property>
-						                                        <property name="xalign">0</property>
-						                                        <property name="xpad">5</property>
-						                                        <property name="label"></property>
-						                                      </widget>
-						                                      <packing>
-						                                        <property name="left_attach">1</property>
-						                                        <property name="top_attach">1</property>
-						                                        <property name="x_options">GTK_FILL</property>
-						                                        <property name="y_options"></property>
-						                                      </packing>
-						                                    </child>
-						                                    <child>
-						                                      <widget class="GtkLabel" id="label_ranking_speed">
-						                                        <property name="visible">True</property>
-						                                        <property name="xalign">0</property>
-						                                        <property name="xpad">5</property>
-						                                        <property name="label"></property>
-						                                      </widget>
-						                                      <packing>
-						                                        <property name="left_attach">1</property>
-						                                        <property name="top_attach">2</property>
-						                                        <property name="x_options">GTK_FILL</property>
-						                                        <property name="y_options"></property>
-						                                      </packing>
-						                                    </child>
-						                                    <child>
-						                                      <widget class="GtkLabel" id="label_ranking_avg">
-						                                        <property name="visible">True</property>
-						                                        <property name="xalign">0</property>
-						                                        <property name="xpad">5</property>
-						                                        <property name="label"></property>
-						                                      </widget>
-						                                      <packing>
-						                                        <property name="left_attach">1</property>
-						                                        <property name="top_attach">3</property>
-						                                        <property name="x_options">GTK_FILL</property>
-						                                        <property name="y_options"></property>
-						                                      </packing>
-						                                    </child>
-						                                    <child>
-						                                      <widget class="GtkLabel" id="label_ranking_stddev">
-						                                        <property name="visible">True</property>
-						                                        <property name="xalign">0</property>
-						                                        <property name="xpad">5</property>
-						                                        <property name="label"></property>
-						                                      </widget>
-						                                      <packing>
-						                                        <property name="left_attach">1</property>
-						                                        <property name="top_attach">4</property>
-						                                        <property name="x_options">GTK_FILL</property>
-						                                        <property name="y_options"></property>
-						                                      </packing>
-						                                    </child>
-						                                    <child>
-						                                      <widget class="GtkLabel" id="label_ranking_dev">
-						                                        <property name="visible">True</property>
-						                                        <property name="xalign">0</property>
-						                                        <property name="xpad">5</property>
-						                                        <property name="label"></property>
-						                                      </widget>
-						                                      <packing>
-						                                        <property name="left_attach">1</property>
-						                                        <property name="top_attach">5</property>
-						                                        <property name="x_options">GTK_FILL</property>
-						                                        <property name="y_options"></property>
-						                                      </packing>
-						                                    </child>
-					                                      </widget>
-					                                    </child>
+							                            <child>
+					                                      <widget class="GtkHBox" id="hbox_ranking">
+								                            <property name="visible">True</property>
+										                    <child>
+								                              <widget class="GtkVBox" id="alignment_ranking2">
+											                    <property name="visible">True</property>
+									                            <child>
+									                              <widget class="GtkHScale" id="slider_ranking">
+									                                <property name="visible">True</property>
+									                                <property name="sensitive">True</property>
+																	<property name="adjustment">5 0 20 1 0 0</property>
+										                            <signal name="value-changed" handler="on_change_rank_percentage"/>
+													              </widget>
+									                              <packing>
+									                                <property name="expand">False</property>
+									                              </packing>
+									                            </child>
+									                            <child>
+									                              <widget class="GtkTable" id="table_ranking">
+									                                <property name="visible">True</property>
+										                            <property name="border_width">10</property>
+										                            <property name="n_rows">5</property>
+										                            <property name="n_columns">2</property>
+										                            <property name="column_spacing">3</property>
+										                            <property name="row_spacing">5</property>
+										                            <child>
+										                              <widget class="GtkLabel" id="label11125">
+										                                <property name="visible">True</property>
+										                                <property name="xalign">0</property>
+										                                <property name="label" translatable="yes">&lt;b&gt;Range:&lt;/b&gt;</property>
+										                                <property name="use_markup">True</property>
+										                              </widget>
+										                              <packing>
+										                                <property name="top_attach">0</property>
+										                                <property name="x_options">GTK_FILL</property>
+										                                <property name="y_options"></property>
+										                              </packing>
+										                            </child>
+										                            <child>
+										                              <widget class="GtkLabel" id="label11125">
+										                                <property name="visible">True</property>
+										                                <property name="xalign">0</property>
+										                                <property name="label" translatable="yes">&lt;b&gt;Rank:&lt;/b&gt;</property>
+										                                <property name="use_markup">True</property>
+										                              </widget>
+										                              <packing>
+										                                <property name="top_attach">1</property>
+										                                <property name="x_options">GTK_FILL</property>
+										                                <property name="y_options"></property>
+										                              </packing>
+										                            </child>
+										                            <child>
+										                              <widget class="GtkLabel" id="label11127">
+										                                <property name="visible">True</property>
+										                                <property name="xalign">0</property>
+										                                <property name="label" translatable="yes">&lt;b&gt;Speed: &lt;/b&gt;</property>
+										                                <property name="use_markup">True</property>
+										                              </widget>
+										                              <packing>
+										                                <property name="top_attach">2</property>
+										                                <property name="x_options">GTK_FILL</property>
+										                                <property name="y_options"></property>
+										                              </packing>
+										                            </child>
+										                            <child>
+										                              <widget class="GtkLabel" id="wssdadadsada">
+										                                <property name="visible">True</property>
+										                                <property name="xalign">0</property>
+										                                <property name="label" translatable="yes">&lt;b&gt;Avg speed:&lt;/b&gt;</property>
+										                                <property name="use_markup">True</property>
+										                              </widget>
+										                              <packing>
+										                                <property name="top_attach">3</property>
+										                                <property name="x_options">GTK_FILL</property>
+										                                <property name="y_options"></property>
+										                              </packing>
+										                            </child>
+										                            <child>
+										                              <widget class="GtkLabel" id="label-2">
+										                                <property name="visible">True</property>
+										                                <property name="xalign">0</property>
+										                                <property name="label" translatable="yes">&lt;b&gt;Standard deviation:&lt;/b&gt;</property>
+										                                <property name="use_markup">True</property>
+										                              </widget>
+										                              <packing>
+										                                <property name="top_attach">4</property>
+										                                <property name="x_options">GTK_FILL</property>
+										                                <property name="y_options"></property>
+										                              </packing>
+										                            </child>
+										                            <child>
+										                              <widget class="GtkLabel" id="label-3">
+										                                <property name="width_request">90</property>
+										                                <property name="visible">True</property>
+										                                <property name="xalign">0</property>
+										                                <property name="label" translatable="yes">&lt;b&gt;Deviation:&lt;/b&gt;</property>
+										                                <property name="use_markup">True</property>
+										                              </widget>
+										                              <packing>
+										                                <property name="top_attach">5</property>
+										                                <property name="x_options">GTK_FILL</property>
+										                                <property name="y_options"></property>
+										                              </packing>
+										                            </child>
+										                            <child>
+										                              <widget class="GtkLabel" id="label_ranking_range">
+										                                <property name="visible">True</property>
+										                                <property name="xalign">0</property>
+										                                <property name="xpad">5</property>
+										                                <property name="label"></property>
+										                              </widget>
+										                              <packing>
+										                                <property name="left_attach">1</property>
+										                                <property name="top_attach">0</property>
+										                                <property name="x_options">GTK_FILL</property>
+										                                <property name="y_options"></property>
+										                              </packing>
+										                            </child>
+										                            <child>
+										                              <widget class="GtkLabel" id="label_ranking_rank">
+										                                <property name="visible">True</property>
+										                                <property name="xalign">0</property>
+										                                <property name="xpad">5</property>
+										                                <property name="label"></property>
+										                              </widget>
+										                              <packing>
+										                                <property name="left_attach">1</property>
+										                                <property name="top_attach">1</property>
+										                                <property name="x_options">GTK_FILL</property>
+										                                <property name="y_options"></property>
+										                              </packing>
+										                            </child>
+										                            <child>
+										                              <widget class="GtkLabel" id="label_ranking_speed">
+										                                <property name="visible">True</property>
+										                                <property name="xalign">0</property>
+										                                <property name="xpad">5</property>
+										                                <property name="label"></property>
+										                              </widget>
+										                              <packing>
+										                                <property name="left_attach">1</property>
+										                                <property name="top_attach">2</property>
+										                                <property name="x_options">GTK_FILL</property>
+										                                <property name="y_options"></property>
+										                              </packing>
+										                            </child>
+										                            <child>
+										                              <widget class="GtkLabel" id="label_ranking_avg">
+										                                <property name="visible">True</property>
+										                                <property name="xalign">0</property>
+										                                <property name="xpad">5</property>
+										                                <property name="label"></property>
+										                              </widget>
+										                              <packing>
+										                                <property name="left_attach">1</property>
+										                                <property name="top_attach">3</property>
+										                                <property name="x_options">GTK_FILL</property>
+										                                <property name="y_options"></property>
+										                              </packing>
+										                            </child>
+										                            <child>
+										                              <widget class="GtkLabel" id="label_ranking_stddev">
+										                                <property name="visible">True</property>
+										                                <property name="xalign">0</property>
+										                                <property name="xpad">5</property>
+										                                <property name="label"></property>
+										                              </widget>
+										                              <packing>
+										                                <property name="left_attach">1</property>
+										                                <property name="top_attach">4</property>
+										                                <property name="x_options">GTK_FILL</property>
+										                                <property name="y_options"></property>
+										                              </packing>
+										                            </child>
+										                            <child>
+										                              <widget class="GtkLabel" id="label_ranking_dev">
+										                                <property name="visible">True</property>
+										                                <property name="xalign">0</property>
+										                                <property name="xpad">5</property>
+										                                <property name="label"></property>
+										                              </widget>
+										                              <packing>
+										                                <property name="left_attach">1</property>
+										                                <property name="top_attach">5</property>
+										                                <property name="x_options">GTK_FILL</property>
+										                                <property name="y_options"></property>
+										                              </packing>
+										                            </child>
+									                              </widget>
+									                            </child>
+							                                  </widget>
+													          <packing>
+													            <property name="padding">10</property>
+													          </packing>
+							                                </child>
+							                                <child>
+							                                  <widget class="GtkTreeView" id="rankingTreeView">
+							                                    <property name="visible">True</property>
+								                                <property name="can_focus">True</property>
+								                                <property name="headers-clickable">False</property>
+							                                  </widget>
+													          <packing>
+													            <property name="padding">10</property>
+													          </packing>
+							                                </child>
+								                          </widget>
+								                        </child>
 			                                          </widget>
 			                                        </child>
 				                                  </widget>

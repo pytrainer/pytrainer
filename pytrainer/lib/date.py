@@ -121,7 +121,7 @@ class Date:
                 dayOfWeek += 7
             #print "Adjusted today is %s day of the week:" % dayOfWeek
         date_ini = weekDate + datetime.timedelta(days=0-dayOfWeek)
-        date_end = weekDate + datetime.timedelta(days=6-dayOfWeek)
+        date_end = weekDate + datetime.timedelta(days=7-dayOfWeek)
         #print "weekrange", date_ini.strftime("%A"), date_end.strftime("%A")
         #print "dates", date_ini.strftime("%Y-%m-%d"), date_end.strftime("%Y-%m-%d")
         return date_ini.strftime("%Y-%m-%d"), date_end.strftime("%Y-%m-%d")

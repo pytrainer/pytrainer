@@ -170,6 +170,18 @@ class Main(SimpleGladeApp):
                 ]
         self.create_treeview(self.analyticsTreeView,columns,sortable=False)
         
+        #create the columns for the rank treeview
+        columns=[ 
+                    {'name':_("id"), 'visible':False},
+                    {'name':_("Rank"), 'visible':True},
+                    {'name':_("Date"), 'xalign':1.0},
+                    {'name':_("Distance"), 'xalign':1.0, 'format_float':'%.2f', 'quantity':'distance'},
+                    {'name':_("Time"), 'xalign':1.0, 'format_duration':True},
+                    {'name':_("Speed"),  'format_float':'%.2f', 'quantity':'speed'},
+                    {'name':_("Color"), 'visible':False},
+                ]
+        self.create_treeview(self.rankingTreeView,columns,sortable=False)
+        
         self.fileconf = self.pytrainer_main.profile.confdir+"/listviewmenu.xml"
         if not os.path.isfile(self.fileconf):
             self._createXmlListView(self.fileconf)
@@ -298,10 +310,8 @@ class Main(SimpleGladeApp):
         cell.set_property('text', new)
         
     def render_float(self, column, cell, model, iter, data):
-        _format, _quantity = data
-        col = column.get_sort_column_id()
-        if col == -1: col = 0
-        _val = model.get_value(iter, col)
+        _format, _quantity, _idx = data
+        _val = model.get_value(iter, _idx)
         _val = self.uc.sys2usr(_quantity, _val)
         _val_str = _format % float(_val)
         cell.set_property('text', _val_str)
@@ -325,11 +335,11 @@ class Main(SimpleGladeApp):
             if 'visible' in column_dict:
                 column.set_visible(column_dict['visible'])
             if 'format_float' in column_dict:
-                column.set_cell_data_func(renderer, self.render_float, [column_dict['format_float'], column_dict['quantity']])
+                column.set_cell_data_func(renderer, self.render_float, [column_dict['format_float'], column_dict['quantity'], column_index])
             if 'format_duration' in column_dict and column_dict['format_duration']:
                 column.set_cell_data_func(renderer, self.render_duration)
             if sortable:
-	            column.set_sort_column_id(column_index)
+                column.set_sort_column_id(column_index)
             treeview.append_column(column)
 
     def actualize_recordview(self,activity):
@@ -461,7 +471,7 @@ class Main(SimpleGladeApp):
         pauseTime = activity.time - runTime
         hrun,mrun,srun = self.pytrainer_main.date.second2time(runTime)
         hpause,mpause,spause = self.pytrainer_main.date.second2time(pauseTime)
-        self.record_runrest.set_text("%d:%d:%d / %d:%d:%d" %(hrun,mrun,srun,hpause,mpause,spause) )	
+        self.record_runrest.set_text("%02d:%02d:%02d / %02d:%02d:%02d" %(hrun,mrun,srun,hpause,mpause,spause) )    
         logging.debug("<<")
 
     def actualize_recordgraph(self,activity):
@@ -783,21 +793,61 @@ class Main(SimpleGladeApp):
             percentage = widget.get_value() / 100
         else:
             percentage = .05
-        records = self.pytrainer_main.ddbb.select_dict("records", ["distance","time"], "distance > %f AND distance < %f AND sport=%d" % (activity.distance * (1-percentage), activity.distance * (1+percentage), activity.sport_id))
+        records = self.pytrainer_main.ddbb.select_dict("records", ["distance","time","id_record","date","average"], "distance > %f AND distance < %f AND sport=%d order by average desc" % (activity.distance * (1-percentage), activity.distance * (1+percentage), activity.sport_id))
         
         count = 1
         for r in records:
-            if r['distance']/int(r['time']) > activity.distance/activity.time:
+            if r['average'] > activity.average:
                 count += 1
 
         import numpy
-        speeds = [r['distance']/int(r['time'])*3600 for r in records]
+        speeds = [r['average'] for r in records]
         self.label_ranking_range.set_text("%.2f - %.2f" % (activity.distance * (1-percentage), activity.distance * (1+percentage)))
         self.label_ranking_rank.set_text("%s/%s" % (count, len(records)))
-        self.label_ranking_avg.set_text("%.4f" % numpy.average(speeds))
-        self.label_ranking_speed.set_text("%.4f" % (activity.distance/activity.time*3600))
+        self.label_ranking_avg.set_text("%.2f" % numpy.average(speeds))
+        self.label_ranking_speed.set_text("%.2f" % activity.average)
         self.label_ranking_stddev.set_text("%.4f" % numpy.std(speeds))
-        self.label_ranking_dev.set_text("%+f" % ((activity.distance/activity.time*3600 - numpy.average(speeds)) / numpy.std(speeds)))
+        self.label_ranking_dev.set_text("%+f" % ((activity.average - numpy.average(speeds)) / numpy.std(speeds)))
+
+        rank_store = gtk.ListStore(
+            gobject.TYPE_INT,       #id
+            gobject.TYPE_INT,       #rank
+            gobject.TYPE_STRING,    #date
+            gobject.TYPE_STRING,    #distance
+            gobject.TYPE_STRING,       #time
+            gobject.TYPE_STRING,       #speed
+            gobject.TYPE_STRING,       #color
+            )
+
+        length = len(records)
+        rec_set = [0,]
+        for r in xrange(max(count-3, 1) if count>1 else count, min(count+3, length-2) if count < length else count):
+            rec_set.append(r)
+        if length>1 and count!=length:
+            rec_set.append(-1)
+            
+        for i in rec_set:
+            r = records[i]
+            iter = rank_store.append()
+            rank = length if i==-1 else i+1
+            rank_store.set (
+                iter,
+                0, i,
+                1, rank,
+                2, r['date'],         
+                3, r['distance'],
+                4, str(r['time']),
+                5, r['average'],
+                6, '#3AA142' if rank==count else '#000000',
+            )
+            
+            # Use grey color for "rest" laps
+            for c in self.rankingTreeView.get_columns()[:-1]:
+                for cr in c.get_cell_renderers():
+                    if type(cr)==gtk.CellRendererText:
+                        c.add_attribute(cr, 'foreground', 6)
+            
+        self.rankingTreeView.set_model(rank_store)
 
     def actualize_dayview(self,record_list=None, activity_list=None):
         logging.debug(">>")

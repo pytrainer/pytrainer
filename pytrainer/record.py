@@ -398,9 +398,9 @@ class Record:
 		#TODO This is essentially the same as getrecordPeriodSport (except date ranges) - need to look at merging the two
 		tables = "records,sports"
 		if not sport:
-			condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports" %(date_ini,date_end)
+			condition = "date>=\"%s\" and date<\"%s\" and records.sport=sports.id_sports" %(date_ini,date_end)
 		else:
-			condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports and sports.id_sports=\"%s\"" %(date_ini,date_end, sport)
+			condition = "date>=\"%s\" and date<\"%s\" and records.sport=sports.id_sports and sports.id_sports=\"%s\"" %(date_ini,date_end, sport)
 
 		return self.pytrainer_main.ddbb.select(tables,"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats, sports.name,upositive,unegative", condition)
 
