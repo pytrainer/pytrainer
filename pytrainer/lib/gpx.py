@@ -234,9 +234,12 @@ class Gpx:
         logging.debug("%d trkpoints in file" % len(trkpoints))
 
         date_ = tree.find(timeTag).text
-        #mk_time = self.getDateTime(date_)[0] #UTC Date
-        mk_time = self.getDateTime(date_)[1] #Local Date
-        self.date = mk_time.strftime("%Y-%m-%d")
+        if date_ is None:
+            logging.info("time tag is blank")
+            self.date = None
+        else:
+            mk_time = self.getDateTime(date_)[1] #Local Date
+            self.date = mk_time.strftime("%Y-%m-%d")
         waiting_points = []
 
 
