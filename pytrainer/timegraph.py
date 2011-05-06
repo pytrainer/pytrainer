@@ -17,6 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import datetime, calendar
+import logging
 from gui.drawArea import DrawArea
 
 class TimeGraph(object):
@@ -53,19 +54,22 @@ class TimeGraph(object):
         sportColors = {}
 
         for record in values:
-            day = unicode(datetime.datetime.strptime(record[0], "%Y-%m-%d").strftime(key_format)) # Gives year for this record
-            sport = record[sportfield]
-            value = self.getValue(record, value_selected)
-            if sport in valueDict: #Already got this sport
-                if day in valueDict[sport]: #Already got this sport on this day
-                    valueDict[sport][day] += value
-                    valueCount[sport][day] += 1
-                else: #New day for this sport
-                    valueDict[sport][day] = value
-                    valueCount[sport][day] = 1
-            else: #New sport
-                valueDict[sport] = {day: value}
-                valueCount[sport] = {day: 1}
+            if record[0]:
+                day = unicode(datetime.datetime.strptime(record[0], "%Y-%m-%d").strftime(key_format)) # Gives year for this record
+                sport = record[sportfield]
+                value = self.getValue(record, value_selected)
+                if sport in valueDict: #Already got this sport
+                    if day in valueDict[sport]: #Already got this sport on this day
+                        valueDict[sport][day] += value
+                        valueCount[sport][day] += 1
+                    else: #New day for this sport
+                        valueDict[sport][day] = value
+                        valueCount[sport][day] = 1
+                else: #New sport
+                    valueDict[sport] = {day: value}
+                    valueCount[sport] = {day: 1}
+            else:
+                logging.debug("No date string found, skipping entry: " + str(record))
                 
         if value_selected in (2, 3):
             total = {}
