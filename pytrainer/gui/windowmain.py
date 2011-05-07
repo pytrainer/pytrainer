@@ -158,6 +158,7 @@ class Main(SimpleGladeApp):
                     {'name':_("Max HR"), 'xalign':1.0},
                     {'name':_("Calories"), 'xalign':1.0},
                     {'name':_("Intensity"), 'visible':False},
+                    {'name':_("Comments"), 'xalign':0.0},
                 ]
         self.create_treeview(self.lapsTreeView,columns)
         
@@ -427,6 +428,7 @@ class Main(SimpleGladeApp):
                     gobject.TYPE_INT,
                     gobject.TYPE_INT,
                     gobject.TYPE_STRING,
+                    gobject.TYPE_STRING,
                     )
                 for lap in activity.laps:
                     t = lap['elapsed_time']
@@ -450,16 +452,56 @@ class Main(SimpleGladeApp):
                     pic = gtk.gdk.pixbuf_new_from_file(self.data_path+"glade/trigger_%s.png" % lap['trigger'])
                         
                     iter = store.append()
-                    store.set(iter, 0, lap['lap_number']+1, 1, pic, 2, m/1000, 3, str(int(float(t))), 4, s, 5, max_speed, 6, pace, 7, max_pace, 8, lap['avg_hr'] if lap['avg_hr'] else 0, 9, lap['max_hr'] if lap['max_hr'] else 0, 10, lap['calories'], 11, color[lap['intensity']])
+                    store.set(iter, 
+                        0, lap['lap_number']+1, 
+                        1, pic, 
+                        2, m/1000, 
+                        3, str(int(float(t))), 
+                        4, s, 
+                        5, max_speed, 
+                        6, pace, 
+                        7, max_pace, 
+                        8, lap['avg_hr'] if lap['avg_hr'] else 0, 
+                        9, lap['max_hr'] if lap['max_hr'] else 0, 
+                        10, lap['calories'], 
+                        11, color[lap['intensity']], 
+                        12, '' if not lap['comments'] else (lap['comments'] if len(lap['comments'])<40 else "%s..." % lap['comments'][:40]),
+                        )
                 self.lapsTreeView.set_model(store)
                 self.lapsTreeView.set_rules_hint(True)
                 
                 # Use grey color for "rest" laps
-                for c in self.lapsTreeView.get_columns()[:-1]:
+                for c in self.lapsTreeView.get_columns():
                     for cr in c.get_cell_renderers():
                         if type(cr)==gtk.CellRendererText:
                             c.add_attribute(cr, 'foreground', 11)
-                        
+
+                def edited_cb(cell, path, new_text, (liststore, activity)):
+                    liststore[path][12] = new_text
+                    activity.laps[int(path)]['comments'] = new_text
+                    self.pytrainer_main.ddbb.update("laps", "comments", [new_text,], "record=%s and lap_number=%s" % (activity.id, path))
+                    
+                def show_tooltip(widget, x, y, keyboard_mode, tooltip, user_param1):
+                     path = self.lapsTreeView.get_path_at_pos(x,y-20)
+                     if not path: return False
+                     if path[1] != self.lapsTreeView.get_columns()[12]: return False
+                     comments = activity.laps[path[0][0]]['comments']
+                     if comments and len(comments)>40:
+                         tooltip.set_text(comments)
+                         return True
+                     return False
+
+                self.lapsTreeView.connect('query-tooltip', show_tooltip, (store, activity))
+                i = 0
+                for cr in self.lapsTreeView.get_columns()[12].get_cell_renderers():
+                    cr.set_property('editable', True)
+                    if getattr(self, 'lapview_handler_id', None):
+                        cr.disconnect(self.lapview_handler_id)
+                    self.lapview_handler_id = cr.connect('edited', edited_cb, (store, activity))
+                    tooltip = gtk.Tooltip()
+                    tooltip.set_text(activity.laps[i]['comments'])
+                    self.lapsTreeView.set_tooltip_cell(tooltip, i, self.lapsTreeView.get_columns()[12], cr)
+                    i += 1
                 self.frame_laps.show()
             else:
                 self.frame_laps.hide()

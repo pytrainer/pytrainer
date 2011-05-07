@@ -80,6 +80,7 @@ tablesList = {  "records":{     "id_record":"integer primary key autoincrement",
                                         "max_speed": "float",
                                         "avg_hr": "int",
                                         "max_hr": "int",
+                                        "comments":"text",
                                         },
                         "athletestats": {
                                         "id_athletestat": "integer primary key autoincrement",

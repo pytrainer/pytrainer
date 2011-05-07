@@ -285,7 +285,7 @@ class Activity:
 			raise Exception( "Error - multiple results from DB for id: %s" % self.id )
 		#Get lap information
 		laps = self.pytrainer_main.ddbb.select_dict("laps",
-					("id_lap", "record", "elapsed_time", "distance", "start_lat", "start_lon", "end_lat", "end_lon", "calories", "lap_number", "intensity", "avg_hr", "max_hr", "max_speed", "trigger"),
+					("id_lap", "record", "elapsed_time", "distance", "start_lat", "start_lon", "end_lat", "end_lon", "calories", "lap_number", "intensity", "avg_hr", "max_hr", "max_speed", "trigger", "comments"),
 					"record=\"%s\"" % self.id)
 		if laps is None or laps == [] or len(laps) < 1:  #No laps found
 			logging.debug("No laps in DB for record %d" % self.id)
