@@ -210,6 +210,9 @@ class DrawArea:
         xvals = [x+barOffset for x in range(0, numCols)]
         cellText = []
         self.showGraph=False
+        
+        for k in colors:
+        	if colors[k]==None: colors[k]=''
 
         #Display first axis
         xticks = []
