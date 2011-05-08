@@ -1142,7 +1142,7 @@ class Main(SimpleGladeApp):
                 tbeats = tbeats/time_in_min
             else:
                 tbeats = 0
-            if km > 0:
+            if km > 0 and time > 0:        # time can be zero when a new year starts
                 average = (km/(time/3600))
             else:
                 average = 0
