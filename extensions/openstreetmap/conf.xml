@@ -10,4 +10,5 @@
 >
 <conf-values variable="username" value=""/>
 <conf-values variable="password" value=""/>
+<conf-values variable="privPolygon" value=""/>
 </pytrainer-extension>

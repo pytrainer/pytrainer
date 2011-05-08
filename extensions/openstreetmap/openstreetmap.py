@@ -11,6 +11,10 @@ from lxml import etree
 import httplib, httplib2
 import urllib2
 import mimetools, mimetypes
+from json import dumps, loads       #   for deserializing JSON data form javascript
+
+from pytrainer.extensions.mapviewer import MapViewer
+from pytrainer.extensions.osm import Osm
 
 class openstreetmap:
     def __init__(self, parent = None, pytrainer_main = None, conf_dir = None, options = None):
@@ -21,22 +25,21 @@ class openstreetmap:
         self.description = " "
         self.tags = ""
         self.visibility = "private"
+        self.mozTitle=""               # Keeps embedded mozilla document title while displaying map for private area selection
+        self.privBounds=[]             # Bounds of areas to be anonymized 
 
     def run(self, id, activity=None):  #TODO Convert to use activity...
         logging.debug(">>")
-        uri = "http://api.openstreetmap.org/api/0.6/gpx/create" #URI for uploading traces to OSM
-        if 'username' not in self.options or self.options['username'] == "" or 'password' not in self.options or self.options['password'] == "":
-            logging.error("Must have username and password configured")
-            msg = _("Must have username and password configured")
-            md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
-            md.set_title(_("Openstreetmap Extension Error"))
-            md.run()
-            md.destroy()
-            return
-        username = self.options['username']
-        password = self.options['password']
-        gpx_file = "%s/gpx/%s.gpx" % (self.conf_dir, id)
-        if os.path.isfile(gpx_file):
+        try:
+            uri = "http://api.openstreetmap.org/api/0.6/gpx/create" #URI for uploading traces to OSM
+            if 'username' not in self.options or self.options['username'] == "" or 'password' not in self.options or self.options['password'] == "":
+                logging.error("Must have username and password configured")
+                raise Exception("Must have username and password configured")
+            username = self.options['username']
+            password = self.options['password']
+            gpx_file = "%s/gpx/%s.gpx" % (self.conf_dir, id)
+            if not os.path.isfile(gpx_file):
+                raise Exception(str(gps_file) + ' File not found')
             #GPX file is ok and found, so open it
             logging.debug("GPX file: %s found, size: %d" % (gpx_file, os.path.getsize(gpx_file)))
             f = open(gpx_file, 'r')
@@ -57,7 +60,7 @@ class openstreetmap:
                 logging.debug("User abort")
                 return
             if self.makeanon:
-                logging.debug("User requested anonymising of GPX data")
+                logging.debug("User requested anonymizing of GPX data")
                 f.close()                   #Close standard gpxfile
                 gpx_file = self.make_gpx_private(gpx_file)
                 f = open(gpx_file, 'r')     #Open anonymous gpxfile in readonly mode
@@ -100,15 +103,20 @@ class openstreetmap:
             md.set_modal(False)
             md.run()
             md.destroy()
-
-        else:
-            logging.error("GPX file: %s NOT found!!!" % (gpx_file))
-        logging.debug("<<")
+        except Exception as e:
+                msg = _("Error while uploading file to OSM: " + str(e))
+                md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
+                md.set_title(_("Openstreetmap Extension Error"))
+                md.run()
+                md.destroy()
+                return
+        finally:
+            logging.debug("<<")
 
     def display_options_window(self):
         self.prefwindow = gtk.Dialog(title=_("Please add any additional information for this upload"), parent=None, flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
         self.prefwindow.set_modal(False)
-        table = gtk.Table(1,2)
+        table = gtk.Table(1,3)
         self.entryList = []
         #Add description
         label = gtk.Label("<b>Description</b>")
@@ -143,7 +151,12 @@ class openstreetmap:
         checkbutton = gtk.CheckButton()
         table.attach(checkbutton,1,2,3,4)
         self.entryList.append(checkbutton)
-        #Buld dialog and show
+        #Add anon area selection button
+        button = gtk.Button("Area selection")
+        button.connect("clicked",self.areaSelect)
+        table.attach(button,1,2,4,5)
+        self.entryList.append(button)
+        #Build dialog and show
         self.prefwindow.vbox.pack_start(table)
         self.prefwindow.show_all()
         self.prefwindow.connect("response", self.on_options_ok_clicked)
@@ -163,6 +176,80 @@ class openstreetmap:
         self.makeanon = self.entryList[3].get_active()
         logging.debug("Description: %s, tags: %s, visibility: %s, makeanon: %s" % ( self.description, self.tags, self.visibility, self.makeanon) )
 
+    def areaSelect(self,dc):
+        """
+            Open a window with OSM map so user could select his private/anonymized area - 
+            all GPX dots in this area will be removed before uploading to OSM
+        """       
+        try:
+            wTree = gtk.glade.XML(self.pytrainer_main.data_path+"extensions/openstreetmap/OSM_AnonSelection.glade")
+            self.privAreaWindow = wTree.get_widget("OSM_AnonSelection")
+            dic = {
+                "on_buttonOk_clicked" : self.privArea_Ok,
+                "on_buttonCancel_clicked" : self.privArea_Cancel
+            }
+            wTree.signal_autoconnect( dic )
+            mapviewer = MapViewer(self.pytrainer_main.data_path, pytrainer_main=self.pytrainer_main, box=wTree.get_widget("mapBox"))
+            json=None
+            if self.options.has_key('privPolygon'):
+                json=self.options['privPolygon']
+            htmlfile = Osm(data_path=self.pytrainer_main.data_path, waypoint=json, pytrainer_main=self.pytrainer_main).selectArea()
+            mapviewer.display_map(htmlfile=htmlfile)
+            mapviewer.moz.connect('title', self.parseTitle) 
+            self.privAreaWindow.show()
+
+        except Exception as e:
+                msg = "Could not init map selection screen, Error: " + str(e)
+                md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
+                md.set_title(_("Error"))
+                md.run()
+                md.destroy()
+                return                
+
+    def parseTitle(self, moz):
+        "Event fired when document title was changed -> meaning polygon was changed"
+        if moz.get_title() != "":
+            self.mozTitle=str(moz.get_title())
+
+    def privArea_Cancel(self,button):
+        "Event fired when cancel button was pressed"
+        self.privAreaWindow.destroy()
+        
+    def privArea_Ok(self,button):
+        "Event fired when ok button was pressed"
+        logging.debug(">> privArea_Ok")
+        # save new private area polygon if changed
+        if self.mozTitle=="":
+            return
+        # try parsing JSON
+        try:
+            # verify json is correct by deserializing and serializing it
+            polygonString=dumps(loads(self.mozTitle))
+            # try saving
+            extensionDir = self.pytrainer_main.data_path + "/extensions" + "/openstreetmap"
+            if not os.path.isdir(extensionDir):
+                loggin.error(str(e))
+                print ("Could not find extension path: " + str(extensionDir))
+                raise Exception("Could not find extension path: " + str(extensionDir))
+            # save new options
+            self.options['privPolygon'] = polygonString
+            # convert dictionary to a lists set
+            savedOptions = []
+            for key in self.options:
+                savedOptions.append((key,self.options[key]))
+            # write new xml config file
+            self.parent.setExtensionConfParams(extensionDir, savedOptions)
+        except Exception as e:
+            logging.error(str(e))    
+            print "Error while saving extension configuration: " + str(e)
+            msg = _(str(e))
+            md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
+            md.set_title(_("Error while saving extension configuration"))
+            md.run()
+            md.destroy()
+        finally:
+            self.privAreaWindow.destroy()
+                                
     def multipart_encode(self, fields, files, boundary = None, buffer = None):
         '''
             Multipart encode data for posting
@@ -176,7 +263,6 @@ class openstreetmap:
             buffer += '--%s\r\n' % boundary
             buffer += 'Content-Disposition: form-data; name="%s"' % key
             buffer += '\r\n\r\n' + value + '\r\n'
-        print files
         for (key, fd) in files:
             file_size = os.fstat(fd.fileno())[stat.ST_SIZE]
             filename = os.path.basename(fd.name)
@@ -202,15 +288,19 @@ class openstreetmap:
         filen = os.path.basename(gpx_file)
         tmpdir = self.pytrainer_main.profile.tmpdir
         anon_gpx_file = "%s/%s" % (tmpdir, filen)
-        
-        # Filtered home area, example Berlin
-        # corners NorthEast and SouthWest       
-        #TODO This needs to be a config item....
-        NE_LAT = 52.518
-        NE_LON = 13.408
-        SW_LAT = 52.4
-        SW_LON = 13.3
 
+        # get saved private area polygon
+        pP=loads(self.options['privPolygon'])
+        pP=pP['geometry']['coordinates'][0]
+        # converts polygon's 2D matrix into a vector of just the lats or lons
+        vector = lambda lonLat: [pP[i][lonLat] for i in range(len(pP))] # 0:lon, 1:lat
+        # try reading private area's bounds, stored as [lon,lat]
+        NE_LAT = max([pP[i][1] for i in range(len(pP))])
+        NE_LON = max([pP[i][0] for i in range(len(pP))])
+        SW_LAT = min([pP[i][1] for i in range(len(pP))])
+        SW_LON = min([pP[i][0] for i in range(len(pP))])
+        logging.info("Anonymizing Area: NE:%f,%f -> SW: %f,%f" % (NE_LON, NE_LAT, SW_LON, SW_LAT))
+            
         # Config parameters, not used yet
         FILTER_BOX = True
         ERASE_TIME  = True
