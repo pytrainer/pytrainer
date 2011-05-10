@@ -413,7 +413,7 @@ class Main(SimpleGladeApp):
                 self.label_record_equipment.set_text(equipment_text)
             else:
                 self.label_record_equipment.set_markup("<i>None</i>")
-            runTime = 0.0;	
+            runTime = 0.0;    
             if len(activity.laps)>1:
                 store = gtk.ListStore(
                     gobject.TYPE_INT,
@@ -485,13 +485,15 @@ class Main(SimpleGladeApp):
                      path = self.lapsTreeView.get_path_at_pos(x,y-20)
                      if not path: return False
                      if path[1] != self.lapsTreeView.get_columns()[12]: return False
-                     comments = activity.laps[path[0][0]]['comments']
+                     comments = user_param1[1].laps[path[0][0]]['comments']
                      if comments and len(comments)>40:
                          tooltip.set_text(comments)
                          return True
                      return False
 
-                self.lapsTreeView.connect('query-tooltip', show_tooltip, (store, activity))
+                if getattr(self.lapsTreeView, 'tooltip_handler_id', None):
+                    self.lapsTreeView.disconnect(self.lapsTreeView.tooltip_handler_id)
+                self.lapsTreeView.tooltip_handler_id = self.lapsTreeView.connect('query-tooltip', show_tooltip, (store, activity))
                 i = 0
                 for cr in self.lapsTreeView.get_columns()[12].get_cell_renderers():
                     cr.set_property('editable', True)
@@ -1310,7 +1312,7 @@ class Main(SimpleGladeApp):
                 c += 1
                 store.set (iter, c, s['total_'+f])
             c += 1
-	    if s['total_duration']!=0:	# Avoid division by zero if 0 length sport activity exists in DB
+        if s['total_duration']!=0:    # Avoid division by zero if 0 length sport activity exists in DB
                 store.set (iter, c, s['total_distance'] / s['total_duration'] * 3600.)
                 for f in data['fields']:
                     c += 1
