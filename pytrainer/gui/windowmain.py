@@ -2110,7 +2110,7 @@ class Main(SimpleGladeApp):
         self.actualize_yearview()
 
     def on_recordTree_clicked(self,widget,num,num2):
-        selected,iter = self.recordTreeView.get_selection().get_selected()
+        selected,iter = widget.get_selection().get_selected()
         self.parent.editRecord(selected.get_value(iter,0), self.selected_view)
 
     ### athleteview events ###
