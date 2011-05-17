@@ -1312,11 +1312,11 @@ class Main(SimpleGladeApp):
                 c += 1
                 store.set (iter, c, s['total_'+f])
             c += 1
-        if s['total_duration']!=0:    # Avoid division by zero if 0 length sport activity exists in DB
-                store.set (iter, c, s['total_distance'] / s['total_duration'] * 3600.)
-                for f in data['fields']:
-                    c += 1
-                    store.set (iter, c, s[f])
+            if s['total_duration']!=0:    # Avoid division by zero if 0 length sport activity exists in DB
+                    store.set (iter, c, s['total_distance'] / s['total_duration'] * 3600.)
+                    for f in data['fields']:
+                        c += 1
+                        store.set (iter, c, s[f])
 
         self.statsTreeView.set_model(store)
         self.statsTreeView.set_rules_hint(True)
