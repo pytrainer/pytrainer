@@ -136,8 +136,9 @@ class Main(SimpleGladeApp):
                     {'name':_("Sport")},
                     {'name':_("Total duration"), 'xalign':1.0, 'format_duration':True},
                     {'name':_("Total distance"), 'xalign':1.0, 'format_float':'%.1f', 'quantity':'distance'},
-                    {'name':_("Avg speed"), 'format_float':'%.2f', 'quantity':'maxspeed'},
-                    {'name':_("Max speed"), 'format_float':'%.2f', 'quantity':'maxspeed'},
+                    {'name':_("Avg speed"), 'format_float':'%.2f', 'quantity':'maxspeed', 'xalign':1.0},
+                    {'name':_("Max speed"), 'format_float':'%.2f', 'quantity':'maxspeed', 'xalign':1.0},
+                    {'name':_("Avg HR"), 'xalign':1.0},
                     {'name':_("Max HR"), 'xalign':1.0},
                     {'name':_("Max duration"), 'xalign':1.0, 'format_duration':True},
                     {'name':_("Max distance"), 'xalign':1.0, 'format_float':'%.1f', 'quantity':'distance'},
@@ -1299,6 +1300,7 @@ class Main(SimpleGladeApp):
             gobject.TYPE_FLOAT,
             gobject.TYPE_INT,
             gobject.TYPE_INT,
+            gobject.TYPE_INT,
             gobject.TYPE_FLOAT
             )
         for s in data['sports'].values():
@@ -1308,15 +1310,15 @@ class Main(SimpleGladeApp):
             store.set (iter, c, c)
             c += 1
             store.set (iter, c, s['name'])
-            for f in data['fields'][2:]:
+            for f in data['fields'][3:]:
                 c += 1
                 store.set (iter, c, s['total_'+f])
             c += 1
             if s['total_duration']!=0:    # Avoid division by zero if 0 length sport activity exists in DB
-                    store.set (iter, c, s['total_distance'] / s['total_duration'] * 3600.)
-                    for f in data['fields']:
-                        c += 1
-                        store.set (iter, c, s[f])
+                store.set (iter, c, s['total_distance'] / s['total_duration'] * 3600.)
+                for f in data['fields']:
+                    c += 1
+                    store.set (iter, c, s[f])
 
         self.statsTreeView.set_model(store)
         self.statsTreeView.set_rules_hint(True)

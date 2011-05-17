@@ -48,14 +48,14 @@ class Stats:
             'total_distance' : 0,
         }
         
-        fields = ['maxspeed', 'maxbeats', 'duration', 'distance']
+        fields = ['maxspeed', 'beats', 'maxbeats', 'duration', 'distance']
         data['fields'] = fields
         
         for f in fields:
             data[f] = 0
         
         sports = dict([(s['id_sports'], s['name']) for s in self.pytrainer_main.ddbb.select_dict("sports", ('id_sports', 'name'))])
-        results = self.pytrainer_main.ddbb.select_dict("records", ('id_record', 'date', 'sport', 'distance', 'duration', 'maxbeats', 'maxspeed', 'maxpace', 'average'))
+        results = self.pytrainer_main.ddbb.select_dict("records", ('id_record', 'date', 'sport', 'distance', 'duration', 'maxbeats', 'maxspeed', 'maxpace', 'average','pace','beats'))
         for r in results:
 #            r['duration'] /= 3600
             if r['sport'] not in data['sports']:
@@ -70,7 +70,12 @@ class Stats:
                     data[f] = max(data[f], r[f])
                 else:
                     logging.info('Skipping null values')
-                
+                    
+            if 'avg_hr' not in data['sports'][r['sport']]:
+                data['sports'][r['sport']]['avg_hr'] = [0, 0]
+            if r['beats']:
+                data['sports'][r['sport']]['avg_hr'][0] += 1
+                data['sports'][r['sport']]['avg_hr'][1] += r['beats']
                 
             data['total_duration'] += r['duration']
             data['total_distance'] += r['distance']
@@ -79,6 +84,12 @@ class Stats:
             data['start_date'] = min(data['start_date'], r['date'])
             if not 'end_date' in data: data['end_date'] = r['date']
             data['end_date'] = max(data['end_date'], r['date'])
+            
+        for s in data['sports']:
+            if data['sports'][s]['avg_hr'][0]:
+                data['sports'][s]['avg_hr'] = int(data['sports'][s]['avg_hr'][1] / data['sports'][s]['avg_hr'][0])
+            else:
+                data['sports'][s]['avg_hr'] = None
             
         logging.debug('<<')
         return data
