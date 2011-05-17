@@ -309,6 +309,11 @@ class Main(SimpleGladeApp):
             new = orig[4:]
         elif orig[:3] == ' 0:':
             new = orig[3:]
+        if len(new)>5:
+		    hours = int(new[:-6])
+		    days = _("d")
+		    if hours>23:
+		    	new = "%d %s %02d:%s" % (hours / 24, days, hours%24 ,new[-5:])
         cell.set_property('text', new)
         
     def render_float(self, column, cell, model, iter, data):
