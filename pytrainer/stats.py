@@ -80,6 +80,9 @@ class Stats:
             data['total_duration'] += r['duration']
             data['total_distance'] += r['distance']
             
+            if not r['maxspeed'] and r['duration']:
+                data['sports'][r['sport']]['maxspeed'] = max(data['sports'][r['sport']]['maxspeed'], r['distance'] / r['duration'] * 3600)
+            
             if not 'start_date' in data: data['start_date'] = r['date']
             data['start_date'] = min(data['start_date'], r['date'])
             if not 'end_date' in data: data['end_date'] = r['date']
