@@ -134,6 +134,7 @@ class Main(SimpleGladeApp):
         #create the columns for the stats treeview
         columns=[   {'name':_("id"), 'visible':False},
                     {'name':_("Sport")},
+                    {'name':_("Records"), 'xalign':1.0},
                     {'name':_("Total duration"), 'xalign':1.0, 'format_duration':True},
                     {'name':_("Total distance"), 'xalign':1.0, 'format_float':'%.1f', 'quantity':'distance'},
                     {'name':_("Avg speed"), 'format_float':'%.2f', 'quantity':'maxspeed', 'xalign':1.0},
@@ -1300,6 +1301,7 @@ class Main(SimpleGladeApp):
             gobject.TYPE_INT,
             gobject.TYPE_STRING,
             gobject.TYPE_INT,
+            gobject.TYPE_INT,
             gobject.TYPE_FLOAT,
             gobject.TYPE_FLOAT,
             gobject.TYPE_FLOAT,
@@ -1315,6 +1317,8 @@ class Main(SimpleGladeApp):
             store.set (iter, c, c)
             c += 1
             store.set (iter, c, s['name'])
+            c += 1
+            store.set (iter, c, s['count'])
             for f in data['fields'][3:]:
                 c += 1
                 store.set (iter, c, s['total_'+f])
@@ -1328,7 +1332,7 @@ class Main(SimpleGladeApp):
         self.statsTreeView.set_model(store)
         self.statsTreeView.set_rules_hint(True)
         
-        store.set_sort_column_id(2, gtk.SORT_DESCENDING)
+        store.set_sort_column_id(3, gtk.SORT_DESCENDING)
 
         self.drawareatotal.drawgraph(record_list)
 

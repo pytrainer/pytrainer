@@ -59,10 +59,11 @@ class Stats:
         for r in results:
 #            r['duration'] /= 3600
             if r['sport'] not in data['sports']:
-                data['sports'][r['sport']] = {'name': sports[r['sport']]}
+                data['sports'][r['sport']] = {'name': sports[r['sport']], 'count': 0}
                 for f in fields:
                     data['sports'][r['sport']][f] = 0
                     data['sports'][r['sport']]['total_'+f] = 0
+            data['sports'][r['sport']]['count'] += 1
             for f in fields:
                 data['sports'][r['sport']][f] = max(data['sports'][r['sport']][f], r[f])
                 if r[f] is not None:
