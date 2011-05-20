@@ -342,7 +342,7 @@
                                             <child>
                                               <widget class="GtkTable" id="table13">
                                                 <property name="visible">True</property>
-                                                <property name="n_rows">11</property>
+                                                <property name="n_rows">9</property>
                                                 <property name="n_columns">6</property>
                                                 <property name="column_spacing">3</property>
                                                 <property name="row_spacing">6</property>
@@ -787,6 +787,7 @@
                                                     <child>
                                                       <widget class="GtkTextView" id="record_comments">
                                                         <property name="width_request">440</property>
+                                                        <property name="height_request">25</property>
                                                         <property name="visible">True</property>
                                                         <property name="can_focus">True</property>
                                                         <property name="editable">False</property>
@@ -994,7 +995,6 @@
                                                     <property name="right_padding">12</property>
                                                     <child>
                                                       <widget class="GtkScrolledWindow" id="scrolledwindow2l">
-                                                        <property name="height_request">300</property>
                                                         <property name="visible">True</property>
                                                         <property name="can_focus">True</property>
                                                         <property name="hscrollbar_policy">automatic</property>
@@ -1229,7 +1229,6 @@ Cadence
                                         <property name="visible">True</property>
                                         <child>
                                           <widget class="GtkScrolledWindow" id="scrolledwindowGraphOptions">
-                                            <property name="height_request">100</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="hscrollbar_policy">automatic</property>
@@ -1389,7 +1388,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonY1Min">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">0 -500 1000 1 10 0</property>
                                                             <signal name="value_changed" handler="on_spinbuttonY1_value_changed"/>
@@ -1407,7 +1406,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonY1Max">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">0 -500 1000 1 10 0</property>
                                                             <signal name="value_changed" handler="on_spinbuttonY1_value_changed"/>
@@ -1470,7 +1469,7 @@ Cadence
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="max_length">2</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="adjustment">1 1 10 1 1 0</property>
                                                             <signal name="value_changed" handler="on_spinbuttonY1LineWeight_value_changed"/>
                                                           </widget>
@@ -1512,7 +1511,7 @@ Cadence
                                                             <property name="sensitive">False</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="max_length">2</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="adjustment">1 0 10 1 1 0</property>
                                                           </widget>
                                                           <packing>
@@ -1604,7 +1603,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonY2Min">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">0 -500 1000 1 10 0</property>
                                                           </widget>
@@ -1621,7 +1620,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonY2Max">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">1 -500 1000 1 10 0</property>
                                                           </widget>
@@ -1691,7 +1690,7 @@ Cadence
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="max_length">2</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="adjustment">1 0 10 1 1 0</property>
                                                           </widget>
                                                           <packing>
@@ -1723,7 +1722,7 @@ Cadence
                                                             <property name="sensitive">False</property>
                                                             <property name="can_focus">True</property>
                                                             <property name="max_length">2</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="adjustment">1 0 10 1 1 0</property>
                                                           </widget>
                                                           <packing>
@@ -1800,7 +1799,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonXMin">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">0 -500 1000 1 10 0</property>
                                                           </widget>
@@ -1817,7 +1816,7 @@ Cadence
                                                           <widget class="GtkSpinButton" id="spinbuttonXMax">
                                                             <property name="visible">True</property>
                                                             <property name="can_focus">True</property>
-                                                            <property name="invisible_char">●</property>
+                                                            <property name="invisible_char">&#x25CF;</property>
                                                             <property name="width_chars">4</property>
                                                             <property name="adjustment">0 -500 1000 1 10 0</property>
                                                           </widget>
@@ -5821,7 +5820,7 @@ Calories</property>
                                             <property name="left_padding">12</property>
                                             <child>
                                               <widget class="GtkHBox" id="boxAthleteGraph">
-                                                <property name="height_request">150</property>
+                                                <property name="height_request">30</property>
                                                 <property name="visible">True</property>
                                                 <child>
                                                   <placeholder/>
@@ -5958,7 +5957,6 @@ Calories</property>
                                             <property name="left_padding">12</property>
                                             <child>
                                               <widget class="GtkHBox" id="total_vbox">
-                                                <property name="height_request">650</property>
                                                 <property name="visible">True</property>
                                                 <property name="border_width">5</property>
                                                 <property name="spacing">8</property>
@@ -6190,7 +6188,6 @@ Calories</property>
                                         </child>
                                       </widget>
                                       <packing>
-                                        <property name="expand">False</property>
                                         <property name="padding">6</property>
                                         <property name="position">3</property>
                                       </packing>
@@ -6239,7 +6236,7 @@ Calories</property>
                     <property name="visible">True</property>
                     <child>
                       <widget class="GtkHBox" id="hbox36">
-                        <property name="height_request">43</property>
+                        <property name="height_request">40</property>
                         <property name="visible">True</property>
                         <property name="border_width">8</property>
                         <property name="spacing">8</property>
@@ -6259,7 +6256,7 @@ Calories</property>
                           <widget class="GtkEntry" id="lsa_searchvalue">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="invisible_char">●</property>
+                            <property name="invisible_char">&#x25CF;</property>
                           </widget>
                           <packing>
                             <property name="expand">False</property>
@@ -6562,7 +6559,7 @@ Summit</property>
                                   <widget class="GtkEntry" id="waypoint_longitude">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
+                                    <property name="invisible_char">&#x25CF;</property>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">3</property>
@@ -6577,7 +6574,7 @@ Summit</property>
                                   <widget class="GtkEntry" id="waypoint_description">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
+                                    <property name="invisible_char">&#x25CF;</property>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -6592,7 +6589,7 @@ Summit</property>
                                   <widget class="GtkEntry" id="waypoint_latitude">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
+                                    <property name="invisible_char">&#x25CF;</property>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">3</property>
@@ -6605,7 +6602,7 @@ Summit</property>
                                   <widget class="GtkEntry" id="waypoint_name">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
+                                    <property name="invisible_char">&#x25CF;</property>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
