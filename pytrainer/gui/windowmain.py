@@ -2072,6 +2072,7 @@ class Main(SimpleGladeApp):
                         2, duration,
                         3, distance
                         )
+                    store.set_sort_column_id(1, gtk.SORT_ASCENDING)
         self.recordTreeView.set_model(store)
         if iterOne:
             self.recordTreeView.get_selection().select_iter(iterOne)
