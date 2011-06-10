@@ -275,6 +275,15 @@ class WindowRecord(SimpleGladeApp):
             comment = buffer.get_text(start,end, True)
             list_options["rcd_comments"] = comment.replace("\"","'")
             selected_equipment_ids = self._get_selected_equipment_ids()
+            # Added to change start time, only activities without GPX+ source file - dgranda 2011/06/10
+            record_time = self.rcd_starttime.get_text()
+            record_date = self.rcd_date.get_text()
+            localtz = Date().getLocalTZ()
+            date = dateutil.parser.parse(record_date+" "+record_time+" "+localtz)
+            local_date = str(date)
+            utc_date = date.astimezone(tzutc()).strftime("%Y-%m-%dT%H:%M:%SZ")
+            list_options["date_time_utc"] = utc_date
+            list_options["date_time_local"] = local_date
 
             if self.mode == "newrecord":
                 logging.debug('Track data: '+str(list_options))

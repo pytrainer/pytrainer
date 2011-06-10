@@ -311,9 +311,9 @@ class Record:
 				shutil.copy2(gpxOrig, gpxfile)
 		else:
 			if (list_options["rcd_gpxfile"]==""):
-				logging.debug('removing gpxfile') # ein?
-				logging.debug('updating bbdd') #ein?
-		cells,values = self._formatRecord(list_options)
+				logging.debug('Activity not based in GPX file') # ein?
+		logging.debug('Updating bbdd')
+		cells,values = self._formatRecordNew(list_options)
 		self.pytrainer_main.ddbb.update("records",cells,values," id_record=%d" %int(id_record))
 		if equipment is not None:
 			self._update_record_equipment(id_record, equipment)
