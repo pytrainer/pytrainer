@@ -1,3 +1,6 @@
+#!/usr/bin/python
+# -*- coding: UTF-8 -*-
+
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
 # Modified by dgranda
 
@@ -853,12 +856,15 @@ class Main(SimpleGladeApp):
 
         import numpy
         speeds = [r['average'] for r in records]
-        self.label_ranking_range.set_text("%.2f - %.2f" % (activity.distance * (1-percentage), activity.distance * (1+percentage)))
+        if self.pytrainer_main.profile.prf_us_system:
+            self.label_ranking_range.set_text("%.2f - %.2f %s" % (km2miles(activity.distance * (1-percentage)), km2miles(activity.distance * (1+percentage)), activity.distance_unit))
+        else:
+            self.label_ranking_range.set_text("%.2f - %.2f %s" % (activity.distance * (1-percentage), activity.distance * (1+percentage), activity.distance_unit))
         self.label_ranking_rank.set_text("%s/%s" % (count, len(records)))
-        self.label_ranking_avg.set_text("%.2f" % numpy.average(speeds))
-        self.label_ranking_speed.set_text("%.2f" % activity.average)
-        self.label_ranking_stddev.set_text("%.4f" % numpy.std(speeds))
-        self.label_ranking_dev.set_text("%+f" % ((activity.average - numpy.average(speeds)) / numpy.std(speeds)))
+        self.label_ranking_avg.set_text("%.2f %s" % (km2miles(numpy.average(speeds)) if self.pytrainer_main.profile.prf_us_system else numpy.average(speeds), activity.speed_unit))
+        self.label_ranking_speed.set_text("%.2f %s" % (km2miles(activity.average) if self.pytrainer_main.profile.prf_us_system else activity.average, activity.speed_unit))
+        self.label_ranking_stddev.set_text("%.4f" % (km2miles(numpy.std(speeds)) if self.pytrainer_main.profile.prf_us_system else numpy.std(speeds)))
+        self.label_ranking_dev.set_text("%+.2fσ" % ((activity.average - numpy.average(speeds)) / numpy.std(speeds)))
 
         rank_store = gtk.ListStore(
             gobject.TYPE_INT,       #id
@@ -886,13 +892,12 @@ class Main(SimpleGladeApp):
                 0, i,
                 1, rank,
                 2, r['date'],         
-                3, r['distance'],
+                3, km2miles(r['distance']) if self.pytrainer_main.profile.prf_us_system else r['distance'],
                 4, str(r['time']),
                 5, r['average'],
                 6, '#3AA142' if rank==count else '#000000',
             )
             
-            # Use grey color for "rest" laps
             for c in self.rankingTreeView.get_columns()[:-1]:
                 for cr in c.get_cell_renderers():
                     if type(cr)==gtk.CellRendererText:
