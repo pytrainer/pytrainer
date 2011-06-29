@@ -3,7 +3,6 @@
 # TODO: Add Google satellite images layers ?
 # TODO: Create map class/interface that osm/googlemaps will inherit from ?
 
-import gtkmozembed      # embedded mozilla
 import os
 import re
 import logging
@@ -78,9 +77,7 @@ class Osm:
     def drawMap(self, activity, linetype):
         '''Draw OSM map
         create HTML file using Open Layers and Open Street Map
-        render using embedded Mozilla
-
-        info at http://www.pygtk.org/pygtkmozembed/class-gtkmozembed.html
+        render using embedded Webkit
         '''
         logging.debug(">>")
         points = []

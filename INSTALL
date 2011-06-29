@@ -7,23 +7,22 @@ These are generic installation instructions to use with *.tar.gz files
 
 Here you are dependencies for PyTrainer. Of course you must have a working environment with proper shell configuration and typical GNU tools to uncompress (gunzip) and untar (tar) files.
 
-1.1.- Packages (Fedora 12 working versions as of 2010.03.03 for 1.7.2 dev)
+1.1.- Packages (Fedora 14 working versions as of 2011.06.28 for 1.8.1)
 
-python-2.6.2
-python-devel-2.6.2 (to run installation from tarball)
-python-matplotlib-0.98.5.2
+python-2.7.8
+python-devel-2.7.8 (to run installation from tarball)
+python-matplotlib-1.0.1
 python-dateutil-1.4.1
-gnome-python2-gtkmozembed-2.25.3
-pygtk2-libglade-2.16.0
-pygtk2-2.16.0
+pywebkitgtk-1.1.6-5 (see ticket #131)
+pygtk2-libglade-2.17.0
+pygtk2-2.17.0
 SOAPpy-0.11.6
-python-lxml-2.2.3
-libxml2-python-2.7.6
-libxml2-2.7.6
+python-lxml-2.2.8
+libxml2-python-2.7.7
+libxml2-2.7.7
 libxslt-python-1.1.26
 libxslt-1.1.26
-sqlite-3.6.20 (sqlite is preferred as db than mysql)
-xulrunner-1.9.1.8
+sqlite-3.6.23 (sqlite is preferred as db than mysql, MySQL-python has been reported to be installed if so)
 
 - Only needed if correspondent plugin is enabled:
 gpsbabel-1.3.5 ("Garmin via GPSBabel 1.3.5" aka garmin_hr)

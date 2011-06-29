@@ -95,25 +95,6 @@ gettext.install("pytrainer", gettext_path, unicode=1)
 sys.path.insert(0, site_path)
 from pytrainer.main import pyTrainer
 
-#Determine xulrunner location
-xulrunners = glob.glob("/usr/li*/xulrunner*/xulrunner")
-if len(xulrunners) == 0:
-    #Didnt find any - fall back to old approach
-    xul_env = commands.getstatusoutput("find /usr/li* -name xulrunner -exec dirname {} \; 2>/dev/null")[1]
-elif len(xulrunners) == 1:
-    #Found just one location - use that
-    xul_env = os.path.dirname(xulrunners[0])
-else:
-    #Found more than one - need to choose one...
-    max_version = None
-    for item in xulrunners:
-        xul_dir = os.path.dirname(item)
-        max_version = _max(max_version, xul_dir)
-    xul_env = max_version
-
-print "Using xulrunner dir: %s" % xul_env
-os.environ['MOZILLA_FIVE_HOME'] = xul_env
-
 def main():
     pytrainer = pyTrainer(None, data_path)
 

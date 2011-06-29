@@ -65,9 +65,7 @@ class Googlemaps:
     def drawMap(self,activity, linetype):
         '''Draw google map
             create html file using Google API version3
-            render using embedded Mozilla
-
-            info at http://www.pygtk.org/pygtkmozembed/class-gtkmozembed.html
+            render using embedded Webkit
         '''
         logging.debug(">>")
         points = []

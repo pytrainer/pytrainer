@@ -16,7 +16,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import gtkmozembed
+import webkit
 import logging
 import os
 
@@ -31,14 +31,13 @@ class MapViewer:
 			logging.debug("Display box (%s) is None" % ( str(box)))
 			return
 		self.box = box
-		gtkmozembed.set_profile_path("/tmp", "foobar") # http://faq.pygtk.org/index.py?req=show&file=faq19.018.htp  #TODO FIX???
-		self.moz = gtkmozembed.MozEmbed()
+		self.wkview = webkit.WebView()
 		self.pack_box()
 		logging.debug("<<")
 
 	def pack_box(self):
 		logging.debug(">>")
-		self.box.pack_start(self.moz, True, True)
+		self.box.pack_start(self.wkview, True, True)
 		self.box.show_all()
 		logging.debug("<<")
 
@@ -46,7 +45,7 @@ class MapViewer:
 		logging.debug(">>")
 		if htmlfile is None:
 			htmlfile = self.createErrorHtml()
-		self.moz.load_url("file://%s" % (htmlfile))
+		self.wkview.load_uri("file://%s" % (htmlfile))
 		#self.box.show_all()
 		logging.debug("<<")
 

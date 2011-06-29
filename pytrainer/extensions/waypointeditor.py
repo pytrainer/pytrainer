@@ -16,7 +16,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import gtkmozembed
+import webkit
 import os
 import re
 
@@ -33,9 +33,9 @@ class WaypointEditor:
 		logging.debug(">>")
 		self.data_path = data_path
 		self.extension = Extension()
-		self.moz = gtkmozembed.MozEmbed()
-		self.moz.connect('title', self.handle_title_changed) 
-		vbox.pack_start(self.moz, True, True)
+		self.wkview = webkit.WebView()
+		self.wkview.connect('notify::title', self.handle_title_changed) 
+		vbox.pack_start(self.wkview, True, True)
 		vbox.show_all()
 		self.htmlfile = ""
 		self.waypoint=waypoint
@@ -43,7 +43,9 @@ class WaypointEditor:
 		logging.debug("<<")
 		
 	def handle_title_changed(self, *args): 
-		title = self.moz.get_title() 
+		title = self.wkview.get_title()
+		if title == None:
+			return
 		logging.debug("Received title: "+ title)
 		m = re.match("call:([a-zA-Z]*)[(](.*)[)]", title) 
 		if m: 
@@ -86,7 +88,7 @@ class WaypointEditor:
 		tmpdir = self.pytrainer_main.profile.tmpdir
 		htmlfile = tmpdir+"/waypointeditor.html"
 		logging.debug("HTML file: "+str(htmlfile))
-		self.moz.load_url("file://"+htmlfile)
+		self.wkview.load_uri("file://"+htmlfile)
 		logging.debug("<<")
 	
 	def createHtml(self,default_waypoint=None):
