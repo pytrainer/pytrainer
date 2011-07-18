@@ -184,9 +184,9 @@ class Gpx:
                     #print elapsedTime
                 calories = lap.findtext(calorieTag)
                 distance = lap.findtext(distanceTag)
-                intensity = lap.findtext(intensityTag)
+                intensity = lap.findtext(intensityTag).lower()
                 trigger = lap.findtext(triggerTag).lower()
-                summary = lap.find(summaryTag).lower()
+                summary = lap.find(summaryTag)
                 max_speed = summary.findtext(mainNS.substitute(tag="MaximumSpeed"))
                 avg_hr = summary.findtext(mainNS.substitute(tag="AverageHeartRateBpm"))
                 max_hr =  summary.findtext(mainNS.substitute(tag="MaximumHeartRateBpm"))
