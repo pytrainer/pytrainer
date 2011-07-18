@@ -352,7 +352,7 @@ class Record:
 	def getLaps(self, id_record):
 		logging.debug('--')
 		laps = self.pytrainer_main.ddbb.select("laps",
-					"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number, intensity, max_speed, avg_hr, max_hr, trigger, comments",
+					"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number, intensity, max_speed, avg_hr, max_hr, `trigger`, comments",
 					"record=\"%s\"" % id_record)
 		if laps is None or laps == []:  #No laps stored - update DB
 			logging.debug("No laps in DB for record %d" % id_record)
@@ -369,7 +369,7 @@ class Record:
 					self.insertLaps(lap_keys,lap.values())
 			#Try to get lap info again #TODO? refactor
 			laps = self.pytrainer_main.ddbb.select("laps",
-					"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number, intensity, max_speed, avg_hr, max_hr, trigger, comments",
+					"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number, intensity, max_speed, avg_hr, max_hr, `trigger`, comments",
 					"record=\"%s\"" % id_record)
 		return laps
 
