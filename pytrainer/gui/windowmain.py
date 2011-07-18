@@ -517,7 +517,7 @@ class Main(SimpleGladeApp):
                 self.frame_laps.show()
             else:
                 self.frame_laps.hide()
-                runTime = activity.time
+                runTime = float(activity.laps[0]['elapsed_time'])
 
         else:
             self.recordview.set_current_page(0)
