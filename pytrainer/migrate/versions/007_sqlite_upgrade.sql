@@ -1,0 +1,1 @@
+-- data type change does not affect sqlite schema
