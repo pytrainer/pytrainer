@@ -459,7 +459,7 @@ class Main(SimpleGladeApp):
                         'rest' : '#808080',
                     }
                     
-                    pic = gtk.gdk.pixbuf_new_from_file(self.data_path+"glade/trigger_%s.png" % lap['trigger'])
+                    pic = gtk.gdk.pixbuf_new_from_file(self.data_path+"glade/trigger_%s.png" % lap['laptrigger'])
                         
                     iter = store.append()
                     store.set(iter, 
