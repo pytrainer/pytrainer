@@ -241,7 +241,7 @@ class Record:
 			tmp_lap['avg_hr'] = lap[8]
 			tmp_lap['max_hr'] = lap[9]
 			tmp_lap['max_speed'] = lap[10]
-			tmp_lap['trigger'] = lap[11]
+			tmp_lap['laptrigger'] = lap[11]
 			tmp_lap['comments'] = ""
 			laps.append(tmp_lap)
 		logging.debug('<<')
