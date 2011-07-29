@@ -25,7 +25,8 @@ setup( 	name="pytrainer",
 	packages=[	'pytrainer',
 			'pytrainer.gui',
 			'pytrainer.extensions',
-			'pytrainer.lib'
+			'pytrainer.lib',
+			'pytrainer.upgrade'
 			],
 
 	data_files=[
