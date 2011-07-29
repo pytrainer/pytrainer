@@ -32,6 +32,9 @@ class Sql:
         self.db = None
         confdir = configuration.confdir
         self.ddbb = "%s/pytrainer.ddbb" %confdir
+        
+    def get_connection_url(self):
+        return "sqlite:///" + self.ddbb
     
     def connect(self):
         #si devolvemos 1 ha ido todo con exito

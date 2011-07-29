@@ -30,6 +30,9 @@ class Sql:
         self.ddbb_host = host
         self.ddbb = ddbb
         self.db = None
+        
+    def get_connection_url(self):
+        return "mysql://{user}:{passwd}@{host}/{db}".format(user=self.ddbb_user, passwd=self.ddbb_pass, host=self.ddbb_host, db=self.ddbb)
     
     def connect(self):
         #si devolvemos 1 ha ido todo con exito

@@ -27,8 +27,9 @@ class InstalledData(object):
     """Encapsulates an installation's existing data and provides means to
     check version state and upgrade."""
     
-    def __init__(self, migratable_db, profile):
+    def __init__(self, migratable_db, ddbb, profile):
         self._migratable_db = migratable_db
+        self._ddbb = ddbb
         self._profile = profile
         
     def update_to_current(self):
@@ -100,6 +101,9 @@ class InstalledData(object):
         """Initialize the version metadata."""
         self._migratable_db.version(initial_version)
         
+    def initialize(self):
+        self._ddbb.create_tables()
+        
     def upgrade(self):
         self._migratable_db.upgrade()
         
@@ -119,7 +123,7 @@ class DataState(object):
         self._update_function(installed_data)
 
 def _update_fresh(data):
-    # TODO create empty DB
+    data.initialize()
     data.initialize_version(data.get_available_version())
 
 def _update_stale(data):

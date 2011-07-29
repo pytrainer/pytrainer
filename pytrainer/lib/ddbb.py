@@ -125,6 +125,9 @@ class DDBB:
         ddbb_user = self.configuration.getValue("pytraining","prf_ddbbuser")
         ddbb_pass = self.configuration.getValue("pytraining","prf_ddbbpass")
         self.ddbbObject = Sql(ddbb_host,ddbb,ddbb_user,ddbb_pass,self.configuration)
+        
+    def get_connection_url(self):
+        return self.ddbbObject.get_connection_url()
 
     def connect(self):
         connection_ok, connection_msg = self.ddbbObject.connect()
@@ -309,12 +312,8 @@ class DDBB:
             if entry not in tablesDB:
                 return False
         return True
-
-    def checkDBIntegrity(self):
-        '''17.11.2009 - dgranda
-        Retrieves tables and columns from database, checks current ones and adds something if missed. New in version 1.7.0
-        args: none
-        returns: none'''
+        
+    def create_tables(self):
         global tablesList
         global tablesDefaultData
         logging.debug('>>')
@@ -351,6 +350,13 @@ class DDBB:
                         self.insert_dict(entry, data_dict)
             else:
                 self.ddbbObject.checkTable(entry,tablesList[entry])
+
+    def checkDBIntegrity(self):
+        '''17.11.2009 - dgranda
+        Retrieves tables and columns from database, checks current ones and adds something if missed. New in version 1.7.0
+        args: none
+        returns: none'''
+        self.create_tables()
 
         #Run any functions to update or correct data
         #These functions _must_ be safe to run at any time (i.e. not be version specfic or only safe to run once)
