@@ -16,6 +16,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+import logging
 import pytrainer
 from pytrainer.upgrade.context import UpgradeContext
 from pytrainer.upgrade.migratedb import MigratableDb
@@ -59,7 +60,7 @@ class InstalledData(object):
         
         """
         data_state = self.get_state()
-        #TODO logging
+        logging.info("Initializing data. Data state is: '%s'.", data_state)
         data_state.update_to_current(self)
         
     def get_state(self):
@@ -107,12 +108,15 @@ class InstalledData(object):
     
     def initialize_version(self, initial_version):
         """Initialize the version metadata."""
+        logging.info("Initializing version metadata to version: '%s'.", initial_version)
         self._migratable_db.version(initial_version)
         
     def initialize(self):
+        logging.info("Initializing new database.")
         self._ddbb.create_tables()
         
     def upgrade(self):
+        logging.info("Upgrading data from version '%s' to version '%s'.", self.get_version(), self.get_available_version())
         pytrainer.upgrade.context.UPGRADE_CONTEXT = UpgradeContext(self._conf_dir)
         self._migratable_db.upgrade()
         
@@ -125,6 +129,9 @@ class DataState(object):
     def __init__(self, name, update_function):
         self.name = name
         self._update_function = update_function
+        
+    def __str__(self):
+        return self.name
         
     def update_to_current(self, installed_data):
         """Update the installed data so it is compatible with the current
