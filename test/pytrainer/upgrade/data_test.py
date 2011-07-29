@@ -27,7 +27,7 @@ class InstalledDataTest(unittest.TestCase):
         self._mock_migratable_db = Mock()
         self._mock_ddbb = Mock()
         self._mock_profile = Mock()
-        self._installed_data = InstalledData(self._mock_migratable_db, self._mock_ddbb, self._mock_profile)
+        self._installed_data = InstalledData(self._mock_migratable_db, self._mock_ddbb, self._mock_profile, "")
         
     def test_get_version_should_return_migrate_version_when_available(self):
         self._mock_migratable_db.get_version.return_value = 1

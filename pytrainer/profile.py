@@ -56,7 +56,6 @@ class Profile:
             "prf_ddbbuser":"",
             "prf_ddbbpass":"",
             "version":"0.0",
-            "DB_version":"0",
             "prf_us_system":"False",
             "prf_hrzones_karvonen":"False",
             "prf_maxhr":"",

@@ -22,21 +22,22 @@ from pytrainer.upgrade.migratedb import MigratableDb
 
 MIGRATE_REPOSITORY_PATH = "pytrainer/upgrade"
 
-def initialize_data(ddbb, profile):
+def initialize_data(ddbb, profile, conf_dir):
     """Initializes the installation's data."""
     db_url = ddbb.get_connection_url()
     migratable_db = MigratableDb(MIGRATE_REPOSITORY_PATH, db_url)
-    InstalledData(migratable_db, ddbb, profile).update_to_current()
+    InstalledData(migratable_db, ddbb, profile, conf_dir).update_to_current()
         
 class InstalledData(object):
     
     """Encapsulates an installation's existing data and provides means to
     check version state and upgrade."""
     
-    def __init__(self, migratable_db, ddbb, profile):
+    def __init__(self, migratable_db, ddbb, profile, conf_dir):
         self._migratable_db = migratable_db
         self._ddbb = ddbb
         self._profile = profile
+        self._conf_dir = conf_dir
         
     def update_to_current(self):
         """Check the current state of the installation's data and update them
@@ -112,6 +113,7 @@ class InstalledData(object):
         self._ddbb.create_tables()
         
     def upgrade(self):
+        pytrainer.upgrade.context.UPGRADE_CONTEXT = UpgradeContext(self._conf_dir)
         self._migratable_db.upgrade()
         
 class DataState(object):

@@ -56,7 +56,6 @@ class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
         self.version ="1.9.0-dev"
-        self.DB_version = 9
         #Process command line options
         self.startup_options = self.get_options()
         self.environment = Environment(platform.get_platform(), self.startup_options.conf_dir)
@@ -64,7 +63,7 @@ class pyTrainer:
         #Setup logging
         self.set_logging(self.startup_options.log_level, self.startup_options.log_type)
         logging.debug('>>')
-        logging.debug("PyTrainer version %s, DB version %s" % (self.version, self.DB_version))
+        logging.debug("PyTrainer version %s" % (self.version))
         self.data_path = data_path
         self.date = Date()
         self.ddbb = None
@@ -77,7 +76,7 @@ class pyTrainer:
         logging.debug('connecting to DDBB')
         self.ddbb.connect()
         
-        initialize_data(self.ddbb, self.profile)
+        initialize_data(self.ddbb, self.profile, self.environment.conf_dir)
         if self.startup_options.check:
             logging.debug("Checking DB as per user's request")
             self.sanityCheck()
