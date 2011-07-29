@@ -76,7 +76,7 @@ class pyTrainer:
         logging.debug('connecting to DDBB')
         self.ddbb.connect()
         
-        initialize_data(self.ddbb, self.profile, self.environment.conf_dir)
+        initialize_data(self.ddbb, self.environment.conf_dir)
         if self.startup_options.check:
             logging.debug("Checking DB as per user's request")
             self.sanityCheck()

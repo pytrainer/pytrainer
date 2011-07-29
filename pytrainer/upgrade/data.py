@@ -17,27 +17,27 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
+from lxml import etree
 import pytrainer
 from pytrainer.upgrade.context import UpgradeContext
 from pytrainer.upgrade.migratedb import MigratableDb
 
 MIGRATE_REPOSITORY_PATH = "pytrainer/upgrade"
 
-def initialize_data(ddbb, profile, conf_dir):
+def initialize_data(ddbb, conf_dir):
     """Initializes the installation's data."""
     db_url = ddbb.get_connection_url()
     migratable_db = MigratableDb(MIGRATE_REPOSITORY_PATH, db_url)
-    InstalledData(migratable_db, ddbb, profile, conf_dir).update_to_current()
+    InstalledData(migratable_db, ddbb, conf_dir).update_to_current()
         
 class InstalledData(object):
     
     """Encapsulates an installation's existing data and provides means to
     check version state and upgrade."""
     
-    def __init__(self, migratable_db, ddbb, profile, conf_dir):
+    def __init__(self, migratable_db, ddbb, conf_dir):
         self._migratable_db = migratable_db
         self._ddbb = ddbb
-        self._profile = profile
         self._conf_dir = conf_dir
         
     def update_to_current(self):
@@ -83,10 +83,8 @@ class InstalledData(object):
             return self._migratable_db.get_version()
         else:
             # Calculate data version in older version that does not use the
-            # current data versioning scheme. Versions earlier than 1.7 are not
-            # supported for upgrades. In versions 1.7 and 1.8 the database
-            # version was stored as a property in the profile config file.
-            legacy_version = self._profile.getValue("pytraining", "DB_version")
+            # current data versioning scheme.
+            legacy_version = self._get_legacy_version()
             if legacy_version is not None:
                 legacy_version = int(legacy_version)
                 if legacy_version <= 6:
@@ -98,6 +96,16 @@ class InstalledData(object):
                 elif legacy_version == 9:
                     return 10
             return -1
+        
+    def _get_legacy_version(self):
+        # In versions 1.7 and 1.8 the database version was stored as a property
+        # in the config file. Versions earlier than 1.7 are not supported for
+        # upgrades.
+        config_file = self._conf_dir + "/conf.xml"
+        parser = etree.XMLParser(encoding="UTF8", recover=True)
+        xml_tree = etree.parse(config_file, parser=parser)
+        config_element = xml_tree.getroot()
+        return config_element.get("DB_version")
         
     def get_available_version(self):
         return self._migratable_db.get_upgrade_version()
