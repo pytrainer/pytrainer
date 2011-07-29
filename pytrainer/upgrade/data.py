@@ -21,6 +21,12 @@ from pytrainer.upgrade.context import UpgradeContext
 from pytrainer.upgrade.migratedb import MigratableDb
 
 MIGRATE_REPOSITORY_PATH = "pytrainer/upgrade"
+
+def initialize_data(ddbb, profile):
+    """Initializes the installation's data."""
+    db_url = ddbb.get_connection_url()
+    migratable_db = MigratableDb(MIGRATE_REPOSITORY_PATH, db_url)
+    InstalledData(migratable_db, ddbb, profile).update_to_current()
         
 class InstalledData(object):
     
@@ -52,6 +58,7 @@ class InstalledData(object):
         
         """
         data_state = self.get_state()
+        #TODO logging
         data_state.update_to_current(self)
         
     def get_state(self):

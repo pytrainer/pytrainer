@@ -33,6 +33,7 @@ import traceback
 from os import path
 
 from pytrainer import platform
+from upgrade.data import initialize_data
 from environment import Environment
 from record import Record
 from waypoint import Waypoint
@@ -75,22 +76,12 @@ class pyTrainer:
         self.ddbb = DDBB(self.profile, self)
         logging.debug('connecting to DDBB')
         self.ddbb.connect()
-
-        #Get user's DB version
-        currentDB_version = self.profile.getValue("pytraining","DB_version")
-        logging.debug("Current DB version: "+str(currentDB_version))
-        # DB check can be triggered either via new version (mandatory) or as runtime parameter (--check)
+        
+        initialize_data(self.ddbb, self.profile)
         if self.startup_options.check:
             logging.debug("Checking DB as per user's request")
             self.sanityCheck()
-        elif currentDB_version is None:
-            logging.debug("No stored DB version. Checking DB")
-            self.sanityCheck()
-        elif self.DB_version > int(currentDB_version):
-            logging.debug("DB version newer than user's version")
-            self.sanityCheck()
-        else:
-            logging.info('No sanity check requested')
+            
         self.record = Record(data_path,self)
         self.athlete = Athlete(data_path,self)
         self.stats = Stats(data_path,self)
@@ -511,6 +502,4 @@ class pyTrainer:
         logging.debug('>>')
         logging.info('Checking database integrity')
         self.ddbb.checkDBIntegrity()
-        logging.info('Setting DB version to: ' + str(self.DB_version))
-        self.profile.setValue("pytraining","DB_version", str(self.DB_version))
         logging.debug('<<')

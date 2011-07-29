@@ -135,10 +135,6 @@ class DDBB:
 			print "ERROR: Unable to connect to database"
 			print connection_msg
 			sys.exit(connection_ok)
-        #Do a quick check to ensure all tables are present in DB
-        if not self.checkDBTables():
-            #Some tables missing - do DB check
-            self.checkDBIntegrity()
 
     def disconnect(self):
         self.ddbbObject.disconnect()
@@ -297,21 +293,6 @@ class DDBB:
         sql = "select %s from %s order by %s Desc limit 0,1" %(id,table,id)
         ret_val = self.ddbbObject.freeExec(sql)
         return ret_val[0][0]
-        
-    def checkDBTables(self):
-        '''Quick check that all expected tables existing in DB
-            return True if OK, False if any tables are missing
-        '''
-        global tablesList
-        logging.debug('>>')
-        tablesDB = self.ddbbObject.getTableList()
-        logging.debug('Tables in DB: '+str(tablesDB));
-        #Check Tables
-        for entry in tablesList:
-            logging.debug("Entry: "+entry)
-            if entry not in tablesDB:
-                return False
-        return True
         
     def create_tables(self):
         global tablesList
