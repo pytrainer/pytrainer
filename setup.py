@@ -28,7 +28,9 @@ setup( 	name="pytrainer",
 			'pytrainer.lib',
 			'pytrainer.upgrade'
 			],
-
+	package_data={
+				'pytrainer.upgrade': ['migrate.cfg', 'versions/*.sql', 'versions/*.py']
+	},
 	data_files=[
 		('share/pytrainer/glade/',glob("glade/*.glade")),
 		('share/pytrainer/glade/',glob("glade/*.png")),
