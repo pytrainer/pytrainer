@@ -28,17 +28,17 @@ def initialize_data(ddbb, conf_dir):
     """Initializes the installation's data."""
     db_url = ddbb.get_connection_url()
     migratable_db = MigratableDb(MIGRATE_REPOSITORY_PATH, db_url)
-    InstalledData(migratable_db, ddbb, conf_dir).update_to_current()
+    InstalledData(migratable_db, ddbb, LegacyVersionProvider(conf_dir)).update_to_current()
         
 class InstalledData(object):
     
     """Encapsulates an installation's existing data and provides means to
     check version state and upgrade."""
     
-    def __init__(self, migratable_db, ddbb, conf_dir):
+    def __init__(self, migratable_db, ddbb, legacy_version_provider):
         self._migratable_db = migratable_db
         self._ddbb = ddbb
-        self._conf_dir = conf_dir
+        self._legacy_version_provider = legacy_version_provider
         
     def update_to_current(self):
         """Check the current state of the installation's data and update them
@@ -84,7 +84,7 @@ class InstalledData(object):
         else:
             # Calculate data version in older version that does not use the
             # current data versioning scheme.
-            legacy_version = self._get_legacy_version()
+            legacy_version = self._legacy_version_provider.get_legacy_version()
             if legacy_version is not None:
                 legacy_version = int(legacy_version)
                 if legacy_version <= 6:
@@ -96,16 +96,6 @@ class InstalledData(object):
                 elif legacy_version == 9:
                     return 10
             return -1
-        
-    def _get_legacy_version(self):
-        # In versions 1.7 and 1.8 the database version was stored as a property
-        # in the config file. Versions earlier than 1.7 are not supported for
-        # upgrades.
-        config_file = self._conf_dir + "/conf.xml"
-        parser = etree.XMLParser(encoding="UTF8", recover=True)
-        xml_tree = etree.parse(config_file, parser=parser)
-        config_element = xml_tree.getroot()
-        return config_element.get("DB_version")
         
     def get_available_version(self):
         return self._migratable_db.get_upgrade_version()
@@ -161,3 +151,21 @@ DataState.CURRENT = DataState("CURRENT", lambda data: None)
 DataState.FRESH = DataState("FRESH", _update_fresh)
 DataState.STALE = DataState("STALE", _update_stale)
 DataState.LEGACY = DataState("LEGACY", _update_legacy)
+
+class LegacyVersionProvider(object):
+    
+    """Provides the DB version number for data not using the current data
+    versioning scheme."""
+    
+    def __init__(self, conf_dir):
+        self._conf_dir = conf_dir
+        
+    def get_legacy_version(self):
+        # In versions 1.7 and 1.8 the database version was stored as a property
+        # in the config file. Versions earlier than 1.7 are not supported for
+        # upgrades.
+        config_file = self._conf_dir + "/conf.xml"
+        parser = etree.XMLParser(encoding="UTF8", recover=True)
+        xml_tree = etree.parse(config_file, parser=parser)
+        config_element = xml_tree.getroot()
+        return config_element.get("DB_version")
