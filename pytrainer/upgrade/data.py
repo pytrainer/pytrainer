@@ -74,7 +74,7 @@ class InstalledData(object):
             else:
                 return DataState.STALE
         else:
-            if version == -1:
+            if version == None:
                 return DataState.FRESH
             else:
                 return DataState.LEGACY
@@ -82,7 +82,7 @@ class InstalledData(object):
     def get_version(self):
         """Get the version number of an installation's data.
         
-        If the data is empty then -1 is returned."""
+        If the data is empty then None is returned."""
         if self.is_versioned():
             return self._migratable_db.get_version()
         else:
@@ -99,7 +99,7 @@ class InstalledData(object):
                     return 10
                 elif legacy_version == 9:
                     return 10
-            return -1
+            return None
         
     def get_available_version(self):
         return self._migratable_db.get_upgrade_version()
