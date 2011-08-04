@@ -58,10 +58,10 @@ class pyTrainer:
         self.version ="1.9.0-dev"
         #Process command line options
         self.startup_options = self.get_options()
-        self.environment = Environment(platform.get_platform(), self.startup_options.conf_dir)
-        self.environment.create_directories()
         #Setup logging
         self.set_logging(self.startup_options.log_level, self.startup_options.log_type)
+        self.environment = Environment(platform.get_platform(), self.startup_options.conf_dir)
+        self.environment.create_directories()
         logging.debug('>>')
         logging.debug("PyTrainer version %s" % (self.version))
         self.data_path = data_path
