@@ -64,13 +64,17 @@ class InstalledData(object):
         data_state.update_to_current(self)
         
     def get_state(self):
+        version = self.get_version()
+        available_version= self.get_available_version()
         if self.is_versioned():
-            if self.get_version() == self.get_available_version():
+            if version == available_version:
                 return DataState.CURRENT
+            elif version > available_version:
+                raise ValueError("Current version ({0}) is greater than available version ({1}).".format(version, available_version))
             else:
                 return DataState.STALE
         else:
-            if self.get_version() == -1:
+            if version == -1:
                 return DataState.FRESH
             else:
                 return DataState.LEGACY

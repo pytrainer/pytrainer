@@ -19,7 +19,6 @@
 import unittest
 from mock import Mock
 from pytrainer.upgrade.data import InstalledData, DataState
-from migrate.versioning.exceptions import DatabaseNotControlledError
 
 class InstalledDataTest(unittest.TestCase):
     
@@ -53,14 +52,23 @@ class InstalledDataTest(unittest.TestCase):
         self._mock_version_provider.get_legacy_version.return_value = None
         self.assertEquals(DataState.FRESH, self._installed_data.get_state())
 
-        
     def test_get_state_should_return_stale_when_data_version_less_than_repository_version(self):
         self._mock_migratable_db.get_version.return_value = 1
         self._mock_migratable_db.get_upgrade_version.return_value = 2
         self.assertEquals(DataState.STALE, self._installed_data.get_state())
 
-        
     def test_get_state_should_return_legacy_when_data_version_is_legacy(self):
         self._mock_migratable_db.is_versioned.return_value = False
         self._mock_version_provider.get_legacy_version.return_value = 1
         self.assertEquals(DataState.LEGACY, self._installed_data.get_state())
+
+    def test_get_state_should_raise_error_when_version_too_large(self):
+        self._mock_migratable_db.is_versioned.return_value = True
+        self._mock_migratable_db.get_version.return_value = 2
+        self._mock_migratable_db.get_upgrade_version.return_value = 1
+        try:
+            self._installed_data.get_state()
+        except ValueError:
+            pass
+        else:
+            self.fail()
