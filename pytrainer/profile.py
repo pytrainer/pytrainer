@@ -261,10 +261,6 @@ class Profile:
         logging.debug("--")
         return self.pytrainer_main.ddbb.select("sports","name,met,weight,max_pace,color","name=\"%s\""%namesport)[0]
 
-    def build_ddbb(self):
-        logging.debug("--")
-        self.pytrainer_main.ddbb.build_ddbb()
-
     def editProfile(self):
         logging.debug(">>")
         from gui.windowprofile import WindowProfile

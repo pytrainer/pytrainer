@@ -196,7 +196,6 @@ class WindowProfile(SimpleGladeApp):
                                 )
                 self.sportTreeView.set_model(store)
                 self.sportTreeView.set_cursor(0)
-                #self.sportlistbutton.hide()
                 self.sportlist.show()
         elif frame == 5: #Startup Parameters page selected
             self.init_params_tab()
@@ -277,14 +276,6 @@ class WindowProfile(SimpleGladeApp):
             logging.debug("NewGraph deactivated")
             self.pytrainer_main.startup_options.newgraph = False       
     
-    def on_sportlistbutton_clicked(self,widget):
-        sport_list = self.parent.getSportList()
-        if sport_list == 0:
-            self.parent.build_ddbb()
-            self.sportlistbutton.hide()
-            self.sportlist.show()
-        
-            
     def on_accept_clicked(self,widget):
         self.saveOptions()
         self.close_window()

@@ -139,12 +139,6 @@ class DDBB:
     def disconnect(self):
         self.ddbbObject.disconnect()
 
-    def build_ddbb(self): #TODO Is this needed?
-        self.ddbbObject.createDDBB()
-        self.ddbbObject.connect()
-        self.ddbbObject.createTables()
-        self.ddbbObject.createTableVersion()
-
     def select(self,table,cells,condition=None, mod=None):
         return self.ddbbObject.select(table,cells,condition,mod)
 
