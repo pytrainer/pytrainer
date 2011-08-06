@@ -28,17 +28,18 @@ def initialize_data(ddbb, conf_dir):
     """Initializes the installation's data."""
     db_url = ddbb.get_connection_url()
     migratable_db = MigratableDb(MIGRATE_REPOSITORY_PATH, db_url)
-    InstalledData(migratable_db, ddbb, LegacyVersionProvider(conf_dir)).update_to_current()
+    InstalledData(migratable_db, ddbb, LegacyVersionProvider(conf_dir), UpgradeContext(conf_dir)).update_to_current()
         
 class InstalledData(object):
     
     """Encapsulates an installation's existing data and provides means to
     check version state and upgrade."""
     
-    def __init__(self, migratable_db, ddbb, legacy_version_provider):
+    def __init__(self, migratable_db, ddbb, legacy_version_provider, upgrade_context):
         self._migratable_db = migratable_db
         self._ddbb = ddbb
         self._legacy_version_provider = legacy_version_provider
+        self._upgrade_context = upgrade_context
         
     def update_to_current(self):
         """Check the current state of the installation's data and update them
@@ -119,7 +120,7 @@ class InstalledData(object):
         
     def upgrade(self):
         logging.info("Upgrading data from version '%s' to version '%s'.", self.get_version(), self.get_available_version())
-        pytrainer.upgrade.context.UPGRADE_CONTEXT = UpgradeContext(self._conf_dir)
+        pytrainer.upgrade.context.UPGRADE_CONTEXT = self._upgrade_context
         self._migratable_db.upgrade()
         
 class DataState(object):
