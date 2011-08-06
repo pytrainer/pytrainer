@@ -19,6 +19,7 @@
 import unittest
 from mock import Mock
 from pytrainer.upgrade.data import InstalledData, DataState
+import pytrainer.upgrade.context
 
 class InstalledDataTest(unittest.TestCase):
     
@@ -73,3 +74,33 @@ class InstalledDataTest(unittest.TestCase):
             pass
         else:
             self.fail()
+            
+    def test_get_available_version_returns_migratable_db_upgrade_version(self):
+        self._mock_migratable_db.get_upgrade_version.return_value = 1
+        self.assertEquals(1, self._installed_data.get_available_version())
+        
+    def test_is_versioned_returns_migratable_db_is_versioned(self):
+        self._mock_migratable_db.is_versioned.return_value = True
+        self.assertEquals(True, self._installed_data.is_versioned())
+        
+    def test_initialize_version_versions_migratable_db(self):
+        self._installed_data.initialize_version(1)
+        self._mock_migratable_db.version.assert_called_with(1)
+        
+    def test_initialize_creates_db_tables(self):
+        self._installed_data.initialize()
+        self.assertTrue(self._mock_ddbb.create_tables.called)
+        
+    def test_upgrade_upgrades_migratable_db(self):
+        self._installed_data.upgrade()
+        self.assertTrue(self._mock_migratable_db.upgrade.called)
+        
+    def test_upgrade_initializes_global_upgrade_context(self):
+        self._installed_data.upgrade()
+        self.assertEqual(self._mock_upgrade_context, pytrainer.upgrade.context.UPGRADE_CONTEXT)
+        
+    def test_update_to_current_delegates_to_data_state(self):
+        mock_state = Mock()
+        self._installed_data.get_state = Mock(return_value=mock_state)
+        self._installed_data.update_to_current()
+        self.assertTrue(mock_state.update_to_current.called)
