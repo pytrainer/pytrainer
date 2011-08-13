@@ -16,7 +16,8 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from pytrainer.lib.color import Color
+from pytrainer.lib.color import Color, color_from_hex_string
+import logging
 
 class Sport(object):
     
@@ -90,3 +91,130 @@ class Sport(object):
         self._color = color
         
     color = property(_get_color, _set_color)
+
+class SportServiceException(Exception):
+    
+    def __init__(self, value):
+        self.value = value
+    
+    def __str__(self):
+        return repr(self.value)
+
+_TABLE = "sports"
+
+_ID_COLUMN = "id_sports"
+
+_NAME_COLUMN = "name"
+
+_UPDATE_COLUMNS = _NAME_COLUMN + ",weight,met,max_pace,color"
+
+_SELECT_COLUMNS = _ID_COLUMN + "," + _UPDATE_COLUMNS
+    
+class SportService(object):
+    
+    """Provides access to stored sports."""
+    
+    def __init__(self, ddbb):
+        self._ddbb = ddbb
+        
+    def _create_sport(self, row):
+        sport = Sport()
+        sport.id = row[0]
+        sport.name = unicode(row[1])
+        sport.weight = row[2]
+        sport.met = row[3]
+        sport.max_pace = row[4]
+        sport.color =  color_from_hex_string(row[5])
+        return sport
+    
+    def _create_row(self, sport):
+        return [sport.name,
+                sport.weight,
+                sport.met,
+                sport.max_pace,
+                sport.color.to_hex_string()]
+        
+    def _create_id_where_clause(self, sport_id):
+        return _ID_COLUMN + "=" + str(sport_id)
+    
+    def _create_name_where_clause(self, sport_name):
+        return _NAME_COLUMN + "=\"{0}\"".format(sport_name)
+    
+    def get_sport(self, sport_id):
+        """Get the sport with the specified id.
+
+        If no sport with the given id exists then None is returned."""
+        resultSet = self._ddbb.select(_TABLE, _SELECT_COLUMNS, self._create_id_where_clause(sport_id))
+        if len(resultSet) == 0:
+            return None
+        else:
+            return self._create_sport(resultSet[0])
+        
+    def get_sport_by_name(self, name):
+        """Get the sport with the specified name.
+
+        If no sport with the given name exists then None is returned."""
+        sport_id = self._get_sport_id_from_name(name)
+        return self.get_sport(sport_id)
+        
+    def _get_sport_id_from_name(self, name):
+        result_set = self._ddbb.select(_TABLE, _ID_COLUMN, self._create_name_where_clause(name))
+        if len(result_set) > 0:
+            return result_set[0][0]
+        return None
+    
+    def get_all_sports(self):
+        """Get all stored sports."""
+        result_set = self._ddbb.select(_TABLE, _SELECT_COLUMNS)
+        logging.debug("Retrieved all sports ({0} results).".format(len(result_set)))
+        sports = []
+        for row in result_set:
+            sport = self._create_sport(row)
+            sports.append(sport)
+        return sports
+    
+    def store_sport(self, sport):
+        """Store a new or update an existing sport.
+       
+       The stored object is returned."""
+        if (sport.id is None):
+            sport_id = self._store_new_sport(sport)
+        else:
+            sport_id = self._update_existing_sport(sport)
+        return self.get_sport(sport_id)
+    
+    def _store_new_sport(self, sport):
+        self._assert_unique(sport)
+        self._ddbb.insert(_TABLE, _UPDATE_COLUMNS, self._create_row(sport))
+        logging.debug("Stored new sport: '{0}'.".format(sport.name))
+        return self._get_sport_id_from_name(sport.name)
+    
+    def _update_existing_sport(self, sport):
+        self._assert_exists(sport)
+        self._assert_unique(sport)
+        self._ddbb.update(_TABLE, _UPDATE_COLUMNS, self._create_row(sport), self._create_id_where_clause(sport.id))
+        logging.debug("Updated sport: '{0}'.".format(sport.name))
+        return sport.id
+        
+    def _assert_unique(self, sport):
+        id = self._get_sport_id_from_name(sport.name)
+        if id is not None and id != sport.id:
+            raise SportServiceException("A sport already exists with name '{0}'".format(sport.name))
+        logging.debug("Asserted sport name is unique: '{0}'.".format(sport.name))
+        
+    def _assert_exists(self, sport):
+        result_set = self._ddbb.select(_TABLE, _ID_COLUMN, self._create_id_where_clause(sport.id))
+        if (result_set == []):
+            raise SportServiceException("Sport does not exist with id: '{0}'.".format(sport.id))
+        logging.debug("Asserted sport exists with id: '{0}'.".format(sport.id))
+        
+    def remove_sport(self, sport):
+        """Delete a stored sport.
+        
+        All records associated with the sport will also be deleted."""
+        if (sport.id is None):
+            raise SportServiceException("Cannot remove sport which has not been stored: '{0}'.".format(sport.name))
+        self._assert_exists(sport)
+        self._ddbb.delete("records", "sport=" + str(sport.id))
+        self._ddbb.delete(_TABLE, self._create_id_where_clause(sport.id))
+        logging.debug("Deleted sport: '{0}'.".format(sport.name))

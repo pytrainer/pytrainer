@@ -17,7 +17,10 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import unittest
-from pytrainer.sport import Sport
+from pytrainer.sport import Sport, SportService, SportServiceException
+import mock
+from pytrainer.lib.sqliteUtils import Sql
+import pytrainer
 
 class SportTest(unittest.TestCase):
     
@@ -212,3 +215,164 @@ class SportTest(unittest.TestCase):
             pass
         else:
             self.fail()
+
+
+class SportServiceTest(unittest.TestCase):
+    
+    def setUp(self):
+        self.mock_ddbb = mock.Mock(spec=Sql)
+        self.sport_service = SportService(self.mock_ddbb)
+        
+    def test_store_sport_should_insert_row_when_sport_has_no_id(self):
+        self.mock_ddbb.select.return_value = []
+        sport = Sport()
+        sport.name = u"Test name"
+        self.sport_service.store_sport(sport)
+        self.mock_ddbb.insert.assert_called_with("sports",  "name,weight,met,max_pace,color",
+                                                 [u"Test name", 0.0, None, None, "0000ff"])
+    
+    def test_store_sport_should_update_row_when_sport_has_id(self):
+        def mock_select(table, columns, where):
+            if columns == "id_sports":
+                return [[1]]
+            else:
+                return [(1, u"", 0, 0, 0, "0")]
+        self.mock_ddbb.select = mock.Mock(wraps=mock_select)
+        sport = Sport()
+        sport.id = 1
+        sport.name = u"New name"
+        self.sport_service.store_sport(sport)
+        self.mock_ddbb.update.assert_called_with("sports",  "name,weight,met,max_pace,color",
+                                                 [u"New name", 0.0, None, None, "0000ff"], "id_sports=1")
+        
+    def test_store_sport_should_return_stored_sport(self):
+        sport_ids = []
+        def update_sport_ids(*args):
+            sport_ids.append([1])
+        self.mock_ddbb.insert.side_effect = update_sport_ids
+        def mock_select(table, columns, where):
+            if columns == "id_sports":
+                return sport_ids
+            else:
+                return [(2, u"", 0, 0, 0, "0")]
+        self.mock_ddbb.select = mock.Mock(wraps=mock_select)
+        sport = Sport()
+        stored_sport = self.sport_service.store_sport(sport)
+        self.assertEquals(2, stored_sport.id)
+    
+    def test_store_sport_should_error_when_sport_has_unknown_id(self):
+        self.mock_ddbb.select.return_value = []
+        sport = Sport()
+        sport.id = 100
+        try:
+            self.sport_service.store_sport(sport)
+        except(SportServiceException):
+            pass
+        else:
+            self.fail()
+            
+    def test_store_sport_should_error_when_new_sport_has_duplicate_name(self):
+        self.mock_ddbb.select.return_value = [(1, u"Test name", 150, 12.5, 200, "0")]
+        sport = Sport()
+        sport.name = u"Test name"
+        try:
+            self.sport_service.store_sport(sport)
+        except(SportServiceException):
+            pass
+        else:
+            self.fail()
+
+    def test_store_sport_should_error_when_existing_sport_has_duplicate_name(self):
+        def mock_select(table, columns, where):
+            if columns == pytrainer.sport._ID_COLUMN:
+                return [[2]]
+            else:
+                return [(1, u"Test name", 0, 0.0, "0"), (2, u"New name", 0, 0.0, "0")]
+        self.mock_ddbb.select = mock.Mock(wraps=mock_select)
+        sport = Sport()
+        sport.id = 1
+        sport.name = u"New name"
+        try:
+            self.sport_service.store_sport(sport)
+        except(SportServiceException):
+            pass
+        else:
+            self.fail()
+    
+    def test_get_sport_returns_none_for_nonexistant_sport(self):
+        self.mock_ddbb.select.return_value = []
+        sport = self.sport_service.get_sport(1)
+        self.assertEquals(None, sport)
+        
+    def test_get_sport_returns_sport_with_id(self):
+        self.mock_ddbb.select.return_value = [(1, u"", 0, 0, 0, "0")]
+        sport = self.sport_service.get_sport(1)
+        self.assertEquals(1, sport.id)
+        
+    def test_get_sport_by_name_returns_none_for_nonexistant_sport(self):
+        self.mock_ddbb.select.return_value = []
+        sport = self.sport_service.get_sport("no such sport")
+        self.assertEquals(None, sport)
+        
+    def test_get_sport_by_name_returns_sport_with_name(self):
+        def mock_select(table, columns, where):
+            if columns == "id_sport":
+                return [(1)]
+            else:
+                return [(1, u"rugby", 0, 0, 0, "0")]
+        self.mock_ddbb.select = mock.Mock(wraps=mock_select)
+        sport = self.sport_service.get_sport("rugby")
+        self.assertEquals(u"rugby", sport.name)
+        
+    def test_get_all_sports_should_return_all_sports_in_query_result(self):
+        self.mock_ddbb.select.return_value = [(1, u"Test name", 0, 0, 0, "0"), (2, u"Test name 2", 0, 0, 0, "0")]
+        sports = self.sport_service.get_all_sports()
+        self.assertEquals(2, len(sports))
+        sport1 = sports[0]
+        self.assertEquals(1, sport1.id)
+        sport2 = sports[1]
+        self.assertEquals(2, sport2.id)
+    
+    def test_get_all_sports_should_return_no_sports_when_query_result_empty(self):
+        self.mock_ddbb.select.return_value = []
+        sports = self.sport_service.get_all_sports()
+        self.assertEquals(0, len(sports))
+        
+    def test_remove_sport_should_error_when_sport_has_no_id(self):
+        self.mock_ddbb.select.return_value = [(1, u"Test name", 150, 12.5, 200, "0")]
+        sport = Sport()
+        try:
+            self.sport_service.remove_sport(sport)
+        except(SportServiceException):
+            pass
+        else:
+            self.fail()
+        
+    def test_remove_sport_should_error_when_sport_has_unknown_id(self):
+        self.mock_ddbb.select.return_value = []
+        sport = Sport()
+        sport.id = 100
+        try:
+            self.sport_service.remove_sport(sport)
+        except(SportServiceException):
+            pass
+        else:
+            self.fail()
+            
+    def test_remove_sport_should_delete_sport_with_specified_id(self):
+        self.mock_ddbb.select.return_value = [[1]]
+        sport = Sport()
+        sport.id = 1
+        self.sport_service.remove_sport(sport)
+        self.mock_ddbb.delete.assert_called_with("sports", "id_sports=1")
+
+    def test_remove_sport_should_remove_associated_entries(self):
+        self.mock_ddbb.select.return_value = [[1]]
+        sport = Sport()
+        sport.id = 1
+        delete_arguments = []
+        def mock_delete(*args):
+            delete_arguments.append(args) 
+        self.mock_ddbb.delete = mock.Mock(wraps=mock_delete)
+        self.sport_service.remove_sport(sport)
+        self.assertEquals(("records", "sport=1"), delete_arguments[0])
