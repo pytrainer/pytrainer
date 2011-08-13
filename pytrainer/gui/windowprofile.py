@@ -21,9 +21,13 @@ from SimpleGladeApp import SimpleGladeApp
 from windowcalendar import WindowCalendar
 from pytrainer.equipment import EquipmentService
 from pytrainer.gui.equipment import EquipmentUi
+from pytrainer.sport import Sport, SportService
 import gtk
 import gobject
 import logging
+import pytrainer
+import pytrainer.lib.color
+from pytrainer.gui.color import ColorConverter
 
 class WindowProfile(SimpleGladeApp):
     def __init__(self, data_path = None, parent=None, pytrainer_main=None):
@@ -35,7 +39,8 @@ class WindowProfile(SimpleGladeApp):
         self.data_path = data_path
         SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
         self.conf_options = parent.profile_options
-        self.stored_color = "000000"
+        self.stored_color = pytrainer.lib.color.Color(0)
+        self._sport_service = SportService(self.pytrainer_main.ddbb)
 
     def new(self):
         self.gender_options = {
@@ -151,52 +156,27 @@ class WindowProfile(SimpleGladeApp):
         #print widget, pointer, frame
         if frame==2:
             self.saveOptions()
-            sport_list = self.parent.getSportList()
-            logging.debug("Got sport_list: %s" % str(sport_list) )
-            if sport_list == 0:
-                pass
-            elif sport_list == -1:
-                self.sportlistbutton.set_label("It is not possible connect to the server")
-            else:
-                store = gtk.ListStore(
-                            gobject.TYPE_STRING,
-                            gobject.TYPE_STRING,
-                            gobject.TYPE_STRING,
-                            gobject.TYPE_STRING,
-                            gtk.gdk.Pixbuf,
-                            object)
-                for i in sport_list:
-                    try:
-                        met = float(i[1])
-                    except:
-                        met = ""
-                    try:
-                        weight = float(i[2])
-                    except:
-                        weight = ""
-                    try:
-                        max_pace = int(i[4])
-                        if max_pace is None or max_pace == 0:
-                            max_pace = ""
-                    except Exception as e:
-                        #print type(e), e
-                        max_pace = ""
-                    
-                    colorPixBuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, 25, 15)
-                    colorPixBuf.fill(0 if i[5] in (None,'') else long(i[5]+'00',16))
-                    
-                    iter = store.append()
-                    store.set (
-                                iter,
-                                0, str(i[0]),
-                                1, met,
-                                2, weight,
-                                3, max_pace,
-                                4, colorPixBuf,
-                                )
-                self.sportTreeView.set_model(store)
-                self.sportTreeView.set_cursor(0)
-                self.sportlist.show()
+            sport_list = self._sport_service.get_all_sports()
+            store = gtk.ListStore(
+                        gobject.TYPE_STRING,
+                        gobject.TYPE_STRING,
+                        gobject.TYPE_STRING,
+                        gobject.TYPE_STRING,
+                        gtk.gdk.Pixbuf,
+                        object)
+            for sport in sport_list:
+                iter = store.append()
+                colorPixBuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, 25, 15)
+                colorPixBuf.fill(sport.color.rgba_val)
+                store.set(iter,
+                    0, sport.name,
+                    1, sport.met,
+                    2, sport.weight,
+                    3, sport.max_pace,
+                    4, colorPixBuf)
+            self.sportTreeView.set_model(store)
+            self.sportTreeView.set_cursor(0)
+            self.sportlist.show()
         elif frame == 5: #Startup Parameters page selected
             self.init_params_tab()
     
@@ -321,19 +301,21 @@ class WindowProfile(SimpleGladeApp):
         self.addsport.show()
 
     def on_newsport_accept_clicked(self,widget):
-        sport = self.newsportentry.get_text()
-        met = self.newmetentry.get_text()
-        weight = self.newweightentry.get_text()
-        maxpace = self.newmaxpace.get_text()
-        if sport.lower() in [s[0].lower() for s in self.parent.getSportList()]:
-            msg = "Sport '%s' already exists" % sport
+        sport = Sport()
+        sport.name = unicode(self.newsportentry.get_text())
+        sport.met = self._trim_to_null(self.newmetentry.get_text())
+        sport.weight = self.newweightentry.get_text()
+        sport.max_pace = self._trim_to_null(self.newmaxpace.get_text())
+        sport.color = self.stored_color
+        if sport.name.lower() in [s.name.lower() for s in self._sport_service.get_all_sports()]:
+            msg = "Sport '%s' already exists" % sport.name
             logging.error(msg)
             md = gtk.MessageDialog(None, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, _(msg))
             md.set_title(_("Sport Creation Error"))
             md.run()
             md.destroy()
             return
-        self.parent.addNewSport(sport,met,weight,maxpace,self.stored_color)
+        self._sport_service.store_sport(sport)
         self.parent.actualize_mainsportlist()
         self.on_switch_page(None,None,2)
         self.hidesportsteps()
@@ -350,8 +332,9 @@ class WindowProfile(SimpleGladeApp):
             self.deletesport.show()
 
     def on_deletesport_clicked(self,widget):
-        sport = self.sportnamedel.get_text()
-        self.parent.delSport(sport)
+        sport_name = self.sportnamedel.get_text()
+        sport = self._sport_service.get_sport_by_name(sport_name)
+        self._sport_service.remove_sport(sport)
         self.parent.actualize_mainsportlist()
         self.on_switch_page(None,None,2)
         self.hidesportsteps()
@@ -362,48 +345,34 @@ class WindowProfile(SimpleGladeApp):
         selected,iter = self.sportTreeView.get_selection().get_selected()
         if iter:
             self.buttonbox.set_sensitive(0)
-            sport = selected.get_value(iter,0)
-            name,met,weight,maxpace,color = self.parent.getSportInfo(sport)
-            self.editsportentry.set_text(sport)
-            self.sportnameedit.set_text(sport)
-            if weight is not None:
-                self.editweightentry.set_text(str(weight))
-            else:
-                self.editweightentry.set_text("")
-            if met is not None:
-                self.editmetentry.set_text(str(met))
-            else:
-                self.editmetentry.set_text("")
-            if maxpace is not None:
-                self.editmaxpace.set_text(str(maxpace))
-            else:
-                self.editmaxpace.set_text("")
-            if color == None:
-                color = "0000"
-                
+            sport_desc = selected.get_value(iter,0)
+            sport = self._sport_service.get_sport_by_name(sport_desc)
+            self.editsportentry.set_text(sport.name)
+            self.sportnameedit.set_text(sport.name)
+            self.editweightentry.set_text(str(sport.weight))
+            met_str = "" if sport.met is None else str(sport.met)
+            self.editmetentry.set_text(met_str)
+            max_pace_str = "" if sport.max_pace is None else str(sport.max_pace)
+            self.editmaxpace.set_text(max_pace_str)
             colorPixBuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, 250, 20)
-            colorPixBuf.fill(long("0x%s00" % color, 16))
+            colorPixBuf.fill(sport.color.rgba_val)
             self.editcolor.set_from_pixbuf(colorPixBuf)
-                
             self.hidesportsteps()
             self.editsport.show()
             
     def on_editcolor_clicked(self, widget):
         selected,iter = self.sportTreeView.get_selection().get_selected()
         if iter:
-            sport = selected.get_value(iter,0)
-            name,met,weight,maxpace,color = self.parent.getSportInfo(sport)
-            if color==None:
-                color = "000000"
+            sport_desc = selected.get_value(iter,0)
+            sport = self._sport_service.get_sport_by_name(sport_desc)
             colorseldlg = gtk.ColorSelectionDialog("test")
             colorseldlg.colorsel.set_has_palette(True)
-            colorseldlg.colorsel.set_current_color(gtk.gdk.color_parse("#"+color))
+            colorseldlg.colorsel.set_current_color(ColorConverter().convert_to_gdk_color(sport.color))
             colorseldlg.run()
-            col = colorseldlg.colorsel.get_current_color()
-            self.stored_color = ("%02x" % col.red)[:2] + ("%02x" % col.green)[:2] + ("%02x" % col.blue)[:2]
-
+            gdk_color = colorseldlg.colorsel.get_current_color()
+            self.stored_color = ColorConverter().convert_to_color(gdk_color)
             colorPixBuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, False, 8, 250, 20)
-            colorPixBuf.fill(long("0x%s00" % self.stored_color, 16))
+            colorPixBuf.fill(self.stored_color.rgba_val)
             self.newcolor.set_from_pixbuf(colorPixBuf)
             self.editcolor.set_from_pixbuf(colorPixBuf)
             
@@ -414,16 +383,22 @@ class WindowProfile(SimpleGladeApp):
     
     def on_editsport_accept_clicked(self,widget):
         oldnamesport = self.sportnameedit.get_text()
-        newnamesport = self.editsportentry.get_text()
-        newmetsport = self.editmetentry.get_text()
-        newweightsport = self.editweightentry.get_text()
-        newmaxpace = self.editmaxpace.get_text()
-        self.parent.updateSport(oldnamesport,newnamesport,newmetsport,newweightsport, newmaxpace, self.stored_color)
+        sport = self._sport_service.get_sport_by_name(oldnamesport)
+        sport.name = unicode(self.editsportentry.get_text())
+        sport.weight = self.editweightentry.get_text()
+        sport.met = self._trim_to_null(self.editmetentry.get_text())
+        sport.max_pace = self._trim_to_null(self.editmaxpace.get_text())
+        sport.color = self.stored_color
+        self._sport_service.store_sport(sport)
         self.parent.actualize_mainsportlist()
         self.on_switch_page(None,None,2)
         self.hidesportsteps()
         self.buttonbox.set_sensitive(1)
         self.sportlist.show()
+        
+    def _trim_to_null(self, string):
+        trimmed = string.strip()
+        return None if trimmed == "" else trimmed
         
     def on_sportcancel_clicked(self,widget):
         self.hidesportsteps()
