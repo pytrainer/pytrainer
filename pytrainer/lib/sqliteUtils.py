@@ -90,11 +90,19 @@ class Sql:
         for i in val:
             if count>0:
                 string+=","
-            string+="""\"%s\"""" %i
+            string+= self._to_sql_value(i)
             count = count+1
         sql = "insert into %s (%s) values (%s)"  %(table,cells,string)
         cur.execute(sql)
         self.db.commit()
+        
+    def _to_sql_value(self, value):
+        if value == None:
+            return "null"
+        elif type(value) in [str, unicode]:
+            return "\"" + value + "\""
+        else:
+            return str(value)
 
     def freeExec(self,sql):
         cur = self.db.cursor()
@@ -119,7 +127,7 @@ class Sql:
         for val in values:
             if count>0:
                 string+=","
-            string += """%s=%s """ %(cells[count],values[count] if type(values[count]) not in [str, unicode] else "'%s'" % values[count])
+            string += """%s=%s """ %(cells[count], self._to_sql_value(values[count]))
             count = count+1
 
         string +=" where %s" %condition
