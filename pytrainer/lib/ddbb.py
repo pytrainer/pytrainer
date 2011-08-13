@@ -104,7 +104,11 @@ tablesList = {  "records":{     "id_record":"integer primary key autoincrement",
                                      "equipment_id": "int",
                                      }
                         }
-tablesDefaultData = {  "sports": [({ "name":"Mountain Bike" } ), ( {"name": "Bike"}), ({"name": "Run"}) ]}
+tablesDefaultData = { "sports": [
+    ({ "name": u"Mountain Bike", "weight": 0.0, "color": "0000ff" } ),
+    ({ "name": u"Bike", "weight": 0.0, "color": "00ff00"}),
+    ({ "name": u"Run", "weight": 0.0, "color": "ffff00"})
+]}
 
 
 class DDBB:
@@ -216,6 +220,10 @@ class DDBB:
             #TODO anytests required here??
             return value
         elif cell_type.startswith('varchar'):
+            #Text so is OK??
+            #TODO check length against spec?
+            return value
+        elif cell_type.startswith('char'):
             #Text so is OK??
             #TODO check length against spec?
             return value
