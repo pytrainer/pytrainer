@@ -20,6 +20,7 @@
 
 import logging
 import sys, traceback, commands
+import datetime
 try:
     from sqlite3 import dbapi2 as sqlite
 except ImportError:
@@ -83,6 +84,7 @@ class Sql:
         logging.debug('<<')
               
     def insert(self,table, cells, values):
+        logging.debug('>>')
         cur = self.db.cursor()  
         val = values
         count = 0
@@ -93,16 +95,23 @@ class Sql:
             string+= self._to_sql_value(i)
             count = count+1
         sql = "insert into %s (%s) values (%s)"  %(table,cells,string)
+        logging.debug('SQL sentence: '+str(sql))
         cur.execute(sql)
         self.db.commit()
+        logging.debug('<<')
         
     def _to_sql_value(self, value):
+        logging.debug('>>')
+        logging.debug('Value: %s | type: %s ' %(value,type(value)))
         if value == None:
             return "null"
         elif type(value) in [str, unicode]:
             return "\"" + value + "\""
+        elif type(value) == datetime.datetime:
+            return value.strftime("\"%Y-%m-%d %H:%M:%S%z\"")
         else:
             return str(value)
+        logging.debug('<<')
 
     def freeExec(self,sql):
         cur = self.db.cursor()
