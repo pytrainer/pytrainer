@@ -558,10 +558,10 @@ class Main(SimpleGladeApp):
                     if isinstance(child, gtk.Frame):
                         self.graph_data_hbox.remove(child)
                 #Build frames and vboxs to hold checkbuttons
-                xFrame = gtk.Frame(label="Show on X Axis")
-                y1Frame = gtk.Frame(label="Show on Y1 Axis")
-                y2Frame = gtk.Frame(label="Show on Y2 Axis")
-                limitsFrame = gtk.Frame(label="Axis Limits")
+                xFrame = gtk.Frame(label=_("Show on X Axis"))
+                y1Frame = gtk.Frame(label=_("Show on Y1 Axis"))
+                y2Frame = gtk.Frame(label=_("Show on Y2 Axis"))
+                limitsFrame = gtk.Frame(label=_("Axis Limits"))
                 xvbox = gtk.VBox()
                 y1box = gtk.Table()
                 y2box = gtk.Table()
