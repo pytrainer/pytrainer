@@ -1,13 +1,13 @@
 import datetime
 
-UC_LISTDISTANCE = {False : [['All Distances', [0.0,999999.9]],
+UC_LISTDISTANCE = {False : [[_('All Distances'), [0.0,999999.9]],
                             ['<1 km', [0.0, 1.0]],
                             ['1-5 km', [1.0, 5.0]],
                             ['5-20 km', [5.0, 20.0]],
                             ['20-50 km', [20.0, 50.0]],
                             ['50-100 km', [50.0, 100.0]],
                             ['>100 km', [100.0, 999999.9]]]  ,
-                    True : [['All Distances', [0.0,999999.9]],
+                    True : [[_('All Distances'), [0.0,999999.9]],
                             ['<1 mi', [0.0, 1.609344]],
                             ['1-5 mi', [1.609344, 8.04672]],
                             ['5-10 mi', [8.04672, 16.09344]],
@@ -29,13 +29,13 @@ class ListSearch(object):
         self.distance = 0        
         self.listSport = self.pytrainer_main.profile.getSportList()
         
-        self.listPast = [['All Time', -99999], ['Last 4 Weeks', -31],
-                         ['Last 6 Months', -183], ['Last 12 Months', -366]]
+        self.listPast = [[_('All Time'), -99999], [_('Last 4 Weeks'), -31],
+                         [_('Last 6 Months'), -183], [_('Last 12 Months'), -366]]
                          
-        self.listDuration = [['All Durations', [0,999999]],
-                             ['<1 Hour', [0,3600]],
-                             ['1-2 Hours', [3600,7200]],
-                             ['>2 Hours', [7200,999999]]]
+        self.listDuration = [[_('All Durations'), [0,999999]],
+                             [_('<1 Hour'), [0,3600]],
+                             [_('1-2 Hours'), [3600,7200]],
+                             [_('>2 Hours'), [7200,999999]]]
        
         """
         self.listDistanceUS = [['All Distances', [0.0,999999.9]],

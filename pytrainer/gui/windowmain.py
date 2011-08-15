@@ -2207,7 +2207,7 @@ class Main(SimpleGladeApp):
         table = gtk.Table(1,2)
         self.entryList = []
         #Add date
-        label = gtk.Label("<b>Date</b>")
+        label = gtk.Label(_("<b>Date</b>"))
         label.set_use_markup(True)
         entry = gtk.Entry()
         entry.set_text(data['date'])
@@ -2223,7 +2223,7 @@ class Main(SimpleGladeApp):
         #table.attach(calbut,2,3,0,1) #TODO
         
         #Add weight
-        label = gtk.Label("<b>Weight</b>")
+        label = gtk.Label(_("<b>Weight</b>"))
         label.set_use_markup(True)
         entry = gtk.Entry()
         entry.set_text(data['weight'])
@@ -2231,7 +2231,7 @@ class Main(SimpleGladeApp):
         table.attach(label,0,1,1,2)
         table.attach(entry,1,2,1,2)
         #Add Body fat
-        label = gtk.Label("<b>Body Fat</b>")
+        label = gtk.Label(_("<b>Body Fat</b>"))
         label.set_use_markup(True)
         entry = gtk.Entry()
         entry.set_text(data['bf'])
@@ -2239,7 +2239,7 @@ class Main(SimpleGladeApp):
         table.attach(label,0,1,2,3)
         table.attach(entry,1,2,2,3)
         #Add Resting HR
-        label = gtk.Label("<b>Resting Heart Rate</b>")
+        label = gtk.Label(_("<b>Resting Heart Rate</b>"))
         label.set_use_markup(True)
         entry = gtk.Entry()
         entry.set_text(data['restingHR'])
@@ -2247,7 +2247,7 @@ class Main(SimpleGladeApp):
         table.attach(label,0,1,3,4)
         table.attach(entry,1,2,3,4)
         #Add Max HR
-        label = gtk.Label("<b>Max Heart Rate</b>")
+        label = gtk.Label(_("<b>Max Heart Rate</b>"))
         label.set_use_markup(True)
         entry = gtk.Entry()
         entry.set_text(data['maxHR'])

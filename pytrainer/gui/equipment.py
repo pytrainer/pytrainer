@@ -95,11 +95,11 @@ class EquipmentUi(gtk.HBox):
 
     def _init_tree_view(self):
         tree_view = self._get_tree_view()
-        column = gtk.TreeViewColumn("Description", gtk.CellRendererText(), text=1)
+        column = gtk.TreeViewColumn(_("Description"), gtk.CellRendererText(), text=1)
         column.set_resizable(True)
         tree_view.append_column(column)
-        tree_view.append_column(gtk.TreeViewColumn("Usage", gtk.CellRendererProgress(), value=2, text=3))
-        tree_view.append_column(gtk.TreeViewColumn("Active", gtk.CellRendererToggle(), active=4))
+        tree_view.append_column(gtk.TreeViewColumn(_("Usage"), gtk.CellRendererProgress(), value=2, text=3))
+        tree_view.append_column(gtk.TreeViewColumn(_("Active"), gtk.CellRendererToggle(), active=4))
         # add filler column
         tree_view.append_column(gtk.TreeViewColumn())
         tree_view.set_model(self._equipment_store)
