@@ -224,7 +224,12 @@ class SportServiceTest(unittest.TestCase):
         self.sport_service = SportService(self.mock_ddbb)
         
     def test_store_sport_should_insert_row_when_sport_has_no_id(self):
-        self.mock_ddbb.select.return_value = []
+        def mock_select(table, columns, where):
+            call_count = self.mock_ddbb.select.call_count
+            if call_count == 2:
+                return [[1]]
+            return []
+        self.mock_ddbb.select = mock.Mock(wraps=mock_select)
         sport = Sport()
         sport.name = u"Test name"
         self.sport_service.store_sport(sport)
@@ -309,6 +314,14 @@ class SportServiceTest(unittest.TestCase):
         sport = self.sport_service.get_sport(1)
         self.assertEquals(1, sport.id)
         
+    def test_get_sport_raises_error_for_id_none(self):
+        try:
+            self.sport_service.get_sport(None)
+        except(ValueError):
+            pass
+        else:
+            self.fail()
+        
     def test_get_sport_by_name_returns_none_for_nonexistant_sport(self):
         self.mock_ddbb.select.return_value = []
         sport = self.sport_service.get_sport("no such sport")
@@ -323,6 +336,14 @@ class SportServiceTest(unittest.TestCase):
         self.mock_ddbb.select = mock.Mock(wraps=mock_select)
         sport = self.sport_service.get_sport("rugby")
         self.assertEquals(u"rugby", sport.name)
+        
+    def test_get_sport_by_name_raises_error_for_none_sport_name(self):
+        try:
+            self.sport_service.get_sport_by_name(None)
+        except(ValueError):
+            pass
+        else:
+            self.fail()
         
     def test_get_all_sports_should_return_all_sports_in_query_result(self):
         self.mock_ddbb.select.return_value = [(1, u"Test name", 0, 0, 0, "0"), (2, u"Test name 2", 0, 0, 0, "0")]

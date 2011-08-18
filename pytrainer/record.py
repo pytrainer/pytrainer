@@ -29,10 +29,12 @@ from lib.xmlUtils import XMLParser
 from lib.date import Date
 from lib.gpx import Gpx
 from pytrainer.equipment import EquipmentService
+from pytrainer.sport import Sport
 
 class Record:
-	def __init__(self, data_path = None, parent = None):
+	def __init__(self, sport_service, data_path = None, parent = None):
 		logging.debug('>>')
+		self._sport_service = sport_service
 		self.parent = parent
 		self.pytrainer_main = parent
 		self._equipment_service = EquipmentService(self.pytrainer_main.ddbb)
@@ -91,37 +93,6 @@ class Record:
 			os.remove(gpxfile)
 			logging.debug('removed gpxfile '+gpxfile)
 		logging.debug('<<')
-
-	def _formatRecord (self, list_options):
-		logging.debug('>>')
-		time = self.date.time2second(list_options["rcd_time"])
-		average = self.parseFloatRecord(list_options["rcd_average"])
-		cells= "date,sport,distance,time,beats,comments,average,calories,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats"
-		if (list_options["rcd_beats"] == ""):
-			list_options["rcd_beats"] = 0
-
-		#calculate the sport id
-		sport_id = self.pytrainer_main.ddbb.select("sports","id_sports","name=\"%s\"" %list_options["rcd_sport"])[0][0]
-
-		values= (
-			list_options["rcd_date"],
-			sport_id,
-			self.parseFloatRecord(list_options["rcd_distance"]),
-			time,
-			self.parseFloatRecord(list_options["rcd_beats"]),
-			list_options["rcd_comments"],
-			average,
-			self.parseFloatRecord(list_options["rcd_calories"]),
-			list_options["rcd_title"],
-			self.parseFloatRecord(list_options["rcd_upositive"]),
-			self.parseFloatRecord(list_options["rcd_unegative"]),
-			self.parseFloatRecord(list_options["rcd_maxvel"]),
-			self.pace_to_float(list_options["rcd_maxpace"]),
-			self.pace_to_float(list_options["rcd_pace"]),
-			self.parseFloatRecord(list_options["rcd_maxbeats"])
-			)
-		logging.debug('<<')
-		return cells,values
 
 	def pace_to_float(self, value):
 		'''Take a mm:ss or mm.ss and return float'''
@@ -418,54 +389,40 @@ class Record:
 		return self.pytrainer_main.ddbb.select(tables,
 					"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats,upositive,unegative",
 					condition)
+		
+	def _get_sport(self, sport_name):
+		return self._sport_service.get_sport_by_name(sport_name)
 
-	def getSportMet(self,sport):
+	def getSportMet(self,sport_name):
+		"""Deprecated: use sport.met"""
 		logging.debug('--')
-		return self.pytrainer_main.ddbb.select("sports","met","name=\"%s\"" %(sport))[0][0]
+		return self._get_sport(sport_name).met
 
-	def getSportWeight(self,sport):
+	def getSportWeight(self,sport_name):
+		"""Deprecated: use sport.weight"""
 		logging.debug('--')
-		return self.pytrainer_main.ddbb.select("sports","weight","name=\"%s\"" %(sport))[0][0]
+		return self._get_sport(sport_name).weight
 
-	def getSportId(self,sport,add=None):
-		"""31.08.2008 - dgranda
-		Retrieves id_sports from provided sport. If add is not set to None, sport is added to the system
+	def getSportId(self, sport_name, add=None):
+		"""Deprecated: use sport_service.get_sport_by_name()
+		
+		Get the id of a sport by name, optionally adding a new sport if
+		none exists with the given name.
 		arguments:
-			sport: sport's name to get id from
-			add: attribute to add or not the sport to db
-		returns: id_sports from provided sport"""
-		logging.debug('>>')
-		sport_id=None
-		if sport == "" or sport is None:
-			return sport_id
-		try:
-			sport_id = self.pytrainer_main.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))[0][0]
-		except:
-			logging.error('Error retrieving id_sports from '+ str(sport))
-			#traceback.print_last()
-			if add is None:
-				logging.debug('Sport '+str(sport)+' will not be added to DB')
-			else:
-				logging.debug('Adding sport '+str(sport)+' to DB')
-				sport_id = self.addNewSport(sport,"0","0")
-		logging.debug('<<')
-		return sport_id
-
-	def addNewSport(self,sport,met,weight):
-		"""31.08.2008 - dgranda
-		Copied from Profile class, adds a new sport.
-		arguments:
-			sport: sport's name
-			met:
-			weight:
-		returns: id_sports from new sport"""
-		logging.debug(">>")
-		logging.debug("Adding new sport: "+sport+"|"+weight+"|"+met)
-		sportT = [sport,met,weight]
-		self.pytrainer_main.ddbb.insert("sports","name,met,weight",sportT)
-		sport_id = self.pytrainer_main.ddbb.select("sports","id_sports","name=\"%s\"" %(sport))[0][0]
-		logging.debug("<<")
-		return sport_id
+			sport_name: sport's name to get id for
+			add: whether the sport should be added if not found
+		returns: id for sport with given name or None"""
+		if sport_name is None:
+			return None
+		sport = self._get_sport(sport_name)
+		if sport is None:
+			logging.debug("No sport with name: '%s'", str(sport_name))
+			if add is not None:
+				logging.debug("Adding sport '%s'", str(sport))
+				new_sport = Sport()
+				new_sport.name = sport_name
+				sport = self._sport_service.store_sport(new_sport)
+		return None if sport is None else sport.id
 
 	def getAllrecord(self):
 		logging.debug('--')

@@ -144,6 +144,8 @@ class SportService(object):
         """Get the sport with the specified id.
 
         If no sport with the given id exists then None is returned."""
+        if sport_id is None:
+            raise ValueError("Sport id cannot be None")
         resultSet = self._ddbb.select(_TABLE, _SELECT_COLUMNS, self._create_id_where_clause(sport_id))
         if len(resultSet) == 0:
             return None
@@ -154,7 +156,11 @@ class SportService(object):
         """Get the sport with the specified name.
 
         If no sport with the given name exists then None is returned."""
+        if name is None:
+            raise ValueError("Sport name cannot be None")
         sport_id = self._get_sport_id_from_name(name)
+        if sport_id is None:
+            return None
         return self.get_sport(sport_id)
         
     def _get_sport_id_from_name(self, name):
