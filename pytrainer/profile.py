@@ -219,15 +219,6 @@ class Profile:
         self.uc.set_us(list_options['prf_us_system'])
         logging.debug("<<")
 
-    def getSportList(self):
-        logging.debug("--")
-        #connection = self.pytrainer_main.ddbb.connect()
-        #if (connection == 1):
-        logging.debug("retrieving sports info")
-        return self.pytrainer_main.ddbb.select("sports","name,met,weight,id_sports,max_pace,color",None)
-        #else:
-        #   return connection
-
     def editProfile(self, sport_service):
         logging.debug(">>")
         from gui.windowprofile import WindowProfile
