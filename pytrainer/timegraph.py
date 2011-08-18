@@ -16,15 +16,15 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import datetime, calendar
+import datetime
 import logging
 from gui.drawArea import DrawArea
 
 class TimeGraph(object):
-    def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None, main = None):
+    def __init__(self, sports, vbox = None, window = None, combovalue = None, combovalue2 = None, main = None):
         self.drawarea = DrawArea(vbox, window)
         self.SPORT_FIELD = 9
-        self.sportlist = dict([(s[0],s[5]) for s in main.profile.getSportList()])
+        self.sport_colors = dict([(sport.name, sport.color.to_hex_string()) for sport in sports])
 
     def getFloatValue(self, value):
         try:
@@ -124,7 +124,7 @@ class TimeGraph(object):
             xlab.append(xvalues)
             valsAreTime.append(valuesAreTime)
         #Draw chart
-        self.drawarea.drawStackedBars(xlab,yval,ylab,tit,valsAreTime, colors = self.sportlist)
+        self.drawarea.drawStackedBars(xlab,yval,ylab,tit,valsAreTime, colors = self.sport_colors)
 
     def get_value_params(self,value):
         return self.value_params[value]

@@ -19,8 +19,8 @@
 from timegraph import TimeGraph
 
 class DayGraph(TimeGraph):
-	def __init__(self, vbox = None, combovalue = None):
-		TimeGraph.__init__(self, vbox=vbox, window=window)
+	def __init__(self, sports, vbox = None, combovalue = None):
+		TimeGraph.__init__(self, sports, vbox=vbox)
 		self.combovalue = combovalue
 
 	def drawgraph(self,values):

@@ -58,6 +58,7 @@ from pytrainer.lib.uc import UC
 
 class Main(SimpleGladeApp):
     def __init__(self, sport_service, data_path = None, parent = None, version = None, gpxDir = None):
+        self._sport_service = sport_service
         def url_hook(dialog, url):
             pytrainer.lib.webUtils.open_url_in_browser(url)
         # Available in PyGTK 2.6 and above
@@ -271,12 +272,12 @@ class Main(SimpleGladeApp):
     def createGraphs(self):
         self.drawarearecord = RecordGraph(self.record_graph_vbox, self.window1, self.record_combovalue, self.record_combovalue2, self.btnShowLaps, self.tableConfigY1, pytrainer_main=self.pytrainer_main)
         self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox, self.window1, self.heartrate_vbox2, pytrainer_main=self.pytrainer_main)
-        #self.drawareaday = DayGraph(self.day_vbox, self.day_combovalue)
         self.day_vbox.hide()
-        self.drawareaweek = WeekGraph(self.weekview, self.window1, self.week_combovalue, self.week_combovalue2, self.pytrainer_main)
-        self.drawareamonth = MonthGraph(self.month_vbox, self.window1, self.month_combovalue,self.month_combovalue2, self.pytrainer_main)
-        self.drawareayear = YearGraph(self.year_vbox, self.window1, self.year_combovalue,self.year_combovalue2, self.pytrainer_main)
-        self.drawareatotal = TotalGraph(self.total_vbox, self.window1, self.total_combovalue,self.total_combovalue2, self.pytrainer_main)
+        sports = self._sport_service.get_all_sports()
+        self.drawareaweek = WeekGraph(sports, self.weekview, self.window1, self.week_combovalue, self.week_combovalue2, self.pytrainer_main)
+        self.drawareamonth = MonthGraph(sports, self.month_vbox, self.window1, self.month_combovalue,self.month_combovalue2, self.pytrainer_main)
+        self.drawareayear = YearGraph(sports, self.year_vbox, self.window1, self.year_combovalue,self.year_combovalue2, self.pytrainer_main)
+        self.drawareatotal = TotalGraph(sports, self.total_vbox, self.window1, self.total_combovalue,self.total_combovalue2, self.pytrainer_main)
 
     def createMap(self,MapViewer,waypoint):
         self.waypoint = waypoint
