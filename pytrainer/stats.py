@@ -17,17 +17,12 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
-import dateutil
-
-from pytrainer.lib.ddbb import DDBB
-from pytrainer.lib.graphdata import GraphData
 
 class Stats:
-    def __init__(self, data_path = None, parent = None):
+    def __init__(self, sport_service, parent = None):
         logging.debug('>>')
-        self.parent = parent
+        self._sport_service = sport_service
         self.pytrainer_main = parent
-        self.data_path = data_path
         self.init_from_conf()
         self.data = self.get_stats()
         logging.debug('<<')
@@ -54,12 +49,11 @@ class Stats:
         for f in fields:
             data[f] = 0
         
-        sports = dict([(s['id_sports'], s['name']) for s in self.pytrainer_main.ddbb.select_dict("sports", ('id_sports', 'name'))])
         results = self.pytrainer_main.ddbb.select_dict("records", ('id_record', 'date', 'sport', 'distance', 'duration', 'maxbeats', 'maxspeed', 'maxpace', 'average','pace','beats'))
         for r in results:
-#            r['duration'] /= 3600
             if r['sport'] not in data['sports']:
-                data['sports'][r['sport']] = {'name': sports[r['sport']], 'count': 0}
+                sport = self._sport_service.get_sport(r['sport'])
+                data['sports'][r['sport']] = {'name': sport.name, 'count': 0}
                 for f in fields:
                     data['sports'][r['sport']][f] = 0
                     data['sports'][r['sport']]['total_'+f] = 0

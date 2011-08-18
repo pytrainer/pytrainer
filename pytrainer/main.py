@@ -85,7 +85,7 @@ class pyTrainer:
         self._sport_service = SportService(self.ddbb)
         self.record = Record(self._sport_service, data_path, self)
         self.athlete = Athlete(data_path,self)
-        self.stats = Stats(data_path,self)
+        self.stats = Stats(self._sport_service, self)
         pool_size = self.profile.getIntValue("pytraining","activitypool_size", default=1)
         self.activitypool = ActivityPool(self, size=pool_size)
         #preparamos la ventana principal
