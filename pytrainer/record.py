@@ -50,10 +50,10 @@ class Record:
 		self.recordwindow.run()
 		logging.debug('<<')
 
-	def newMultiRecord(self, activities, list_sport):
+	def newMultiRecord(self, activities):
 		logging.debug('>>')
-		#activities (activity_id, start_time, distance, duration, sport, gpx_file)
-		self.recordwindow = WindowRecord(self._equipment_service, self.data_path, list_sport, parent=self, windowTitle="Modify details before importing")
+		sports = self._sport_service.get_all_sports()
+		self.recordwindow = WindowRecord(self._equipment_service, self.data_path, sports, parent=self, windowTitle="Modify details before importing")
 		self.recordwindow.populateMultiWindow(activities)
 		self.recordwindow.run()
 		return self.recordwindow.getActivityData()
@@ -66,19 +66,6 @@ class Record:
 		sports = self._sport_service.get_all_sports()
 		self.recordwindow = WindowRecord(self._equipment_service, self.data_path, sports, self, None, windowTitle=_("Edit Entry"), equipment=record_equipment)
 		self.recordwindow.setValuesFromActivity(activity)
-		'''
-		record = self.pytrainer_main.ddbb.select("records", "id_record, date, sport, distance, time, beats, average, calories, comments, gpslog, title, upositive, unegative, maxspeed, maxpace, pace, maxbeats, date_time_utc, date_time_local", "id_record=\"%s\"" %id_record)
-		logging.debug('retrieving data from DB: '+str(record))
-		gpxfile = self.pytrainer_main.profile.gpxdir+"/%d.gpx"%int(id_record)
-		logging.debug('gpx file associated: '+gpxfile)
-		self.recordwindow = WindowRecord(self.data_path, list_sport,self, None, windowTitle=_("Edit Entry"))
-		if os.path.isfile(gpxfile):
-			self.recordwindow.rcd_gpxfile.set_text(gpxfile)
-			self.recordwindow.frameGeneral.set_sensitive(0)		#Currently record values not changed if a GPX file is present
-			self.recordwindow.frameVelocity.set_sensitive(0)	#Greying out options to indicate this to user
-		logging.debug('sending record info to window')
-		self.recordwindow.setValues(record[0])
-		'''
 		logging.debug('launching window')
 		self.recordwindow.run()
 		logging.debug('<<')
@@ -517,18 +504,6 @@ class Record:
 		selectrckdialog = DialogSelectTrack(self.data_path, tracks,self.__actualize_fromgpx, gpxfile)
 		logging.debug('Launching window...')
 		selectrckdialog.run()
-		logging.debug('<<')
-
-	def newGpxRecord(self,gpxfile,list_sport): #TODO Not used?
-		logging.debug('>>')
-		logging.debug("opening a new window record "+self.data_path+'|'+gpxfile+'|'+str(list_sport))
-		self.recordwindow = WindowRecord(self._equipment_service, self.data_path, list_sport,self, None)
-		logging.debug('setting text in window '+ gpxfile)
-		self.recordwindow.rcd_gpxfile.set_text(gpxfile)
-		logging.debug('retrieving data from gpx file')
-		self.actualize_fromgpx(gpxfile)
-		logging.debug('Launching window...')
-		self.recordwindow.run()
 		logging.debug('<<')
 
 	def importFromGPX(self, gpxFile, sport):

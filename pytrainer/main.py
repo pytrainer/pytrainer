@@ -45,7 +45,6 @@ from pytrainer.sport import SportService
 from athlete import Athlete
 from stats import Stats
 
-from gui.windowimportdata import WindowImportdata
 from gui.windowmain import Main
 from gui.warning import Warning
 from lib.date import Date
@@ -94,7 +93,7 @@ class pyTrainer:
         self.waypoint = Waypoint(data_path,self)
         self.extension = Extension(data_path, self)
         self.plugins = Plugins(data_path, self)
-        self.importdata = Importdata(data_path, self, self.profile)
+        self.importdata = Importdata(self._sport_service, data_path, self, self.profile)
         self.loadPlugins()
         self.loadExtensions()
         self.windowmain.setup()

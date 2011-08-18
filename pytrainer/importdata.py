@@ -16,17 +16,16 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import os
-
 from gui.windowimportdata import WindowImportdata
 
 class Importdata:
-	def __init__(self, data_path = None, parent = None, config = None):
+	def __init__(self, sport_service, data_path = None, parent = None, config = None):
+		self._sport_service = sport_service
 		self.data_path=data_path
 		self.parent = parent
 		self.pytrainer_main = parent
 		self.configuration = config
 	
 	def runImportdata(self):
-		windowImportdata = WindowImportdata(self.data_path, self, self.configuration, self.pytrainer_main)
+		windowImportdata = WindowImportdata(self._sport_service, self.data_path, self, self.configuration, self.pytrainer_main)
 		windowImportdata.run()

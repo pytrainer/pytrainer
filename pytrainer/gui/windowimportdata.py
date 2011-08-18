@@ -32,7 +32,8 @@ from pytrainer.gui.dialogs import fileChooserDialog
 from pytrainer.lib.date import Date
 
 class WindowImportdata(SimpleGladeApp):
-    def __init__(self, data_path = None, parent=None, config=None, pytrainer_main=None):
+    def __init__(self, sport_service, data_path = None, parent=None, config=None, pytrainer_main=None):
+        self._sport_service = sport_service
         self.data_path = data_path
         self.glade_path=data_path+"glade/importdata.glade"
         self.root = "win_importdata"
@@ -202,12 +203,12 @@ class WindowImportdata(SimpleGladeApp):
     def init_csvimport_tab(self):
         logging.debug(">>")
         #Populate Force Sport to combobox
-        sport_list = self.pytrainer_main.profile.getSportList()
+        sport_list = self._sport_service.get_all_sports()
         #Remove placeholder item (needed to ensure correct model for combobox)
         self.comboCSVForceSport.remove_text(0)
         for sport in sport_list:
-            logging.debug('Adding sport: %s' % sport[0])
-            self.comboCSVForceSport.append_text(sport[0])
+            logging.debug('Adding sport: %s' % sport.name)
+            self.comboCSVForceSport.append_text(sport.name)
         self.comboCSVForceSport.set_active(0)
         logging.debug("<<")
         return
@@ -487,11 +488,8 @@ class WindowImportdata(SimpleGladeApp):
         """
             Function to import selected activity
         """
-
-        #selectedActivities.append((activity_id, start_time, distance, duration, sport, gpx_file))
         logging.debug( "Importing %d activities" % len(activities))
-        list_sport = self.pytrainer_main.profile.getSportList()
-        result = self.pytrainer_main.record.newMultiRecord(activities, list_sport)
+        result = self.pytrainer_main.record.newMultiRecord(activities)
         for activity in result:
             if "db_id" in activity.keys() and type(activity["db_id"]) is types.IntType:
                 #Activity imported correctly
