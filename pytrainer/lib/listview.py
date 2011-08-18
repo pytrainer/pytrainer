@@ -17,7 +17,7 @@ UC_LISTDISTANCE = {False : [[_('All Distances'), [0.0,999999.9]],
                     }
 class ListSearch(object):
     """ Builds SQLite condition out of search parameters"""
-    def __init__(self,  parent = None, pytrainer_main = None):
+    def __init__(self, sport_service, parent = None, pytrainer_main = None):
         self.parent = parent    
         self.pytrainer_main = pytrainer_main
         self.uc = self.pytrainer_main.uc
@@ -27,7 +27,7 @@ class ListSearch(object):
         self.past = 0
         self.duration = 0
         self.distance = 0        
-        self.listSport = self.pytrainer_main.profile.getSportList()
+        self.listSport = sport_service.get_all_sports()
         
         self.listPast = [[_('All Time'), -99999], [_('Last 4 Weeks'), -31],
                          [_('Last 6 Months'), -183], [_('Last 12 Months'), -366]]
@@ -70,7 +70,7 @@ class ListSearch(object):
             _search = "title like '%" +self.title + "%'"
             _add_and = True
         if self.sport > 0:
-            _sport = self.listSport[self.sport-1][3]
+            _sport = self.listSport[self.sport-1].id
             _here = "sport=%s" % _sport
             if _add_and:
                 _search += " and " + _here
@@ -130,8 +130,8 @@ class ListSearch(object):
         #Re-add "All Sports"
         liststore_lsa.append([firstEntry])
         #Re-add all sports in listSport
-        for i in self.listSport:
-            liststore_lsa.append([i[0]])
+        for sport in self.listSport:
+            liststore_lsa.append([sport.name])
         self.parent.lsa_sport.set_active(0)
         #Add handler manually, so above changes do not trigger recursive loop
         self.parent.lsa_sport.connect("changed", self.parent.on_listareasearch_clicked)

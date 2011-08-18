@@ -88,7 +88,7 @@ class pyTrainer:
         pool_size = self.profile.getIntValue("pytraining","activitypool_size", default=1)
         self.activitypool = ActivityPool(self, size=pool_size)
         #preparamos la ventana principal
-        self.windowmain = Main(data_path,self,self.version, gpxDir=self.profile.gpxdir)
+        self.windowmain = Main(self._sport_service, data_path,self,self.version, gpxDir=self.profile.gpxdir)
         self.date = Date(self.windowmain.calendar)
         self.waypoint = Waypoint(data_path,self)
         self.extension = Extension(data_path, self)

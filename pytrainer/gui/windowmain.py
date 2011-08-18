@@ -57,7 +57,7 @@ from pytrainer.lib.uc import UC
 
 
 class Main(SimpleGladeApp):
-    def __init__(self, data_path = None, parent = None, version = None, gpxDir = None):
+    def __init__(self, sport_service, data_path = None, parent = None, version = None, gpxDir = None):
         def url_hook(dialog, url):
             pytrainer.lib.webUtils.open_url_in_browser(url)
         # Available in PyGTK 2.6 and above
@@ -87,7 +87,7 @@ class Main(SimpleGladeApp):
         self.y1_color = None
         self.y1_linewidth = 1
         # setup Search ListView
-        self.listsearch = ListSearch(self, self.pytrainer_main)
+        self.listsearch = ListSearch(sport_service, self, self.pytrainer_main)
         
         self.aboutwindow = None
 
