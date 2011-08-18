@@ -21,7 +21,7 @@ from SimpleGladeApp import SimpleGladeApp
 from windowcalendar import WindowCalendar
 from pytrainer.equipment import EquipmentService
 from pytrainer.gui.equipment import EquipmentUi
-from pytrainer.sport import Sport, SportService
+from pytrainer.sport import Sport
 import gtk
 import gobject
 import logging
@@ -30,7 +30,7 @@ import pytrainer.lib.color
 from pytrainer.gui.color import ColorConverter
 
 class WindowProfile(SimpleGladeApp):
-    def __init__(self, data_path = None, parent=None, pytrainer_main=None):
+    def __init__(self, sport_service, data_path = None, parent=None, pytrainer_main=None):
         glade_path="glade/profile.glade"
         root = "newprofile"
         domain = None
@@ -40,7 +40,7 @@ class WindowProfile(SimpleGladeApp):
         SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
         self.conf_options = parent.profile_options
         self.stored_color = pytrainer.lib.color.Color(0)
-        self._sport_service = SportService(self.pytrainer_main.ddbb)
+        self._sport_service = sport_service
 
     def new(self):
         self.gender_options = {

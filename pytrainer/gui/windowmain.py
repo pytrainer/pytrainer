@@ -297,8 +297,8 @@ class Main(SimpleGladeApp):
         #Re-add "All Sports"
         liststore.append([firstEntry])
         #Re-add all sports in listSport
-        for i in listSport:
-            liststore.append([i[0]])
+        for sport in listSport:
+            liststore.append([sport.name])
         self.sportlist.set_active(0)
         logging.debug("<<")
 

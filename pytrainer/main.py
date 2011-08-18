@@ -41,6 +41,7 @@ from extension import Extension
 from importdata import Importdata
 from plugins import Plugins
 from profile import Profile
+from pytrainer.sport import SportService
 from athlete import Athlete
 from stats import Stats
 
@@ -81,6 +82,7 @@ class pyTrainer:
             logging.debug("Checking DB as per user's request")
             self.sanityCheck()
             
+        self._sport_service = SportService(self.ddbb)
         self.record = Record(data_path,self)
         self.athlete = Athlete(data_path,self)
         self.stats = Stats(data_path,self)
@@ -207,8 +209,8 @@ class pyTrainer:
 
     def refreshMainSportList(self):
         logging.debug('>>')
-        listSport = self.profile.getSportList()
-        self.windowmain.updateSportList(listSport)
+        sports = self._sport_service.get_all_sports()
+        self.windowmain.updateSportList(sports)
         logging.debug('<<')
 
     def refreshGraphView(self, view, sport=None):
@@ -426,20 +428,17 @@ class pyTrainer:
 
     def newRecord(self,title=None,distance=None,time=None,upositive=None,unegative=None,bpm=None,calories=None,date=None,comment=None,view=None):
         logging.debug('>>')
-        list_sport = self.profile.getSportList()
         if date == None:
              date = self.date.getDate()
-        self.record.newRecord(list_sport, date, title, distance, time, upositive, unegative, bpm, calories, comment)
+        self.record.newRecord(date, title, distance, time, upositive, unegative, bpm, calories, comment)
         self.refreshListRecords()
         if view is not None:
             self.refreshGraphView(view)
         logging.debug('<<')
 
     def editRecord(self, id_record, view=None):
-        logging.debug('>>')
-        list_sport = self.profile.getSportList()
-        logging.debug('id_record: '+str(id_record)+' | list_sport: '+str(list_sport))
-        self.record.editRecord(id_record,list_sport)
+        logging.debug("Editing record with id: '%s'", id_record)
+        self.record.editRecord(id_record)
         self.refreshListRecords()
         if view is not None:
             self.refreshGraphView(view)
@@ -488,7 +487,7 @@ class pyTrainer:
 
     def editProfile(self):
         logging.debug('>>')
-        self.profile.editProfile()
+        self.profile.editProfile(self._sport_service)
         self.activitypool.clear_pool()
         self.windowmain.setup()
         logging.debug('<<')

@@ -67,8 +67,8 @@ class WindowRecord(SimpleGladeApp):
             "rcd_maxvel",
             ]
         self.listSport = {}
-        for i in listSport:
-            self.listSport[i[3]] = i[0] #Create dictionary using SportID as key (may be non sequential if sports have been deleted)
+        for sport in listSport:
+            self.listSport[sport.id] = sport.name
         for i in self.listSport:    
             self.rcd_sport.insert_text(i,self.listSport[i])
         self.rcd_sport.set_active(0)

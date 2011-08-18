@@ -41,9 +41,10 @@ class Record:
 		self.date = Date()
 		logging.debug('<<')
 
-	def newRecord(self, list_sport, date, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None):
+	def newRecord(self, date, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None):
 		logging.debug('>>')
-		self.recordwindow = WindowRecord(self._equipment_service, self.data_path, list_sport,self, date, title, distance, time, upositive, unegative, bpm, calories, comment)
+		sports = self._sport_service.get_all_sports()
+		self.recordwindow = WindowRecord(self._equipment_service, self.data_path, sports, self, date, title, distance, time, upositive, unegative, bpm, calories, comment)
 		self.recordwindow.run()
 		logging.debug('<<')
 
@@ -56,11 +57,12 @@ class Record:
 		return self.recordwindow.getActivityData()
 		logging.debug('<<')
 
-	def editRecord(self,id_record,list_sport):
+	def editRecord(self,id_record):
 		logging.debug('>>')
 		activity = self.pytrainer_main.activitypool.get_activity(id_record)
 		record_equipment = self.get_record_equipment(id_record)
-		self.recordwindow = WindowRecord(self._equipment_service, self.data_path, list_sport, self, None, windowTitle=_("Edit Entry"), equipment=record_equipment)
+		sports = self._sport_service.get_all_sports()
+		self.recordwindow = WindowRecord(self._equipment_service, self.data_path, sports, self, None, windowTitle=_("Edit Entry"), equipment=record_equipment)
 		self.recordwindow.setValuesFromActivity(activity)
 		'''
 		record = self.pytrainer_main.ddbb.select("records", "id_record, date, sport, distance, time, beats, average, calories, comments, gpslog, title, upositive, unegative, maxspeed, maxpace, pace, maxbeats, date_time_utc, date_time_local", "id_record=\"%s\"" %id_record)

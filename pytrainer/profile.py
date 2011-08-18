@@ -228,14 +228,14 @@ class Profile:
         #else:
         #   return connection
 
-    def editProfile(self):
+    def editProfile(self, sport_service):
         logging.debug(">>")
         from gui.windowprofile import WindowProfile
         logging.debug("retrieving configuration data")
         #Refresh configuration
         self.configuration = self._parse_config_file(self.config_file)
         if self.profilewindow is None:
-            self.profilewindow = WindowProfile(self.data_path, self, pytrainer_main=self.pytrainer_main)
+            self.profilewindow = WindowProfile(sport_service, self.data_path, self, pytrainer_main=self.pytrainer_main)
             logging.debug("setting data values")
             self.profilewindow.setValues(self.configuration)
             self.profilewindow.run()
