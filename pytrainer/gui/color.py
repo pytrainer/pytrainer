@@ -17,7 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import gtk.gdk
-from pytrainer.lib.color import Color
+from pytrainer.util.color import Color
 
 class ColorConverter(object):
     

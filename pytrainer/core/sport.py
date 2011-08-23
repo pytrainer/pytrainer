@@ -16,7 +16,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from pytrainer.lib.color import Color, color_from_hex_string
+from pytrainer.util.color import Color, color_from_hex_string
 import logging
 
 class Sport(object):
