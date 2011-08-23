@@ -17,10 +17,10 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import unittest
-from pytrainer.sport import Sport, SportService, SportServiceException
+from pytrainer.core.sport import Sport, SportService, SportServiceException
 import mock
 from pytrainer.lib.sqliteUtils import Sql
-import pytrainer
+import pytrainer.core
 
 class SportTest(unittest.TestCase):
     
@@ -289,7 +289,7 @@ class SportServiceTest(unittest.TestCase):
 
     def test_store_sport_should_error_when_existing_sport_has_duplicate_name(self):
         def mock_select(table, columns, where):
-            if columns == pytrainer.sport._ID_COLUMN:
+            if columns == pytrainer.core.sport._ID_COLUMN:
                 return [[2]]
             else:
                 return [(1, u"Test name", 0, 0.0, "0"), (2, u"New name", 0, 0.0, "0")]

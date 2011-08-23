@@ -41,7 +41,7 @@ from extension import Extension
 from importdata import Importdata
 from plugins import Plugins
 from profile import Profile
-from pytrainer.sport import SportService
+from pytrainer.core.sport import SportService
 from athlete import Athlete
 from stats import Stats
 

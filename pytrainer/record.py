@@ -29,7 +29,7 @@ from lib.xmlUtils import XMLParser
 from lib.date import Date
 from lib.gpx import Gpx
 from pytrainer.core.equipment import EquipmentService
-from pytrainer.sport import Sport
+from pytrainer.core.sport import Sport
 
 class Record:
 	def __init__(self, sport_service, data_path = None, parent = None):

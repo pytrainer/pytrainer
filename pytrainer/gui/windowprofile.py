@@ -21,7 +21,7 @@ from SimpleGladeApp import SimpleGladeApp
 from windowcalendar import WindowCalendar
 from pytrainer.core.equipment import EquipmentService
 from pytrainer.gui.equipment import EquipmentUi
-from pytrainer.sport import Sport
+from pytrainer.core.sport import Sport
 import gtk
 import gobject
 import logging
