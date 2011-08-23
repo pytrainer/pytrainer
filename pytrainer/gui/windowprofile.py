@@ -19,7 +19,7 @@
 from __future__ import division
 from SimpleGladeApp import SimpleGladeApp
 from windowcalendar import WindowCalendar
-from pytrainer.equipment import EquipmentService
+from pytrainer.core.equipment import EquipmentService
 from pytrainer.gui.equipment import EquipmentUi
 from pytrainer.sport import Sport
 import gtk

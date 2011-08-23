@@ -48,7 +48,7 @@ from pytrainer.totalgraph import TotalGraph
 from pytrainer.heartrategraph import HeartRateGraph
 from pytrainer.extensions.mapviewer import MapViewer
 from pytrainer.extensions.waypointeditor import WaypointEditor
-from pytrainer.equipment import EquipmentService
+from pytrainer.core.equipment import EquipmentService
 
 from pytrainer.gui.drawGraph import DrawGraph
 from pytrainer.gui.windowcalendar import WindowCalendar

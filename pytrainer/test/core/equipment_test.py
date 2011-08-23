@@ -18,7 +18,7 @@
 
 import unittest
 import mock
-from pytrainer.equipment import Equipment, EquipmentService,\
+from pytrainer.core.equipment import Equipment, EquipmentService,\
     EquipmentServiceException
 from pytrainer.lib.sqliteUtils import Sql
 

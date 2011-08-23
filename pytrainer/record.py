@@ -28,7 +28,7 @@ from lib.ddbb import DDBB
 from lib.xmlUtils import XMLParser
 from lib.date import Date
 from lib.gpx import Gpx
-from pytrainer.equipment import EquipmentService
+from pytrainer.core.equipment import EquipmentService
 from pytrainer.sport import Sport
 
 class Record:

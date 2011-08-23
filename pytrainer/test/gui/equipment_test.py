@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from unittest import TestCase
 from mock import Mock
-from pytrainer.equipment import Equipment, EquipmentService
+from pytrainer.core.equipment import Equipment, EquipmentService
 from pytrainer.gui.equipment import EquipmentStore
 
 #Copyright (C) Nathan Jones ncjones@users.sourceforge.net
