@@ -214,9 +214,11 @@ class Gpx:
                 self.calories += int(lapCalories)
                 lapDistance = lap.findtext(distanceTag)
                 totalDistance += float(lapDistance)
-                lapDuration = lap.findtext(elapsedTimeTag)
-                totalDuration += float(lapDuration)
-                logging.info("Lap distance: %s | Duration: %s | Calories (kcal): %s" % (lapDistance, lapDuration, lapCalories))
+                lapDuration_hms = lap.findtext(elapsedTimeTag)
+                hour,minu,sec = lapDuration_hms.split(":")
+                lapDuration = float(sec) + int(minu)*60 + int(hour)*3600
+                totalDuration += lapDuration 
+                logging.info("Lap distance: %s m | Duration: %s s | Calories: %s kcal" % (lapDistance, lapDuration, lapCalories))
             self.total_dist = float(totalDistance/1000.0) # Returning km
             self.total_time = int(totalDuration) # Returning seconds
             logging.info("Distance: %.02f km | Duration: %d s | Calories: %s kcal" % (self.total_dist, self.total_time, self.calories))
