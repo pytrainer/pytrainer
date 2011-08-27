@@ -415,6 +415,9 @@ class Main(SimpleGladeApp):
             self.record_duration.set_text(activity.get_value_f('time', '%s'))
             self.record_calories.set_text(activity.get_value_f('calories', "%0.0f"))
             self.record_title.set_text(activity.title)
+            hrun,mrun,srun = self.pytrainer_main.date.second2time(activity.time)
+            hpause,mpause,spause = self.pytrainer_main.date.second2time(activity.time_pause)
+            self.record_runrest.set_text("%02d:%02d:%02d / %02d:%02d:%02d" %(hrun,mrun,srun,hpause,mpause,spause)) 
             buffer = self.record_comments.get_buffer()
             start,end = buffer.get_bounds()
             buffer.set_text(activity.comments)
@@ -423,8 +426,7 @@ class Main(SimpleGladeApp):
                 equipment_text = ", ".join(map(lambda(item): item.description, equipment))
                 self.label_record_equipment.set_text(equipment_text)
             else:
-                self.label_record_equipment.set_markup("<i>None</i>")
-            runTime = 0.0;    
+                self.label_record_equipment.set_markup("<i>None</i>")    
             if len(activity.laps)>1:
                 store = gtk.ListStore(
                     gobject.TYPE_INT,
@@ -442,8 +444,7 @@ class Main(SimpleGladeApp):
                     gobject.TYPE_STRING,
                     )
                 for lap in activity.laps:
-                    t = lap['elapsed_time']
-                    runTime += float(t) 
+                    t = lap['elapsed_time'] 
                     m = lap['distance']
                     
                     if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
@@ -518,15 +519,11 @@ class Main(SimpleGladeApp):
                 self.frame_laps.show()
             else:
                 self.frame_laps.hide()
-                runTime = float(activity.laps[0]['elapsed_time'])
 
         else:
             self.recordview.set_current_page(0)
             self.recordview.set_sensitive(0)
-        pauseTime = activity.time - runTime
-        hrun,mrun,srun = self.pytrainer_main.date.second2time(runTime)
-        hpause,mpause,spause = self.pytrainer_main.date.second2time(pauseTime)
-        self.record_runrest.set_text("%02d:%02d:%02d / %02d:%02d:%02d" %(hrun,mrun,srun,hpause,mpause,spause) )    
+   
         logging.debug("<<")
 
     def actualize_recordgraph(self,activity):

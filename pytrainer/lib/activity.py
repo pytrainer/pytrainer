@@ -99,6 +99,7 @@ class Activity:
 		self.has_data = False
 		self.distance_data = {}
 		self.time_data = {}
+		self.time_pause = 0
 		self.pace_limit = None
 		self.starttime = None
 		self.gpx_distance = None
@@ -216,7 +217,11 @@ class Activity:
 		self.tracks = self.gpx.getTrackList() #TODO fix - this should removed and replaced with self.tracklist functionality
 		self.tracklist = self.gpx.trkpoints
 		self.gpx_distance = self.gpx.total_dist
-		logging.debug("GPX Distance: %s" % self.gpx_distance)
+		logging.info("GPX Distance: %s | distance (trkpts): %s | duration: %s | duration (trkpts): %s" % (self.gpx_distance, self.gpx.total_dist_trkpts, self.gpx.total_time, self.gpx.total_time_trkpts))
+		time_diff = self.gpx.total_time_trkpts - self.gpx.total_time
+		if time_diff > 10:
+			self.time_pause = time_diff
+			logging.debug("Identified non active time: %s s" % self.time_pause)
 		logging.debug("<<")
 
 	def _init_from_db(self):

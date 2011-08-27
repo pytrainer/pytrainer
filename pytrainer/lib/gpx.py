@@ -66,6 +66,7 @@ class Gpx:
         self.trkpoints = []
         self.vel_array = []
         self.total_dist = 0
+        self.total_dist_trkpts = 0
         self.total_time = 0
         self.total_time_trkpts = 0
         self.upositive = 0
@@ -348,7 +349,7 @@ class Gpx:
             #Accumulate distances
             if dist is not None:
                 dist_elapsed += dist #TODO fix
-                total_dist += dist
+                self.total_dist_trkpts += dist
 
             #Calculate speed...
             vel = self._calculate_speed(dist, time_elapsed, smoothing_factor=3)
@@ -368,10 +369,10 @@ class Gpx:
                     waiting_points = []
                     dist_elapsed = 0
                 else:
-                    retorno.append((total_dist,ele, self.total_time,vel,lat,lon,hr,cadence,corEle))
+                    retorno.append((self.total_dist_trkpts,ele, self.total_time,vel,lat,lon,hr,cadence,corEle))
                     dist_elapsed = 0
             else: # time_ is None
-                waiting_points.append((total_dist, dist_elapsed, ele, self.total_time, lat, lon, hr, cadence, corEle))
+                waiting_points.append((self.total_dist_trkpts, dist_elapsed, ele, self.total_time, lat, lon, hr, cadence, corEle))
 
             #Add to dict of values to trkpoint list
             self.trkpoints.append({ 'id': i,
@@ -385,7 +386,7 @@ class Gpx:
                                     'ele':ele,
                                     'ele_change': rel_alt,
                                     'distance_from_previous': dist,
-                                    'elapsed_distance': total_dist,
+                                    'elapsed_distance': self.total_dist_trkpts,
                                     'velocity':vel,
                                     'correctedElevation':corEle,
 
@@ -399,12 +400,15 @@ class Gpx:
             self.hr_average = total_hr/len_validhrpoints
         # In case there is no other way to calculate distance, we rely on trackpoints (number of trackpoints is configurable!)
         if self.total_dist is None or self.total_dist == 0:
-            self.total_dist = total_dist
+            self.total_dist = self.total_dist_trkpts
+        else:
+            dist_diff = 1000*(self.total_dist_trkpts - self.total_dist)
+            logging.info("Distance difference between laps and trkpts calculation: %f m" % dist_diff)
         if self.total_time is None or self.total_time == 0:
             self.total_time = self.total_time_trkpts
         else:
             time_diff = self.total_time_trkpts - self.total_time
-            logging.info("Duration difference between laps and trkpts calculation: %d seconds" % time_diff)
+            logging.info("Duration difference between laps and trkpts calculation: %d s" % time_diff)
         logging.debug("<<")
         return retorno
 
