@@ -16,11 +16,10 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import webkit
-import logging
-import os
-
 from pytrainer.lib.fileUtils import fileUtils
+import gtk
+import logging
+import webkit
 
 class MapViewer:
 	def __init__(self, data_path = None, pytrainer_main=None, box=None):
@@ -37,7 +36,9 @@ class MapViewer:
 
 	def pack_box(self):
 		logging.debug(">>")
-		self.box.pack_start(self.wkview, True, True)
+		scrolled_window = gtk.ScrolledWindow()
+		scrolled_window.add(self.wkview)
+		self.box.pack_start(scrolled_window, True, True)
 		self.box.show_all()
 		logging.debug("<<")
 

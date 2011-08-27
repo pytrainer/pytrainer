@@ -16,17 +16,13 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import webkit
-import os
-import re
-
 from pytrainer.extension import Extension
 from pytrainer.lib.fileUtils import fileUtils
-
-import string,cgi,time
-import time
-
+import gtk
 import logging
+import os
+import re
+import webkit
 
 class WaypointEditor:
 	def __init__(self, data_path = None, vbox = None, waypoint=None, parent=None):		
@@ -35,7 +31,9 @@ class WaypointEditor:
 		self.extension = Extension()
 		self.wkview = webkit.WebView()
 		self.wkview.connect('notify::title', self.handle_title_changed) 
-		vbox.pack_start(self.wkview, True, True)
+		scrolled_window = gtk.ScrolledWindow()
+		scrolled_window.add(self.wkview)
+		vbox.pack_start(scrolled_window, True, True)
 		vbox.show_all()
 		self.htmlfile = ""
 		self.waypoint=waypoint
