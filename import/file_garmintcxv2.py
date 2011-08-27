@@ -19,6 +19,7 @@
 
 import logging
 import os
+import traceback
 from lxml import etree
 from pytrainer.lib.date import Date
 
@@ -46,23 +47,43 @@ class garmintcxv2():
 		return self.activitiesSummary
 
 	def getDetails(self, activity, startTime):
-		points = activity.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Trackpoint")
-		while True:
-			lastPoint = points[-1]
-			try:
-				distance = lastPoint.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}DistanceMeters")
-				if distance is None:
+		logging.debug(">>")
+		distance = 0
+		duration = 0
+		laps = activity.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Lap")
+		if laps:
+			for lap in laps:
+				lap_duration = float(lap.findtext(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}TotalTimeSeconds"))
+				lap_distance = float(lap.findtext(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}DistanceMeters"))
+				logging.debug("Lap distance (m): %f | duration (s): %f" % (lap_distance, lap_duration))
+				distance += lap_distance
+				duration += lap_duration
+			hours = int(duration)//3600
+			minutes = (int(duration)/60)%60
+			seconds = int(duration)%60
+			duration_hhmmss = "%02d:%02d:%02d" % (hours, minutes, seconds)       
+			logging.debug("Activity distance (m): %f | duration (hh:mm:ss - s): %s - %f" % (distance, duration_hhmmss, duration))
+        	else:
+			points = activity.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Trackpoint")
+			while True:
+				lastPoint = points[-1]
+				try:
+					distance = lastPoint.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}DistanceMeters")
+					if distance is None:
+						points = points[:-1]
+						continue
+					time = lastPoint.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Time")
+					distance = distance.text
+					time = time.text
+					break
+				except:
+					#Try again without the last point (i.e work from end until find time and distance)
 					points = points[:-1]
 					continue
-				time = lastPoint.find(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Time")
-				distance = distance.text
-				time = time.text
-				break
-			except:
-				#Try again without the last point (i.e work from end until find time and distance)
-				points = points[:-1]
-				continue
-		return float(distance), self.getDateTime(time)[0]-startTime[0]
+			duration_hhmmss = self.getDateTime(time)[0]-startTime[0]
+			logging.debug("Activity distance (m): %f | duration (hh:mm:ss): %s" % (distance, duration_hhmmss))
+		logging.debug("<<")
+		return float(distance), duration_hhmmss
 
 	def testFile(self, filename):
 		logging.debug('>>')
@@ -95,7 +116,7 @@ class garmintcxv2():
 				#print self.activitiesSummary
 				return True
 		except:
-			#Not valid file
+			logging.debug("Traceback: %s" % traceback.format_exc())
 			return False 
 		return False
 
