@@ -67,6 +67,7 @@ class Gpx:
         self.vel_array = []
         self.total_dist = 0
         self.total_time = 0
+        self.total_time_trkpts = 0
         self.upositive = 0
         self.unegative = 0
         self.maxvel = 0
@@ -165,6 +166,7 @@ class Gpx:
             lat = self.trkpoints[-1]['lat']
             lon = self.trkpoints[-1]['lon']
             #print ((self.total_time, lat, lon, self.calories, self.total_dist, stLat, stLon))
+            logging.debug("total_time: %s" %self.total_time)
             lapInfo.append((self.total_time, lat, lon, self.calories, self.total_dist*1000, stLat, stLon, "active", self.hr_average, self.maxhr, self.maxvel, "manual"))
         else:
             for lap in laps:
@@ -206,14 +208,18 @@ class Gpx:
         laps = tree.findall(lapTag)
         if laps is not None and laps != "":
             totalDistance = 0
+            totalDuration = 0
             for lap in laps:
                 lapCalories = lap.findtext(calorieTag)                
                 self.calories += int(lapCalories)
-                lapDistance = int(float(lap.findtext(distanceTag)))
-                totalDistance += lapDistance
-                logging.debug("Lap distance: " + str(lapDistance) + " | calories (kcal): "+str(lapCalories))
+                lapDistance = lap.findtext(distanceTag)
+                totalDistance += float(lapDistance)
+                lapDuration = lap.findtext(elapsedTimeTag)
+                totalDuration += float(lapDuration)
+                logging.info("Lap distance: %s | Duration: %s | Calories (kcal): %s" % (lapDistance, lapDuration, lapCalories))
             self.total_dist = float(totalDistance/1000.0) # Returning km
-            logging.debug("Distance: " + str(self.total_dist) + " | calories (kcal): "+str(self.calories))
+            self.total_time = int(totalDuration) # Returning seconds
+            logging.info("Distance: %.02f km | Duration: %d s | Calories: %s kcal" % (self.total_dist, self.total_time, self.calories))
         else:
             laps = []
 
@@ -270,6 +276,7 @@ class Gpx:
                 cadence = int(cadResult.text)
             else:
                 cadence = None
+
             #get the time
             timeResult = trkpoint.find(timeTag)
             if timeResult is not None:
@@ -280,10 +287,13 @@ class Gpx:
                     time_elapsed = 0
                 else:
                     time_elapsed = time_ - self.trkpoints[i-1]['time'] if self.trkpoints[i-1]['time'] is not None else 0
-                    self.total_time += time_elapsed
+                    self.total_time_trkpts += time_elapsed
+                    if time_elapsed > 10:
+                        logging.debug("Adding %d seconds from last trkpt, someone took a break!" % time_elapsed)
             else:
                 time_ = None
                 time_elapsed = None
+
             #get the elevation
             eleResult = trkpoint.find(elevationTag)
             rel_alt = 0
@@ -345,6 +355,7 @@ class Gpx:
                         w_time = (w_dist/dist_elapsed) * time_elapsed
                         w_vel = w_dist/((w_time)/3600.0)
                         w_total_time += w_time
+                        logging.info("Time added: %f" % w_time)
                         retorno.append((w_total_dist, w_alt, w_total_time, w_vel, w_lat, w_lon, w_hr, w_cadence, w_corEle))
                     waiting_points = []
                     dist_elapsed = 0
@@ -362,7 +373,7 @@ class Gpx:
                                     'cadence':cadence,
                                     'time':time_,
                                     'time_since_previous': time_elapsed,
-                                    'time_elapsed': self.total_time,
+                                    'time_elapsed': self.total_time_trkpts,
                                     'ele':ele,
                                     'ele_change': rel_alt,
                                     'distance_from_previous': dist,
@@ -381,6 +392,11 @@ class Gpx:
         # In case there is no other way to calculate distance, we rely on trackpoints (number of trackpoints is configurable!)
         if self.total_dist is None or self.total_dist == 0:
             self.total_dist = total_dist
+        if self.total_time is None or self.total_time == 0:
+            self.total_time = self.total_time_trkpts
+        else:
+            time_diff = self.total_time_trkpts - self.total_time
+            logging.info("Duration difference between laps and trkpts calculation: %d seconds" % time_diff)
         logging.debug("<<")
         return retorno
 
