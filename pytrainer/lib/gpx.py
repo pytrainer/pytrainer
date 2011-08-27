@@ -214,9 +214,15 @@ class Gpx:
                 self.calories += int(lapCalories)
                 lapDistance = lap.findtext(distanceTag)
                 totalDistance += float(lapDistance)
-                lapDuration_hms = lap.findtext(elapsedTimeTag)
-                hour,minu,sec = lapDuration_hms.split(":")
-                lapDuration = float(sec) + int(minu)*60 + int(hour)*3600
+                lapDuration_tmp = lap.findtext(elapsedTimeTag)
+                # When retrieving data from TCX file -> seconds (float)
+                # When retrieving data from GPX+ file -> hh:mm:ss
+                # EAFP -> http://docs.python.org/glossary.html
+                try:
+                    lapDuration = float(lapDuration_tmp)
+                except ValueError:
+                    hour,minu,sec = lapDuration_tmp.split(":")
+                    lapDuration = float(sec) + int(minu)*60 + int(hour)*3600
                 totalDuration += lapDuration 
                 logging.info("Lap distance: %s m | Duration: %s s | Calories: %s kcal" % (lapDistance, lapDuration, lapCalories))
             self.total_dist = float(totalDistance/1000.0) # Returning km
