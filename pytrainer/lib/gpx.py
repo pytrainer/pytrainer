@@ -303,7 +303,7 @@ class Gpx:
                 else:
                     time_elapsed = time_ - self.trkpoints[i-1]['time'] if self.trkpoints[i-1]['time'] is not None else 0
                     self.total_time_trkpts += time_elapsed
-                    if time_elapsed > 5:
+                    if time_elapsed > 15:
                         logging.debug("Adding %d seconds from last trkpt, someone took a break!" % time_elapsed)
             else:
                 time_ = None
