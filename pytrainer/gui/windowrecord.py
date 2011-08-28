@@ -289,9 +289,8 @@ class WindowRecord(SimpleGladeApp):
             if self.mode == "newrecord":
                 logging.debug('Track data: '+str(list_options))
                 if list_options["rcd_gpxfile"] != "":
-                    logging.info('Adding new activity based on GPX file')   
-                    trackSummary=(list_options["rcd_sport"],"","")
-                    self.parent.insertNewRecord(list_options["rcd_gpxfile"], trackSummary)
+                    logging.info('Adding new activity based on GPX file')
+                    self.parent.insertRecord(list_options, None, selected_equipment_ids)
                 else:
                     logging.info('Adding new activity based on provided data')
                     #Manual entry, calculate time info

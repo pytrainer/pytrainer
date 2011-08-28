@@ -53,7 +53,7 @@ class Record:
 	def newMultiRecord(self, activities):
 		logging.debug('>>')
 		sports = self._sport_service.get_all_sports()
-		self.recordwindow = WindowRecord(self._equipment_service, self.data_path, sports, parent=self, windowTitle="Modify details before importing")
+		self.recordwindow = WindowRecord(self._equipment_service, self.data_path, sports, parent=self, windowTitle=_("Modify details before importing"))
 		self.recordwindow.populateMultiWindow(activities)
 		self.recordwindow.run()
 		return self.recordwindow.getActivityData()
@@ -476,8 +476,10 @@ class Record:
 		heartrate = gpx.getHeartRateAverage()
 		date = gpx.getDate()
 		calories = gpx.getCalories()
+		start_time = gpx.getStart_time()
 
 		self.recordwindow.rcd_date.set_text(date)
+		self.recordwindow.rcd_starttime.set_text(start_time)
 		self.recordwindow.rcd_upositive.set_text(str(upositive))
 		self.recordwindow.rcd_unegative.set_text(str(unegative))
 		self.recordwindow.rcd_beats.set_text(str(heartrate))

@@ -75,6 +75,7 @@ class Gpx:
         self.maxhr = 0
         self.hr_average = 0
         self.date = ""
+        self.start_time = ""
         #self.Date = Date()
         self.calories= 0
         self.tree = None
@@ -129,6 +130,7 @@ class Gpx:
             timeResult = trk.find(timeTag)
             if timeResult is not None:
                 time_ = timeResult.text # check timezone
+                logging.debug("TimeResult: %s" %time_)
                 mk_time = self.getDateTime(time_)[0]
                 time_ = mk_time.strftime("%Y-%m-%d")
             else:
@@ -151,6 +153,9 @@ class Gpx:
 
     def getCalories(self):
         return self.calories
+
+    def getStart_time(self):
+        return self.start_time
 
     def getLaps(self):
         logging.debug(">>")
@@ -228,7 +233,7 @@ class Gpx:
                 logging.info("Lap distance: %s m | Duration: %s s | Calories: %s kcal" % (lapDistance, lapDuration, lapCalories))
             self.total_dist = float(totalDistance/1000.0) # Returning km
             self.total_time = int(totalDuration) # Returning seconds
-            logging.info("Distance: %.02f km | Duration: %d s | Calories: %s kcal" % (self.total_dist, self.total_time, self.calories))
+            logging.info("Laps - Distance: %.02f km | Duration: %d s | Calories: %s kcal" % (self.total_dist, self.total_time, self.calories))
         else:
             laps = []
 
@@ -255,8 +260,9 @@ class Gpx:
         else:
             mk_time = self.getDateTime(date_)[1] #Local Date
             self.date = mk_time.strftime("%Y-%m-%d")
+            self.start_time = mk_time.strftime("%H:%M:%S")
         waiting_points = []
-
+        logging.debug("date: %s | start_time: %s | mk_time: %s" % (self.date, self.start_time, mk_time))
 
         for i, trkpoint in enumerate(trkpoints):
             #Get data from trkpoint
@@ -297,7 +303,7 @@ class Gpx:
                 else:
                     time_elapsed = time_ - self.trkpoints[i-1]['time'] if self.trkpoints[i-1]['time'] is not None else 0
                     self.total_time_trkpts += time_elapsed
-                    if time_elapsed > 10:
+                    if time_elapsed > 5:
                         logging.debug("Adding %d seconds from last trkpt, someone took a break!" % time_elapsed)
             else:
                 time_ = None
@@ -403,12 +409,13 @@ class Gpx:
             self.total_dist = self.total_dist_trkpts
         else:
             dist_diff = 1000*(self.total_dist_trkpts - self.total_dist)
-            logging.info("Distance difference between laps and trkpts calculation: %f m" % dist_diff)
+            logging.debug("Distance difference between laps and trkpts calculation: %f m" % dist_diff)
         if self.total_time is None or self.total_time == 0:
             self.total_time = self.total_time_trkpts
         else:
             time_diff = self.total_time_trkpts - self.total_time
-            logging.info("Duration difference between laps and trkpts calculation: %d s" % time_diff)
+            logging.debug("Duration difference between laps and trkpts calculation: %d s" % time_diff)
+        logging.info("Values - Distance: %.02f km | Duration: %d s | Calories: %s kcal" % (self.total_dist, self.total_time, self.calories))
         logging.debug("<<")
         return retorno
 

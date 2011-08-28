@@ -219,7 +219,8 @@ class Activity:
 		self.gpx_distance = self.gpx.total_dist
 		logging.info("GPX Distance: %s | distance (trkpts): %s | duration: %s | duration (trkpts): %s" % (self.gpx_distance, self.gpx.total_dist_trkpts, self.gpx.total_time, self.gpx.total_time_trkpts))
 		time_diff = self.gpx.total_time_trkpts - self.gpx.total_time
-		if time_diff > 10:
+		acceptable_lapse = 4 # number of seconds that duration calculated using lap and trkpts data can differ
+		if time_diff > acceptable_lapse:
 			self.time_pause = time_diff
 			logging.debug("Identified non active time: %s s" % self.time_pause)
 		logging.debug("<<")
