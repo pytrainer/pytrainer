@@ -248,7 +248,8 @@ class WindowRecord(SimpleGladeApp):
                 activity["rcd_title"] = activity["rcd_title"].replace("\"","'")
                 #Add activity to DB etc
                 laps = activity.pop("laps", ())
-                self.activity_data[index]["db_id"] = self.parent.insertRecord(activity, laps)
+                selected_equipment_ids = self._get_selected_equipment_ids()
+                self.activity_data[index]["db_id"] = self.parent.insertRecord(activity, laps, equipment=selected_equipment_ids)
                 row += 1
             logging.debug("Processed %d rows of activity data" % row)
         else:
