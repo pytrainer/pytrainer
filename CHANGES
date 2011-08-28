@@ -1,5 +1,19 @@
 See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/pytrainer/roadmap
 
+- PyTrainer changes for 1.9.0:
+
+* New functionality
+
+    - Added swedish localization (thnx to Per) - ticket:98 [756] [757] [758] [759] [760]
+    - Add startup option for choosing console or file logging. When "console" is chosen all loging messsages are sent to stdout instead of a log file. [755]
+
+* Fixes
+
+    - Distance data is retrieved from laps if present, calculated from trackpoints otherwise - ticket:101 [761]
+    - Remove non iso-8859-1 characters [754]
+    - Fix so only once instance of preferences dialog can be open at a time - ticket:74 [753]
+
+
 - PyTrainer changes for 1.8.0:
 
 * New functionality
