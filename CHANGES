@@ -4,14 +4,44 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
 
 * New functionality
 
-    - Added swedish localization (thnx to Per) - ticket:98 [756] [757] [758] [759] [760]
+    - Create sport service - #138 [838] [840 - 845] [850] [850 - 856]
+    - Provide means to run all unit tests - #139 [837]
+    - Discrete version migration - #132 [815 - 836] [839] [864] [865]
+    - Totals tab - #60 [766] [800] [801] [802] [803]
+    - Display projected times in record view, including ranking - #116 [782] [785] [811]
+    - Ascent and descent figures shown in all views. Added time spent moving and paused in record view (thanks to Friso) - #114 [781]
+    - Assign graph color to sports - #111 [780]
+    - Display laps information on record summary page - #109 #122 [768 - 772] [775] [777] [778] [788] [812] [813]
+    - Coloring Google Maps path by speed/pace - thanks to Jonathan - #107 [765] 
+    - Added swedish localization (thnx to Per) - #98 [756] [757] [758] [759] [760]
     - Add startup option for choosing console or file logging. When "console" is chosen all loging messsages are sent to stdout instead of a log file. [755]
 
 * Fixes
 
-    - Distance data is retrieved from laps if present, calculated from trackpoints otherwise - ticket:101 [761]
+    - Active/Rest times are not calculated for activities with only one lap - [811]
+    - Activity's data (equipment and title) missing when importing activity from file - #105 #137 [866 - 868]
+    - Wrong duration calculation when breaks are present - #103 [858 - 862]
+    - GUI problems when resizing - #113 [857]
+    - GPX file import fails - #141 [849]
+    - Enabling localization for some labels - #99 [846] [847]
+    - Broken MySQL support - #130 [810] [817] [818]
+    - Moving from GtkMozEmbed to WebKit - thanks to Christian - #131 [809]
+    - Support US units and display units in analytics view - [808]
+    - Start time can be changed in manually entered activities - #127 [807]
+    - Sort records in record tree view by time by default - #128 [806]
+    - Graphical improvements - [795] [796] [797] [798] [799] [805]
+    - Improved OSM performance through caching and also anonymize sensitive date before upload - [790] [791] [792]
+    - Failed to build stacked bars graphic in week, month and year tabs - #123 [789]
+    - Changed the way OS is checked to allow pytrainer run on other POSIX in addition to GNU/LINUX - thanks to Christian - #120 [784]
+    - Renaming danish suffix in po file to avoid confusion - #119 [783]
+    - Try using Google Maps Elevation API if all else fails - #102 [779]
+    - Updated ES localization [773] [774] [776] [804] [848] [863]
+    - Better management of wrong/corrupted data - #118 [767] [786] [787] - [793] [794]
+    - Elevation correction extension not handling properly errors #102 [764]
+    - Equipment management fixes - #95 [763] #96 [762]
+    - Distance data is retrieved from laps if present, calculated from trackpoints otherwise - #101 [761]
     - Remove non iso-8859-1 characters [754]
-    - Fix so only once instance of preferences dialog can be open at a time - ticket:74 [753]
+    - Fix so only once instance of preferences dialog can be open at a time - #74 [753]
 
 
 - PyTrainer changes for 1.8.0:
