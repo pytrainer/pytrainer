@@ -1,0 +1,52 @@
+.TH pytrainer 7 2011-08-29
+.SH NAME
+pytrainer - manual page for pytrainer 1.9.0
+
+.SH SYNOPSIS
+pytrainer [options]
+
+.SH DESCRIPTION
+pytrainer is a tool to log all sport excursions coming from GPS devices (with a focus on ForeRunnner 205, 305 and 405) or GPX (http://www.topografix.com) files. 
+.br 
+Pytrainer supports GPS track files and displays it in graphs, maps...
+
+.SH OPTIONS 
+.IP "-h, --help"
+show this help message and exit
+.IP "-d, --debug"
+enable logging at debug level
+.IP "-i, --info"
+enable logging at info level
+.IP "-w, --warn"
+enable logging at warning level
+.IP --valid
+enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation
+.IP --check
+triggers database (only sqlite based) and configuration file sanity checks, adding fields if necessary. Backup of database is done before any change. Details at info or debug logging level
+.br
+.IP --oldgraph 
+Turn off new graphing approach
+.IP --newgraph
+Deprecated option: turn on new graphing approach
+.IP --confdir=CONF_DIR  
+Specify the directory where application configuration will be stored.
+.IP --logtype=TYPE
+Specify where logging should be output to. TYPE is one of 'file' (default), or 'console'.
+
+.SH EXAMPLES
+.IP pytrainer
+starts pytrainer with log level set to ERROR
+.IP "pytrainer -d"
+starts pytrainer with log level set to DEBUG (troubleshooting)
+
+.SH AUTHORS
+This manual page was originally written by Braulio Valdivielso <brlvldvlsmrtnz@gmail.com> and polished by Christian Perrier <bubulle@debian.org>.
+.P
+For more information please check 'Credits' in 'About' menu.
+.P
+Thanks to everyone who contributes and supports pytrainer.
+
+.SH SEE ALSO
+Project web site: http://sourceforge.net/apps/trac/pytrainer/
+.br
+Distribution list: pytrainer-devel@lists.sourceforge.net
