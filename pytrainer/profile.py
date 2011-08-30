@@ -81,10 +81,15 @@ class Profile:
         #resthr = self.getValue("pytraining","prf_minhr")
         try:
             maxhr = int(self.getValue("pytraining","prf_maxhr"))
+        except Exception as e:
+            logging.error("Failed when retrieving Max Heartrate value: %s" %e)
+            logging.info("Setting Max Heartrate to default value: 190")
+            maxhr = 190
+        try:
             resthr = int(self.getValue("pytraining","prf_minhr"))
         except Exception as e:
-            logging.debug(str(e))
-            maxhr = 220
+            logging.error("Failed when retrieving Min Heartrate value: %s" %e)
+            logging.info("Setting Min Heartrate to default value: 65")
             resthr = 65
         self.maxhr = maxhr
         self.rethr = resthr
