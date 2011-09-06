@@ -51,6 +51,9 @@ class Stats:
         
         results = self.pytrainer_main.ddbb.select_dict("records", ('id_record', 'date', 'sport', 'distance', 'duration', 'maxbeats', 'maxspeed', 'maxpace', 'average','pace','beats'))
         for r in results:
+            if r['sport'] is None:
+                # temporary fix to ignore corrupt records caused by GPX import bug
+                continue
             if r['sport'] not in data['sports']:
                 sport = self._sport_service.get_sport(r['sport'])
                 data['sports'][r['sport']] = {'name': sport.name, 'count': 0}
