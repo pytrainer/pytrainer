@@ -353,7 +353,7 @@ class WindowRecord(SimpleGladeApp):
         self.rcd_hour.set_value(h)
         self.rcd_min.set_value(m)
         self.rcd_second.set_value(s)
-        self.rcd_date.set_text(activity.date)
+        self.rcd_date.set_text(str(activity.date))
         
         #self.rcd_distance.set_text("%.2f"%activity.distance)
         #myset_text(self.rcd_distance, 'distance', activity.distance, us=self.us, round=2)
