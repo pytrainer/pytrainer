@@ -231,35 +231,39 @@ class Activity:
 		'''
 		logging.debug(">>")
 		#Get base information
-		db_result = self.pytrainer_main.ddbb.select_dict("records,sports",
-					("sports.name","id_sports", "date","distance","time","beats","comments",
+		cols = ("sports.name","id_sports", "date","distance","time","beats","comments",
 						"average","calories","id_record","title","upositive","unegative",
-						"maxspeed","maxpace","pace","maxbeats","date_time_utc","date_time_local", "sports.max_pace"),
-					"id_record=\"%s\" and records.sport=sports.id_sports" %self.id)
+						"maxspeed","maxpace","pace","maxbeats","date_time_utc","date_time_local", "sports.max_pace")
+		# outer join on sport id to workaround bug where sport reference is null on records from GPX import
+		db_result = self.pytrainer_main.ddbb.select("records left outer join sports on records.sport=sports.id_sports",
+					", ".join(cols),
+					"id_record=\"%s\" " %self.id)
 		if len(db_result) == 1:
-			_dict = db_result[0]
-			self.sport_name = _dict['sports.name']
-			self.sport_id = _dict['id_sports']
-			self.pace_limit = _dict['sports.max_pace']
+			row = db_result[0]
+			self.sport_name = row[cols.index('sports.name')]
+			if self.sport_name == None:
+				self.sport_name = ""
+			self.sport_id = row[cols.index('id_sports')]
+			self.pace_limit = row[cols.index('sports.max_pace')]
 			if self.pace_limit == 0 or self.pace_limit == "":
 				self.pace_limit = None
-			self.title = _dict['title']
+			self.title = row[cols.index('title')]
 			if self.title is None:
 				self.title = ""
-			self.date = _dict['date']
-			self.time = self._int(_dict['time'])
+			self.date = row[cols.index('date')]
+			self.time = self._int(row[cols.index('time')])
 			self.time_tuple = Date().second2time(self.time)
-			self.beats = self._int(_dict['beats'])
-			self.comments = _dict['comments']
+			self.beats = self._int(row[cols.index('beats')])
+			self.comments = row[cols.index('comments')]
 			if self.comments is None:
 				self.comments = ""
-			self.calories = self._int(_dict['calories'])
-			self.id_record = _dict['id_record']
-			self.maxbeats = self._int(_dict['maxbeats'])
+			self.calories = self._int(row[cols.index('calories')])
+			self.id_record = row[cols.index('id_record')]
+			self.maxbeats = self._int(row[cols.index('maxbeats')])
 			#Sort time....
 			# ... use local time if available otherwise use date_time_utc and create a local datetime...
-			self.date_time_local = _dict['date_time_local']
-			self.date_time_utc = _dict['date_time_utc']
+			self.date_time_local = row[cols.index('date_time_local')]
+			self.date_time_utc = row[cols.index('date_time_utc')]
 			if self.date_time_local is not None: #Have a local time stored in DB
 				self.date_time = dateutil.parser.parse(self.date_time_local)
 				self.starttime = self.date_time.strftime("%X")
@@ -269,23 +273,23 @@ class Activity:
 				self.starttime = self.date_time.strftime("%X")
 			#Sort data that changes for the US etc
 			#if self.us_system:
-			#	self.distance = km2miles(self._float(_dict['distance']))
-			#	self.average = km2miles(self._float(_dict['average']))
-			#	self.upositive = m2feet(self._float(_dict['upositive']))
-			#	self.unegative = m2feet(self._float(_dict['unegative']))
-			#	self.maxspeed = km2miles(self._float(_dict['maxspeed']))
-			#	self.maxpace = pacekm2miles(self._float(_dict['maxpace']))
-			#	self.pace = pacekm2miles(self._float(_dict['pace']))
+			#	self.distance = km2miles(self._float(row[cols.index('distance')]))
+			#	self.average = km2miles(self._float(row[cols.index('average')]))
+			#	self.upositive = m2feet(self._float(row[cols.index('upositive')]))
+			#	self.unegative = m2feet(self._float(row[cols.index('unegative')]))
+			#	self.maxspeed = km2miles(self._float(row[cols.index('maxspeed')]))
+			#	self.maxpace = pacekm2miles(self._float(row[cols.index('maxpace')]))
+			#	self.pace = pacekm2miles(self._float(row[cols.index('pace')]))
 			#else:
-			self.distance = self._float(_dict['distance'])
+			self.distance = self._float(row[cols.index('distance')])
 			if not self.distance:
 				self.distance = self.gpx_distance
-			self.average = self._float(_dict['average'])
-			self.upositive = self._float(_dict['upositive'])
-			self.unegative = self._float(_dict['unegative'])
-			self.maxspeed = self._float(_dict['maxspeed'])
-			self.maxpace = self._float(_dict['maxpace'])
-			self.pace = self._float(_dict['pace'])
+			self.average = self._float(row[cols.index('average')])
+			self.upositive = self._float(row[cols.index('upositive')])
+			self.unegative = self._float(row[cols.index('unegative')])
+			self.maxspeed = self._float(row[cols.index('maxspeed')])
+			self.maxpace = self._float(row[cols.index('maxpace')])
+			self.pace = self._float(row[cols.index('pace')])
 			self.has_data = True
 		else:
 			raise Exception( "Error - multiple results from DB for id: %s" % self.id )

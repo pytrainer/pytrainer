@@ -301,9 +301,10 @@ class Record:
 	def getrecordList(self,date, id_sport=None):
 		logging.debug('--')
 		if not id_sport:
-			return self.pytrainer_main.ddbb.select("records,sports",
+			# outer join on sport id to workaround bug where sport reference is null on records from GPX import
+			return self.pytrainer_main.ddbb.select("records left outer join sports on records.sport=sports.id_sports",
 					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
-					"date=\"%s\" and records.sport=sports.id_sports" %date)
+					"date=\"%s\" " %date)
 		else:
 			return self.pytrainer_main.ddbb.select("records,sports",
 					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
