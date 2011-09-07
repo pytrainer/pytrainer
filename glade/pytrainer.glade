@@ -976,15 +976,6 @@
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkLabel" id="label2">
-                                                <property name="visible">True</property>
-                                                <property name="label">   </property>
-                                              </widget>
-                                              <packing>
-                                                <property name="position">1</property>
-                                              </packing>
-                                            </child>
-                                            <child>
                                               <widget class="GtkFrame" id="frame_laps">
                                                 <property name="visible">True</property>
                                                 <property name="label_xalign">0</property>
