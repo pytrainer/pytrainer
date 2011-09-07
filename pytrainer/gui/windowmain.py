@@ -2053,7 +2053,7 @@ class Main(SimpleGladeApp):
             if laps is not None:
                 for lap in laps:
                     #"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number",
-                    lapNumber = "%s%d" % ( _("lap"), int(lap[9])+1 )
+                    lapNumber = "%s %02d" % ( _("lap"), int(lap[9])+1 )
                     if self.pytrainer_main.profile.prf_us_system:
                         dist = km2miles(lap[3])
                     else:
