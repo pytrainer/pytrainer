@@ -51,7 +51,7 @@ class Stats:
         
         results = self.pytrainer_main.ddbb.select_dict("records", ('id_record', 'date', 'sport', 'distance', 'duration', 'maxbeats', 'maxspeed', 'maxpace', 'average','pace','beats'))
         for r in results:
-            if r['sport'] is None:
+            if r['sport'] is None or r['sport'] is 0:
                 # temporary fix to ignore corrupt records caused by GPX import bug
                 continue
             if r['sport'] not in data['sports']:
