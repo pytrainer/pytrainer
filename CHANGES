@@ -4,7 +4,8 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
 
 * New functionality
 
-    - Create sport service - #138 [838] [840 - 845] [850] [850 - 856]
+    - Manpage for pytrainer - #125 [872] [874]
+    - Create sport service - #138 [838] [840 - 845] [850] [850 - 856] [875] [880]
     - Provide means to run all unit tests - #139 [837]
     - Discrete version migration - #132 [815 - 836] [839] [864] [865]
     - Totals tab - #60 [766] [800] [801] [802] [803]
@@ -13,15 +14,20 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
     - Assign graph color to sports - #111 [780]
     - Display laps information on record summary page - #109 #122 [768 - 772] [775] [777] [778] [788] [812] [813]
     - Coloring Google Maps path by speed/pace - thanks to Jonathan - #107 [765] 
-    - Added swedish localization (thnx to Per) - #98 [756] [757] [758] [759] [760]
-    - Add startup option for choosing console or file logging. When "console" is chosen all loging messsages are sent to stdout instead of a log file. [755]
+    - Added swedish localization (thnx to Per) - #98 [756 - 760]
+    - Add startup option for choosing console or file logging. When "console" is chosen all logging messsages are sent to stdout instead of a log file. [755]
 
 * Fixes
 
+    - Cannot edit record created from GPX import with null sport reference #147 [881]
+    - Pytrainer crashes when closing edit record dialog - #146 [879]
+    - Added zero padding to overcome lap order issue - #145 [878]
+    - Updated french localization - thanks to Vincent [876]
+    - Heartrate figures from profile are retrieved independently so only those which fail are set to default value [873]
     - Active/Rest times are not calculated for activities with only one lap - [811]
     - Activity's data (equipment and title) missing when importing activity from file - #105 #137 [866 - 868]
     - Wrong duration calculation when breaks are present - #103 [858 - 862]
-    - GUI problems when resizing - #113 [857]
+    - GUI problems when resizing - #113 [857] [877] [882]
     - GPX file import fails - #141 [849]
     - Enabling localization for some labels - #99 [846] [847]
     - Broken MySQL support - #130 [810] [817] [818]
@@ -35,7 +41,7 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
     - Changed the way OS is checked to allow pytrainer run on other POSIX in addition to GNU/LINUX - thanks to Christian - #120 [784]
     - Renaming danish suffix in po file to avoid confusion - #119 [783]
     - Try using Google Maps Elevation API if all else fails - #102 [779]
-    - Updated ES localization [773] [774] [776] [804] [848] [863]
+    - Updated ES localization [773] [774] [776] [804] [848] [863] [883]
     - Better management of wrong/corrupted data - #118 [767] [786] [787] - [793] [794]
     - Elevation correction extension not handling properly errors #102 [764]
     - Equipment management fixes - #95 [763] #96 [762]
