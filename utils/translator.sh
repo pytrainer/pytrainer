@@ -24,7 +24,7 @@ cd ./locale/$LANGUAGE/LC_MESSAGES/
 echo "Merging old po file with newly generated one"
 make merge
 
-SOFTWARE=$(zenity --list --text="Select your translation software" --radiolist --column "Pick" --column "Software" TRUE "gtranslator" FALSE "kbabel" FALSE "poedit")
+SOFTWARE=$(zenity --list --text="Select your translation software" --radiolist --column "Pick" --column "Software" TRUE "gtranslator" FALSE "kbabel" FALSE "poedit" FALSE "virtaal")
 if [ $? != 0 ]; then exit ; fi
 
 # Editing our new gettext catalog (.po file)
