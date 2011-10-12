@@ -4,6 +4,8 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
 
 * New functionality
 
+    - Option added in localization script (utils/translator.sh) to generate only .pot file - [888 - 892] 
+    - Galician localization (thanks to Kaptan) - [885 - 887] [893]
     - Manpage for pytrainer - #125 [872] [874]
     - Create sport service - #138 [838] [840 - 845] [850] [850 - 856] [875] [880]
     - Provide means to run all unit tests - #139 [837]
@@ -14,7 +16,7 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
     - Assign graph color to sports - #111 [780]
     - Display laps information on record summary page - #109 #122 [768 - 772] [775] [777] [778] [788] [812] [813]
     - Coloring Google Maps path by speed/pace - thanks to Jonathan - #107 [765] 
-    - Added swedish localization (thnx to Per) - #98 [756 - 760]
+    - Added swedish localization (thanks to Per) - #98 [756 - 760]
     - Add startup option for choosing console or file logging. When "console" is chosen all logging messsages are sent to stdout instead of a log file. [755]
 
 * Fixes
