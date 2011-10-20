@@ -43,5 +43,5 @@ class WeekGraph(TimeGraph):
 
 def getDays(date_ini):
 	#TODO look at using calendar.day_abbr for this
-	return [(datetime.datetime.strptime(date_ini, "%Y-%m-%d")+datetime.timedelta(x)).strftime("%a") for x in xrange(0,7)]
+	return [unicode((datetime.datetime.strptime(date_ini, "%Y-%m-%d")+datetime.timedelta(x)).strftime("%a")) for x in xrange(0,7)]
 
