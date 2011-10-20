@@ -2,7 +2,7 @@
 
 NO_LANGUAGE='None (generate .pot)'
 
-LANGUAGE=$(zenity --list --text="Select your language" --radiolist --column "Pick" --column "Language" TRUE "$NO_LANGUAGE" FALSE "es" FALSE "eu" FALSE "ca" FALSE "fr" FALSE "da" FALSE "de" FALSE "pl" FALSE "no" FALSE "cs" FALSE "ru" FALSE "pl" FALSE "sv" FALSE "gl")
+LANGUAGE=$(zenity --list --text="Select your language" --radiolist --column "Pick" --column "Language" TRUE "$NO_LANGUAGE" FALSE "ca" FALSE "cs" FALSE "da" FALSE "de" FALSE "es" FALSE "eu" FALSE "fr" FALSE "gl" FALSE "no" FALSE "pl" FALSE "pt" FALSE "ru" FALSE "sv")
 if [ $? != 0 ]; then exit ; fi
 
 cd ../
