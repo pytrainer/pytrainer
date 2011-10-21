@@ -109,6 +109,8 @@ class Sql:
             return "\"" + value + "\""
         elif type(value) == datetime.datetime:
             return value.strftime("\"%Y-%m-%d %H:%M:%S%z\"")
+        elif type(value) == datetime.date:
+            return value.strftime("\"%Y-%m-%d\"")
         else:
             return str(value)
         logging.debug('<<')
