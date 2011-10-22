@@ -17,7 +17,12 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from migrate.versioning.api import db_version, upgrade, version, version_control
-from migrate.versioning.exceptions import DatabaseNotControlledError
+# sqlalchemy-migrate 0.6.1 broke backwards compatibility
+# so we need to try importing exceptions from one of two packages
+try:
+    from migrate.exceptions import DatabaseNotControlledError
+except:
+    from migrate.versioning.exceptions import DatabaseNotControlledError
 import logging
 import os
 import sys

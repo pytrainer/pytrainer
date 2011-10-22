@@ -24,7 +24,7 @@ libxslt-python-1.1.26
 libxslt-1.1.26
 sqlite-3.7.5 (sqlite is preferred as db than mysql, MySQL-python has been reported to be installed if so)
 python-sqlalchemy-0.6.8 (sqlalchemy >= 0.6.4)
-python-migrate-0.6 (sqlalchemy-migrate-0.6.0) -- In 0.6.1 migrate.*.exceptions are moved to migrate.exceptions --
+python-migrate-0.6 (sqlalchemy-migrate >=0.6.0)
 
 - Only needed if correspondent plugin is enabled:
 gpsbabel-1.3.5 ("Garmin via GPSBabel 1.3.5" aka garmin_hr) - No longer available in official F15 repositories
