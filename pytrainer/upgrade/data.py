@@ -130,6 +130,7 @@ class InstalledData(object):
         
     def upgrade(self):
         logging.info("Upgrading data from version '%s' to version '%s'.", self.get_version(), self.get_available_version())
+        self._ddbb.create_backup()
         pytrainer.upgrade.context.UPGRADE_CONTEXT = self._upgrade_context
         self._migratable_db.upgrade()
         

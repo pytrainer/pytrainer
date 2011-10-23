@@ -20,10 +20,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
-import traceback
-import commands, os
 import dateutil
-from pytrainer.lib.date import Date
 
 #Define the tables and their columns that should be in the database
 #Obviously, this is not a list but a dict -> TODO: ammend name to avoid confusion!!!
@@ -135,9 +132,9 @@ class DDBB:
     def connect(self):
         connection_ok, connection_msg = self.ddbbObject.connect()
         if not connection_ok:
-			print "ERROR: Unable to connect to database"
-			print connection_msg
-			sys.exit(connection_ok)
+            print "ERROR: Unable to connect to database"
+            print connection_msg
+            sys.exit(connection_ok)
 
     def disconnect(self):
         self.ddbbObject.disconnect()
@@ -296,95 +293,15 @@ class DDBB:
         return ret_val[0][0]
         
     def create_tables(self):
-        global tablesList
-        global tablesDefaultData
-        logging.debug('>>')
-        logging.info('Checking PyTrainer database')
-        #if self.ddbb_type != "sqlite":
-        #    logging.error('Support for MySQL database is decommissioned, please migrate to SQLite. Exiting check')
-        #    exit(-2)
-        try:
-            tablesDB = self.ddbbObject.getTableList()
-        except:
-            logging.error('Not able to retrieve which tables are in DB. Printing traceback')
-            traceback.print_exc()
-            exit(-1)
-
-        logging.debug('Found '+ str(len(tablesDB))+' tables in DB: '+ str(tablesDB))
-
-        # Create a compressed copy of current DB
-        try:
-            self.ddbbObject.createDatabaseBackup()
-        except:
-            logging.error('Not able to make a copy of current DB. Printing traceback and exiting')
-            traceback.print_exc()
-            exit(-1)
-
-        #Check Tables
+        """Initialise the database schema from an empty database."""
+        logging.info("Creating database tables")
         for entry in tablesList:
-            if entry not in tablesDB:
-                logging.warn('Table '+str(entry)+' does not exist in DB')
-                self.ddbbObject.createTableDefault(entry,tablesList[entry])
-                #Check if this table has default data to add..
-                if entry in tablesDefaultData:
-                    logging.debug("Adding default data to %s" % entry)
-                    for data_dict in tablesDefaultData[entry]:
-                        self.insert_dict(entry, data_dict)
-            else:
-                self.ddbbObject.checkTable(entry,tablesList[entry])
-
-    def checkDBIntegrity(self):
-        '''17.11.2009 - dgranda
-        Retrieves tables and columns from database, checks current ones and adds something if missed. New in version 1.7.0
-        args: none
-        returns: none'''
-        self.create_tables()
-
-        #Run any functions to update or correct data
-        #These functions _must_ be safe to run at any time (i.e. not be version specfic or only safe to run once)
-        self.populate_date_time_local()
-        logging.debug('<<')
-
-    def checkDBDataValues(self):
-        ''' Check all data in DB and report values that do not match the type '''
-        global tablesList
-
-        for table in tablesList.keys():
-            pass
-
-    def populate_date_time_local(self):
-        ''' Populate date_time_local and date from date_time_utc
-                only access records that date_time_local is NULL
-                using OS timezone to create local_time
-
-                also updates date if date != local_time
-
-                TODO - leaves date_time_local blank for records that have been manually created (as date_time_utc will actually be local time)
-        '''
-        logging.debug('--')
-        listOfRecords = self.ddbbObject.select("records","id_record,date,date_time_utc,date_time_local", "date_time_local is NULL")
-        logging.debug("Found %d records in DB without date_time_local field populated" % (len(listOfRecords) ) )
-        for record in listOfRecords:
-            try:
-                gpxfile = self.configuration.gpxdir+"/%s.gpx"%(record[0])
-                dateFromUTC = Date().getDateTime(record[2])
-                if os.path.isfile(gpxfile) : #GPX file exists for this record - probably not a manual record
-                    date_time_local = str(dateFromUTC[1])
-                    dateFromLocal = dateFromUTC[1].strftime("%Y-%m-%d")
-                    if record[1] != dateFromLocal:
-                        #date field incorrect - update it
-                        logging.debug("Updating record id: %s with date: %s and date_time_local: %s" % (record[0], dateFromLocal, date_time_local) )
-                        self.ddbbObject.update("records","date, date_time_local",[dateFromLocal, date_time_local], "id_record = %d" %record[0])
-                    else:
-                        #date field OK, just update date_time_local
-                        logging.debug("Updating record id: %s with date_time_local: %s" % (record[0], date_time_local) )
-                        self.ddbbObject.update("records","date_time_local",[date_time_local], "id_record = %d" %record[0])
-                else: #Manual entry?
-                    #For manual entries, the UTC time is the local time
-                    #TODO figure out a way to correct this...
-                    pass
-            except Exception as e:
-                print "Error updating record: " + str(record)
-                print e
-                logging.debug("Error updating record: " + str(record))
-                logging.debug(str(e))
+            self.ddbbObject.createTableDefault(entry, tablesList[entry])
+            if entry in tablesDefaultData:
+                logging.debug("Adding default data to %s" % entry)
+                for data_dict in tablesDefaultData[entry]:
+                    self.insert_dict(entry, data_dict)
+                
+    def create_backup(self):
+        """Create a backup of the current database."""
+        self.ddbbObject.createDatabaseBackup()

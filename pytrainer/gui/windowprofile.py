@@ -200,12 +200,6 @@ class WindowProfile(SimpleGladeApp):
         else:
             self.checkbuttonValidate.set_active(False)
             
-        #Show if database and config check requested 
-        if self.pytrainer_main.startup_options.check:
-            self.checkbuttonCheck.set_active(True)
-        else:
-            self.checkbuttonCheck.set_active(False)
-            
         #Show if new graph activated
         if self.pytrainer_main.startup_options.newgraph:
             self.checkbuttonNewGraph.set_active(True)
@@ -236,18 +230,6 @@ class WindowProfile(SimpleGladeApp):
             logging.debug("Validate deactivated")
             self.pytrainer_main.startup_options.validate = False
             
-    def on_checkbuttonCheck_toggled(self, widget):
-        if self.checkbuttonCheck.get_active():
-            logging.debug( "Check activated")
-            if self.pytrainer_main.startup_options.check is not True:
-                #Need to do sanitycheck
-                logging.debug("Need to do sanitycheck")
-                self.pytrainer_main.sanityCheck()
-            self.pytrainer_main.startup_options.check = True
-        else:
-            logging.debug("Check deactivated")
-            self.pytrainer_main.startup_options.check = False
-                
     def on_checkbuttonNewGraph_toggled(self, widget):
         if self.checkbuttonNewGraph.get_active():
             logging.debug("NewGraph activated")

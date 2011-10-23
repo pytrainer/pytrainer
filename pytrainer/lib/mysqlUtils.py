@@ -168,61 +168,6 @@ class Sql:
         sql = "update %s set %s" %(table,string)
         self.db.query(sql)
         
-    def checkTable(self,tableName,columns):
-        '''
-        Checks column names and values from table and adds something if missed. New in version 1.7.0
-        args:
-            tableName - string with name of the table
-            columns - dictionary containing column names and data types coming from definition
-        returns: none'''
-        logging.debug('>>')
-        logging.info('Inspecting '+str(tableName)+' table')
-        logging.debug('Columns definition: '+str(columns))
-
-        # Retrieving data from DB
-        tableInfo = self.retrieveTableInfo(tableName)
-        logging.debug('Raw data retrieved from DB '+str(tableName)+': '+str(tableInfo))
-        #print('Raw data retrieved from DB '+str(tableName)+': '+str(tableInfo))
-        #Raw data retrieved from DB sports: [('met', 'float', 'YES', '', None, ''), ('id_sports', 'int(11)', 'NO', 'PRI', None, 'auto_increment'), ('max_pace', 'int(11)', 'YES', '', None, ''), ('name', 'varchar(100)', 'YES', '', None, ''), ('weight', 'float', 'YES', '', None, '')]
-
-        # Comparing data retrieved from DB with what comes from definition
-        columnsDB = {}
-        for field in tableInfo:
-            newField = {field[0]:field[1]}
-            columnsDB.update(newField)
-        logging.debug('Useful data retrieved from '+str(tableName)+' in DB: '+str(columnsDB))
-        #print('Useful data retrieved from '+str(tableName)+' in DB: '+str(columnsDB))
-
-        # http://mail.python.org/pipermail/python-list/2002-May/141458.html
-        #tempDict = dict(zip(columns,columns))
-        tempDict = dict(columns)
-        #Test for columns that are in DB that shouldn't be
-        result = [x for x in columnsDB if x not in tempDict]
-        #Test for columns that are not in the DB that should be
-        result2 = [x for x in tempDict if x not in columnsDB]
-
-        logging.debug("Columns in DB that shouldnt be: "+str(result))
-        logging.debug("Columns missing from DB: "+str(result2))
-        
-        table_ok = True
-        if len(result) > 0:
-            logging.debug('Found columns in DB that should not be: '+ str(result))
-            table_ok = False
-            for entry in result:
-                logging.debug('Column '+ str(entry) +' in DB but not in definition')
-                print "Column %s in DB but not in definition - please fix manually" % (str(entry))
-                print "#TODO need to add auto fix code"
-                sys.exit(1)
-        if len(result2) > 0: # may have also different data type
-            logging.debug('Found columns missed in DB: '+ str(result2))
-            table_ok = False
-            for entry in result2:
-                logging.debug('Column '+ str(entry) +' not found in DB')
-                self.addColumn(tableName,str(entry),columns[entry])
-        if table_ok:
-            logging.info('Table '+ str(tableName) +' is OK')
-        logging.debug('<<')
-        
     def retrieveTableInfo(self,tableName):
         cur = self.db.cursor()
         sql = "desc %s;" %tableName
@@ -245,6 +190,4 @@ class Sql:
             traceback.print_exc()
             
     def createDatabaseBackup(self):
-        logging.debug('>>')
         logging.info("Unable to create backup for MySQL DB")
-        logging.debug('<<')
