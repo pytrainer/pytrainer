@@ -115,13 +115,13 @@ class InstalledData(object):
                 elif legacy_version == 5: # 1.8.0-dev
                     return 5
                 elif legacy_version == 6: # 1.8.0
-                    return 8
-                elif legacy_version == 7: # 1.9.0-dev
                     return 9
+                elif legacy_version == 7: # 1.9.0-dev
+                    return 10
                 elif legacy_version == 8: # 1.9.0-dev
-                    return 10
+                    return 12
                 elif legacy_version == 9: # 1.9.0-dev
-                    return 10
+                    return 12
             return None
         
     def get_available_version(self):

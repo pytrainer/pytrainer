@@ -1,34 +1,11 @@
 from pytrainer.upgrade.context import UPGRADE_CONTEXT
 from pytrainer.lib import gpx
-from sqlalchemy import MetaData, Table, Column
-from sqlalchemy.types import Integer, Text, Float, String
 from sqlalchemy.sql.expression import text
 import logging
 import os.path
 
 #	lap info added in version 1.9.0
 def upgrade(migrate_engine):
-    add_lap_details_columns(migrate_engine)
-    populate_lap_details_values(migrate_engine)
-    
-def add_lap_details_columns(migrate_engine):
-    logging.info("Adding laps details columns")
-    meta = MetaData(migrate_engine)
-    laps_table = Table("laps", meta, autoload=True)
-    create_laps_column(laps_table, "intensity", String(7))
-    create_laps_column(laps_table, "laptrigger", String(9))
-    create_laps_column(laps_table, "max_speed", Float)
-    create_laps_column(laps_table, "avg_hr" , Integer)
-    create_laps_column(laps_table, "max_hr", Integer)
-    create_laps_column(laps_table, "comments", Text)
-    logging.info("Created laps details columns")
-
-def create_laps_column(laps_table, column_name, column_type):
-    logging.info("Adding column laps.%s" , column_name)
-    column = Column(column_name, column_type)
-    laps_table.create(column)
-    
-def populate_lap_details_values(migrate_engine):
     logging.info("Populating laps details columns")
     resultset = migrate_engine.execute(text("select distinct record from laps where intensity is null"))
     record_ids = []

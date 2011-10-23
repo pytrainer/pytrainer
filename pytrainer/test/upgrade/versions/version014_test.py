@@ -18,7 +18,7 @@
 
 import unittest
 import sqlalchemy
-import pytrainer.upgrade.versions.version012 as version012
+import pytrainer.upgrade.versions.version014 as version014
 
 class UpgradeTest(unittest.TestCase):
     
@@ -46,7 +46,7 @@ class UpgradeTest(unittest.TestCase):
                                            color= original["color"],
                                            met= original["met"],
                                            max_pace= original["max_pace"])
-        version012.upgrade(self._engine)
+        version014.upgrade(self._engine)
         result = self._engine.execute(self._sports_table.select(self._sports_table.c.id_sports==1))
         (_, _, weight, color, met, max_pace) = result.fetchone()
         result.close()
