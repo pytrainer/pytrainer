@@ -65,25 +65,37 @@ class InstalledData(object):
         data_state.update_to_current(self)
         
     def get_state(self):
+        """Get the current state of the installation's data.
+        
+        raises DataInitializationException if the existing data is not
+        compatible and cannot be upgraded.
+        """
         version = self.get_version()
         available_version= self.get_available_version()
         if self.is_versioned():
             if version == available_version:
                 return DataState.CURRENT
             elif version > available_version:
-                raise ValueError("Current version ({0}) is greater than available version ({1}).".format(version, available_version))
+                raise DataInitializationException("Existing data version ({0}) is greater than available version ({1}).".format(version, available_version))
             else:
                 return DataState.STALE
         else:
             if version == None:
-                return DataState.FRESH
+                if self.is_fresh():
+                    return DataState.FRESH
+                else:
+                    raise DataInitializationException("Existing data version cannot be determined.")
             else:
                 return DataState.LEGACY
+            
+    def is_fresh(self):
+        """Check if this is a fresh installation."""
+        return self._migratable_db.is_empty()
     
     def get_version(self):
         """Get the version number of an installation's data.
         
-        If the data is empty then None is returned."""
+        If the data version cannot be determined then None is returned."""
         if self.is_versioned():
             return self._migratable_db.get_version()
         else:
@@ -133,6 +145,11 @@ class InstalledData(object):
         self._ddbb.create_backup()
         pytrainer.upgrade.context.UPGRADE_CONTEXT = self._upgrade_context
         self._migratable_db.upgrade()
+        
+class DataInitializationException(Exception):
+    
+    def __init__(self, value):
+        self.value = value
         
 class DataState(object):
     

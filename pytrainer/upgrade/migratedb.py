@@ -23,8 +23,10 @@ try:
     from migrate.exceptions import DatabaseNotControlledError
 except:
     from migrate.versioning.exceptions import DatabaseNotControlledError
+from sqlalchemy.schema import MetaData
 import logging
 import os
+import sqlalchemy
 import sys
 
 class MigratableDb(object):
@@ -40,6 +42,16 @@ class MigratableDb(object):
         """
         self._repository_path = _get_resource_absolute_path(repository_path)
         self._db_url = db_url
+        
+    def is_empty(self):
+        """Check if the DB schema is empty.
+        
+        An empty schema indicates a new uninitialised database."""
+        metadata = MetaData()
+        metadata.bind = sqlalchemy.create_engine(self._db_url)
+        metadata.reflect()
+        tables = metadata.tables
+        return not tables
         
     def is_versioned(self):
         """ Check if the DB has been initiaized with version metadata."""
