@@ -18,7 +18,7 @@
 
 import unittest
 from mock import Mock
-from pytrainer.upgrade.data import InstalledData, DataState
+from pytrainer.upgrade.data import InstalledData, DataState, DataInitializationException
 import pytrainer.upgrade.context
 
 class InstalledDataTest(unittest.TestCase):
@@ -70,7 +70,7 @@ class InstalledDataTest(unittest.TestCase):
         self._mock_migratable_db.get_upgrade_version.return_value = 1
         try:
             self._installed_data.get_state()
-        except ValueError:
+        except DataInitializationException:
             pass
         else:
             self.fail()
