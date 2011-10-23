@@ -1,4 +1,4 @@
--- athlete stats added in version 1.7.2
+-- athlete stats added in version 1.8.0
 create table athletestats (
 	id_athletestat integer primary key auto_increment,
 	date date,

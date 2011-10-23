@@ -1,4 +1,4 @@
--- initial schema as of version 1.7.0
+-- initial schema as of version 1.7.1
 
 create table sports  (
 	id_sports integer primary key auto_increment,

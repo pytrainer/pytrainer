@@ -92,13 +92,23 @@ class InstalledData(object):
             legacy_version = self._legacy_version_provider.get_legacy_version()
             if legacy_version is not None:
                 legacy_version = int(legacy_version)
-                if legacy_version <= 6:
-                    return legacy_version
-                elif legacy_version == 7:
+                if legacy_version == 1: # 1.7.1
+                    return 1
+                elif legacy_version == 2: # 1.7.2-dev
+                    return 2
+                elif legacy_version == 3: # 1.7.2
+                    return 3
+                elif legacy_version == 4: # 1.8.0-dev
+                    return 4
+                elif legacy_version == 5: # 1.8.0-dev
+                    return 5
+                elif legacy_version == 6: # 1.8.0
+                    return 8
+                elif legacy_version == 7: # 1.9.0-dev
                     return 9
-                elif legacy_version == 8:
+                elif legacy_version == 8: # 1.9.0-dev
                     return 10
-                elif legacy_version == 9:
+                elif legacy_version == 9: # 1.9.0-dev
                     return 10
             return None
         
@@ -166,8 +176,8 @@ class LegacyVersionProvider(object):
         self._conf_dir = conf_dir
         
     def get_legacy_version(self):
-        # In versions 1.7 and 1.8 the database version was stored as a property
-        # in the config file. Versions earlier than 1.7 are not supported for
+        # In versions 1.7.1-1.8.0 the database version was stored as a property
+        # in the config file. Versions earlier than 1.7.1 are not supported for
         # upgrades.
         config_file = self._conf_dir + "/conf.xml"
         parser = etree.XMLParser(encoding="UTF8", recover=True)

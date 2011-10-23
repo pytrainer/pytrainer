@@ -2,7 +2,7 @@ from sqlalchemy import MetaData, Table, Column, Integer
 from sqlalchemy.sql.expression import text
 import logging
 
-# record duration added in version 1.7.2
+# record duration added in version 1.8.0
 
 def upgrade(migrate_engine):
     add_duration_column(migrate_engine)
