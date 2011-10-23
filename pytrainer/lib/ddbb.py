@@ -23,7 +23,6 @@ import logging
 import traceback
 import commands, os
 import dateutil
-import gpx
 from pytrainer.lib.date import Date
 
 #Define the tables and their columns that should be in the database
@@ -344,7 +343,6 @@ class DDBB:
         #Run any functions to update or correct data
         #These functions _must_ be safe to run at any time (i.e. not be version specfic or only safe to run once)
         self.populate_date_time_local()
-        self.add_lap_metadata()
         logging.debug('<<')
 
     def checkDBDataValues(self):
@@ -390,21 +388,3 @@ class DDBB:
                 print e
                 logging.debug("Error updating record: " + str(record))
                 logging.debug(str(e))
-                
-    def add_lap_metadata(self):
-        logging.debug('--')
-        record_ids = set([r[0] for r in self.select("laps","record")])
-        for record in record_ids:
-            try:
-            	laps = self.select("laps","id_lap, intensity, avg_hr, max_hr, max_speed, laptrigger", "record = %s" % record)
-                gpxfile = self.configuration.gpxdir+"/%s.gpx"%(record)
-                if not laps[0][1] and os.path.isfile(gpxfile) : #GPX file exists for this record - probably not a manual record
-                	gpxrecord = gpx.Gpx(filename=gpxfile)
-                	for lap, gpxlap in zip(laps, gpxrecord.getLaps()):
-                		self.ddbbObject.update("laps", "intensity, avg_hr, max_hr, max_speed, laptrigger", (gpxlap[7], gpxlap[8], gpxlap[9], gpxlap[10], "%s" % gpxlap[11]), "id_lap = %d" % lap[0])
-            except Exception as e:
-                print "Error updating record: " + str(record)
-                print e
-                logging.debug("Error updating record: " + str(record))
-                logging.debug(str(e))
-
