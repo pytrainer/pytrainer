@@ -406,9 +406,9 @@ class Record:
 		if sport is None:
 			logging.debug("No sport with name: '%s'", str(sport_name))
 			if add is not None:
-				logging.debug("Adding sport '%s'", str(sport))
+				logging.debug("Adding sport '%s'", str(sport_name))
 				new_sport = Sport()
-				new_sport.name = sport_name
+				new_sport.name = unicode(sport_name)
 				sport = self._sport_service.store_sport(new_sport)
 		return None if sport is None else sport.id
 
