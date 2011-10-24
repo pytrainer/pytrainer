@@ -462,6 +462,7 @@ class Main(SimpleGladeApp):
                     color = {
                         'active' : '#000000',
                         'rest' : '#808080',
+                        'resting' : '#808080',
                     }
                     
                     pic = gtk.gdk.pixbuf_new_from_file(self.data_path+"glade/trigger_%s.png" % lap['laptrigger'])
