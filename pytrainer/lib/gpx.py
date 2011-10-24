@@ -196,6 +196,9 @@ class Gpx:
                 trigger = lap.findtext(triggerTag).lower()
                 summary = lap.find(summaryTag)
                 max_speed = summary.findtext(mainNS.substitute(tag="MaximumSpeed"))
+                if not max_speed:
+                    max_speed = 0
+                    logging.info("No max speed found in lap info. Default setting to 0")
                 avg_hr = summary.findtext(mainNS.substitute(tag="AverageHeartRateBpm"))
                 max_hr =  summary.findtext(mainNS.substitute(tag="MaximumHeartRateBpm"))
                 logging.debug("Found time: %s, lat: %s lon: %s cal: %s dist: %s " % (elapsedTime, lat, lon, calories, distance))

@@ -454,7 +454,10 @@ class Main(SimpleGladeApp):
                     max_speed = lap['max_speed'] * 3.6
                     if s > 0:
                         pace = "%d:%02d" %((3600/s)/60,(3600/s)%60)
-                        max_pace = "%d:%02d" %((3600/max_speed)/60,(3600/max_speed)%60)
+                        if max_speed >0:
+                            max_pace = "%d:%02d" %((3600/max_speed)/60,(3600/max_speed)%60)
+                        else:
+                            max_pace = "0:00"
                         
                     color = {
                         'active' : '#000000',
