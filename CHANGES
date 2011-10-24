@@ -1,15 +1,16 @@
 See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/pytrainer/roadmap
 
-- PyTrainer changes for 1.9.0:
+- pytrainer changes for 1.9.0:
 
 * New functionality
 
+    - Added portuguese localization (thanks to Pedro Ribeiro) - [896]
     - Option added in localization script (utils/translator.sh) to generate only .pot file - [888 - 892] 
     - Galician localization (thanks to Kaptan) - [885 - 887] [893]
     - Manpage for pytrainer - #125 [872] [874]
     - Create sport service - #138 [838] [840 - 845] [850] [850 - 856] [875] [880]
     - Provide means to run all unit tests - #139 [837]
-    - Discrete version migration - #132 [815 - 836] [839] [864] [865]
+    - Discrete version migration - #132 [815 - 836] [839] [864] [865] [899 - 906]
     - Totals tab - #60 [766] [800] [801] [802] [803]
     - Display projected times in record view, including ranking - #116 [782] [785] [811]
     - Ascent and descent figures shown in all views. Added time spent moving and paused in record view (thanks to Friso) - #114 [781]
@@ -17,14 +18,17 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
     - Display laps information on record summary page - #109 #122 [768 - 772] [775] [777] [778] [788] [812] [813]
     - Coloring Google Maps path by speed/pace - thanks to Jonathan - #107 [765] 
     - Added swedish localization (thanks to Per) - #98 [756 - 760]
-    - Add startup option for choosing console or file logging. When "console" is chosen all logging messsages are sent to stdout instead of a log file. [755]
+    - Added startup option for choosing console or file logging. When "console" is chosen all logging messsages are sent to stdout instead of a log file. [755]
 
 * Fixes
 
-    - Cannot edit record created from GPX import with null sport reference #147 [881]
+    - Fixed support to import TCXv2 files - [907 - 909]
+    - Date value was not saved in "Athlete" tab - #149 [898]
+    - Fixed encoding issue that prevented some days of the week and associated information to be shown in stacked bars graph under week tab [897]
+    - Cannot edit record created from GPX import with null sport reference - #147 [881]
     - Pytrainer crashes when closing edit record dialog - #146 [879]
     - Added zero padding to overcome lap order issue - #145 [878]
-    - Updated french localization - thanks to Vincent [876]
+    - Updated french localization - thanks to Vincent, Pierr [876] [895]
     - Heartrate figures from profile are retrieved independently so only those which fail are set to default value [873]
     - Active/Rest times are not calculated for activities with only one lap - [811]
     - Activity's data (equipment and title) missing when importing activity from file - #105 #137 [866 - 868]
@@ -52,7 +56,7 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
     - Fix so only once instance of preferences dialog can be open at a time - #74 [753]
 
 
-- PyTrainer changes for 1.8.0:
+- pytrainer changes for 1.8.0:
 
 * New functionality
     - Equipment management (thx to Nathan) [571] [572] [573] [598] [678] [679] [680] [685] [698] [699] [707] [708] [711] [717] [718] #12
@@ -117,7 +121,7 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
     - Update DB check to ensure time == duration [736]
     - Updating credits [740] [743] 
 
-- PyTrainer changes for 1.7.2:
+- pytrainer changes for 1.7.2:
 
     * Lap DB table created and code changed to populate and use the table [507] [508] [509]
     * Moved some global variables to class variables in main.py [513]
@@ -150,7 +154,7 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
     - plugins tab added - provides alternative way of viewing and running import plugins [512]
     - device import NOT functional 
 
-- PyTrainer changes for 1.7.1:
+- pytrainer changes for 1.7.1:
 
     * New import plugin - Garmintools - svn [430], [431], [436], [452], [453], [459], [460], [461], [463], [464], [486], [487], [488]
     - both file (dump file) and device import implemented
@@ -183,7 +187,7 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
     - file import functional
     - device import NOT functional 
 
-- PyTrainer changes for 1.7.0:
+- pytrainer changes for 1.7.0:
 
 Updated Spanish translation (svn rev 420,423,424)
 Updated French translation (svn rev 421)
@@ -203,7 +207,7 @@ Improving import from TCXv1 format (svn rev 354,371,375,376)
 Several improvements in plugins handling (svn rev 350,353,360,378,422)
 Import GPX files (svn rev 349)
 
-- PyTrainer tasks for 1.6.0.9:
+- pytrainer tasks for 1.6.0.9:
 
 Added dynamic loading and unloading of plugin menu items (svn rev 344)
 Removal of decommissioned plugin (garmin301) and addition of new ones (garmingpx). Update of project data (version and url) (svn rev 343)
@@ -214,7 +218,7 @@ Major improvements in graphs (thanks to Fiz) (svn revs 339, 336, 332, 331)
 Updated german translation - bug ID: 2811507 (thanks to Noèl) (svn revs 338, 333)
 Minor project and license information updated (svn revs 337, 335, 334, 329)
 
-- PyTrainer tasks for 1.6.0.8:
+- pytrainer tasks for 1.6.0.8:
 
 Rotating log file support added (rev 322, http://sourceforge.net/tracker/?func=detail&aid=2717142&group_id=213157&atid=1024595)
 Translations reviewed and added script to facilitate them (rev 319-321,323)
@@ -223,7 +227,7 @@ Changed potential problems when dealing with date objects using MySQL as DB (rev
 Removing redundant calls improving graphical performance (rev 310, linked to http://sourceforge.net/tracker/?func=detail&aid=2717135&group_id=213157&atid=1024592, not yet fully fixed)
 Optimizing xml files parsing when retrieving data from them (rev 309)
 
-- PyTrainer tasks for 1.6.0.7:
+- pytrainer tasks for 1.6.0.7:
 
 Removing pytrainer gui minimal window size (svn rev 304)
 Ordered shutdown of logging stuff (svn rev 303)
@@ -237,7 +241,7 @@ Fixed bug where track record was supposed to be updated in database. Type cast w
 Bug #2100647 - Quick entry doesn't work if no gpx file - Fixed (svn rev. 287)
 FR #2126411 - Package python-sqlite2 not needed anymore: http://www.python.org/doc/2.5.2/lib/module-sqlite3.html (svn rev. 286)
 
-- PyTrainer tasks for 1.6.0.6:
+- pytrainer tasks for 1.6.0.6:
 
 Close button in "About" dialog now works. Migrating from Glade to GTKBuilder
 Fixed some properties in pytrainer.desktop (ID#2126616)
@@ -245,30 +249,30 @@ Added COPYING file with GPLv2 (ID#2126413)
 Removal of garmin301 plugin
 Fixed some issues with MySql tables creation (email from Jonas Liljenfeldt)
 
-- PyTrainer tasks for 1.6.0.5:
+- pytrainer tasks for 1.6.0.5:
 
 mozpytrainer launch script with log level support -> DONE (24.08.2008)
 MET and extra weight values swapped when adding a new sport -> DONE (22.08.2008)
-PyTrainer crashes when adding an activity which sport is not yet in DB -> DONE (31.08.2008) 
+pytrainer crashes when adding an activity which sport is not yet in DB -> DONE (31.08.2008) 
 Should be enough to check timestamps when adding new activities -> DONE (31.08.2008)
 Correct initialization of pace and maxpace values -> DONE (31.08.2008)
 
-- PyTrainer tasks for 1.6.0.4:
+- pytrainer tasks for 1.6.0.4:
 
 Added support for date_time_utc field when importing new tracks via file upload
 pytrainer/profile.py: fixed logging issue when removing sport from database
 
-- PyTrainer tasks for 1.6.0.3:
+- pytrainer tasks for 1.6.0.3:
 
 Complete review of migration scripts. Special attention to ~/.pytrainer/conf.xml file -> DONE (31.07.2008)
 Number output always with two figures to avoid confusion -> DONE (02.08.2008)
 
-- PyTrainer tasks for 1.6.0.2:
+- pytrainer tasks for 1.6.0.2:
 
 Check paces in DB (maxspeed<->maxpace | average<->pace) -> DONE (19.07.2008)
 Error when updating records because of new date_time_utc field in DB -> FIXED (20.07.2008)
 
-- PyTrainer tasks for 1.6.0.1:
+- pytrainer tasks for 1.6.0.1:
 
 Adjust migration scripts
 	Sports saved in ddbb (new column in table sports) -> id_sports in table sports (nothing to do)
