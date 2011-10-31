@@ -86,6 +86,8 @@ class _SportNormalizer(object):
 
 def upgrade(migrate_engine):
     sport_rows = migrate_engine.execute("select id_sports, weight, color, met, max_pace from sports")
+    sport_normalizers = []
     for (id, weight, color, met, max_pace) in sport_rows:
-        _SportNormalizer(id, weight, color, met, max_pace).normalize(migrate_engine)
-    sport_rows.close()
+        sport_normalizers.append(_SportNormalizer(id, weight, color, met, max_pace))
+    for sport_normalizer in sport_normalizers:
+        sport_normalizer.normalize(migrate_engine)
