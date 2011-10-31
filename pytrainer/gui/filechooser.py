@@ -20,9 +20,11 @@
 
 from SimpleGladeApp import SimpleGladeApp
 import gtk
+import logging
 
 class FileChooser(SimpleGladeApp):
     def __init__(self,data_path = None, parent = None, method = None, action = None):
+        logging.debug('>>')
         self.data_path = data_path
         self.filename = None
         self.parent = parent
@@ -36,26 +38,35 @@ class FileChooser(SimpleGladeApp):
             filter.add_pattern("*.gpx")
             self.filechooserdialog.set_filter(filter)
         else:
-            self.button14.set_label("Save")
+            self.button14.set_label(_("Save"))
             self.filechooserdialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
-            print self.filechooserdialog.get_action()
             self.filechooserdialog.set_current_name("*.csv")
+        logging.debug('<<')
 
     def on_accept_clicked(self,widget):
+        logging.debug('>>')
         try:
             self.filename = self.filechooserdialog.get_filename()
+            logging.debug("Filename chosen: %s" % self.filename)
         except AttributeError:
             if self.filename is None:
+                logging.debug("No valid filename has been chosen. Exiting")
                 self.quit()
                 return
+        logging.debug("Parent: %s | Method: %s" %(self.parent, self.method))
         parentmethod = getattr(self.parent,self.method)
         parentmethod()
+        logging.debug("Closing current window")
         self.closewindow()
+        logging.debug('<<')
     
     def on_cancel_clicked(self,widget):
+        logging.debug(">>")
         self.closewindow()
+        logging.debug('<<')
 
     def closewindow(self):
-        #self.filechooserdialog.hide()
-        self.filechooserdialog = None
-        self.quit() 
+        if self.filechooserdialog is not None:
+            self.filechooserdialog.hide()
+        else:
+            logging.debug('GTK Dialog no longer exists, nothing to do')
