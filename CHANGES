@@ -10,7 +10,7 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
     - Manpage for pytrainer - #125 [872] [874]
     - Create sport service - #138 [838] [840 - 845] [850] [850 - 856] [875] [880]
     - Provide means to run all unit tests - #139 [837]
-    - Discrete version migration - #132 [815 - 836] [839] [864] [865] [899 - 906]
+    - Discrete version migration - #132 [815 - 836] [839] [864] [865] [899 - 906] [911]
     - Totals tab - #60 [766] [800] [801] [802] [803]
     - Display projected times in record view, including ranking - #116 [782] [785] [811]
     - Ascent and descent figures shown in all views. Added time spent moving and paused in record view (thanks to Friso) - #114 [781]
@@ -22,11 +22,12 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
 
 * Fixes
 
-    - Fixed support to import TCXv2 files - [907 - 909]
+    - pytrainer quits when exporting activities in csv format [912]
+    - Importing TCXv2 files failed - [907 - 909]
     - Date value was not saved in "Athlete" tab - #149 [898]
     - Fixed encoding issue that prevented some days of the week and associated information to be shown in stacked bars graph under week tab [897]
     - Cannot edit record created from GPX import with null sport reference - #147 [881]
-    - Pytrainer crashes when closing edit record dialog - #146 [879]
+    - pytrainer crashes when closing edit record dialog - #146 [879]
     - Added zero padding to overcome lap order issue - #145 [878]
     - Updated french localization - thanks to Vincent, Pierr [876] [895]
     - Heartrate figures from profile are retrieved independently so only those which fail are set to default value [873]
