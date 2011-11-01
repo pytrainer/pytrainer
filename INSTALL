@@ -32,6 +32,7 @@ garmintools >= 0.10 ("Import from Garmin GPS device (via garmintools)" aka "garm
 wordpresslib (already distributed within pytrainer tarball, wordpress extension)
 httplib2 >= 0.6.0 (wordpress extension)
 SOAPpy >= 0.11.6 (dotclear extension)
+GDAL (Elevation correction, via "gdal-python" or "python-gdal")
 
 2.- Installation process
 
