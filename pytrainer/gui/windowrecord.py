@@ -384,6 +384,9 @@ class WindowRecord(SimpleGladeApp):
             self.rcd_gpxfile.set_text(activity.gpx_file)
             self.frameGeneral.set_sensitive(0)      #Currently record values not changed if a GPX file is present
             self.frameVelocity.set_sensitive(0)     #Greying out options to indicate this to user
+            self.framePace.set_sensitive(0)
+            self.frameElevation.set_sensitive(0)
+            self.frameBeats.set_sensitive(0)
         logging.debug("<<")
         
     def setValues(self,values):

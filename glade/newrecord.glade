@@ -620,7 +620,7 @@
               <widget class="GtkVBox" id="vbox26">
                 <property name="visible">True</property>
                 <child>
-                  <widget class="GtkFrame" id="frame20">
+                  <widget class="GtkFrame" id="framePace">
                     <property name="visible">True</property>
                     <property name="border_width">5</property>
                     <property name="label_xalign">0</property>
@@ -651,7 +651,6 @@
                             <child>
                               <widget class="GtkEntry" id="rcd_maxpace">
                                 <property name="visible">True</property>
-                                <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
@@ -680,7 +679,6 @@
                             <child>
                               <widget class="GtkEntry" id="rcd_pace">
                                 <property name="visible">True</property>
-                                <property name="sensitive">False</property>
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
@@ -730,7 +728,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFrame" id="frame21">
+                  <widget class="GtkFrame" id="frameElevation">
                     <property name="visible">True</property>
                     <property name="border_width">5</property>
                     <property name="label_xalign">0</property>
@@ -825,7 +823,7 @@
                   </packing>
                 </child>
                 <child>
-                  <widget class="GtkFrame" id="frame22">
+                  <widget class="GtkFrame" id="frameBeats">
                     <property name="visible">True</property>
                     <property name="border_width">5</property>
                     <property name="label_xalign">0</property>
