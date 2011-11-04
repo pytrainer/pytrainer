@@ -12,8 +12,8 @@ Here you are dependencies for pytrainer. Of course you must have a working envir
 python >= 2.5 (python >= 3.0 not checked on 2011/11!)
 distutils >= 2.5 (python-devel, to run installation from tarball)
 dateutil >= 1.5 (python-dateutil)
-GTK+ > 2
-PyGTK > 2
+GTK+ >= 2.6.0
+PyGTK >= 2.6.0
 libglade >= 2.6.4 (libglade, pygtk2-libglade)
 pywebkitgtk >= 1.1.8 (see ticket #131)
 matplotlib >= 0.99.x (python-matplotlib)
