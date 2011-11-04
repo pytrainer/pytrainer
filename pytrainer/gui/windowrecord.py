@@ -86,7 +86,7 @@ class WindowRecord(SimpleGladeApp):
         if time != None:
             self.setTime(time)
         if distance!=None and time!=None:
-            self.on_calcaverage_clicked(None)
+            self.on_calcavs_clicked(None)
         if upositive != None:
             self.rcd_upositive.set_text(self.uc.height(upositive))
         if unegative != None:
@@ -608,41 +608,32 @@ class WindowRecord(SimpleGladeApp):
             while gtk.events_pending(): # This allows the GUI to update 
                 gtk.main_iteration()    # before completion of this entire action
             self.show_treeviewEntries_row(path[0])
-        
-    def on_calcaverage_clicked(self,widget):
-        try:
-            hour = self.rcd_hour.get_value_as_int()
-            min = self.rcd_min.get_value_as_int()
-            sec = self.rcd_second.get_value_as_int()
-            time = sec + (min*60) + (hour*3600)
-            time_in_hour = time/3600.0
-            distance = float(self.rcd_distance.get_text())
-            average = distance/time_in_hour
-            self.rcd_average.set_text("%0.2f" %average)
-        except:
-            pass
-    
-    def on_calcpace_clicked(self,widget):
+
+    def on_calcavs_clicked(self,widget):
+        logging.debug(">>")
         hour = self.rcd_hour.get_value_as_int()
         min = self.rcd_min.get_value_as_int()
         sec = self.rcd_second.get_value_as_int()
         time = sec + (min*60) + (hour*3600)
         if time<1:
+            logging.debug("Seems no time value (%s) has been entered, nothing to calculate." %time)
             return False
-        time_in_min = time/60.0
         distance = float(self.rcd_distance.get_text())
         if distance<1:
+            logging.debug("Seems no distance value (%s) has been entered, nothing to calculate." %distance)
             return False
-        #Calc Pace 
-        average = time_in_min/distance
-        #Tranform pace to mm.ss
-        min = int(average)
-        per_min = average - min
-        sec = float(per_min) * 60 / 100
-        dec_pace = min + sec
+        logging.debug("Time: %d seconds | Distance: %0.2f km (mi)" %(time,distance))
+        # Average speed        
+        average_speed = distance*3600.0/time
+        logging.debug("Average speed: %0.2f" %average_speed)
+        self.rcd_average.set_text("%0.2f" %average_speed)
+        # Average pace 
+        dec_pace = 60/average_speed
         #Transform pace to mm:ss
         pace = self.parent.pace_from_float(dec_pace)
+        logging.debug("Average pace: %s" %pace)
         self.rcd_pace.set_text(pace)
+        logging.debug("<<")
     
     def on_calccalories_clicked(self,widget):
         sport = self.rcd_sport.get_active_text()

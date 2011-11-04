@@ -100,5 +100,5 @@ class Waypoint:
 		self.recordwindow.rcd_unegative.set_text(str(unegative))
 		self.recordwindow.set_distance(distance)
 		self.recordwindow.set_recordtime(time/60.0/60.0)
-		self.recordwindow.on_calcaverage_clicked(None)
+		self.recordwindow.on_calcavs_clicked(None)
 		logging.debug("<<")

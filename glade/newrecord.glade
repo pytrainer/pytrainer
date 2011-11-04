@@ -560,7 +560,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_underline">True</property>
-                                <signal name="clicked" handler="on_calcaverage_clicked"/>
+                                <signal name="clicked" handler="on_calcavs_clicked"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">4</property>
@@ -699,7 +699,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_underline">True</property>
-                                <signal name="clicked" handler="on_calcpace_clicked"/>
+                                <signal name="clicked" handler="on_calcavs_clicked"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">4</property>
