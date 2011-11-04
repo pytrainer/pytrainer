@@ -2,6 +2,10 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
 
 - pytrainer changes for 1.9.0:
 
+* Known issues
+
+    - Can't maximize main window. Issue related to graph subtab in register tab #113 #124
+
 * New functionality
 
     - Added portuguese localization (thanks to Pedro Ribeiro) - [896]
@@ -22,6 +26,7 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
 
 * Fixes
 
+    - Syncing calculations of distance, time, speed and pace. Normalized pace format - #71 #152 [916] [918 - 919]
     - pytrainer quits when exporting activities in csv format [912]
     - Importing TCXv2 files failed - [907 - 909]
     - Date value was not saved in "Athlete" tab - #149 [898]
