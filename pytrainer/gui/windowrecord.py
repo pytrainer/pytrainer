@@ -19,6 +19,7 @@
 from __future__ import division
 import os
 import logging
+import traceback
 import gtk, gobject
 from SimpleGladeApp import SimpleGladeApp
 from windowcalendar import WindowCalendar
@@ -442,13 +443,29 @@ class WindowRecord(SimpleGladeApp):
         return None
     
     def on_calctime_clicked(self,widget):
+        logging.debug(">>")
         try:
-            distance = self.rcd_distance.get_text()
-            average = self.rcd_average.get_text()
-            time_in_hour = float(distance)/float(average)
+            distance = float(self.rcd_distance.get_text()) # distance is mandatory!
+            # we need either pace or speed
+            try:
+                average = float(self.rcd_average.get_text())
+                time_in_hour = distance/average
+                logging.debug("Distance: %0.3f km (mi) | Speed: %0.2f -> Time: %.f hours  " %(distance,average,time_in_hour)) 
+                pace = self.parent.pace_from_float(60/average)
+                logging.debug("Setting pace: %s" %pace)
+                self.rcd_pace.set_text(pace)
+            except:
+                pace_dec = self.parent.pace_to_float(self.rcd_pace.get_text())
+                time_in_hour = pace_dec*distance/60.0
+                logging.debug("Distance: %0.3f km (mi) | Pace_dec: %0.2f -> Time: %.f hours" %(distance,pace_dec,time_in_hour))
+                speed = distance/time_in_hour
+                logging.debug("Setting average speed: %0.2f" %speed)
+                self.rcd_average.set_text("%0.2f" %speed)
             self.set_recordtime(time_in_hour)
         except:
+            logging.debug("Traceback: %s" % traceback.format_exc())
             pass
+        logging.debug("<<")
 
     def update_activity_data(self, row, gpx_file, sport):
         self.activity_data[row]["rcd_comments"] = ""
@@ -634,7 +651,7 @@ class WindowRecord(SimpleGladeApp):
         logging.debug("Average pace: %s" %pace)
         self.rcd_pace.set_text(pace)
         logging.debug("<<")
-    
+
     def on_calccalories_clicked(self,widget):
         sport = self.rcd_sport.get_active_text()
         hour = self.rcd_hour.get_value_as_int()
@@ -660,17 +677,33 @@ class WindowRecord(SimpleGladeApp):
             self.rcd_calories.set_text(str(calories))
 
     def on_calcdistance_clicked(self,widget):
+        logging.debug(">>")
         try:
             hour = self.rcd_hour.get_value_as_int()
             min = self.rcd_min.get_value_as_int()
             sec = self.rcd_second.get_value_as_int()
             time = sec + (min*60) + (hour*3600)
             time_in_hour = time/3600.0
-            average = float(self.rcd_average.get_text())
-            distance = average*time_in_hour
+            # we need either pace or speed
+            try:
+                average = float(self.rcd_average.get_text())
+                distance = average*time_in_hour
+                logging.debug("Time: %d seconds | Speed: %0.2f -> Distance: %0.3f km (mi)" %(time,average,distance)) 
+                pace = self.parent.pace_from_float(60/average)
+                logging.debug("Setting pace: %s" %pace)
+                self.rcd_pace.set_text(pace)
+            except:
+                pace_dec = self.parent.pace_to_float(self.rcd_pace.get_text())
+                distance = time/(60.0*pace_dec)
+                logging.debug("Time: %d seconds | Pace_dec: %0.2f -> Distance: %0.3f km (mi)" %(time,pace_dec,distance))
+                speed = distance/time_in_hour
+                logging.debug("Setting average speed: %0.2f" %speed)
+                self.rcd_average.set_text("%0.2f" %speed)
             self.set_distance(distance) 
         except:
+            logging.debug("Traceback: %s" % traceback.format_exc())
             pass
+        logging.debug("<<")
     
     def set_distance(self,distance):
         self.rcd_distance.set_text("%0.2f" %distance)
