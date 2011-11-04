@@ -83,11 +83,17 @@ class Record:
 
 	def pace_to_float(self, value):
 		'''Take a mm:ss or mm.ss and return float'''
-		value = value.replace(':', '.')
 		try:
-			value = float(value)
-		except ValueError:
-			value = None
+			value = float(value)			
+		except:
+			if ":" in value: # 'mm:ss' found
+				mins, sec = value.split(":")
+				value = float(mins + "." + "%02d" %round(int(sec)*5/3))
+			elif "," in value:
+				value = float(value.replace(',','.'))
+			else:
+				logging.error("Wrong value provided: %s" %value)
+				value = None
 		return value
 
 	def pace_from_float(self, value):
@@ -97,7 +103,9 @@ class Record:
 			_value = "%0.2f" % float(value)
 		except ValueError:
 			_value = str(value)
-		return _value.replace('.',':')
+		mins, sec_dec = _value.split(".")
+		pace = mins + ":" + "%02d" %round(int(sec_dec)*3/5)
+		return pace
 
 	def _formatRecordNew (self, list_options):
 		"""20.07.2008 - dgranda
