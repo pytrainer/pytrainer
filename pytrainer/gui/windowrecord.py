@@ -268,8 +268,11 @@ class WindowRecord(SimpleGladeApp):
             list_options["rcd_upositive"] = self.uc.usr2sys_str('height', self.rcd_upositive.get_text())
             list_options["rcd_unegative"] = self.uc.usr2sys_str('height', self.rcd_unegative.get_text())
             list_options["rcd_maxbeats"] = self.rcd_maxbeats.get_text()
-            list_options["rcd_pace"] = self.uc.usr2sys_str('pace', self.rcd_pace.get_text())
-            list_options["rcd_maxpace"] = self.uc.usr2sys_str('pace', self.rcd_maxpace.get_text())
+            # 2011.11.05 - dgranda
+            # Pace is shown to user in mm:ss format
+            # But pace in database is stored in a mixed way: 4.30 for 4:30 (4.5 in 'decimal'). This needs to be changed!!
+            list_options["rcd_pace"] = self.uc.usr2sys_str('pace', self.rcd_pace.get_text().replace(":","."))
+            list_options["rcd_maxpace"] = self.uc.usr2sys_str('pace', self.rcd_maxpace.get_text().replace(":","."))
             list_options["rcd_maxvel"] = self.uc.usr2sys_str('speed', self.rcd_maxvel.get_text())
             list_options["rcd_time"] = [self.rcd_hour.get_value_as_int(),self.rcd_min.get_value_as_int(),self.rcd_second.get_value_as_int()]
             buffer = self.rcd_comments.get_buffer()
