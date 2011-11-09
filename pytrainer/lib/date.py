@@ -34,12 +34,16 @@ class Date:
     def second2time(self,seconds):
         if not seconds:
             return 0,0,0
-        time_in_hour = seconds/3600.0
-        hour = int(time_in_hour)
-        min = int((time_in_hour-hour)*60)
-        sec = (((time_in_hour-hour)*60)-min)*60
-        sec = seconds-(hour*3600)-(min*60)
-        return hour,min,sec
+        #time_in_hour = seconds/3600.0
+        #hour = int(time_in_hour)
+        #min = int((time_in_hour-hour)*60)
+        #sec = (((time_in_hour-hour)*60)-min)*60
+        #sec = seconds-(hour*3600)-(min*60)
+        hours = seconds // (60*60)       
+        seconds %= (60*60)
+        minutes = seconds // 60
+        seconds %= 60                      
+        return hours,minutes,seconds
 
     def time2second(self,time):
         hour,min,sec = time
