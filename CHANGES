@@ -4,10 +4,11 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
 
 * Known issues
 
-    - Can't maximize main window. Issue related to graph subtab in register tab #113 #124
+    - Can't maximize main window. Issue related to graph subtab in register tab - tickets #113 #124
 
-* New functionality
+* New functionality or improvement
 
+    - Updated DE localization. Thanks to Erik Pfannenstein from Debian DE group - [923]
     - Added portuguese localization (thanks to Pedro Ribeiro) - [896]
     - Option added in localization script (utils/translator.sh) to generate only .pot file - [888 - 892] 
     - Galician localization (thanks to Kaptan) - [885 - 887] [893]
@@ -26,7 +27,7 @@ See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/
 
 * Fixes
 
-    - Syncing calculations of distance, time, speed and pace. Normalized pace format - #71 #152 [916] [918 - 919]
+    - Syncing calculations of distance, time, speed and pace. Normalized pace format - #71 #152 [916] [918 - 919] [922] [924]
     - pytrainer quits when exporting activities in csv format [912]
     - Importing TCXv2 files failed - [907 - 909]
     - Date value was not saved in "Athlete" tab - #149 [898]
