@@ -96,15 +96,18 @@ class Record:
 				value = None
 		return value
 
-	def pace_from_float(self, value):
+	def pace_from_float(self, value, fromDB=False):
 		'''Helper to generate mm:ss from float representation mm.ss (or mm,ss?)'''
 		#Check that value supplied is a float
 		try:
 			_value = "%0.2f" % float(value)
 		except ValueError:
 			_value = str(value)
-		mins, sec_dec = _value.split(".")
-		pace = mins + ":" + "%02d" %round(int(sec_dec)*3/5)
+		if fromDB:  # paces in DB are stored in mixed format -> 4:30 as 4.3 (NOT as 4.5 aka 'decimal')
+			pace = _value
+		else:
+			mins, sec_dec = _value.split(".")
+			pace = mins + ":" + "%02d" %round(int(sec_dec)*3/5)
 		return pace
 
 	def _formatRecordNew (self, list_options):
@@ -268,7 +271,7 @@ class Record:
 		logging.debug('<<')
 		return summaryRecord, laps
 
-	def updateRecord(self, list_options, id_record, equipment=None):
+	def updateRecord(self, list_options, id_record, equipment=None): # ToDo: update only fields that can change if GPX file is present
 		logging.debug('>>')
 		#Remove activity from pool so data is updated
 		self.pytrainer_main.activitypool.remove_activity(id_record)

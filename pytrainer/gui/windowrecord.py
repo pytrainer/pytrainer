@@ -371,8 +371,8 @@ class WindowRecord(SimpleGladeApp):
         self.rcd_upositive.set_text("%.2f" %self.uc.height(activity.upositive))
         self.rcd_unegative.set_text("%.2f" %self.uc.height(activity.unegative))
         self.rcd_maxvel.set_text("%.2f" %self.uc.speed(activity.maxspeed))
-        self.rcd_maxpace.set_text("%s" %self.parent.pace_from_float(self.uc.pace(activity.maxpace)))
-        self.rcd_pace.set_text("%s" %self.parent.pace_from_float(self.uc.pace(activity.pace)))
+        self.rcd_maxpace.set_text("%s" %self.parent.pace_from_float(self.uc.pace(activity.maxpace),True)) # value coming from DB
+        self.rcd_pace.set_text("%s" %self.parent.pace_from_float(self.uc.pace(activity.pace),True)) # value coming from DB
         self.rcd_maxbeats.set_text("%s"%activity.maxbeats)
         self.rcd_title.set_text(activity.title)
         
