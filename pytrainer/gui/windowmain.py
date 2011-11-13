@@ -95,7 +95,7 @@ class Main(SimpleGladeApp):
     def new(self):
         self.menublocking = 0
         self.selected_view="day"
-        self.window1.set_title ("pyTrainer %s" % self.version)
+        self.window1.set_title ("pytrainer %s" % self.version)
         try:
             width, height = self.pytrainer_main.profile.getValue("pytraining","window_size").split(',')
             self.window1.resize(int(width), int(height))

@@ -474,7 +474,7 @@ class Record:
 			logging.debug('Found '+str(len(tracks))+' tracks')
 			self._select_trkfromgpx(gpxfile,tracks)
 		else:
-			msg = _("pyTrainer can't import data from your gpx file")
+			msg = _("pytrainer can't import data from your gpx file")
 			from gui.warning import Warning
 			warning = Warning(self.data_path)
 			warning.set_text(msg)
