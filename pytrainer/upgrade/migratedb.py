@@ -17,6 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from migrate.versioning.api import db_version, upgrade, version, version_control
+from sqlalchemy.exc import NoSuchTableError
 # sqlalchemy-migrate 0.6.1 broke backwards compatibility
 # so we need to try importing exceptions from one of two packages
 try:
@@ -58,6 +59,10 @@ class MigratableDb(object):
         try:
             self.get_version()
         except DatabaseNotControlledError:
+            return False
+        except NoSuchTableError:
+            # prior to 0.6.0, sqlalchemy-migrate did not handle querying
+            # against unversioned databases.
             return False
         return True
         

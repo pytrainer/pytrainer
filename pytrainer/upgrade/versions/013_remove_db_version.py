@@ -1,7 +1,7 @@
 from lxml import etree
 from pytrainer.upgrade.context import UPGRADE_CONTEXT
 
-def upgrade(migrate_engine):
+def upgrade(migrate_engine=None):
     config_file = UPGRADE_CONTEXT.conf_dir + "/conf.xml"
     parser = etree.XMLParser(encoding="UTF8", recover=True)
     xml_tree = etree.parse(config_file, parser=parser)

@@ -22,8 +22,9 @@ class UpgradeContext(object):
     
     Provides access to the application base dir."""
     
-    def __init__(self, conf_dir):
+    def __init__(self, conf_dir, db_url):
         self.conf_dir = conf_dir
+        self.db_url = db_url
     
 # sqlalchemy-migrate does not provide any means to inject the context object in
 # to upgrade scripts so instead we provide access via this global which must be
