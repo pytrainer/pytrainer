@@ -21,6 +21,7 @@ import re
 import logging
 import colorsys
 import math
+import traceback
 
 import pytrainer.lib.points as Points
 from pytrainer.lib.fileUtils import fileUtils
@@ -73,26 +74,29 @@ class Googlemaps:
         pointlist = []
         polyline = []
 
-        list_values = activity.tracks
+        list_values = activity.tracks 
+        # (accum distance, elevation, total duration, speed, lat, lon, bpm, cadence, corrected elevation)
+        # (19.963867183986643, 7.34716797, 6488, 13.791899119294959, 43.53392358, -5.634736, 146, None, None)
         if list_values is not None and list_values != [] and len(list_values) > 0:
             minlat, minlon = float(list_values[0][4]),float(list_values[0][5])
             maxlat=minlat
             maxlon=minlon
             
-            pre = 0
             av_sum = 0
             variance_sum = 0
             n = 0
+            #logging.debug("\n, ".join(map(str, list_values)))
             for i in list_values:
                 if linetype==1:
-                    if pre:
-                        val = (i[0]-pre[0])/((i[2]-pre[2])/3600)
+                    if i[3] is not None:
+                        val = i[3]
                     else:
-                        val = (list_values[1][0]-list_values[0][0])/((list_values[1][2]-list_values[0][2])/3600)
+                        val = 0
+                        logging.error("No valid speed value for trackpoint: distance: %s | lat: %s | lon: %s" %(i[0],i[4],i[5]))
                 elif linetype==2:
                 	val = i[6] if i[6] else 0
                 elif linetype==3:
-                	val =i[7] if i[7]!=None else 1
+                	val = i[7] if i[7]!=None else 1
                 else:
                     val = 1
                     
@@ -107,7 +111,6 @@ class Googlemaps:
                 maxlon = max(maxlon, lon)
                 pointlist.append((lat,lon))
                 polyline.append(["new google.maps.LatLng(%s, %s)" % (lat, lon), val, ""])
-                pre = i
                 
             av_speed = av_sum / float(n)
             variance = (variance_sum / float(n)) - av_speed**2
