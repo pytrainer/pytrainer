@@ -1,5 +1,19 @@
 See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/pytrainer/roadmap
 
+- pytrainer changes for 1.9.1:
+
+* Known issues
+
+    - Can't maximize main window. Issue related to graph subtab in register tab - tickets #113 #124
+
+* Fixes
+
+    - Corrected german localization (thanks to Andreas) - [938]
+    - Amended typo in translator credits - [937]
+    - Coloring graph not working when selecting speed as reference - #154 [936]
+    - Added support for sqlalchemy-migrate 0.5.4 - #153 [935] 
+
+
 - pytrainer changes for 1.9.0:
 
 * Known issues
