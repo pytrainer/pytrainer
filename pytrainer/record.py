@@ -448,13 +448,12 @@ class Record:
 
 	def getRecordDayList(self,date, id_sport=None):
 		logging.debug('>>')
-		year,month,day = date.split("-")
-		logging.debug('Retrieving data for '+year+'.'+month+'.'+day)
+		logging.debug('Retrieving data for ' + str(date))
 		# Why is looking for all days of the same month?
 		if not id_sport:
-			records = self.pytrainer_main.ddbb.select("records","date","date LIKE '"+year+"-"+month+"-%'")
+			records = self.pytrainer_main.ddbb.select("records","date","date LIKE '" +str(date.year)+"-"+date.strftime("%m")+"-%'")
 		else:
-			records = self.pytrainer_main.ddbb.select("records","date","date LIKE \"%s-%s-%%\" and sport=\"%s\"" %(year,month,id_sport))
+			records = self.pytrainer_main.ddbb.select("records","date","date LIKE \"%d-%0.2d-%%\" and sport=\"%s\"" %(date.year,date.month,id_sport))
 		logging.debug('Found '+str(len(records))+' entries')
 		day_list = []
 		for i in records:
