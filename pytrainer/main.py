@@ -217,7 +217,7 @@ class pyTrainer:
             logging.debug('<<')
             return
         date_selected = self.date.getDate()
-        date_selected_as_date = datetime.strptime(date_selected, "%Y-%m-%d")
+        date_formatted = self.format_date(date_selected)
         if view=="record":
              logging.debug('record view')
              if self.windowmain.recordview.get_current_page()==0:
@@ -234,12 +234,12 @@ class pyTrainer:
              logging.debug('day view')
              sport = self.windowmain.activeSport
              sport_id = self.record.getSportId(sport)
-             record_list = self.record.getrecordList(date_selected, sport_id)
+             record_list = self.record.getrecordList(date_formatted, sport_id)
              self.windowmain.actualize_dayview(record_list=record_list)
              #selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
         elif view=="week":
              logging.debug('week view')
-             date_range = DateRange.for_week_containing(date_selected_as_date)
+             date_range = DateRange.for_week_containing(date_selected)
              date_ini = self.format_date(date_range.start_date)
              date_end = self.format_date(date_range.end_date)
              sport = self.windowmain.activeSport
@@ -248,27 +248,25 @@ class pyTrainer:
              self.windowmain.actualize_weekview(record_list, date_ini, date_end)
         elif view=="month":
              logging.debug('month view')
-             date_range = DateRange.for_month_containing(date_selected_as_date)
+             date_range = DateRange.for_month_containing(date_selected)
              date_ini = self.format_date(date_range.start_date)
              date_end = self.format_date(date_range.end_date)
              sport = self.windowmain.activeSport
              sport_id = self.record.getSportId(sport)
 #             record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport_id)
              record_list = self.record.getrecordPeriod(date_ini, date_end, sport_id)
-             nameMonth, daysInMonth = self.date.getNameMonth(date_selected)
+             nameMonth, daysInMonth = self.date.getNameMonth(date_formatted)
              self.windowmain.actualize_monthview(record_list, nameMonth)
              self.windowmain.actualize_monthgraph(record_list, daysInMonth)
         elif view=="year":
              logging.debug('year view')
-             date_range = DateRange.for_year_containing(date_selected_as_date)
+             date_range = DateRange.for_year_containing(date_selected)
              date_ini = self.format_date(date_range.start_date)
              date_end = self.format_date(date_range.end_date)
              sport = self.windowmain.activeSport
              sport_id = self.record.getSportId(sport)
-             year = self.date.getYear(date_selected)
-#             record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport_id)
              record_list = self.record.getrecordPeriod(date_ini, date_end, sport_id)
-             self.windowmain.actualize_yearview(record_list, year)
+             self.windowmain.actualize_yearview(record_list, date_selected.year)
              self.windowmain.actualize_yeargraph(record_list)
         elif view=="listview":
             logging.debug('list view')
@@ -337,7 +335,7 @@ class pyTrainer:
         #self.refreshListView() # old variant
         self.refreshListView(self.windowmain.listsearch.condition)
         #Refresh list records
-        date = self.date.getDate()
+        date = self.format_date(self.date.getDate())
         sport = self.windowmain.activeSport
         id_sport = self.record.getSportId(sport)
         record_ids = self.record.getrecordList(date, id_sport)
@@ -436,7 +434,7 @@ class pyTrainer:
     def newRecord(self,title=None,distance=None,time=None,upositive=None,unegative=None,bpm=None,calories=None,date=None,comment=None,view=None):
         logging.debug('>>')
         if date == None:
-             date = self.date.getDate()
+             date = self.format_date(self.date.getDate())
         self.record.newRecord(date, title, distance, time, upositive, unegative, bpm, calories, comment)
         self.refreshListRecords()
         if view is not None:

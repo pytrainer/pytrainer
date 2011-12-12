@@ -55,9 +55,9 @@ class Date:
         #hack for the gtk calendar widget
         if self.calendar is not None:
             year,month,day = self.calendar.get_date()
-            return "%0.4d-%0.2d-%0.2d" %(year,month+1,day)
+            return datetime.date(year, month+1, day)
         else:
-            return datetime.date.today().strftime("%Y-%m-%d")
+            return datetime.date.today()
 
     def setDate(self,newdate):
         year,month,day = newdate.split("-")
@@ -87,10 +87,6 @@ class Date:
         day, daysInMonth = calendar.monthrange(int(year), int(month))
         monthName = calendar.month_name[int(month)]
         return monthName, daysInMonth
-
-    def getYear(self,date):
-        year,month,day = date.split("-")
-        return year
 
     def unixtime2date(self,unixtime):
         print unixtime
