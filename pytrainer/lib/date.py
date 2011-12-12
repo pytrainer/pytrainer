@@ -69,23 +69,8 @@ class Date:
         
     
     def getNameMonth(self, date):
-        #month_name = {
-        #   "01":_("January"),
-        #   "02":_("Febrary"),
-        #   "03":_("March"),
-        #   "04":_("April"),
-        #   "05":_("May"),
-        #   "06":_("June"),
-        #   "07":_("July"),
-        #   "08":_("August"),
-        #   "09":_("September"),
-        #   "10":_("October"),
-        #   "11":_("November"),
-        #   "12":_("December")
-        #   }
-        year,month,day = date.split("-")
-        day, daysInMonth = calendar.monthrange(int(year), int(month))
-        monthName = calendar.month_name[int(month)]
+        day, daysInMonth = calendar.monthrange(date.year, date.month)
+        monthName = calendar.month_name[date.month]
         return monthName, daysInMonth
 
     def unixtime2date(self,unixtime):

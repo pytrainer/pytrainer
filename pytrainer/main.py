@@ -255,7 +255,7 @@ class pyTrainer:
              sport_id = self.record.getSportId(sport)
 #             record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport_id)
              record_list = self.record.getrecordPeriod(date_ini, date_end, sport_id)
-             nameMonth, daysInMonth = self.date.getNameMonth(date_formatted)
+             nameMonth, daysInMonth = self.date.getNameMonth(date_selected)
              self.windowmain.actualize_monthview(record_list, nameMonth)
              self.windowmain.actualize_monthgraph(record_list, daysInMonth)
         elif view=="year":
