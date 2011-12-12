@@ -55,7 +55,7 @@ from lib.uc import UC
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
         #Version constants
-        self.version ="1.9.2-dev"
+        self.version ="1.10.0-dev"
         #Process command line options
         self.startup_options = self.get_options()
         #Setup logging
