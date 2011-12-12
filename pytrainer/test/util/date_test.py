@@ -17,11 +17,27 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import unittest
+import pytrainer.util.date
 from pytrainer.util.date import DateRange
 from datetime import date
 from datetime import datetime
+from mock import Mock
+
+class DateModuleTest(unittest.TestCase):
+    
+    def test_first_day_of_week_should_be_non_negative_integer(self):
+        first_day = pytrainer.util.date.first_day_of_week()
+        self.assertTrue(first_day >= 0)
+    
+    def test_first_day_of_week_should_be_less_than_seven(self):
+        first_day = pytrainer.util.date.first_day_of_week()
+        self.assertTrue(first_day < 7)
 
 class DateRangeTest(unittest.TestCase):
+    
+    def setUp(self):
+        pytrainer.util.date.first_day_of_week = Mock()
+        pytrainer.util.date.first_day_of_week.return_value = 0
 
     def test_constructor_should_accept_end_date_same_as_start_date(self):
         DateRange(date(2011, 9, 28), date(2011, 9, 28))
@@ -95,3 +111,32 @@ class DateRangeTest(unittest.TestCase):
             pass
         else:
             self.fail()
+            
+    def test_date_range_for_year_should_start_jan_1(self):
+        date_range = DateRange.for_year_containing(date(2011, 12, 11))
+        self.assertEquals(date(2011, 1, 1), date_range.start_date)
+    
+    def test_date_range_for_year_should_end_dec_31(self):
+        date_range = DateRange.for_year_containing(date(2011, 12, 11))
+        self.assertEquals(date(2011, 12, 31), date_range.end_date)
+        
+    def test_date_range_for_month_should_start_first_day_of_month(self):
+        date_range = DateRange.for_month_containing(date(2011, 12, 11))
+        self.assertEquals(date(2011, 12, 1), date_range.start_date)
+        
+    def test_date_range_for_month_dec_should_end_dec_31(self):
+        date_range = DateRange.for_month_containing(date(2011, 12, 11))
+        self.assertEquals(date(2011, 12, 31), date_range.end_date)
+        
+    def test_date_range_for_month_feb_should_end_feb_28(self):
+        date_range = DateRange.for_month_containing(date(2011, 2, 11))
+        self.assertEquals(date(2011, 2, 28), date_range.end_date)
+        
+    def test_date_range_for_week_should_start_sunday(self):
+        date_range = DateRange.for_week_containing(date(2011, 12, 7))
+        self.assertEquals(date(2011, 12, 4), date_range.start_date)
+    
+    def test_date_range_for_week_should_end_saturday(self):
+        date_range = DateRange.for_week_containing(date(2011, 12, 7))
+        self.assertEquals(date(2011, 12, 10), date_range.end_date)
+        

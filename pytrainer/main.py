@@ -29,10 +29,12 @@ from optparse import OptionParser
 import logging
 import logging.handlers
 import traceback
+from datetime import datetime
 
 from os import path
 
 from pytrainer import platform
+from pytrainer.util.date import DateRange
 from upgrade.data import initialize_data
 from environment import Environment
 from record import Record
@@ -215,6 +217,7 @@ class pyTrainer:
             logging.debug('<<')
             return
         date_selected = self.date.getDate()
+        date_selected_as_date = datetime.strptime(date_selected, "%Y-%m-%d")
         if view=="record":
              logging.debug('record view')
              if self.windowmain.recordview.get_current_page()==0:
@@ -236,14 +239,18 @@ class pyTrainer:
              #selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
         elif view=="week":
              logging.debug('week view')
-             date_ini, date_end = self.date.getWeekInterval(date_selected, self.profile.prf_us_system)
+             date_range = DateRange.for_week_containing(date_selected_as_date)
+             date_ini = self.format_date(date_range.start_date)
+             date_end = self.format_date(date_range.end_date)
              sport = self.windowmain.activeSport
              sport_id = self.record.getSportId(sport)
              record_list = self.record.getrecordPeriod(date_ini, date_end, sport_id)
              self.windowmain.actualize_weekview(record_list, date_ini, date_end)
         elif view=="month":
              logging.debug('month view')
-             date_ini, date_end = self.date.getMonthInterval(date_selected)
+             date_range = DateRange.for_month_containing(date_selected_as_date)
+             date_ini = self.format_date(date_range.start_date)
+             date_end = self.format_date(date_range.end_date)
              sport = self.windowmain.activeSport
              sport_id = self.record.getSportId(sport)
 #             record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport_id)
@@ -253,7 +260,9 @@ class pyTrainer:
              self.windowmain.actualize_monthgraph(record_list, daysInMonth)
         elif view=="year":
              logging.debug('year view')
-             date_ini, date_end = self.date.getYearInterval(date_selected)
+             date_range = DateRange.for_year_containing(date_selected_as_date)
+             date_ini = self.format_date(date_range.start_date)
+             date_end = self.format_date(date_range.end_date)
              sport = self.windowmain.activeSport
              sport_id = self.record.getSportId(sport)
              year = self.date.getYear(date_selected)
@@ -273,6 +282,9 @@ class pyTrainer:
         else:
             print "Unknown view %s" % view
         logging.debug('<<')
+        
+    def format_date(self, date):
+        return date.strftime("%Y-%m-%d")
 
     def refreshRecordGraphView(self, view, id_record=None):
         logging.debug('>>')

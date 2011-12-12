@@ -21,10 +21,8 @@
 import time
 import datetime
 import calendar
-import datetime
 import dateutil.parser
 from dateutil.tz import * # for tzutc()
-from subprocess import Popen, PIPE
 import logging
 
 class Date:
@@ -69,84 +67,6 @@ class Date:
     def time2string(self,date):
         return "%0.4d-%0.2d-%0.2d" %(int(date[0]),int(date[1]),int(date[2]))
         
-    def getFirstDayOfWeek(self):
-        '''
-        Function to determine the first day of the week from the locale
-        from http://blogs.gnome.org/patrys/2008/09/29/how-to-determine-the-first-day-of-week/
-        
-        $ locale first_weekday week-1stday
-        2
-        19971130
-        '''
-        
-        CMD=('locale', 'first_weekday', 'week-1stday')
-        p=Popen(CMD, stdout=PIPE, stderr=PIPE)
-        stdout, stderr = p.communicate()
-        #print "STDOUT\n"+stdout
-        #print "STDERR\n"+stderr
-        #print "RETURNCODE: "+str(p.returncode)
-        if  p.returncode != 0:
-            #Error in command execution
-            return None
-        results = stdout.split('\n')
-        if len(results) < 2:
-            #print "len error", len(results), results
-            return None
-        try:
-            day_delta = datetime.timedelta(days=int(results[0]) - 1)
-            base_date = dateutil.parser.parse(results[1])
-            first_day = base_date + day_delta
-            msg = "First day of week based on locale is:", first_day.strftime("%A")
-            logging.debug(msg)
-            return first_day
-        except Exception as e:
-            print type(e)
-            print e
-            return None
-        
-        
-
-    def getWeekInterval(self,date, prf_us_system):
-        ''' Function to provide beginning and ending of the week that a certain day is in
-            Problems as python date functions do not respect locale (i.e. Sunday is always start of week????)
-            Note: %w gives weekday as a decimal number [0(Sunday),6(Saturday)].
-        '''
-        weekDate = datetime.datetime.strptime(date, "%Y-%m-%d")
-        dayOfWeek = int(weekDate.strftime("%w"))
-        #print "Today is %s day of the week:" % dayOfWeek
-        first_day = self.getFirstDayOfWeek().strftime("%w") #0 = Sun is first, 1 = Mon is first, 6 = Sat is first
-        #first_day = 6
-        if first_day is not None:
-            #got response from locale query...
-            #print "first day of week is:", first_day
-            #Adjust dayOfweek...
-            dayOfWeek -= int(first_day)
-            if dayOfWeek < 0:
-                dayOfWeek += 7
-            #print "Adjusted today is %s day of the week:" % dayOfWeek
-        date_ini = weekDate + datetime.timedelta(days=0-dayOfWeek)
-        date_end = weekDate + datetime.timedelta(days=7-dayOfWeek)
-        #print "weekrange", date_ini.strftime("%A"), date_end.strftime("%A")
-        #print "dates", date_ini.strftime("%Y-%m-%d"), date_end.strftime("%Y-%m-%d")
-        return date_ini.strftime("%Y-%m-%d"), date_end.strftime("%Y-%m-%d")
-    
-    def getMonthInterval(self,date):
-        year,month,day = date.split("-")
-        date_ini = "%0.4d-%0.2d-00" %(int(year),int(month))
-        if (int(month)<12):
-            month = int(month)+1
-        else:
-            year = int(year)+1
-            month = 1
-        date_end = "%0.4d-%0.2d-01" %(int(year),int(month))
-        return date_ini, date_end
-
-    def getYearInterval(self,date):
-        year,month,day = date.split("-")
-        date_ini = "%0.4d-0.1-01" %int(year)
-        year = int(year)+1
-        date_end = "%0.4d-01-01" %int(year)
-        return date_ini, date_end
     
     def getNameMonth(self, date):
         #month_name = {
