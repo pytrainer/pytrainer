@@ -430,10 +430,9 @@ class pyTrainer:
                 self.windowmain.addExtension(txtbutton)
         logging.debug('<<')
 
-    def newRecord(self,title=None,distance=None,time=None,upositive=None,unegative=None,bpm=None,calories=None,date=None,comment=None,view=None):
+    def newRecord(self,title=None,distance=None,time=None,upositive=None,unegative=None,bpm=None,calories=None,comment=None,view=None):
         logging.debug('>>')
-        if date == None:
-             date = self.format_date(self.date.getDate())
+        date = self.date.getDate()
         self.record.newRecord(date, title, distance, time, upositive, unegative, bpm, calories, comment)
         self.refreshListRecords()
         if view is not None:

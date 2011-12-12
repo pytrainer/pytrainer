@@ -46,7 +46,7 @@ class Record:
 	def newRecord(self, date, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None):
 		logging.debug('>>')
 		sports = self._sport_service.get_all_sports()
-		self.recordwindow = WindowRecord(self._equipment_service, self.data_path, sports, self, date, title, distance, time, upositive, unegative, bpm, calories, comment)
+		self.recordwindow = WindowRecord(self._equipment_service, self.data_path, sports, self, self.format_date(date), title, distance, time, upositive, unegative, bpm, calories, comment)
 		self.recordwindow.run()
 		logging.debug('<<')
 
