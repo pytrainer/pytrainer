@@ -309,17 +309,20 @@ class Record:
 					"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc,date_time_local",
 					"id_record=\"%s\" and records.sport=sports.id_sports" %id_record)
 
+	def format_date(self, date):
+		return date.strftime("%Y-%m-%d")
+
 	def getrecordList(self,date, id_sport=None):
 		logging.debug('--')
 		if not id_sport:
 			# outer join on sport id to workaround bug where sport reference is null on records from GPX import
 			return self.pytrainer_main.ddbb.select("records left outer join sports on records.sport=sports.id_sports",
 					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
-					"date=\"%s\" " %date)
+					"date=\"%s\" " %self.format_date(date))
 		else:
 			return self.pytrainer_main.ddbb.select("records,sports",
 					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
-					"date=\"%s\" and sports.id_sports=\"%s\" and records.sport=sports.id_sports" %(date,id_sport))
+					"date=\"%s\" and sports.id_sports=\"%s\" and records.sport=sports.id_sports" %(self.format_date(date),id_sport))
 
 	def getLaps(self, id_record):
 		logging.debug('--')

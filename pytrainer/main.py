@@ -217,7 +217,6 @@ class pyTrainer:
             logging.debug('<<')
             return
         date_selected = self.date.getDate()
-        date_formatted = self.format_date(date_selected)
         if view=="record":
              logging.debug('record view')
              if self.windowmain.recordview.get_current_page()==0:
@@ -234,7 +233,7 @@ class pyTrainer:
              logging.debug('day view')
              sport = self.windowmain.activeSport
              sport_id = self.record.getSportId(sport)
-             record_list = self.record.getrecordList(date_formatted, sport_id)
+             record_list = self.record.getrecordList(date_selected, sport_id)
              self.windowmain.actualize_dayview(record_list=record_list)
              #selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
         elif view=="week":
@@ -335,13 +334,14 @@ class pyTrainer:
         #self.refreshListView() # old variant
         self.refreshListView(self.windowmain.listsearch.condition)
         #Refresh list records
-        date = self.format_date(self.date.getDate())
+        date = self.date.getDate()
+        date_formatted = self.format_date(date)
         sport = self.windowmain.activeSport
         id_sport = self.record.getSportId(sport)
         record_ids = self.record.getrecordList(date, id_sport)
         self.windowmain.actualize_recordTreeView(record_ids)
         #Mark the monthly calendar to show which days have activity?
-        record_list = self.record.getRecordDayList(date, id_sport)
+        record_list = self.record.getRecordDayList(date_formatted, id_sport)
         self.windowmain.actualize_calendar(record_list)
         logging.debug('<<')
 
