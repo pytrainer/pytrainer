@@ -370,8 +370,10 @@ class Record:
 			record_equipment.append(equipment_item)
 		return record_equipment
 
-	def getrecordPeriod(self,date_ini, date_end, sport=None):
+	def getrecordPeriod(self, date_range, sport=None):
 		#TODO This is essentially the same as getrecordPeriodSport (except date ranges) - need to look at merging the two
+		date_ini = self.format_date(date_range.start_date)
+		date_end = self.format_date(date_range.end_date)
 		tables = "records,sports"
 		if not sport:
 			condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports" %(date_ini,date_end)

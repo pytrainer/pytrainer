@@ -243,28 +243,23 @@ class pyTrainer:
              date_end = self.format_date(date_range.end_date)
              sport = self.windowmain.activeSport
              sport_id = self.record.getSportId(sport)
-             record_list = self.record.getrecordPeriod(date_ini, date_end, sport_id)
+             record_list = self.record.getrecordPeriod(date_range, sport_id)
              self.windowmain.actualize_weekview(record_list, date_ini, date_end)
         elif view=="month":
              logging.debug('month view')
              date_range = DateRange.for_month_containing(date_selected)
-             date_ini = self.format_date(date_range.start_date)
-             date_end = self.format_date(date_range.end_date)
              sport = self.windowmain.activeSport
              sport_id = self.record.getSportId(sport)
-#             record_list = self.record.getrecordPeriodSport(date_ini, date_end,sport_id)
-             record_list = self.record.getrecordPeriod(date_ini, date_end, sport_id)
+             record_list = self.record.getrecordPeriod(date_range, sport_id)
              nameMonth, daysInMonth = self.date.getNameMonth(date_selected)
              self.windowmain.actualize_monthview(record_list, nameMonth)
              self.windowmain.actualize_monthgraph(record_list, daysInMonth)
         elif view=="year":
              logging.debug('year view')
              date_range = DateRange.for_year_containing(date_selected)
-             date_ini = self.format_date(date_range.start_date)
-             date_end = self.format_date(date_range.end_date)
              sport = self.windowmain.activeSport
              sport_id = self.record.getSportId(sport)
-             record_list = self.record.getrecordPeriod(date_ini, date_end, sport_id)
+             record_list = self.record.getrecordPeriod(date_range, sport_id)
              self.windowmain.actualize_yearview(record_list, date_selected.year)
              self.windowmain.actualize_yeargraph(record_list)
         elif view=="listview":
