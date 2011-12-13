@@ -1021,12 +1021,9 @@ class Main(SimpleGladeApp):
             self.mapviewer.display_map(htmlfile=htmlfile)
         logging.debug("<<")
 
-    def actualize_weekview(self, record_list, date_ini, date_end):
+    def actualize_weekview(self, record_list, date_range):
         logging.debug(">>")
-        date_s = datetime.datetime.strptime(date_ini, "%Y-%m-%d")
-        date_e = datetime.datetime.strptime(date_end, "%Y-%m-%d")
-        #self.week_date.set_text("%s - %s (%d)" % (datetime.datetime.strftime(date_s, "%a %d %b"), datetime.datetime.strftime(date_e, "%a %d %b"), int(datetime.datetime.strftime(date_e, "%W"))+1) )
-        self.week_date.set_text("%s - %s (%d)" % (datetime.datetime.strftime(date_s, "%a %d %b"), datetime.datetime.strftime(date_e, "%a %d %b"), int(datetime.datetime.strftime(date_e, "%V"))) )
+        self.week_date.set_text("%s - %s (%d)" % (date_range.start_date.strftime("%a %d %b"), date_range.end_date.strftime("%a %d %b"), int(date_range.end_date.strftime("%V"))) )
         km = calories = time = average = beats = 0
         num_records = len(record_list)
         logging.info("Number of records selected week: "+str(num_records))
@@ -1104,7 +1101,7 @@ class Main(SimpleGladeApp):
             self.weekview.set_sensitive(1)
         else:
             self.weekview.set_sensitive(0)
-        self.drawareaweek.drawgraph(record_list, date_ini)
+        self.drawareaweek.drawgraph(record_list, date_range.start_date)
         logging.debug("<<")
 
     def actualize_monthview(self,record_list, nameMonth):

@@ -16,10 +16,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from gui.drawArea import DrawArea
-import logging
 import datetime
-import calendar
 from timegraph import TimeGraph
 
 class WeekGraph(TimeGraph):
@@ -43,5 +40,5 @@ class WeekGraph(TimeGraph):
 
 def getDays(date_ini):
 	#TODO look at using calendar.day_abbr for this
-	return [unicode((datetime.datetime.strptime(date_ini, "%Y-%m-%d")+datetime.timedelta(x)).strftime("%a")) for x in xrange(0,7)]
+	return [unicode((date_ini+datetime.timedelta(x)).strftime("%a")) for x in xrange(0,7)]
 

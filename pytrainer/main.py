@@ -239,12 +239,10 @@ class pyTrainer:
         elif view=="week":
              logging.debug('week view')
              date_range = DateRange.for_week_containing(date_selected)
-             date_ini = self.format_date(date_range.start_date)
-             date_end = self.format_date(date_range.end_date)
              sport = self.windowmain.activeSport
              sport_id = self.record.getSportId(sport)
              record_list = self.record.getrecordPeriod(date_range, sport_id)
-             self.windowmain.actualize_weekview(record_list, date_ini, date_end)
+             self.windowmain.actualize_weekview(record_list, date_range)
         elif view=="month":
              logging.debug('month view')
              date_range = DateRange.for_month_containing(date_selected)
@@ -275,9 +273,6 @@ class pyTrainer:
             print "Unknown view %s" % view
         logging.debug('<<')
         
-    def format_date(self, date):
-        return date.strftime("%Y-%m-%d")
-
     def refreshRecordGraphView(self, view, id_record=None):
         logging.debug('>>')
         logging.info('Working on '+view+' graph')
