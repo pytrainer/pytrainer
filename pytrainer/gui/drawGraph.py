@@ -188,9 +188,9 @@ class DrawGraph:
 
         if activity.x_axis == "distance":
             if activity.title is None or activity.title == "":
-                _title = "%s%s of %s on %s" % (str(activity.distance), activity.distance_unit, activity.sport_name, activity.date)
+                _title = "%s %s of %s on %s" % (str(activity.get_value_f('distance', "%0.2f")), activity.distance_unit, activity.sport_name, activity.date)
             else:
-                _title = "%s: %s%s of %s on %s" % (activity.title, str(activity.distance), activity.distance_unit, activity.sport_name, activity.date)
+                _title = "%s: %s %s of %s on %s" % (activity.title, str(activity.get_value_f('distance', "%0.2f")), activity.distance_unit, activity.sport_name, activity.date)
 
             #Loop through data items and graph the selected ones
             for item in activity.distance_data:
