@@ -38,6 +38,13 @@ class FieldValidator (object):
     FV_MAX_HRATE = 4
     FV_MIN_HRATE = 5
 
+    # Log messages (they are not translated)
+    FVLM_HEIGHT = 'Invalid height field entered >>'
+    FVLM_WEIGHT = 'Invalid weight field entered >>'
+    FVLM_BIRTH_DATE = 'Invalid date of birth field entered >>'
+    FVLM_MAX_HRATE = 'Invalid max heart rate field entered >>'
+    FVLM_MIN_HRATE = 'Invalid resting hear rate field entered >>'
+
     def __init__(self):
         # The error messages
         self.FVEM_HEIGHT = _('Error with the height field.')
@@ -46,13 +53,22 @@ class FieldValidator (object):
         self.FVEM_MAX_HRATE = _('Error with the maximum heart rate field.')
         self.FVEM_MIN_HRATE = _('Error with the resting heart rate field.')
 
-        # Error messages
+        # Error messages dictionary
         self.errorMessages = { 
             self.FV_HEIGHT: self.FVEM_HEIGHT,
             self.FV_WEIGHT: self.FVEM_WEIGHT,
             self.FV_BIRTH_DATE: self.FVEM_BIRTH_DATE,
             self.FV_MAX_HRATE: self.FVEM_MAX_HRATE,
             self.FV_MIN_HRATE: self.FVEM_MIN_HRATE,
+        }
+
+        # Log messages dictionary
+        self.logMessages = { 
+            self.FV_HEIGHT: self.FVLM_HEIGHT,
+            self.FV_WEIGHT: self.FVLM_WEIGHT,
+            self.FV_BIRTH_DATE: self.FVLM_BIRTH_DATE,
+            self.FV_MAX_HRATE: self.FVLM_MAX_HRATE,
+            self.FV_MIN_HRATE: self.FVLM_MIN_HRATE,
         }
 
         # Integer fields
@@ -121,6 +137,19 @@ class FieldValidator (object):
             retVal, errMsg = self.validateDateOfBirth (fieldDicitionary)
 
         return retVal, errMsg
+
+    def validateSingleField (self, fieldId, fieldStr):
+        retVal =False
+        if fieldId == self.FV_BIRTH_DATE:
+            retVal = self.validateDate (fieldStr)
+        else:
+            retVal = self.validatePositiveIntegerField (fieldStr)
+
+        return retVal
+
+    def validateSingleFieldAndLog (self, fieldId, fieldStr):
+        if not self.validateSingleField (fieldId, fieldStr):
+            logging.warning (self.logMessages[fieldId] + fieldStr + '<<')
 
 class WindowProfile(SimpleGladeApp):
     def __init__(self, sport_service, data_path = None, parent=None, pytrainer_main=None):
@@ -493,7 +522,7 @@ class WindowProfile(SimpleGladeApp):
         self.deletesport.hide()
         self.editsport.hide()   
 
-    def validateFields (self):
+    def validateFields (self, originField):
         # A dictionary containing all the fields to validate
         fieldDict = {}
         fieldDict [FieldValidator.FV_HEIGHT] = self.prf_height.get_text()
@@ -503,6 +532,9 @@ class WindowProfile(SimpleGladeApp):
         fieldDict [FieldValidator.FV_MIN_HRATE] = self.prf_minhr.get_text()
 
         F = FieldValidator ()
+
+        F.validateSingleFieldAndLog (originField, fieldDict[originField])
+
         retVal, errMsg = F.validateFields (fieldDict)
         self.button3.set_sensitive (retVal)
         if errMsg == '':
@@ -513,17 +545,17 @@ class WindowProfile(SimpleGladeApp):
         self.label12.set_markup (msg)
 
     def on_prf_height_focus_out_event(self, widget, data):
-        self.validateFields ()
+        self.validateFields (FieldValidator.FV_HEIGHT)
 
     def on_prf_weight_focus_out_event (self, widget, data):
-        self.validateFields ()
+        self.validateFields (FieldValidator.FV_WEIGHT)
 
     def on_prf_age_focus_out_event (self, widget, data):
-        self.validateFields ()
+        self.validateFields (FieldValidator.FV_BIRTH_DATE)
 
     def on_prf_maxhr_focus_out_event (self, widget, data):
-        self.validateFields ()
+        self.validateFields (FieldValidator.FV_MAX_HRATE)
 
     def on_prf_minhr_focus_out_event (self, widget, data):
-        self.validateFields ()
+        self.validateFields (FieldValidator.FV_MIN_HRATE)
 
