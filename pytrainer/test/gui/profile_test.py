@@ -193,6 +193,8 @@ class FieldValidatorTest (TestCase):
             FieldValidator.FV_WEIGHT, 
             FieldValidator.FV_MAX_HRATE, 
             FieldValidator.FV_MIN_HRATE, 
+            FieldValidator.FV_LIFE_EXPECT,
+            FieldValidator.FV_MET,
         ]
 
         # How do I check the logs are created?
@@ -227,4 +229,162 @@ class FieldValidatorTest (TestCase):
         for fieldStr in wrongDates:
             F.validateSingleFieldAndLog (FieldValidator.FV_BIRTH_DATE,
                     fieldStr)
+
+        wrongIntegerField = [ '45a', 'a45', '-1', '-45']
+        integerFields = [
+            FieldValidator.FV_PRIOR_USE, 
+            FieldValidator.FV_MAX_PACE]
+
+        for fieldId in integerFields:
+            for fieldStr in wrongIntegerField:
+                F.validateSingleFieldAndLog (fieldId, fieldStr)
+
+    def test_all_equipment_good (self):
+        field_dict = {
+            FieldValidator.FV_LIFE_EXPECT: '5',
+            FieldValidator.FV_PRIOR_USE: '2',
+        }
+
+        F = FieldValidator ()
+        retVal, msg = F.validateEquipmentFields (field_dict)
+        self.assertTrue (retVal)
+        self.assertEquals (msg, '')
+
+        # Empty fields are accepted
+        field_dict = {
+            FieldValidator.FV_LIFE_EXPECT: '',
+            FieldValidator.FV_PRIOR_USE: '',
+        }
+        retVal, msg = F.validateEquipmentFields (field_dict)
+        self.assertTrue (retVal)
+        self.assertEquals (msg, '')
+
+        field_dict = {
+            FieldValidator.FV_LIFE_EXPECT: '1',
+            FieldValidator.FV_PRIOR_USE: '0',
+        }
+        retVal, msg = F.validateEquipmentFields (field_dict)
+        self.assertTrue (retVal)
+        self.assertEquals (msg, '')
+
+
+    def test_invalid_life_expect (self):
+        wrongLifeExpect = [ '5a', 'a5', '0', '-1', '-5', '5.35']
+        field_dict = {
+            FieldValidator.FV_LIFE_EXPECT: '1',
+            FieldValidator.FV_PRIOR_USE: '0',
+        }
+
+        F = FieldValidator ()
+        for h in wrongLifeExpect:
+            field_dict[FieldValidator.FV_LIFE_EXPECT] = h
+            retVal, msg = F.validateEquipmentFields (field_dict)
+            self.assertTrue (not retVal)
+            self.assertEquals (msg, F.FVEM_LIFE_EXPECT)
+
+    def test_invalid_prior_usage (self):
+        wrongPriorUsage = [ '5a', 'a5', '-1', '-5', '5.35']
+        field_dict = {
+            FieldValidator.FV_LIFE_EXPECT: '1',
+            FieldValidator.FV_PRIOR_USE: '0',
+        }
+
+        F = FieldValidator ()
+        for h in wrongPriorUsage:
+            field_dict[FieldValidator.FV_PRIOR_USE] = h
+            retVal, msg = F.validateEquipmentFields (field_dict)
+            self.assertTrue (not retVal)
+            self.assertEquals (msg, F.FVEM_PRIOR_USE)
+
+    def test_all_sport_good (self):
+        field_dict = {
+            FieldValidator.FV_MET: '5',
+            FieldValidator.FV_EXTRA_WEIGHT: '2.3',
+            FieldValidator.FV_MAX_PACE: '2',
+        }
+
+        F = FieldValidator ()
+        retVal, msg = F.validateSportFields (field_dict)
+        self.assertTrue (retVal)
+        self.assertEquals (msg, '')
+
+        # Empty fields are accepted
+        field_dict = {
+            FieldValidator.FV_MET: '',
+            FieldValidator.FV_EXTRA_WEIGHT: '',
+            FieldValidator.FV_MAX_PACE: '',
+        }
+        retVal, msg = F.validateSportFields (field_dict)
+        self.assertTrue (retVal)
+        self.assertEquals (msg, '')
+
+        field_dict = {
+            FieldValidator.FV_MET: '5',
+            FieldValidator.FV_EXTRA_WEIGHT: '0.0',
+            FieldValidator.FV_MAX_PACE: '2',
+        }
+        retVal, msg = F.validateSportFields (field_dict)
+        self.assertTrue (retVal)
+        self.assertEquals (msg, '')
+
+
+    def test_invalid_met (self):
+        wrongMET = [ '5a', 'a5', '-1', '-5', '5.35', '0']
+        field_dict = {
+            FieldValidator.FV_MET: '',
+            FieldValidator.FV_EXTRA_WEIGHT: '1.1',
+            FieldValidator.FV_MAX_PACE: '3',
+        }
+
+        F = FieldValidator ()
+        for h in wrongMET:
+            field_dict[FieldValidator.FV_MET] = h
+            retVal, msg = F.validateSportFields (field_dict)
+            self.assertTrue (not retVal)
+            self.assertEquals (msg, F.FVEM_MET)
+
+    def test_invalid_extra_weight (self):
+        wrongExtraWeight = [ '5.2a', 'a5.2', '-1.2', '-5.2' ]
+        field_dict = {
+            FieldValidator.FV_MET: '5',
+            FieldValidator.FV_EXTRA_WEIGHT: '1.1',
+            FieldValidator.FV_MAX_PACE: '3',
+        }
+
+        F = FieldValidator ()
+        for h in wrongExtraWeight:
+            field_dict[FieldValidator.FV_EXTRA_WEIGHT] = h
+            retVal, msg = F.validateSportFields (field_dict)
+            self.assertTrue (not retVal)
+            self.assertEquals (msg, F.FVEM_EXTRA_WEIGHT)
+
+    def test_invalid_extra_weight (self):
+        wrongExtraWeight = [ '5.2a', 'a5.2', '-1.2', '-5.2' ]
+        field_dict = {
+            FieldValidator.FV_MET: '5',
+            FieldValidator.FV_EXTRA_WEIGHT: '1.1',
+            FieldValidator.FV_MAX_PACE: '3',
+        }
+
+        F = FieldValidator ()
+        for h in wrongExtraWeight:
+            field_dict[FieldValidator.FV_EXTRA_WEIGHT] = h
+            retVal, msg = F.validateSportFields (field_dict)
+            self.assertTrue (not retVal)
+            self.assertEquals (msg, F.FVEM_EXTRA_WEIGHT)
+
+    def test_invalid_maximum_pace (self):
+        wrongMaximumPace = [ '5a', 'a5', '-1', '-5', '5.5', '0' ]
+        field_dict = {
+            FieldValidator.FV_MET: '5',
+            FieldValidator.FV_EXTRA_WEIGHT: '1.1',
+            FieldValidator.FV_MAX_PACE: '3',
+        }
+
+        F = FieldValidator ()
+        for h in wrongMaximumPace:
+            field_dict[FieldValidator.FV_MAX_PACE] = h
+            retVal, msg = F.validateSportFields (field_dict)
+            self.assertTrue (not retVal)
+            self.assertEquals (msg, F.FVEM_MAX_PACE)
 

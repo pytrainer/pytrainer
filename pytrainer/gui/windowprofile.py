@@ -42,9 +42,9 @@ class FieldValidator (object):
     FV_LIFE_EXPECT = 6 
     FV_PRIOR_USE = 7
     # Profile sports 
-    FV_MET = 7
-    FV_EXTRA_WEIGHT = 8
-    FV_MAX_PACE = 9
+    FV_MET = 8
+    FV_EXTRA_WEIGHT = 9
+    FV_MAX_PACE = 10
 
     # Log messages (they are not translated)
     FVLM_HEIGHT = 'Invalid height field entered >>'
@@ -188,6 +188,10 @@ class FieldValidator (object):
         retVal =False
         if fieldId == self.FV_BIRTH_DATE:
             retVal = self.validateDate (fieldStr)
+        elif fieldId == self.FV_EXTRA_WEIGHT:
+            retVal = self.validateDate (fieldStr)
+        elif fieldId == self.FV_PRIOR_USE:  
+            retVal = self.validatePositiveIntegerField (fieldStr, True)
         else:
             retVal = self.validatePositiveIntegerField (fieldStr)
 
@@ -204,10 +208,10 @@ class FieldValidator (object):
             In case of error, a message is returned along whit False. """
         retVal = False 
         errMsg = ''
-        if not self.validatePositiveIntegerField (/
+        if not self.validatePositiveIntegerField (\
                 fieldDict[self.FV_LIFE_EXPECT]):
             errMsg = self.errorMessages [self.FV_LIFE_EXPECT] 
-        elif not self.validatePositiveIntegerField (/
+        elif not self.validatePositiveIntegerField (\
                 fieldDict[self.FV_PRIOR_USE], True):
             errMsg = self.errorMessages [self.FV_PRIOR_USE] 
         else:
@@ -222,13 +226,13 @@ class FieldValidator (object):
             In case of error, a message is returned along whit False. """
         retVal = False 
         errMsg = ''
-        if not self.validatePositiveIntegerField (/
+        if not self.validatePositiveIntegerField (\
                 fieldDict[self.FV_MET]):
             errMsg = self.errorMessages [self.FV_MET] 
-        elif not self.validatePositiveIntegerField (/
+        elif not self.validatePositiveIntegerField (\
                 fieldDict[self.FV_MAX_PACE]):
             errMsg = self.errorMessages [self.FV_MAX_PACE] 
-        elif not self.validatePositiveRealField (/
+        elif not self.validatePositiveRealField (\
                 fieldDict[self.FV_EXTRA_WEIGHT], True):
             errMsg = self.errorMessages [self.FV_EXTRA_WEIGHT] 
         else:
