@@ -28,6 +28,99 @@ import logging
 import pytrainer
 import pytrainer.util.color
 from pytrainer.gui.color import ColorConverter
+import datetime
+
+class FieldValidator (object):
+    """ A class to validate all the input fields that can have errors. """
+    FV_HEIGHT = 1
+    FV_WEIGHT = 2
+    FV_BIRTH_DATE = 3
+    FV_MAX_HRATE = 4
+    FV_MIN_HRATE = 5
+
+    def __init__(self):
+        # The error messages
+        self.FVEM_HEIGHT = _('Error with the height field.')
+        self.FVEM_WEIGHT = _('Error with the weight field.')
+        self.FVEM_BIRTH_DATE = _('Error with the date of birth field.')
+        self.FVEM_MAX_HRATE = _('Error with the maximum heart rate field.')
+        self.FVEM_MIN_HRATE = _('Error with the resting heart rate field.')
+
+        # Error messages
+        self.errorMessages = { 
+            self.FV_HEIGHT: self.FVEM_HEIGHT,
+            self.FV_WEIGHT: self.FVEM_WEIGHT,
+            self.FV_BIRTH_DATE: self.FVEM_BIRTH_DATE,
+            self.FV_MAX_HRATE: self.FVEM_MAX_HRATE,
+            self.FV_MIN_HRATE: self.FVEM_MIN_HRATE,
+        }
+
+        # Integer fields
+        self.integerFields = [
+            self.FV_HEIGHT,
+            self.FV_WEIGHT, 
+            self.FV_MAX_HRATE,
+            self.FV_MIN_HRATE, ] 
+
+    def validatePositiveIntegerField (self, field):
+        retVal = False
+        if field == '':
+            retVal = True
+        else:
+            try:
+                a = int (field)
+                if a > 0:
+                    retVal = True
+            except:
+                pass
+        return retVal
+
+    def validatePositiveIntegerFields (self, fieldDicitionary):
+        retVal = True 
+        errMsg = ''
+        for f in self.integerFields:
+            if not self.validatePositiveIntegerField (fieldDicitionary [f]):
+                retVal = False
+                errMsg = self.errorMessages [f]
+        return retVal, errMsg
+
+    def validateDate (self, dateStr):
+        retVal = False
+
+        try:
+            year,month,day = dateStr.split ('-')
+            if (len(year) == 4):
+                d = datetime.datetime (int(year), int(month), int (day), 0,0,0)
+                retVal = True
+        except:
+            pass
+
+        return retVal
+
+    def validateDateOfBirth (self, fieldDicitionary):
+        errMsg = ''
+        strField = fieldDicitionary[self.FV_BIRTH_DATE]
+        if strField == '':
+            retVal = True
+        else:
+            retVal = self.validateDate (strField)
+
+        if not retVal:
+            errMsg = self.FVEM_BIRTH_DATE
+
+        return retVal, errMsg
+
+    def validateFields (self, fieldDicitionary):
+        """ The function receives a dictionary containing pairs FV value and 
+            string field. 
+            The function returns True if all the fields are ok. 
+            In case of error, a message is returned along whit False. """
+            
+        retVal, errMsg = self.validatePositiveIntegerFields (fieldDicitionary)
+        if retVal:
+            retVal, errMsg = self.validateDateOfBirth (fieldDicitionary)
+
+        return retVal, errMsg
 
 class WindowProfile(SimpleGladeApp):
     def __init__(self, sport_service, data_path = None, parent=None, pytrainer_main=None):
@@ -388,7 +481,6 @@ class WindowProfile(SimpleGladeApp):
         self.sportlist.show()
 
     def on_calculatemaxhr_clicked(self,widget=None):
-        import datetime
         today = "%s"%datetime.date.today()
         year1,month1,day1 = today.split("-")
         year2,month2,day2 = self.prf_age.get_text().split("-")
@@ -400,3 +492,38 @@ class WindowProfile(SimpleGladeApp):
         self.addsport.hide()
         self.deletesport.hide()
         self.editsport.hide()   
+
+    def validateFields (self):
+        # A dictionary containing all the fields to validate
+        fieldDict = {}
+        fieldDict [FieldValidator.FV_HEIGHT] = self.prf_height.get_text()
+        fieldDict [FieldValidator.FV_WEIGHT] = self.prf_weight.get_text()
+        fieldDict [FieldValidator.FV_BIRTH_DATE] = self.prf_age.get_text()
+        fieldDict [FieldValidator.FV_MAX_HRATE] = self.prf_maxhr.get_text()
+        fieldDict [FieldValidator.FV_MIN_HRATE] = self.prf_minhr.get_text()
+
+        F = FieldValidator ()
+        retVal, errMsg = F.validateFields (fieldDict)
+        self.button3.set_sensitive (retVal)
+        if errMsg == '':
+            msg = ''
+        else:
+            msg = '<span weight="bold"' + " fgcolor='#ff0000'>" +\
+                  str(errMsg) + '</span>'
+        self.label12.set_markup (msg)
+
+    def on_prf_height_focus_out_event(self, widget, data):
+        self.validateFields ()
+
+    def on_prf_weight_focus_out_event (self, widget, data):
+        self.validateFields ()
+
+    def on_prf_age_focus_out_event (self, widget, data):
+        self.validateFields ()
+
+    def on_prf_maxhr_focus_out_event (self, widget, data):
+        self.validateFields ()
+
+    def on_prf_minhr_focus_out_event (self, widget, data):
+        self.validateFields ()
+
