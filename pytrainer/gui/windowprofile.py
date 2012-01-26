@@ -32,11 +32,19 @@ import datetime
 
 class FieldValidator (object):
     """ A class to validate all the input fields that can have errors. """
+
     FV_HEIGHT = 1
     FV_WEIGHT = 2
     FV_BIRTH_DATE = 3
     FV_MAX_HRATE = 4
     FV_MIN_HRATE = 5
+    # Profile equipment 
+    FV_LIFE_EXPECT = 6 
+    FV_PRIOR_USE = 7
+    # Profile sports 
+    FV_MET = 7
+    FV_EXTRA_WEIGHT = 8
+    FV_MAX_PACE = 9
 
     # Log messages (they are not translated)
     FVLM_HEIGHT = 'Invalid height field entered >>'
@@ -44,6 +52,11 @@ class FieldValidator (object):
     FVLM_BIRTH_DATE = 'Invalid date of birth field entered >>'
     FVLM_MAX_HRATE = 'Invalid max heart rate field entered >>'
     FVLM_MIN_HRATE = 'Invalid resting hear rate field entered >>'
+    FVLM_LIFE_EXPECT = 'Invalid life expectancy field entered >>'
+    FVLM_PRIOR_USE = 'Invalid prior usage field entered >>'
+    FVLM_MET = 'Invalid M.E.T. field entered >>'
+    FVLM_EXTRA_WEIGHT = 'Invalid extra weight field entered >>'
+    FVLM_MAX_PACE = 'Invalid maximum pace entered >>'
 
     def __init__(self):
         # The error messages
@@ -52,6 +65,11 @@ class FieldValidator (object):
         self.FVEM_BIRTH_DATE = _('Error with the date of birth field.')
         self.FVEM_MAX_HRATE = _('Error with the maximum heart rate field.')
         self.FVEM_MIN_HRATE = _('Error with the resting heart rate field.')
+        self.FVEM_LIFE_EXPECT = _('Error with the life expectancy field.')
+        self.FVEM_PRIOR_USE = _('Error with the prior usage field.')
+        self.FVEM_MET = _('Error with the M.E.T. field.')
+        self.FVEM_EXTRA_WEIGHT = _('Error with the extra weight field.')
+        self.FVEM_MAX_PACE = _('Error with the maximum pace field.') 
 
         # Error messages dictionary
         self.errorMessages = { 
@@ -60,6 +78,11 @@ class FieldValidator (object):
             self.FV_BIRTH_DATE: self.FVEM_BIRTH_DATE,
             self.FV_MAX_HRATE: self.FVEM_MAX_HRATE,
             self.FV_MIN_HRATE: self.FVEM_MIN_HRATE,
+            self.FV_LIFE_EXPECT: self.FVEM_LIFE_EXPECT,
+            self.FV_PRIOR_USE: self.FVEM_PRIOR_USE,
+            self.FV_MET: self.FVEM_MET,
+            self.FV_EXTRA_WEIGHT: self.FVEM_EXTRA_WEIGHT,
+            self.FV_MAX_PACE: self.FVEM_MAX_PACE,
         }
 
         # Log messages dictionary
@@ -69,6 +92,11 @@ class FieldValidator (object):
             self.FV_BIRTH_DATE: self.FVLM_BIRTH_DATE,
             self.FV_MAX_HRATE: self.FVLM_MAX_HRATE,
             self.FV_MIN_HRATE: self.FVLM_MIN_HRATE,
+            self.FV_LIFE_EXPECT: self.FVLM_LIFE_EXPECT,
+            self.FV_PRIOR_USE: self.FVLM_PRIOR_USE,
+            self.FV_MET: self.FVLM_MET,
+            self.FV_EXTRA_WEIGHT: self.FVLM_EXTRA_WEIGHT,
+            self.FV_MAX_PACE: self.FVLM_MAX_PACE,
         }
 
         # Integer fields
@@ -78,14 +106,32 @@ class FieldValidator (object):
             self.FV_MAX_HRATE,
             self.FV_MIN_HRATE, ] 
 
-    def validatePositiveIntegerField (self, field):
+
+    def validatePositiveIntegerField (self, field, include0 = False):
         retVal = False
         if field == '':
             retVal = True
         else:
             try:
                 a = int (field)
-                if a > 0:
+                if (a == 0) and include0:
+                    retVal = True
+                elif a > 0:
+                    retVal = True
+            except:
+                pass
+        return retVal
+
+    def validatePositiveRealField (self, field, include0 = False):
+        retVal = False
+        if field == '':
+            retVal = True
+        else:
+            try:
+                a = float (field)
+                if (a == 0.0) and include0:
+                    retVal = True
+                elif a > 0.0:
                     retVal = True
             except:
                 pass
@@ -150,6 +196,45 @@ class FieldValidator (object):
     def validateSingleFieldAndLog (self, fieldId, fieldStr):
         if not self.validateSingleField (fieldId, fieldStr):
             logging.warning (self.logMessages[fieldId] + fieldStr + '<<')
+
+    def validateEquipmentFields (self, fieldDict):
+        """ The function receives a dictionary containing pairs FV value and 
+            string field related to an equipment form. 
+            The function returns True if all the fields are ok. 
+            In case of error, a message is returned along whit False. """
+        retVal = False 
+        errMsg = ''
+        if not self.validatePositiveIntegerField (/
+                fieldDict[self.FV_LIFE_EXPECT]):
+            errMsg = self.errorMessages [self.FV_LIFE_EXPECT] 
+        elif not self.validatePositiveIntegerField (/
+                fieldDict[self.FV_PRIOR_USE], True):
+            errMsg = self.errorMessages [self.FV_PRIOR_USE] 
+        else:
+            retVal = True
+
+        return retVal, errMsg
+
+    def validateSportFields (self, fieldDict):
+        """ The function receives a dictionary containing pairs FV value and 
+            string field related to a sport form. 
+            The function returns True if all the fields are ok. 
+            In case of error, a message is returned along whit False. """
+        retVal = False 
+        errMsg = ''
+        if not self.validatePositiveIntegerField (/
+                fieldDict[self.FV_MET]):
+            errMsg = self.errorMessages [self.FV_MET] 
+        elif not self.validatePositiveIntegerField (/
+                fieldDict[self.FV_MAX_PACE]):
+            errMsg = self.errorMessages [self.FV_MAX_PACE] 
+        elif not self.validatePositiveRealField (/
+                fieldDict[self.FV_EXTRA_WEIGHT], True):
+            errMsg = self.errorMessages [self.FV_EXTRA_WEIGHT] 
+        else:
+            retVal = True
+
+        return retVal, errMsg
 
 class WindowProfile(SimpleGladeApp):
     def __init__(self, sport_service, data_path = None, parent=None, pytrainer_main=None):
