@@ -108,9 +108,9 @@ class FieldValidator (object):
             self.FV_MIN_HRATE: self.validatePositiveIntegerField,
             self.FV_LIFE_EXPECT: self.validatePositiveIntegerField,
             self.FV_PRIOR_USE: self.validatePositiveIntegerOrZeroField,
-            self.FV_MET: self.validatePositiveIntegerField,
+            self.FV_MET: self.validatePositiveRealField,
             self.FV_EXTRA_WEIGHT: self.validatePositiveRealField,
-            self.FV_MAX_PACE: self.validatePositiveIntegerField,
+            self.FV_MAX_PACE: self.validatePositiveRealField,
         }
 
         # Main profile fields

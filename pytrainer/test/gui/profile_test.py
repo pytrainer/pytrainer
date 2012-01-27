@@ -195,8 +195,6 @@ class FieldValidatorTest (TestCase):
             FieldValidator.FV_MAX_HRATE, 
             FieldValidator.FV_MIN_HRATE, 
             FieldValidator.FV_LIFE_EXPECT,
-            FieldValidator.FV_MET,
-            FieldValidator.FV_MAX_PACE,
         ]
 
         # How do I check the logs are created?
@@ -256,7 +254,20 @@ class FieldValidatorTest (TestCase):
             for fieldStr in goodIntergerField:
                 self.assertTrue(F.validateSingleFieldAndLog (fieldId,
                             fieldStr))
-                
+        realFields = [    
+            FieldValidator.FV_MET,
+            FieldValidator.FV_EXTRA_WEIGHT,
+            FieldValidator.FV_MAX_PACE,]
+        wrongRealField = [ '5.2a', 'a5.2', '-1.2', '-5.2' ]
+        goodRealField = ['0.0', '5.2']
+
+        for fieldId in realFields:
+            for fieldStr in wrongRealField:
+                self.assertFalse (F.validateSingleFieldAndLog (fieldId,
+                            fieldStr))
+            for fieldStr in goodRealField:
+                self.assertTrue (F.validateSingleFieldAndLog (fieldId,
+                            fieldStr))
 
     def test_all_equipment_good (self):
         field_dict = {
@@ -317,9 +328,9 @@ class FieldValidatorTest (TestCase):
 
     def test_all_sport_good (self):
         field_dict = {
-            FieldValidator.FV_MET: '5',
+            FieldValidator.FV_MET: '5.0',
             FieldValidator.FV_EXTRA_WEIGHT: '2.3',
-            FieldValidator.FV_MAX_PACE: '2',
+            FieldValidator.FV_MAX_PACE: '2.2',
         }
 
         F = FieldValidator ()
@@ -338,9 +349,9 @@ class FieldValidatorTest (TestCase):
         self.assertEquals (msg, '')
 
         field_dict = {
-            FieldValidator.FV_MET: '5',
+            FieldValidator.FV_MET: '0.0',
             FieldValidator.FV_EXTRA_WEIGHT: '0.0',
-            FieldValidator.FV_MAX_PACE: '2',
+            FieldValidator.FV_MAX_PACE: '0.0',
         }
         retVal, msg = F.validateSportFields (field_dict)
         self.assertTrue (retVal)
@@ -348,11 +359,11 @@ class FieldValidatorTest (TestCase):
 
 
     def test_invalid_met (self):
-        wrongMET = [ '5a', 'a5', '-1', '-5', '5.35', '0']
+        wrongMET = [ '5.1a', 'a5.1', '-1.1', '-5.1' ]
         field_dict = {
             FieldValidator.FV_MET: '',
             FieldValidator.FV_EXTRA_WEIGHT: '1.1',
-            FieldValidator.FV_MAX_PACE: '3',
+            FieldValidator.FV_MAX_PACE: '3.3',
         }
 
         F = FieldValidator ()
@@ -365,24 +376,9 @@ class FieldValidatorTest (TestCase):
     def test_invalid_extra_weight (self):
         wrongExtraWeight = [ '5.2a', 'a5.2', '-1.2', '-5.2' ]
         field_dict = {
-            FieldValidator.FV_MET: '5',
+            FieldValidator.FV_MET: '5.1',
             FieldValidator.FV_EXTRA_WEIGHT: '1.1',
-            FieldValidator.FV_MAX_PACE: '3',
-        }
-
-        F = FieldValidator ()
-        for h in wrongExtraWeight:
-            field_dict[FieldValidator.FV_EXTRA_WEIGHT] = h
-            retVal, msg = F.validateSportFields (field_dict)
-            self.assertTrue (not retVal)
-            self.assertEquals (msg, F.FVEM_EXTRA_WEIGHT)
-
-    def test_invalid_extra_weight (self):
-        wrongExtraWeight = [ '5.2a', 'a5.2', '-1.2', '-5.2' ]
-        field_dict = {
-            FieldValidator.FV_MET: '5',
-            FieldValidator.FV_EXTRA_WEIGHT: '1.1',
-            FieldValidator.FV_MAX_PACE: '3',
+            FieldValidator.FV_MAX_PACE: '3.3',
         }
 
         F = FieldValidator ()
@@ -393,11 +389,11 @@ class FieldValidatorTest (TestCase):
             self.assertEquals (msg, F.FVEM_EXTRA_WEIGHT)
 
     def test_invalid_maximum_pace (self):
-        wrongMaximumPace = [ '5a', 'a5', '-1', '-5', '5.5', '0' ]
+        wrongMaximumPace = [ '5.1a', 'a5.1', '-1.1', '-5.1',  ]
         field_dict = {
-            FieldValidator.FV_MET: '5',
+            FieldValidator.FV_MET: '5.2',
             FieldValidator.FV_EXTRA_WEIGHT: '1.1',
-            FieldValidator.FV_MAX_PACE: '3',
+            FieldValidator.FV_MAX_PACE: '3.2',
         }
 
         F = FieldValidator ()
