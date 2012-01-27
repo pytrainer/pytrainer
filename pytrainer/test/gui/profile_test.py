@@ -188,6 +188,7 @@ class FieldValidatorTest (TestCase):
         
     def test_validate_field (self):
         wrongIntegerField = [ '45a', 'a45', '0', '-1', '-45']
+        goodFields = ['1', '22']
         integerFields = [
             FieldValidator.FV_HEIGHT, 
             FieldValidator.FV_WEIGHT, 
@@ -195,13 +196,18 @@ class FieldValidatorTest (TestCase):
             FieldValidator.FV_MIN_HRATE, 
             FieldValidator.FV_LIFE_EXPECT,
             FieldValidator.FV_MET,
+            FieldValidator.FV_MAX_PACE,
         ]
 
         # How do I check the logs are created?
         F = FieldValidator ()
         for fieldId in integerFields:
             for fieldStr in wrongIntegerField:
-                F.validateSingleFieldAndLog (fieldId, fieldStr)
+                self.assertFalse (F.validateSingleFieldAndLog (fieldId,
+                            fieldStr))
+            for fieldStr in goodFields:
+                self.assertTrue (F.validateSingleFieldAndLog (fieldId,
+                            fieldStr))
 
         wrongDates = [
             # Wrong format
@@ -226,18 +232,31 @@ class FieldValidatorTest (TestCase):
             # Not split year
             '1973-02-29',
             ]
+
+        goodDates = [
+            '1972-12-30']
+
         for fieldStr in wrongDates:
-            F.validateSingleFieldAndLog (FieldValidator.FV_BIRTH_DATE,
-                    fieldStr)
+            self.assertFalse (F.validateSingleFieldAndLog (
+                        FieldValidator.FV_BIRTH_DATE, fieldStr))
+        for fieldStr in goodDates:
+            self.assertTrue (F.validateSingleFieldAndLog (
+                        FieldValidator.FV_BIRTH_DATE, fieldStr))
 
         wrongIntegerField = [ '45a', 'a45', '-1', '-45']
+        goodIntergerField = [ '0', '1', '27']
         integerFields = [
             FieldValidator.FV_PRIOR_USE, 
-            FieldValidator.FV_MAX_PACE]
+        ]
 
         for fieldId in integerFields:
             for fieldStr in wrongIntegerField:
-                F.validateSingleFieldAndLog (fieldId, fieldStr)
+                self.assertFalse(F.validateSingleFieldAndLog (fieldId,
+                            fieldStr))
+            for fieldStr in goodIntergerField:
+                self.assertTrue(F.validateSingleFieldAndLog (fieldId,
+                            fieldStr))
+                
 
     def test_all_equipment_good (self):
         field_dict = {

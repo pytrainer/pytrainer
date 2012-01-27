@@ -99,12 +99,39 @@ class FieldValidator (object):
             self.FV_MAX_PACE: self.FVLM_MAX_PACE,
         }
 
-        # Integer fields
-        self.integerFields = [
+        # Function dictionary
+        self.functions = {
+            self.FV_HEIGHT: self.validatePositiveIntegerField,
+            self.FV_WEIGHT: self.validatePositiveIntegerField,
+            self.FV_BIRTH_DATE: self.validateDate,
+            self.FV_MAX_HRATE: self.validatePositiveIntegerField,
+            self.FV_MIN_HRATE: self.validatePositiveIntegerField,
+            self.FV_LIFE_EXPECT: self.validatePositiveIntegerField,
+            self.FV_PRIOR_USE: self.validatePositiveIntegerOrZeroField,
+            self.FV_MET: self.validatePositiveIntegerField,
+            self.FV_EXTRA_WEIGHT: self.validatePositiveRealField,
+            self.FV_MAX_PACE: self.validatePositiveIntegerField,
+        }
+
+        # Main profile fields
+        self.profileFields = [
             self.FV_HEIGHT,
             self.FV_WEIGHT, 
             self.FV_MAX_HRATE,
-            self.FV_MIN_HRATE, ] 
+            self.FV_MIN_HRATE,
+            self.FV_BIRTH_DATE] 
+
+        self.equipmentFields = [
+            self.FV_LIFE_EXPECT,
+            self.FV_PRIOR_USE,
+        ]
+
+        self.sportFields = [
+            self.FV_MET,
+            self.FV_EXTRA_WEIGHT,
+            self.FV_MAX_PACE,
+        ]
+
 
 
     def validatePositiveIntegerField (self, field, include0 = False):
@@ -122,7 +149,10 @@ class FieldValidator (object):
                 pass
         return retVal
 
-    def validatePositiveRealField (self, field, include0 = False):
+    def validatePositiveIntegerOrZeroField (self, field):
+        return self.validatePositiveIntegerField (field, True)
+
+    def validatePositiveRealField (self, field, include0 = True):
         retVal = False
         if field == '':
             retVal = True
@@ -137,106 +167,79 @@ class FieldValidator (object):
                 pass
         return retVal
 
-    def validatePositiveIntegerFields (self, fieldDicitionary):
-        retVal = True 
-        errMsg = ''
-        for f in self.integerFields:
-            if not self.validatePositiveIntegerField (fieldDicitionary [f]):
-                retVal = False
-                errMsg = self.errorMessages [f]
-        return retVal, errMsg
 
     def validateDate (self, dateStr):
         retVal = False
 
-        try:
-            year,month,day = dateStr.split ('-')
-            if (len(year) == 4):
-                d = datetime.datetime (int(year), int(month), int (day), 0,0,0)
-                retVal = True
-        except:
-            pass
-
-        return retVal
-
-    def validateDateOfBirth (self, fieldDicitionary):
-        errMsg = ''
-        strField = fieldDicitionary[self.FV_BIRTH_DATE]
-        if strField == '':
+        if dateStr == '':
             retVal = True
         else:
-            retVal = self.validateDate (strField)
+            try:
+                year,month,day = dateStr.split ('-')
+                if (len(year) == 4):
+                    d = datetime.datetime (int(year), int(month), int (day), \
+                            0,0,0)
+                    retVal = True
+            except:
+                pass
 
-        if not retVal:
-            errMsg = self.FVEM_BIRTH_DATE
-
-        return retVal, errMsg
+        return retVal
 
     def validateFields (self, fieldDicitionary):
         """ The function receives a dictionary containing pairs FV value and 
             string field. 
             The function returns True if all the fields are ok. 
             In case of error, a message is returned along whit False. """
-            
-        retVal, errMsg = self.validatePositiveIntegerFields (fieldDicitionary)
-        if retVal:
-            retVal, errMsg = self.validateDateOfBirth (fieldDicitionary)
+        retVal = True
+        errMsg = ''
+
+        for f in self.profileFields:
+            retVal = self.functions [f] (fieldDicitionary[f])
+            if not retVal:
+                errMsg = self.errorMessages[f]
+                retVal = False
+                break
 
         return retVal, errMsg
 
-    def validateSingleField (self, fieldId, fieldStr):
-        retVal =False
-        if fieldId == self.FV_BIRTH_DATE:
-            retVal = self.validateDate (fieldStr)
-        elif fieldId == self.FV_EXTRA_WEIGHT:
-            retVal = self.validateDate (fieldStr)
-        elif fieldId == self.FV_PRIOR_USE:  
-            retVal = self.validatePositiveIntegerField (fieldStr, True)
-        else:
-            retVal = self.validatePositiveIntegerField (fieldStr)
-
-        return retVal
-
     def validateSingleFieldAndLog (self, fieldId, fieldStr):
-        if not self.validateSingleField (fieldId, fieldStr):
+        retVal =  self.functions[fieldId] (fieldStr)
+        if not retVal:
             logging.warning (self.logMessages[fieldId] + fieldStr + '<<')
+        return retVal
 
     def validateEquipmentFields (self, fieldDict):
         """ The function receives a dictionary containing pairs FV value and 
             string field related to an equipment form. 
             The function returns True if all the fields are ok. 
             In case of error, a message is returned along whit False. """
-        retVal = False 
+        retVal = True
         errMsg = ''
-        if not self.validatePositiveIntegerField (\
-                fieldDict[self.FV_LIFE_EXPECT]):
-            errMsg = self.errorMessages [self.FV_LIFE_EXPECT] 
-        elif not self.validatePositiveIntegerField (\
-                fieldDict[self.FV_PRIOR_USE], True):
-            errMsg = self.errorMessages [self.FV_PRIOR_USE] 
-        else:
-            retVal = True
+
+        for f in self.equipmentFields:
+            retVal = self.functions [f] (fieldDict[f])
+            if not retVal:
+                errMsg = self.errorMessages[f]
+                retVal = False
+                break
 
         return retVal, errMsg
+
 
     def validateSportFields (self, fieldDict):
         """ The function receives a dictionary containing pairs FV value and 
             string field related to a sport form. 
             The function returns True if all the fields are ok. 
             In case of error, a message is returned along whit False. """
-        retVal = False 
+        retVal = True
         errMsg = ''
-        if not self.validatePositiveIntegerField (\
-                fieldDict[self.FV_MET]):
-            errMsg = self.errorMessages [self.FV_MET] 
-        elif not self.validatePositiveIntegerField (\
-                fieldDict[self.FV_MAX_PACE]):
-            errMsg = self.errorMessages [self.FV_MAX_PACE] 
-        elif not self.validatePositiveRealField (\
-                fieldDict[self.FV_EXTRA_WEIGHT], True):
-            errMsg = self.errorMessages [self.FV_EXTRA_WEIGHT] 
-        else:
-            retVal = True
+
+        for f in self.sportFields:
+            retVal = self.functions [f] (fieldDict[f])
+            if not retVal:
+                errMsg = self.errorMessages[f]
+                retVal = False
+                break
 
         return retVal, errMsg
 
