@@ -54,24 +54,31 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     <xsl:variable name="vIndex">
     <xsl:number count="lap"/>
     </xsl:variable>
-		<gpxdata:lap><xsl:value-of select="$newline"/>
-			<gpxdata:index><xsl:value-of select="$vIndex"/></gpxdata:index><xsl:value-of select="$newline"/>
+	<gpxdata:lap><xsl:value-of select="$newline"/>
+		<gpxdata:index><xsl:value-of select="$vIndex"/></gpxdata:index><xsl:value-of select="$newline"/>
             <xsl:variable name="stlat"><xsl:value-of select="begin_pos/@lat"/></xsl:variable>
-            <xsl:variable name="stlon"><xsl:value-of select="begin_pos/@lon"/></xsl:variable>
-            <gpxdata:startPoint lat="{$stlat}" lon="{$stlon}"/><xsl:value-of select="$newline"/>
-            <xsl:variable name="endlat"><xsl:value-of select="end_pos/@lat"/></xsl:variable>
-            <xsl:variable name="endlon"><xsl:value-of select="end_pos/@lon"/></xsl:variable>
-            <gpxdata:endPoint lat="{$endlat}" lon="{$endlon}"/><xsl:value-of select="$newline"/>
+			<xsl:variable name="stlon"><xsl:value-of select="begin_pos/@lon"/></xsl:variable>
+			<gpxdata:startPoint lat="{$stlat}" lon="{$stlon}"/><xsl:value-of select="$newline"/>
+			<xsl:variable name="endlat"><xsl:value-of select="end_pos/@lat"/></xsl:variable>
+			<xsl:variable name="endlon"><xsl:value-of select="end_pos/@lon"/></xsl:variable>
+			<gpxdata:endPoint lat="{$endlat}" lon="{$endlon}"/><xsl:value-of select="$newline"/>
 			<gpxdata:startTime><xsl:value-of select="@start"/></gpxdata:startTime><xsl:value-of select="$newline"/>
-			<gpxdata:elapsedTime><xsl:value-of select="@duration"/></gpxdata:elapsedTime><xsl:value-of select="$newline"/> <!-- Needs converting to seconds -->
+            
+            <xsl:variable name="duration_string"><xsl:value-of select="@duration"/></xsl:variable>
+		    <xsl:variable name="hours" select="substring-before($duration_string,':')"/>
+            <xsl:variable name="rest_duration" select="substring-after($duration_string,':')"/>
+            <xsl:variable name="minutes" select="substring-before($rest_duration,':')"/>
+            <xsl:variable name="seconds" select="substring-after($rest_duration,':')"/>
+            <xsl:variable name="duration_seconds" select="$hours*3600 + $minutes*60 + $seconds"/>
+            <!-- Forcing sum result to have '.' as decimal separator -->
+			<gpxdata:elapsedTime><xsl:value-of select='format-number($duration_seconds, "#.##")'/></gpxdata:elapsedTime><xsl:value-of select="$newline"/>
 			<gpxdata:calories><xsl:value-of select="calories"/></gpxdata:calories><xsl:value-of select="$newline"/>
 			<gpxdata:distance><xsl:value-of select="@distance"/></gpxdata:distance><xsl:value-of select="$newline"/>
-			<gpxdata:summary><xsl:value-of select="$newline"/>
-				<MaximumSpeed kind="max"><xsl:value-of select="max_speed"/></MaximumSpeed><xsl:value-of select="$newline"/>
-				<AverageHeartRateBpm kind="avg"><xsl:value-of select="avg_hr"/></AverageHeartRateBpm><xsl:value-of select="$newline"/>
-				<MaximumHeartRateBpm kind="max"><xsl:value-of select="max_hr"/></MaximumHeartRateBpm><xsl:value-of select="$newline"/>
-			</gpxdata:summary><xsl:value-of select="$newline"/> 
-			<gpxdata:trigger><xsl:value-of select="@trigger"/></gpxdata:trigger><xsl:value-of select="$newline"/>
+			<gpxdata:summary name="MaximumSpeed" kind="max"><xsl:value-of select="max_speed"/></gpxdata:summary><xsl:value-of select="$newline"/>
+			<gpxdata:summary name="AverageHeartRateBpm" kind="avg"><xsl:value-of select="avg_hr"/></gpxdata:summary><xsl:value-of select="$newline"/>
+			<gpxdata:summary name="MaximumHeartRateBpm" kind="max"><xsl:value-of select="max_hr"/></gpxdata:summary><xsl:value-of select="$newline"/>
+			<xsl:variable name="trigger"><xsl:value-of select="@trigger"/></xsl:variable>
+			<gpxdata:trigger kind="{$trigger}"/><xsl:value-of select="$newline"/>
 			<gpxdata:intensity><xsl:value-of select="intensity"/></gpxdata:intensity><xsl:value-of select="$newline"/>
 		</gpxdata:lap><xsl:value-of select="$newline"/>
     </xsl:for-each>

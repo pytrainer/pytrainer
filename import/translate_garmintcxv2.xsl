@@ -67,8 +67,8 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
     </xsl:variable>
 		<gpxdata:lap><xsl:value-of select="$newline"/>
 			<gpxdata:index><xsl:value-of select="$vIndex"/></gpxdata:index><xsl:value-of select="$newline"/>
-            <xsl:variable name="stlat"><xsl:value-of select="t:Track/t:Trackpoint/t:Position[1]/t:LatitudeDegrees"/></xsl:variable>
-            <xsl:variable name="stlon"><xsl:value-of select="t:Track/t:Trackpoint/t:Position[1]/t:LongitudeDegrees"/></xsl:variable>
+            <xsl:variable name="stlat"><xsl:value-of select="t:Track/t:Trackpoint[1]/t:Position/t:LatitudeDegrees"/></xsl:variable>
+            <xsl:variable name="stlon"><xsl:value-of select="t:Track/t:Trackpoint[1]/t:Position/t:LongitudeDegrees"/></xsl:variable>
             <gpxdata:startPoint lat="{$stlat}" lon="{$stlon}"/><xsl:value-of select="$newline"/>
 			<xsl:variable name="cnt"><xsl:value-of select="count(t:Track/t:Trackpoint/t:Position)-1"/></xsl:variable>
 			<xsl:variable name="endlat"><xsl:value-of select="t:Track/t:Trackpoint[number($cnt)]/t:Position/t:LatitudeDegrees"/></xsl:variable>
@@ -79,12 +79,11 @@ xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
 			<gpxdata:calories><xsl:value-of select="t:Calories"/></gpxdata:calories><xsl:value-of select="$newline"/>
 			<gpxdata:distance><xsl:value-of select="t:DistanceMeters"/></gpxdata:distance><xsl:value-of select="$newline"/>
 			<!-- <gpxdata:trackReference>Reference information for the track which corresponds to this lap type="trackReferenceType"</gpxdata:trackReference><xsl:value-of select="$newline"/> -->
-			<gpxdata:summary><xsl:value-of select="$newline"/>
-				<MaximumSpeed kind="max"><xsl:value-of select="t:MaximumSpeed"/></MaximumSpeed><xsl:value-of select="$newline"/>
-				<AverageHeartRateBpm kind="avg"><xsl:value-of select="t:AverageHeartRateBpm/t:Value"/></AverageHeartRateBpm><xsl:value-of select="$newline"/>
-				<MaximumHeartRateBpm kind="max"><xsl:value-of select="t:MaximumHeartRateBpm/t:Value"/></MaximumHeartRateBpm><xsl:value-of select="$newline"/>
-			</gpxdata:summary><xsl:value-of select="$newline"/> 
-			<gpxdata:trigger><xsl:value-of select="t:TriggerMethod"/></gpxdata:trigger><xsl:value-of select="$newline"/>
+			<gpxdata:summary name="MaximumSpeed" kind="max"><xsl:value-of select="t:MaximumSpeed"/></gpxdata:summary><xsl:value-of select="$newline"/>
+		    <gpxdata:summary name="AverageHeartRateBpm" kind="avg"><xsl:value-of select="t:AverageHeartRateBpm/t:Value"/></gpxdata:summary><xsl:value-of select="$newline"/>
+			<gpxdata:summary name ="MaximumHeartRateBpm" kind="max"><xsl:value-of select="t:MaximumHeartRateBpm/t:Value"/></gpxdata:summary><xsl:value-of select="$newline"/>
+            <xsl:variable name="trigger_kind"><xsl:value-of select="t:TriggerMethod"/></xsl:variable>
+			<gpxdata:trigger kind="{$trigger_kind}" /><xsl:value-of select="$newline"/>
 			<gpxdata:intensity><xsl:value-of select="t:Intensity"/></gpxdata:intensity><xsl:value-of select="$newline"/>
 		</gpxdata:lap><xsl:value-of select="$newline"/>
     </xsl:for-each>
