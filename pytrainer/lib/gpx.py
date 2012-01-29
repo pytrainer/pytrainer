@@ -51,7 +51,7 @@ intensityTag = gpxdataNS.substitute(tag="intensity")
 triggerTag = gpxdataNS.substitute(tag="trigger")
 summaryTag = gpxdataNS.substitute(tag="summary")
 
-pytrainerNS = string.Template(".//{http://sourceforge.net.project/pytrainer/GPX/0/1}$tag")
+pytrainerNS = string.Template(".//{http://sourceforge.net/projects/pytrainer/GPX/0/1}$tag")
 pyt_eleTag = pytrainerNS.substitute(tag="ele")
 
 class Gpx:
@@ -188,20 +188,39 @@ class Gpx:
                 elapsedTime = lap.findtext(elapsedTimeTag)
                 if elapsedTime.count(":") == 2: # got a 0:41:42.14 type elasped time
                     hours, mins, secs = elapsedTime.split(":")
-                    elapsedTime = (int(hours) *3600) + (int(mins) * 60) + float(secs)
-                    #print elapsedTime
+                    elapsedTime = str((int(hours) *3600) + (int(mins) * 60) + float(secs))
                 calories = lap.findtext(calorieTag)
                 distance = lap.findtext(distanceTag)
+                logging.info("Found time: %s, start lat: %s, start lon: %s, end lat: %s end lon: %s cal: %s dist: %s " % (elapsedTime, stLat, stLon, lat, lon, calories, distance))
                 intensity = lap.findtext(intensityTag).lower()
-                trigger = lap.findtext(triggerTag).lower()
-                summary = lap.find(summaryTag)
-                max_speed = summary.findtext(mainNS.substitute(tag="MaximumSpeed"))
-                if not max_speed:
-                    max_speed = 0
-                    logging.info("No max speed found in lap info. Default setting to 0")
-                avg_hr = summary.findtext(mainNS.substitute(tag="AverageHeartRateBpm"))
-                max_hr =  summary.findtext(mainNS.substitute(tag="MaximumHeartRateBpm"))
-                logging.debug("Found time: %s, lat: %s lon: %s cal: %s dist: %s " % (elapsedTime, lat, lon, calories, distance))
+                trigger_element = lap.find(triggerTag)
+                #logging.debug("Trigger element: %s" % etree.tostring(trigger_element))
+                if "kind" in trigger_element.keys():
+                    trigger = trigger_element.get("kind").lower()
+                else:
+                    trigger = trigger_element.text.lower()
+                # attribute xpath features are only available in 1.3 (python >= 2.7) - 2012/01/28 - dgranda
+                lap_summary = lap.findall(summaryTag)
+                num_elements = len(lap_summary)
+                summary_dict = {"MaximumSpeed": 0,
+                                "AverageHeartRateBpm": None,
+                                "MaximumHeartRateBpm": None}
+                if num_elements > 0:
+                    if num_elements == 1: # old _non compliant_ pytrainer estructure
+                        #logging.debug("lap_summary[0]: %s" % etree.tostring(lap_summary[0]))
+                        for key in summary_dict.keys():
+                            summary_dict[key] = lap_summary[0].findtext(mainNS.substitute(tag=key))
+                            logging.debug("%s: %s" % (key, summary_dict[key]))
+                    else:
+                        for summary_element in lap_summary:
+                            summary_dict[summary_element.get('name')] = summary_element.text
+                            logging.debug("%s: %s" % (summary_element.get('name'), summary_element.text))
+                    max_speed = summary_dict["MaximumSpeed"]
+                    avg_hr = summary_dict["AverageHeartRateBpm"]
+                    max_hr = summary_dict["MaximumHeartRateBpm"]
+                else:
+                    logging.info("No summary found")
+                logging.info("Intensity: %s | Trigger: %s | Max speed: %s | Average hr: %s | Maximum hr: %s" % (intensity, trigger, max_speed, avg_hr, max_hr))
                 lapInfo.append((elapsedTime, lat, lon, calories, distance, stLat, stLon, intensity, avg_hr, max_hr, max_speed, trigger))
         logging.debug("<<")
         return lapInfo
