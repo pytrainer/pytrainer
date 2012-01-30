@@ -296,12 +296,9 @@ class garmintools_full():
 		if result[0] == 0:
 			if result[1] != "garmin unit could not be opened!":
 				try:
-					#ToDo: review, always get "lxml.etree.XMLSyntaxError: PCDATA invalid Char value 28, line 6, column 29" error
 					xmlString = result[1].rstrip()
-					logging.debug("xmlString: "+str(xmlString))
-					prueba = etree.XMLID(xmlString)
-					logging.debug("Prueba: "+str(prueba))
-					tree = etree.fromstring(xmlString)
+					xmlString_2 = ' '.join(xmlString.split())
+					tree = etree.fromstring(xmlString_2)
 					description = self.getProductDesc(tree)
 					if description is not None:
 						logging.info("Found "+str(description))
@@ -309,6 +306,7 @@ class garmintools_full():
 						raise Exception
 				except:
 					logging.error("Not able to identify GPS device. Continuing anyway...")
+					logging.debug("Traceback: %s" % traceback.format_exc())
 					pass
 			else:
 				logging.error(result[1])
@@ -320,12 +318,7 @@ class garmintools_full():
 		return numError
 
 	def getProductDesc(self, tree):
-		root = tree.getroot()
-		pointProduct = root.find(".//garmin_product")
-		if pointProduct is not None:
-			desc = pointProduct.get("product_description")
-			return desc
-		return None
+		return tree[0][0].text
 
 	def checkLoadedModule(self):
 		try:
