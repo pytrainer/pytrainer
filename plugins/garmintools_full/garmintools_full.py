@@ -318,7 +318,8 @@ class garmintools_full():
 		return numError
 
 	def getProductDesc(self, tree):
-		return tree[0][0].text
+		desc = tree.findtext(".//product_description")
+		return desc
 
 	def checkLoadedModule(self):
 		try:
