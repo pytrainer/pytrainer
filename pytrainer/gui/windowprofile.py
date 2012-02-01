@@ -702,19 +702,34 @@ class WindowProfile(SimpleGladeApp):
                   str(errMsg) + '</span>'
         self.label12.set_markup (msg)"""
 
+    def validate_field_and_log (self, validator, inputWidget):
+        V = validator()
+        field = inputWidget.get_text()
+
+        if not V.validate_field (field):
+            logging.warning (V.get_log_message() + field + '<<')
+
+
+
     def on_prf_height_focus_out_event(self, widget, data):
+        self.validate_field_and_log (HeightFieldValidator, self.prf_height)
         self.validate_profile_fields ()
 
     def on_prf_weight_focus_out_event (self, widget, data):
+        self.validate_field_and_log (WeightFieldValidator, self.prf_weight)
         self.validate_profile_fields ()
 
     def on_prf_age_focus_out_event (self, widget, data):
+        self.validate_field_and_log (DateOfBirthFieldValidator, self.prf_age)
         self.validate_profile_fields ()
 
     def on_prf_maxhr_focus_out_event (self, widget, data):
+        self.validate_field_and_log (MaxHeartRateFieldValidator, self.prf_maxhr)
         self.validate_profile_fields ()
 
     def on_prf_minhr_focus_out_event (self, widget, data):
+        self.validate_field_and_log (RestHeartRateFieldValidator,
+                self.prf_minhr)
         self.validate_profile_fields ()
 
 
