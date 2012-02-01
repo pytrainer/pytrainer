@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pytrainer 1.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-01-26 11:25+0100\n"
-"PO-Revision-Date: 2011-08-28 13:29+0100\n"
+"POT-Creation-Date: 2012-02-01 15:31+0100\n"
+"PO-Revision-Date: 2012-02-01 15:35+0100\n"
 "Last-Translator: David Garcia Granda <dgranda@gmail.com>\n"
 "Language-Team: Spanish <pytrainer-devel@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -296,7 +296,7 @@ msgid "Average Speed (km/h)"
 msgstr "Velocidad media (km/h)"
 
 #: glade/importdata.glade:1050 glade/pytrainer.glade:277
-#: pytrainer/gui/windowimportdata.py:353 pytrainer/gui/windowprofile.py:158
+#: pytrainer/gui/windowimportdata.py:353 pytrainer/gui/windowprofile.py:139
 #: pytrainer/gui/windowrecord.py:211 pytrainer/gui/windowmain.py:110
 #: pytrainer/gui/windowmain.py:118 pytrainer/gui/windowmain.py:140
 #: pytrainer/gui/windowmain.py:1497
@@ -657,15 +657,15 @@ msgstr "Nombre"
 msgid "M.E.T."
 msgstr "M.E.T."
 
-#: glade/profile.glade:1321 pytrainer/gui/windowprofile.py:158
+#: glade/profile.glade:1321 pytrainer/gui/windowprofile.py:139
 msgid "Extra Weight"
 msgstr "Peso extra"
 
-#: glade/profile.glade:1368 pytrainer/gui/windowprofile.py:158
+#: glade/profile.glade:1368 pytrainer/gui/windowprofile.py:139
 msgid "Maximum Pace"
 msgstr "Ritmo más rápido"
 
-#: glade/profile.glade:1396 pytrainer/gui/windowprofile.py:158
+#: glade/profile.glade:1396 pytrainer/gui/windowprofile.py:139
 #: pytrainer/gui/windowmain.py:188
 msgid "Color"
 msgstr "Color"
@@ -1813,39 +1813,59 @@ msgstr "Columna %d"
 msgid "Athlete Data"
 msgstr "Datos del atleta"
 
-#: pytrainer/gui/windowprofile.py:43
+#: pytrainer/gui/windowprofile.py:48
 msgid "Error with the height field."
-msgstr "Error en el campo de altura."
+msgstr "Error en el campo de vida útil esperada."
 
-#: pytrainer/gui/windowprofile.py:44
+#: pytrainer/gui/windowprofile.py:54
 msgid "Error with the weight field."
 msgstr "Error en el campo de peso."
 
-#: pytrainer/gui/windowprofile.py:45
+#: pytrainer/gui/windowprofile.py:60
 msgid "Error with the date of birth field."
 msgstr "Error en el campo de fecha de nacimiento."
 
-#: pytrainer/gui/windowprofile.py:46
+#: pytrainer/gui/windowprofile.py:66
 msgid "Error with the maximum heart rate field."
 msgstr "Error en el campo de pulsaciones máximas."
 
-#: pytrainer/gui/windowprofile.py:47
+#: pytrainer/gui/windowprofile.py:72
 msgid "Error with the resting heart rate field."
 msgstr "Error en el campo de pulsaciones en reposo."
 
-#: pytrainer/gui/windowprofile.py:140
+#: pytrainer/gui/windowprofile.py:78
+msgid "Error with the M.E.T. field."
+msgstr "Error en el campo de M.E.T."
+
+#: pytrainer/gui/windowprofile.py:84
+msgid "Error with the extra weight field."
+msgstr "Error en el campo de peso extra."
+
+#: pytrainer/gui/windowprofile.py:90
+msgid "Error with the maximum pace field."
+msgstr "Error en el campo de ritmo máximo."
+
+#: pytrainer/gui/windowprofile.py:96
+msgid "Error with the life expectancy field."
+msgstr "Error en el campo de vida útil esperada."
+
+#: pytrainer/gui/windowprofile.py:103
+msgid "Error with the prior usage field."
+msgstr "Error en el campo de uso anterior."
+
+#: pytrainer/gui/windowprofile.py:121
 msgid "Male"
 msgstr "Varón"
 
-#: pytrainer/gui/windowprofile.py:141
+#: pytrainer/gui/windowprofile.py:122
 msgid "Female"
 msgstr "Mujer"
 
-#: pytrainer/gui/windowprofile.py:158
+#: pytrainer/gui/windowprofile.py:139
 msgid "MET"
 msgstr "M.E.T."
 
-#: pytrainer/gui/windowprofile.py:389
+#: pytrainer/gui/windowprofile.py:370
 msgid "Sport Creation Error"
 msgstr "Fallo en la creación de deporte"
 
