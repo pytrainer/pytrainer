@@ -1815,7 +1815,7 @@ msgstr "Datos del atleta"
 
 #: pytrainer/gui/windowprofile.py:48
 msgid "Error with the height field."
-msgstr "Error en el campo de vida útil esperada."
+msgstr "Error en el campo de altura."
 
 #: pytrainer/gui/windowprofile.py:54
 msgid "Error with the weight field."
