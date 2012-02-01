@@ -19,6 +19,7 @@
 import gtk
 from pytrainer.core.equipment import Equipment
 from pytrainer.gui import fieldvalidator
+import logging
 
 class LifeExpentancyFieldValidator (
         fieldvalidator.PositiveIntegerFieldValidator):
@@ -130,7 +131,9 @@ class EquipmentUi(gtk.HBox):
             "confirm_edit_equipment_clicked": self._confirm_edit_equipment_clicked,
             "delete_equipment_clicked": self._delete_equipment_clicked,
             "cancel_delete_equipment_clicked": self._cancel_delete_equipment_clicked,
-            "confirm_delete_equipment_clicked": self._confirm_delete_equipment_clicked})
+            "confirm_delete_equipment_clicked": self._confirm_delete_equipment_clicked,
+            "on_entryEquipmentAddLifeExpectancy_focus_out_event": self._on_entryEquipmentAddLifeExpectancy_focus_out_event,
+            "on_entryEquipmentAddPriorUsage_focus_out_event": self._on_entryEquipmentAddPriorUsage_focus_out_event})
         
     def _get_selected_equipment_path(self):
         (path, _) = self._get_tree_view().get_cursor()
@@ -223,3 +226,49 @@ class EquipmentUi(gtk.HBox):
     def _confirm_delete_equipment_clicked(self, widget):
         self._equipment_store.remove_equipment(self._get_selected_equipment_path())
         self.show_page_equipment_list()
+
+    def _validate_add_equipment_fields (self):
+        input_fields = [(self._builder.get_object( 
+                    "entryEquipmentAddLifeExpectancy"),
+                LifeExpentancyFieldValidator),
+                (self._builder.get_object("entryEquipmentAddPriorUsage"),
+                PriorUsageFieldValidator),]
+        
+        error_msg = ''
+        all_good = True
+        for entry in input_fields:
+            validator = entry[1]()
+            field = entry[0].get_text()
+
+            if not validator.validate_field (field):
+                error_msg = validator.get_error_message ()
+                all_good = False
+
+        self._builder.get_object( "buttonEquipmentAddConfirm").set_sensitive (
+                all_good)
+        if error_msg == '':
+            msg = ''
+        else:
+            msg = '<span weight="bold"' + " fgcolor='#ff0000'>" +\
+                  str(error_msg) + '</span>'
+        self._builder.get_object(
+                "label_add_equipment_error_message").set_markup (msg)
+
+    def _validate_field_and_log (self, validator, inputWidget):
+        V = validator()
+        field = inputWidget.get_text()
+
+        if not V.validate_field (field):
+            logging.warning (V.get_log_message() + field + '<<')
+
+    def _on_entryEquipmentAddLifeExpectancy_focus_out_event (self, widget, 
+            data):
+        self._validate_field_and_log (LifeExpentancyFieldValidator, 
+                self._builder.get_object("entryEquipmentAddLifeExpectancy"))
+        self._validate_add_equipment_fields ()
+
+    def _on_entryEquipmentAddPriorUsage_focus_out_event (self, widget, data):
+        self._validate_field_and_log (PriorUsageFieldValidator, 
+                self._builder.get_object("entryEquipmentAddPriorUsage"))
+        self._validate_add_equipment_fields ()
+
