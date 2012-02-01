@@ -78,16 +78,14 @@ class PositiveIntegerFieldValidator (FieldValidator):
 
 class PositiveOrZeroIntegerFieldValidator (FieldValidator):
     def validate_field (self, field):
+        # Empty values are not allowed 
         is_valid = False
-        if field == '':
-            is_valid = True
-        else:
-            try:
-                a = float (field)
-                if (a >= 0):
-                    is_valid = True
-            except:
-                pass
+        try:
+            a = float (field)
+            if (a >= 0):
+                is_valid = True
+        except:
+            pass
         return is_valid
 
 class DateFieldValidator (FieldValidator):
@@ -108,3 +106,6 @@ class DateFieldValidator (FieldValidator):
 
         return is_valid
 
+class NotEmptyFieldValidator (FieldValidator):
+    def validate_field(self, field):
+        return len (field.strip ()) > 0

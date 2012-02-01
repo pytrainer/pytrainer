@@ -47,8 +47,8 @@ class FieldValidatorTest (TestCase):
         self.execute_validations (V, good_integer_fields, wrong_integer_fields)
 
     def test_positive_or_zero_integer_field_validator (self):
-        good_integer_fields = ['1', '22', '0', '']
-        wrong_integer_fields = ['45a', 'a45', '-1', '-45']
+        good_integer_fields = ['1', '22', '0' ]
+        wrong_integer_fields = ['45a', 'a45', '-1', '-45', '', ' ']
         V = fieldvalidator.PositiveOrZeroIntegerFieldValidator ()
         self.execute_validations (V, good_integer_fields, wrong_integer_fields)
 
@@ -80,3 +80,9 @@ class FieldValidatorTest (TestCase):
 
         V = fieldvalidator.DateFieldValidator ()
         self.execute_validations (V, good_date_fields, wrong_date_fields)
+
+    def test_not_empty_field_validator (self):
+        good_fields = ['name', '17']
+        wrong_fields = ['', '  ']
+        V = fieldvalidator.NotEmptyFieldValidator ()
+        self.execute_validations (V, good_fields, wrong_fields)

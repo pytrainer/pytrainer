@@ -33,6 +33,12 @@ class PriorUsageFieldValidator (
         self.log_message = 'Invalid prior usage field entered >>'
         self.error_message = _('Error with the prior usage field.')
 
+class EquiptmentDescriptionFieldValidator (
+        fieldvalidator.NotEmptyFieldValidator):
+    def __init__ (self):
+        self.log_message = 'Invalid description field entered >>'
+        self.error_message = _('The description field should not be empty.')
+
 
 class EquipmentStore(gtk.ListStore):
     

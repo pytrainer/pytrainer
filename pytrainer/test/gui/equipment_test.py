@@ -5,6 +5,7 @@ from pytrainer.core.equipment import Equipment, EquipmentService
 from pytrainer.gui.equipment import EquipmentStore
 from pytrainer.gui.equipment import LifeExpentancyFieldValidator
 from pytrainer.gui.equipment import PriorUsageFieldValidator
+from pytrainer.gui.equipment import EquiptmentDescriptionFieldValidator
 import gettext
 
 #Copyright (C) Nathan Jones ncjones@users.sourceforge.net
@@ -190,16 +191,23 @@ class EquipmentFieldValidators (TestCase):
         msgLog = validator.get_log_message ()
  
     def test_life_expentancy_field_validator (self):
-        good_life = ['45', '', '0']
-        wrong_life = [ '45a', 'a45', '-1', '-45']
+        good_life = ['45', '0']
+        wrong_life = [ '45a', 'a45', '-1', '-45', '', ' ']
 
         V = LifeExpentancyFieldValidator ()
         self.execute_single_field_validator (V, good_life, wrong_life)
 
     def test_prior_usage_field_validator (self):
-        good_usage = ['45', '', '0']
-        wrong_usage = [ '45a', 'a45', '-1', '-45']
+        good_usage = ['45', '0']
+        wrong_usage = [ '45a', 'a45', '-1', '-45', '', ' ']
 
         V = PriorUsageFieldValidator ()
         self.execute_single_field_validator (V, good_usage, wrong_usage)
 
+    def test_equiptment_description_field_validator (self):
+        good_description = ['desc', '34']
+        wrong_description = ['', ' ']
+
+        V = EquiptmentDescriptionFieldValidator ()
+        self.execute_single_field_validator (V, good_description,
+                wrong_description)
