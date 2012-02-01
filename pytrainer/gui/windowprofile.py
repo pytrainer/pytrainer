@@ -528,4 +528,43 @@ class WindowProfile(SimpleGladeApp):
                 self.prf_minhr)
         self.validate_profile_fields ()
 
+    def validate_sport_fields (self):
+        input_fields = [( self.newmetentry, METFieldValidator), 
+            ( self.newweightentry, ExtraWeightFieldValidator),
+            ( self.newmaxpace, MaximumPaceFieldValidator),]
+            
+
+        error_msg = ''
+        all_good = True
+        for entry in input_fields:
+            validator = entry[1]()
+            field = entry[0].get_text()
+
+            if not validator.validate_field (field):
+                error_msg = validator.get_error_message ()
+                all_good = False
+
+        self.button18.set_sensitive (all_good)
+        if error_msg == '':
+            msg = ''
+        else:
+            msg = '<span weight="bold"' + " fgcolor='#ff0000'>" +\
+                  str(error_msg) + '</span>'
+        self.label_sport_error_message.set_markup (msg)
+
+    def on_newmetentry_focus_out_event (self, widget, data):
+        self.validate_field_and_log (METFieldValidator,
+                self.newmetentry)
+        self.validate_sport_fields ()
+
+
+    def on_newmaxpace_focus_out_event (self, widget, data):
+        self.validate_field_and_log (MaximumPaceFieldValidator,
+                self.newmaxpace)
+        self.validate_sport_fields ()
+
+    def on_newweightentry_focus_out_event (self, widget, data):
+        self.validate_field_and_log (ExtraWeightFieldValidator,
+                self.newweightentry)
+        self.validate_sport_fields ()
 

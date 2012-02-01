@@ -828,6 +828,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">●</property>
+                                    <signal name="focus_out_event" handler="on_newmetentry_focus_out_event" swapped="no"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -856,6 +857,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">●</property>
+                                    <signal name="focus_out_event" handler="on_newweightentry_focus_out_event" swapped="no"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -915,6 +917,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">●</property>
+                                    <signal name="focus_out_event" handler="on_newmaxpace_focus_out_event" swapped="no"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -991,9 +994,10 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <child>
-                                  <widget class="GtkLabel" id="label139">
+                                  <widget class="GtkLabel" id="label_sport_error_message">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
+                                    <property name="use_markup">True</property>
                                   </widget>
                                   <packing>
                                     <property name="expand">True</property>
