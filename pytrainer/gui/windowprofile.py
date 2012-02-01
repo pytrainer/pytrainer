@@ -28,7 +28,48 @@ import logging
 import pytrainer
 import pytrainer.util.color
 from pytrainer.gui.color import ColorConverter
+from pytrainer.gui import fieldvalidator
 import datetime
+
+class GenericFieldValidator (object):
+
+    def get_log_message (self):
+        return self.log_message 
+
+    def get_error_message (self):
+        return self.error_message
+
+
+
+class HeightFieldValidator (fieldvalidator.PositiveIntegerFieldValidator,
+        GenericFieldValidator):
+    def __init__(self):
+        self.log_message = 'Invalid height field entered >>'
+        self.error_message = _('Error with the height field.')
+
+class WeightFieldValidator (fieldvalidator.PositiveIntegerFieldValidator,
+        GenericFieldValidator):
+    def __init__ (self):
+        self.log_message = 'Invalid weight field entered >>'
+        self.error_message = _('Error with the weight field.')
+
+class DateOfBirthFieldValidator (fieldvalidator.DateFieldValidator,
+        GenericFieldValidator):
+    def __init__ (self):
+        self.log_message = 'Invalid date of birth field entered >>'
+        self.error_message = _('Error with the date of birth field.')
+
+class MaxHeartRateFieldValidator (fieldvalidator.PositiveIntegerFieldValidator,
+        GenericFieldValidator):
+    def __init__ (self):
+        self.log_message = 'Invalid maximum heart rate field entered >>'
+        self.error_message = _('Error with the maximum heart rate field.')
+
+class RestHeartRateFieldValidator (fieldvalidator.PositiveIntegerFieldValidator,
+        GenericFieldValidator):
+    def __init__ (self):
+        self.log_message = 'Invalid resting heart rate field entered >>'
+        self.error_message = _('Error with the resting heart rate field.')
 
 class FieldValidator (object):
     """ A class to validate all the input fields that can have errors. """
@@ -614,7 +655,32 @@ class WindowProfile(SimpleGladeApp):
         self.deletesport.hide()
         self.editsport.hide()   
 
-    def validateFields (self, originField):
+    def validate_profile_fields (self):
+        input_fields = [(self.prf_height,HeightFieldValidator), 
+            (self.prf_weight, WeightFieldValidator),
+            (self.prf_age, DateOfBirthFieldValidator),
+            (self.prf_maxhr, MaxHeartRateFieldValidator ),
+            (self.prf_minhr, RestHeartRateFieldValidator),]
+
+        error_msg = ''
+        all_good = True
+        for entry in input_fields:
+            validator = entry[1]()
+            field = entry[0].get_text()
+
+            if not validator.validate_field (field):
+                error_msg = validator.get_error_message ()
+                all_good = False
+
+        self.button3.set_sensitive (all_good)
+        if error_msg == '':
+            msg = ''
+        else:
+            msg = '<span weight="bold"' + " fgcolor='#ff0000'>" +\
+                  str(error_msg) + '</span>'
+        self.label12.set_markup (msg)
+
+    """def validateFields (self, originField):
         # A dictionary containing all the fields to validate
         fieldDict = {}
         fieldDict [FieldValidator.FV_HEIGHT] = self.prf_height.get_text()
@@ -634,20 +700,21 @@ class WindowProfile(SimpleGladeApp):
         else:
             msg = '<span weight="bold"' + " fgcolor='#ff0000'>" +\
                   str(errMsg) + '</span>'
-        self.label12.set_markup (msg)
+        self.label12.set_markup (msg)"""
 
     def on_prf_height_focus_out_event(self, widget, data):
-        self.validateFields (FieldValidator.FV_HEIGHT)
+        self.validate_profile_fields ()
 
     def on_prf_weight_focus_out_event (self, widget, data):
-        self.validateFields (FieldValidator.FV_WEIGHT)
+        self.validate_profile_fields ()
 
     def on_prf_age_focus_out_event (self, widget, data):
-        self.validateFields (FieldValidator.FV_BIRTH_DATE)
+        self.validate_profile_fields ()
 
     def on_prf_maxhr_focus_out_event (self, widget, data):
-        self.validateFields (FieldValidator.FV_MAX_HRATE)
+        self.validate_profile_fields ()
 
     def on_prf_minhr_focus_out_event (self, widget, data):
-        self.validateFields (FieldValidator.FV_MIN_HRATE)
+        self.validate_profile_fields ()
+
 

@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 from unittest import  TestCase
 from pytrainer.gui.windowprofile import FieldValidator
+from pytrainer.gui.windowprofile import HeightFieldValidator
+from pytrainer.gui.windowprofile import WeightFieldValidator
+from pytrainer.gui.windowprofile import DateOfBirthFieldValidator
+from pytrainer.gui.windowprofile import MaxHeartRateFieldValidator
+from pytrainer.gui.windowprofile import RestHeartRateFieldValidator
 import gettext
 
 
@@ -403,3 +408,50 @@ class FieldValidatorTest2 (TestCase):
             self.assertTrue (not retVal)
             self.assertEquals (msg, F.FVEM_MAX_PACE)
 
+    def execute_single_field_validator (self, validator, good_fields,
+            wrong_fields):
+        for field in good_fields:
+            self.assertTrue (validator.validate_field(field))
+        for field in wrong_fields:
+            self.assertFalse (validator.validate_field (field))
+
+        # Make sure the function is available
+        msgErr = validator.get_error_message ()
+        msgLog = validator.get_log_message ()
+
+
+    def test_height_field_validator (self):
+        good_height = ['191', '']
+        wrong_height = [ '191a', 'a191', '0', '-1', '-191']
+
+        V = HeightFieldValidator ()
+        self.execute_single_field_validator (V, good_height, wrong_height)
+
+
+    def test_wight_field_validator (self):
+        good_weight = ['50', '']
+        wrong_weight = [ '50a', 'a80', '0', '-1', '-80']
+
+        V = WeightFieldValidator ()
+        self.execute_single_field_validator (V, good_weight, wrong_weight)
+
+    def test_date_of_birth_field_validator (self):
+        good_date = ['1972-12-30','']
+        wrong_date = [ 'aaaaaa']
+
+        V =  DateOfBirthFieldValidator ()
+        self.execute_single_field_validator (V, good_date, wrong_date)
+        
+    def test_max_heart_rate_field_validator (self):
+        good_rate = ['191', '']
+        wrong_rate = [ '191a', 'a191', '0', '-1', '-191']
+
+        V = MaxHeartRateFieldValidator ()
+        self.execute_single_field_validator (V, good_rate, wrong_rate)
+
+    def test_rest_heart_rate_field_validator (self):
+        good_rate = ['45', '']
+        wrong_rate = [ '45a', 'a45', '0', '-1', '-45']
+
+        V = RestHeartRateFieldValidator ()
+        self.execute_single_field_validator (V, good_rate, wrong_rate)
