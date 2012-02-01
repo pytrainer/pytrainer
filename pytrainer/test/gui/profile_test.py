@@ -8,8 +8,6 @@ from pytrainer.gui.windowprofile import RestHeartRateFieldValidator
 from pytrainer.gui.windowprofile import METFieldValidator
 from pytrainer.gui.windowprofile import ExtraWeightFieldValidator
 from pytrainer.gui.windowprofile import MaximumPaceFieldValidator
-from pytrainer.gui.windowprofile import LifeExpentancyFieldValidator
-from pytrainer.gui.windowprofile import PriorUsageFieldValidator
 import gettext
 
 
@@ -112,18 +110,4 @@ class FieldValidatorTest2 (TestCase):
 
         V = MaximumPaceFieldValidator ()
         self.execute_single_field_validator (V, good_pace, wrong_pace)
-
-    def test_life_expentancy_field_validator (self):
-        good_life = ['45', '']
-        wrong_life = [ '45a', 'a45', '0', '-1', '-45']
-
-        V = LifeExpentancyFieldValidator ()
-        self.execute_single_field_validator (V, good_life, wrong_life)
-
-    def test_prior_usage_field_validator (self):
-        good_usage = ['45', '', '0']
-        wrong_usage = [ '45a', 'a45', '-1', '-45']
-
-        V = PriorUsageFieldValidator ()
-        self.execute_single_field_validator (V, good_usage, wrong_usage)
 

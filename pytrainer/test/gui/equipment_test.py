@@ -3,6 +3,9 @@ from unittest import TestCase
 from mock import Mock
 from pytrainer.core.equipment import Equipment, EquipmentService
 from pytrainer.gui.equipment import EquipmentStore
+from pytrainer.gui.equipment import LifeExpentancyFieldValidator
+from pytrainer.gui.equipment import PriorUsageFieldValidator
+import gettext
 
 #Copyright (C) Nathan Jones ncjones@users.sourceforge.net
 
@@ -159,4 +162,44 @@ class EquipmentStoreTest(TestCase):
         iter = equipment_store.iter_next(iter)
         self.assertEquals(2, equipment_store.get_value(iter, 0))
         
+
+class EquipmentFieldValidators (TestCase):
+   
+    def setUp (self):
+        """ These tests are meant to be executed for the source main directory.
+            Need to initialize the locale to deal with FieldValidator
+            translated error messages. """
+        gettext_path =  "./locale"
+
+        gettext.install("pytrainer", gettext_path, unicode=1)
+
+
+    def tearDown (self):
+        pass
+
+    def execute_single_field_validator (self, validator, good_fields,
+            wrong_fields):
+        for field in good_fields:
+            self.assertTrue (validator.validate_field(field))
+        for field in wrong_fields:
+            self.assertFalse (validator.validate_field (field))
+
+        # Make sure the function is available
+        # How do I check the message is right?
+        msgErr = validator.get_error_message ()
+        msgLog = validator.get_log_message ()
+ 
+    def test_life_expentancy_field_validator (self):
+        good_life = ['45', '']
+        wrong_life = [ '45a', 'a45', '0', '-1', '-45']
+
+        V = LifeExpentancyFieldValidator ()
+        self.execute_single_field_validator (V, good_life, wrong_life)
+
+    def test_prior_usage_field_validator (self):
+        good_usage = ['45', '', '0']
+        wrong_usage = [ '45a', 'a45', '-1', '-45']
+
+        V = PriorUsageFieldValidator ()
+        self.execute_single_field_validator (V, good_usage, wrong_usage)
 

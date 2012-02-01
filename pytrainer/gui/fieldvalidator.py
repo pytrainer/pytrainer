@@ -31,6 +31,23 @@ class FieldValidator (object):
         raise NotImplementedError ("Should have implemented validate_field " +
                 "the derived classes.")
 
+    def get_log_message (self):
+        """ Another "abstract" function definition to provide the log
+            message.
+
+            All the "derived" classes should have a log_message attribute
+            """
+        return self.log_message 
+
+    def get_error_message (self):
+        """ Another "abstract" function definition to provide the error
+            message.
+
+            All the "derived" classes should have a log_message attribute
+            """
+        return self.error_message
+
+
 class PositiveRealNumberFieldValidator (FieldValidator):
     def validate_field (self, field):
         is_valid = False

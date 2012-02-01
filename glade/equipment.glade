@@ -10,16 +10,19 @@
     <child>
       <object class="GtkFrame" id="frameEquipmentList">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">5</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
           <object class="GtkAlignment" id="alignmentEquipmentList">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="left_padding">12</property>
             <child>
               <object class="GtkVBox" id="vboxEquipmentList">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="border_width">5</property>
                 <child>
                   <object class="GtkScrolledWindow" id="scrolledwindowEquipmentList">
@@ -30,26 +33,30 @@
                       <object class="GtkTreeView" id="treeviewEquipmentList">
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
-                        <signal name="cursor_changed" handler="equipment_cursor_changed"/>
-                        <signal name="row_activated" handler="equipment_row_activated"/>
+                        <signal name="cursor-changed" handler="equipment_cursor_changed" swapped="no"/>
+                        <signal name="row-activated" handler="equipment_row_activated" swapped="no"/>
                       </object>
                     </child>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkHBox" id="hboxEquipmentListButtons">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkButton" id="buttonEquipmentAdd">
                         <property name="label">gtk-add</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_stock">True</property>
-                        <signal name="clicked" handler="add_equipment_clicked"/>
+                        <signal name="clicked" handler="add_equipment_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -61,12 +68,13 @@
                     <child>
                       <object class="GtkButton" id="buttonEquipmentEdit">
                         <property name="label">gtk-edit</property>
-                        <property name="sensitive">False</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_stock">True</property>
-                        <signal name="clicked" handler="edit_equipment_clicked"/>
+                        <signal name="clicked" handler="edit_equipment_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -78,12 +86,13 @@
                     <child>
                       <object class="GtkButton" id="buttonEquipmentDelete">
                         <property name="label">gtk-delete</property>
-                        <property name="sensitive">False</property>
                         <property name="visible">True</property>
+                        <property name="sensitive">False</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_stock">True</property>
-                        <signal name="clicked" handler="delete_equipment_clicked"/>
+                        <signal name="clicked" handler="delete_equipment_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -106,6 +115,7 @@
         <child type="label">
           <object class="GtkLabel" id="labelEquipmentList">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="label" translatable="yes">&lt;b&gt;Equipment List&lt;/b&gt;</property>
             <property name="use_markup">True</property>
           </object>
@@ -121,29 +131,35 @@
     <child>
       <object class="GtkFrame" id="frameEquipmentAdd">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">5</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
           <object class="GtkAlignment" id="alignmentEquipmentAdd">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="left_padding">12</property>
             <child>
               <object class="GtkVBox" id="vboxEquipmentAdd">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="border_width">5</property>
                 <child>
                   <object class="GtkHBox" id="hboxEquipmentAddDetails">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkTable" id="tableEquipmentAddDetails">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="n_rows">5</property>
                         <property name="n_columns">2</property>
                         <property name="row_spacing">5</property>
                         <child>
                           <object class="GtkLabel" id="labelEquipmentAddDescription">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xalign">1</property>
                             <property name="xpad">5</property>
                             <property name="label" translatable="yes">Description</property>
@@ -156,7 +172,7 @@
                           <object class="GtkEntry" id="entryEquipmentAddDescription">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="invisible_char">&#x25CF;</property>
+                            <property name="invisible_char">●</property>
                             <property name="width_chars">35</property>
                           </object>
                           <packing>
@@ -169,6 +185,7 @@
                         <child>
                           <object class="GtkLabel" id="labelEquipmentAddLifeExpectancy">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xalign">1</property>
                             <property name="xpad">5</property>
                             <property name="label" translatable="yes">Life Expectancy</property>
@@ -182,14 +199,16 @@
                         <child>
                           <object class="GtkAlignment" id="alignment3">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xscale">0</property>
                             <child>
                               <object class="GtkEntry" id="entryEquipmentAddLifeExpectancy">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="invisible_char">●</property>
                                 <property name="width_chars">8</property>
+                                <signal name="focus-out-event" handler="on_entryEquipmentAddLifeExpectancy_focus_out_event" swapped="no"/>
                               </object>
                             </child>
                           </object>
@@ -204,6 +223,7 @@
                         <child>
                           <object class="GtkLabel" id="labelEquipmentAddPriorUsage">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xalign">1</property>
                             <property name="yalign">0</property>
                             <property name="xpad">5</property>
@@ -219,6 +239,7 @@
                         <child>
                           <object class="GtkAlignment" id="alignment2">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xscale">0</property>
                             <child>
@@ -227,6 +248,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">•</property>
                                 <property name="width_chars">8</property>
+                                <signal name="focus-out-event" handler="on_entryEquipmentAddPriorUsage_focus_out_event" swapped="no"/>
                               </object>
                             </child>
                           </object>
@@ -244,6 +266,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="draw_indicator">True</property>
                           </object>
                           <packing>
@@ -257,6 +280,7 @@
                         <child>
                           <object class="GtkAlignment" id="alignment6">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <child>
                               <placeholder/>
                             </child>
@@ -270,6 +294,7 @@
                         <child>
                           <object class="GtkLabel" id="labelEquipmentAddNotes">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xalign">1</property>
                             <property name="yalign">0</property>
                             <property name="xpad">5</property>
@@ -311,20 +336,41 @@
                     </child>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkHBox" id="hboxEquipmentAddButtons">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkButton" id="buttonEquipmentAddConfirm">
+                        <property name="label">gtk-add</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="use_stock">True</property>
+                        <signal name="clicked" handler="confirm_add_equipment_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
                     <child>
                       <object class="GtkButton" id="buttonEquipmentAddCancel">
                         <property name="label">gtk-cancel</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_stock">True</property>
-                        <signal name="clicked" handler="cancel_add_equipment_clicked"/>
+                        <signal name="clicked" handler="cancel_add_equipment_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -334,19 +380,15 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkButton" id="buttonEquipmentAddConfirm">
-                        <property name="label">gtk-add</property>
+                      <object class="GtkLabel" id="label_add_equipment_error_message">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="use_stock">True</property>
-                        <signal name="clicked" handler="confirm_add_equipment_clicked"/>
+                        <property name="can_focus">False</property>
+                        <property name="use_markup">True</property>
                       </object>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="pack_type">end</property>
-                        <property name="position">0</property>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                   </object>
@@ -363,6 +405,7 @@
         <child type="label">
           <object class="GtkLabel" id="labelEquipmentAdd">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="label" translatable="yes">&lt;b&gt;Add New Equipment&lt;/b&gt;</property>
             <property name="use_markup">True</property>
           </object>
@@ -378,29 +421,35 @@
     <child>
       <object class="GtkFrame" id="frameEquipmentEdit">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">5</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
           <object class="GtkAlignment" id="alignmentEquipmentEdit">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="left_padding">12</property>
             <child>
               <object class="GtkVBox" id="vboxEquipmentEdit">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="border_width">5</property>
                 <child>
                   <object class="GtkHBox" id="hboxEquipmentEditDetails">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkTable" id="tableEquipmentEditDetails">
                         <property name="visible">True</property>
+                        <property name="can_focus">False</property>
                         <property name="n_rows">5</property>
                         <property name="n_columns">2</property>
                         <property name="row_spacing">5</property>
                         <child>
                           <object class="GtkLabel" id="labelEquipmentEditDescription">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xalign">1</property>
                             <property name="xpad">5</property>
                             <property name="label" translatable="yes">Description</property>
@@ -413,7 +462,7 @@
                           <object class="GtkEntry" id="entryEquipmentEditDescription">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <property name="invisible_char">&#x25CF;</property>
+                            <property name="invisible_char">●</property>
                             <property name="width_chars">35</property>
                           </object>
                           <packing>
@@ -426,6 +475,7 @@
                         <child>
                           <object class="GtkLabel" id="labelEquipmentEditLifeExpectancy">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xalign">1</property>
                             <property name="xpad">5</property>
                             <property name="label" translatable="yes">Life Expectancy</property>
@@ -440,13 +490,14 @@
                         <child>
                           <object class="GtkAlignment" id="alignment1">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xscale">0</property>
                             <child>
                               <object class="GtkEntry" id="entryEquipmentEditLifeExpectancy">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="invisible_char">&#x25CF;</property>
+                                <property name="invisible_char">●</property>
                                 <property name="width_chars">8</property>
                               </object>
                             </child>
@@ -462,6 +513,7 @@
                         <child>
                           <object class="GtkLabel" id="labelEquipmentEditPriorUsage">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xalign">1</property>
                             <property name="xpad">5</property>
                             <property name="label" translatable="yes">Prior Usage</property>
@@ -475,6 +527,7 @@
                         <child>
                           <object class="GtkAlignment" id="alignment4">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xscale">0</property>
                             <child>
@@ -500,6 +553,7 @@
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
+                            <property name="use_action_appearance">False</property>
                             <property name="draw_indicator">True</property>
                           </object>
                           <packing>
@@ -513,6 +567,7 @@
                         <child>
                           <object class="GtkAlignment" id="alignment8">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <child>
                               <placeholder/>
                             </child>
@@ -526,6 +581,7 @@
                         <child>
                           <object class="GtkLabel" id="labelEquipmentEditNotes">
                             <property name="visible">True</property>
+                            <property name="can_focus">False</property>
                             <property name="xalign">1</property>
                             <property name="yalign">0</property>
                             <property name="xpad">5</property>
@@ -567,42 +623,47 @@
                     </child>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkHBox" id="hboxEquipmentEditButtons">
                     <property name="visible">True</property>
-                    <child>
-                      <object class="GtkButton" id="buttonEquipmentEditCancel">
-                        <property name="label">gtk-cancel</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">True</property>
-                        <property name="use_stock">True</property>
-                        <signal name="clicked" handler="cancel_edit_equipment_clicked"/>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="pack_type">end</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
+                    <property name="can_focus">False</property>
                     <child>
                       <object class="GtkButton" id="buttonEquipmentEditConfirm">
                         <property name="label">gtk-save</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_stock">True</property>
-                        <signal name="clicked" handler="confirm_edit_equipment_clicked"/>
+                        <signal name="clicked" handler="confirm_edit_equipment_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">False</property>
                         <property name="pack_type">end</property>
                         <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="buttonEquipmentEditCancel">
+                        <property name="label">gtk-cancel</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="use_stock">True</property>
+                        <signal name="clicked" handler="cancel_edit_equipment_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="pack_type">end</property>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
@@ -619,6 +680,7 @@
         <child type="label">
           <object class="GtkLabel" id="labelEquipmentEdit">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="label" translatable="yes">&lt;b&gt;Edit Equipment&lt;/b&gt;</property>
             <property name="use_markup">True</property>
           </object>
@@ -634,29 +696,36 @@
     <child>
       <object class="GtkFrame" id="frameEquipmentDelete">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="border_width">5</property>
         <property name="label_xalign">0</property>
         <property name="shadow_type">none</property>
         <child>
           <object class="GtkAlignment" id="alignmentEquipmentDelete">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="left_padding">12</property>
             <child>
               <object class="GtkVBox" id="vboxEquipmentDelete">
                 <property name="visible">True</property>
+                <property name="can_focus">False</property>
                 <property name="border_width">5</property>
                 <child>
                   <object class="GtkLabel" id="labelEquipmentDeleteConfirm">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes">Really delete the equipment item?</property>
                   </object>
                   <packing>
+                    <property name="expand">True</property>
+                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkHButtonBox" id="hbuttonboxEquipmentDeleteButtons">
                     <property name="visible">True</property>
+                    <property name="can_focus">False</property>
                     <property name="layout_style">end</property>
                     <child>
                       <object class="GtkButton" id="buttonEquipmentDeleteCancel">
@@ -664,8 +733,9 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_stock">True</property>
-                        <signal name="clicked" handler="cancel_delete_equipment_clicked"/>
+                        <signal name="clicked" handler="cancel_delete_equipment_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -679,8 +749,9 @@
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="use_stock">True</property>
-                        <signal name="clicked" handler="confirm_delete_equipment_clicked"/>
+                        <signal name="clicked" handler="confirm_delete_equipment_clicked" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -691,6 +762,7 @@
                   </object>
                   <packing>
                     <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -701,6 +773,7 @@
         <child type="label">
           <object class="GtkLabel" id="labelEquipmentDelete">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
             <property name="label" translatable="yes">&lt;b&gt;Delete Equipment&lt;/b&gt;</property>
             <property name="use_markup">True</property>
           </object>
