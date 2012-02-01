@@ -51,3 +51,32 @@ class FieldValidatorTest (TestCase):
         wrong_integer_fields = ['45a', 'a45', '-1', '-45']
         V = fieldvalidator.PositiveOrZeroIntegerFieldValidator ()
         self.execute_validations (V, good_integer_fields, wrong_integer_fields)
+
+    def test_date_field_validator (self):
+        good_date_fields = ['', '1972-12-30']
+        wrong_date_fields = [
+            # Wrong format
+            'aaaaaaa',
+            # Wrong day 
+            '1972-12-32',
+            '1972-11-31',
+            '1972-02-30',
+            '1972-02-31',
+            '1972-02-00',
+            '1972-02-s0',
+            # Wrong month
+            '1972-00-28',
+            '1972-13-28',
+            '1972-1a-28',
+            # Wrong year
+            '1972a-10-28',
+            '197-10-28',
+            '19-10-28',
+            '1-10-28',
+            '10000-10-28',
+            # Not split year
+            '1973-02-29',
+        ]
+
+        V = fieldvalidator.DateFieldValidator ()
+        self.execute_validations (V, good_date_fields, wrong_date_fields)
