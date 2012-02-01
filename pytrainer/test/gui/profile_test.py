@@ -4,7 +4,7 @@ from pytrainer.gui.windowprofile import FieldValidator
 import gettext
 
 
-#Copyright (C) Nathan Jones ncjones@users.sourceforge.net
+#Copyright (C) Rodolfo Gonzalez rgonzalez72@yahoo.com
 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -20,7 +20,7 @@ import gettext
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-class FieldValidatorTest (TestCase):
+class FieldValidatorTest2 (TestCase):
 
     def setUp (self):
         """ These tests are meant to be executed for the source main directory.
