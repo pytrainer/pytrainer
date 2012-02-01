@@ -499,6 +499,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">●</property>
                                 <property name="width_chars">8</property>
+                                <signal name="focus-out-event" handler="on_entryEquipmentEditLifeExpectancy_focus_out_event" swapped="no"/>
                               </object>
                             </child>
                           </object>
@@ -536,6 +537,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">•</property>
                                 <property name="width_chars">8</property>
+                                <signal name="focus-out-event" handler="on_entryEquipmentEditPriorUsage_focus_out_event" swapped="no"/>
                               </object>
                             </child>
                           </object>
@@ -632,6 +634,18 @@
                   <object class="GtkHBox" id="hboxEquipmentEditButtons">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkLabel" id="label_edit_equipment_error_message">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="use_markup">True</property>
+                      </object>
+                      <packing>
+                        <property name="expand">True</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
                     <child>
                       <object class="GtkButton" id="buttonEquipmentEditConfirm">
                         <property name="label">gtk-save</property>

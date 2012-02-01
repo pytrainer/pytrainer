@@ -22,7 +22,7 @@ from pytrainer.gui import fieldvalidator
 import logging
 
 class LifeExpentancyFieldValidator (
-        fieldvalidator.PositiveIntegerFieldValidator):
+        fieldvalidator.PositiveOrZeroIntegerFieldValidator):
     def __init__ (self):
         self.log_message = 'Invalid life expectancy field entered >>'
         self.error_message = _('Error with the life expectancy field.')
@@ -133,7 +133,10 @@ class EquipmentUi(gtk.HBox):
             "cancel_delete_equipment_clicked": self._cancel_delete_equipment_clicked,
             "confirm_delete_equipment_clicked": self._confirm_delete_equipment_clicked,
             "on_entryEquipmentAddLifeExpectancy_focus_out_event": self._on_entryEquipmentAddLifeExpectancy_focus_out_event,
-            "on_entryEquipmentAddPriorUsage_focus_out_event": self._on_entryEquipmentAddPriorUsage_focus_out_event})
+            "on_entryEquipmentAddPriorUsage_focus_out_event": self._on_entryEquipmentAddPriorUsage_focus_out_event,
+            "on_entryEquipmentEditLifeExpectancy_focus_out_event": self._on_entryEquipmentEditLifeExpectancy_focus_out_event,
+            "on_entryEquipmentEditPriorUsage_focus_out_event": self._on_entryEquipmentEditPriorUsage_focus_out_event,
+            })
         
     def _get_selected_equipment_path(self):
         (path, _) = self._get_tree_view().get_cursor()
@@ -227,13 +230,8 @@ class EquipmentUi(gtk.HBox):
         self._equipment_store.remove_equipment(self._get_selected_equipment_path())
         self.show_page_equipment_list()
 
-    def _validate_add_equipment_fields (self):
-        input_fields = [(self._builder.get_object( 
-                    "entryEquipmentAddLifeExpectancy"),
-                LifeExpentancyFieldValidator),
-                (self._builder.get_object("entryEquipmentAddPriorUsage"),
-                PriorUsageFieldValidator),]
-        
+    def _validate_equipment_fields (self, input_fields, label, button):
+ 
         error_msg = ''
         all_good = True
         for entry in input_fields:
@@ -244,15 +242,36 @@ class EquipmentUi(gtk.HBox):
                 error_msg = validator.get_error_message ()
                 all_good = False
 
-        self._builder.get_object( "buttonEquipmentAddConfirm").set_sensitive (
-                all_good)
+        button.set_sensitive (all_good)
         if error_msg == '':
             msg = ''
         else:
             msg = '<span weight="bold"' + " fgcolor='#ff0000'>" +\
                   str(error_msg) + '</span>'
-        self._builder.get_object(
-                "label_add_equipment_error_message").set_markup (msg)
+        label.set_markup (msg)
+
+
+    def _validate_add_equipment_fields (self):
+        input_fields = [(self._builder.get_object( 
+                    "entryEquipmentAddLifeExpectancy"),
+                LifeExpentancyFieldValidator),
+                (self._builder.get_object("entryEquipmentAddPriorUsage"),
+                PriorUsageFieldValidator),]
+
+        self._validate_equipment_fields (input_fields, 
+            self._builder.get_object("label_add_equipment_error_message"),
+            self._builder.get_object( "buttonEquipmentAddConfirm"))
+
+    def _validate_edit_equipment_fields (self):
+        input_fields = [(self._builder.get_object( 
+                    "entryEquipmentEditLifeExpectancy"),
+                LifeExpentancyFieldValidator),
+                (self._builder.get_object("entryEquipmentEditPriorUsage"),
+                PriorUsageFieldValidator),]
+
+        self._validate_equipment_fields (input_fields, 
+            self._builder.get_object("label_edit_equipment_error_message"),
+            self._builder.get_object( "buttonEquipmentEditConfirm"))
 
     def _validate_field_and_log (self, validator, inputWidget):
         V = validator()
@@ -271,4 +290,15 @@ class EquipmentUi(gtk.HBox):
         self._validate_field_and_log (PriorUsageFieldValidator, 
                 self._builder.get_object("entryEquipmentAddPriorUsage"))
         self._validate_add_equipment_fields ()
+
+    def _on_entryEquipmentEditLifeExpectancy_focus_out_event (self, widget, 
+            data):
+        self._validate_field_and_log (LifeExpentancyFieldValidator, 
+                self._builder.get_object("entryEquipmentEditLifeExpectancy"))
+        self._validate_edit_equipment_fields ()
+
+    def _on_entryEquipmentEditPriorUsage_focus_out_event (self, widget, data):
+        self._validate_field_and_log (PriorUsageFieldValidator, 
+                self._builder.get_object("entryEquipmentEditPriorUsage"))
+        self._validate_edit_equipment_fields ()
 

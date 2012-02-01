@@ -190,8 +190,8 @@ class EquipmentFieldValidators (TestCase):
         msgLog = validator.get_log_message ()
  
     def test_life_expentancy_field_validator (self):
-        good_life = ['45', '']
-        wrong_life = [ '45a', 'a45', '0', '-1', '-45']
+        good_life = ['45', '', '0']
+        wrong_life = [ '45a', 'a45', '-1', '-45']
 
         V = LifeExpentancyFieldValidator ()
         self.execute_single_field_validator (V, good_life, wrong_life)
