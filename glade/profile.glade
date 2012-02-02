@@ -4,54 +4,46 @@
   <!-- interface-naming-policy toplevel-contextual -->
   <widget class="GtkWindow" id="newprofile">
     <property name="visible">True</property>
-    <property name="can_focus">False</property>
     <property name="title" translatable="yes">Preferences</property>
     <property name="icon">logo_mini.png</property>
-    <signal name="destroy" handler="quit" swapped="no"/>
+    <signal name="destroy" handler="quit"/>
     <child>
       <widget class="GtkVBox" id="vbox4">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
         <child>
           <widget class="GtkNotebook" id="notebook3">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="border_width">9</property>
-            <signal name="switch_page" handler="on_switch_page" swapped="no"/>
+            <signal name="switch_page" handler="on_switch_page"/>
             <child>
               <widget class="GtkVBox" id="vbox24">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <child>
                   <widget class="GtkFrame" id="frame14">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="border_width">5</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <widget class="GtkAlignment" id="alignment14">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <widget class="GtkHBox" id="hbox2">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <child>
                               <widget class="GtkRadioButton" id="prf_metric_system">
                                 <property name="label" translatable="yes">Metric system</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
-                                <property name="fill">True</property>
                                 <property name="padding">5</property>
                                 <property name="position">0</property>
                               </packing>
@@ -62,14 +54,12 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">prf_metric_system</property>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
-                                <property name="fill">True</property>
                                 <property name="padding">5</property>
                                 <property name="position">1</property>
                               </packing>
@@ -81,7 +71,6 @@
                     <child>
                       <widget class="GtkLabel" id="label20">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">&lt;b&gt;System of Measurement&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </widget>
@@ -99,32 +88,27 @@
                 <child>
                   <widget class="GtkFrame" id="frameDefaultMapViewer">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="border_width">5</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <widget class="GtkAlignment" id="alignment2">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <widget class="GtkHBox" id="hbox1">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <child>
                               <widget class="GtkRadioButton" id="radiobuttonDefaultGMap">
                                 <property name="label" translatable="yes">Google</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="active">True</property>
                                 <property name="draw_indicator">True</property>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
-                                <property name="fill">True</property>
                                 <property name="padding">5</property>
                                 <property name="position">0</property>
                               </packing>
@@ -135,13 +119,11 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">radiobuttonDefaultGMap</property>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
-                                <property name="fill">True</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
@@ -155,7 +137,6 @@
                     <child>
                       <widget class="GtkLabel" id="labelDefaultMapViewer">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">&lt;b&gt;Default Map Viewer&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </widget>
@@ -173,19 +154,16 @@
                 <child>
                   <widget class="GtkFrame" id="frame13">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="border_width">5</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <widget class="GtkAlignment" id="alignment13">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <widget class="GtkTable" id="table3">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="border_width">5</property>
                             <property name="n_rows">3</property>
                             <property name="n_columns">4</property>
@@ -194,7 +172,6 @@
                             <child>
                               <widget class="GtkLabel" id="prf_ddbb_label">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">Database type:</property>
                               </widget>
@@ -206,7 +183,6 @@
                             <child>
                               <widget class="GtkLabel" id="prf_ddbbhost_label">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">Database host:</property>
                               </widget>
@@ -233,7 +209,6 @@
                             <child>
                               <widget class="GtkLabel" id="prf_ddbbname_label">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">Database name:</property>
                               </widget>
@@ -260,14 +235,8 @@
                             <child>
                               <widget class="GtkComboBoxEntry" id="prf_ddbb">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="items"></property>
-                                <signal name="changed" handler="on_prf_ddbb_changed" swapped="no"/>
-                                <child internal-child="entry">
-                                  <widget class="GtkEntry" id="comboboxentry-entry1">
-                                    <property name="can_focus">False</property>
-                                  </widget>
-                                </child>
+                                <signal name="changed" handler="on_prf_ddbb_changed"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -279,7 +248,6 @@
                             <child>
                               <widget class="GtkLabel" id="prf_ddbbuser_label">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">Database user:</property>
                               </widget>
@@ -295,7 +263,6 @@
                             <child>
                               <widget class="GtkLabel" id="prf_ddbbpass_label">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">Database pass:</property>
                               </widget>
@@ -348,7 +315,6 @@
                     <child>
                       <widget class="GtkLabel" id="label19">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">&lt;b&gt;Database&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </widget>
@@ -371,7 +337,6 @@
             <child>
               <widget class="GtkLabel" id="label-2147483645">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">General</property>
               </widget>
               <packing>
@@ -382,19 +347,16 @@
             <child>
               <widget class="GtkFrame" id="frame12">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="border_width">5</property>
                 <property name="label_xalign">0</property>
                 <property name="shadow_type">none</property>
                 <child>
                   <widget class="GtkAlignment" id="alignment12">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="left_padding">12</property>
                     <child>
                       <widget class="GtkTable" id="table2">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="border_width">5</property>
                         <property name="n_rows">3</property>
                         <property name="n_columns">4</property>
@@ -403,7 +365,6 @@
                         <child>
                           <widget class="GtkLabel" id="label14">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">User name:</property>
                           </widget>
@@ -415,7 +376,6 @@
                         <child>
                           <widget class="GtkLabel" id="label15">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">Gender:</property>
                           </widget>
@@ -429,13 +389,7 @@
                         <child>
                           <widget class="GtkComboBoxEntry" id="prf_gender">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="items"></property>
-                            <child internal-child="entry">
-                              <widget class="GtkEntry" id="comboboxentry-entry2">
-                                <property name="can_focus">False</property>
-                              </widget>
-                            </child>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
@@ -449,7 +403,6 @@
                         <child>
                           <widget class="GtkLabel" id="label17">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">Height:</property>
                           </widget>
@@ -466,7 +419,7 @@
                           <widget class="GtkEntry" id="prf_height">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <signal name="focus_out_event" handler="on_prf_height_focus_out_event" swapped="no"/>
+                            <signal name="focus_out_event" handler="on_prf_height_focus_out_event"/>
                           </widget>
                           <packing>
                             <property name="left_attach">3</property>
@@ -491,7 +444,6 @@
                         <child>
                           <widget class="GtkLabel" id="label18">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">Date of birth (yyyy-mm-dd):</property>
                           </widget>
@@ -507,14 +459,13 @@
                         <child>
                           <widget class="GtkHBox" id="hbox50">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <child>
                               <widget class="GtkEntry" id="prf_age">
                                 <property name="width_request">108</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
-                                <property name="invisible_char">●</property>
-                                <signal name="focus_out_event" handler="on_prf_age_focus_out_event" swapped="no"/>
+                                <property name="invisible_char">&#x25CF;</property>
+                                <signal name="focus_out_event" handler="on_prf_age_focus_out_event"/>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
@@ -527,12 +478,10 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
-                                <signal name="clicked" handler="on_calendar_clicked" swapped="no"/>
+                                <signal name="clicked" handler="on_calendar_clicked"/>
                                 <child>
                                   <widget class="GtkImage" id="image31">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="stock">gtk-index</property>
                                   </widget>
                                 </child>
@@ -557,7 +506,7 @@
                           <widget class="GtkEntry" id="prf_weight">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
-                            <signal name="focus_out_event" handler="on_prf_weight_focus_out_event" swapped="no"/>
+                            <signal name="focus_out_event" handler="on_prf_weight_focus_out_event"/>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
@@ -570,7 +519,6 @@
                         <child>
                           <widget class="GtkLabel" id="label16">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="label" translatable="yes">Weight:</property>
                           </widget>
@@ -594,7 +542,6 @@
                 <child>
                   <widget class="GtkLabel" id="label-2147483648">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes">&lt;b&gt;Athlete Details&lt;/b&gt;</property>
                     <property name="use_markup">True</property>
                   </widget>
@@ -610,7 +557,6 @@
             <child>
               <widget class="GtkLabel" id="label13">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Athlete</property>
               </widget>
               <packing>
@@ -622,25 +568,21 @@
             <child>
               <widget class="GtkNotebook" id="notebook5">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="show_tabs">False</property>
                 <property name="show_border">False</property>
                 <child>
                   <widget class="GtkFrame" id="sportlist">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="border_width">5</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <widget class="GtkAlignment" id="alignment16">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <widget class="GtkVBox" id="sportlist_">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="border_width">5</property>
                             <child>
                               <widget class="GtkScrolledWindow" id="sportScrollWindow">
@@ -652,27 +594,22 @@
                                   <widget class="GtkTreeView" id="sportTreeView">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <signal name="row_activated" handler="on_sporttreeview_row_activated" swapped="no"/>
+                                    <signal name="row_activated" handler="on_sporttreeview_row_activated"/>
                                   </widget>
                                 </child>
                               </widget>
                               <packing>
-                                <property name="expand">True</property>
-                                <property name="fill">True</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
                               <widget class="GtkHBox" id="hbox4">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <child>
                                   <widget class="GtkLabel" id="label26">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                   </widget>
                                   <packing>
-                                    <property name="expand">True</property>
                                     <property name="fill">False</property>
                                     <property name="position">0</property>
                                   </packing>
@@ -683,9 +620,8 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
-                                    <signal name="clicked" handler="on_delsport_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="on_delsport_clicked"/>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -699,9 +635,8 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
-                                    <signal name="clicked" handler="on_editsport_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="on_editsport_clicked"/>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -715,9 +650,8 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
-                                    <signal name="clicked" handler="on_addsport_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="on_addsport_clicked"/>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -728,7 +662,6 @@
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
-                                <property name="fill">True</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
@@ -739,7 +672,6 @@
                     <child>
                       <widget class="GtkLabel" id="label1">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">&lt;b&gt;Sport List&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </widget>
@@ -752,7 +684,6 @@
                 <child>
                   <widget class="GtkLabel" id="label135">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes">llist</property>
                   </widget>
                   <packing>
@@ -763,24 +694,20 @@
                 <child>
                   <widget class="GtkFrame" id="addsport">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="border_width">5</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <widget class="GtkAlignment" id="alignment18">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <widget class="GtkVBox" id="addsport_">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="border_width">5</property>
                             <child>
                               <widget class="GtkTable" id="table18">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="n_rows">5</property>
                                 <property name="n_columns">3</property>
                                 <property name="column_spacing">5</property>
@@ -789,8 +716,8 @@
                                   <widget class="GtkEntry" id="newsportentry">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
-                                    <signal name="focus_out_event" handler="on_newsportentry_focus_out_event" swapped="no"/>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="focus_out_event" handler="on_newsportentry_focus_out_event"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -801,7 +728,6 @@
                                 <child>
                                   <widget class="GtkLabel" id="label154">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Name:</property>
                                   </widget>
@@ -813,7 +739,6 @@
                                 <child>
                                   <widget class="GtkLabel" id="label155">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">M.E.T.:</property>
                                   </widget>
@@ -828,8 +753,8 @@
                                   <widget class="GtkEntry" id="newmetentry">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
-                                    <signal name="focus_out_event" handler="on_newmetentry_focus_out_event" swapped="no"/>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="focus_out_event" handler="on_newmetentry_focus_out_event"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -842,7 +767,6 @@
                                 <child>
                                   <widget class="GtkLabel" id="label-1">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Extra Weight:</property>
                                   </widget>
@@ -857,8 +781,8 @@
                                   <widget class="GtkEntry" id="newweightentry">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
-                                    <signal name="focus_out_event" handler="on_newweightentry_focus_out_event" swapped="no"/>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="focus_out_event" handler="on_newweightentry_focus_out_event"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -871,7 +795,6 @@
                                 <child>
                                   <widget class="GtkLabel" id="label156">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="xalign">0</property>
                                   </widget>
                                   <packing>
@@ -887,7 +810,6 @@
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="relief">none</property>
                                     <property name="uri">http://en.wikipedia.org/wiki/Metabolic_equivalent</property>
                                   </widget>
@@ -902,7 +824,6 @@
                                 <child>
                                   <widget class="GtkLabel" id="label-10">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Maximum Pace:</property>
                                   </widget>
@@ -917,8 +838,8 @@
                                   <widget class="GtkEntry" id="newmaxpace">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
-                                    <signal name="focus_out_event" handler="on_newmaxpace_focus_out_event" swapped="no"/>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="focus_out_event" handler="on_newmaxpace_focus_out_event"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -931,15 +852,12 @@
                                 <child>
                                   <widget class="GtkHBox" id="hboxcolor">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <child>
                                       <widget class="GtkImage" id="newcolor">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                       </widget>
                                       <packing>
-                                        <property name="expand">True</property>
-                                        <property name="fill">True</property>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
@@ -949,9 +867,8 @@
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_stock">True</property>
-                                        <signal name="clicked" handler="on_editcolor_clicked" swapped="no"/>
+                                        <signal name="clicked" handler="on_editcolor_clicked"/>
                                       </widget>
                                       <packing>
                                         <property name="expand">False</property>
@@ -985,23 +902,18 @@
                                 </child>
                               </widget>
                               <packing>
-                                <property name="expand">True</property>
-                                <property name="fill">True</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
                               <widget class="GtkHBox" id="hbox22">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <child>
                                   <widget class="GtkLabel" id="label_sport_error_message">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="use_markup">True</property>
                                   </widget>
                                   <packing>
-                                    <property name="expand">True</property>
                                     <property name="fill">False</property>
                                     <property name="position">0</property>
                                   </packing>
@@ -1012,9 +924,8 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
-                                    <signal name="clicked" handler="on_sportcancel_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="on_sportcancel_clicked"/>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1028,9 +939,8 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
-                                    <signal name="clicked" handler="on_newsport_accept_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="on_newsport_accept_clicked"/>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1041,7 +951,6 @@
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
-                                <property name="fill">True</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
@@ -1052,7 +961,6 @@
                     <child>
                       <widget class="GtkLabel" id="label-2">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">&lt;b&gt;Add New Sport&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </widget>
@@ -1068,7 +976,6 @@
                 <child>
                   <widget class="GtkLabel" id="label136">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes">new</property>
                   </widget>
                   <packing>
@@ -1080,19 +987,16 @@
                 <child>
                   <widget class="GtkFrame" id="deletesport">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="border_width">5</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <widget class="GtkAlignment" id="alignment19">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <widget class="GtkVBox" id="deletesport_">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="border_width">5</property>
                             <child>
                               <placeholder/>
@@ -1100,11 +1004,9 @@
                             <child>
                               <widget class="GtkVBox" id="vbox17">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <child>
                                   <widget class="GtkLabel" id="label144">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="label" translatable="yes">Deleting a sport removes associated records.
 Continue?</property>
                                     <property name="wrap">True</property>
@@ -1118,32 +1020,25 @@ Continue?</property>
                                 <child>
                                   <widget class="GtkLabel" id="label142">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                   </widget>
                                   <packing>
-                                    <property name="expand">True</property>
                                     <property name="fill">False</property>
                                     <property name="position">1</property>
                                   </packing>
                                 </child>
                               </widget>
                               <packing>
-                                <property name="expand">True</property>
-                                <property name="fill">True</property>
                                 <property name="position">1</property>
                               </packing>
                             </child>
                             <child>
                               <widget class="GtkHBox" id="hbox23">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <child>
                                   <widget class="GtkLabel" id="label143">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                   </widget>
                                   <packing>
-                                    <property name="expand">True</property>
                                     <property name="fill">False</property>
                                     <property name="position">0</property>
                                   </packing>
@@ -1154,9 +1049,8 @@ Continue?</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
-                                    <signal name="clicked" handler="on_sportcancel_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="on_sportcancel_clicked"/>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1170,9 +1064,8 @@ Continue?</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
-                                    <signal name="clicked" handler="on_deletesport_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="on_deletesport_clicked"/>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1183,7 +1076,6 @@ Continue?</property>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
-                                <property name="fill">True</property>
                                 <property name="position">2</property>
                               </packing>
                             </child>
@@ -1194,11 +1086,9 @@ Continue?</property>
                     <child>
                       <widget class="GtkHBox" id="hbox52">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <child>
                           <widget class="GtkLabel" id="label158">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="label" translatable="yes">&lt;b&gt;Delete Sport&lt;/b&gt;</property>
                             <property name="use_markup">True</property>
                           </widget>
@@ -1210,7 +1100,6 @@ Continue?</property>
                         </child>
                         <child>
                           <widget class="GtkLabel" id="sportnamedel">
-                            <property name="can_focus">False</property>
                             <property name="label">label-2147483648</property>
                           </widget>
                           <packing>
@@ -1232,7 +1121,6 @@ Continue?</property>
                 <child>
                   <widget class="GtkLabel" id="label137">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes">delete</property>
                   </widget>
                   <packing>
@@ -1244,24 +1132,20 @@ Continue?</property>
                 <child>
                   <widget class="GtkFrame" id="editsport">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="border_width">5</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <widget class="GtkAlignment" id="alignment21">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <widget class="GtkVBox" id="editsport_">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="border_width">5</property>
                             <child>
                               <widget class="GtkTable" id="table17">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="n_rows">5</property>
                                 <property name="n_columns">2</property>
                                 <property name="column_spacing">5</property>
@@ -1269,7 +1153,6 @@ Continue?</property>
                                 <child>
                                   <widget class="GtkLabel" id="label153">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Name</property>
                                   </widget>
@@ -1282,8 +1165,8 @@ Continue?</property>
                                   <widget class="GtkEntry" id="editsportentry">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
-                                    <signal name="focus_out_event" handler="on_editsportentry_focus_out_event" swapped="no"/>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="focus_out_event" handler="on_editsportentry_focus_out_event"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1294,7 +1177,6 @@ Continue?</property>
                                 <child>
                                   <widget class="GtkLabel" id="label-3">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">M.E.T.</property>
                                   </widget>
@@ -1309,8 +1191,8 @@ Continue?</property>
                                   <widget class="GtkEntry" id="editmetentry">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
-                                    <signal name="focus_out_event" handler="on_editmetentry_focus_out_event" swapped="no"/>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="focus_out_event" handler="on_editmetentry_focus_out_event"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1323,7 +1205,6 @@ Continue?</property>
                                 <child>
                                   <widget class="GtkLabel" id="label-2147483647">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Extra Weight</property>
                                   </widget>
@@ -1338,8 +1219,8 @@ Continue?</property>
                                   <widget class="GtkEntry" id="editweightentry">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
-                                    <signal name="focus_out_event" handler="on_editweightentry_focus_out_event" swapped="no"/>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="focus_out_event" handler="on_editweightentry_focus_out_event"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1356,7 +1237,6 @@ Continue?</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">True</property>
                                     <property name="has_tooltip">True</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="relief">none</property>
                                     <property name="uri">http://en.wikipedia.org/wiki/Metabolic_equivalent</property>
                                   </widget>
@@ -1371,7 +1251,6 @@ Continue?</property>
                                 <child>
                                   <widget class="GtkLabel" id="label-9">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Maximum Pace</property>
                                   </widget>
@@ -1386,8 +1265,8 @@ Continue?</property>
                                   <widget class="GtkEntry" id="editmaxpace">
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
-                                    <property name="invisible_char">●</property>
-                                    <signal name="focus_out_event" handler="on_editmaxpace_focus_out_event" swapped="no"/>
+                                    <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="focus_out_event" handler="on_editmaxpace_focus_out_event"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1400,7 +1279,6 @@ Continue?</property>
                                 <child>
                                   <widget class="GtkLabel" id="label-4">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Color</property>
                                   </widget>
@@ -1414,15 +1292,12 @@ Continue?</property>
                                 <child>
                                   <widget class="GtkHBox" id="hboxcolor1">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                     <child>
                                       <widget class="GtkImage" id="editcolor">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                       </widget>
                                       <packing>
-                                        <property name="expand">True</property>
-                                        <property name="fill">True</property>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
@@ -1432,9 +1307,8 @@ Continue?</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
-                                        <property name="use_action_appearance">False</property>
                                         <property name="use_stock">True</property>
-                                        <signal name="clicked" handler="on_editcolor_clicked" swapped="no"/>
+                                        <signal name="clicked" handler="on_editcolor_clicked"/>
                                       </widget>
                                       <packing>
                                         <property name="expand">False</property>
@@ -1453,22 +1327,17 @@ Continue?</property>
                                 </child>
                               </widget>
                               <packing>
-                                <property name="expand">True</property>
-                                <property name="fill">True</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
                             <child>
                               <widget class="GtkHBox" id="hbox26">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <child>
                                   <widget class="GtkLabel" id="label152">
                                     <property name="visible">True</property>
-                                    <property name="can_focus">False</property>
                                   </widget>
                                   <packing>
-                                    <property name="expand">True</property>
                                     <property name="fill">False</property>
                                     <property name="position">0</property>
                                   </packing>
@@ -1479,9 +1348,8 @@ Continue?</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
-                                    <signal name="clicked" handler="on_sportcancel_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="on_sportcancel_clicked"/>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1495,9 +1363,8 @@ Continue?</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_stock">True</property>
-                                    <signal name="clicked" handler="on_editsport_accept_clicked" swapped="no"/>
+                                    <signal name="clicked" handler="on_editsport_accept_clicked"/>
                                   </widget>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1519,12 +1386,10 @@ Continue?</property>
                     <child>
                       <widget class="GtkHBox" id="hbox51">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="spacing">5</property>
                         <child>
                           <widget class="GtkLabel" id="label-5">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="label" translatable="yes">&lt;b&gt;Edit Sport&lt;/b&gt;</property>
                             <property name="use_markup">True</property>
                           </widget>
@@ -1536,7 +1401,6 @@ Continue?</property>
                         </child>
                         <child>
                           <widget class="GtkLabel" id="sportnameedit">
-                            <property name="can_focus">False</property>
                             <property name="label" translatable="yes">&lt;b&gt;lalaal&lt;/b&gt;</property>
                             <property name="use_markup">True</property>
                           </widget>
@@ -1559,7 +1423,6 @@ Continue?</property>
                 <child>
                   <widget class="GtkLabel" id="label147">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="label" translatable="yes">edit</property>
                   </widget>
                   <packing>
@@ -1576,7 +1439,6 @@ Continue?</property>
             <child>
               <widget class="GtkLabel" id="label24">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Sports</property>
               </widget>
               <packing>
@@ -1588,7 +1450,6 @@ Continue?</property>
             <child>
               <widget class="GtkAlignment" id="equipment_container">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <child>
                   <placeholder/>
                 </child>
@@ -1600,7 +1461,6 @@ Continue?</property>
             <child>
               <widget class="GtkLabel" id="labelEquipment">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Equipment</property>
               </widget>
               <packing>
@@ -1612,23 +1472,19 @@ Continue?</property>
             <child>
               <widget class="GtkVBox" id="vbox25">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <child>
                   <widget class="GtkFrame" id="frame17">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="border_width">5</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <widget class="GtkAlignment" id="alignment17">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <widget class="GtkTable" id="table21">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="border_width">5</property>
                             <property name="n_rows">3</property>
                             <property name="n_columns">4</property>
@@ -1637,7 +1493,6 @@ Continue?</property>
                             <child>
                               <widget class="GtkLabel" id="label-2147483641">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">Maximum heart rate:</property>
                               </widget>
@@ -1649,7 +1504,6 @@ Continue?</property>
                             <child>
                               <widget class="GtkLabel" id="label-2147483640">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">Resting heart rate:</property>
                               </widget>
@@ -1665,9 +1519,9 @@ Continue?</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="max_length">4</property>
-                                <property name="invisible_char">●</property>
+                                <property name="invisible_char">&#x25CF;</property>
                                 <property name="width_chars">4</property>
-                                <signal name="focus_out_event" handler="on_prf_maxhr_focus_out_event" swapped="no"/>
+                                <signal name="focus_out_event" handler="on_prf_maxhr_focus_out_event"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -1681,9 +1535,9 @@ Continue?</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="max_length">4</property>
-                                <property name="invisible_char">●</property>
+                                <property name="invisible_char">&#x25CF;</property>
                                 <property name="width_chars">4</property>
-                                <signal name="focus_out_event" handler="on_prf_minhr_focus_out_event" swapped="no"/>
+                                <signal name="focus_out_event" handler="on_prf_minhr_focus_out_event"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -1697,7 +1551,6 @@ Continue?</property>
                             <child>
                               <widget class="GtkLabel" id="label-2147483639">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">&lt;small&gt;&lt;b&gt;Note:&lt;/b&gt; Maximum heart rate is calculated by subtracting the number 220 minus your age. &lt;/small&gt;</property>
                                 <property name="use_markup">True</property>
@@ -1716,9 +1569,8 @@ Continue?</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
-                                <signal name="clicked" handler="on_calculatemaxhr_clicked" swapped="no"/>
+                                <signal name="clicked" handler="on_calculatemaxhr_clicked"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">2</property>
@@ -1730,7 +1582,6 @@ Continue?</property>
                             <child>
                               <widget class="GtkLabel" id="label-2147483638">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                               </widget>
                               <packing>
@@ -1752,7 +1603,6 @@ Continue?</property>
                     <child>
                       <widget class="GtkLabel" id="label-6">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">&lt;b&gt;General&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </widget>
@@ -1770,19 +1620,16 @@ Continue?</property>
                 <child>
                   <widget class="GtkFrame" id="frame18">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="border_width">5</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
                       <widget class="GtkAlignment" id="alignment20">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="left_padding">12</property>
                         <child>
                           <widget class="GtkTable" id="table22">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="border_width">5</property>
                             <property name="n_rows">4</property>
                             <property name="n_columns">4</property>
@@ -1791,7 +1638,6 @@ Continue?</property>
                             <child>
                               <widget class="GtkLabel" id="label-7">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">&lt;small&gt;&lt;b&gt;NOTE:&lt;/b&gt; in order to use the Karvonen method you must cover the Resting hr field.&lt;/small&gt;</property>
                                 <property name="use_markup">True</property>
@@ -1810,7 +1656,6 @@ Continue?</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
                               </widget>
@@ -1827,7 +1672,6 @@ Continue?</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">radiobutton3</property>
@@ -1844,7 +1688,6 @@ Continue?</property>
                             <child>
                               <widget class="GtkLabel" id="label-8">
                                 <property name="visible">True</property>
-                                <property name="can_focus">False</property>
                                 <property name="xalign">0</property>
                                 <property name="label" translatable="yes">Select how to calculate your heart rate zones.</property>
                               </widget>
@@ -1885,7 +1728,6 @@ Continue?</property>
                     <child>
                       <widget class="GtkLabel" id="label-11">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="label" translatable="yes">&lt;b&gt;Heart Rate Zones&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
                       </widget>
@@ -1908,7 +1750,6 @@ Continue?</property>
             <child>
               <widget class="GtkLabel" id="label-2147483646">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Heart Rate</property>
               </widget>
               <packing>
@@ -1920,22 +1761,18 @@ Continue?</property>
             <child>
               <widget class="GtkVBox" id="vbox_startup_params">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <child>
                   <widget class="GtkAlignment" id="alignment1">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="xalign">0</property>
                     <child>
                       <widget class="GtkTable" id="table1">
                         <property name="visible">True</property>
-                        <property name="can_focus">False</property>
                         <property name="n_rows">6</property>
                         <property name="n_columns">3</property>
                         <child>
                           <widget class="GtkLabel" id="labelLogLevel">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">5</property>
                             <property name="ypad">5</property>
@@ -1946,13 +1783,12 @@ Continue?</property>
                         <child>
                           <widget class="GtkComboBox" id="comboboxLogLevel">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="active">0</property>
                             <property name="items" translatable="yes">Error
 Warning
 Info
 Debug</property>
-                            <signal name="changed" handler="on_comboboxLogLevel_changed" swapped="no"/>
+                            <signal name="changed" handler="on_comboboxLogLevel_changed"/>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
@@ -1964,7 +1800,6 @@ Debug</property>
                         <child>
                           <widget class="GtkLabel" id="labelLogLevelDescription">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">5</property>
                             <property name="label" translatable="yes">&lt;small&gt;What level of detail is written to the log?&lt;/small&gt;</property>
@@ -1978,7 +1813,6 @@ Debug</property>
                         <child>
                           <widget class="GtkLabel" id="labelValidate">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">5</property>
                             <property name="ypad">5</property>
@@ -1995,9 +1829,8 @@ Debug</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="draw_indicator">True</property>
-                            <signal name="toggled" handler="on_checkbuttonValidate_toggled" swapped="no"/>
+                            <signal name="toggled" handler="on_checkbuttonValidate_toggled"/>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
@@ -2011,7 +1844,6 @@ Debug</property>
                         <child>
                           <widget class="GtkLabel" id="labelValidateDescription">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">5</property>
                             <property name="label" translatable="yes">&lt;small&gt;Do the plugins attempt to validate the input file before processing?&lt;/small&gt;</property>
@@ -2027,7 +1859,6 @@ Debug</property>
                         <child>
                           <widget class="GtkLabel" id="labelNewGraph">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">5</property>
                             <property name="ypad">5</property>
@@ -2044,9 +1875,8 @@ Debug</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">False</property>
-                            <property name="use_action_appearance">False</property>
                             <property name="draw_indicator">True</property>
-                            <signal name="toggled" handler="on_checkbuttonNewGraph_toggled" swapped="no"/>
+                            <signal name="toggled" handler="on_checkbuttonNewGraph_toggled"/>
                           </widget>
                           <packing>
                             <property name="left_attach">1</property>
@@ -2059,7 +1889,6 @@ Debug</property>
                         <child>
                           <widget class="GtkLabel" id="labelNewGraphDescription">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
                             <property name="xalign">0</property>
                             <property name="xpad">5</property>
                             <property name="label" translatable="yes">&lt;small&gt;Want to use experimental new approach to graphing?&lt;/small&gt;</property>
@@ -2112,7 +1941,6 @@ Debug</property>
                 <child>
                   <widget class="GtkLabel" id="labelNotification">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
                     <property name="xalign">0</property>
                     <property name="xpad">5</property>
                     <property name="label" translatable="yes">&lt;small&gt;This screen shows the state of command line configurable options for pytrainer. These options can be changed here which will affect the current instance of pytrainer, they will not be remembered next time though&lt;/small&gt;</property>
@@ -2121,8 +1949,6 @@ Debug</property>
                     <property name="width_chars">75</property>
                   </widget>
                   <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -2138,7 +1964,6 @@ Debug</property>
             <child>
               <widget class="GtkLabel" id="label_startup_params">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Startup Parameters</property>
               </widget>
               <packing>
@@ -2149,25 +1974,19 @@ Debug</property>
             </child>
           </widget>
           <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
           <widget class="GtkHBox" id="buttonbox">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
             <property name="border_width">3</property>
             <child>
               <widget class="GtkLabel" id="label12">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
                 <property name="use_markup">True</property>
               </widget>
               <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
                 <property name="padding">7</property>
                 <property name="position">0</property>
               </packing>
@@ -2178,9 +1997,8 @@ Debug</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_cancel_clicked" swapped="no"/>
+                <signal name="clicked" handler="on_cancel_clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -2195,9 +2013,8 @@ Debug</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_accept_clicked" swapped="no"/>
+                <signal name="clicked" handler="on_accept_clicked"/>
               </widget>
               <packing>
                 <property name="expand">False</property>
@@ -2208,7 +2025,6 @@ Debug</property>
           </widget>
           <packing>
             <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
