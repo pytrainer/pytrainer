@@ -19,6 +19,7 @@
 import gtk
 from pytrainer.core.equipment import Equipment
 from pytrainer.gui import fieldvalidator
+from pytrainer.gui.fieldvalidator import EntryInputFieldValidator
 import logging
 
 class LifeExpentancyFieldValidator (
@@ -144,6 +145,10 @@ class EquipmentUi(gtk.HBox):
             "on_entryEquipmentEditDescription_focus_out_event": self._on_entryEquipmentEditDescription_focus_out_event,
             "on_entryEquipmentEditLifeExpectancy_focus_out_event": self._on_entryEquipmentEditLifeExpectancy_focus_out_event,
             "on_entryEquipmentEditPriorUsage_focus_out_event": self._on_entryEquipmentEditPriorUsage_focus_out_event,
+            "on_entryEquipmentAddLifeExpectancy_insert_text": self._on_entryEquipmentAddLifeExpectancy_insert_text,
+            "on_entryEquipmentAddPriorUsage_insert_text": self._on_entryEquipmentAddPriorUsage_insert_text,
+            "on_entryEquipmentEditLifeExpectancy_insert_text": self._on_entryEquipmentEditLifeExpectancy_insert_text,
+            "on_entryEquipmentEditPriorUsage_insert_text": self._on_entryEquipmentEditPriorUsage_insert_text,
             })
         
     def _get_selected_equipment_path(self):
@@ -328,4 +333,30 @@ class EquipmentUi(gtk.HBox):
         self._validate_field_and_log (PriorUsageFieldValidator, 
                 self._builder.get_object("entryEquipmentEditPriorUsage"))
         self._validate_edit_equipment_fields ()
+
+    def _on_insert_text_positve_integer (self, entry, text, length, 
+            input_function):
+        V = EntryInputFieldValidator();
+        V.validate_entry_input_positive_integer (entry, text, length,
+                input_function)
+
+    def _on_entryEquipmentAddLifeExpectancy_insert_text (self, entry, text,
+            length, position):
+        self._on_insert_text_positve_integer (entry, text, length,
+                self._on_entryEquipmentAddLifeExpectancy_insert_text)
+
+    def _on_entryEquipmentAddPriorUsage_insert_text (self, entry, text,
+            length, position):
+        self._on_insert_text_positve_integer (entry, text, length,
+                self._on_entryEquipmentAddPriorUsage_insert_text)
+
+    def _on_entryEquipmentEditLifeExpectancy_insert_text (self, entry, text,
+            length, position):
+        self._on_insert_text_positve_integer (entry, text, length,
+                self._on_entryEquipmentEditLifeExpectancy_insert_text)
+
+    def _on_entryEquipmentEditPriorUsage_insert_text (self, entry, text,
+            length, position):
+        self._on_insert_text_positve_integer (entry, text, length,
+                self._on_entryEquipmentEditPriorUsage_insert_text)
 

@@ -191,6 +191,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">&#x25CF;</property>
                                 <property name="width_chars">8</property>
+                                <signal name="insert_text" handler="on_entryEquipmentAddLifeExpectancy_insert_text"/>
                                 <signal name="focus_out_event" handler="on_entryEquipmentAddLifeExpectancy_focus_out_event"/>
                               </object>
                             </child>
@@ -229,6 +230,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">&#x2022;</property>
                                 <property name="width_chars">8</property>
+                                <signal name="insert_text" handler="on_entryEquipmentAddPriorUsage_insert_text"/>
                                 <signal name="focus_out_event" handler="on_entryEquipmentAddPriorUsage_focus_out_event"/>
                               </object>
                             </child>
@@ -461,6 +463,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">&#x25CF;</property>
                                 <property name="width_chars">8</property>
+                                <signal name="insert_text" handler="on_entryEquipmentEditLifeExpectancy_insert_text"/>
                                 <signal name="focus_out_event" handler="on_entryEquipmentEditLifeExpectancy_focus_out_event"/>
                               </object>
                             </child>
@@ -497,6 +500,7 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">&#x2022;</property>
                                 <property name="width_chars">8</property>
+                                <signal name="insert_text" handler="on_entryEquipmentEditPriorUsage_insert_text"/>
                                 <signal name="focus_out_event" handler="on_entryEquipmentEditPriorUsage_focus_out_event"/>
                               </object>
                             </child>
