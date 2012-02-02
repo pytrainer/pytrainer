@@ -332,6 +332,7 @@ class WindowProfile(SimpleGladeApp):
     def on_addsport_clicked(self,widget):
         self.hidesportsteps()
         self.buttonbox.set_sensitive(0)
+        self.button18.set_sensitive(False)
         self.addsport.show()
 
     def on_newsport_accept_clicked(self,widget):
@@ -452,13 +453,7 @@ class WindowProfile(SimpleGladeApp):
         self.deletesport.hide()
         self.editsport.hide()   
 
-    def validate_profile_fields (self):
-        input_fields = [(self.prf_height,HeightFieldValidator), 
-            (self.prf_weight, WeightFieldValidator),
-            (self.prf_age, DateOfBirthFieldValidator),
-            (self.prf_maxhr, MaxHeartRateFieldValidator ),
-            (self.prf_minhr, RestHeartRateFieldValidator),]
-
+    def validate_group_of_fields (self, input_fields, button, label):
         error_msg = ''
         all_good = True
         for entry in input_fields:
@@ -469,13 +464,23 @@ class WindowProfile(SimpleGladeApp):
                 error_msg = validator.get_error_message ()
                 all_good = False
 
-        self.button3.set_sensitive (all_good)
+        button.set_sensitive (all_good)
         if error_msg == '':
             msg = ''
         else:
             msg = '<span weight="bold"' + " fgcolor='#ff0000'>" +\
                   str(error_msg) + '</span>'
-        self.label12.set_markup (msg)
+        label.set_markup (msg)
+
+    def validate_profile_fields (self):
+        input_fields = [(self.prf_height,HeightFieldValidator), 
+            (self.prf_weight, WeightFieldValidator),
+            (self.prf_age, DateOfBirthFieldValidator),
+            (self.prf_maxhr, MaxHeartRateFieldValidator ),
+            (self.prf_minhr, RestHeartRateFieldValidator),]
+
+        self.validate_group_of_fields (input_fields, self.button3,
+                self.label12)
 
 
     def validate_field_and_log (self, validator, inputWidget):
@@ -509,26 +514,12 @@ class WindowProfile(SimpleGladeApp):
     def validate_sport_fields (self):
         input_fields = [( self.newmetentry, METFieldValidator), 
             ( self.newweightentry, ExtraWeightFieldValidator),
-            ( self.newmaxpace, MaximumPaceFieldValidator),]
-            
+            ( self.newmaxpace, MaximumPaceFieldValidator),
+            ( self.newsportentry, SportNameFiedValidator),]
 
-        error_msg = ''
-        all_good = True
-        for entry in input_fields:
-            validator = entry[1]()
-            field = entry[0].get_text()
+        self.validate_group_of_fields (input_fields, self.button18,
+                self.label_sport_error_message)
 
-            if not validator.validate_field (field):
-                error_msg = validator.get_error_message ()
-                all_good = False
-
-        self.button18.set_sensitive (all_good)
-        if error_msg == '':
-            msg = ''
-        else:
-            msg = '<span weight="bold"' + " fgcolor='#ff0000'>" +\
-                  str(error_msg) + '</span>'
-        self.label_sport_error_message.set_markup (msg)
 
     def on_newmetentry_focus_out_event (self, widget, data):
         self.validate_field_and_log (METFieldValidator,
@@ -546,3 +537,7 @@ class WindowProfile(SimpleGladeApp):
                 self.newweightentry)
         self.validate_sport_fields ()
 
+    def on_newsportentry_focus_out_event (self, widget, data):
+        self.validate_field_and_log (SportNameFiedValidator,
+                self.newsportentry)
+        self.validate_sport_fields ()

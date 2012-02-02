@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pytrainer 1.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-02-01 15:31+0100\n"
-"PO-Revision-Date: 2012-02-01 15:35+0100\n"
+"POT-Creation-Date: 2012-02-02 10:34+0100\n"
+"PO-Revision-Date: 2012-02-02 10:36+0100\n"
 "Last-Translator: David Garcia Granda <dgranda@gmail.com>\n"
 "Language-Team: Spanish <pytrainer-devel@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -23,46 +23,46 @@ msgstr ""
 msgid "Calendar"
 msgstr "Calendario"
 
-#: glade/equipment.glade:109
+#: glade/equipment.glade:119
 msgid "<b>Equipment List</b>"
 msgstr "<b>Lista de material</b>"
 
-#: glade/equipment.glade:149 glade/equipment.glade:406
-#: pytrainer/gui/equipment.py:98
+#: glade/equipment.glade:165 glade/equipment.glade:456
+#: pytrainer/gui/equipment.py:119
 msgid "Description"
 msgstr "Descripción"
 
-#: glade/equipment.glade:174 glade/equipment.glade:431
+#: glade/equipment.glade:192 glade/equipment.glade:483
 msgid "Life Expectancy"
 msgstr "Vida útil esperada"
 
-#: glade/equipment.glade:211 glade/equipment.glade:467
+#: glade/equipment.glade:232 glade/equipment.glade:522
 msgid "Prior Usage"
 msgstr "Uso anterior"
 
-#: glade/equipment.glade:243 glade/equipment.glade:499
-#: pytrainer/gui/equipment.py:102
+#: glade/equipment.glade:266 glade/equipment.glade:556
+#: pytrainer/gui/equipment.py:123
 msgid "Active"
 msgstr "Habilitado"
 
-#: glade/equipment.glade:277 glade/equipment.glade:533
+#: glade/equipment.glade:303 glade/equipment.glade:593
 #: pytrainer/gui/windowimportdata.py:353
 msgid "Notes"
 msgstr "Notas"
 
-#: glade/equipment.glade:366
+#: glade/equipment.glade:410
 msgid "<b>Add New Equipment</b>"
 msgstr "<b>Añadir nuevo material</b>"
 
-#: glade/equipment.glade:622
+#: glade/equipment.glade:700
 msgid "<b>Edit Equipment</b>"
 msgstr "<b>Editar material</b>"
 
-#: glade/equipment.glade:651
+#: glade/equipment.glade:733
 msgid "Really delete the equipment item?"
 msgstr "¿Confirma que desea borrar el material?"
 
-#: glade/equipment.glade:704
+#: glade/equipment.glade:793
 msgid "<b>Delete Equipment</b>"
 msgstr "<b>Borrar material</b>"
 
@@ -78,7 +78,7 @@ msgstr "<b>Detalles de la extensión</b>"
 msgid "name-entry"
 msgstr "Nombre"
 
-#: glade/extensions.glade:82 glade/plugins.glade:144 glade/profile.glade:805
+#: glade/extensions.glade:82 glade/plugins.glade:144 glade/profile.glade:806
 #: glade/pytrainer.glade:5703
 msgid "Name:"
 msgstr "Nombre:"
@@ -296,7 +296,7 @@ msgid "Average Speed (km/h)"
 msgstr "Velocidad media (km/h)"
 
 #: glade/importdata.glade:1050 glade/pytrainer.glade:277
-#: pytrainer/gui/windowimportdata.py:353 pytrainer/gui/windowprofile.py:139
+#: pytrainer/gui/windowimportdata.py:353 pytrainer/gui/windowprofile.py:117
 #: pytrainer/gui/windowrecord.py:211 pytrainer/gui/windowmain.py:110
 #: pytrainer/gui/windowmain.py:118 pytrainer/gui/windowmain.py:140
 #: pytrainer/gui/windowmain.py:1497
@@ -389,7 +389,7 @@ msgstr "Distancia (km):"
 
 #: glade/newrecord.glade:230 glade/newrecord.glade:355
 #: glade/newrecord.glade:558 glade/newrecord.glade:695
-#: glade/newrecord.glade:956 glade/profile.glade:1706
+#: glade/newrecord.glade:956 glade/profile.glade:1711
 msgid "Calculate"
 msgstr "Calcular"
 
@@ -413,7 +413,7 @@ msgstr "Hora de comienzo:"
 msgid "12:00:00"
 msgstr "12:00:00"
 
-#: glade/newrecord.glade:486 glade/profile.glade:1747
+#: glade/newrecord.glade:486 glade/profile.glade:1752
 msgid "<b>General</b>"
 msgstr "<b>General:</b>"
 
@@ -500,7 +500,7 @@ msgstr "<i>No hay piezas de material activas</i>"
 msgid "<b>Associated Equipment</b>"
 msgstr "<b>Material asociado</b>"
 
-#: glade/newrecord.glade:1201 glade/profile.glade:1595
+#: glade/newrecord.glade:1201 glade/profile.glade:1600
 msgid "Equipment"
 msgstr "Equipamiento"
 
@@ -608,32 +608,32 @@ msgstr "<b>Lista de deportes</b>"
 msgid "llist"
 msgstr "lista"
 
-#: glade/profile.glade:817
+#: glade/profile.glade:818
 msgid "M.E.T.:"
 msgstr "M.E.T.:"
 
-#: glade/profile.glade:845
+#: glade/profile.glade:847
 msgid "Extra Weight:"
 msgstr "Peso extra:"
 
-#: glade/profile.glade:882 glade/profile.glade:1346
+#: glade/profile.glade:885 glade/profile.glade:1351
 msgid ""
 "More information on determining yor M.E.T sport coefficient on Wikipedia"
 msgstr "Más información sobre el coeficiente M.E.T. en Wikipedia"
 
-#: glade/profile.glade:904
+#: glade/profile.glade:907
 msgid "Maximum Pace:"
 msgstr "Ritmo más rápido:"
 
-#: glade/profile.glade:1051
+#: glade/profile.glade:1056
 msgid "<b>Add New Sport</b>"
 msgstr "<b>Añadir nuevo deporte</b>"
 
-#: glade/profile.glade:1067
+#: glade/profile.glade:1072
 msgid "new"
 msgstr "nuevo"
 
-#: glade/profile.glade:1103
+#: glade/profile.glade:1108
 msgid ""
 "Deleting a sport removes associated records.\n"
 "Continue?"
@@ -641,60 +641,60 @@ msgstr ""
 "Si borra un deporte elimina sus registros asociados.\n"
 "¿Desea continuar?"
 
-#: glade/profile.glade:1197
+#: glade/profile.glade:1202
 msgid "<b>Delete Sport</b>"
 msgstr "<b>Borrar deporte</b>"
 
-#: glade/profile.glade:1231
+#: glade/profile.glade:1236
 msgid "delete"
 msgstr "borrar"
 
-#: glade/profile.glade:1269
+#: glade/profile.glade:1274
 msgid "Name"
 msgstr "Nombre"
 
-#: glade/profile.glade:1293
+#: glade/profile.glade:1298
 msgid "M.E.T."
 msgstr "M.E.T."
 
-#: glade/profile.glade:1321 pytrainer/gui/windowprofile.py:139
+#: glade/profile.glade:1326 pytrainer/gui/windowprofile.py:117
 msgid "Extra Weight"
 msgstr "Peso extra"
 
-#: glade/profile.glade:1368 pytrainer/gui/windowprofile.py:139
+#: glade/profile.glade:1373 pytrainer/gui/windowprofile.py:117
 msgid "Maximum Pace"
 msgstr "Ritmo más rápido"
 
-#: glade/profile.glade:1396 pytrainer/gui/windowprofile.py:139
+#: glade/profile.glade:1401 pytrainer/gui/windowprofile.py:117
 #: pytrainer/gui/windowmain.py:188
 msgid "Color"
 msgstr "Color"
 
-#: glade/profile.glade:1519
+#: glade/profile.glade:1524
 msgid "<b>Edit Sport</b>"
 msgstr "<b>Editar deporte</b>"
 
-#: glade/profile.glade:1531
+#: glade/profile.glade:1536
 msgid "<b>lalaal</b>"
 msgstr "<b>lalaal</b>"
 
-#: glade/profile.glade:1554
+#: glade/profile.glade:1559
 msgid "edit"
 msgstr "editar"
 
-#: glade/profile.glade:1571
+#: glade/profile.glade:1576
 msgid "Sports"
 msgstr "Deportes"
 
-#: glade/profile.glade:1633
+#: glade/profile.glade:1638
 msgid "Maximum heart rate:"
 msgstr "Pulsaciones máximas:"
 
-#: glade/profile.glade:1645
+#: glade/profile.glade:1650
 msgid "Resting heart rate:"
 msgstr "Pulsaciones en reposo:"
 
-#: glade/profile.glade:1693
+#: glade/profile.glade:1698
 msgid ""
 "<small><b>Note:</b> Maximum heart rate is calculated by subtracting the "
 "number 220 minus your age. </small>"
@@ -702,7 +702,7 @@ msgstr ""
 "<small><b>Nota:</b> el número máximo de pulsaciones se calcula con la "
 "siguiente fórmula: 220 menos su edad. </small>"
 
-#: glade/profile.glade:1787
+#: glade/profile.glade:1792
 msgid ""
 "<small><b>NOTE:</b> in order to use the Karvonen method you must cover the "
 "Resting hr field.</small>"
@@ -710,34 +710,34 @@ msgstr ""
 "<small><b>Nota:</b> rellene todos los campos relativos a pulsaciones si usa "
 "el método Karvonen</small>"
 
-#: glade/profile.glade:1800
+#: glade/profile.glade:1805
 msgid "Percentages based method"
 msgstr "Basado en porcentajes"
 
-#: glade/profile.glade:1817 pytrainer/gui/windowmain.py:794
+#: glade/profile.glade:1822 pytrainer/gui/windowmain.py:794
 msgid "Karvonen method"
 msgstr "Karvonen"
 
-#: glade/profile.glade:1840
+#: glade/profile.glade:1845
 msgid "Select how to calculate your heart rate zones."
 msgstr "Seleccione cómo calcular las zonas de frecuencia cardiaca"
 
-#: glade/profile.glade:1880
+#: glade/profile.glade:1885
 msgid "<b>Heart Rate Zones</b>"
 msgstr "<b>Zonas de frecuencia cardiaca</b>"
 
-#: glade/profile.glade:1903 pytrainer/heartrategraph.py:36
+#: glade/profile.glade:1908 pytrainer/heartrategraph.py:36
 #: pytrainer/lib/activity.py:443 pytrainer/lib/activity.py:445
 #: pytrainer/lib/activity.py:455 pytrainer/lib/activity.py:525
 #: pytrainer/recordgraph.py:140 pytrainer/daygraph.py:56
 msgid "Heart Rate"
 msgstr "Pulsaciones"
 
-#: glade/profile.glade:1933
+#: glade/profile.glade:1938
 msgid "Log Level"
 msgstr "Nivel de log"
 
-#: glade/profile.glade:1942
+#: glade/profile.glade:1947
 msgid ""
 "Error\n"
 "Warning\n"
@@ -749,15 +749,15 @@ msgstr ""
 "Información\n"
 "Depuración"
 
-#: glade/profile.glade:1961
+#: glade/profile.glade:1966
 msgid "<small>What level of detail is written to the log?</small>"
 msgstr "<small>¿Qué nivel de detalle existe en el fichero de log?</small>"
 
-#: glade/profile.glade:1976
+#: glade/profile.glade:1981
 msgid "Validate"
 msgstr "Validar"
 
-#: glade/profile.glade:2008
+#: glade/profile.glade:2013
 msgid ""
 "<small>Do the plugins attempt to validate the input file before processing?</"
 "small>"
@@ -765,15 +765,15 @@ msgstr ""
 "<small>¿Intentan los plugins validar el fichero de entrada antes de "
 "procesarlo?</small>"
 
-#: glade/profile.glade:2025
+#: glade/profile.glade:2030
 msgid "New Graph"
 msgstr "Nuevo gráfico"
 
-#: glade/profile.glade:2056
+#: glade/profile.glade:2061
 msgid "<small>Want to use experimental new approach to graphing?</small>"
 msgstr "<small>¿Desea usar los nuevos gráficos (experimental)?</small>"
 
-#: glade/profile.glade:2109
+#: glade/profile.glade:2114
 msgid ""
 "<small>This screen shows the state of command line configurable options for "
 "pytrainer. These options can be changed here which will affect the current "
@@ -784,7 +784,7 @@ msgstr ""
 "hagan únicamente tendrán efecto en la presente ejecución de pytrainer y no "
 "serán recordados en el futuro</small>"
 
-#: glade/profile.glade:2133
+#: glade/profile.glade:2138
 msgid "Startup Parameters"
 msgstr "Configuración inicio"
 
@@ -1813,59 +1813,55 @@ msgstr "Columna %d"
 msgid "Athlete Data"
 msgstr "Datos del atleta"
 
-#: pytrainer/gui/windowprofile.py:48
+#: pytrainer/gui/windowprofile.py:39
 msgid "Error with the height field."
 msgstr "Error en el campo de altura."
 
-#: pytrainer/gui/windowprofile.py:54
+#: pytrainer/gui/windowprofile.py:44
 msgid "Error with the weight field."
 msgstr "Error en el campo de peso."
 
-#: pytrainer/gui/windowprofile.py:60
+#: pytrainer/gui/windowprofile.py:49
 msgid "Error with the date of birth field."
 msgstr "Error en el campo de fecha de nacimiento."
 
-#: pytrainer/gui/windowprofile.py:66
+#: pytrainer/gui/windowprofile.py:54
 msgid "Error with the maximum heart rate field."
 msgstr "Error en el campo de pulsaciones máximas."
 
-#: pytrainer/gui/windowprofile.py:72
+#: pytrainer/gui/windowprofile.py:60
 msgid "Error with the resting heart rate field."
 msgstr "Error en el campo de pulsaciones en reposo."
 
-#: pytrainer/gui/windowprofile.py:78
+#: pytrainer/gui/windowprofile.py:65
 msgid "Error with the M.E.T. field."
 msgstr "Error en el campo de M.E.T."
 
-#: pytrainer/gui/windowprofile.py:84
+#: pytrainer/gui/windowprofile.py:71
 msgid "Error with the extra weight field."
 msgstr "Error en el campo de peso extra."
 
-#: pytrainer/gui/windowprofile.py:90
+#: pytrainer/gui/windowprofile.py:77
 msgid "Error with the maximum pace field."
 msgstr "Error en el campo de ritmo máximo."
 
-#: pytrainer/gui/windowprofile.py:96
-msgid "Error with the life expectancy field."
-msgstr "Error en el campo de vida útil esperada."
+#: pytrainer/gui/windowprofile.py:82
+msgid "The sport name field should not be empty."
+msgstr "El campo de nombre de deporte no puede ser vacío."
 
-#: pytrainer/gui/windowprofile.py:103
-msgid "Error with the prior usage field."
-msgstr "Error en el campo de uso anterior."
-
-#: pytrainer/gui/windowprofile.py:121
+#: pytrainer/gui/windowprofile.py:99
 msgid "Male"
 msgstr "Varón"
 
-#: pytrainer/gui/windowprofile.py:122
+#: pytrainer/gui/windowprofile.py:100
 msgid "Female"
 msgstr "Mujer"
 
-#: pytrainer/gui/windowprofile.py:139
+#: pytrainer/gui/windowprofile.py:117
 msgid "MET"
 msgstr "M.E.T."
 
-#: pytrainer/gui/windowprofile.py:370
+#: pytrainer/gui/windowprofile.py:348
 msgid "Sport Creation Error"
 msgstr "Fallo en la creación de deporte"
 
@@ -2124,7 +2120,19 @@ msgstr "<b>Pulsaciones máx</b>"
 msgid "Are you sure?"
 msgstr "¿Está seguro?"
 
-#: pytrainer/gui/equipment.py:101
+#: pytrainer/gui/equipment.py:28
+msgid "Error with the life expectancy field."
+msgstr "Error en el campo de vida útil esperada."
+
+#: pytrainer/gui/equipment.py:34
+msgid "Error with the prior usage field."
+msgstr "Error en el campo de uso anterior."
+
+#: pytrainer/gui/equipment.py:40
+msgid "The description field should not be empty."
+msgstr "El campo descripcion de equipo no puede ser vacío."
+
+#: pytrainer/gui/equipment.py:122
 msgid "Usage"
 msgstr "Uso"
 
