@@ -419,6 +419,8 @@
                           <widget class="GtkEntry" id="prf_height">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="max_length">5</property>
+                            <signal name="insert_text" handler="on_prf_height_insert_text"/>
                             <signal name="focus_out_event" handler="on_prf_height_focus_out_event"/>
                           </widget>
                           <packing>
@@ -464,7 +466,9 @@
                                 <property name="width_request">108</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
+                                <property name="max_length">10</property>
                                 <property name="invisible_char">&#x25CF;</property>
+                                <signal name="insert_text" handler="on_insert_text_date"/>
                                 <signal name="focus_out_event" handler="on_prf_age_focus_out_event"/>
                               </widget>
                               <packing>
@@ -506,6 +510,8 @@
                           <widget class="GtkEntry" id="prf_weight">
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
+                            <property name="max_length">4</property>
+                            <signal name="insert_text" handler="on_prf_weight_insert_text"/>
                             <signal name="focus_out_event" handler="on_prf_weight_focus_out_event"/>
                           </widget>
                           <packing>
@@ -754,6 +760,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="insert_text" handler="on_newmetentry_insert_text"/>
                                     <signal name="focus_out_event" handler="on_newmetentry_focus_out_event"/>
                                   </widget>
                                   <packing>
@@ -782,6 +789,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="insert_text" handler="on_newweightentry_insert_text"/>
                                     <signal name="focus_out_event" handler="on_newweightentry_focus_out_event"/>
                                   </widget>
                                   <packing>
@@ -839,6 +847,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="insert_text" handler="on_newmaxpace_insert_text"/>
                                     <signal name="focus_out_event" handler="on_newmaxpace_focus_out_event"/>
                                   </widget>
                                   <packing>
@@ -1192,6 +1201,7 @@ Continue?</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="insert_text" handler="on_editmetentry_insert_text"/>
                                     <signal name="focus_out_event" handler="on_editmetentry_focus_out_event"/>
                                   </widget>
                                   <packing>
@@ -1220,6 +1230,7 @@ Continue?</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="insert_text" handler="on_editweightentry_insert_text"/>
                                     <signal name="focus_out_event" handler="on_editweightentry_focus_out_event"/>
                                   </widget>
                                   <packing>
@@ -1266,6 +1277,7 @@ Continue?</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">&#x25CF;</property>
+                                    <signal name="insert_text" handler="on_editmaxpace_insert_text"/>
                                     <signal name="focus_out_event" handler="on_editmaxpace_focus_out_event"/>
                                   </widget>
                                   <packing>
@@ -1521,6 +1533,7 @@ Continue?</property>
                                 <property name="max_length">4</property>
                                 <property name="invisible_char">&#x25CF;</property>
                                 <property name="width_chars">4</property>
+                                <signal name="insert_text" handler="on_prf_maxhr_insert_text"/>
                                 <signal name="focus_out_event" handler="on_prf_maxhr_focus_out_event"/>
                               </widget>
                               <packing>
@@ -1537,6 +1550,7 @@ Continue?</property>
                                 <property name="max_length">4</property>
                                 <property name="invisible_char">&#x25CF;</property>
                                 <property name="width_chars">4</property>
+                                <signal name="insert_text" handler="on_prf_minhr_insert_text"/>
                                 <signal name="focus_out_event" handler="on_prf_minhr_focus_out_event"/>
                               </widget>
                               <packing>

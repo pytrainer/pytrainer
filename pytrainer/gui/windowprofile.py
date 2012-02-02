@@ -29,7 +29,9 @@ import pytrainer
 import pytrainer.util.color
 from pytrainer.gui.color import ColorConverter
 from pytrainer.gui import fieldvalidator
+from pytrainer.gui.fieldvalidator import EntryInputFieldValidator
 import datetime
+import string
 
 
 
@@ -431,8 +433,8 @@ class WindowProfile(SimpleGladeApp):
         self.buttonbox.set_sensitive(1)
         self.sportlist.show()
         
-    def _trim_to_null(self, string):
-        trimmed = string.strip()
+    def _trim_to_null(self, stringValue):
+        trimmed = stringValue.strip()
         return None if trimmed == "" else trimmed
         
     def on_sportcancel_clicked(self,widget):
@@ -497,6 +499,7 @@ class WindowProfile(SimpleGladeApp):
     def on_prf_weight_focus_out_event (self, widget, data):
         self.validate_field_and_log (WeightFieldValidator, self.prf_weight)
         self.validate_profile_fields ()
+
 
     def on_prf_age_focus_out_event (self, widget, data):
         self.validate_field_and_log (DateOfBirthFieldValidator, self.prf_age)
@@ -572,3 +575,60 @@ class WindowProfile(SimpleGladeApp):
         self.validate_field_and_log (SportNameFiedValidator,
                 self.editsportentry)
         self.validate_edit_sport_fields ()
+
+    def on_insert_text_positve_integer (self, entry, text, length, 
+            input_function):
+        V = EntryInputFieldValidator();
+        V.validate_entry_input_positive_integer (entry, text, length,
+                input_function)
+
+    def on_insert_text_positive_real (self, entry, text, length,
+            input_function):
+        V = EntryInputFieldValidator();
+        V.validate_entry_input_positive_real_number (entry, text, length,
+                input_function)
+
+    def on_prf_height_insert_text (self, entry, text, length, position):
+        self.on_insert_text_positve_integer (entry, text, length, 
+                self.on_prf_height_insert_text)
+
+    def on_prf_weight_insert_text (self, entry, text, length, position):
+        self.on_insert_text_positve_integer (entry, text, length, 
+                self.on_prf_weight_insert_text)
+
+    def on_prf_maxhr_insert_text (self, entry, text, length, position):
+        self.on_insert_text_positve_integer (entry, text, length, 
+                self.on_prf_maxhr_insert_text)
+
+    def on_prf_minhr_insert_text (self, entry, text, length, position):
+        self.on_insert_text_positve_integer (entry, text, length, 
+                self.on_prf_minhr_insert_text)
+
+    def on_insert_text_date (self, entry, text, length, position):
+        V = EntryInputFieldValidator();
+        V.validate_entry_input_date (entry, text, length,
+                self.on_insert_text_date) 
+
+    def on_newmetentry_insert_text (self, entry, text, length, position):
+        self.on_insert_text_positive_real (entry, text, length,
+                self.on_newmetentry_insert_text)
+
+    def on_newmaxpace_insert_text (self, entry, text, length, position):
+        self.on_insert_text_positive_real (entry, text, length,
+                self.on_newmaxpace_insert_text)
+
+    def on_newweightentry_insert_text (self, entry, text, length, position):
+        self.on_insert_text_positive_real (entry, text, length,
+                self.on_newweightentry_insert_text)
+
+    def on_editmetentry_insert_text (self, entry, text, length, position):
+        self.on_insert_text_positive_real (entry, text, length,
+                self.on_editmetentry_insert_text)
+
+    def on_editmaxpace_insert_text (self, entry, text, length, position):
+        self.on_insert_text_positive_real (entry, text, length,
+                self.on_editmaxpace_insert_text)
+
+    def on_editweightentry_insert_text (self, entry, text, length, position):
+        self.on_insert_text_positive_real (entry, text, length,
+                self.on_editweightentry_insert_text)

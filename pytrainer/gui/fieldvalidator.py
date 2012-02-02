@@ -17,6 +17,9 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import datetime
+import string
+import gtk
+import gobject
 
 
 class FieldValidator (object):
@@ -109,3 +112,47 @@ class DateFieldValidator (FieldValidator):
 class NotEmptyFieldValidator (FieldValidator):
     def validate_field(self, field):
         return len (field.strip ()) > 0
+
+
+class EntryInputFieldValidator (object):
+    """A class to check the allowed characters on an entry form.
+     
+     The methods in this class are meant to be called within a 'insert_text'
+     signal callback function.
+    """
+    def filter_entry_input (self, entry, text, length, insert_function,
+            allowed_chars):
+        """ The insert_function parameter is the function that deals with 
+            signal. """
+        position = entry.get_position ()
+        result = ''.join ([c for c in text if c in allowed_chars])
+        if result != '':
+            # Block the callback to avoid calling the function recursively
+            entry.handler_block_by_func (insert_function)
+            entry.insert_text(result, position)
+            entry.handler_unblock_by_func (insert_function)
+
+            # Set the cursor in the right position
+            new_pos = position + len (result)
+            gobject.idle_add(entry.set_position, new_pos)
+        else:
+            # Beep to show the error
+            gtk.gdk.beep()
+        entry.stop_emission("insert_text")
+
+    def validate_entry_input_positive_integer (self, entry, text, length,
+            insert_function):
+        allowed_chars = string.digits
+        self.filter_entry_input ( entry, text, length, insert_function,
+                allowed_chars)
+ 
+    def validate_entry_input_date (self, entry, text, length, insert_function):
+        allowed_chars = string.digits + '-'
+        self.filter_entry_input ( entry, text, length, insert_function,
+                allowed_chars)
+
+    def validate_entry_input_positive_real_number (self, entry, text, length,
+            insert_function):
+        allowed_chars = string.digits + '.'
+        self.filter_entry_input ( entry, text, length, insert_function,
+                allowed_chars)
