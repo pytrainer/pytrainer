@@ -23,21 +23,21 @@ from pytrainer.gui.fieldvalidator import NotEmptyFieldValidator
 from pytrainer.gui.fieldvalidator import EntryInputFieldValidator
 import logging
 
-class LifeExpentancyFieldValidator (
+class LifeExpentancyFieldValidator(
         PositiveOrZeroIntegerFieldValidator):
-    def __init__ (self):
+    def __init__(self):
         self.log_message = 'Invalid life expectancy field entered >>'
         self.error_message = _('Error with the life expectancy field.')
 
-class PriorUsageFieldValidator (
+class PriorUsageFieldValidator(
         PositiveOrZeroIntegerFieldValidator):
-    def __init__ (self):
+    def __init__(self):
         self.log_message = 'Invalid prior usage field entered >>'
         self.error_message = _('Error with the prior usage field.')
 
-class EquiptmentDescriptionFieldValidator (
+class EquiptmentDescriptionFieldValidator(
         NotEmptyFieldValidator):
-    def __init__ (self):
+    def __init__(self):
         self.log_message = 'Invalid description field entered >>'
         self.error_message = _('The description field should not be empty.')
 
@@ -65,7 +65,7 @@ class EquipmentStore(gtk.ListStore):
         
     def _create_tuple(self, equipment):
         usage = self._equipment_service.get_equipment_usage(equipment) + equipment.prior_usage
-        return (equipment.id,
+        return(equipment.id,
                 equipment.description,
                 self._calculate_usage_percent(usage, equipment.life_expectancy),
                 str(int(round(usage)))  + " / " + str(equipment.life_expectancy),
@@ -90,7 +90,7 @@ class EquipmentStore(gtk.ListStore):
         
     def edit_equipment(self, item_path, equipment):
         updated_item = self._equipment_service.store_equipment(equipment)
-        for (column_index, value) in enumerate(self._create_tuple(updated_item)):
+        for(column_index, value) in enumerate(self._create_tuple(updated_item)):
             self.set(self.get_iter(item_path), column_index, value)
         
     def remove_equipment(self, item_path):
@@ -247,7 +247,7 @@ class EquipmentUi(gtk.HBox):
         self._equipment_store.remove_equipment(self._get_selected_equipment_path())
         self.show_page_equipment_list()
 
-    def _validate_equipment_fields (self, input_fields, label, button):
+    def _validate_equipment_fields(self, input_fields, label, button):
  
         error_msg = ''
         all_good = True
@@ -255,20 +255,20 @@ class EquipmentUi(gtk.HBox):
             validator = entry[1]()
             field = entry[0].get_text()
 
-            if not validator.validate_field (field):
-                error_msg = validator.get_error_message ()
+            if not validator.validate_field(field):
+                error_msg = validator.get_error_message()
                 all_good = False
 
-        button.set_sensitive (all_good)
+        button.set_sensitive(all_good)
         if error_msg == '':
             msg = ''
         else:
             msg = '<span weight="bold"' + " fgcolor='#ff0000'>" +\
                   str(error_msg) + '</span>'
-        label.set_markup (msg)
+        label.set_markup(msg)
 
 
-    def _validate_add_equipment_fields (self):
+    def _validate_add_equipment_fields(self):
         input_fields = [(self._builder.get_object( 
                     "entryEquipmentAddLifeExpectancy"),
                 LifeExpentancyFieldValidator),
@@ -277,11 +277,11 @@ class EquipmentUi(gtk.HBox):
                 (self._builder.get_object("entryEquipmentAddDescription"),
                 EquiptmentDescriptionFieldValidator),]
 
-        self._validate_equipment_fields (input_fields, 
+        self._validate_equipment_fields(input_fields, 
             self._builder.get_object("label_add_equipment_error_message"),
             self._builder.get_object( "buttonEquipmentAddConfirm"))
 
-    def _validate_edit_equipment_fields (self):
+    def _validate_edit_equipment_fields(self):
         input_fields = [(self._builder.get_object( 
                     "entryEquipmentEditLifeExpectancy"),
                 LifeExpentancyFieldValidator),
@@ -290,74 +290,74 @@ class EquipmentUi(gtk.HBox):
                 (self._builder.get_object("entryEquipmentEditDescription"),
                 EquiptmentDescriptionFieldValidator),]
 
-        self._validate_equipment_fields (input_fields, 
+        self._validate_equipment_fields(input_fields, 
             self._builder.get_object("label_edit_equipment_error_message"),
             self._builder.get_object( "buttonEquipmentEditConfirm"))
 
-    def _validate_field_and_log (self, validator, inputWidget):
+    def _validate_field_and_log(self, validator, inputWidget):
         V = validator()
         field = inputWidget.get_text()
 
-        if not V.validate_field (field):
-            logging.warning (V.get_log_message() + field + '<<')
+        if not V.validate_field(field):
+            logging.warning(V.get_log_message() + field + '<<')
 
-    def _on_entryEquipmentAddDescription_focus_out_event (self, widget,
+    def _on_entryEquipmentAddDescription_focus_out_event(self, widget,
         data):
-        self._validate_field_and_log (EquiptmentDescriptionFieldValidator, 
+        self._validate_field_and_log(EquiptmentDescriptionFieldValidator, 
                 self._builder.get_object("entryEquipmentAddDescription"))
-        self._validate_add_equipment_fields ()
+        self._validate_add_equipment_fields()
 
-    def _on_entryEquipmentAddLifeExpectancy_focus_out_event (self, widget, 
+    def _on_entryEquipmentAddLifeExpectancy_focus_out_event(self, widget, 
             data):
-        self._validate_field_and_log (LifeExpentancyFieldValidator, 
+        self._validate_field_and_log(LifeExpentancyFieldValidator, 
                 self._builder.get_object("entryEquipmentAddLifeExpectancy"))
-        self._validate_add_equipment_fields ()
+        self._validate_add_equipment_fields()
 
-    def _on_entryEquipmentAddPriorUsage_focus_out_event (self, widget, data):
-        self._validate_field_and_log (PriorUsageFieldValidator, 
+    def _on_entryEquipmentAddPriorUsage_focus_out_event(self, widget, data):
+        self._validate_field_and_log(PriorUsageFieldValidator, 
                 self._builder.get_object("entryEquipmentAddPriorUsage"))
-        self._validate_add_equipment_fields ()
+        self._validate_add_equipment_fields()
 
-    def _on_entryEquipmentEditDescription_focus_out_event (self, widget,
+    def _on_entryEquipmentEditDescription_focus_out_event(self, widget,
             data):
-        self._validate_field_and_log (EquiptmentDescriptionFieldValidator, 
+        self._validate_field_and_log(EquiptmentDescriptionFieldValidator, 
                 self._builder.get_object("entryEquipmentAddDescription"))
-        self._validate_edit_equipment_fields ()
+        self._validate_edit_equipment_fields()
 
-    def _on_entryEquipmentEditLifeExpectancy_focus_out_event (self, widget, 
+    def _on_entryEquipmentEditLifeExpectancy_focus_out_event(self, widget, 
             data):
-        self._validate_field_and_log (LifeExpentancyFieldValidator, 
+        self._validate_field_and_log(LifeExpentancyFieldValidator, 
                 self._builder.get_object("entryEquipmentEditLifeExpectancy"))
-        self._validate_edit_equipment_fields ()
+        self._validate_edit_equipment_fields()
 
-    def _on_entryEquipmentEditPriorUsage_focus_out_event (self, widget, data):
-        self._validate_field_and_log (PriorUsageFieldValidator, 
+    def _on_entryEquipmentEditPriorUsage_focus_out_event(self, widget, data):
+        self._validate_field_and_log(PriorUsageFieldValidator, 
                 self._builder.get_object("entryEquipmentEditPriorUsage"))
-        self._validate_edit_equipment_fields ()
+        self._validate_edit_equipment_fields()
 
-    def _on_insert_text_positve_integer (self, entry, text, length, 
+    def _on_insert_text_positve_integer(self, entry, text, length, 
             input_function):
         V = EntryInputFieldValidator();
-        V.validate_entry_input_positive_integer (entry, text, length,
+        V.validate_entry_input_positive_integer(entry, text, length,
                 input_function)
 
-    def _on_entryEquipmentAddLifeExpectancy_insert_text (self, entry, text,
+    def _on_entryEquipmentAddLifeExpectancy_insert_text(self, entry, text,
             length, position):
-        self._on_insert_text_positve_integer (entry, text, length,
+        self._on_insert_text_positve_integer(entry, text, length,
                 self._on_entryEquipmentAddLifeExpectancy_insert_text)
 
-    def _on_entryEquipmentAddPriorUsage_insert_text (self, entry, text,
+    def _on_entryEquipmentAddPriorUsage_insert_text(self, entry, text,
             length, position):
-        self._on_insert_text_positve_integer (entry, text, length,
+        self._on_insert_text_positve_integer(entry, text, length,
                 self._on_entryEquipmentAddPriorUsage_insert_text)
 
-    def _on_entryEquipmentEditLifeExpectancy_insert_text (self, entry, text,
+    def _on_entryEquipmentEditLifeExpectancy_insert_text(self, entry, text,
             length, position):
-        self._on_insert_text_positve_integer (entry, text, length,
+        self._on_insert_text_positve_integer(entry, text, length,
                 self._on_entryEquipmentEditLifeExpectancy_insert_text)
 
-    def _on_entryEquipmentEditPriorUsage_insert_text (self, entry, text,
+    def _on_entryEquipmentEditPriorUsage_insert_text(self, entry, text,
             length, position):
-        self._on_insert_text_positve_integer (entry, text, length,
+        self._on_insert_text_positve_integer(entry, text, length,
                 self._on_entryEquipmentEditPriorUsage_insert_text)
 

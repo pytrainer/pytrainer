@@ -18,41 +18,41 @@ from pytrainer.gui import fieldvalidator
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-class FieldValidatorTest (TestCase):
-    def setUp (self):
+class FieldValidatorTest(TestCase):
+    def setUp(self):
         pass
 
-    def tearDown (self):
+    def tearDown(self):
         pass
 
-    def execute_validations (self, validator, good_fields, wrong_fields):
+    def execute_validations(self, validator, good_fields, wrong_fields):
         for field in good_fields:
-            self.assertTrue (validator.validate_field (field))
+            self.assertTrue(validator.validate_field(field))
 
         for field in wrong_fields:
-            self.assertFalse (validator.validate_field(field))
+            self.assertFalse(validator.validate_field(field))
 
-    def test_positive_real_number_field_validator (self):
+    def test_positive_real_number_field_validator(self):
         good_real_number_fields = ['0.0', '5.1', '']
         wrong_real_number_fields = [ '5.1a', 'a5.1', '-1.1', '-5.1',  ]
 
-        V = fieldvalidator.PositiveRealNumberFieldValidator ()
-        self.execute_validations (V, good_real_number_fields,
+        V = fieldvalidator.PositiveRealNumberFieldValidator()
+        self.execute_validations(V, good_real_number_fields,
                 wrong_real_number_fields)
 
-    def test_positive_integer_field_validator (self):
+    def test_positive_integer_field_validator(self):
         good_integer_fields = ['1', '22', '']
         wrong_integer_fields = ['45a', 'a45', '0', '-1', '-45', '1.3',]
-        V = fieldvalidator.PositiveIntegerFieldValidator ()
-        self.execute_validations (V, good_integer_fields, wrong_integer_fields)
+        V = fieldvalidator.PositiveIntegerFieldValidator()
+        self.execute_validations(V, good_integer_fields, wrong_integer_fields)
 
-    def test_positive_or_zero_integer_field_validator (self):
+    def test_positive_or_zero_integer_field_validator(self):
         good_integer_fields = ['1', '22', '0' ]
         wrong_integer_fields = ['45a', 'a45', '-1', '-45', '', ' ', '1.3']
-        V = fieldvalidator.PositiveOrZeroIntegerFieldValidator ()
-        self.execute_validations (V, good_integer_fields, wrong_integer_fields)
+        V = fieldvalidator.PositiveOrZeroIntegerFieldValidator()
+        self.execute_validations(V, good_integer_fields, wrong_integer_fields)
 
-    def test_date_field_validator (self):
+    def test_date_field_validator(self):
         good_date_fields = ['', '1972-12-30']
         wrong_date_fields = [
             # Wrong format
@@ -78,11 +78,11 @@ class FieldValidatorTest (TestCase):
             '1973-02-29',
         ]
 
-        V = fieldvalidator.DateFieldValidator ()
-        self.execute_validations (V, good_date_fields, wrong_date_fields)
+        V = fieldvalidator.DateFieldValidator()
+        self.execute_validations(V, good_date_fields, wrong_date_fields)
 
-    def test_not_empty_field_validator (self):
+    def test_not_empty_field_validator(self):
         good_fields = ['name', '17']
         wrong_fields = ['', '  ']
-        V = fieldvalidator.NotEmptyFieldValidator ()
-        self.execute_validations (V, good_fields, wrong_fields)
+        V = fieldvalidator.NotEmptyFieldValidator()
+        self.execute_validations(V, good_fields, wrong_fields)

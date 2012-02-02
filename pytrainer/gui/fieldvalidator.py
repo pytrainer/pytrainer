@@ -22,7 +22,7 @@ import gtk
 import gobject
 
 
-class FieldValidator (object):
+class FieldValidator(object):
     """ This is an "abstract" function definition for the method that validates
         an input field in the form.
         The field parameter is a string with the contents of the typed field.
@@ -30,11 +30,11 @@ class FieldValidator (object):
         
         Python does not really need this definition
         but I think that it makes is clearer for humans."""
-    def validate_field (self, field):
-        raise NotImplementedError ("Should have implemented validate_field " +
+    def validate_field(self, field):
+        raise NotImplementedError("Should have implemented validate_field " +
                 "the derived classes.")
 
-    def get_log_message (self):
+    def get_log_message(self):
         """ Another "abstract" function definition to provide the log
             message.
 
@@ -42,7 +42,7 @@ class FieldValidator (object):
             """
         return self.log_message 
 
-    def get_error_message (self):
+    def get_error_message(self):
         """ Another "abstract" function definition to provide the error
             message.
 
@@ -51,57 +51,57 @@ class FieldValidator (object):
         return self.error_message
 
 
-class PositiveRealNumberFieldValidator (FieldValidator):
-    def validate_field (self, field):
+class PositiveRealNumberFieldValidator(FieldValidator):
+    def validate_field(self, field):
         is_valid = False
         if field == '':
             is_valid = True
         else:
             try:
-                a = float (field)
+                a = float(field)
                 if (a >= 0.0):
                     is_valid = True
             except:
                 pass
         return is_valid
 
-class PositiveIntegerFieldValidator (FieldValidator):
-    def validate_field (self, field):
+class PositiveIntegerFieldValidator(FieldValidator):
+    def validate_field(self, field):
         is_valid = False
         if field == '':
             is_valid = True
         else:
             try:
-                a = int (field)
+                a = int(field)
                 if (a > 0):
                     is_valid = True
             except:
                 pass
         return is_valid
 
-class PositiveOrZeroIntegerFieldValidator (FieldValidator):
-    def validate_field (self, field):
+class PositiveOrZeroIntegerFieldValidator(FieldValidator):
+    def validate_field(self, field):
         # Empty values are not allowed 
         is_valid = False
         try:
-            a = int (field)
-            if (a >= 0):
+            a = int(field)
+            if(a >= 0):
                 is_valid = True
         except:
             pass
         return is_valid
 
-class DateFieldValidator (FieldValidator):
-    def validate_field (self, field):
+class DateFieldValidator(FieldValidator):
+    def validate_field(self, field):
         is_valid = False
 
         if field == '':
             is_valid = True
         else:
             try:
-                year,month,day = field.split ('-')
-                if (len(year) == 4):
-                    d = datetime.datetime (int(year), int(month), int (day), \
+                year,month,day = field.split('-')
+                if(len(year) == 4):
+                    d = datetime.datetime(int(year), int(month), int(day), \
                             0,0,0)
                     is_valid = True
             except:
@@ -109,50 +109,50 @@ class DateFieldValidator (FieldValidator):
 
         return is_valid
 
-class NotEmptyFieldValidator (FieldValidator):
+class NotEmptyFieldValidator(FieldValidator):
     def validate_field(self, field):
-        return len (field.strip ()) > 0
+        return len(field.strip()) > 0
 
 
-class EntryInputFieldValidator (object):
+class EntryInputFieldValidator(object):
     """A class to check the allowed characters on an entry form.
      
      The methods in this class are meant to be called within a 'insert_text'
      signal callback function.
     """
-    def filter_entry_input (self, entry, text, length, insert_function,
+    def filter_entry_input(self, entry, text, length, insert_function,
             allowed_chars):
         """ The insert_function parameter is the function that deals with 
             signal. """
-        position = entry.get_position ()
-        result = ''.join ([c for c in text if c in allowed_chars])
+        position = entry.get_position()
+        result = ''.join([c for c in text if c in allowed_chars])
         if result != '':
             # Block the callback to avoid calling the function recursively
-            entry.handler_block_by_func (insert_function)
+            entry.handler_block_by_func(insert_function)
             entry.insert_text(result, position)
-            entry.handler_unblock_by_func (insert_function)
+            entry.handler_unblock_by_func(insert_function)
 
             # Set the cursor in the right position
-            new_pos = position + len (result)
+            new_pos = position + len(result)
             gobject.idle_add(entry.set_position, new_pos)
         else:
             # Beep to show the error
             gtk.gdk.beep()
         entry.stop_emission("insert_text")
 
-    def validate_entry_input_positive_integer (self, entry, text, length,
+    def validate_entry_input_positive_integer(self, entry, text, length,
             insert_function):
         allowed_chars = string.digits
-        self.filter_entry_input ( entry, text, length, insert_function,
+        self.filter_entry_input( entry, text, length, insert_function,
                 allowed_chars)
  
-    def validate_entry_input_date (self, entry, text, length, insert_function):
+    def validate_entry_input_date(self, entry, text, length, insert_function):
         allowed_chars = string.digits + '-'
-        self.filter_entry_input ( entry, text, length, insert_function,
+        self.filter_entry_input( entry, text, length, insert_function,
                 allowed_chars)
 
-    def validate_entry_input_positive_real_number (self, entry, text, length,
+    def validate_entry_input_positive_real_number(self, entry, text, length,
             insert_function):
         allowed_chars = string.digits + '.'
-        self.filter_entry_input ( entry, text, length, insert_function,
+        self.filter_entry_input( entry, text, length, insert_function,
                 allowed_chars)

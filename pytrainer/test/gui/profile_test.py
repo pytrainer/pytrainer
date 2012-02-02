@@ -28,9 +28,9 @@ import gettext
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-class FieldValidatorTest (TestCase):
+class FieldValidatorTest(TestCase):
 
-    def setUp (self):
+    def setUp(self):
         """ These tests are meant to be executed for the source main directory.
             Need to initialize the locale to deal with FieldValidator
             translated error messages. """
@@ -39,82 +39,82 @@ class FieldValidatorTest (TestCase):
         gettext.install("pytrainer", gettext_path, unicode=1)
 
 
-    def tearDown (self):
+    def tearDown(self):
         pass
 
-    def execute_single_field_validator (self, validator, good_fields,
+    def execute_single_field_validator(self, validator, good_fields,
             wrong_fields):
         for field in good_fields:
-            self.assertTrue (validator.validate_field(field))
+            self.assertTrue(validator.validate_field(field))
         for field in wrong_fields:
-            self.assertFalse (validator.validate_field (field))
+            self.assertFalse(validator.validate_field(field))
 
         # Make sure the function is available
         # How do I check the message is right?
-        msgErr = validator.get_error_message ()
-        msgLog = validator.get_log_message ()
+        msgErr = validator.get_error_message()
+        msgLog = validator.get_log_message()
 
 
-    def test_height_field_validator (self):
+    def test_height_field_validator(self):
         good_height = ['191', '']
         wrong_height = [ '191a', 'a191', '0', '-1', '-191']
 
-        V = HeightFieldValidator ()
-        self.execute_single_field_validator (V, good_height, wrong_height)
+        V = HeightFieldValidator()
+        self.execute_single_field_validator(V, good_height, wrong_height)
 
 
-    def test_wight_field_validator (self):
+    def test_wight_field_validator(self):
         good_weight = ['50', '']
         wrong_weight = [ '50a', 'a80', '0', '-1', '-80']
 
-        V = WeightFieldValidator ()
-        self.execute_single_field_validator (V, good_weight, wrong_weight)
+        V = WeightFieldValidator()
+        self.execute_single_field_validator(V, good_weight, wrong_weight)
 
-    def test_date_of_birth_field_validator (self):
+    def test_date_of_birth_field_validator(self):
         good_date = ['1972-12-30','']
         wrong_date = [ 'aaaaaa']
 
-        V =  DateOfBirthFieldValidator ()
-        self.execute_single_field_validator (V, good_date, wrong_date)
+        V =  DateOfBirthFieldValidator()
+        self.execute_single_field_validator(V, good_date, wrong_date)
         
-    def test_max_heart_rate_field_validator (self):
+    def test_max_heart_rate_field_validator(self):
         good_rate = ['191', '']
         wrong_rate = [ '191a', 'a191', '0', '-1', '-191']
 
-        V = MaxHeartRateFieldValidator ()
-        self.execute_single_field_validator (V, good_rate, wrong_rate)
+        V = MaxHeartRateFieldValidator()
+        self.execute_single_field_validator(V, good_rate, wrong_rate)
 
-    def test_rest_heart_rate_field_validator (self):
+    def test_rest_heart_rate_field_validator(self):
         good_rate = ['45', '']
         wrong_rate = [ '45a', 'a45', '0', '-1', '-45']
 
-        V = RestHeartRateFieldValidator ()
-        self.execute_single_field_validator (V, good_rate, wrong_rate)
+        V = RestHeartRateFieldValidator()
+        self.execute_single_field_validator(V, good_rate, wrong_rate)
 
-    def test_MET_field_validator (self):
+    def test_MET_field_validator(self):
         good_MET = ['45', '44.4', '0.0', '']
         wrong_MET = [ '45.4a', 'a45.4', '-0.0001', '-1.0', '-45.0']
 
-        V = METFieldValidator ()
-        self.execute_single_field_validator (V, good_MET, wrong_MET)
+        V = METFieldValidator()
+        self.execute_single_field_validator(V, good_MET, wrong_MET)
     
-    def test_extra_weight_field_validator (self):
+    def test_extra_weight_field_validator(self):
         good_weigth = ['45', '44.4', '0.0', '']
         wrong_weigth = [ '45.4a', 'a45.4', '-0.0001', '-1.0', '-45.0']
 
-        V = ExtraWeightFieldValidator ()
-        self.execute_single_field_validator (V, good_weigth, wrong_weigth)
+        V = ExtraWeightFieldValidator()
+        self.execute_single_field_validator(V, good_weigth, wrong_weigth)
 
-    def test_maximum_pace_field_validator (self):
+    def test_maximum_pace_field_validator(self):
         good_pace = ['45', '44.4', '0.0', '']
         wrong_pace = [ '45.4a', 'a45.4', '-0.0001', '-1.0', '-45.0']
 
-        V = MaximumPaceFieldValidator ()
-        self.execute_single_field_validator (V, good_pace, wrong_pace)
+        V = MaximumPaceFieldValidator()
+        self.execute_single_field_validator(V, good_pace, wrong_pace)
 
-    def test_sport_name_field_validator (self):
+    def test_sport_name_field_validator(self):
         good_name = ['name', '17']
         wrong_name = ['', '   ']
 
-        V = SportNameFiedValidator ()
-        self.execute_single_field_validator (V, good_name, wrong_name)
+        V = SportNameFiedValidator()
+        self.execute_single_field_validator(V, good_name, wrong_name)

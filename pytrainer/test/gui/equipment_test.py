@@ -164,9 +164,9 @@ class EquipmentStoreTest(TestCase):
         self.assertEquals(2, equipment_store.get_value(iter, 0))
         
 
-class EquipmentFieldValidators (TestCase):
+class EquipmentFieldValidators(TestCase):
    
-    def setUp (self):
+    def setUp(self):
         """ These tests are meant to be executed for the source main directory.
             Need to initialize the locale to deal with FieldValidator
             translated error messages. """
@@ -175,39 +175,39 @@ class EquipmentFieldValidators (TestCase):
         gettext.install("pytrainer", gettext_path, unicode=1)
 
 
-    def tearDown (self):
+    def tearDown(self):
         pass
 
-    def execute_single_field_validator (self, validator, good_fields,
+    def execute_single_field_validator(self, validator, good_fields,
             wrong_fields):
         for field in good_fields:
-            self.assertTrue (validator.validate_field(field))
+            self.assertTrue(validator.validate_field(field))
         for field in wrong_fields:
-            self.assertFalse (validator.validate_field (field))
+            self.assertFalse(validator.validate_field(field))
 
         # Make sure the function is available
         # How do I check the message is right?
-        msgErr = validator.get_error_message ()
-        msgLog = validator.get_log_message ()
+        msgErr = validator.get_error_message()
+        msgLog = validator.get_log_message()
  
-    def test_life_expentancy_field_validator (self):
+    def test_life_expentancy_field_validator(self):
         good_life = ['45', '0']
         wrong_life = [ '45a', 'a45', '-1', '-45', '', ' ']
 
-        V = LifeExpentancyFieldValidator ()
-        self.execute_single_field_validator (V, good_life, wrong_life)
+        V = LifeExpentancyFieldValidator()
+        self.execute_single_field_validator(V, good_life, wrong_life)
 
-    def test_prior_usage_field_validator (self):
+    def test_prior_usage_field_validator(self):
         good_usage = ['45', '0']
         wrong_usage = [ '45a', 'a45', '-1', '-45', '', ' ']
 
-        V = PriorUsageFieldValidator ()
-        self.execute_single_field_validator (V, good_usage, wrong_usage)
+        V = PriorUsageFieldValidator()
+        self.execute_single_field_validator(V, good_usage, wrong_usage)
 
-    def test_equiptment_description_field_validator (self):
+    def test_equiptment_description_field_validator(self):
         good_description = ['desc', '34']
         wrong_description = ['', ' ']
 
-        V = EquiptmentDescriptionFieldValidator ()
-        self.execute_single_field_validator (V, good_description,
+        V = EquiptmentDescriptionFieldValidator()
+        self.execute_single_field_validator(V, good_description,
                 wrong_description)

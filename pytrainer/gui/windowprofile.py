@@ -38,48 +38,48 @@ import string
 
 
 
-class HeightFieldValidator (PositiveIntegerFieldValidator):
+class HeightFieldValidator(PositiveIntegerFieldValidator):
     def __init__(self):
         self.log_message = 'Invalid height field entered >>'
         self.error_message = _('Error with the height field.')
 
-class WeightFieldValidator (PositiveIntegerFieldValidator):
-    def __init__ (self):
+class WeightFieldValidator(PositiveIntegerFieldValidator):
+    def __init__(self):
         self.log_message = 'Invalid weight field entered >>'
         self.error_message = _('Error with the weight field.')
 
-class DateOfBirthFieldValidator (DateFieldValidator):
-    def __init__ (self):
+class DateOfBirthFieldValidator(DateFieldValidator):
+    def __init__(self):
         self.log_message = 'Invalid date of birth field entered >>'
         self.error_message = _('Error with the date of birth field.')
 
-class MaxHeartRateFieldValidator (PositiveIntegerFieldValidator):
-    def __init__ (self):
+class MaxHeartRateFieldValidator(PositiveIntegerFieldValidator):
+    def __init__(self):
         self.log_message = 'Invalid maximum heart rate field entered >>'
         self.error_message = _('Error with the maximum heart rate field.')
 
-class RestHeartRateFieldValidator (PositiveIntegerFieldValidator):
-    def __init__ (self):
+class RestHeartRateFieldValidator(PositiveIntegerFieldValidator):
+    def __init__(self):
         self.log_message = 'Invalid resting heart rate field entered >>'
         self.error_message = _('Error with the resting heart rate field.')
 
-class METFieldValidator (PositiveRealNumberFieldValidator):
-    def __init__ (self):
+class METFieldValidator(PositiveRealNumberFieldValidator):
+    def __init__(self):
         self.log_message = 'Invalid M.E.T. field entered >>'
         self.error_message = _('Error with the M.E.T. field.')
 
-class ExtraWeightFieldValidator (PositiveRealNumberFieldValidator):
-    def __init__ (self):
+class ExtraWeightFieldValidator(PositiveRealNumberFieldValidator):
+    def __init__(self):
         self.log_message = 'Invalid extra weight field entered >>'
         self.error_message = _('Error with the extra weight field.')
 
-class MaximumPaceFieldValidator (PositiveRealNumberFieldValidator):
-    def __init__ (self):
+class MaximumPaceFieldValidator(PositiveRealNumberFieldValidator):
+    def __init__(self):
         self.log_message = 'Invalid maximum pace field entered >>'
         self.error_message = _('Error with the maximum pace field.')
 
-class SportNameFiedValidator (NotEmptyFieldValidator):
-    def __init__ (self):
+class SportNameFiedValidator(NotEmptyFieldValidator):
+    def __init__(self):
         self.log_message = 'Invalid sport name field entered >>'
         self.error_message = _('The sport name field should not be empty.')
 
@@ -455,180 +455,180 @@ class WindowProfile(SimpleGladeApp):
         self.deletesport.hide()
         self.editsport.hide()   
 
-    def validate_group_of_fields (self, input_fields, button, label):
+    def validate_group_of_fields(self, input_fields, button, label):
         error_msg = ''
         all_good = True
         for entry in input_fields:
             validator = entry[1]()
             field = entry[0].get_text()
 
-            if not validator.validate_field (field):
-                error_msg = validator.get_error_message ()
+            if not validator.validate_field(field):
+                error_msg = validator.get_error_message()
                 all_good = False
 
-        button.set_sensitive (all_good)
+        button.set_sensitive(all_good)
         if error_msg == '':
             msg = ''
         else:
             msg = '<span weight="bold"' + " fgcolor='#ff0000'>" +\
                   str(error_msg) + '</span>'
-        label.set_markup (msg)
+        label.set_markup(msg)
 
-    def validate_profile_fields (self):
+    def validate_profile_fields(self):
         input_fields = [(self.prf_height,HeightFieldValidator), 
             (self.prf_weight, WeightFieldValidator),
             (self.prf_age, DateOfBirthFieldValidator),
             (self.prf_maxhr, MaxHeartRateFieldValidator ),
             (self.prf_minhr, RestHeartRateFieldValidator),]
 
-        self.validate_group_of_fields (input_fields, self.button3,
+        self.validate_group_of_fields(input_fields, self.button3,
                 self.label12)
 
 
-    def validate_field_and_log (self, validator, inputWidget):
+    def validate_field_and_log(self, validator, inputWidget):
         V = validator()
         field = inputWidget.get_text()
 
-        if not V.validate_field (field):
-            logging.warning (V.get_log_message() + field + '<<')
+        if not V.validate_field(field):
+            logging.warning(V.get_log_message() + field + '<<')
 
     def on_prf_height_focus_out_event(self, widget, data):
-        self.validate_field_and_log (HeightFieldValidator, self.prf_height)
-        self.validate_profile_fields ()
+        self.validate_field_and_log(HeightFieldValidator, self.prf_height)
+        self.validate_profile_fields()
 
-    def on_prf_weight_focus_out_event (self, widget, data):
-        self.validate_field_and_log (WeightFieldValidator, self.prf_weight)
-        self.validate_profile_fields ()
+    def on_prf_weight_focus_out_event(self, widget, data):
+        self.validate_field_and_log(WeightFieldValidator, self.prf_weight)
+        self.validate_profile_fields()
 
 
-    def on_prf_age_focus_out_event (self, widget, data):
-        self.validate_field_and_log (DateOfBirthFieldValidator, self.prf_age)
-        self.validate_profile_fields ()
+    def on_prf_age_focus_out_event(self, widget, data):
+        self.validate_field_and_log(DateOfBirthFieldValidator, self.prf_age)
+        self.validate_profile_fields()
 
-    def on_prf_maxhr_focus_out_event (self, widget, data):
-        self.validate_field_and_log (MaxHeartRateFieldValidator, self.prf_maxhr)
-        self.validate_profile_fields ()
+    def on_prf_maxhr_focus_out_event(self, widget, data):
+        self.validate_field_and_log(MaxHeartRateFieldValidator, self.prf_maxhr)
+        self.validate_profile_fields()
 
-    def on_prf_minhr_focus_out_event (self, widget, data):
-        self.validate_field_and_log (RestHeartRateFieldValidator,
+    def on_prf_minhr_focus_out_event(self, widget, data):
+        self.validate_field_and_log(RestHeartRateFieldValidator,
                 self.prf_minhr)
-        self.validate_profile_fields ()
+        self.validate_profile_fields()
 
-    def validate_add_sport_fields (self):
+    def validate_add_sport_fields(self):
         input_fields = [( self.newmetentry, METFieldValidator), 
             ( self.newweightentry, ExtraWeightFieldValidator),
             ( self.newmaxpace, MaximumPaceFieldValidator),
             ( self.newsportentry, SportNameFiedValidator),]
 
-        self.validate_group_of_fields (input_fields, self.button18,
+        self.validate_group_of_fields(input_fields, self.button18,
                 self.label_sport_error_message)
 
-    def validate_edit_sport_fields (self):
+    def validate_edit_sport_fields(self):
         input_fields = [( self.editmetentry, METFieldValidator), 
             ( self.editweightentry, ExtraWeightFieldValidator),
             ( self.editmaxpace, MaximumPaceFieldValidator),
             ( self.editsportentry, SportNameFiedValidator),]
 
-        self.validate_group_of_fields (input_fields, self.button22,
+        self.validate_group_of_fields(input_fields, self.button22,
                 self.label152)
 
 
-    def on_newmetentry_focus_out_event (self, widget, data):
-        self.validate_field_and_log (METFieldValidator,
+    def on_newmetentry_focus_out_event(self, widget, data):
+        self.validate_field_and_log(METFieldValidator,
                 self.newmetentry)
-        self.validate_add_sport_fields ()
+        self.validate_add_sport_fields()
 
 
-    def on_newmaxpace_focus_out_event (self, widget, data):
-        self.validate_field_and_log (MaximumPaceFieldValidator,
+    def on_newmaxpace_focus_out_event(self, widget, data):
+        self.validate_field_and_log(MaximumPaceFieldValidator,
                 self.newmaxpace)
-        self.validate_add_sport_fields ()
+        self.validate_add_sport_fields()
 
-    def on_newweightentry_focus_out_event (self, widget, data):
-        self.validate_field_and_log (ExtraWeightFieldValidator,
+    def on_newweightentry_focus_out_event(self, widget, data):
+        self.validate_field_and_log(ExtraWeightFieldValidator,
                 self.newweightentry)
-        self.validate_add_sport_fields ()
+        self.validate_add_sport_fields()
 
-    def on_newsportentry_focus_out_event (self, widget, data):
-        self.validate_field_and_log (SportNameFiedValidator,
+    def on_newsportentry_focus_out_event(self, widget, data):
+        self.validate_field_and_log(SportNameFiedValidator,
                 self.newsportentry)
-        self.validate_add_sport_fields ()
+        self.validate_add_sport_fields()
 
 
-    def on_editmetentry_focus_out_event (self, widget, data):
-        self.validate_field_and_log (METFieldValidator,
+    def on_editmetentry_focus_out_event(self, widget, data):
+        self.validate_field_and_log(METFieldValidator,
                 self.editmetentry)
-        self.validate_edit_sport_fields ()
+        self.validate_edit_sport_fields()
 
 
-    def on_editmaxpace_focus_out_event (self, widget, data):
-        self.validate_field_and_log (MaximumPaceFieldValidator,
+    def on_editmaxpace_focus_out_event(self, widget, data):
+        self.validate_field_and_log(MaximumPaceFieldValidator,
                 self.editmaxpace)
-        self.validate_edit_sport_fields ()
+        self.validate_edit_sport_fields()
 
-    def on_editweightentry_focus_out_event (self, widget, data):
-        self.validate_field_and_log (ExtraWeightFieldValidator,
+    def on_editweightentry_focus_out_event(self, widget, data):
+        self.validate_field_and_log(ExtraWeightFieldValidator,
                 self.editweightentry)
-        self.validate_edit_sport_fields ()
+        self.validate_edit_sport_fields()
 
-    def on_editsportentry_focus_out_event (self, widget, data):
-        self.validate_field_and_log (SportNameFiedValidator,
+    def on_editsportentry_focus_out_event(self, widget, data):
+        self.validate_field_and_log(SportNameFiedValidator,
                 self.editsportentry)
-        self.validate_edit_sport_fields ()
+        self.validate_edit_sport_fields()
 
-    def on_insert_text_positve_integer (self, entry, text, length, 
+    def on_insert_text_positve_integer(self, entry, text, length, 
             input_function):
         V = EntryInputFieldValidator();
-        V.validate_entry_input_positive_integer (entry, text, length,
+        V.validate_entry_input_positive_integer(entry, text, length,
                 input_function)
 
-    def on_insert_text_positive_real (self, entry, text, length,
+    def on_insert_text_positive_real(self, entry, text, length,
             input_function):
         V = EntryInputFieldValidator();
-        V.validate_entry_input_positive_real_number (entry, text, length,
+        V.validate_entry_input_positive_real_number(entry, text, length,
                 input_function)
 
-    def on_prf_height_insert_text (self, entry, text, length, position):
-        self.on_insert_text_positve_integer (entry, text, length, 
+    def on_prf_height_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positve_integer(entry, text, length, 
                 self.on_prf_height_insert_text)
 
-    def on_prf_weight_insert_text (self, entry, text, length, position):
-        self.on_insert_text_positve_integer (entry, text, length, 
+    def on_prf_weight_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positve_integer(entry, text, length, 
                 self.on_prf_weight_insert_text)
 
-    def on_prf_maxhr_insert_text (self, entry, text, length, position):
-        self.on_insert_text_positve_integer (entry, text, length, 
+    def on_prf_maxhr_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positve_integer(entry, text, length, 
                 self.on_prf_maxhr_insert_text)
 
-    def on_prf_minhr_insert_text (self, entry, text, length, position):
-        self.on_insert_text_positve_integer (entry, text, length, 
+    def on_prf_minhr_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positve_integer(entry, text, length, 
                 self.on_prf_minhr_insert_text)
 
-    def on_insert_text_date (self, entry, text, length, position):
+    def on_insert_text_date(self, entry, text, length, position):
         V = EntryInputFieldValidator();
-        V.validate_entry_input_date (entry, text, length,
+        V.validate_entry_input_date(entry, text, length,
                 self.on_insert_text_date) 
 
-    def on_newmetentry_insert_text (self, entry, text, length, position):
-        self.on_insert_text_positive_real (entry, text, length,
+    def on_newmetentry_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_real(entry, text, length,
                 self.on_newmetentry_insert_text)
 
-    def on_newmaxpace_insert_text (self, entry, text, length, position):
-        self.on_insert_text_positive_real (entry, text, length,
+    def on_newmaxpace_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_real(entry, text, length,
                 self.on_newmaxpace_insert_text)
 
-    def on_newweightentry_insert_text (self, entry, text, length, position):
-        self.on_insert_text_positive_real (entry, text, length,
+    def on_newweightentry_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_real(entry, text, length,
                 self.on_newweightentry_insert_text)
 
-    def on_editmetentry_insert_text (self, entry, text, length, position):
-        self.on_insert_text_positive_real (entry, text, length,
+    def on_editmetentry_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_real(entry, text, length,
                 self.on_editmetentry_insert_text)
 
-    def on_editmaxpace_insert_text (self, entry, text, length, position):
-        self.on_insert_text_positive_real (entry, text, length,
+    def on_editmaxpace_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_real(entry, text, length,
                 self.on_editmaxpace_insert_text)
 
-    def on_editweightentry_insert_text (self, entry, text, length, position):
-        self.on_insert_text_positive_real (entry, text, length,
+    def on_editweightentry_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_real(entry, text, length,
                 self.on_editweightentry_insert_text)
