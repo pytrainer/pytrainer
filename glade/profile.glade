@@ -790,6 +790,7 @@
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">●</property>
+                                    <signal name="focus_out_event" handler="on_newsportentry_focus_out_event" swapped="no"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>

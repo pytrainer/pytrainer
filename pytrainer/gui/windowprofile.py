@@ -76,6 +76,11 @@ class MaximumPaceFieldValidator (
         self.log_message = 'Invalid maximum pace field entered >>'
         self.error_message = _('Error with the maximum pace field.')
 
+class SportNameFiedValidator (fieldvalidator.NotEmptyFieldValidator):
+    def __init__ (self):
+        self.log_message = 'Invalid sport name field entered >>'
+        self.error_message = _('The sport name field should not be empty.')
+
 class WindowProfile(SimpleGladeApp):
     def __init__(self, sport_service, data_path = None, parent=None, pytrainer_main=None):
         glade_path="glade/profile.glade"

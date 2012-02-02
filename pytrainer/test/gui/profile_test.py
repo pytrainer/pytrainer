@@ -8,6 +8,7 @@ from pytrainer.gui.windowprofile import RestHeartRateFieldValidator
 from pytrainer.gui.windowprofile import METFieldValidator
 from pytrainer.gui.windowprofile import ExtraWeightFieldValidator
 from pytrainer.gui.windowprofile import MaximumPaceFieldValidator
+from pytrainer.gui.windowprofile import SportNameFiedValidator
 import gettext
 
 
@@ -27,7 +28,7 @@ import gettext
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-class FieldValidatorTest2 (TestCase):
+class FieldValidatorTest (TestCase):
 
     def setUp (self):
         """ These tests are meant to be executed for the source main directory.
@@ -111,3 +112,9 @@ class FieldValidatorTest2 (TestCase):
         V = MaximumPaceFieldValidator ()
         self.execute_single_field_validator (V, good_pace, wrong_pace)
 
+    def test_sport_name_field_validator (self):
+        good_name = ['name', '17']
+        wrong_name = ['', '   ']
+
+        V = SportNameFiedValidator ()
+        self.execute_single_field_validator (V, good_name, wrong_name)
