@@ -28,57 +28,57 @@ import logging
 import pytrainer
 import pytrainer.util.color
 from pytrainer.gui.color import ColorConverter
-from pytrainer.gui import fieldvalidator
+from pytrainer.gui.fieldvalidator import PositiveIntegerFieldValidator
+from pytrainer.gui.fieldvalidator import DateFieldValidator
+from pytrainer.gui.fieldvalidator import PositiveRealNumberFieldValidator
+from pytrainer.gui.fieldvalidator import NotEmptyFieldValidator
 from pytrainer.gui.fieldvalidator import EntryInputFieldValidator
 import datetime
 import string
 
 
 
-class HeightFieldValidator (fieldvalidator.PositiveIntegerFieldValidator):
+class HeightFieldValidator (PositiveIntegerFieldValidator):
     def __init__(self):
         self.log_message = 'Invalid height field entered >>'
         self.error_message = _('Error with the height field.')
 
-class WeightFieldValidator (fieldvalidator.PositiveIntegerFieldValidator):
+class WeightFieldValidator (PositiveIntegerFieldValidator):
     def __init__ (self):
         self.log_message = 'Invalid weight field entered >>'
         self.error_message = _('Error with the weight field.')
 
-class DateOfBirthFieldValidator (fieldvalidator.DateFieldValidator):
+class DateOfBirthFieldValidator (DateFieldValidator):
     def __init__ (self):
         self.log_message = 'Invalid date of birth field entered >>'
         self.error_message = _('Error with the date of birth field.')
 
-class MaxHeartRateFieldValidator (fieldvalidator.PositiveIntegerFieldValidator):
+class MaxHeartRateFieldValidator (PositiveIntegerFieldValidator):
     def __init__ (self):
         self.log_message = 'Invalid maximum heart rate field entered >>'
         self.error_message = _('Error with the maximum heart rate field.')
 
-class RestHeartRateFieldValidator (
-        fieldvalidator.PositiveIntegerFieldValidator):
+class RestHeartRateFieldValidator (PositiveIntegerFieldValidator):
     def __init__ (self):
         self.log_message = 'Invalid resting heart rate field entered >>'
         self.error_message = _('Error with the resting heart rate field.')
 
-class METFieldValidator (fieldvalidator.PositiveRealNumberFieldValidator):
+class METFieldValidator (PositiveRealNumberFieldValidator):
     def __init__ (self):
         self.log_message = 'Invalid M.E.T. field entered >>'
         self.error_message = _('Error with the M.E.T. field.')
 
-class ExtraWeightFieldValidator (
-        fieldvalidator.PositiveRealNumberFieldValidator):
+class ExtraWeightFieldValidator (PositiveRealNumberFieldValidator):
     def __init__ (self):
         self.log_message = 'Invalid extra weight field entered >>'
         self.error_message = _('Error with the extra weight field.')
 
-class MaximumPaceFieldValidator ( 
-        fieldvalidator.PositiveRealNumberFieldValidator):
+class MaximumPaceFieldValidator (PositiveRealNumberFieldValidator):
     def __init__ (self):
         self.log_message = 'Invalid maximum pace field entered >>'
         self.error_message = _('Error with the maximum pace field.')
 
-class SportNameFiedValidator (fieldvalidator.NotEmptyFieldValidator):
+class SportNameFiedValidator (NotEmptyFieldValidator):
     def __init__ (self):
         self.log_message = 'Invalid sport name field entered >>'
         self.error_message = _('The sport name field should not be empty.')
