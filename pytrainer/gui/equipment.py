@@ -138,8 +138,10 @@ class EquipmentUi(gtk.HBox):
             "delete_equipment_clicked": self._delete_equipment_clicked,
             "cancel_delete_equipment_clicked": self._cancel_delete_equipment_clicked,
             "confirm_delete_equipment_clicked": self._confirm_delete_equipment_clicked,
+            "on_entryEquipmentAddDescription_focus_out_event": self._on_entryEquipmentAddDescription_focus_out_event,
             "on_entryEquipmentAddLifeExpectancy_focus_out_event": self._on_entryEquipmentAddLifeExpectancy_focus_out_event,
             "on_entryEquipmentAddPriorUsage_focus_out_event": self._on_entryEquipmentAddPriorUsage_focus_out_event,
+            "on_entryEquipmentEditDescription_focus_out_event": self._on_entryEquipmentEditDescription_focus_out_event,
             "on_entryEquipmentEditLifeExpectancy_focus_out_event": self._on_entryEquipmentEditLifeExpectancy_focus_out_event,
             "on_entryEquipmentEditPriorUsage_focus_out_event": self._on_entryEquipmentEditPriorUsage_focus_out_event,
             })
@@ -157,6 +159,9 @@ class EquipmentUi(gtk.HBox):
         self._builder.get_object("entryEquipmentAddPriorUsage").set_text("0")
         self._builder.get_object("checkbuttonEquipmentAddActive").set_active(True)
         self._builder.get_object("textviewEquipmentAddNotes").get_buffer().set_text("")
+        # The ok button disabled because there's no description
+        self._builder.get_object("buttonEquipmentAddConfirm").set_sensitive(
+                False)
         
     def show_page_equipment_list(self):
         self._get_notebook().set_current_page(0)
@@ -262,7 +267,9 @@ class EquipmentUi(gtk.HBox):
                     "entryEquipmentAddLifeExpectancy"),
                 LifeExpentancyFieldValidator),
                 (self._builder.get_object("entryEquipmentAddPriorUsage"),
-                PriorUsageFieldValidator),]
+                PriorUsageFieldValidator),
+                (self._builder.get_object("entryEquipmentAddDescription"),
+                EquiptmentDescriptionFieldValidator),]
 
         self._validate_equipment_fields (input_fields, 
             self._builder.get_object("label_add_equipment_error_message"),
@@ -273,7 +280,9 @@ class EquipmentUi(gtk.HBox):
                     "entryEquipmentEditLifeExpectancy"),
                 LifeExpentancyFieldValidator),
                 (self._builder.get_object("entryEquipmentEditPriorUsage"),
-                PriorUsageFieldValidator),]
+                PriorUsageFieldValidator),
+                (self._builder.get_object("entryEquipmentEditDescription"),
+                EquiptmentDescriptionFieldValidator),]
 
         self._validate_equipment_fields (input_fields, 
             self._builder.get_object("label_edit_equipment_error_message"),
@@ -286,6 +295,12 @@ class EquipmentUi(gtk.HBox):
         if not V.validate_field (field):
             logging.warning (V.get_log_message() + field + '<<')
 
+    def _on_entryEquipmentAddDescription_focus_out_event (self, widget,
+        data):
+        self._validate_field_and_log (EquiptmentDescriptionFieldValidator, 
+                self._builder.get_object("entryEquipmentAddDescription"))
+        self._validate_add_equipment_fields ()
+
     def _on_entryEquipmentAddLifeExpectancy_focus_out_event (self, widget, 
             data):
         self._validate_field_and_log (LifeExpentancyFieldValidator, 
@@ -296,6 +311,12 @@ class EquipmentUi(gtk.HBox):
         self._validate_field_and_log (PriorUsageFieldValidator, 
                 self._builder.get_object("entryEquipmentAddPriorUsage"))
         self._validate_add_equipment_fields ()
+
+    def _on_entryEquipmentEditDescription_focus_out_event (self, widget,
+            data):
+        self._validate_field_and_log (EquiptmentDescriptionFieldValidator, 
+                self._builder.get_object("entryEquipmentAddDescription"))
+        self._validate_edit_equipment_fields ()
 
     def _on_entryEquipmentEditLifeExpectancy_focus_out_event (self, widget, 
             data):

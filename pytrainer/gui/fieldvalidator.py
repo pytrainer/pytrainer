@@ -69,7 +69,7 @@ class PositiveIntegerFieldValidator (FieldValidator):
             is_valid = True
         else:
             try:
-                a = float (field)
+                a = int (field)
                 if (a > 0):
                     is_valid = True
             except:
@@ -81,7 +81,7 @@ class PositiveOrZeroIntegerFieldValidator (FieldValidator):
         # Empty values are not allowed 
         is_valid = False
         try:
-            a = float (field)
+            a = int (field)
             if (a >= 0):
                 is_valid = True
         except:
