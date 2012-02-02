@@ -511,7 +511,7 @@ class WindowProfile(SimpleGladeApp):
                 self.prf_minhr)
         self.validate_profile_fields ()
 
-    def validate_sport_fields (self):
+    def validate_add_sport_fields (self):
         input_fields = [( self.newmetentry, METFieldValidator), 
             ( self.newweightentry, ExtraWeightFieldValidator),
             ( self.newmaxpace, MaximumPaceFieldValidator),
@@ -520,24 +520,55 @@ class WindowProfile(SimpleGladeApp):
         self.validate_group_of_fields (input_fields, self.button18,
                 self.label_sport_error_message)
 
+    def validate_edit_sport_fields (self):
+        input_fields = [( self.editmetentry, METFieldValidator), 
+            ( self.editweightentry, ExtraWeightFieldValidator),
+            ( self.editmaxpace, MaximumPaceFieldValidator),
+            ( self.editsportentry, SportNameFiedValidator),]
+
+        self.validate_group_of_fields (input_fields, self.button22,
+                self.label152)
+
 
     def on_newmetentry_focus_out_event (self, widget, data):
         self.validate_field_and_log (METFieldValidator,
                 self.newmetentry)
-        self.validate_sport_fields ()
+        self.validate_add_sport_fields ()
 
 
     def on_newmaxpace_focus_out_event (self, widget, data):
         self.validate_field_and_log (MaximumPaceFieldValidator,
                 self.newmaxpace)
-        self.validate_sport_fields ()
+        self.validate_add_sport_fields ()
 
     def on_newweightentry_focus_out_event (self, widget, data):
         self.validate_field_and_log (ExtraWeightFieldValidator,
                 self.newweightentry)
-        self.validate_sport_fields ()
+        self.validate_add_sport_fields ()
 
     def on_newsportentry_focus_out_event (self, widget, data):
         self.validate_field_and_log (SportNameFiedValidator,
                 self.newsportentry)
-        self.validate_sport_fields ()
+        self.validate_add_sport_fields ()
+
+
+    def on_editmetentry_focus_out_event (self, widget, data):
+        self.validate_field_and_log (METFieldValidator,
+                self.editmetentry)
+        self.validate_edit_sport_fields ()
+
+
+    def on_editmaxpace_focus_out_event (self, widget, data):
+        self.validate_field_and_log (MaximumPaceFieldValidator,
+                self.editmaxpace)
+        self.validate_edit_sport_fields ()
+
+    def on_editweightentry_focus_out_event (self, widget, data):
+        self.validate_field_and_log (ExtraWeightFieldValidator,
+                self.editweightentry)
+        self.validate_edit_sport_fields ()
+
+    def on_editsportentry_focus_out_event (self, widget, data):
+        self.validate_field_and_log (SportNameFiedValidator,
+                self.editsportentry)
+        self.validate_edit_sport_fields ()

@@ -1283,6 +1283,7 @@ Continue?</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">●</property>
+                                    <signal name="focus_out_event" handler="on_editsportentry_focus_out_event" swapped="no"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1309,6 +1310,7 @@ Continue?</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">●</property>
+                                    <signal name="focus_out_event" handler="on_editmetentry_focus_out_event" swapped="no"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1337,6 +1339,7 @@ Continue?</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">●</property>
+                                    <signal name="focus_out_event" handler="on_editweightentry_focus_out_event" swapped="no"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
@@ -1384,6 +1387,7 @@ Continue?</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="invisible_char">●</property>
+                                    <signal name="focus_out_event" handler="on_editmaxpace_focus_out_event" swapped="no"/>
                                   </widget>
                                   <packing>
                                     <property name="left_attach">1</property>
