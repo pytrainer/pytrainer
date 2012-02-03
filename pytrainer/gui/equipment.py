@@ -21,6 +21,7 @@ from pytrainer.core.equipment import Equipment
 from pytrainer.gui.fieldvalidator import PositiveOrZeroIntegerFieldValidator
 from pytrainer.gui.fieldvalidator import NotEmptyFieldValidator
 from pytrainer.gui.fieldvalidator import EntryInputFieldValidator
+from pytrainer.gui.fieldvalidator import EntryValidatorCouple
 import logging
 
 class LifeExpentancyFieldValidator(
@@ -35,8 +36,7 @@ class PriorUsageFieldValidator(
         self.log_message = 'Invalid prior usage field entered >>'
         self.error_message = _('Error with the prior usage field.')
 
-class EquiptmentDescriptionFieldValidator(
-        NotEmptyFieldValidator):
+class EquiptmentDescriptionFieldValidator(NotEmptyFieldValidator):
     def __init__(self):
         self.log_message = 'Invalid description field entered >>'
         self.error_message = _('The description field should not be empty.')
@@ -251,9 +251,9 @@ class EquipmentUi(gtk.HBox):
  
         error_msg = ''
         all_good = True
-        for entry in input_fields:
-            validator = entry[1]()
-            field = entry[0].get_text()
+        for couple in input_fields:
+            field = couple._get_entry().get_text()
+            validator = couple._get_validator()
 
             if not validator.validate_field(field):
                 error_msg = validator.get_error_message()
@@ -269,12 +269,15 @@ class EquipmentUi(gtk.HBox):
 
 
     def _validate_add_equipment_fields(self):
-        input_fields = [(self._builder.get_object( 
+        input_fields = [
+            EntryValidatorCouple(self._builder.get_object( 
                     "entryEquipmentAddLifeExpectancy"),
                 LifeExpentancyFieldValidator),
-                (self._builder.get_object("entryEquipmentAddPriorUsage"),
+            EntryValidatorCouple(self._builder.get_object(
+                        "entryEquipmentAddPriorUsage"),
                 PriorUsageFieldValidator),
-                (self._builder.get_object("entryEquipmentAddDescription"),
+            EntryValidatorCouple(self._builder.get_object(
+                        "entryEquipmentAddDescription"),
                 EquiptmentDescriptionFieldValidator),]
 
         self._validate_equipment_fields(input_fields, 
@@ -282,12 +285,15 @@ class EquipmentUi(gtk.HBox):
             self._builder.get_object( "buttonEquipmentAddConfirm"))
 
     def _validate_edit_equipment_fields(self):
-        input_fields = [(self._builder.get_object( 
+        input_fields = [
+            EntryValidatorCouple(self._builder.get_object( 
                     "entryEquipmentEditLifeExpectancy"),
                 LifeExpentancyFieldValidator),
-                (self._builder.get_object("entryEquipmentEditPriorUsage"),
+            EntryValidatorCouple(self._builder.get_object(
+                        "entryEquipmentEditPriorUsage"),
                 PriorUsageFieldValidator),
-                (self._builder.get_object("entryEquipmentEditDescription"),
+            EntryValidatorCouple(self._builder.get_object(
+                        "entryEquipmentEditDescription"),
                 EquiptmentDescriptionFieldValidator),]
 
         self._validate_equipment_fields(input_fields, 

@@ -33,6 +33,7 @@ from pytrainer.gui.fieldvalidator import DateFieldValidator
 from pytrainer.gui.fieldvalidator import PositiveRealNumberFieldValidator
 from pytrainer.gui.fieldvalidator import NotEmptyFieldValidator
 from pytrainer.gui.fieldvalidator import EntryInputFieldValidator
+from pytrainer.gui.fieldvalidator import EntryValidatorCouple
 import datetime
 import string
 
@@ -458,10 +459,9 @@ class WindowProfile(SimpleGladeApp):
     def validate_group_of_fields(self, input_fields, button, label):
         error_msg = ''
         all_good = True
-        for entry in input_fields:
-            validator = entry[1]()
-            field = entry[0].get_text()
-
+        for couple in input_fields:
+            field = couple._get_entry().get_text()
+            validator = couple._get_validator()
             if not validator.validate_field(field):
                 error_msg = validator.get_error_message()
                 all_good = False
@@ -475,11 +475,12 @@ class WindowProfile(SimpleGladeApp):
         label.set_markup(msg)
 
     def validate_profile_fields(self):
-        input_fields = [(self.prf_height,HeightFieldValidator), 
-            (self.prf_weight, WeightFieldValidator),
-            (self.prf_age, DateOfBirthFieldValidator),
-            (self.prf_maxhr, MaxHeartRateFieldValidator ),
-            (self.prf_minhr, RestHeartRateFieldValidator),]
+        input_fields = [
+            EntryValidatorCouple(self.prf_height,HeightFieldValidator), 
+            EntryValidatorCouple(self.prf_weight, WeightFieldValidator),
+            EntryValidatorCouple(self.prf_age, DateOfBirthFieldValidator),
+            EntryValidatorCouple(self.prf_maxhr, MaxHeartRateFieldValidator ),
+            EntryValidatorCouple(self.prf_minhr, RestHeartRateFieldValidator),]
 
         self.validate_group_of_fields(input_fields, self.button3,
                 self.label12)
@@ -515,19 +516,23 @@ class WindowProfile(SimpleGladeApp):
         self.validate_profile_fields()
 
     def validate_add_sport_fields(self):
-        input_fields = [( self.newmetentry, METFieldValidator), 
-            ( self.newweightentry, ExtraWeightFieldValidator),
-            ( self.newmaxpace, MaximumPaceFieldValidator),
-            ( self.newsportentry, SportNameFiedValidator),]
+        input_fields = [
+            EntryValidatorCouple(self.newmetentry, METFieldValidator), 
+            EntryValidatorCouple(self.newweightentry,
+                    ExtraWeightFieldValidator),
+            EntryValidatorCouple(self.newmaxpace, MaximumPaceFieldValidator),
+            EntryValidatorCouple(self.newsportentry, SportNameFiedValidator),]
 
         self.validate_group_of_fields(input_fields, self.button18,
                 self.label_sport_error_message)
 
     def validate_edit_sport_fields(self):
-        input_fields = [( self.editmetentry, METFieldValidator), 
-            ( self.editweightentry, ExtraWeightFieldValidator),
-            ( self.editmaxpace, MaximumPaceFieldValidator),
-            ( self.editsportentry, SportNameFiedValidator),]
+        input_fields = [
+            EntryValidatorCouple(self.editmetentry, METFieldValidator), 
+            EntryValidatorCouple(self.editweightentry,
+                    ExtraWeightFieldValidator),
+            EntryValidatorCouple(self.editmaxpace, MaximumPaceFieldValidator),
+            EntryValidatorCouple(self.editsportentry, SportNameFiedValidator),]
 
         self.validate_group_of_fields(input_fields, self.button22,
                 self.label152)
