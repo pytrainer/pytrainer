@@ -10,4 +10,18 @@
 >
 <conf-values variable="script" value=""/>
 <conf-values variable="arguments" value=""/>
+
+<conf-values variable="title" value="TRUE"/>
+<conf-values variable="sport" value="FALSE"/>
+<conf-values variable="date" value="FALSE"/>
+<conf-values variable="distance" value="TRUE"/>
+<conf-values variable="time" value="TRUE"/>
+<conf-values variable="pace" value="TRUE"/>
+<conf-values variable="speed" value="FALSE"/>
+<conf-values variable="beats" value="FALSE"/>
+<conf-values variable="comments" value="TRUE"/>
+<conf-values variable="calories" value="FALSE"/>
+<conf-values variable="maxspeed" value="FALSE"/>
+<conf-values variable="maxpace" value="FALSE"/>
+<conf-values variable="maxbeats" value="FALSE"/>
 </pytrainer-extension>

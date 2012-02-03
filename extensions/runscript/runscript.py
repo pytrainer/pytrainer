@@ -55,17 +55,36 @@ class runscript:
         options = self.options
         self.activity = activity
         self.loadRecordInfo()
-        if self.title is None or self.title == "":
-            self.title = "Untitled Activity"
 
-	comment = self.comments
-	if len(comment) > 120:
-	  comment.ljust(120)
+	arguments = ""
 
-	if len(self.title) > 0:
-	  arguments="%s: %s %s, %s h, %s %s %s" %(self.title,self.distance,self.distance_unit,self.time,self.pace,self.pace_unit,comment)
-	else:
-	  arguments="%s %s, %s h, %s %s %s" %(self.distance,self.distance_unit,self.time,self.pace,self.pace_unit,comment)
+	if options["title"] == "TRUE":
+	  arguments = arguments + "%s " %(self.title)
+	if options["sport"] == "TRUE":
+	  arguments = arguments + "%s " %(self.sport)
+	if options["date"] == "TRUE":
+	  arguments = arguments + "%s " %(self.date)
+	if options["distance"] == "TRUE":
+	  arguments = arguments + "%s %s " %(self.distance,self.distance_unit)
+	if options["time"] == "TRUE":
+	  arguments = arguments + "%s " %(self.time)
+	if options["pace"] == "TRUE":
+	  arguments = arguments + "%.2f %s " %(self.pace,self.pace_unit)
+	if options["speed"] == "TRUE":
+	  arguments = arguments + "%.2f %s " %(self.average, self.speed_unit)
+	if options["beats"] == "TRUE":
+	  arguments = arguments + "%s bpm " %(self.beats)
+	if options["comments"] == "TRUE":
+	  arguments = arguments + "%s " %(self.comments)
+	if options["calories"] == "TRUE":
+	  arguments = arguments + "%s kcal " %(self.calories)
+	if options["maxspeed"] == "TRUE":
+	  arguments = arguments + "%.2f %s " %(self.maxspeed,self.speed_unit)
+	if options["maxpace"] == "TRUE":
+	  arguments = arguments + "%.2f %s " %(self.maxpace,self.pace_unit)
+	if options["maxbeats"] == "TRUE":
+	  arguments = arguments + "%s bpm " %(self.maxbeats)
+
 	ret = call([options["script"],options["arguments"], arguments])
         md.destroy()
 	if ret == 0:
