@@ -55,6 +55,38 @@ from pytrainer.gui.windowcalendar import WindowCalendar
 from pytrainer.lib.listview import ListSearch
 from pytrainer.lib.uc import UC
 
+from pytrainer.gui.fieldvalidator import RealNumberFieldValidator
+
+class AxisFieldValidatorXMin (RealNumberFieldValidator):
+    def __init__(self):
+        self.log_message = 'Invalid X min label entered >>'
+        self.error_message = '' # No error message
+
+class AxisFieldValidatorXMax (RealNumberFieldValidator):
+    def __init__(self):
+        self.log_message = 'Invalid X max label entered >>'
+        self.error_message = '' # No error message
+
+class AxisFieldValidatorY1Min (RealNumberFieldValidator):
+    def __init__(self):
+        self.log_message = 'Invalid Y1 min label entered >>'
+        self.error_message = '' # No error message
+
+class AxisFieldValidatorY1Max (RealNumberFieldValidator):
+    def __init__(self):
+        self.log_message = 'Invalid Y1 max label entered >>'
+        self.error_message = '' # No error message
+
+class AxisFieldValidatorY2Min (RealNumberFieldValidator):
+    def __init__(self):
+        self.log_message = 'Invalid Y2 min label entered >>'
+        self.error_message = '' # No error message
+
+class AxisFieldValidatorY2Max (RealNumberFieldValidator):
+    def __init__(self):
+        self.log_message = 'Invalid Y2 max label entered >>'
+        self.error_message = '' # No error message
+
 
 class Main(SimpleGladeApp):
     def __init__(self, sport_service, data_path = None, parent = None, version = None, gpxDir = None):
@@ -640,6 +672,18 @@ class Main(SimpleGladeApp):
                 resetbutton.connect("clicked", self.on_setlimits, activity, True, None)
                 setbutton = gtk.Button(_('Set Limits'))
                 setbutton.connect("clicked", self.on_setlimits, activity, False, limits)
+                xminlabel.connect("focus_out_event", 
+                        self.on_xminlabel_focus_out_event, limits, setbutton)
+                xmaxlabel.connect("focus_out_event", 
+                        self.on_xmaxlabel_focus_out_event, limits, setbutton)
+                y1minlabel.connect("focus_out_event", 
+                        self.on_y1minlabel_focus_out_event, limits, setbutton)
+                y1maxlabel.connect("focus_out_event", 
+                        self.on_y1maxlabel_focus_out_event, limits, setbutton)
+                y2minlabel.connect("focus_out_event", 
+                        self.on_y2minlabel_focus_out_event, limits, setbutton)
+                y2maxlabel.connect("focus_out_event", 
+                        self.on_y2maxlabel_focus_out_event, limits, setbutton)
                 #Add labels etc to table
                 limitsbox.attach(minlabel, 1, 2, 0, 1, yoptions=gtk.SHRINK)
                 limitsbox.attach(maxlabel, 2, 3, 0, 1, yoptions=gtk.SHRINK)
@@ -2349,3 +2393,46 @@ class Main(SimpleGladeApp):
     def on_hrplotbutton_clicked(self,widget):
         self.heartrate_vbox.show()
         self.heartrate_vbox2.hide()
+
+    def validate_field_and_log(self, validator, entry):
+        V = validator()
+        field = entry.get_text()
+        
+        if not V.validate_field(field):
+            logging.warning(V.get_log_message() + field + '<<')
+
+    def validate_limit_fields(self, limits, button):
+        # All the fields use the same format
+        V = RealNumberFieldValidator ()
+        all_good = True
+        for l in limits:
+            field = limits[l].get_text()
+            if not V.validate_field(field):
+                all_good = False
+                break
+        button.set_sensitive(all_good)
+
+    def on_xminlabel_focus_out_event(self, widget, data, limits, button):
+        self.validate_field_and_log(AxisFieldValidatorXMin, widget)
+        self.validate_limit_fields(limits, button)
+
+    def on_xmaxlabel_focus_out_event(self, widget, data, limits, button):
+        self.validate_field_and_log(AxisFieldValidatorXMax, widget)
+        self.validate_limit_fields(limits, button)
+
+    def on_y1minlabel_focus_out_event(self, widget, data, limits, button):
+        self.validate_field_and_log(AxisFieldValidatorY1Min, widget)
+        self.validate_limit_fields(limits, button)
+
+    def on_y1maxlabel_focus_out_event(self, widget, data, limits, button):
+        self.validate_field_and_log(AxisFieldValidatorY1Max, widget)
+        self.validate_limit_fields(limits, button)
+
+    def on_y2minlabel_focus_out_event(self, widget, data, limits, button):
+        self.validate_field_and_log(AxisFieldValidatorY2Min, widget)
+        self.validate_limit_fields(limits, button)
+
+    def on_y2maxlabel_focus_out_event(self, widget, data, limits, button):
+        self.validate_field_and_log(AxisFieldValidatorY2Max, widget)
+        self.validate_limit_fields(limits, button)
+

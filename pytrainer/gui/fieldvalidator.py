@@ -54,11 +54,15 @@ class FieldValidator(object):
 class RealNumberFieldValidator(FieldValidator):
     def validate_field(self, field):
         is_valid = False
-        try:
-            a = float(field.strip())
+        field_aux = field.strip()
+        if field_aux == '':
             is_valid = True
-        except:
-            pass
+        else:
+            try:
+                a = float(field.strip())
+                is_valid = True
+            except:
+                pass
         return is_valid
 
 class PositiveRealNumberFieldValidator(FieldValidator):

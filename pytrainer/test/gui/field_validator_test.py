@@ -93,8 +93,8 @@ class FieldValidatorTest(TestCase):
         self.execute_validations(V, good_fields, wrong_fields)
 
     def test_real_number_validator(self):
-        good_real_number_fields = ['0.0', '5.1', '-1.1','-5.1']
-        wrong_real_number_fields = [ '5.1a', 'a5.1', '', ]
+        good_real_number_fields = ['0.0', '5.1', '-1.1','-5.1', '']
+        wrong_real_number_fields = [ '5.1a', 'a5.1', ]
         V = RealNumberFieldValidator()
         self.execute_validations(V, good_real_number_fields,
                 wrong_real_number_fields)
