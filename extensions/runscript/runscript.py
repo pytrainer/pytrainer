@@ -30,6 +30,7 @@
 import os
 import sys
 import gtk
+import string
 from pytrainer.lib.date import Date
 from subprocess import call
 
@@ -56,36 +57,22 @@ class runscript:
         self.activity = activity
         self.loadRecordInfo()
 
-	arguments = ""
+	inputstring = options["string"]
+	inputstring = string.replace(inputstring,"%t",self.title)
+	inputstring = string.replace(inputstring,"%s",self.sport)
+	inputstring = string.replace(inputstring,"%D",self.date)
+	inputstring = string.replace(inputstring,"%T",self.time)
+	inputstring = string.replace(inputstring,"%d","%s %s" %(self.distance,self.distance_unit))
+	inputstring = string.replace(inputstring,"%p","%.2f %s" %(self.pace,self.pace_unit))
+	inputstring = string.replace(inputstring,"%S","%.2f %s" %(self.average,self.speed_unit))
+	inputstring = string.replace(inputstring,"%b","%s" % self.beats)
+	inputstring = string.replace(inputstring,"%c",self.comments)
+	inputstring = string.replace(inputstring,"%C","%s" % self.calories)
+	inputstring = string.replace(inputstring,"%mS","%.2f %s" %(self.maxspeed,self.speed_unit))
+	inputstring = string.replace(inputstring,"%mp","%.2f %s" %(self.maxpace,self.pace_unit))
+	inputstring = string.replace(inputstring,"%mb","%s" %self.maxbeats)
 
-	if options["title"] == "TRUE":
-	  arguments = arguments + "%s " %(self.title)
-	if options["sport"] == "TRUE":
-	  arguments = arguments + "%s " %(self.sport)
-	if options["date"] == "TRUE":
-	  arguments = arguments + "%s " %(self.date)
-	if options["distance"] == "TRUE":
-	  arguments = arguments + "%s %s " %(self.distance,self.distance_unit)
-	if options["time"] == "TRUE":
-	  arguments = arguments + "%s " %(self.time)
-	if options["pace"] == "TRUE":
-	  arguments = arguments + "%.2f %s " %(self.pace,self.pace_unit)
-	if options["speed"] == "TRUE":
-	  arguments = arguments + "%.2f %s " %(self.average, self.speed_unit)
-	if options["beats"] == "TRUE":
-	  arguments = arguments + "%s bpm " %(self.beats)
-	if options["comments"] == "TRUE":
-	  arguments = arguments + "%s " %(self.comments)
-	if options["calories"] == "TRUE":
-	  arguments = arguments + "%s kcal " %(self.calories)
-	if options["maxspeed"] == "TRUE":
-	  arguments = arguments + "%.2f %s " %(self.maxspeed,self.speed_unit)
-	if options["maxpace"] == "TRUE":
-	  arguments = arguments + "%.2f %s " %(self.maxpace,self.pace_unit)
-	if options["maxbeats"] == "TRUE":
-	  arguments = arguments + "%s bpm " %(self.maxbeats)
-
-	ret = call([options["script"],options["arguments"], arguments])
+	ret = call([options["script"],options["arguments"], inputstring])
         md.destroy()
 	if ret == 0:
 	  res_msg="OK"
