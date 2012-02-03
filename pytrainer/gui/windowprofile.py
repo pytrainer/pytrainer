@@ -583,13 +583,13 @@ class WindowProfile(SimpleGladeApp):
 
     def on_insert_text_positve_integer(self, entry, text, length, 
             input_function):
-        V = EntryInputFieldValidator();
+        V = EntryInputFieldValidator()
         V.validate_entry_input_positive_integer(entry, text, length,
                 input_function)
 
     def on_insert_text_positive_real(self, entry, text, length,
             input_function):
-        V = EntryInputFieldValidator();
+        V = EntryInputFieldValidator()
         V.validate_entry_input_positive_real_number(entry, text, length,
                 input_function)
 

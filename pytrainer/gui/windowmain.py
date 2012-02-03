@@ -56,6 +56,7 @@ from pytrainer.lib.listview import ListSearch
 from pytrainer.lib.uc import UC
 
 from pytrainer.gui.fieldvalidator import RealNumberFieldValidator
+from pytrainer.gui.fieldvalidator import EntryInputFieldValidator
 
 class AxisFieldValidatorXMin (RealNumberFieldValidator):
     def __init__(self):
@@ -674,16 +675,27 @@ class Main(SimpleGladeApp):
                 setbutton.connect("clicked", self.on_setlimits, activity, False, limits)
                 xminlabel.connect("focus_out_event", 
                         self.on_xminlabel_focus_out_event, limits, setbutton)
+                xminlabel.connect("insert_text", self.on_xminlabel_insert_text)
                 xmaxlabel.connect("focus_out_event", 
                         self.on_xmaxlabel_focus_out_event, limits, setbutton)
+                xmaxlabel.connect("insert_text", self.on_xmaxlabel_insert_text)
                 y1minlabel.connect("focus_out_event", 
                         self.on_y1minlabel_focus_out_event, limits, setbutton)
+                y1minlabel.connect("insert_text", 
+                        self.on_y1minlabel_insert_text)
                 y1maxlabel.connect("focus_out_event", 
                         self.on_y1maxlabel_focus_out_event, limits, setbutton)
+                y1maxlabel.connect("insert_text", 
+                        self.on_y1maxlabel_insert_text)
                 y2minlabel.connect("focus_out_event", 
                         self.on_y2minlabel_focus_out_event, limits, setbutton)
+                y2minlabel.connect("insert_text", 
+                        self.on_y2minlabel_insert_text)
                 y2maxlabel.connect("focus_out_event", 
                         self.on_y2maxlabel_focus_out_event, limits, setbutton)
+                y2maxlabel.connect("insert_text", 
+                        self.on_y2maxlabel_insert_text)
+
                 #Add labels etc to table
                 limitsbox.attach(minlabel, 1, 2, 0, 1, yoptions=gtk.SHRINK)
                 limitsbox.attach(maxlabel, 2, 3, 0, 1, yoptions=gtk.SHRINK)
@@ -2436,3 +2448,30 @@ class Main(SimpleGladeApp):
         self.validate_field_and_log(AxisFieldValidatorY2Max, widget)
         self.validate_limit_fields(limits, button)
 
+    def on_insert_text_real(self, entry, text, length, input_function):
+        V = EntryInputFieldValidator()
+        V.validate_entry_input_real_number(entry, text, length, input_function)
+
+    def on_xminlabel_insert_text(self, entry, text, length, position):
+        self.on_insert_text_real(entry, text, length, 
+                self.on_xminlabel_insert_text)
+
+    def on_xmaxlabel_insert_text(self, entry, text, length, position):
+        self.on_insert_text_real(entry, text, length, 
+                self.on_xmaxlabel_insert_text)
+
+    def on_y1minlabel_insert_text(self, entry, text, length, position):
+        self.on_insert_text_real(entry, text, length, 
+                self.on_y1minlabel_insert_text)
+
+    def on_y1maxlabel_insert_text(self, entry, text, length, position):
+        self.on_insert_text_real(entry, text, length, 
+                self.on_y1maxlabel_insert_text)
+
+    def on_y2minlabel_insert_text(self, entry, text, length, position):
+        self.on_insert_text_real(entry, text, length, 
+                self.on_y2minlabel_insert_text)
+
+    def on_y2maxlabel_insert_text(self, entry, text, length, position):
+        self.on_insert_text_real(entry, text, length, 
+                self.on_y2maxlabel_insert_text)

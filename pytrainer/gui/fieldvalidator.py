@@ -172,6 +172,12 @@ class EntryInputFieldValidator(object):
         self.filter_entry_input( entry, text, length, insert_function,
                 allowed_chars)
 
+    def validate_entry_input_real_number(self, entry, text, length,
+            insert_function):
+        allowed_chars = string.digits + '.-'
+        self.filter_entry_input( entry, text, length, insert_function,
+                allowed_chars)
+
 class EntryValidatorCouple(object):
     """ This class relates an entry object with a validator. 
         It's used in the profiles forms to validate the entries.
