@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<pytrainer-extension 
+	name="Runscript Export" 
+	description="Feed the workout to a script"
+	extensionbutton="Run Script" 
+	extensioncode="runscript"
+	type="record" 
+	helpfile="README.txt"
+	executable="runscript"
+>
+<conf-values variable="script" value=""/>
+<conf-values variable="arguments" value=""/>
+</pytrainer-extension>
