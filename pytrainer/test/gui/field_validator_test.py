@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 from unittest import  TestCase
-from pytrainer.gui import fieldvalidator 
+from pytrainer.gui.fieldvalidator import PositiveIntegerFieldValidator 
+from pytrainer.gui.fieldvalidator import PositiveOrZeroIntegerFieldValidator 
+from pytrainer.gui.fieldvalidator import PositiveRealNumberFieldValidator 
+from pytrainer.gui.fieldvalidator import NotEmptyFieldValidator 
+from pytrainer.gui.fieldvalidator import RealNumberFieldValidator 
+from pytrainer.gui.fieldvalidator import DateFieldValidator 
 
 
 #Copyright (C) Rodolfo Gonzalez rgonzalez72@yahoo.com
@@ -36,20 +41,20 @@ class FieldValidatorTest(TestCase):
         good_real_number_fields = ['0.0', '5.1', '']
         wrong_real_number_fields = [ '5.1a', 'a5.1', '-1.1', '-5.1',  ]
 
-        V = fieldvalidator.PositiveRealNumberFieldValidator()
+        V = PositiveRealNumberFieldValidator()
         self.execute_validations(V, good_real_number_fields,
                 wrong_real_number_fields)
 
     def test_positive_integer_field_validator(self):
         good_integer_fields = ['1', '22', '']
         wrong_integer_fields = ['45a', 'a45', '0', '-1', '-45', '1.3',]
-        V = fieldvalidator.PositiveIntegerFieldValidator()
+        V = PositiveIntegerFieldValidator()
         self.execute_validations(V, good_integer_fields, wrong_integer_fields)
 
     def test_positive_or_zero_integer_field_validator(self):
         good_integer_fields = ['1', '22', '0' ]
         wrong_integer_fields = ['45a', 'a45', '-1', '-45', '', ' ', '1.3']
-        V = fieldvalidator.PositiveOrZeroIntegerFieldValidator()
+        V = PositiveOrZeroIntegerFieldValidator()
         self.execute_validations(V, good_integer_fields, wrong_integer_fields)
 
     def test_date_field_validator(self):
@@ -78,11 +83,18 @@ class FieldValidatorTest(TestCase):
             '1973-02-29',
         ]
 
-        V = fieldvalidator.DateFieldValidator()
+        V = DateFieldValidator()
         self.execute_validations(V, good_date_fields, wrong_date_fields)
 
     def test_not_empty_field_validator(self):
         good_fields = ['name', '17']
         wrong_fields = ['', '  ']
-        V = fieldvalidator.NotEmptyFieldValidator()
+        V = NotEmptyFieldValidator()
         self.execute_validations(V, good_fields, wrong_fields)
+
+    def test_real_number_validator(self):
+        good_real_number_fields = ['0.0', '5.1', '-1.1','-5.1']
+        wrong_real_number_fields = [ '5.1a', 'a5.1', '', ]
+        V = RealNumberFieldValidator()
+        self.execute_validations(V, good_real_number_fields,
+                wrong_real_number_fields)
