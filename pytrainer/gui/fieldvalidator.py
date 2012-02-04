@@ -142,6 +142,24 @@ class TimeFieldValidator(FieldValidator):
 
         return is_valid
 
+class PaceFieldValidator(FieldValidator):
+    def validate_field(self, field):
+        is_valid = False
+        if field == '':
+            is_valid = True
+        else:
+            try:
+                minute,sec = field.split(':')
+                minute = int(minute)
+                sec = int(sec)
+                if (minute >=0) and (sec >=0) and (sec <= 59):
+                    is_valid = True
+
+            except:
+                pass
+
+        return is_valid
+
 class NotEmptyFieldValidator(FieldValidator):
     def validate_field(self, field):
         return len(field.strip()) > 0

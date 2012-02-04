@@ -7,6 +7,7 @@ from pytrainer.gui.fieldvalidator import NotEmptyFieldValidator
 from pytrainer.gui.fieldvalidator import RealNumberFieldValidator 
 from pytrainer.gui.fieldvalidator import DateFieldValidator 
 from pytrainer.gui.fieldvalidator import TimeFieldValidator 
+from pytrainer.gui.fieldvalidator import PaceFieldValidator 
 from pytrainer.gui.fieldvalidator import MaxHeartRateFieldValidator
 from pytrainer.gui.fieldvalidator import RestHeartRateFieldValidator
 from pytrainer.gui.fieldvalidator import WeightFieldValidator
@@ -116,6 +117,14 @@ class FieldValidatorTest(TestCase):
 
         V = TimeFieldValidator()
         self.execute_validations(V, good_time_fields, wrong_time_fields)
+
+    def test_pace_field_validator(self):
+        good_pace_fields =['08:35', '8:35', '08:0', '']
+        wrong_pace_fields = ['aaaa', '00:00:00', '-2:00', '08:-1',
+            '08:60', '08:67' ]
+
+        V = PaceFieldValidator()
+        self.execute_validations(V, good_pace_fields, wrong_pace_fields)
 
     def test_not_empty_field_validator(self):
         good_fields = ['name', '17']

@@ -31,6 +31,18 @@ from pytrainer.plugins import Plugins
 from pytrainer.gui.dialogs import fileChooserDialog
 from pytrainer.lib.date import Date
 
+from pytrainer.gui.fieldvalidator import PositiveRealNumberFieldValidator
+
+class MaxSpeedFieldValidator(PositiveRealNumberFieldValidator):
+    def __init__(self):
+        self.log_message = 'Invalid maximum speed field entered >>'
+        self.error_message = _('Error with the maximum speed field.')
+
+class AverageSpeedFieldValidator(PositiveRealNumberFieldValidator):
+    def __init__(self):
+        self.log_message = 'Invalid average speed field entered >>'
+        self.error_message = _('Error with the average speed field.')
+
 class WindowImportdata(SimpleGladeApp):
     def __init__(self, sport_service, data_path = None, parent=None, config=None, pytrainer_main=None):
         self._sport_service = sport_service
