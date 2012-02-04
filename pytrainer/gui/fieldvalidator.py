@@ -128,6 +128,20 @@ class NotEmptyFieldValidator(FieldValidator):
     def validate_field(self, field):
         return len(field.strip()) > 0
 
+class WeightFieldValidator(PositiveIntegerFieldValidator):
+    def __init__(self):
+        self.log_message = 'Invalid weight field entered >>'
+        self.error_message = _('Error with the weight field.')
+
+class MaxHeartRateFieldValidator(PositiveIntegerFieldValidator):
+    def __init__(self):
+        self.log_message = 'Invalid maximum heart rate field entered >>'
+        self.error_message = _('Error with the maximum heart rate field.')
+
+class RestHeartRateFieldValidator(PositiveIntegerFieldValidator):
+    def __init__(self):
+        self.log_message = 'Invalid resting heart rate field entered >>'
+        self.error_message = _('Error with the resting heart rate field.')
 
 class EntryInputFieldValidator(object):
     """A class to check the allowed characters on an entry form.

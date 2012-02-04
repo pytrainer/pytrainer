@@ -6,6 +6,10 @@ from pytrainer.gui.fieldvalidator import PositiveRealNumberFieldValidator
 from pytrainer.gui.fieldvalidator import NotEmptyFieldValidator 
 from pytrainer.gui.fieldvalidator import RealNumberFieldValidator 
 from pytrainer.gui.fieldvalidator import DateFieldValidator 
+from pytrainer.gui.fieldvalidator import MaxHeartRateFieldValidator
+from pytrainer.gui.fieldvalidator import RestHeartRateFieldValidator
+from pytrainer.gui.fieldvalidator import WeightFieldValidator
+import gettext
 
 
 #Copyright (C) Rodolfo Gonzalez rgonzalez72@yahoo.com
@@ -98,3 +102,52 @@ class FieldValidatorTest(TestCase):
         V = RealNumberFieldValidator()
         self.execute_validations(V, good_real_number_fields,
                 wrong_real_number_fields)
+
+class SpecificFieldValidatorTests(TestCase):
+       
+    def setUp(self):
+        """ These tests are meant to be executed for the source main directory.
+            Need to initialize the locale to deal with FieldValidator
+            translated error messages. """
+        gettext_path =  "./locale"
+
+        gettext.install("pytrainer", gettext_path, unicode=1)
+
+
+    def tearDown(self):
+        pass
+
+    def execute_single_field_validator(self, validator, good_fields,
+            wrong_fields):
+        for field in good_fields:
+            self.assertTrue(validator.validate_field(field))
+        for field in wrong_fields:
+            self.assertFalse(validator.validate_field(field))
+
+        # Make sure the function is available
+        # How do I check the message is right?
+        msgErr = validator.get_error_message()
+        msgLog = validator.get_log_message()
+
+ 
+    def test_weight_field_validator(self):
+        good_weight = ['50', '']
+        wrong_weight = [ '50a', 'a80', '0', '-1', '-80']
+
+        V = WeightFieldValidator()
+        self.execute_single_field_validator(V, good_weight, wrong_weight)
+        
+    def test_max_heart_rate_field_validator(self):
+        good_rate = ['191', '']
+        wrong_rate = [ '191a', 'a191', '0', '-1', '-191']
+
+        V = MaxHeartRateFieldValidator()
+        self.execute_single_field_validator(V, good_rate, wrong_rate)
+
+    def test_rest_heart_rate_field_validator(self):
+        good_rate = ['45', '']
+        wrong_rate = [ '45a', 'a45', '0', '-1', '-45']
+
+        V = RestHeartRateFieldValidator()
+        self.execute_single_field_validator(V, good_rate, wrong_rate)
+

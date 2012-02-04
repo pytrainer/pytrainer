@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 from unittest import  TestCase
 from pytrainer.gui.windowprofile import HeightFieldValidator
-from pytrainer.gui.windowprofile import WeightFieldValidator
 from pytrainer.gui.windowprofile import DateOfBirthFieldValidator
-from pytrainer.gui.windowprofile import MaxHeartRateFieldValidator
-from pytrainer.gui.windowprofile import RestHeartRateFieldValidator
 from pytrainer.gui.windowprofile import METFieldValidator
 from pytrainer.gui.windowprofile import ExtraWeightFieldValidator
 from pytrainer.gui.windowprofile import MaximumPaceFieldValidator
@@ -63,33 +60,12 @@ class FieldValidatorTest(TestCase):
         self.execute_single_field_validator(V, good_height, wrong_height)
 
 
-    def test_wight_field_validator(self):
-        good_weight = ['50', '']
-        wrong_weight = [ '50a', 'a80', '0', '-1', '-80']
-
-        V = WeightFieldValidator()
-        self.execute_single_field_validator(V, good_weight, wrong_weight)
-
     def test_date_of_birth_field_validator(self):
         good_date = ['1972-12-30','']
         wrong_date = [ 'aaaaaa']
 
         V =  DateOfBirthFieldValidator()
         self.execute_single_field_validator(V, good_date, wrong_date)
-        
-    def test_max_heart_rate_field_validator(self):
-        good_rate = ['191', '']
-        wrong_rate = [ '191a', 'a191', '0', '-1', '-191']
-
-        V = MaxHeartRateFieldValidator()
-        self.execute_single_field_validator(V, good_rate, wrong_rate)
-
-    def test_rest_heart_rate_field_validator(self):
-        good_rate = ['45', '']
-        wrong_rate = [ '45a', 'a45', '0', '-1', '-45']
-
-        V = RestHeartRateFieldValidator()
-        self.execute_single_field_validator(V, good_rate, wrong_rate)
 
     def test_MET_field_validator(self):
         good_MET = ['45', '44.4', '0.0', '']

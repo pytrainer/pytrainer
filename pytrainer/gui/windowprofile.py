@@ -32,37 +32,23 @@ from pytrainer.gui.fieldvalidator import PositiveIntegerFieldValidator
 from pytrainer.gui.fieldvalidator import DateFieldValidator
 from pytrainer.gui.fieldvalidator import PositiveRealNumberFieldValidator
 from pytrainer.gui.fieldvalidator import NotEmptyFieldValidator
+from pytrainer.gui.fieldvalidator import WeightFieldValidator
+from pytrainer.gui.fieldvalidator import MaxHeartRateFieldValidator
+from pytrainer.gui.fieldvalidator import RestHeartRateFieldValidator
 from pytrainer.gui.fieldvalidator import EntryInputFieldValidator
 from pytrainer.gui.fieldvalidator import EntryValidatorCouple
 import datetime
 import string
-
-
 
 class HeightFieldValidator(PositiveIntegerFieldValidator):
     def __init__(self):
         self.log_message = 'Invalid height field entered >>'
         self.error_message = _('Error with the height field.')
 
-class WeightFieldValidator(PositiveIntegerFieldValidator):
-    def __init__(self):
-        self.log_message = 'Invalid weight field entered >>'
-        self.error_message = _('Error with the weight field.')
-
 class DateOfBirthFieldValidator(DateFieldValidator):
     def __init__(self):
         self.log_message = 'Invalid date of birth field entered >>'
         self.error_message = _('Error with the date of birth field.')
-
-class MaxHeartRateFieldValidator(PositiveIntegerFieldValidator):
-    def __init__(self):
-        self.log_message = 'Invalid maximum heart rate field entered >>'
-        self.error_message = _('Error with the maximum heart rate field.')
-
-class RestHeartRateFieldValidator(PositiveIntegerFieldValidator):
-    def __init__(self):
-        self.log_message = 'Invalid resting heart rate field entered >>'
-        self.error_message = _('Error with the resting heart rate field.')
 
 class METFieldValidator(PositiveRealNumberFieldValidator):
     def __init__(self):
