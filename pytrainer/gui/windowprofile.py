@@ -42,26 +42,31 @@ import string
 
 class HeightFieldValidator(PositiveIntegerFieldValidator):
     def __init__(self):
+        PositiveIntegerFieldValidator.__init__(self)
         self.log_message = 'Invalid height field entered >>'
         self.error_message = _('Error with the height field.')
 
 class DateOfBirthFieldValidator(DateFieldValidator):
     def __init__(self):
+        DateFieldValidator.__init__(self)
         self.log_message = 'Invalid date of birth field entered >>'
         self.error_message = _('Error with the date of birth field.')
 
 class METFieldValidator(PositiveRealNumberFieldValidator):
     def __init__(self):
+        PositiveRealNumberFieldValidator.__init__(self)
         self.log_message = 'Invalid M.E.T. field entered >>'
         self.error_message = _('Error with the M.E.T. field.')
 
 class ExtraWeightFieldValidator(PositiveRealNumberFieldValidator):
     def __init__(self):
+        PositiveRealNumberFieldValidator.__init__(self)
         self.log_message = 'Invalid extra weight field entered >>'
         self.error_message = _('Error with the extra weight field.')
 
 class MaximumPaceFieldValidator(PositiveRealNumberFieldValidator):
     def __init__(self):
+        PositiveRealNumberFieldValidator.__init__(self)
         self.log_message = 'Invalid maximum pace field entered >>'
         self.error_message = _('Error with the maximum pace field.')
 
@@ -584,7 +589,7 @@ class WindowProfile(SimpleGladeApp):
                 self.on_prf_height_insert_text)
 
     def on_prf_weight_insert_text(self, entry, text, length, position):
-        self.on_insert_text_positve_integer(entry, text, length, 
+        self.on_insert_text_positive_real(entry, text, length, 
                 self.on_prf_weight_insert_text)
 
     def on_prf_maxhr_insert_text(self, entry, text, length, position):

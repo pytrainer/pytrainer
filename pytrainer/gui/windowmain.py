@@ -66,36 +66,43 @@ from pytrainer.gui.fieldvalidator import EntryInputFieldValidator
 
 class AxisFieldValidatorXMin(RealNumberFieldValidator):
     def __init__(self):
+        RealNumberFieldValidator.__init__(self)
         self.log_message = 'Invalid X min label entered >>'
         self.error_message = '' # No error message
 
 class AxisFieldValidatorXMax(RealNumberFieldValidator):
     def __init__(self):
+        RealNumberFieldValidator.__init__(self)
         self.log_message = 'Invalid X max label entered >>'
         self.error_message = '' # No error message
 
 class AxisFieldValidatorY1Min(RealNumberFieldValidator):
     def __init__(self):
+        RealNumberFieldValidator.__init__(self)
         self.log_message = 'Invalid Y1 min label entered >>'
         self.error_message = '' # No error message
 
 class AxisFieldValidatorY1Max(RealNumberFieldValidator):
     def __init__(self):
+        RealNumberFieldValidator.__init__(self)
         self.log_message = 'Invalid Y1 max label entered >>'
         self.error_message = '' # No error message
 
 class AxisFieldValidatorY2Min(RealNumberFieldValidator):
     def __init__(self):
+        RealNumberFieldValidator.__init__(self)
         self.log_message = 'Invalid Y2 min label entered >>'
         self.error_message = '' # No error message
 
 class AxisFieldValidatorY2Max(RealNumberFieldValidator):
     def __init__(self):
+        RealNumberFieldValidator.__init__(self)
         self.log_message = 'Invalid Y2 max label entered >>'
         self.error_message = '' # No error message
 
 class BodyFatFieldValidator(PositiveRealNumberFieldValidator):
     def __init__(self):
+        PositiveRealNumberFieldValidator.__init__(self)
         self.log_message = 'Invalid body fat percentage entered >>'
         self.error_message = _('Error in the body fat percentage field.')
 

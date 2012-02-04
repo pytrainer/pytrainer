@@ -23,6 +23,9 @@ import gobject
 
 
 class FieldValidator(object):
+    def __init__(self):
+        self.allow_empty_field = True
+
     """ This is an "abstract" function definition for the method that validates
         an input field in the form.
         The field parameter is a string with the contents of the typed field.
@@ -33,6 +36,9 @@ class FieldValidator(object):
     def validate_field(self, field):
         raise NotImplementedError("Should have implemented validate_field " +
                 "the derived classes.")
+
+    def set_allow_empty_field(self, allow):
+        self.allow_empty_field = allow
 
     def get_log_message(self):
         """ Another "abstract" function definition to provide the log
@@ -55,7 +61,7 @@ class RealNumberFieldValidator(FieldValidator):
     def validate_field(self, field):
         is_valid = False
         field_aux = field.strip()
-        if field_aux == '':
+        if self.allow_empty_field and (field_aux == ''):
             is_valid = True
         else:
             try:
@@ -66,9 +72,11 @@ class RealNumberFieldValidator(FieldValidator):
         return is_valid
 
 class PositiveRealNumberFieldValidator(FieldValidator):
+    def __init__(self):
+        FieldValidator.__init__(self)
     def validate_field(self, field):
         is_valid = False
-        if field == '':
+        if self.allow_empty_field and (field == ''):
             is_valid = True
         else:
             try:
@@ -83,7 +91,7 @@ class PositiveRealNumberFieldValidator(FieldValidator):
 class PositiveIntegerFieldValidator(FieldValidator):
     def validate_field(self, field):
         is_valid = False
-        if field == '':
+        if self.allow_empty_field and (field == ''):
             is_valid = True
         else:
             try:
@@ -96,21 +104,26 @@ class PositiveIntegerFieldValidator(FieldValidator):
 
 class PositiveOrZeroIntegerFieldValidator(FieldValidator):
     def validate_field(self, field):
-        # Empty values are not allowed 
         is_valid = False
-        try:
-            a = int(field)
-            if(a >= 0):
-                is_valid = True
-        except:
-            pass
+        if self.allow_empty_field and (field == ''):
+            is_valid = True
+        else:
+            try:
+                a = int(field)
+                if(a >= 0):
+                    is_valid = True
+            except:
+                pass
         return is_valid
 
 class DateFieldValidator(FieldValidator):
+    def __init__(self):
+        FieldValidator.__init__(self)
+
     def validate_field(self, field):
         is_valid = False
 
-        if field == '':
+        if self.allow_empty_field and (field == ''):
             is_valid = True
         else:
             try:
@@ -127,25 +140,27 @@ class DateFieldValidator(FieldValidator):
 class TimeFieldValidator(FieldValidator):
     def validate_field(self, field):
         is_valid = False
-        
-        try:
-            hour,minute,sec = field.split(':')
-            hour = int(hour)
-            minute = int(minute)
-            sec = int(sec)
-            if (hour >= 0) and (hour <= 23):
-                if (minute >= 0) and (minute <= 59):
-                    if (sec >= 0) and (sec <= 59):
-                        is_valid = True
-        except:
-            pass
+        if self.allow_empty_field and (field == ''):
+            is_valid = True
+        else:
+            try:
+                hour,minute,sec = field.split(':')
+                hour = int(hour)
+                minute = int(minute)
+                sec = int(sec)
+                if (hour >= 0) and (hour <= 23):
+                    if (minute >= 0) and (minute <= 59):
+                        if (sec >= 0) and (sec <= 59):
+                            is_valid = True
+            except:
+                pass
 
         return is_valid
 
 class PaceFieldValidator(FieldValidator):
     def validate_field(self, field):
         is_valid = False
-        if field == '':
+        if self.allow_empty_field and (field == ''):
             is_valid = True
         else:
             try:
@@ -166,21 +181,25 @@ class NotEmptyFieldValidator(FieldValidator):
 
 class WeightFieldValidator(PositiveRealNumberFieldValidator):
     def __init__(self):
+        PositiveRealNumberFieldValidator.__init__(self)
         self.log_message = 'Invalid weight field entered >>'
         self.error_message = _('Error with the weight field.')
 
 class MaxHeartRateFieldValidator(PositiveIntegerFieldValidator):
     def __init__(self):
+        PositiveIntegerFieldValidator.__init__(self)
         self.log_message = 'Invalid maximum heart rate field entered >>'
         self.error_message = _('Error with the maximum heart rate field.')
 
 class RestHeartRateFieldValidator(PositiveIntegerFieldValidator):
     def __init__(self):
+        PositiveIntegerFieldValidator.__init__(self)
         self.log_message = 'Invalid resting heart rate field entered >>'
         self.error_message = _('Error with the resting heart rate field.')
 
 class DateEntryFieldValidator(DateFieldValidator):
     def __init__(self):
+        DateFieldValidator.__init__(self)
         self.log_message = 'Invalid date field entered >>'
         self.error_message = _('Error with the date field.')
 

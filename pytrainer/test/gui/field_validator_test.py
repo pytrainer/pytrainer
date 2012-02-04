@@ -60,8 +60,8 @@ class FieldValidatorTest(TestCase):
         self.execute_validations(V, good_integer_fields, wrong_integer_fields)
 
     def test_positive_or_zero_integer_field_validator(self):
-        good_integer_fields = ['1', '22', '0' ]
-        wrong_integer_fields = ['45a', 'a45', '-1', '-45', '', ' ', '1.3']
+        good_integer_fields = ['1', '22', '0', '' ]
+        wrong_integer_fields = ['45a', 'a45', '-1', '-45', '1.3']
         V = PositiveOrZeroIntegerFieldValidator()
         self.execute_validations(V, good_integer_fields, wrong_integer_fields)
 
@@ -96,9 +96,8 @@ class FieldValidatorTest(TestCase):
 
     def test_hour_field_validator(self):
         good_time_fields = ['00:00:00', '23:59:59', '12:34:53', '2:00:00',
-            '12:1:1']
+            '12:1:1', '']
         wrong_time_fields = [
-            '',
             # Wrong format
             'aaaaaa',
             '00:00:00:00',

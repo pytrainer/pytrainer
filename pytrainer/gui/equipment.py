@@ -27,17 +27,22 @@ import logging
 class LifeExpentancyFieldValidator(
         PositiveOrZeroIntegerFieldValidator):
     def __init__(self):
+        PositiveOrZeroIntegerFieldValidator.__init__(self)
+        self.set_allow_empty_field(False)
         self.log_message = 'Invalid life expectancy field entered >>'
         self.error_message = _('Error with the life expectancy field.')
 
 class PriorUsageFieldValidator(
         PositiveOrZeroIntegerFieldValidator):
     def __init__(self):
+        PositiveOrZeroIntegerFieldValidator.__init__(self)
+        self.set_allow_empty_field(False)
         self.log_message = 'Invalid prior usage field entered >>'
         self.error_message = _('Error with the prior usage field.')
 
 class EquiptmentDescriptionFieldValidator(NotEmptyFieldValidator):
     def __init__(self):
+        NotEmptyFieldValidator.__init__(self)
         self.log_message = 'Invalid description field entered >>'
         self.error_message = _('The description field should not be empty.')
 
