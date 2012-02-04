@@ -56,38 +56,44 @@ from pytrainer.lib.listview import ListSearch
 from pytrainer.lib.uc import UC
 
 from pytrainer.gui.fieldvalidator import RealNumberFieldValidator
+from pytrainer.gui.fieldvalidator import PositiveRealNumberFieldValidator
+from pytrainer.gui.fieldvalidator import DateFieldValidator
 from pytrainer.gui.fieldvalidator import EntryInputFieldValidator
 
-class AxisFieldValidatorXMin (RealNumberFieldValidator):
+class AxisFieldValidatorXMin(RealNumberFieldValidator):
     def __init__(self):
         self.log_message = 'Invalid X min label entered >>'
         self.error_message = '' # No error message
 
-class AxisFieldValidatorXMax (RealNumberFieldValidator):
+class AxisFieldValidatorXMax(RealNumberFieldValidator):
     def __init__(self):
         self.log_message = 'Invalid X max label entered >>'
         self.error_message = '' # No error message
 
-class AxisFieldValidatorY1Min (RealNumberFieldValidator):
+class AxisFieldValidatorY1Min(RealNumberFieldValidator):
     def __init__(self):
         self.log_message = 'Invalid Y1 min label entered >>'
         self.error_message = '' # No error message
 
-class AxisFieldValidatorY1Max (RealNumberFieldValidator):
+class AxisFieldValidatorY1Max(RealNumberFieldValidator):
     def __init__(self):
         self.log_message = 'Invalid Y1 max label entered >>'
         self.error_message = '' # No error message
 
-class AxisFieldValidatorY2Min (RealNumberFieldValidator):
+class AxisFieldValidatorY2Min(RealNumberFieldValidator):
     def __init__(self):
         self.log_message = 'Invalid Y2 min label entered >>'
         self.error_message = '' # No error message
 
-class AxisFieldValidatorY2Max (RealNumberFieldValidator):
+class AxisFieldValidatorY2Max(RealNumberFieldValidator):
     def __init__(self):
         self.log_message = 'Invalid Y2 max label entered >>'
         self.error_message = '' # No error message
 
+class BodyFatFieldValidator(PositiveIntegerFieldValidator):
+    def __init__(self):
+        self.log_message = 'Invalid body fat percentage entered >>'
+        self.error_message = 'Error in the body fat percentage field.' 
 
 class Main(SimpleGladeApp):
     def __init__(self, sport_service, data_path = None, parent = None, version = None, gpxDir = None):

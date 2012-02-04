@@ -124,11 +124,29 @@ class DateFieldValidator(FieldValidator):
 
         return is_valid
 
+class TimeFieldValidator(FieldValidator):
+    def validate_field(self, field):
+        is_valid = False
+        
+        try:
+            hour,minute,sec = field.split(':')
+            hour = int(hour)
+            minute = int(minute)
+            sec = int(sec)
+            if (hour >= 0) and (hour <= 23):
+                if (minute >= 0) and (minute <= 59):
+                    if (sec >= 0) and (sec <= 59):
+                        is_valid = True
+        except:
+            pass
+
+        return is_valid
+
 class NotEmptyFieldValidator(FieldValidator):
     def validate_field(self, field):
         return len(field.strip()) > 0
 
-class WeightFieldValidator(PositiveIntegerFieldValidator):
+class WeightFieldValidator(PositiveRealNumberFieldValidator):
     def __init__(self):
         self.log_message = 'Invalid weight field entered >>'
         self.error_message = _('Error with the weight field.')
@@ -142,6 +160,11 @@ class RestHeartRateFieldValidator(PositiveIntegerFieldValidator):
     def __init__(self):
         self.log_message = 'Invalid resting heart rate field entered >>'
         self.error_message = _('Error with the resting heart rate field.')
+
+class DateEntryFieldValidator(DateFieldValidator):
+    def __init__(self):
+        self.log_message = 'Invalid date field entered >>'
+        self.error_message = _('Error with the date field.')
 
 class EntryInputFieldValidator(object):
     """A class to check the allowed characters on an entry form.

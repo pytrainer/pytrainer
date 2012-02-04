@@ -6,9 +6,11 @@ from pytrainer.gui.fieldvalidator import PositiveRealNumberFieldValidator
 from pytrainer.gui.fieldvalidator import NotEmptyFieldValidator 
 from pytrainer.gui.fieldvalidator import RealNumberFieldValidator 
 from pytrainer.gui.fieldvalidator import DateFieldValidator 
+from pytrainer.gui.fieldvalidator import TimeFieldValidator 
 from pytrainer.gui.fieldvalidator import MaxHeartRateFieldValidator
 from pytrainer.gui.fieldvalidator import RestHeartRateFieldValidator
 from pytrainer.gui.fieldvalidator import WeightFieldValidator
+from pytrainer.gui.fieldvalidator import DateEntryFieldValidator
 import gettext
 
 
@@ -36,6 +38,7 @@ class FieldValidatorTest(TestCase):
 
     def execute_validations(self, validator, good_fields, wrong_fields):
         for field in good_fields:
+            print field
             self.assertTrue(validator.validate_field(field))
 
         for field in wrong_fields:
@@ -90,6 +93,30 @@ class FieldValidatorTest(TestCase):
         V = DateFieldValidator()
         self.execute_validations(V, good_date_fields, wrong_date_fields)
 
+    def test_hour_field_validator(self):
+        good_time_fields = ['00:00:00', '23:59:59', '12:34:53', '2:00:00',
+            '12:1:1']
+        wrong_time_fields = [
+            '',
+            # Wrong format
+            'aaaaaa',
+            '00:00:00:00',
+            # Wrong hour
+            '24:00:00',
+            '28:00:00',
+            '-2:00:00',
+            # Wrong minute
+            '08:60:00',
+            '08:67:00',
+            '08:-1:00',
+            # Wrong second
+            '08:00:60',
+            '08:00:67',
+            '08:00:-1',]
+
+        V = TimeFieldValidator()
+        self.execute_validations(V, good_time_fields, wrong_time_fields)
+
     def test_not_empty_field_validator(self):
         good_fields = ['name', '17']
         wrong_fields = ['', '  ']
@@ -131,8 +158,8 @@ class SpecificFieldValidatorTests(TestCase):
 
  
     def test_weight_field_validator(self):
-        good_weight = ['50', '']
-        wrong_weight = [ '50a', 'a80', '0', '-1', '-80']
+        good_weight = ['50.0', '3.56', '', '0.0']
+        wrong_weight = [ '50a', 'a80', '-1', '-80']
 
         V = WeightFieldValidator()
         self.execute_single_field_validator(V, good_weight, wrong_weight)
@@ -151,3 +178,31 @@ class SpecificFieldValidatorTests(TestCase):
         V = RestHeartRateFieldValidator()
         self.execute_single_field_validator(V, good_rate, wrong_rate)
 
+    def test_date_entry_field_validator(self):
+        good_date = ['', '1972-12-30']
+        wrong_date= [
+            # Wrong format
+            'aaaaaaa',
+            # Wrong day 
+            '1972-12-32',
+            '1972-11-31',
+            '1972-02-30',
+            '1972-02-31',
+            '1972-02-00',
+            '1972-02-s0',
+            # Wrong month
+            '1972-00-28',
+            '1972-13-28',
+            '1972-1a-28',
+            # Wrong year
+            '1972a-10-28',
+            '197-10-28',
+            '19-10-28',
+            '1-10-28',
+            '10000-10-28',
+            # Not split year
+            '1973-02-29',
+        ]
+
+        V = DateEntryFieldValidator()
+        self.execute_single_field_validator(V, good_date, wrong_date)
