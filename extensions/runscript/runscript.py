@@ -27,14 +27,11 @@
 # And it works as advertised :)
 # Todo: Make the Arguments to the script configurable
 
-import os
-import sys
 import gtk
 import string
-from pytrainer.lib.date import Date
 from subprocess import call
 
-class runscript:
+class RunScriptExtension:
     def __init__(self, parent = None, pytrainer_main = None, conf_dir = None, options = None):
         self.parent = parent
         self.pytrainer_main = pytrainer_main
@@ -55,36 +52,35 @@ class runscript:
             gtk.main_iteration()    # before completion of this entire action
         options = self.options
         self.activity = activity
-        self.loadRecordInfo()
+        self.load_record_info()
+        inputstring = options["string"]
+        inputstring = string.replace(inputstring,"%t",self.title)
+        inputstring = string.replace(inputstring,"%s",self.sport)
+        inputstring = string.replace(inputstring,"%D",self.date)
+        inputstring = string.replace(inputstring,"%T",self.time)
+        inputstring = string.replace(inputstring,"%d","%s %s" %(self.distance,self.distance_unit))
+        inputstring = string.replace(inputstring,"%p","%.2f %s" %(self.pace,self.pace_unit))
+        inputstring = string.replace(inputstring,"%S","%.2f %s" %(self.average,self.speed_unit))
+        inputstring = string.replace(inputstring,"%b","%s" % self.beats)
+        inputstring = string.replace(inputstring,"%c",self.comments)
+        inputstring = string.replace(inputstring,"%C","%s" % self.calories)
+        inputstring = string.replace(inputstring,"%mS","%.2f %s" %(self.maxspeed,self.speed_unit))
+        inputstring = string.replace(inputstring,"%mp","%.2f %s" %(self.maxpace,self.pace_unit))
+        inputstring = string.replace(inputstring,"%mb","%s" %self.maxbeats)
 
-	inputstring = options["string"]
-	inputstring = string.replace(inputstring,"%t",self.title)
-	inputstring = string.replace(inputstring,"%s",self.sport)
-	inputstring = string.replace(inputstring,"%D",self.date)
-	inputstring = string.replace(inputstring,"%T",self.time)
-	inputstring = string.replace(inputstring,"%d","%s %s" %(self.distance,self.distance_unit))
-	inputstring = string.replace(inputstring,"%p","%.2f %s" %(self.pace,self.pace_unit))
-	inputstring = string.replace(inputstring,"%S","%.2f %s" %(self.average,self.speed_unit))
-	inputstring = string.replace(inputstring,"%b","%s" % self.beats)
-	inputstring = string.replace(inputstring,"%c",self.comments)
-	inputstring = string.replace(inputstring,"%C","%s" % self.calories)
-	inputstring = string.replace(inputstring,"%mS","%.2f %s" %(self.maxspeed,self.speed_unit))
-	inputstring = string.replace(inputstring,"%mp","%.2f %s" %(self.maxpace,self.pace_unit))
-	inputstring = string.replace(inputstring,"%mb","%s" %self.maxbeats)
-
-	ret = call([options["script"],options["arguments"], inputstring])
+        ret = call([options["script"],options["arguments"], inputstring])
         md.destroy()
-	if ret == 0:
-	  res_msg="OK"
-	else:
-	  res_msg="Error"      
+        if ret == 0:
+            res_msg="OK"
+        else:
+            res_msg="Error"      
         md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, res_msg)
         md.set_title(_("Script has Run"))
         md.set_modal(False)
         md.run()
         md.destroy()
 
-    def loadRecordInfo(self):
+    def load_record_info(self):
         self.sport = self.activity.sport_name
         self.date = self.activity.date
         self.distance = self.activity.distance

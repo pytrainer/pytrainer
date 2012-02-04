@@ -3,7 +3,7 @@
 	name="Runscript" 
 	description="Feed the workout to a script"
 	extensionbutton="Run Script" 
-	extensioncode="runscript"
+	extensioncode="RunScriptExtension"
 	type="record" 
 	helpfile="README.txt"
 	executable="runscript"
