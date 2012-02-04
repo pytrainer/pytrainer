@@ -1002,4 +1002,3 @@ class WindowImportdata(SimpleGladeApp):
 
         logging.debug('<<')
 
-        def validate_import_fields(self):

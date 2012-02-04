@@ -1,5 +1,12 @@
 # -*- coding: utf-8 -*-
 from unittest import TestCase
+
+# TODO
+# I'm not using record within the tests but the problem is that windowrecord 
+# imports record and record imports windowrecord so if I remove this line 
+# I get an error. 
+import pytrainer.record
+
 from pytrainer.gui.windowrecord import MaxSpeedFieldValidator
 from pytrainer.gui.windowrecord import AverageSpeedFieldValidator
 from pytrainer.gui.windowrecord import MaxPaceFieldValidator
