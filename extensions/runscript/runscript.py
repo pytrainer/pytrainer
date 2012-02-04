@@ -29,6 +29,7 @@
 
 import gtk
 import string
+import shlex
 from subprocess import call
 
 class RunScriptExtension:
@@ -53,7 +54,7 @@ class RunScriptExtension:
         options = self.options
         self.activity = activity
         self.load_record_info()
-        inputstring = options["string"]
+        inputstring = options["script"]
         inputstring = string.replace(inputstring,"%t",self.title)
         inputstring = string.replace(inputstring,"%s",self.sport)
         inputstring = string.replace(inputstring,"%D",self.date)
@@ -68,7 +69,8 @@ class RunScriptExtension:
         inputstring = string.replace(inputstring,"%mp","%.2f %s" %(self.maxpace,self.pace_unit))
         inputstring = string.replace(inputstring,"%mb","%s" %self.maxbeats)
 
-        ret = call([options["script"],options["arguments"], inputstring])
+        args = shlex.split(inputstring) 
+        ret = call(args)
         md.destroy()
         if ret == 0:
             res_msg="OK"

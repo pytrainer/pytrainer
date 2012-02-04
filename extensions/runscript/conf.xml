@@ -9,6 +9,4 @@
 	executable="runscript"
 >
 <conf-values variable="script" value=""/>
-<conf-values variable="arguments" value=""/>
-<conf-values variable="string" value=""/>
 </pytrainer-extension>
