@@ -1,6 +1,7 @@
 # -*- coding: iso-8859-1 -*-
 
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
+#Copyright (C) Christoph Kluenter <c@kluenter.de>
 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
