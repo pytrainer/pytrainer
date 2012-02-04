@@ -36,7 +36,7 @@ import gettext
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-class ImportDataFieldValidator(TestCase):
+class RecordFieldValidator(TestCase):
 
     def setUp(self):
         """ These tests are meant to be executed for the source main directory.
@@ -127,8 +127,8 @@ class ImportDataFieldValidator(TestCase):
         self.execute_single_field_validator(V, good_rate, wrong_rate)
 
     def test_calories_field_validator(self):
-        good_cal = ['45', '0', '']
-        wrong_cal = [ '45a', 'a45', '-1', '-45', '3.77', ]
+        good_cal = ['45.6', '0.0', '']
+        wrong_cal = [ '45.4a', 'a45.4', '-1.0', '-45.0',  ]
 
         V = CaloriesFieldValidator()
         self.execute_single_field_validator(V, good_cal, wrong_cal)

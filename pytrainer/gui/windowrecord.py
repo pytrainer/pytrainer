@@ -38,6 +38,8 @@ from pytrainer.gui.fieldvalidator import TimeFieldValidator
 from pytrainer.gui.fieldvalidator import PositiveOrZeroIntegerFieldValidator
 from pytrainer.gui.fieldvalidator import PositiveIntegerFieldValidator
 from pytrainer.gui.fieldvalidator import MaxHeartRateFieldValidator
+from pytrainer.gui.fieldvalidator import EntryValidatorCouple
+from pytrainer.gui.fieldvalidator import EntryInputFieldValidator
 
 class MaxSpeedFieldValidator(PositiveRealNumberFieldValidator):
     def __init__(self):
@@ -93,9 +95,9 @@ class AverageHeartRateFieldValidator(PositiveIntegerFieldValidator):
         self.log_message = 'Invalid average heart rate field entered >>'
         self.error_message = _('Error with the average heart rate field.')
 
-class CaloriesFieldValidator(PositiveOrZeroIntegerFieldValidator):
+class CaloriesFieldValidator(PositiveRealNumberFieldValidator):
     def __init__(self):
-        PositiveOrZeroIntegerFieldValidator.__init__(self)
+        PositiveRealNumberFieldValidator.__init__(self)
         self.log_message = 'Invalid calories field entered >>'
         self.error_message = _('Error with the calories field.')
 
@@ -819,3 +821,153 @@ class WindowRecord(SimpleGladeApp):
             self.frameVelocity.set_sensitive(0) 
             self.parent.actualize_fromgpx(gpxfile)
 
+    def validate_record_fields(self):
+        input_fields = [
+            EntryValidatorCouple(self.rcd_distance, DistanceFieldValidator),
+            EntryValidatorCouple(self.rcd_starttime, StartTimeFieldValidator),
+            EntryValidatorCouple(self.rcd_maxvel, MaxSpeedFieldValidator),
+            EntryValidatorCouple(self.rcd_average, AverageSpeedFieldValidator),
+            EntryValidatorCouple(self.rcd_maxpace, MaxPaceFieldValidator),
+            EntryValidatorCouple(self.rcd_pace, AveragePaceFieldValidator),
+            EntryValidatorCouple(self.rcd_upositive, AscentFieldValidator ),
+            EntryValidatorCouple(self.rcd_unegative, DescentFieldValidator),
+            EntryValidatorCouple(self.rcd_maxbeats, MaxHeartRateFieldValidator),
+            EntryValidatorCouple(self.rcd_beats, 
+                    AverageHeartRateFieldValidator ),
+            EntryValidatorCouple(self.rcd_calories, CaloriesFieldValidator),
+            ]
+ 
+        error_msg = ''
+        all_good = True
+        for couple in input_fields:
+            field = couple._get_entry().get_text()
+            validator = couple._get_validator()
+
+            if not validator.validate_field(field):
+                error_msg = validator.get_error_message()
+                all_good = False
+
+        self.button1.set_sensitive(all_good)
+        if error_msg == '':
+            msg = ''
+        else:
+            msg = '<span weight="bold"' + " fgcolor='#ff0000'>" +\
+                  str(error_msg) + '</span>'
+        self.label5.set_markup(msg)
+
+        
+    def validate_field_and_log(self, validator, inputWidget):
+        V = validator()
+        field = inputWidget.get_text()
+
+        if not V.validate_field(field):
+            logging.warning(V.get_log_message() + field + '<<')
+
+    def on_rcd_distance_focus_out_event(self, widget, data):
+        self.validate_field_and_log(DistanceFieldValidator, self.rcd_distance)
+        self.validate_record_fields()
+
+    def on_rcd_starttime_focus_out_event(self, widget, data):
+        self.validate_field_and_log(StartTimeFieldValidator, self.rcd_starttime)
+        self.validate_record_fields()
+
+    def on_rcd_maxvel_focus_out_event(self, widget, data):
+        self.validate_field_and_log(MaxSpeedFieldValidator, self.rcd_maxvel)
+        self.validate_record_fields()
+
+    def on_rcd_average_focus_out_event(self, widget, data):
+        self.validate_field_and_log(AverageSpeedFieldValidator,
+                self.rcd_average)
+        self.validate_record_fields()
+
+    def on_rcd_maxpace_focus_out_event(self, widget, data):
+        self.validate_field_and_log(MaxPaceFieldValidator, self.rcd_maxpace)
+        self.validate_record_fields()
+
+    def on_rcd_pace_focus_out_event(self, widget, data):
+        self.validate_field_and_log(AveragePaceFieldValidator,
+                self.rcd_pace)
+        self.validate_record_fields()
+
+    def on_rcd_upositive_focus_out_event(self, widget, data):
+        self.validate_field_and_log(AscentFieldValidator, self.rcd_upositive)
+        self.validate_record_fields()
+
+    def on_rcd_unegative_focus_out_event(self, widget, data):
+        self.validate_field_and_log(DescentFieldValidator, self.rcd_unegative)
+        self.validate_record_fields()
+
+    def on_rcd_maxbeats_focus_out_event(self, widget, data):
+        self.validate_field_and_log(MaxHeartRateFieldValidator, 
+                self.rcd_maxbeats)
+        self.validate_record_fields()
+
+    def on_rcd_beats_focus_out_event(self, widget, data):
+        self.validate_field_and_log(AverageHeartRateFieldValidator, 
+                self.rcd_beats)
+        self.validate_record_fields()
+
+    def on_rcd_calories_focus_out_event(self, widget, data):
+        self.validate_field_and_log(CaloriesFieldValidator, self.rcd_calories)
+        self.validate_record_fields()
+
+    def on_insert_text_time(self, entry, text, length, input_function):
+        V = EntryInputFieldValidator();
+        V.validate_entry_input_time(entry, text, length,
+                input_function)
+
+    def on_insert_text_positive_integer(self, entry, text, length, 
+            input_function):
+        V = EntryInputFieldValidator();
+        V.validate_entry_input_positive_integer(entry, text, length,
+                input_function)
+
+    def on_insert_text_positive_real(self, entry, text, length, 
+            input_function):
+        V = EntryInputFieldValidator();
+        V.validate_entry_input_positive_real_number(entry, text, length,
+                input_function)
+
+    def on_rcd_distance_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_real(entry, text, length,
+                self.on_rcd_distance_insert_text)
+
+    def on_rcd_starttime_insert_text(self, entry, text, length, position):
+        self.on_insert_text_time(entry, text, length,
+                self.on_rcd_starttime_insert_text)
+
+    def on_rcd_maxvel_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_real(entry, text, length,
+                self.on_rcd_maxvel_insert_text)
+
+    def on_rcd_average_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_real(entry, text, length,
+                self.on_rcd_average_insert_text)
+
+    def on_rcd_maxpace_insert_text(self, entry, text, length, position):
+        self.on_insert_text_time(entry, text, length,
+                self.on_rcd_maxpace_insert_text)
+
+    def on_rcd_pace_insert_text(self, entry, text, length, position):
+        self.on_insert_text_time(entry, text, length, 
+                self.on_rcd_pace_insert_text)
+
+    def on_rcd_upositive_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_real(entry, text, length,
+                self.on_rcd_upositive_insert_text)
+
+    def on_rcd_unegative_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_real(entry, text, length,
+                self.on_rcd_unegative_insert_text)
+
+    def on_rcd_maxbeats_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_integer(entry, text, length,
+                self.on_rcd_maxbeats_insert_text)
+
+    def on_rcd_beats_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_integer(entry, text, length,
+                self.on_rcd_beats_insert_text)
+
+    def on_rcd_calories_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_real(entry, text, length,
+                self.on_rcd_calories_insert_text)

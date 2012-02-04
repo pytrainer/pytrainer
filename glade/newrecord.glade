@@ -342,6 +342,8 @@
                                 <property name="can_focus">True</property>
                                 <property name="width_chars">7</property>
                                 <signal name="changed" handler="on_rcd_distance_changed"/>
+                                <signal name="focus_out_event" handler="on_rcd_distance_focus_out_event"/>
+                                <signal name="insert_text" handler="on_rcd_distance_insert_text"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -460,6 +462,8 @@
                                 <property name="width_chars">10</property>
                                 <property name="text" translatable="yes">12:00:00</property>
                                 <signal name="changed" handler="on_rcd_starttime_changed"/>
+                                <signal name="focus_out_event" handler="on_rcd_starttime_focus_out_event"/>
+                                <signal name="insert_text" handler="on_rcd_starttime_insert_text"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">3</property>
@@ -532,6 +536,8 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
+                                <signal name="focus_out_event" handler="on_rcd_maxvel_focus_out_event"/>
+                                <signal name="insert_text" handler="on_rcd_maxvel_insert_text"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -575,6 +581,8 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
+                                <signal name="focus_out_event" handler="on_rcd_average_focus_out_event"/>
+                                <signal name="insert_text" handler="on_rcd_average_insert_text"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">3</property>
@@ -654,6 +662,8 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
+                                <signal name="focus_out_event" handler="on_rcd_maxpace_focus_out_event"/>
+                                <signal name="insert_text" handler="on_rcd_maxpace_insert_text"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -682,6 +692,8 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
+                                <signal name="focus_out_event" handler="on_rcd_pace_focus_out_event"/>
+                                <signal name="insert_text" handler="on_rcd_pace_insert_text"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">3</property>
@@ -762,6 +774,8 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
+                                <signal name="focus_out_event" handler="on_rcd_upositive_focus_out_event"/>
+                                <signal name="insert_text" handler="on_rcd_upositive_insert_text"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -790,6 +804,8 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
+                                <signal name="focus_out_event" handler="on_rcd_unegative_focus_out_event"/>
+                                <signal name="insert_text" handler="on_rcd_unegative_insert_text"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">3</property>
@@ -872,6 +888,8 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
+                                <signal name="focus_out_event" handler="on_rcd_maxbeats_focus_out_event"/>
+                                <signal name="insert_text" handler="on_rcd_maxbeats_insert_text"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -885,6 +903,8 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="width_chars">7</property>
+                                <signal name="focus_out_event" handler="on_rcd_beats_focus_out_event"/>
+                                <signal name="insert_text" handler="on_rcd_beats_insert_text"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">4</property>
@@ -912,6 +932,8 @@
                                 <property name="can_focus">True</property>
                                 <property name="invisible_char">●</property>
                                 <property name="width_chars">7</property>
+                                <signal name="focus_out_event" handler="on_rcd_calories_focus_out_event"/>
+                                <signal name="insert_text" handler="on_rcd_calories_insert_text"/>
                               </widget>
                               <packing>
                                 <property name="left_attach">1</property>
