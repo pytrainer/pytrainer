@@ -58,6 +58,10 @@ from pytrainer.lib.uc import UC
 from pytrainer.gui.fieldvalidator import RealNumberFieldValidator
 from pytrainer.gui.fieldvalidator import PositiveRealNumberFieldValidator
 from pytrainer.gui.fieldvalidator import DateFieldValidator
+from pytrainer.gui.fieldvalidator import WeightFieldValidator
+from pytrainer.gui.fieldvalidator import RestHeartRateFieldValidator
+from pytrainer.gui.fieldvalidator import MaxHeartRateFieldValidator
+from pytrainer.gui.fieldvalidator import DateEntryFieldValidator
 from pytrainer.gui.fieldvalidator import EntryInputFieldValidator
 
 class AxisFieldValidatorXMin(RealNumberFieldValidator):
@@ -90,10 +94,10 @@ class AxisFieldValidatorY2Max(RealNumberFieldValidator):
         self.log_message = 'Invalid Y2 max label entered >>'
         self.error_message = '' # No error message
 
-class BodyFatFieldValidator(PositiveIntegerFieldValidator):
+class BodyFatFieldValidator(PositiveRealNumberFieldValidator):
     def __init__(self):
         self.log_message = 'Invalid body fat percentage entered >>'
-        self.error_message = 'Error in the body fat percentage field.' 
+        self.error_message = _('Error in the body fat percentage field.')
 
 class Main(SimpleGladeApp):
     def __init__(self, sport_service, data_path = None, parent = None, version = None, gpxDir = None):
@@ -2268,10 +2272,13 @@ class Main(SimpleGladeApp):
         table = gtk.Table(1,2)
         self.entryList = []
         #Add date
-        label = gtk.Label(_("<b>Date</b>"))
+        label = gtk.Label(_("<b>Date (yyyy-mm-dd)</b>"))
         label.set_use_markup(True)
         entry = gtk.Entry()
         entry.set_text(data['date'])
+        entry.connect("focus_out_event", self.on_athlete_date_focus_out,
+                dialog)
+        entry.connect("insert_text", self.on_athlete_date_insert_text)
         self.entryList.append(entry)
         #Date calander widget
         cal = gtk.Image()
@@ -2288,6 +2295,9 @@ class Main(SimpleGladeApp):
         label.set_use_markup(True)
         entry = gtk.Entry()
         entry.set_text(data['weight'])
+        entry.connect("focus_out_event", self.on_athlete_weight_focus_out,
+                dialog)
+        entry.connect("insert_text", self.on_athlete_weight_insert_text)
         self.entryList.append(entry)
         table.attach(label,0,1,1,2)
         table.attach(entry,1,2,1,2)
@@ -2296,6 +2306,9 @@ class Main(SimpleGladeApp):
         label.set_use_markup(True)
         entry = gtk.Entry()
         entry.set_text(data['bf'])
+        entry.connect("focus_out_event", self.on_athlete_body_fat_focus_out,
+                dialog)
+        entry.connect("insert_text", self.on_athlete_body_fat_insert_text)
         self.entryList.append(entry)
         table.attach(label,0,1,2,3)
         table.attach(entry,1,2,2,3)
@@ -2304,6 +2317,9 @@ class Main(SimpleGladeApp):
         label.set_use_markup(True)
         entry = gtk.Entry()
         entry.set_text(data['restingHR'])
+        entry.connect("focus_out_event", self.on_athlete_minhr_focus_out,
+                dialog)
+        entry.connect("insert_text", self.on_athlete_minhr_insert_text)
         self.entryList.append(entry)
         table.attach(label,0,1,3,4)
         table.attach(entry,1,2,3,4)
@@ -2312,6 +2328,9 @@ class Main(SimpleGladeApp):
         label.set_use_markup(True)
         entry = gtk.Entry()
         entry.set_text(data['maxHR'])
+        entry.connect("focus_out_event", self.on_athlete_maxhr_focus_out,
+                dialog)
+        entry.connect("insert_text", self.on_athlete_maxhr_insert_text)
         self.entryList.append(entry)
         table.attach(label,0,1,4,5)
         table.attach(entry,1,2,4,5)
@@ -2430,6 +2449,19 @@ class Main(SimpleGladeApp):
                 break
         button.set_sensitive(all_good)
 
+    def validate_athlete_params_fields(self, dialog):
+        validatorList = [ DateEntryFieldValidator(), WeightFieldValidator(), 
+            BodyFatFieldValidator(), BodyFatFieldValidator(), 
+            RestHeartRateFieldValidator(), MaxHeartRateFieldValidator()]
+        all_good = True
+        for i in range(0, len(self.entryList)):
+            field = self.entryList[i].get_text()
+            if not validatorList[i].validate_field(field):
+                all_good = False
+                break
+        # TODO deactive the dialog button
+        #button.set_sensitive(all_good)
+
     def on_xminlabel_focus_out_event(self, widget, data, limits, button):
         self.validate_field_and_log(AxisFieldValidatorXMin, widget)
         self.validate_limit_fields(limits, button)
@@ -2458,6 +2490,23 @@ class Main(SimpleGladeApp):
         V = EntryInputFieldValidator()
         V.validate_entry_input_real_number(entry, text, length, input_function)
 
+    def on_insert_text_date(self, entry, text, length, input_function):
+        V = EntryInputFieldValidator()
+        V.validate_entry_input_date(entry, text, length, input_function)
+
+    def on_insert_text_positive_integer(self, entry, text, length,
+            input_function):
+        V = EntryInputFieldValidator()
+        V.validate_entry_input_positive_integer(entry, text, length,
+                input_function)
+
+    def on_insert_text_positive_real(self, entry, text, length,
+            input_function):
+        V = EntryInputFieldValidator()
+        V.validate_entry_input_positive_real_number(entry, text, length,
+                input_function)
+        
+
     def on_xminlabel_insert_text(self, entry, text, length, position):
         self.on_insert_text_real(entry, text, length, 
                 self.on_xminlabel_insert_text)
@@ -2481,3 +2530,43 @@ class Main(SimpleGladeApp):
     def on_y2maxlabel_insert_text(self, entry, text, length, position):
         self.on_insert_text_real(entry, text, length, 
                 self.on_y2maxlabel_insert_text)
+
+    def on_athlete_date_focus_out(self, widget, data, dialog):
+        self.validate_field_and_log(DateEntryFieldValidator, widget)
+        self.validate_athlete_params_fields(dialog)
+
+    def on_athlete_weight_focus_out(self, widget, data, dialog):
+        self.validate_field_and_log(WeightFieldValidator, widget)
+        self.validate_athlete_params_fields(dialog)
+
+    def on_athlete_body_fat_focus_out(self, widget, data, dialog):
+        self.validate_field_and_log(BodyFatFieldValidator, widget)
+        self.validate_athlete_params_fields(dialog)
+
+    def on_athlete_maxhr_focus_out(self, widget, data, dialog):
+        self.validate_field_and_log(MaxHeartRateFieldValidator, widget)
+        self.validate_athlete_params_fields(dialog)
+
+    def on_athlete_minhr_focus_out(self, widget, data, dialog):
+        self.validate_field_and_log(RestHeartRateFieldValidator, widget)
+        self.validate_athlete_params_fields(dialog)
+
+    def on_athlete_date_insert_text(self, entry, text, length, position):
+        self.on_insert_text_date(entry, text, length,
+                self.on_athlete_date_insert_text)
+
+    def on_athlete_weight_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_real(entry, text, length,
+                self.on_athlete_weight_insert_text)
+
+    def on_athlete_body_fat_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_real(entry, text, length,
+                self.on_athlete_body_fat_insert_text)
+
+    def on_athlete_minhr_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_integer(entry, text, length,
+                self.on_athlete_minhr_insert_text)
+
+    def on_athlete_maxhr_insert_text(self, entry, text, length, position):
+        self.on_insert_text_positive_integer(entry, text, length,
+                self.on_athlete_maxhr_insert_text)
