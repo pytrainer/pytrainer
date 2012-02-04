@@ -39,7 +39,6 @@ class FieldValidatorTest(TestCase):
 
     def execute_validations(self, validator, good_fields, wrong_fields):
         for field in good_fields:
-            print field
             self.assertTrue(validator.validate_field(field))
 
         for field in wrong_fields:

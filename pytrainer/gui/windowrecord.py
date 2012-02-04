@@ -32,6 +32,73 @@ import dateutil.parser
 from dateutil.tz import * # for tzutc()
 from pytrainer.lib.uc import UC
 
+from pytrainer.gui.fieldvalidator import PositiveRealNumberFieldValidator
+from pytrainer.gui.fieldvalidator import PaceFieldValidator
+from pytrainer.gui.fieldvalidator import TimeFieldValidator
+from pytrainer.gui.fieldvalidator import PositiveOrZeroIntegerFieldValidator
+from pytrainer.gui.fieldvalidator import PositiveIntegerFieldValidator
+from pytrainer.gui.fieldvalidator import MaxHeartRateFieldValidator
+
+class MaxSpeedFieldValidator(PositiveRealNumberFieldValidator):
+    def __init__(self):
+        PositiveRealNumberFieldValidator.__init__(self)
+        self.log_message = 'Invalid maximum speed field entered >>'
+        self.error_message = _('Error with the maximum speed field.')
+
+class AverageSpeedFieldValidator(PositiveRealNumberFieldValidator):
+    def __init__(self):
+        PositiveRealNumberFieldValidator.__init__(self)
+        self.log_message = 'Invalid average speed field entered >>'
+        self.error_message = _('Error with the average speed field.')
+
+class DistanceFieldValidator(PositiveRealNumberFieldValidator):
+    def __init__(self):
+        PositiveRealNumberFieldValidator.__init__(self)
+        self.log_message = 'Invalid distance field entered >>'
+        self.error_message = _('Error with the distance field.')
+
+class StartTimeFieldValidator(TimeFieldValidator):
+    def __init__(self):
+        TimeFieldValidator.__init__(self)
+        self.log_message = 'Invalid start time field entered >>'
+        self.error_message = _('Error with the start time field.')
+
+class MaxPaceFieldValidator(PaceFieldValidator):
+    def __init__(self):
+        PaceFieldValidator.__init__(self)
+        self.log_message = 'Invalid maximum pace field entered >>'
+        self.error_message = _('Error with the maximum pace field.')
+
+class AveragePaceFieldValidator(PaceFieldValidator):
+    def __init__(self):
+        PaceFieldValidator.__init__(self)
+        self.log_message = 'Invalid average pace field entered >>'
+        self.error_message = _('Error with the average pace field.')
+
+class AscentFieldValidator(PositiveOrZeroIntegerFieldValidator):
+    def __init__(self):
+        PositiveOrZeroIntegerFieldValidator.__init__(self)
+        self.log_message = 'Invalid ascent field entered >>'
+        self.error_message = _('Error with the ascent field.')
+
+class DescentFieldValidator(PositiveOrZeroIntegerFieldValidator):
+    def __init__(self):
+        PositiveOrZeroIntegerFieldValidator.__init__(self)
+        self.log_message = 'Invalid descent field entered >>'
+        self.error_message = _('Error with the descent field.')
+
+class AverageHeartRateFieldValidator(PositiveIntegerFieldValidator):
+    def __init__(self):
+        PositiveIntegerFieldValidator.__init__(self)
+        self.log_message = 'Invalid average heart rate field entered >>'
+        self.error_message = _('Error with the average heart rate field.')
+
+class CaloriesFieldValidator(PositiveOrZeroIntegerFieldValidator):
+    def __init__(self):
+        PositiveOrZeroIntegerFieldValidator.__init__(self)
+        self.log_message = 'Invalid calories field entered >>'
+        self.error_message = _('Error with the calories field.')
+
 class WindowRecord(SimpleGladeApp):
     def __init__(self, equipment_service, data_path = None, listSport = None, parent = None, date = None, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None, windowTitle=None, equipment=[]):
         logging.debug(">>")

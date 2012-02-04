@@ -31,52 +31,6 @@ from pytrainer.plugins import Plugins
 from pytrainer.gui.dialogs import fileChooserDialog
 from pytrainer.lib.date import Date
 
-from pytrainer.gui.fieldvalidator import PositiveRealNumberFieldValidator
-from pytrainer.gui.fieldvalidator import PaceFieldValidator
-from pytrainer.gui.fieldvalidator import TimeFieldValidator
-from pytrainer.gui.fieldvalidator import PositiveIntegerFieldValidator
-
-class MaxSpeedFieldValidator(PositiveRealNumberFieldValidator):
-    def __init__(self):
-        PositiveRealNumberFieldValidator.__init__(self)
-        self.log_message = 'Invalid maximum speed field entered >>'
-        self.error_message = _('Error with the maximum speed field.')
-
-class AverageSpeedFieldValidator(PositiveRealNumberFieldValidator):
-    def __init__(self):
-        PositiveRealNumberFieldValidator.__init__(self)
-        self.log_message = 'Invalid average speed field entered >>'
-        self.error_message = _('Error with the average speed field.')
-
-class DistanceFieldValidator(PositiveRealNumberFieldValidator):
-    def __init__(self):
-        PositiveRealNumberFieldValidator.__init__(self)
-        self.log_message = 'Invalid distance field entered >>'
-        self.error_message = _('Error with the distance field.')
-
-class StartTimeFieldValidator(TimeFieldValidator):
-    def __init__(self):
-        TimeFieldValidator.__init__(self)
-        self.log_message = 'Invalid start time field entered >>'
-        self.error_message = _('Error with the start time field.')
-
-class MaxPaceFieldValidator(PaceFieldValidator):
-    def __init__(self):
-        PaceFieldValidator.__init__(self)
-        self.log_message = 'Invalid maximum pace field entered >>'
-        self.error_message = _('Error with the maximum pace field.')
-
-class AveragePaceFieldValidator(PaceFieldValidator):
-    def __init__(self):
-        PaceFieldValidator.__init__(self)
-        self.log_message = 'Invalid average pace field entered >>'
-        self.error_message = _('Error with the average pace field.')
-
-class AscentFieldValidator(PaceFieldValidator):
-    def __init__(self):
-        self.log_message = 'Invalid average pace field entered >>'
-        self.error_message = _('Error with the average pace field.')
-
 class WindowImportdata(SimpleGladeApp):
     def __init__(self, sport_service, data_path = None, parent=None, config=None, pytrainer_main=None):
         self._sport_service = sport_service
@@ -1047,3 +1001,5 @@ class WindowImportdata(SimpleGladeApp):
         self.buttonCSVImport.set_sensitive(0)
 
         logging.debug('<<')
+
+        def validate_import_fields(self):
