@@ -31,7 +31,9 @@
 import gtk
 import string
 import shlex
-from subprocess import call
+import subprocess
+import threading
+import logging
 
 class RunScriptExtension:
     def __init__(self, parent = None, pytrainer_main = None, conf_dir = None, options = None):
@@ -39,19 +41,9 @@ class RunScriptExtension:
         self.pytrainer_main = pytrainer_main
         self.options = options
         self.conf_dir = conf_dir
-        self.tmpdir = self.pytrainer_main.profile.tmpdir
-        self.data_path = self.pytrainer_main.profile.data_path
-        self.wp = None
+        self.p = None
 
     def run(self, id, activity=None):
-        #Show user something is happening
-        msg = _("Running Script ...")
-        md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_NONE, msg)
-        md.set_title(_("Passing data to Script"))
-        md.set_modal(True)
-        md.show()
-        while gtk.events_pending(): # This allows the GUI to update
-            gtk.main_iteration()    # before completion of this entire action
         options = self.options
         self.activity = activity
         self.load_record_info()
@@ -71,17 +63,32 @@ class RunScriptExtension:
         inputstring = string.replace(inputstring,"%mb","%s" %self.maxbeats)
 
         args = shlex.split(inputstring) 
-        ret = call(args)
-        md.destroy()
-        if ret == 0:
-            res_msg="OK"
+        msg="Script is Running ..."
+        self.md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CANCEL, msg)
+        self.md.set_title(_(msg))
+        self.md.set_modal(False)
+        self.md.connect('response', self.handle_cancel)
+        self.md.show()
+        thread = threading.Thread(target=self.run_in_thread, args=(args))
+        thread.start()
+
+    def handle_cancel(self, *args):
+        if self.p != None:
+            self.p.kill()
+        self.md.destroy()
+
+    def run_in_thread(self,*popenArgs):
+        try:
+            self.p = subprocess.Popen(popenArgs)
+        except OSError as e:
+            logging.debug(e.child_traceback)
+        except Exception as e:
+            logging.debug(e)
         else:
-            res_msg="Error"      
-        md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, res_msg)
-        md.set_title(_("Script has Run"))
-        md.set_modal(False)
-        md.run()
-        md.destroy()
+            self.p.wait()
+        self.md.destroy()
+        return
+
 
     def load_record_info(self):
         self.sport = self.activity.sport_name
