@@ -201,7 +201,6 @@ class WindowProfile(SimpleGladeApp):
     def on_switch_page(self,widget,pointer,frame):
         #print widget, pointer, frame
         if frame==2:
-            self.saveOptions()
             sport_list = self._sport_service.get_all_sports()
             store = gtk.ListStore(
                         gobject.TYPE_STRING,
