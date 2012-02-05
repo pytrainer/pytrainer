@@ -953,11 +953,11 @@ class WindowRecord(SimpleGladeApp):
                 self.on_rcd_pace_insert_text)
 
     def on_rcd_upositive_insert_text(self, entry, text, length, position):
-        self.on_insert_text_positive_real(entry, text, length,
+        self.on_insert_text_positive_integer(entry, text, length,
                 self.on_rcd_upositive_insert_text)
 
     def on_rcd_unegative_insert_text(self, entry, text, length, position):
-        self.on_insert_text_positive_real(entry, text, length,
+        self.on_insert_text_positive_integer(entry, text, length,
                 self.on_rcd_unegative_insert_text)
 
     def on_rcd_maxbeats_insert_text(self, entry, text, length, position):
