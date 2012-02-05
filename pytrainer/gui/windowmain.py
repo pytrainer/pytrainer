@@ -2467,7 +2467,7 @@ class Main(SimpleGladeApp):
                 all_good = False
                 break
         # TODO deactive the dialog button
-        #button.set_sensitive(all_good)
+        dialog.set_response_sensitive(gtk.RESPONSE_ACCEPT, all_good)
 
     def on_xminlabel_focus_out_event(self, widget, data, limits, button):
         self.validate_field_and_log(AxisFieldValidatorXMin, widget)
