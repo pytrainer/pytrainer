@@ -45,6 +45,14 @@ class RunScriptExtension:
 
     def run(self, id, activity=None):
         options = self.options
+        if len(options["script"]) == 0:
+            msg="You have not configured any script. Please see Help for examples"
+            md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, msg)
+            md.set_title(_("Error"))
+            md.set_modal(False)
+            md.run()
+            md.destroy()
+            return
         self.activity = activity
         self.load_record_info()
         inputstring = options["script"]
