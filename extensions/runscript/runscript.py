@@ -46,8 +46,8 @@ class RunScriptExtension:
     def run(self, id, activity=None):
         options = self.options
         if len(options["script"]) == 0:
-            msg="You have not configured any script. Please see Help for examples"
-            md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, msg)
+            res_msg="You have not configured any script. Please see Help for examples"
+            md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, res_msg)
             md.set_title(_("Error"))
             md.set_modal(False)
             md.run()
@@ -71,9 +71,9 @@ class RunScriptExtension:
         inputstring = string.replace(inputstring,"%mb","%s" %self.maxbeats)
 
         args = shlex.split(inputstring) 
-        msg="Script is Running ..."
-        self.md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CANCEL, msg)
-        self.md.set_title(_(msg))
+        res_msg="Script is Running ..."
+        self.md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CANCEL, res_msg)
+        self.md.set_title(_(res_msg))
         self.md.set_modal(False)
         self.md.connect('response', self.handle_cancel)
         self.md.show()
