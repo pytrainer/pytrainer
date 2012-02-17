@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
 #Copyright (C) Christoph Kluenter <chris@inferno.nadir.org>
@@ -70,6 +70,10 @@ class RunScriptExtension:
         inputstring = string.replace(inputstring,"%mp","%.2f %s" %(self.maxpace,self.pace_unit))
         inputstring = string.replace(inputstring,"%mb","%s" %self.maxbeats)
 
+        # work around a bug in shlex.split(). only python >=2.7.3 can split unicode.
+        # this makes the output only usable with western languages... 
+        # TODO : depend on python >=2.7.3 end of 2013
+        inputstring = inputstring.encode('cp1250','replace')
         args = shlex.split(inputstring) 
         res_msg="Script is Running ..."
         self.md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CANCEL, res_msg)
