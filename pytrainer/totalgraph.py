@@ -50,7 +50,7 @@ class TotalGraph(TimeGraph):
             0: 1, #value 0 es kilometros (1)
             1: 6, #value 1 es tiempo (2)
             2: 7, #value 2 es pulsaciones(3)
-            3: 5, #value 3 es media(5)
+            3: 2, #value 3 es media (2)
             4: 8 #value 4 es calorias(6)
             }
         value_sel = conv[value_selected]
