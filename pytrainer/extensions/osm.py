@@ -192,8 +192,6 @@ class Osm:
                 //Add open street maps layers
                 layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
                 map.addLayer(layerMapnik);
-                layerTilesAtHome = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
-                map.addLayer(layerTilesAtHome);      
 
                 //Add polygon drawing layer
                 var polygonLayer = new OpenLayers.Layer.Vector("Polygon Layer");
@@ -398,8 +396,6 @@ class Osm:
                 //Add open street maps layers
                 layerMapnik = new OpenLayers.Layer.OSM.Mapnik("Mapnik");
                 map.addLayer(layerMapnik);
-                layerTilesAtHome = new OpenLayers.Layer.OSM.Osmarender("Osmarender");
-                map.addLayer(layerTilesAtHome);
 
                 //Create vector layer to add the data on to
                 var vector_layer = new OpenLayers.Layer.Vector();
