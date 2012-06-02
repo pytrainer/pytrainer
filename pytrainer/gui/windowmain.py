@@ -185,6 +185,7 @@ class Main(SimpleGladeApp):
                     {'name':_("Distance"), 'xalign':1.0, 'format_float':'%.2f', 'quantity':'distance'},
                     {'name':_("Time"), 'xalign':1.0, 'format_duration':True},
                     {'name':_("Speed"),  'format_float':'%.2f', 'quantity':'speed'},
+                    {'name':_("Pace"),  'format_float':'%.2f', 'quantity':'pace'},
                     {'name':_("Color"), 'visible':False},
                 ]
         self.create_treeview(self.rankingTreeView,columns,sortable=False)
@@ -849,7 +850,7 @@ class Main(SimpleGladeApp):
             percentage = widget.get_value() / 100
         else:
             percentage = .05
-        records = self.pytrainer_main.ddbb.select_dict("records", ["distance","time","id_record","date","average"], "distance > %f AND distance < %f AND sport=%d order by average desc" % (activity.distance * (1-percentage), activity.distance * (1+percentage), activity.sport_id))
+        records = self.pytrainer_main.ddbb.select_dict("records", ["distance","time","id_record","date","average","pace"], "distance > %f AND distance < %f AND sport=%d order by average desc" % (activity.distance * (1-percentage), activity.distance * (1+percentage), activity.sport_id))
         
         count = 1
         for r in records:
@@ -875,6 +876,7 @@ class Main(SimpleGladeApp):
             gobject.TYPE_STRING,    #distance
             gobject.TYPE_STRING,       #time
             gobject.TYPE_STRING,       #speed
+            gobject.TYPE_STRING,       #pace
             gobject.TYPE_STRING,       #color
             )
 
@@ -897,13 +899,14 @@ class Main(SimpleGladeApp):
                 3, km2miles(r['distance']) if self.pytrainer_main.profile.prf_us_system else r['distance'],
                 4, str(r['time']),
                 5, r['average'],
-                6, '#3AA142' if rank==count else '#000000',
+                6, r['pace'],
+                7, '#3AA142' if rank==count else '#000000',
             )
             
             for c in self.rankingTreeView.get_columns()[:-1]:
                 for cr in c.get_cell_renderers():
                     if type(cr)==gtk.CellRendererText:
-                        c.add_attribute(cr, 'foreground', 6)
+                        c.add_attribute(cr, 'foreground', 7)
             
         self.rankingTreeView.set_model(rank_store)
 

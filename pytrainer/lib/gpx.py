@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
 
@@ -171,7 +171,6 @@ class Gpx:
             stLon = self.trkpoints[0]['lon']
             lat = self.trkpoints[-1]['lat']
             lon = self.trkpoints[-1]['lon']
-            #print ((self.total_time, lat, lon, self.calories, self.total_dist, stLat, stLon))
             logging.debug("total_time: %s" %self.total_time)
             lapInfo.append((self.total_time, lat, lon, self.calories, self.total_dist*1000, stLat, stLon, "active", self.hr_average, self.maxhr, self.maxvel, "manual"))
         else:
@@ -324,9 +323,14 @@ class Gpx:
                     time_elapsed = 0
                 else:
                     time_elapsed = time_ - self.trkpoints[i-1]['time'] if self.trkpoints[i-1]['time'] is not None else 0
-                    self.total_time_trkpts += time_elapsed
-                    if time_elapsed > 15:
-                        logging.debug("Adding %d seconds from last trkpt, someone took a break!" % time_elapsed)
+                    if time_elapsed > 10:
+                        logging.debug("%d seconds from last trkpt, someone took a break!" % time_elapsed)
+                        # Calculating average lapse between trackpoints to add it
+                        average_lapse = round(self.total_time_trkpts/i)
+                        logging.debug("Adding %d seconds (activity average) as lapse from last point" % average_lapse)
+                        self.total_time_trkpts += average_lapse
+                    else:
+                        self.total_time_trkpts += time_elapsed
             else:
                 time_ = None
                 time_elapsed = None

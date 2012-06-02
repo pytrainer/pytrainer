@@ -56,8 +56,8 @@ from lib.uc import UC
 
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
-        #Version constants
-        self.version ="1.10.0-dev"
+        # Based in Django's approach -> http://code.djangoproject.com/svn/django/trunk/django/__init__.py
+        self.version = __import__('pytrainer').get_version()
         #Process command line options
         self.startup_options = self.get_options()
         #Setup logging
@@ -65,7 +65,7 @@ class pyTrainer:
         self.environment.create_directories()
         self.set_logging(self.startup_options.log_level, self.startup_options.log_type)
         logging.debug('>>')
-        logging.debug("PyTrainer version %s" % (self.version))
+        logging.debug("pytrainer version %s" % (self.version))
         self.data_path = data_path
         self.date = Date()
         self.ddbb = None
@@ -100,7 +100,6 @@ class pyTrainer:
         self.refreshMainSportList()
         self.windowmain.run()
         logging.debug('<<')
-
 
     def get_options(self):
         '''

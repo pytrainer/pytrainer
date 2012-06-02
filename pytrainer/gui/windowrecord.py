@@ -197,7 +197,7 @@ class WindowRecord(SimpleGladeApp):
         while gtk.events_pending(): # This allows the GUI to update 
             gtk.main_iteration()    # before completion of this entire action
         #Select first row and display details
-        self.treeviewEntries.set_cursor(0)
+        self.treeviewEntries.set_cursor(0)  
         self.show_treeviewEntries_row(0)
         logging.debug("<<")
         
@@ -474,6 +474,7 @@ class WindowRecord(SimpleGladeApp):
         logging.debug("<<")
 
     def update_activity_data(self, row, gpx_file, sport):
+        logging.debug(">>")
         self.activity_data[row]["rcd_comments"] = ""
         gpx_summary, laps = self.parent.summaryFromGPX(gpx_file, (sport,""))
         local_time = gpx_summary['date_time_local']
@@ -483,6 +484,7 @@ class WindowRecord(SimpleGladeApp):
         self.activity_data[row]["rcd_starttime"] = start_time
         self.activity_data[row]["date_time_local"] = gpx_summary['date_time_local']
         self.activity_data[row]["date_time_utc"] = gpx_summary['date_time_utc']
+        self.activity_data[row]["rcd_time"] = gpx_summary["rcd_time"]
         self.activity_data[row]["rcd_distance"] = gpx_summary["rcd_distance"]
         self.activity_data[row]["rcd_average"] = gpx_summary["rcd_average"]
         self.activity_data[row]["rcd_calories"] = gpx_summary["rcd_calories"]
@@ -496,6 +498,7 @@ class WindowRecord(SimpleGladeApp):
         self.activity_data[row]["rcd_title"] = ""
         self.activity_data[row]["laps"] = laps
         self.activity_data[row]["complete"] = True
+        logging.debug("<<")
 
         
     def show_treeviewEntries_row(self, row):
@@ -503,6 +506,7 @@ class WindowRecord(SimpleGladeApp):
         Show details of treeview entry
         TODO need to maintain any changes and display those....
         '''
+        logging.debug(">>")
         self.active_row = row
         #Get details from stored data
         #set sport
@@ -544,7 +548,9 @@ class WindowRecord(SimpleGladeApp):
                 gtk.main_iteration()    # before completion of this entire action
             #Get some info from gpx file
             self.update_activity_data(row, gpx_file, sport)
-        self.setValue("rcd_distance",self.activity_data[row]["rcd_distance"], "%s")  
+        self.setValue("rcd_distance",self.activity_data[row]["rcd_distance"], "%s") 
+        time = Date().time2second(self.activity_data[row]["rcd_time"])
+        self.setTime(time)  
         self.setValue("rcd_date", self.activity_data[row]["rcd_date"], "%s")
         self.setValue("rcd_starttime", self.activity_data[row]["rcd_starttime"], "%s")
         self.setValue("rcd_average",self.activity_data[row]["rcd_average"])
@@ -557,6 +563,7 @@ class WindowRecord(SimpleGladeApp):
         self.rcd_pace.set_text(self.activity_data[row]["rcd_pace"])
         self.setValue("rcd_maxbeats",self.activity_data[row]["rcd_maxbeats"], "%s")
         self.rcd_title.set_text(self.activity_data[row]["rcd_title"])
+        logging.debug("<<")
         
         
     def on_rcd_title_changed(self, widget):
