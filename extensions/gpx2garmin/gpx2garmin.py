@@ -2,7 +2,7 @@
 
 import gtk
 import subprocess
-import os
+import re
 
 class gpx2garmin:
     def __init__(self, parent = None, pytrainer_main = None, conf_dir = None, options = None):
@@ -14,11 +14,19 @@ class gpx2garmin:
         self.pytrainer_main = pytrainer_main
 
     def prepareGPX(self):
-        # add a name to the gpx data in the <trk> stanza
-        os.system('grep "<name>.*</name>" %s > /tmp/_gpx2garmin' % self.gpxfile)
-        os.system('sed "/<trk>/r /tmp/_gpx2garmin" %s > %s' % (self.gpxfile, self.tmpgpxfile))
+        ' create an output file and insert a name into the <trk> stanza '
+        f = open(self.tmpgpxfile, 'w')
+        name = 'default'
+        for line in open(self.gpxfile):
+            if re.search('^<name>.+</name>$', line):
+                name = line
+            elif re.search('^<trk>$', line):
+                line = '%s%s' % (line, name)
+            f.write(line)
+        f.close()
         
     def exportGPX(self):
+        ' export the GPX file using gpsbabel '
         cmd = ["gpsbabel", "-t", "-i", "gpx", "-f", self.tmpgpxfile, "-o", "garmin"]
         if self.limit is not None:
             cmd = cmd + ["-x", "simplify,count=%s" % self.limit]
@@ -26,6 +34,7 @@ class gpx2garmin:
         return subprocess.call(cmd)
 
     def run(self, id, activity=None):
+        ' main extension method '
         self.gpxfile = "%s/gpx/%s.gpx" % (self.conf_dir, id)
         self.log = "Export "
         try:
