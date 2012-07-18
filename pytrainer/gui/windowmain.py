@@ -2193,7 +2193,7 @@ class Main(SimpleGladeApp):
             #New entry...
             logging.debug('New athlete entry')
             title = _('Create Athlete Entry')
-            data = {'id':None, 'date':"", 'weight':"", 'bf':"", 'restingHR':"", 'maxHR':""}
+            data = {'id':None, 'date': Date().getDate().strftime("%Y-%m-%d"), 'weight':"", 'bf':"", 'restingHR':"", 'maxHR':""}
         else:
             logging.debug('Edit existing athlete entry: %s', str(data))
             title = _('Edit Athlete Entry')
