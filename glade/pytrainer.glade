@@ -5252,7 +5252,7 @@ Calories</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkLabel" id="label122">
+                                              <widget class="GtkLabel" id="y_distance_unit">
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0</property>
                                                 <property name="xpad">5</property>
@@ -5295,7 +5295,7 @@ Calories</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkLabel" id="label124">
+                                              <widget class="GtkLabel" id="y_speed_unit">
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0</property>
                                                 <property name="xpad">5</property>
@@ -5311,7 +5311,7 @@ Calories</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkLabel" id="label-31">
+                                              <widget class="GtkLabel" id="y_maxspeed_unit">
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0</property>
                                                 <property name="xpad">5</property>
@@ -5392,7 +5392,7 @@ Calories</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkLabel" id="label-2147483643">
+                                              <widget class="GtkLabel" id="y_pace_unit">
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0</property>
                                                 <property name="xpad">5</property>
@@ -5408,7 +5408,7 @@ Calories</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkLabel" id="label-2147483642">
+                                              <widget class="GtkLabel" id="y_maxpace_unit">
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0</property>
                                                 <property name="xpad">5</property>

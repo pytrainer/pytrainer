@@ -1,0 +1,29 @@
+Summary:
+
+gpx2garmin is a pytrainer (http://sourceforge.net/projects/pytrainer/) extension that will export the current record's gpx track to a garmin device.
+
+Requirements:
+
+gbsbabel - http://www.gpsbabel.org/
+
+(typically installable via your repository) 
+
+Usage:
+
+1) Plug your device in via USB, switch it on.
+2) Click the 'Export to device' button = export to garmin device!
+
+Caveats:
+
+- Some (all?) devices will truncate the track because they only support a
+  limited amount of track points. The extension can (via gpsbabel) simplify a
+  track using the limit supplied by the user. Beware of track changes (e.g.
+  sharp bends on the map may show the trace cutting corners)!
+- Track names aren't part of the track data so are added by the extension from
+  the metadata. Some devices, however, truncate the name (e.g. biking2010-08-23
+  > biking2010-08) so rename tracks where necessary. 
+
+You may also need to fix the device permissions as documented here:
+
+http://www.gpsbabel.org/os/Linux_Hotplug.html 
+

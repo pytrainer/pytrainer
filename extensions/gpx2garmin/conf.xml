@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<pytrainer-extension
+    name="Pytrainer gpx2garmin extension"
+    description="Export the GPX track to a garmin device"
+	extensionbutton="Export to device"
+	extensioncode="gpx2garmin"
+	type="record" 
+	helpfile="README"
+	executable="gpx2garmin"
+>
+<conf-values variable="gpx2garmindevice" value=""/>
+<conf-values variable="gpx2garminmaxpoints" value=""/>
+</pytrainer-extension>

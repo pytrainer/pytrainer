@@ -316,10 +316,10 @@ class Main(SimpleGladeApp):
         elif orig[:3] == ' 0:':
             new = orig[3:]
         if len(new)>5:
-		    hours = int(new[:-6])
-		    days = _("d")
-		    if hours>23:
-		    	new = "%d %s %02d:%s" % (hours / 24, days, hours%24 ,new[-5:])
+            hours = int(new[:-6])
+            days = _("d")
+            if hours>23:
+                new = "%d %s %02d:%s" % (hours / 24, days, hours%24 ,new[-5:])
         cell.set_property('text', new)
         
     def render_float(self, column, cell, model, iter, data):
@@ -1206,6 +1206,18 @@ class Main(SimpleGladeApp):
         maxbeats = 0
         totalascent = 0 
         totaldescent = 0
+        if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
+            self.y_distance_unit.set_text(_("miles"))
+            self.y_speed_unit.set_text(_("miles/h"))
+            self.y_maxspeed_unit.set_text(_("miles/h"))
+            self.y_pace_unit.set_text(_("min/mile"))
+            self.y_maxpace_unit.set_text(_("min/mile"))
+        else:
+            self.y_distance_unit.set_text(_("km"))
+            self.y_speed_unit.set_text(_("km/h"))
+            self.y_maxspeed_unit.set_text(_("km/h"))
+            self.y_pace_unit.set_text(_("min/km"))
+            self.y_maxpace_unit.set_text(_("min/km"))
         if num_records>0:
             for record in record_list:
                 km += self.parseFloat(record[1])
@@ -1222,6 +1234,11 @@ class Main(SimpleGladeApp):
                     maxspeed = self.parseFloat(record[7])
                 if record[8] > maxbeats:
                     maxbeats = self.parseFloat(record[8])
+
+            if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
+                km = km2miles(km)
+                maxspeed = km2miles(maxspeed)
+
             if time_in_min > 0:
                 tbeats = tbeats/time_in_min
             else:
@@ -2193,7 +2210,7 @@ class Main(SimpleGladeApp):
             #New entry...
             logging.debug('New athlete entry')
             title = _('Create Athlete Entry')
-            data = {'id':None, 'date':"", 'weight':"", 'bf':"", 'restingHR':"", 'maxHR':""}
+            data = {'id':None, 'date': Date().getDate().strftime("%Y-%m-%d"), 'weight':"", 'bf':"", 'restingHR':"", 'maxHR':""}
         else:
             logging.debug('Edit existing athlete entry: %s', str(data))
             title = _('Edit Athlete Entry')
