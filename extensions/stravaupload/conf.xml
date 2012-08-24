@@ -1,0 +1,13 @@
+<?xml version="1.0" ?>
+<pytrainer-extension
+    name="Pytrainer strava upload extension"
+    description="Upload current track to Strava"
+	extensionbutton="Upload to Strava"
+	extensioncode="StravaUpload"
+	type="record" 
+	helpfile="README"
+	executable="stravaupload"
+>
+<conf-values variable="stravauploademail" value=""/>
+<conf-values variable="stravauploadpassword" value=""/>
+</pytrainer-extension>
