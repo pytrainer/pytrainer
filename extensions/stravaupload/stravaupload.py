@@ -2,60 +2,76 @@
 
 import json
 import subprocess
+import urllib
+import urllib2
 
 class StravaUpload:
     def __init__(self, parent = None, pytrainer_main = None, conf_dir = None, options = None):
-        self.gpxfile = None
         self.pytrainer_main = pytrainer_main
         self.conf_dir = conf_dir
 
         self.login_url = "https://www.strava.com/api/v2/authentication/login"
         self.upload_url = "http://www.strava.com/api/v2/upload"
+        self.strava_token = "%s/.strava_token"
 
-        self.email = ""
-        self.password = ""
+        self.email = options['stravauploademail']
+        self.password = options['stravauploadpassword']
 
     def login_token(self):
         token = None
         try:
-            # TODO: use conf_dir?
-            with open('.strava_token') as f:
+            with open(self.strava_token) as f:
                 token = f.readline()
         except:
             pass
         if token is None or token.strip() == '' :
-            # file doesn't exist, or failed to read it so attempt login
             cmd = ["curl", "-s", "-X", "POST", "-d", ("email=%s" % self.email), "-d", ("password=%s" % self.password), self.login_url]
             result = json.loads(subprocess.check_output(cmd));
             token = result['token']
             try:
-                f = open('.strava_token', 'w')
+                f = open(self.strava_token, 'w')
                 f.write(token)
             finally:
                 f.close()
         return token 
 
-    def upload(self, token):
-        # TODO: the remining bits of the method using the login token
-        #       refactor json handling to pull requested item e.g. get('token'), get('success')
-        return True
-
-    def run(self):
-        # only prints token so far ;)
-        self.log = "Strava Upload "
+    def upload(self, token, gpx_file):
+        gpx = None
+        result = 0
         try:
-            result = self.login_token();
-            if result is not None:
-                print result
-        except (ValueError, KeyError), e:
-            self.log = self.log + ("JSON error: %s.  Username and password correct?" % e)
-        except Exception, e:
-            self.log = self.log + "failed! %s" % e
-        else:
-            self.log = self.log + "success!"
-        print self.log
+            with open(gpx_file) as f:
+                gpx = f.read()
+        except:
+            pass
+        if gpx is not None and gpx.strip() != '':
+            values = { 'token': token, 'type': 'gpx', 'data': gpx }
+            data = urllib.urlencode(values)
+            req = urllib2.Request(self.upload_url, data)
+            response = json.loads(urllib2.urlopen(req))
+            result = response['upload_id']
+        return result
 
-# TODO: remove this
+    def run(self, id, activity = None):
+        log = "Strava Upload "
+        gpx_file = "%s/gpx/%s.gpx" % (self.conf_dir, id)
+        try:
+            user_token = self.login_token();
+            if user_token is not None:
+                upload_id = self.upload(user_token, gpx_file)
+                if upload_id > 0:
+                    log = log + "success (id: %s)!" % upload_id
+                else:
+                    log = log + "failed to upload!"
+        except (ValueError, KeyError), e:
+            log = log + ("JSON error: %s.  Username and password correct?" % e)
+        except Exception, e:
+            log = log + "failed! %s" % e
+        md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, log)
+        md.set_title(_("Strave Upload"))
+        md.set_model(False)
+        md.run()
+        md.destroy()
+
 if __name__ == '__main__':
     app = StravaUpload()
     app.run()
