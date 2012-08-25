@@ -1,7 +1,6 @@
 #!/usr/bin/env python 
 
 import json
-import subprocess
 import urllib
 import urllib2
 import gtk
@@ -18,6 +17,12 @@ class StravaUpload:
         self.email = options['stravauploademail']
         self.password = options['stravauploadpassword']
 
+    def get_web_data(self, url, values):
+        data = urllib.urlencode(values)
+        req = urllib2.Request(url, data)
+        response = urllib2.urlopen(req)
+        return json.loads(response.read())
+
     def login_token(self):
         token = None
         try:
@@ -26,8 +31,8 @@ class StravaUpload:
         except:
             pass
         if token is None or token.strip() == '' :
-            cmd = ["curl", "-s", "-X", "POST", "-d", ("email=%s" % self.email), "-d", ("password=%s" % self.password), self.login_url]
-            result = json.loads(subprocess.check_output(cmd));
+            values = { 'email' : self.email, 'password' : self.password }
+            result = self.get_web_data(self.login_url, values)
             token = result['token']
             try:
                 with open(self.strava_token, 'w') as f:
@@ -39,7 +44,7 @@ class StravaUpload:
 
     def upload(self, token, gpx_file):
         gpx = None
-        result = 0
+        upload_id = 0
         try:
             with open(gpx_file) as f:
                 gpx = f.read()
@@ -47,12 +52,9 @@ class StravaUpload:
             pass
         if gpx is not None and gpx.strip() != '':
             values = { 'token': token, 'type': 'gpx', 'data': gpx }
-            data = urllib.urlencode(values)
-            req = urllib2.Request(self.upload_url, data)
-            response = urllib2.urlopen(req)
-            json_data = json.loads(response.read())
-            result = json_data['upload_id']
-        return result
+            result = self.get_web_data(self.upload_url, values)
+            upload_id = result['upload_id']
+        return upload_id
 
     def run(self, id, activity = None):
         log = "Strava Upload "
