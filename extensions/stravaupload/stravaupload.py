@@ -4,6 +4,7 @@ import json
 import subprocess
 import urllib
 import urllib2
+import gtk
 
 class StravaUpload:
     def __init__(self, parent = None, pytrainer_main = None, conf_dir = None, options = None):
@@ -12,7 +13,7 @@ class StravaUpload:
 
         self.login_url = "https://www.strava.com/api/v2/authentication/login"
         self.upload_url = "http://www.strava.com/api/v2/upload"
-        self.strava_token = "%s/.strava_token"
+        self.strava_token = "%s/.strava_token" % self.conf_dir
 
         self.email = options['stravauploademail']
         self.password = options['stravauploadpassword']
@@ -29,10 +30,11 @@ class StravaUpload:
             result = json.loads(subprocess.check_output(cmd));
             token = result['token']
             try:
-                f = open(self.strava_token, 'w')
-                f.write(token)
-            finally:
-                f.close()
+                with open(self.strava_token, 'w') as f:
+                    f.write(token)
+            except:
+                # didn't write token but that's ok, get another next time...
+                pass
         return token 
 
     def upload(self, token, gpx_file):
@@ -47,8 +49,9 @@ class StravaUpload:
             values = { 'token': token, 'type': 'gpx', 'data': gpx }
             data = urllib.urlencode(values)
             req = urllib2.Request(self.upload_url, data)
-            response = json.loads(urllib2.urlopen(req))
-            result = response['upload_id']
+            response = urllib2.urlopen(req)
+            json_data = json.loads(response.read())
+            result = json_data['upload_id']
         return result
 
     def run(self, id, activity = None):
@@ -68,10 +71,6 @@ class StravaUpload:
             log = log + "failed! %s" % e
         md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, log)
         md.set_title(_("Strave Upload"))
-        md.set_model(False)
+        md.set_modal(False)
         md.run()
         md.destroy()
-
-if __name__ == '__main__':
-    app = StravaUpload()
-    app.run()
