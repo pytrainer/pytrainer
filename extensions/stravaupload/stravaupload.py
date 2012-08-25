@@ -10,14 +10,30 @@ class StravaUpload:
         self.conf_dir = conf_dir
 
         self.login_url = "https://www.strava.com/api/v2/authentication/login"
+        self.upload_url = "http://www.strava.com/api/v2/upload"
 
         self.email = ""
         self.password = ""
 
     def login_token(self):
-        cmd = ["curl", "-s", "-X", "POST", "-d", ("email=%s" % self.email), "-d", ("password=%s" % self.password), self.login_url]
-        output = subprocess.check_output(cmd)
-        return output 
+        token = None
+        try:
+            # TODO: use conf_dir?
+            with open('.strava_token') as f:
+                token = f.readline()
+        except:
+            pass
+        if token is None or token.strip() == '' :
+            # file doesn't exist, or failed to read it so attempt login
+            cmd = ["curl", "-s", "-X", "POST", "-d", ("email=%s" % self.email), "-d", ("password=%s" % self.password), self.login_url]
+            result = json.loads(subprocess.check_output(cmd));
+            token = result['token']
+            try:
+                f = open('.strava_token', 'w')
+                f.write(token)
+            finally:
+                f.close()
+        return token 
 
     def upload(self, token):
         # TODO: the remining bits of the method using the login token
@@ -28,17 +44,18 @@ class StravaUpload:
         # only prints token so far ;)
         self.log = "Strava Upload "
         try:
-            result = json.loads(self.login_token());
+            result = self.login_token();
             if result is not None:
-                print result['token']
+                print result
         except (ValueError, KeyError), e:
             self.log = self.log + ("JSON error: %s.  Username and password correct?" % e)
-        except:
-            self.log = self.log + "failed!"
+        except Exception, e:
+            self.log = self.log + "failed! %s" % e
         else:
             self.log = self.log + "success!"
         print self.log
 
+# TODO: remove this
 if __name__ == '__main__':
     app = StravaUpload()
     app.run()
