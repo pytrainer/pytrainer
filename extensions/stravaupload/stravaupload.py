@@ -68,8 +68,10 @@ class StravaUpload:
         log = "Strava Upload "
         gpx_file = "%s/gpx/%s.gpx" % (self.conf_dir, id)
         try:
+            logging.debug("Getting user token")
             user_token = self.login_token();
             if user_token is not None:
+                logging.debug("Uploading GPX: %s" % gpx_file)
                 upload_id = self.upload(user_token, gpx_file)
                 if upload_id > 0:
                     log = log + "success (upload: %s)!" % upload_id
