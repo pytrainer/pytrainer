@@ -4,14 +4,18 @@ import json
 import urllib
 import urllib2
 import gtk
+import logging
+
+LOGIN_URL = "https://www.strava.com/api/v2/authentication/login"
+UPLOAD_URL = "http://www.strava.com/api/v2/upload"
+
+class ConfigError(Exception): pass
 
 class StravaUpload:
     def __init__(self, parent = None, pytrainer_main = None, conf_dir = None, options = None):
         self.pytrainer_main = pytrainer_main
         self.conf_dir = conf_dir
 
-        self.login_url = "https://www.strava.com/api/v2/authentication/login"
-        self.upload_url = "http://www.strava.com/api/v2/upload"
         self.strava_token = "%s/.strava_token" % self.conf_dir
 
         self.email = options['stravauploademail']
@@ -31,9 +35,12 @@ class StravaUpload:
         except:
             pass
         if token is None or token.strip() == '' :
-            values = { 'email' : self.email, 'password' : self.password }
-            result = self.get_web_data(self.login_url, values)
-            token = result['token']
+            if self.email and self.password:
+                values = { 'email' : self.email, 'password' : self.password }
+                result = self.get_web_data(LOGIN_URL, values)
+                token = result['token']
+            else:
+                raise ConfigError, "Username or password missing"
             try:
                 with open(self.strava_token, 'w') as f:
                     f.write(token)
@@ -52,11 +59,12 @@ class StravaUpload:
             pass
         if gpx is not None and gpx.strip() != '':
             values = { 'token': token, 'type': 'gpx', 'data': gpx }
-            result = self.get_web_data(self.upload_url, values)
+            result = self.get_web_data(UPLOAD_URL, values)
             upload_id = result['upload_id']
         return upload_id
 
     def run(self, id, activity = None):
+        logging.debug(">>")
         log = "Strava Upload "
         gpx_file = "%s/gpx/%s.gpx" % (self.conf_dir, id)
         try:
@@ -64,15 +72,19 @@ class StravaUpload:
             if user_token is not None:
                 upload_id = self.upload(user_token, gpx_file)
                 if upload_id > 0:
-                    log = log + "success (id: %s)!" % upload_id
+                    log = log + "success (upload: %s)!" % upload_id
                 else:
                     log = log + "failed to upload!"
         except (ValueError, KeyError), e:
-            log = log + ("JSON error: %s.  Username and password correct?" % e)
+            log = log + ("JSON error: %s." % e)
+        except ConfigError, e:
+            log = log + ("config error: %s." % e)
         except Exception, e:
             log = log + "failed! %s" % e
         md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, log)
-        md.set_title(_("Strave Upload"))
+        md.set_title(_("Strava Upload"))
         md.set_modal(False)
         md.run()
         md.destroy()
+        logging.debug(log)
+        logging.debug("<<")
