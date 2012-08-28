@@ -5,6 +5,7 @@ import urllib
 import urllib2
 import gtk
 import logging
+from subprocess import Popen, PIPE
 
 LOGIN_URL = "https://www.strava.com/api/v2/authentication/login"
 UPLOAD_URL = "http://www.strava.com/api/v2/upload"
@@ -68,6 +69,8 @@ class StravaUpload:
         log = "Strava Upload "
         gpx_file = "%s/gpx/%s.gpx" % (self.conf_dir, id)
         try:
+            progress = Popen(["zenity", "--text", "Strava Upload", "--percentage=0", "--auto-close=True", "--pulsate=True", "--progress", "--no-cancel"], stdin=PIPE)
+            progress.stdin.write('# Uploading record...\n')
             logging.debug("Getting user token")
             user_token = self.login_token();
             if user_token is not None:
@@ -77,6 +80,7 @@ class StravaUpload:
                     log = log + "success (upload: %s)!" % upload_id
                 else:
                     log = log + "failed to upload!"
+            progress.stdin.write('100\n')
         except (ValueError, KeyError), e:
             log = log + ("JSON error: %s." % e)
         except ConfigError, e:
