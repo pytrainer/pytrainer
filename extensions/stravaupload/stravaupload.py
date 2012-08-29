@@ -12,6 +12,19 @@ UPLOAD_URL = "http://www.strava.com/api/v2/upload"
 
 class ConfigError(Exception): pass
 
+class ProgressDialog():
+    def __init__(self):
+        self.progress = None
+    def __enter__(self):
+        self.progress = Popen(["zenity", "--text", "Strava Upload", "--percentage=0", "--auto-close=True", "--pulsate=True", "--progress", "--no-cancel"], stdin=PIPE)
+        self.progress.stdin.write('# Uploading record...\n')
+        return self
+
+    def __exit__(self, type, value, traceback):
+        self.progress.stdin.write('100\n')
+        self.progress.stdin.close()
+        self.progress.wait()
+
 class StravaUpload:
     def __init__(self, parent = None, pytrainer_main = None, conf_dir = None, options = None):
         self.pytrainer_main = pytrainer_main
@@ -53,15 +66,17 @@ class StravaUpload:
     def upload(self, token, gpx_file):
         gpx = None
         upload_id = 0
-        try:
-            with open(gpx_file) as f:
-                gpx = f.read()
-        except:
-            pass
-        if gpx is not None and gpx.strip() != '':
-            values = { 'token': token, 'type': 'gpx', 'data': gpx }
-            result = self.get_web_data(UPLOAD_URL, values)
-            upload_id = result['upload_id']
+        with ProgressDialog() as p:
+            user_token = self.login_token();
+            try:
+                with open(gpx_file) as f:
+                    gpx = f.read()
+            except:
+                pass
+            if gpx is not None and gpx.strip() != '':
+                values = { 'token': token, 'type': 'gpx', 'data': gpx }
+                result = self.get_web_data(UPLOAD_URL, values)
+                upload_id = result['upload_id']
         return upload_id
 
     def run(self, id, activity = None):
@@ -69,8 +84,6 @@ class StravaUpload:
         log = "Strava Upload "
         gpx_file = "%s/gpx/%s.gpx" % (self.conf_dir, id)
         try:
-            progress = Popen(["zenity", "--text", "Strava Upload", "--percentage=0", "--auto-close=True", "--pulsate=True", "--progress", "--no-cancel"], stdin=PIPE)
-            progress.stdin.write('# Uploading record...\n')
             logging.debug("Getting user token")
             user_token = self.login_token();
             if user_token is not None:
@@ -80,7 +93,6 @@ class StravaUpload:
                     log = log + "success (upload: %s)!" % upload_id
                 else:
                     log = log + "failed to upload!"
-            progress.stdin.write('100\n')
         except (ValueError, KeyError), e:
             log = log + ("JSON error: %s." % e)
         except ConfigError, e:
