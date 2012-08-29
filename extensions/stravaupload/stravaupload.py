@@ -67,7 +67,6 @@ class StravaUpload:
         gpx = None
         upload_id = 0
         with ProgressDialog() as p:
-            user_token = self.login_token();
             try:
                 with open(gpx_file) as f:
                     gpx = f.read()
