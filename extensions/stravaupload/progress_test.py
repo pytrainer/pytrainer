@@ -8,7 +8,6 @@ class ProgressDialogTest(unittest.TestCase):
     def testProgress(self):
         with ProgressDialog() as p:
             sleep(5)
-        print "after: %s" % p.progress.poll()
         self.assert_(p.progress.poll() is not None, 'zenity still running!')
         
 if __name__ == '__main__':
