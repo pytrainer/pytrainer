@@ -4,7 +4,7 @@ from stravaupload import ProgressDialog
 
 class ProgressDialogTest(unittest.TestCase):
     """ nose-compatible test to drive the class that wraps up
-        zentity.  Ensures the zenity process is closed correctly. 
+        zenity.  Ensures the zenity process is closed correctly. 
         
         Not part of the larger test cases as extensions are
         not installed as importable modules without modifying
