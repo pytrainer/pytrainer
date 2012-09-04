@@ -13,11 +13,12 @@ UPLOAD_URL = "http://www.strava.com/api/v2/upload"
 class ConfigError(Exception): pass
 
 class ProgressDialog():
-    def __init__(self):
+    def __init__(self, text):
         self.progress = None
+        self.text = text
     def __enter__(self):
         self.progress = Popen(["zenity", "--text", "Strava Upload", "--percentage=0", "--auto-close=True", "--pulsate=True", "--progress", "--no-cancel"], stdin=PIPE)
-        self.progress.stdin.write('# Uploading record...\n')
+        self.progress.stdin.write('# %s\n' % self.text)
         return self
 
     def __exit__(self, type, value, traceback):
@@ -32,14 +33,18 @@ class StravaUpload:
 
         self.strava_token = "%s/.strava_token" % self.conf_dir
 
-        self.email = options['stravauploademail']
-        self.password = options['stravauploadpassword']
+        self.email = None
+        self.password = None
+        if options:
+          self.email = options['stravauploademail']
+          self.password = options['stravauploadpassword']
 
-    def get_web_data(self, url, values):
-        data = urllib.urlencode(values)
-        req = urllib2.Request(url, data)
-        response = urllib2.urlopen(req)
-        return json.loads(response.read())
+    def get_web_data(self, url, values, text):
+        with ProgressDialog(text) as p:
+          data = urllib.urlencode(values)
+          req = urllib2.Request(url, data)
+          response = urllib2.urlopen(req)
+          return json.loads(response.read())
 
     def login_token(self):
         token = None
@@ -51,7 +56,7 @@ class StravaUpload:
         if token is None or token.strip() == '' :
             if self.email and self.password:
                 values = { 'email' : self.email, 'password' : self.password }
-                result = self.get_web_data(LOGIN_URL, values)
+                result = self.get_web_data(LOGIN_URL, values, "Validating user...")
                 token = result['token']
             else:
                 raise ConfigError, "Username or password missing"
@@ -66,16 +71,15 @@ class StravaUpload:
     def upload(self, token, gpx_file):
         gpx = None
         upload_id = 0
-        with ProgressDialog() as p:
-            try:
-                with open(gpx_file) as f:
-                    gpx = f.read()
-            except:
-                pass
-            if gpx is not None and gpx.strip() != '':
-                values = { 'token': token, 'type': 'gpx', 'data': gpx }
-                result = self.get_web_data(UPLOAD_URL, values)
-                upload_id = result['upload_id']
+        try:
+            with open(gpx_file) as f:
+                gpx = f.read()
+        except:
+            pass
+        if gpx is not None and gpx.strip() != '':
+            values = { 'token': token, 'type': 'gpx', 'data': gpx }
+            result = self.get_web_data(UPLOAD_URL, values, "Uploading record...")
+            upload_id = result['upload_id']
         return upload_id
 
     def run(self, id, activity = None):

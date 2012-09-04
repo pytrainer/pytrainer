@@ -12,7 +12,7 @@ class ProgressDialogTest(unittest.TestCase):
         
         Run 'nosetests extensions' from the project root to test. """
     def test_progress_process_closes_cleanly(self):
-        with ProgressDialog() as p:
+        with ProgressDialog("testing") as p:
             sleep(2)
         self.assert_(p.progress.poll() is not None, 'zenity still running!')
         
