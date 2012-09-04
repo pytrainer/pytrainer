@@ -36,15 +36,15 @@ class StravaUpload:
         self.email = None
         self.password = None
         if options:
-          self.email = options['stravauploademail']
-          self.password = options['stravauploadpassword']
+            self.email = options['stravauploademail']
+            self.password = options['stravauploadpassword']
 
     def get_web_data(self, url, values, text):
         with ProgressDialog(text) as p:
-          data = urllib.urlencode(values)
-          req = urllib2.Request(url, data)
-          response = urllib2.urlopen(req)
-          return json.loads(response.read())
+            data = urllib.urlencode(values)
+            req = urllib2.Request(url, data)
+            response = urllib2.urlopen(req)
+            return json.loads(response.read())
 
     def login_token(self):
         token = None
