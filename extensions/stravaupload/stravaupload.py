@@ -32,12 +32,19 @@ class StravaUpload:
         self.conf_dir = conf_dir
 
         self.strava_token = "%s/.strava_token" % self.conf_dir
+        self.strava_uploads = "%s/.strava_uploads" % self.conf_dir
 
         self.email = None
         self.password = None
         if options:
             self.email = options['stravauploademail']
             self.password = options['stravauploadpassword']
+      
+    def __enter__(self):
+        return self
+
+    def __exit__(self, type, value, traceback):
+        pass
 
     def get_web_data(self, url, values, text):
         with ProgressDialog(text) as p:
@@ -68,6 +75,14 @@ class StravaUpload:
                 pass
         return token 
 
+    def store_upload_id(self, id, upload_id):
+        try:
+          with open(self.strava_uploads, 'a') as f:
+            f.write('%s,%s\n' % (id, upload_id))
+        except IOError, e:
+          # log failure but continue...
+          logging.debug("Failed to write upload id: %s" % e)
+
     def upload(self, token, gpx_file):
         gpx = None
         upload_id = 0
@@ -93,6 +108,7 @@ class StravaUpload:
                 logging.debug("Uploading GPX: %s" % gpx_file)
                 upload_id = self.upload(user_token, gpx_file)
                 if upload_id > 0:
+                    self.store_upload_id(id, upload_id)
                     log = log + "success (upload: %s)!" % upload_id
                 else:
                     log = log + "failed to upload!"
