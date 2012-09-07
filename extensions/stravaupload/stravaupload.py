@@ -75,13 +75,26 @@ class StravaUpload:
                 pass
         return token 
 
+    def find_upload(self, id):
+        upload_id = None
+        try:
+            with open(self.strava_uploads) as f:
+                for line in f:
+                    upload = line.strip().split(',')
+                    if upload[0] == str(id):
+                       upload_id = upload[1]
+                       break
+        except IOError, e:
+            logging.debug("Failed to read uploads file: %s" % e)
+        return upload_id
+
     def store_upload_id(self, id, upload_id):
         try:
-          with open(self.strava_uploads, 'a') as f:
-            f.write('%s,%s\n' % (id, upload_id))
+            with open(self.strava_uploads, 'a') as f:
+                f.write('%s,%s\n' % (id, upload_id))
         except IOError, e:
-          # log failure but continue...
-          logging.debug("Failed to write upload id: %s" % e)
+            # log failure but continue...
+            logging.debug("Failed to write upload id: %s" % e)
 
     def upload(self, token, gpx_file):
         gpx = None
