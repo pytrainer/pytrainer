@@ -1,4 +1,55 @@
-See the pytrainer roadmap for more information http://sourceforge.net/apps/trac/pytrainer/roadmap
+We have migrated to GitHub, for more details about changelog please see git log documentation (http://git-scm.com/docs/git-log). One simple approach: git log --oneline --stat --decorate <since>..<until>
+
+* Changes for development version:
+
+- New features:
+
+c58fb0a Extension to upload activities to Strava - credits to spaceyjase (971be41)
+aa7fde6 Added gpx2garmin extension - thanks to spaceyjase (a139757)
+d8f864f New "pace" column in ranking tab (thanks to cz8s)
+
+- Improvements:
+
+cdc639d Amended path issue when testing gpx files
+ba37e2a Setting current date for new athlete log entry - on behalf of Andreas Mair
+0f5c84a Defining version number in one place for the whole application
+d2a0153 Looking for tag instead of non intuitive list indexes when using garmintools import
+3e785c8 Finally showing product description from garmin_get_info
+d256862 Added tests to check lap parsing with samples
+    ef474c7 Accept date range object for actualize_weekview()
+    56c038d Accept date range object for record.getrecordPeriod()
+    4d10679 Accept date object for record.newRecord()
+    4428a3e Accept date object for record.getRecordDayList()
+    4af8a35 Accept date object for record.getrecordList()
+    81ad5f5 Accept date object for date.getNameMonth()
+    1a5af41 Return date object from date.getDate()
+9ab01ab Use date range for week/month/year interval calculations ()
+4bca25e Add date range utility class
+    7f4578a Add pytrainer.util and pytrainer.core packages to setup script.
+    25145e6 Move pytrainer.lib.color module to pytrainer.util package
+    e9e6674 Move sport module to pytrainer.core package
+    7c7ff55 Move equipment module to pytrainer.core package
+8273a36 Create pytrainer.core package
+
+- Bugs fixed:
+
+46a1775 Fix year tab text labels/units (thanks to spaceyjase)
+d4d988f Fixed unhandled exception by removing the Osmarender layer
+41df1d8 Amended wrong value to average speed in totals graph. Thnx to lifo2 - ticket:173
+72a84c8 Better duration estimation for activities with no laps and several breaks - ticket:167
+d239c37 Matching xml parse with amended stylesheets data structure keeping backward compatibility
+ac5261d Amended stylesheets to match GPXDATA schema
+1dcf5fe Showing proper figures in graph title according to units. Thnx Jason for the hint
+
+- Internal stuff:
+
+5c25518 Updated links of some doc pages migrated to GitHub wiki
+797b3af Update version to "1.10.0"
+a6e7c49 Ignore generated artifacts
+9fd8b0c Adding a description in name section. Renaming man file. No need for README file any more
+e636650 Appending development suffix to version number
+
+############################################################
 
 - pytrainer changes for 1.9.1:
 
