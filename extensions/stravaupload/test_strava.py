@@ -50,3 +50,10 @@ class StravaUploadTest(unittest.TestCase):
                 pass
         self.assert_(upload_id == '33333', 'Failed to find entry')
         
+    def test_upload_id_is_none(self):
+        expected = None
+        upload_id = 0
+        with StravaUpload(None, None, '.', None) as app:
+            upload_id = app.find_upload(1)
+        self.assert_(expected == upload_id, 'Upload ID found, expected None')
+        
