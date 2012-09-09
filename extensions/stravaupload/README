@@ -8,3 +8,4 @@ Usage:
 2) Click the 'Upload to Strava' button.
 3) Did you earn that KOM?
 
+pytrainer will let you know if the record already exists at Strava.
