@@ -23,14 +23,14 @@ class StravaUploadTest(unittest.TestCase):
         self.assert_(p.progress.poll() is not None, 'zenity still running!')
 
     def test_store_upload_id_crates_file(self):
+        exists = False
         with StravaUpload(None, None, '.', None) as app:
             app.store_upload_id(1, 12345)
-        exists = False
-        try:
-            with open(app.strava_uploads) as f:
-                exists = True
-        except:
-            pass
+            try:
+                with open(app.strava_uploads) as f:
+                    exists = True
+            except:
+                pass
         self.assert_(exists is True, 'Store upload token failed')
 
     def test_store_upload_id(self):
@@ -38,15 +38,15 @@ class StravaUploadTest(unittest.TestCase):
             mints a new upload id (pytrainer's id aren't
             unique to Strava!) for each upload... but the docs
             don't say what the type is; treat as a string """
+        upload_id = ''
         with StravaUpload(None, None, '.', None) as app:
             app.store_upload_id(1, '11111')
             app.store_upload_id(2, 'some made up id')
             app.store_upload_id(3, 33333)
-        upload_id = ''
-        try:
-            with open(app.strava_uploads) as f:
-                upload_id = app.find_upload(3)
-        except:
-            pass
+            try:
+                with open(app.strava_uploads) as f:
+                    upload_id = app.find_upload(3)
+            except:
+                pass
         self.assert_(upload_id == '33333', 'Failed to find entry')
         
