@@ -223,7 +223,7 @@ class WindowImportdata(SimpleGladeApp):
             Currently displays the tool info and config grayed out if tool is not present
         '''
         logging.debug('>>')
-        self.updateStatusbar(self.statusbarDevice, "Checking for tools")
+        self.updateStatusbar(self.statusbarDevice, _("Checking for tools"))
         #Remove all components in vbox - in case of re-detection
         for child in self.vboxImportTools.get_children():
             self.vboxImportTools.remove(child)
@@ -282,7 +282,7 @@ class WindowImportdata(SimpleGladeApp):
                  returns None
         '''
         logging.debug('>>')
-        self.updateStatusbar(self.statusbarImportFile, "Checking file type for: " + import_filename)
+        self.updateStatusbar(self.statusbarImportFile, _("Checking file type for: ") + import_filename)
         #Get import files_* files
         fileList = glob.glob(self.data_path+"import/file_*.py")
         fileList.sort()
@@ -728,12 +728,13 @@ class WindowImportdata(SimpleGladeApp):
                         )
             else: #Selected file not understood by any of the process files
                 #Display error
-                logging.debug(_("File %s is of unknown or unsupported file type" % filename))
-                msg = _("File %s is of unknown or unsupported file type" % filename)
+                logging.debug("File %s is of unknown or unsupported file type" % filename)
+                msg = _("File %s is of unknown or unsupported file type") % filename
                 md = gtk.MessageDialog(self.win_importdata, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
                 md.set_title("Error")
                 md.run()
                 md.destroy()
+                self.updateStatusbar(self.statusbarImportFile, "")
         logging.debug('<<')
 
     def on_buttonFileClose_clicked(self, widget):
@@ -765,7 +766,7 @@ class WindowImportdata(SimpleGladeApp):
         filename = widget.get_filename()
         if not os.path.isfile(filename):
             return
-        self.updateStatusbar(self.statusbarCSVImport, "Got file: " + filename)
+        self.updateStatusbar(self.statusbarCSVImport, _("Got file: ") + filename)
         #Enable buttons
         self.buttonCSVProcess.set_sensitive(True)
         self.buttonCSVImport.set_sensitive(True)
@@ -862,7 +863,7 @@ class WindowImportdata(SimpleGladeApp):
 
         if dateCol == 0:
             #Error need to have at least a date
-            self.updateStatusbar(self.statusbarCSVImport, "ERROR: Must define at least a date column")
+            self.updateStatusbar(self.statusbarCSVImport, _("ERROR: Must define at least a date column"))
             return
 
         #Import...
