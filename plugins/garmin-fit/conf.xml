@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<pytrainer-plugin 
+	name="Garmin FIT file" 
+	description="Import your records from a Garmin FIT file (.fit) e.g. from a Garmin gps device (i.e. Forerunner 210)" 
+	plugincode="garminFIT"
+	pluginbutton="Import from file: Garmin FIT" 
+	executable="garmin-fit" 
+>
+	<conf-values variable="Force_sport_to" value=""/>
+</pytrainer-plugin>
