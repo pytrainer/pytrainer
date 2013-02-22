@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pytrainer 1.9\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-21 13:45+0100\n"
-"PO-Revision-Date: 2013-02-21 13:50+0100\n"
+"POT-Creation-Date: 2013-02-22 18:46+0100\n"
+"PO-Revision-Date: 2013-02-22 18:44+0100\n"
 "Last-Translator: David Garcia Granda <dgranda@gmail.com>\n"
 "Language-Team: Spanish <pytrainer-devel@lists.sourceforge.net>\n"
 "Language: es\n"
@@ -45,7 +45,7 @@ msgid "Active"
 msgstr "Habilitado"
 
 #: glade/equipment.glade:277 glade/equipment.glade:533
-#: pytrainer/gui/windowimportdata.py:353
+#: pytrainer/gui/windowimportdata.py:335
 msgid "Notes"
 msgstr "Notas"
 
@@ -141,7 +141,7 @@ msgstr "Borrar ficheros seleccionados y actividades asociadas"
 
 #: glade/importdata.glade:239
 msgid "Add files to import activities from"
-msgstr "Añadir ficheros desde los importar actividades"
+msgstr "Añadir ficheros desde los que importar actividades"
 
 #: glade/importdata.glade:264
 msgid "<b>Add file(s) to import activities from</b>"
@@ -153,7 +153,7 @@ msgstr "<b>Seleccionar actividades para importar</b>"
 
 #: glade/importdata.glade:330
 msgid "Import selected activities"
-msgstr "Importadas %d actividades"
+msgstr "Importar actividades seleccionadas"
 
 #: glade/importdata.glade:347
 msgid "Close Import dialog"
@@ -213,7 +213,7 @@ msgstr "Pestaña"
 
 #: glade/importdata.glade:746
 msgid "Comma"
-msgstr "Comma"
+msgstr "Coma"
 
 #: glade/importdata.glade:763
 msgid "Other"
@@ -261,7 +261,7 @@ msgstr "Duración (s)"
 
 #: glade/importdata.glade:947
 msgid "<b>PyTrainer Field</b>"
-msgstr "<b>Campo en PyTrainer</b>"
+msgstr "<b>Campo en pytrainer</b>"
 
 #: glade/importdata.glade:958
 msgid "<b>File Column</b>"
@@ -297,7 +297,7 @@ msgstr "Velocidad media (km/h)"
 #: glade/importdata.glade:1050 glade/pytrainer.glade:277
 #: pytrainer/gui/windowmain.py:110 pytrainer/gui/windowmain.py:118
 #: pytrainer/gui/windowmain.py:140 pytrainer/gui/windowmain.py:1517
-#: pytrainer/gui/windowimportdata.py:353 pytrainer/gui/windowrecord.py:211
+#: pytrainer/gui/windowimportdata.py:335 pytrainer/gui/windowrecord.py:211
 #: pytrainer/gui/windowprofile.py:65
 msgid "Sport"
 msgstr "Deporte"
@@ -1421,7 +1421,7 @@ msgstr "Comienzo"
 #: pytrainer/gui/windowmain.py:117 pytrainer/gui/windowmain.py:157
 #: pytrainer/gui/windowmain.py:175 pytrainer/gui/windowmain.py:185
 #: pytrainer/gui/windowmain.py:574 pytrainer/gui/windowmain.py:1516
-#: pytrainer/gui/windowimportdata.py:353 pytrainer/gui/windowrecord.py:211
+#: pytrainer/gui/windowimportdata.py:335 pytrainer/gui/windowrecord.py:211
 #: pytrainer/lib/activity.py:323 pytrainer/lib/activity.py:334
 #: pytrainer/lib/activity.py:406 pytrainer/lib/activity.py:417
 #: pytrainer/lib/activity.py:426 pytrainer/lib/activity.py:435
@@ -1716,143 +1716,156 @@ msgstr "¿Borrar esta entrada de la base de datos?"
 msgid "Are you sure?"
 msgstr "¿Está seguro?"
 
-#: pytrainer/gui/windowimportdata.py:117
+#: pytrainer/gui/windowimportdata.py:99
 msgid "No file selected"
 msgstr "Ningún fichero seleccionado"
 
-#: pytrainer/gui/windowimportdata.py:162
+#: pytrainer/gui/windowimportdata.py:144
 msgid "Configure"
 msgstr "Configurar"
 
-#: pytrainer/gui/windowimportdata.py:163
+#: pytrainer/gui/windowimportdata.py:145
 msgid "Run"
 msgstr "Ejecutar"
 
-#: pytrainer/gui/windowimportdata.py:171
+#: pytrainer/gui/windowimportdata.py:153
 msgid "Disabled"
 msgstr "Desactivo"
 
-#: pytrainer/gui/windowimportdata.py:173
+#: pytrainer/gui/windowimportdata.py:155
 msgid "Enabled"
 msgstr "Activo"
 
-#: pytrainer/gui/windowimportdata.py:226
+#: pytrainer/gui/windowimportdata.py:208
 msgid "Checking for tools"
 msgstr "Comprobando herramientas"
 
-#: pytrainer/gui/windowimportdata.py:253
+#: pytrainer/gui/windowimportdata.py:235
 msgid "GPS device found"
 msgstr "Dispositivos GPS encontrado"
 
-#: pytrainer/gui/windowimportdata.py:256
+#: pytrainer/gui/windowimportdata.py:238
 msgid "GPS device <b>not</b> found"
 msgstr "Dispositivo GPS <b>no</b> encontrado"
 
-#: pytrainer/gui/windowimportdata.py:263
+#: pytrainer/gui/windowimportdata.py:245
 msgid "This tool was not found on the system"
 msgstr "No se ha encontrado esta herramienta en el sistema"
 
-#: pytrainer/gui/windowimportdata.py:265
+#: pytrainer/gui/windowimportdata.py:247
 msgid " Homepage"
 msgstr "Página de inicio"
 
-#: pytrainer/gui/windowimportdata.py:285
+#: pytrainer/gui/windowimportdata.py:267
 msgid "Checking file type for: "
 msgstr "Comprobando tipo de fichero: "
 
-#: pytrainer/gui/windowimportdata.py:318
+#: pytrainer/gui/windowimportdata.py:300
 msgid "File"
 msgstr "Archivo"
 
-#: pytrainer/gui/windowimportdata.py:318
+#: pytrainer/gui/windowimportdata.py:300
 msgid "Type"
 msgstr "Tipo"
 
-#: pytrainer/gui/windowimportdata.py:318
+#: pytrainer/gui/windowimportdata.py:300
 msgid "Activities"
 msgstr "Actividades"
 
-#: pytrainer/gui/windowimportdata.py:353 pytrainer/gui/windowrecord.py:211
+#: pytrainer/gui/windowimportdata.py:335 pytrainer/gui/windowrecord.py:211
 msgid "Start Time"
 msgstr "Hora de comienzo"
 
-#: pytrainer/gui/windowimportdata.py:353 pytrainer/gui/windowrecord.py:211
+#: pytrainer/gui/windowimportdata.py:335 pytrainer/gui/windowrecord.py:211
 msgid "Duration"
 msgstr "Duración"
 
-#: pytrainer/gui/windowimportdata.py:499
+#: pytrainer/gui/windowimportdata.py:490
 msgid "Imported into database"
 msgstr "Importado a base de datos"
 
-#: pytrainer/gui/windowimportdata.py:543 pytrainer/gui/windowextensions.py:81
+#: pytrainer/gui/windowimportdata.py:538 pytrainer/gui/windowextensions.py:81
 #: pytrainer/gui/windowplugins.py:80
 #, python-format
 msgid "%s settings"
 msgstr "%s opciones"
 
-#: pytrainer/gui/windowimportdata.py:558 pytrainer/gui/windowextensions.py:70
+#: pytrainer/gui/windowimportdata.py:553 pytrainer/gui/windowextensions.py:70
 #: pytrainer/gui/windowplugins.py:71 pytrainer/gui/windowplugins.py:95
 msgid "Disable"
 msgstr "Desactivo"
 
-#: pytrainer/gui/windowimportdata.py:559 pytrainer/gui/windowextensions.py:72
+#: pytrainer/gui/windowimportdata.py:554 pytrainer/gui/windowextensions.py:72
 #: pytrainer/gui/windowplugins.py:69 pytrainer/gui/windowplugins.py:96
 msgid "Enable"
 msgstr "Activo"
 
-#: pytrainer/gui/windowimportdata.py:566 pytrainer/gui/windowplugins.py:103
+#: pytrainer/gui/windowimportdata.py:561 pytrainer/gui/windowplugins.py:103
 msgid "Ok"
 msgstr "Ok"
 
-#: pytrainer/gui/windowimportdata.py:626
+#: pytrainer/gui/windowimportdata.py:621
 msgid "Saving options"
 msgstr "Guardar configuración"
 
-#: pytrainer/gui/windowimportdata.py:628
+#: pytrainer/gui/windowimportdata.py:623
 msgid "Options saved"
 msgstr "Configuración guardada"
 
-#: pytrainer/gui/windowimportdata.py:653
+#: pytrainer/gui/windowimportdata.py:649
 msgid "Importing one activity"
 msgstr "Importando una actividad"
 
-#: pytrainer/gui/windowimportdata.py:654
-msgid "Imported one activity"
-msgstr "Una actividad importada"
-
-#: pytrainer/gui/windowimportdata.py:656
+#: pytrainer/gui/windowimportdata.py:651
 #, python-format
 msgid "Importing %d activities"
 msgstr "Importando %d actividades"
 
-#: pytrainer/gui/windowimportdata.py:657
+#: pytrainer/gui/windowimportdata.py:659
+msgid "No activity has been imported"
+msgstr "Ninguna actividad ha sido importada"
+
+#: pytrainer/gui/windowimportdata.py:661
+msgid "Imported one activity"
+msgstr "Una actividad importada"
+
+#: pytrainer/gui/windowimportdata.py:663
 #, python-format
 msgid "Imported %d activities"
 msgstr "Importadas %d actividades"
 
-#: pytrainer/gui/windowimportdata.py:676
+#: pytrainer/gui/windowimportdata.py:667
+msgid " Activity selected was already present in DB"
+msgstr " La actividad seleccionada ya estaba presente en base de datos"
+
+#: pytrainer/gui/windowimportdata.py:669
+#, python-format
+msgid " %d selected activities were already present in DB"
+msgstr "%d actividades seleccionadas ya estaban presentes en base de datos"
+
+#: pytrainer/gui/windowimportdata.py:677
 msgid "Choose a file (or files) to import activities from"
 msgstr "Seleccione fichero/s desde el/los que importar actividades"
 
-#: pytrainer/gui/windowimportdata.py:691 pytrainer/gui/windowimportdata.py:692
+#: pytrainer/gui/windowimportdata.py:692
 #, python-format
 msgid "Found file of type: %s"
 msgstr "Tipo de fichero encontrado: %s"
 
-#: pytrainer/gui/windowimportdata.py:716
+#: pytrainer/gui/windowimportdata.py:717
 msgid "Found in database"
 msgstr "Encontrado en base de datos"
 
-#: pytrainer/gui/windowimportdata.py:732
+#: pytrainer/gui/windowimportdata.py:735
 #, python-format
 msgid "File %s is of unknown or unsupported file type"
 msgstr "Fichero %s desconocido o no compatible"
 
-#: pytrainer/gui/windowimportdata.py:769
+#: pytrainer/gui/windowimportdata.py:772
 msgid "Got file: "
 msgstr "Fichero:"
 
-#: pytrainer/gui/windowimportdata.py:806
+#: pytrainer/gui/windowimportdata.py:809
 #, python-format
 msgid "Column %d"
 msgstr "Columna %d"
@@ -1860,6 +1873,11 @@ msgstr "Columna %d"
 #: pytrainer/gui/windowimportdata.py:866
 msgid "ERROR: Must define at least a date column"
 msgstr "Error: se debe definir al menos la columna de la fecha"
+
+#: pytrainer/gui/windowimportdata.py:998
+#, python-format
+msgid "Import completed. %d rows processed"
+msgstr "Importación completa. %d filas procesadas"
 
 #: pytrainer/gui/drawArea.py:166 pytrainer/extensions/googlemaps.py:130
 #: pytrainer/extensions/osm.py:102
