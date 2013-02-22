@@ -26,8 +26,8 @@ class WindowImportdata(SimpleGladeApp):
         self.parent = parent
         self.pytrainer_main = pytrainer_main
         self.configuration = config
-        self.activities_store = None
-        self.files_store = None
+        self.activities_store = None # gtk.ListStore containing gtk.TreeModelRow, see build_activities_tree_view
+        self.files_store = None # gtk.ListStore containing gtk.TreeModelRow, see build_files_tree_view
         self.processClasses = []
         self.plugins = Plugins(data_path, self.parent.parent)
         SimpleGladeApp.__init__(self, self.glade_path, self.root, self.domain)
@@ -307,7 +307,6 @@ class WindowImportdata(SimpleGladeApp):
                 column = gtk.TreeViewColumn(column_name, self.renderer1 )
                 column.add_attribute( self.renderer1, "active", column_index)
                 column.set_sort_column_id(-1)
-                #column.connect('clicked', self.treeviewImportFiles_header_checkbox, store)
             else:
                 #Add other columns
                 column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
@@ -331,8 +330,9 @@ class WindowImportdata(SimpleGladeApp):
                                 gobject.TYPE_STRING,
                                 gobject.TYPE_STRING,
                                 gobject.TYPE_STRING,
-                                gobject.TYPE_STRING )
-        column_names=["id", "", _("Start Time"), _("Distance"),_("Duration"),_("Sport"), _("Notes"), "file_id"]
+                                gobject.TYPE_STRING,
+                                gobject.TYPE_BOOLEAN )
+        column_names=["id", "", _("Start Time"), _("Distance"), _("Duration"), _("Sport"), _("Notes"), "file_id", "in_db"]
         for column_index, column_name in enumerate(column_names):
             if column_index == 1:
                 #Add checkbox column
@@ -347,7 +347,7 @@ class WindowImportdata(SimpleGladeApp):
                 #Add other columns
                 column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
                 column.set_sort_column_id(column_index)
-            if column_name == "id" or column_name == "file_id":
+            if column_name == "id" or column_name == "file_id" or column_name == "in_db":
                 column.set_visible(False)
             column.set_resizable(True)
             self.treeviewImportEvents.append_column(column)
@@ -411,7 +411,6 @@ class WindowImportdata(SimpleGladeApp):
         logging.debug("Saving default tab: %s, auto launch: %s" % (str(self.defaulttab), str(self.autoLaunchFileSelection)))
         self.configuration.setValue("pytraining","import_default_tab",self.defaulttab)
         self.configuration.setValue("pytraining","auto_launch_file_selection",self.autoLaunchFileSelection)
-        #option
 
     def removeSelectedFiles(self):
         '''
@@ -453,7 +452,7 @@ class WindowImportdata(SimpleGladeApp):
             logging.debug("activities_store is empty")
             return None
         for item in self.activities_store:
-            if item[1] is True: #Checkbox is True
+            if item[1] is True: #Checkbox is True (selected)
                 logging.debug("Added activity %s to selected list" % item)
                 file_id = int(item[7])
                 activity_id = item[0]
@@ -462,7 +461,8 @@ class WindowImportdata(SimpleGladeApp):
                 duration = item[4]
                 sport = item[5]
                 gpx_file = self.processClasses[file_id].getGPXFile(activity_id, file_id)[1]
-                selectedActivities.append((activity_id, start_time, distance, duration, sport, gpx_file, file_id))
+                in_db = item[8]
+                selectedActivities.append((activity_id, start_time, distance, duration, sport, gpx_file, file_id, in_db))
         logging.debug("Found %d selected activities to import" % len(selectedActivities))
         return selectedActivities
 
@@ -470,20 +470,33 @@ class WindowImportdata(SimpleGladeApp):
         """
             Function to import selected activity
         """
-        logging.debug( "Importing %d activities" % len(activities))
-        result = self.pytrainer_main.record.newMultiRecord(activities)
-        for activity in result:
-            if "db_id" in activity.keys() and type(activity["db_id"]) is types.IntType:
-                #Activity imported correctly
-                duration = "%0.0f:%0.0f:%02.0f" % (float(activity["rcd_time"][0]), float(activity["rcd_time"][1]), float(activity["rcd_time"][2]))
-                self.updateActivity(activity["activity_id"], activity["file_id"],
-                                    status = False,
-                                    notes = _("Imported into database"),
-                                    sport = activity["rcd_sport"],
-                                    distance = activity["rcd_distance"],
-                                    duration = duration)
+        logging.debug("Checking if activities are already present in database...")
+        for activity in activities:
+            if activity[7]:
+                logging.debug("Activity from %s (%s) already in database. Skipping import." % (activity[1], activity[5]))
+                activities.remove(activity)
+                self.updateActivity(activity[0], activity[6], status = False)
 
-    def updateActivity(self, activityID, file_id, status = None, notes = None, sport = None, distance = None, duration = None):
+        if len(activities) > 0:
+            logging.debug("Importing %d activities" % len(activities))
+            result = self.pytrainer_main.record.newMultiRecord(activities)
+            for activity in result:
+                if "db_id" in activity.keys() and type(activity["db_id"]) is types.IntType:
+                    #Activity imported correctly
+                    duration = "%0.0f:%0.0f:%02.0f" % (float(activity["rcd_time"][0]), float(activity["rcd_time"][1]), float(activity["rcd_time"][2]))
+                    self.updateActivity(activity["activity_id"], 
+                                        activity["file_id"],
+                                        status = False,
+                                        notes = _("Imported into database"),
+                                        sport = activity["rcd_sport"],
+                                        distance = activity["rcd_distance"],
+                                        duration = duration,
+                                        in_db = True)
+        else:
+            logging.debug("No activities to import")
+        return len(activities)
+
+    def updateActivity(self, activityID, file_id, status = None, notes = None, sport = None, distance = None, duration = None, in_db = None):
         path = 0
         for item in self.activities_store:
             if item[0] == activityID and item[7] == str(file_id):
@@ -497,6 +510,8 @@ class WindowImportdata(SimpleGladeApp):
                     self.activities_store[path][3] = distance
                 if duration is not None:
                     self.activities_store[path][4] = duration
+                if in_db is not None:
+                    self.activities_store[path][8] = in_db
             path +=1
 
     def close_window(self):
@@ -632,16 +647,26 @@ class WindowImportdata(SimpleGladeApp):
         if selectedCount > 0:
             if selectedCount == 1:
                 msgImporting = _("Importing one activity")
-                msgImported = _("Imported one activity")
             else:
                 msgImporting = _("Importing %d activities") % selectedCount
-                msgImported = _("Imported %d activities") % selectedCount
             self.updateStatusbar(self.statusbarImportFile, msgImporting)
             logging.debug(msgImporting)
             while gtk.events_pending(): # This allows the GUI to update
                 gtk.main_iteration()    # before completion of this entire action
-            #for activity in selectedActivities:
-            self.importSelectedActivities(selectedActivities)
+            importedActivities = self.importSelectedActivities(selectedActivities)
+            # Preparing feedback for user
+            if importedActivities == 0:
+                msgImported = _("No activity has been imported")
+            elif importedActivities == 1:
+                msgImported = _("Imported one activity")
+            elif importedActivities > 1:
+                msgImported = _("Imported %d activities") % importedActivities
+            discardedActivities = selectedCount - importedActivities
+            if discardedActivities > 0:
+                if discardedActivities == 1:
+                    msgImported += _(" Activity selected was already present in DB")
+                else:
+                    msgImported += _(" %d selected activities were already present in DB") % discardedActivities
             self.updateStatusbar(self.statusbarImportFile, msgImported)
             logging.debug(msgImported)
         self.buttonFileImport.set_sensitive(0) #Disable import button
@@ -665,7 +690,7 @@ class WindowImportdata(SimpleGladeApp):
             if self.processClasses[class_index] is not None:
                 filetype = self.processClasses[class_index].getFileType()
                 self.updateStatusbar(self.statusbarImportFile, _("Found file of type: %s") % filetype )
-                logging.debug(_("Found file of type: %s") % filetype)
+                logging.debug("Found file of type: %s" % filetype)
                 activitiesSummary = self.processClasses[class_index].getActivitiesSummary()
                 activity_count = len(activitiesSummary)
                 logging.debug("%s activities in file: %s" % (str(activity_count), filename) )
@@ -691,6 +716,7 @@ class WindowImportdata(SimpleGladeApp):
                     else:
                         note = _("Found in database")
                     activity_iter = self.activities_store.append()
+                    # Status (#1) can be changed by user (via checkbox), we need another field to know if activity is in DB 
                     self.activities_store.set(
                         activity_iter,
                         0, activity[0],
@@ -701,6 +727,7 @@ class WindowImportdata(SimpleGladeApp):
                         5, activity[5],
                         6, note,
                         7, class_index,
+                        8, activity [1],
                         )
             else: #Selected file not understood by any of the process files
                 #Display error
@@ -780,7 +807,6 @@ class WindowImportdata(SimpleGladeApp):
             #Otherwise just label them with numbers
             print len(reader.fieldnames)
             columns = [_("Column %d") % x for x in range(0, len(reader.fieldnames))]
-        #print columns
 
         for column in columns:
             self.cbCSVDate.append_text(column)
@@ -892,7 +918,6 @@ class WindowImportdata(SimpleGladeApp):
                     except:
                         #Unknown duration
                         logging.debug("Could not determine duration for '%s'" % _duration)
-                        #print("Could not determine duration for '%s'" % _duration)
                         durationSec = None
                 if durationSec is not None:
                     data['duration'] = durationSec
@@ -973,5 +998,4 @@ class WindowImportdata(SimpleGladeApp):
         self.updateStatusbar(self.statusbarCSVImport, _("Import completed. %d rows processed") % i)
         #Disable import button
         self.buttonCSVImport.set_sensitive(0)
-
         logging.debug('<<')
