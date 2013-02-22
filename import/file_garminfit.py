@@ -111,7 +111,6 @@ class garminfit():
                                                                  str(duration), 
                                                                  sport,
                                                                  ) )
-                    #print self.activitiesSummary
                     return True
         except:
             logging.debug("Traceback: %s" % traceback.format_exc())
