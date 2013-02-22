@@ -1,20 +1,5 @@
-# -*- coding: iso-8859-1 -*-
-
-#Copyright (C) Fiz Vazquez vud1@sindominio.net
-
-#This program is free software; you can redistribute it and/or
-#modify it under the terms of the GNU General Public License
-#as published by the Free Software Foundation; either version 2
-#of the License, or (at your option) any later version.
-
-#This program is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
-
-#You should have received a copy of the GNU General Public License
-#along with this program; if not, write to the Free Software
-#Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
 from SimpleGladeApp import SimpleGladeApp
 import gtk
@@ -46,9 +31,6 @@ class WindowImportdata(SimpleGladeApp):
         self.processClasses = []
         self.plugins = Plugins(data_path, self.parent.parent)
         SimpleGladeApp.__init__(self, self.glade_path, self.root, self.domain)
-
-    #def run(self):
-    #   SimpleGladeApp.__init__(self, self.glade_path, self.root, self.domain)
 
     def new(self):
         logging.debug(">>")
@@ -481,7 +463,7 @@ class WindowImportdata(SimpleGladeApp):
                 sport = item[5]
                 gpx_file = self.processClasses[file_id].getGPXFile(activity_id, file_id)[1]
                 selectedActivities.append((activity_id, start_time, distance, duration, sport, gpx_file, file_id))
-        logging.debug( "Found %d selected activities to import" % len(selectedActivities) )
+        logging.debug("Found %d selected activities to import" % len(selectedActivities))
         return selectedActivities
 
     def importSelectedActivities(self, activities):
@@ -500,7 +482,6 @@ class WindowImportdata(SimpleGladeApp):
                                     sport = activity["rcd_sport"],
                                     distance = activity["rcd_distance"],
                                     duration = duration)
-                #print "updating activity %s " % (str(activity))
 
     def updateActivity(self, activityID, file_id, status = None, notes = None, sport = None, distance = None, duration = None):
         path = 0
@@ -521,7 +502,6 @@ class WindowImportdata(SimpleGladeApp):
     def close_window(self):
         logging.debug('--')
         self.win_importdata.hide()
-        #self.win_importdata.destroy()
         self.quit()
 
     ############################
@@ -641,6 +621,7 @@ class WindowImportdata(SimpleGladeApp):
         ''' Remove selected files and associated activities from list '''
         logging.debug('>>')
         self.removeSelectedFiles()
+        self.updateStatusbar(self.statusbarOptions, "")
         logging.debug('<<')
 
     def on_buttonFileImport_clicked(self, widget):
@@ -653,8 +634,8 @@ class WindowImportdata(SimpleGladeApp):
                 msgImporting = _("Importing one activity")
                 msgImported = _("Imported one activity")
             else:
-                msgImporting = _("Importing %d activities" % selectedCount)
-                msgImported = _("Imported %d activities" % selectedCount)
+                msgImporting = _("Importing %d activities") % selectedCount
+                msgImported = _("Imported %d activities") % selectedCount
             self.updateStatusbar(self.statusbarImportFile, msgImporting)
             logging.debug(msgImporting)
             while gtk.events_pending(): # This allows the GUI to update
@@ -663,11 +644,6 @@ class WindowImportdata(SimpleGladeApp):
             self.importSelectedActivities(selectedActivities)
             self.updateStatusbar(self.statusbarImportFile, msgImported)
             logging.debug(msgImported)
-            #Display informational dialog box
-            #md = gtk.MessageDialog(self.win_importdata, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_CLOSE, msgImported)
-            #md.set_title(_("Import Success"))
-            #md.run()
-            #md.destroy()
         self.buttonFileImport.set_sensitive(0) #Disable import button
         logging.debug('<<')
 
@@ -859,8 +835,6 @@ class WindowImportdata(SimpleGladeApp):
         maxPaceCol = self.cbCSVMaxPace.get_active()
         commentsCol = self.cbCSVComments.get_active()
 
-        #print dateCol, distanceCol, durationCol, titleCol, sportCol, avgspeedCol, maxspeedCol, calCol, accCol, desCol, hrCol, maxHRCol, paceCol, maxPaceCol, commentsCol
-
         if dateCol == 0:
             #Error need to have at least a date
             self.updateStatusbar(self.statusbarCSVImport, _("ERROR: Must define at least a date column"))
@@ -911,7 +885,6 @@ class WindowImportdata(SimpleGladeApp):
                         durationSec = int(h)*3600 + int(m)*60 + int(s)
                     except:
                         logging.debug("Error calculating duration for '%s'" % _duration)
-                        #print("Error calculating duration for '%s'" % _duration)
                         durationSec = None
                 else:
                     try:
@@ -997,7 +970,7 @@ class WindowImportdata(SimpleGladeApp):
             logging.debug("Data", data)
             self.pytrainer_main.ddbb.insert_dict('records', data)
         #Display message....
-        self.updateStatusbar(self.statusbarCSVImport, "Import completed. %d rows processed" % i)
+        self.updateStatusbar(self.statusbarCSVImport, _("Import completed. %d rows processed") % i)
         #Disable import button
         self.buttonCSVImport.set_sensitive(0)
 
