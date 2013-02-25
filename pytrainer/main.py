@@ -155,8 +155,14 @@ class pyTrainer:
              logging.info("No active plugins")
         else:
              for plugin in activeplugins:
-                txtbutton = self.plugins.loadPlugin(plugin)
-                self.windowmain.addImportPlugin(txtbutton)
+                # From version 1.10 on all file imports are managed via File -> import wizard
+                # Only showing garmintools_full and garmin-hr in 'File' dropdown
+                plugin_name = os.path.basename(plugin)
+                if (plugin_name == "garmintools_full" or plugin_name == "garmin-hr"):
+                    txtbutton = self.plugins.loadPlugin(plugin)
+                    self.windowmain.addImportPlugin(txtbutton)
+                else:
+                    logging.debug('From version 1.10 on file import plugins are managed via File -> Import. Not displaying plugin ' + plugin_name)
         logging.debug('<<')
 
     def loadExtensions(self):
@@ -397,8 +403,12 @@ class pyTrainer:
         for plugin in activeplugins_after:
             if plugin not in activeplugins_before:
                 #new active plugin -> need to load plugin
-                txtbutton = self.plugins.loadPlugin(plugin)
-                self.windowmain.addImportPlugin(txtbutton)
+                plugin_name = os.path.basename(plugin)
+                if (plugin_name == "garmintools_full" or plugin_name == "garmin-hr"):
+                    txtbutton = self.plugins.loadPlugin(plugin)
+                    self.windowmain.addImportPlugin(txtbutton)
+                else:
+                    logging.debug('From version 1.10 on file import plugins are managed via File -> Import. Not displaying plugin ' + plugin_name)
         logging.debug('<<')
 
     def setExtensions(self, before, after):
