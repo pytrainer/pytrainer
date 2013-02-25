@@ -142,14 +142,11 @@ class WindowImportdata(SimpleGladeApp):
             name,description,status = self.plugins.getPluginInfo(pluginClass)
             #Create labels and buttons
             configButton = gtk.Button(label=_("Configure"))
-            runButton = gtk.Button(label=_("Run"))
             #Connect button handlers
             configButton.connect('clicked', self.on_pluginsButton_Configure_clicked, pluginClass)
-            runButton.connect('clicked', self.on_pluginsButton_Run_clicked, pluginClass)
             if status == 0 or status == "0":
                 #Plugin disabled
                 pluginFrame.set_sensitive(0)
-                runButton.set_sensitive(0)
                 statusLabel = gtk.Label(_("Disabled"))
             else:
                 statusLabel = gtk.Label(_("Enabled"))
@@ -159,7 +156,6 @@ class WindowImportdata(SimpleGladeApp):
             pluginTable.attach(pluginFrame, 0, 1, 0, 1, xoptions=gtk.EXPAND|gtk.FILL, xpadding=5)
             pluginTable.attach(statusLabel, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.SHRINK, xpadding=5, ypadding=5)
             pluginTable.attach(configButton, 2, 3, 0, 1, xoptions=gtk.FILL, yoptions=gtk.SHRINK, xpadding=5, ypadding=5)
-            pluginTable.attach(runButton, 3, 4, 0, 1, xoptions=gtk.FILL, yoptions=gtk.SHRINK, xpadding=5, ypadding=5)
             #Add frame to tab
             self.vboxPlugins.pack_start(pluginTable, expand=False, fill=False, padding=5)
         self.win_importdata.show_all()
@@ -563,14 +559,6 @@ class WindowImportdata(SimpleGladeApp):
         table.attach(button,0,2,i,i+1)
         self.prefwindow.add(table)
         self.prefwindow.show_all()
-
-    def on_pluginsButton_Run_clicked(self, button, pluginClass):
-        '''
-            Handler for plugin Buttons
-        '''
-        logging.debug('>>')
-        self.pytrainer_main.runPlugin(button,pluginClass)
-        logging.debug('<<')
 
     def on_pluginAcceptSettings_clicked(self, widget, pluginClass):
         '''
