@@ -26,7 +26,7 @@ require Exporter;
 	     FIT_HEADER_LENGTH
 	     );
 
-$version = 0.10;
+$version = 0.11;
 $version_major_scale = 100;
 
 sub version_major {
@@ -122,7 +122,7 @@ sub protocol_version_from_string {
   }
 }
 
-$protocol_version = &protocol_version_from_string(undef, "1.2");
+$protocol_version = &protocol_version_from_string(undef, "1.3");
 @protocol_version = &protocol_version_major(undef, $protocol_version);
 $protocol_version_header_crc_started = &protocol_version_from_string(undef, "1.2");
 
@@ -177,7 +177,7 @@ sub profile_version_from_string {
   }
 }
 
-$profile_version = &profile_version_from_string(undef, "2.00");
+$profile_version = &profile_version_from_string(undef, "4.10");
 @profile_version = &profile_version_major(undef, $profile_version);
 
 sub profile_version_string {
@@ -709,6 +709,8 @@ $template[FIT_FLOAT64] = 'd';
      'speed_zone' => 53,
      'monitoring' => 55,
      'hrv' => 78,
+     'length' => 101,
+     'monitoring_info' => 103,
      'pad' => 105,
    },
 
@@ -1001,6 +1003,7 @@ $template[FIT_FLOAT64] = 'd';
      'calorie_duration_alert' => 25,
      'activity' => 26,
      'fitness_equipment' => 27,
+     'length' => 28,
    },
 
    'event_type' => +{
@@ -1035,7 +1038,7 @@ $template[FIT_FLOAT64] = 'd';
    'activity_class' => +{
      '_base_type' => FIT_ENUM,
      '_mask' => 1,
-     'level' => 0x7F,
+     'level' => 0x7f,
      'level_max' => 100,
      'athlete' => 0x80,
    },
@@ -1170,6 +1173,7 @@ $template[FIT_FLOAT64] = 'd';
      'archinoetics' => 34,
      'the_hurt_box' => 35,
      'citizen_systems' => 36,
+     'magellan' => 37,
      'osynce' => 38,
      'holux' => 39,
      'concept2' => 40,
@@ -1183,6 +1187,18 @@ $template[FIT_FLOAT64] = 'd';
      'spantec' => 49,
      'metalogics' => 50,
      '4iiiis' => 51,
+     'seiko_epson' => 52,
+     'seiko_epson_oem' => 53,
+     'ifor_powell' => 54,
+     'maxwell_guider' => 55,
+     'star_trac' => 56,
+     'breakaway' => 57,
+     'alatech_technology_ltd' => 58,
+     'rotor' => 60,
+     'geonaute' => 61,
+     'id_bike' => 62,
+     'development' => 255,
+     'actigraphcorp' => 5759,
    },
 
    'garmin_product' => +{
@@ -1193,6 +1209,7 @@ $template[FIT_FLOAT64] = 'd';
      'axb01' => 3,
      'axb02' => 4,
      'hrm2ss' => 5,
+     'dsi_alf02' => 6,
      'fr405' => 717,
      'fr50' => 782,
      'fr60' => 988,
@@ -1731,7 +1748,7 @@ sub named_type_value {
      2 => +{'name' => 'type', 'type_name' => 'activity'},
      3 => +{'name' => 'event', 'type_name' => 'event'},
      4 => +{'name' => 'event_type', 'type_name' => 'event_type'},
-     5 => +{'name' => 'local_timestamp', 'type_name' => 'date_time'},
+     5 => +{'name' => 'local_timestamp', 'type_name' => 'local_date_time'},
      6 => +{'name' => 'event_group'},
    },
 
@@ -1813,7 +1830,29 @@ sub named_type_value {
      46 => +{'name' => 'pool_length_unit', 'type_name' => 'display_measure'},
      47 => +{'name' => 'num_active_lengths', 'unit' => 'lengths'},
      48 => +{'name' => 'total_work', 'unit' => 'J'},
+     49 => +{'name' => 'avg_altitude', 'scale' => 5, 'offset' => 500, 'unit' => 'm'},
+     50 => +{'name' => 'max_altitude', 'scale' => 5, 'offset' => 500, 'unit' => 'm'},
+     51 => +{'name' => 'gps_accuracy', 'unit' => 'm'},
+     52 => +{'name' => 'avg_grade', 'scale' => 100, 'unit' => '%'},
+     53 => +{'name' => 'avg_pos_grade', 'scale' => 100, 'unit' => '%'},
+     54 => +{'name' => 'avg_neg_grade', 'scale' => 100, 'unit' => '%'},
+     55 => +{'name' => 'max_pos_grade', 'scale' => 100, 'unit' => '%'},
+     56 => +{'name' => 'max_neg_grade', 'scale' => 100, 'unit' => '%'},
+     57 => +{'name' => 'avg_temperature', 'unit' => 'deg.C'},
+     58 => +{'name' => 'max_temperature', 'unit' => 'deg.C'},
+     59 => +{'name' => 'total_moving_time', 'scale' => 1000, 'unit' => 's'},
+     60 => +{'name' => 'avg_pos_vertical_speed', 'scale' => 1000, 'unit' => 'm/s'},
+     61 => +{'name' => 'avg_neg_vertical_speed', 'scale' => 1000, 'unit' => 'm/s'},
+     62 => +{'name' => 'max_pos_vertical_speed', 'scale' => 1000, 'unit' => 'm/s'},
+     63 => +{'name' => 'max_neg_vertical_speed', 'scale' => 1000, 'unit' => 'm/s'},
      64 => +{'name' => 'min_heart_rate', 'unit' => 'bpm'},
+     65 => +{'name' => 'time_in_hr_zone', 'scale' => 1000, 'unit' => 's'},
+     66 => +{'name' => 'time_in_speed_zone', 'scale' => 1000, 'unit' => 's'},
+     67 => +{'name' => 'time_in_cadence_zone', 'scale' => 1000, 'unit' => 's'},
+     68 => +{'name' => 'time_in_power_zone', 'scale' => 1000, 'unit' => 's'},
+     69 => +{'name' => 'avg_lap_time', 'scale' => 1000, 'unit' => 's'},
+     70 => +{'name' => 'best_lap_index'},
+     71 => +{'name' => 'min_altitude', 'scale' => 5, 'offset' => 500, 'unit' => 'm'},
    },
 
    'lap' => +{
@@ -1882,6 +1921,7 @@ sub named_type_value {
      28 => +{'name' => 'nec_long', 'unit' => 'semicircles'},
      29 => +{'name' => 'swc_lat', 'unit' => 'semicircles'},
      30 => +{'name' => 'swc_long', 'unit' => 'semicircles'},
+     32 => +{'name' => 'num_lengths', 'unit' => 'lengths'},
      33 => +{'name' => 'normalized_power', 'unit' => 'watts'},
      34 => +{'name' => 'left_right_balance', 'type_name' => 'left_right_balance_100'},
      35 => +{'name' => 'first_length_index'},
@@ -1890,7 +1930,29 @@ sub named_type_value {
      39 => +{'name' => 'sub_sport', 'type_name' => 'sub_sport'},
      40 => +{'name' => 'num_active_lengths', 'unit' => 'lengths'},
      41 => +{'name' => 'total_work', 'unit' => 'J'},
+     42 => +{'name' => 'avg_altitude', 'scale' => 5, 'offset' => 500, 'unit' => 'm'},
+     43 => +{'name' => 'max_altitude', 'scale' => 5, 'offset' => 500, 'unit' => 'm'},
+     44 => +{'name' => 'gps_accuracy', 'unit' => 'm'},
+     45 => +{'name' => 'avg_grade', 'scale' => 100, 'unit' => '%'},
+     46 => +{'name' => 'avg_pos_grade', 'scale' => 100, 'unit' => '%'},
+     47 => +{'name' => 'avg_neg_grade', 'scale' => 100, 'unit' => '%'},
+     48 => +{'name' => 'max_pos_grade', 'scale' => 100, 'unit' => '%'},
+     49 => +{'name' => 'max_neg_grade', 'scale' => 100, 'unit' => '%'},
+     50 => +{'name' => 'avg_temperature', 'unit' => 'deg.C'},
+     51 => +{'name' => 'max_temperature', 'unit' => 'deg.C'},
+     52 => +{'name' => 'total_moving_time', 'scale' => 1000, 'unit' => 's'},
+     53 => +{'name' => 'avg_pos_vertical_speed', 'scale' => 1000, 'unit' => 'm/s'},
+     54 => +{'name' => 'avg_neg_vertical_speed', 'scale' => 1000, 'unit' => 'm/s'},
+     55 => +{'name' => 'max_pos_vertical_speed', 'scale' => 1000, 'unit' => 'm/s'},
+     56 => +{'name' => 'max_neg_vertical_speed', 'scale' => 1000, 'unit' => 'm/s'},
+     57 => +{'name' => 'time_in_hr_zone', 'scale' => 1000, 'unit' => 's'},
+     58 => +{'name' => 'time_in_speed_zone', 'scale' => 1000, 'unit' => 's'},
+     59 => +{'name' => 'time_in_cadence_zone', 'scale' => 1000, 'unit' => 's'},
+     60 => +{'name' => 'time_in_power_zone', 'scale' => 1000, 'unit' => 's'},
+     61 => +{'name' => 'repetition_num'},
+     62 => +{'name' => 'min_altitude', 'scale' => 5, 'offset' => 500, 'unit' => 'm'},
      63 => +{'name' => 'min_heart_rate', 'unit' => 'bpm'},
+     71 => +{'name' => 'wkt_step_index'},
    },
 
    'length' => +{
@@ -1932,6 +1994,9 @@ sub named_type_value {
      28 => +{'name' => 'compressed_accumulated_power', 'unit' => 'watts'},
      29 => +{'name' => 'accumulated_power', 'unit' => 'watts'},
      30 => +{'name' => 'left_right_balance', 'type_name' => 'left_right_balance'},
+     31 => +{'name' => 'gps_accuracy', 'unit' => 'm'},
+     32 => +{'name' => 'vertical_speed', 'scale' => 1000, 'unit' => 'm/s'},
+     33 => +{'name' => 'calories', 'scale' => 1, 'unit' => 'kcal'},
    },
 
    'event' => +{
@@ -2134,7 +2199,7 @@ sub named_type_value {
      3 => +{'name' => 'sport', 'type_name' => 'sport'},
      4 => +{'name' => 'elapsed_time', 'unit' => 's'},
      5 => +{'name' => 'sessions'},
-
+     6 => +{'name' => 'active_time', 'unit' => 's'},
    },
 
    'weight_scale' => +{
@@ -3409,6 +3474,20 @@ The author is very grateful to Garmin for supplying us free software programers 
 which includes detailed documetation about its proprietary file format.
 
 =head1 CHANGES
+
+=head2 0.10 --E<gt> 0.11
+
+=over 4
+
+=item C<profile_version>
+
+=item C<%named_type>
+
+=item C<%msgtype_by_name>
+
+follow global profile version 4.10.
+
+=back
 
 =head2 0.09 --E<gt> 0.10
 
