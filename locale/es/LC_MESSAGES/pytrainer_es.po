@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pytrainer 1.10\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2013-02-25 13:35+0100\n"
+"POT-Creation-Date: 2013-03-05 19:39+0100\n"
 "PO-Revision-Date: 2013-02-25 13:37+0100\n"
 "Last-Translator: David Garcia Granda <dgranda@gmail.com>\n"
 "Language-Team: Spanish <pytrainer-devel@lists.sourceforge.net>\n"
@@ -2179,39 +2179,39 @@ msgstr "Velocidad"
 msgid "Delete this waypoint?"
 msgstr "¿Borrar este waypoint?"
 
-#: import/file_gpxplus.py:41
+#: imports/file_gpxplus.py:41
 msgid "GPS eXchange file"
 msgstr "Fichero de intercambio GPS"
 
-#: import/file_kml20.py:47
+#: imports/file_kml20.py:47
 msgid "Geodistance kml version 2.0 file"
 msgstr "Fichero kml v2.0"
 
-#: import/file_garmintcxv1.py:45
+#: imports/file_garmintcxv1.py:45
 msgid "Garmin training center database file version 1"
 msgstr "Versión 1 del fichero Garmin training center database"
 
-#: import/file_gpxplusNokia.py:41
+#: imports/file_gpxplusNokia.py:41
 msgid "Nokia Export - GPS eXchange file"
 msgstr "Nokia Export - Fichero de intercambio GPS"
 
-#: import/tool_gpsbabel.py:37
+#: imports/tool_gpsbabel.py:37
 msgid "GPSBabel"
 msgstr "GPSBabel"
 
-#: import/tool_garmintools.py:37
+#: imports/tool_garmintools.py:37
 msgid "Garmintools"
 msgstr "Garmintools"
 
-#: import/tool_gant.py:37
+#: imports/tool_gant.py:37
 msgid "Gant"
 msgstr "Gant"
 
-#: import/file_garmintools.py:44
+#: imports/file_garmintools.py:44
 msgid "Garmin tools dump file"
 msgstr "Fichero de volcado de datos de Garmintools"
 
-#: import/file_garmintcxv2.py:44
+#: imports/file_garmintcxv2.py:44
 msgid "Garmin training center database file version 2"
 msgstr "Versión 2 del fichero Garmin training center database"
 

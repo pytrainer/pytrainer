@@ -15,10 +15,12 @@ class garminfit():
      '''
     def __init__(self, parent = None, data_path = None):
         self.parent = parent
-        self.pytrainer_main = parent.parent
-        self.tmpdir = self.pytrainer_main.profile.tmpdir
-        self.main_data_path = data_path
-        self.data_path = os.path.dirname(__file__)
+        if parent is not None:
+        	self.pytrainer_main = parent.parent
+        	self.tmpdir = self.pytrainer_main.profile.tmpdir
+        if data_path is not None:
+        	self.main_data_path = data_path
+        	self.data_path = os.path.dirname(__file__)
         self.xmldoc = None
         self.activitiesSummary = []
         self.activities = []
@@ -84,45 +86,49 @@ class garminfit():
         logging.debug("<<")
         return result
 
+    def validate(self, xmldoc, schema):
+        xmlschema_doc = etree.parse(self.main_data_path + schema)
+        xmlschema = etree.XMLSchema(xmlschema_doc)
+        return xmlschema.validate(xmldoc)
+
+    def buildActivitiesSummary(self):
+        self.activities = self.getActivities()
+        for activity in self.activities:
+            startTime = self.getDateTime(self.getStartTimeFromActivity(activity))
+            inDatabase = self.inDatabase(activity, startTime)
+            sport = self.getSport(activity)
+            distance, duration  = self.getDetails(activity, startTime)
+            distance = distance / 1000.0
+            self.activitiesSummary.append((self.activities.index(activity),
+                                                                 inDatabase, 
+                                                                 startTime[1].strftime("%Y-%m-%dT%H:%M:%S"), 
+                                                                 "%0.2f" % distance , 
+                                                                 str(duration), 
+                                                                 sport,
+                                                                 ))
+
     def testFile(self, filename):
         logging.debug('>>')
         logging.debug("Testing " + filename)
         try:
             # Original file is in fit format, so first it will be translated into tcxv2 and then parsed
             xmldoc = etree.fromstring(self.fromFIT2TCXv2(filename))
-            #Parse XML schema
-            xmlschema_doc = etree.parse(self.main_data_path+"schemas/GarminTrainingCenterDatabase_v2.xsd")
-            xmlschema = etree.XMLSchema(xmlschema_doc)
-            if (xmlschema.validate(xmldoc)):
+            valid_xml = self.validate(xmldoc, "schemas/GarminTrainingCenterDatabase_v2.xsd")
+            if (valid_xml):
                 logging.debug("FIT file converted to valid TCXv2")
                 self.xmldoc = xmldoc
                 #Possibly multiple entries in file
-                self.activities = self.getActivities(xmldoc)
-                for activity in self.activities:
-                    startTime = self.getDateTime(self.getStartTimeFromActivity(activity))
-                    inDatabase = self.inDatabase(activity, startTime)
-                    sport = self.getSport(activity)
-                    distance, duration  = self.getDetails(activity, startTime)
-                    distance = distance / 1000.0
-                    self.activitiesSummary.append( (self.activities.index(activity),
-                                                                 inDatabase, 
-                                                                 startTime[1].strftime("%Y-%m-%dT%H:%M:%S"), 
-                                                                 "%0.2f" % distance , 
-                                                                 str(duration), 
-                                                                 sport,
-                                                                 ) )
-                    return True
+                self.buildActivitiesSummary()
+                return True
         except:
             logging.debug("Traceback: %s" % traceback.format_exc())
             return False 
         return False
 
-    def getActivities(self, tree):
+    def getActivities(self):
         '''Function to return all activities in Garmin training center version 2 file
         '''
-        #root = tree.getroot()
-        #fromstring() parses XML from a string directly into an Element, which is the root element of the parsed tree.
-        activities = tree.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Activity")
+        activities = self.xmldoc.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Activity")
         return activities
 
     def inDatabase(self, activity, startTime):
@@ -175,7 +181,6 @@ class garminfit():
         """
         xslt_doc = etree.parse(self.data_path+"/translate_garmintcxv2.xsl")
         transform = etree.XSLT(xslt_doc)
-        #xml_doc = etree.parse(filename)
         xml_doc = activity
         result_tree = transform(xml_doc)
         result_tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')

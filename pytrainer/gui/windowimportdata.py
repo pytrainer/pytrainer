@@ -206,7 +206,7 @@ class WindowImportdata(SimpleGladeApp):
         for child in self.vboxImportTools.get_children():
             self.vboxImportTools.remove(child)
         #Get import tool_* files
-        fileList = glob.glob(self.data_path+"import/tool_*.py")
+        fileList = glob.glob(self.data_path+"imports/tool_*.py")
         logging.debug("Tools filelist: %s" % fileList)
         for toolFile in fileList:
             index = fileList.index(toolFile)
@@ -261,8 +261,8 @@ class WindowImportdata(SimpleGladeApp):
         '''
         logging.debug('>>')
         self.updateStatusbar(self.statusbarImportFile, _("Checking file type for: ") + import_filename)
-        #Get import files_* files
-        fileList = glob.glob(self.data_path+"import/file_*.py")
+        #Get imports files_* files
+        fileList = glob.glob(self.data_path+"imports/file_*.py")
         fileList.sort()
         logging.debug("File filelist: %s" % fileList)
         for processingFile in fileList:
@@ -271,7 +271,7 @@ class WindowImportdata(SimpleGladeApp):
             logging.debug("Trying: %s" % filename)
             classname = filename.lstrip('file_')
             #Import module
-            sys.path.insert(0, self.data_path+"import")
+            sys.path.insert(0, self.data_path + "imports")
             module = __import__(filename)
             processMain = getattr(module, classname)
             #Instantiate module
