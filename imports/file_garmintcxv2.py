@@ -58,8 +58,8 @@ class garmintcxv2():
                 lap_duration = float(lap.findtext(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}TotalTimeSeconds"))
                 lap_distance = float(lap.findtext(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}DistanceMeters"))
                 logging.debug("Lap distance (m): %f | duration (s): %f" % (lap_distance, lap_duration))
-            distance += lap_distance
-            duration += lap_duration
+                distance += lap_distance
+                duration += lap_duration
             hours = int(duration)//3600
             minutes = (int(duration)/60)%60
             seconds = int(duration)%60
@@ -110,6 +110,7 @@ class garmintcxv2():
                                                                  str(duration), 
                                                                  sport,
                                                                  ))
+        print self.activitiesSummary
         logging.debug("<<")
 
     def testFile(self, filename):
