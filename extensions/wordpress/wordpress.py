@@ -267,7 +267,7 @@ class wordpress:
         return blog_figures
 
     def createFoot(self):
-        return ''' <br/><center>Powered by <a href='http://sourceforge.net/projects/pytrainer/'>Pytrainer</a></center>'''
+        return ''' <br/><center>Powered by <a href='https://github.com/pytrainer/pytrainer'>pytrainer</a></center>'''
 
     def createTitle(self):
         if self.title==None:

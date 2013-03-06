@@ -1,6 +1,6 @@
 Summary:
 
-gpx2garmin is a pytrainer (http://sourceforge.net/projects/pytrainer/) extension that will export the current record's gpx track to a garmin device.
+gpx2garmin is a pytrainer (https://github.com/pytrainer/pytrainer) extension that will export the current record's gpx track to a garmin device.
 
 Requirements:
 
