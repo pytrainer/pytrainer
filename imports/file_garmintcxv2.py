@@ -110,7 +110,6 @@ class garmintcxv2():
                                                                  str(duration), 
                                                                  sport,
                                                                  ))
-        print self.activitiesSummary
         logging.debug("<<")
 
     def testFile(self, filename):
