@@ -22,5 +22,18 @@ class GarminTCXv2Test(unittest.TestCase):
         except():
             self.fail()
 
+    def test_workout_summary(self):
+        summary = [(0, False, '2012-10-14T12:02:42', '10.12', '00:39:51', 'Running')]
+        try:
+            current_path = os.path.dirname(os.path.abspath(__file__))
+            data_path = os.path.dirname(os.path.dirname(os.path.dirname(current_path))) + "/"
+            tcx_file = current_path + "/sample.tcx"
+            garmin_tcxv2 = garmintcxv2(None, data_path)
+            garmin_tcxv2.xmldoc = etree.parse(tcx_file)
+            garmin_tcxv2.buildActivitiesSummary()
+            self.assertEquals(summary, garmin_tcxv2.activitiesSummary)
+        except():
+            self.fail()
+
 if __name__ == '__main__':
     unittest.main()
