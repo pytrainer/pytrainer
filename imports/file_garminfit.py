@@ -95,7 +95,7 @@ class garminfit():
         self.activities = self.getActivities()
         for activity in self.activities:
             startTime = self.getDateTime(self.getStartTimeFromActivity(activity))
-            inDatabase = self.inDatabase(activity, startTime)
+            inDatabase = self.inDatabase(startTime)
             sport = self.getSport(activity)
             distance, duration  = self.getDetails(activity, startTime)
             distance = distance / 1000.0
@@ -109,15 +109,14 @@ class garminfit():
 
     def testFile(self, filename):
         logging.debug('>>')
-        logging.debug("Testing " + filename)
+        logging.debug("Testing %s" %filename)
         try:
             # Original file is in fit format, so first it will be translated into tcxv2 and then parsed
             xmldoc = etree.fromstring(self.fromFIT2TCXv2(filename))
             valid_xml = self.validate(xmldoc, "schemas/GarminTrainingCenterDatabase_v2.xsd")
             if (valid_xml):
-                logging.debug("FIT file converted to valid TCXv2")
+                logging.debug("FIT file %s converted to valid TCXv2" %filename)
                 self.xmldoc = xmldoc
-                #Possibly multiple entries in file
                 self.buildActivitiesSummary()
                 return True
         except:
@@ -131,16 +130,19 @@ class garminfit():
         activities = self.xmldoc.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Activity")
         return activities
 
-    def inDatabase(self, activity, startTime):
+    def inDatabase(self, startTime):
         #comparing date and start time (sport may have been changed in DB after import)
-        time = startTime
-        if time is None:
-            return False
-        time = time[0].strftime("%Y-%m-%dT%H:%M:%SZ")
-        if self.parent.parent.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
-            return True
+        logging.debug('>>')
+        result = False
+        if startTime is not None:
+            logging.info("Checking if activity from %s exists in db" % startTime[0])
+            time = startTime[0].strftime("%Y-%m-%dT%H:%M:%SZ")
+            if self.parent.parent.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
+                result = True
         else:
-            return False
+            logging.info("No start time provided, nothing to check")
+        logging.debug('<<')
+        return result
 
     def getSport(self, activity):
         try:
