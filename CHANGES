@@ -1,15 +1,41 @@
 We have migrated to GitHub, for more details about changelog please see git log documentation (http://git-scm.com/docs/git-log). One simple approach: git log --oneline --stat --decorate <since>..<until>
 
-* Changes for development version:
+- pytrainer changes for 1.10.0:
+
+- Known issues
+
+Can't maximize main window. Issue related to graph subtab in register tab - SF tickets #113 #124
 
 - New features:
 
+Support for Garmin FIT format via file import (ticket #5)
+    979b7c9 Adding test case for workout summary - ticket #5
+    8e6f8d2 Removed print entry
+    9a6245e Amended recursive addition issue when indenting - ticket #5
+    0cb21ca Adding basic test case for TCXv2 file import - ticket #5
+    d4d1b2b Code refactoring - ticket #5
+    a0da00d Adding test case for Garmin FIT file import - ticket #5
+    d63ce44 Renaming directory to avoid conflict with reserved 'import' word - ticket #5
+    4581b67 Added perl dependency for garmin-fit plugin - ticket #5
+    a7eeae2 Updated version to 0.11 - ticket #5
+    de9a78b Updating ES localization
+    577b0de Including garmin-fit plugin also with external perl files needed to translate from FIT to TCXv2 - ticket #5
+    d17913f Plugins are executed from 'Import' tabs
+    3c0e645 File imports only managed via 'Import' menu. Need to migrate import processes which read data directly from GPS device
+    9444f5b Updating ES localization
+    b8da65c Prevent importing already present activities
+    222b89f Removed commented lines
+    380a940 Removed commented lines. Amended minor localization issues
+    6176111 First step to import Garmin FIT files. Quick parse for validation previous to actual import
+    43a0e56 Updating ES locale
+    cb936d4 Including more messages for localization. Updating status bar text when there is an error with a file
 c58fb0a Extension to upload activities to Strava - credits to spaceyjase (971be41)
 aa7fde6 Added gpx2garmin extension - thanks to spaceyjase (a139757)
 d8f864f New "pace" column in ranking tab (thanks to cz8s)
 
 - Improvements:
 
+c5ccfe9 Retrieving all record related data from DB when exporting to csv - #11
 cdc639d Amended path issue when testing gpx files
 ba37e2a Setting current date for new athlete log entry - on behalf of Andreas Mair
 0f5c84a Defining version number in one place for the whole application
@@ -43,6 +69,10 @@ ac5261d Amended stylesheets to match GPXDATA schema
 
 - Internal stuff:
 
+2886ac4 (HEAD, pytrainer-git/master, master) Updated man file
+bef3116 Getting closer to release: updated version
+83d9e50 Updated pytrainer project url
+f314697 Removed link to SourceForge and amended 'imports' directory name
 5c25518 Updated links of some doc pages migrated to GitHub wiki
 797b3af Update version to "1.10.0"
 a6e7c49 Ignore generated artifacts
