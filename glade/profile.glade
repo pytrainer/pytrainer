@@ -19,6 +19,7 @@
             <child>
               <widget class="GtkVBox" id="vbox24">
                 <property name="visible">True</property>
+                <!-- Start of unit system -->
                 <child>
                   <widget class="GtkFrame" id="frame14">
                     <property name="visible">True</property>
@@ -85,6 +86,76 @@
                     <property name="position">0</property>
                   </packing>
                 </child>
+                <!-- End of unit system -->
+                <!-- Start of start screen -->
+                <child>
+                  <widget class="GtkFrame" id="frame_ss">
+                    <property name="visible">True</property>
+                    <property name="border_width">5</property>
+                    <property name="label_xalign">0</property>
+                    <property name="shadow_type">none</property>
+                    <child>
+                      <widget class="GtkAlignment" id="alignment_ss">
+                        <property name="visible">True</property>
+                        <property name="left_padding">12</property>
+                        <child>
+                          <widget class="GtkHBox" id="hbox_ss">
+                            <property name="visible">True</property>
+                            <child>
+                              <widget class="GtkRadioButton" id="ss_last_entry">
+                                <property name="label" translatable="yes">Last entry</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="active">True</property>
+                                <property name="draw_indicator">True</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="padding">5</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <widget class="GtkRadioButton" id="ss_current_day">
+                                <property name="label" translatable="yes">Current day</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="draw_indicator">True</property>
+                                <property name="group">ss_last_entry</property>
+                              </widget>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="padding">5</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </widget>
+                        </child>
+                      </widget>
+                    </child>
+                    <child>
+                      <widget class="GtkLabel" id="label_ss">
+                        <property name="visible">True</property>
+                        <property name="label" translatable="yes">&lt;b&gt;Start screen&lt;/b&gt;</property>
+                        <property name="use_markup">True</property>
+                      </widget>
+                      <packing>
+                        <property name="type">label_item</property>
+                      </packing>
+                    </child>
+                  </widget>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">False</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <!-- End of start screen -->
+                <!-- Start of default map -->
                 <child>
                   <widget class="GtkFrame" id="frameDefaultMapViewer">
                     <property name="visible">True</property>
@@ -127,9 +198,6 @@
                                 <property name="position">1</property>
                               </packing>
                             </child>
-                            <child>
-                              <placeholder/>
-                            </child>
                           </widget>
                         </child>
                       </widget>
@@ -148,9 +216,11 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">1</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
+                <!-- End of default map -->
+                <!-- Start of database info -->
                 <child>
                   <widget class="GtkFrame" id="frame13">
                     <property name="visible">True</property>
@@ -302,12 +372,6 @@
                                 <property name="y_options"></property>
                               </packing>
                             </child>
-                            <child>
-                              <placeholder/>
-                            </child>
-                            <child>
-                              <placeholder/>
-                            </child>
                           </widget>
                         </child>
                       </widget>
@@ -326,11 +390,8 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">False</property>
-                    <property name="position">2</property>
+                    <property name="position">3</property>
                   </packing>
-                </child>
-                <child>
-                  <placeholder/>
                 </child>
               </widget>
             </child>
