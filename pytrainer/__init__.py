@@ -1,5 +1,5 @@
-# Based in Django's approach -> http://code.djangoproject.com/svn/django/trunk/django/__init__.py
-VERSION = (1, 10, 1, 'dev')
+# Based on Django's approach -> http://code.djangoproject.com/svn/django/trunk/django/__init__.py
+VERSION = (1, 11, 0, 'dev')
 #VERSION = (1, 11, 0, 'final')
 
 def get_version(version=None):
