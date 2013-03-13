@@ -65,6 +65,7 @@ class Profile:
             "default_viewer":"0",
             "window_size":"800, 640",
             "activitypool_size": "10",
+            "prf_startscreen":"current_day",
             }
 
         #Parse pytrainer configuration file
@@ -203,14 +204,14 @@ class Profile:
     def setValue(self, tag, variable, value, delay_write=False):
         logging.debug(">>")
         if tag != "pytraining":
-            print "ERROR - pytraining is the only profile tag supported"
+            logging.error("ERROR: pytraining is the only profile tag supported")
         logging.debug("Setting %s to %s" % (variable, value))
         if self.xml_tree is None:
             #new config file....
             self.xml_tree = etree.parse(StringIO('''<?xml version='1.0' encoding='UTF-8'?><pytraining />'''))
         self.xml_tree.getroot().set(variable, value.decode('utf-8'))
         if not delay_write:
-            logging.debug("Writting...")
+            logging.debug("Writing...")
             self.xml_tree.write(self.config_file, xml_declaration=True, encoding='UTF-8')
         logging.debug("<<")
 

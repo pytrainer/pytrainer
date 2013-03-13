@@ -43,6 +43,7 @@ class WindowProfile(SimpleGladeApp):
         self._sport_service = sport_service
 
     def new(self):
+        logging.debug(">>")
         self.gender_options = {
             0:_("Male"),
             1:_("Female")
@@ -80,55 +81,76 @@ class WindowProfile(SimpleGladeApp):
         #initialise equipment tab:
         equipment_service = EquipmentService(self.pytrainer_main.ddbb)
         equipment_ui = EquipmentUi(self.data_path + "/glade", equipment_service)
-        self.equipment_container.add(equipment_ui)            
+        self.equipment_container.add(equipment_ui) 
+        logging.debug("<<")           
         
     def present(self):
         self.newprofile.present()
         
-    def setValues(self,list_options):
+    def setValues(self, list_options):
+        logging.debug(">>")
+        # Need to think if it does make sense to use pprint -> compatibility issues
+        #print list_options
         for i in self.conf_options.keys():
             if not list_options.has_key(i):
-                print 'no list options for: ' + i
+                logging.info('No list options for %s' %s)
                 continue
             if i == "default_viewer":
                 if list_options[i] == "1":
-                    logging.debug("Setting defult map viewer to OSM")
+                    logging.info("Setting default map viewer to OSM")
                     self.radiobuttonDefaultOSM.set_active(1)
                 else:
-                    logging.debug("Setting defult map viewer to Google")
+                    logging.info("Setting default map viewer to Google")
                     self.radiobuttonDefaultGMap.set_active(1)
+            elif i == "prf_startscreen":
+                if list_options[i] == "current_day":
+                    self.radioButtonStartScreenCurrentDay.set_active(1)
+                else:
+                    self.radioButtonStartScreenLastEntry.set_active(1)
+                logging.info("Setting start screen to display %s" % list_options[i])
             else:
                 try:
                     var = getattr(self,i)
                 except AttributeError as e:
                     continue                
                 if i == "prf_hrzones_karvonen" or i == "prf_us_system":
-                    if list_options[i]=="True":
+                    if list_options[i] == "True":
+                        logging.info("Setting %s to true" %i)
                         var.set_active(True)
-    
                 elif i == "prf_gender":
                     for j in self.gender_options:
-                        if self.gender_options[j]==list_options[i]:
+                        if self.gender_options[j] == list_options[i]:
+                            logging.info("Setting gender to %s" % self.gender_options[j])
                             var.set_active(j)
                 elif i == "prf_ddbb":
                     for j in self.ddbb_type:
-                        if self.ddbb_type[j]==list_options[i]:
+                        if self.ddbb_type[j] == list_options[i]:
+                            logging.info("Setting %s as database engine" % self.ddbb_type[j])
                             var.set_active(j)
                             if j==0:
                                 self._ddbb_value_deactive()
                             else:
                                 self._ddbb_value_active()
                 else:
+                    logging.info("Setting %s to %s" % (i,list_options[i]))
                     var.set_text(list_options[i])
+        logging.debug("<<")
     
     def saveOptions(self):
+        logging.debug(">>")
         list_options = {}
+        print self.conf_options
         for i in self.conf_options.keys():
             if i == "default_viewer":
                 if self.radiobuttonDefaultOSM.get_active():
                     list_options[i] = "1"
                 else:
                     list_options[i] = "0"
+            elif i == "prf_startscreen":
+                ss_selected = "current_day"
+                if self.radioButtonStartScreenLastEntry.get_active():
+                    ss_selected = "last_entry"
+                list_options[i] = ss_selected
             else:
                 try:
                     var = getattr(self,i)
@@ -143,7 +165,10 @@ class WindowProfile(SimpleGladeApp):
                     list_options[i] = var.get_active_text()
                 else:
                     list_options[i] = var.get_text()
+            logging.info("Saving %s as %s" % (i, list_options[i]))
+        logging.info("Updating profile...")
         self.parent.setProfile(list_options)
+        logging.debug("<<")
     
     def on_calendar_clicked(self,widget):
         calendardialog = WindowCalendar(self.data_path,self)

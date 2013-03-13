@@ -89,21 +89,21 @@
                 <!-- End of unit system -->
                 <!-- Start of start screen -->
                 <child>
-                  <widget class="GtkFrame" id="frame_ss">
+                  <widget class="GtkFrame" id="frame_startscreen">
                     <property name="visible">True</property>
                     <property name="border_width">5</property>
                     <property name="label_xalign">0</property>
                     <property name="shadow_type">none</property>
                     <child>
-                      <widget class="GtkAlignment" id="alignment_ss">
+                      <widget class="GtkAlignment" id="alignment_startscreen">
                         <property name="visible">True</property>
                         <property name="left_padding">12</property>
                         <child>
-                          <widget class="GtkHBox" id="hbox_ss">
+                          <widget class="GtkHBox" id="hbox_startscreen">
                             <property name="visible">True</property>
                             <child>
-                              <widget class="GtkRadioButton" id="ss_last_entry">
-                                <property name="label" translatable="yes">Last entry</property>
+                              <widget class="GtkRadioButton" id="radioButtonStartScreenCurrentDay">
+                                <property name="label" translatable="yes">Current day</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
@@ -118,14 +118,14 @@
                               </packing>
                             </child>
                             <child>
-                              <widget class="GtkRadioButton" id="ss_current_day">
-                                <property name="label" translatable="yes">Current day</property>
+                              <widget class="GtkRadioButton" id="radioButtonStartScreenLastEntry">
+                                <property name="label" translatable="yes">Last entry</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
                                 <property name="use_underline">True</property>
                                 <property name="draw_indicator">True</property>
-                                <property name="group">ss_last_entry</property>
+                                <property name="group">radioButtonStartScreenCurrentDay</property>
                               </widget>
                               <packing>
                                 <property name="expand">False</property>
@@ -138,7 +138,7 @@
                       </widget>
                     </child>
                     <child>
-                      <widget class="GtkLabel" id="label_ss">
+                      <widget class="GtkLabel" id="label_startscreen">
                         <property name="visible">True</property>
                         <property name="label" translatable="yes">&lt;b&gt;Start screen&lt;/b&gt;</property>
                         <property name="use_markup">True</property>
