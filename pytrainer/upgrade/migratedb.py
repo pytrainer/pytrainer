@@ -41,17 +41,22 @@ class MigratableDb(object):
             pypath.
         db_url -- the connection URL string for the DB.
         """
+        logging.debug(">>")
         self._repository_path = _get_resource_absolute_path(repository_path)
         self._db_url = db_url
+        self._db_version = None
+        logging.debug("<<")
         
     def is_empty(self):
         """Check if the DB schema is empty.
         
         An empty schema indicates a new uninitialised database."""
+        logging.debug(">>")
         metadata = MetaData()
         metadata.bind = sqlalchemy.create_engine(self._db_url)
         metadata.reflect()
         tables = metadata.tables
+        logging.debug("<<")
         return not tables
         
     def is_versioned(self):
@@ -70,7 +75,10 @@ class MigratableDb(object):
         """Get the current version of the versioned DB.
         
         Raises DatabaseNotControlledError if the DB is not initialized."""
-        return db_version(self._db_url, self._repository_path)
+        # Introducing some caching to avoid duplicate calls
+        if self._db_version is None:
+            self._db_version = db_version(self._db_url, self._repository_path)
+        return self._db_version
     
     def get_upgrade_version(self):
         """Get the latest version available in upgrade repository."""

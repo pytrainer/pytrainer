@@ -26,9 +26,11 @@ MIGRATE_REPOSITORY_PATH = "pytrainer/upgrade"
 
 def initialize_data(ddbb, conf_dir):
     """Initializes the installation's data."""
+    logging.debug(">>")
     db_url = ddbb.get_connection_url()
     migratable_db = MigratableDb(MIGRATE_REPOSITORY_PATH, db_url)
     InstalledData(migratable_db, ddbb, LegacyVersionProvider(conf_dir), UpgradeContext(conf_dir, db_url)).update_to_current()
+    logging.debug("<<")
         
 class InstalledData(object):
     
@@ -36,10 +38,12 @@ class InstalledData(object):
     check version state and upgrade."""
     
     def __init__(self, migratable_db, ddbb, legacy_version_provider, upgrade_context):
+        logging.debug(">>")
         self._migratable_db = migratable_db
         self._ddbb = ddbb
         self._legacy_version_provider = legacy_version_provider
         self._upgrade_context = upgrade_context
+        logging.debug("<<")
         
     def update_to_current(self):
         """Check the current state of the installation's data and update them
@@ -60,9 +64,11 @@ class InstalledData(object):
             - run upgrade scripts
         
         """
+        logging.debug(">>")
         data_state = self.get_state()
         logging.info("Initializing data. Data state is: '%s'.", data_state)
         data_state.update_to_current(self)
+        logging.debug("<<")
         
     def get_state(self):
         """Get the current state of the installation's data.
@@ -70,6 +76,7 @@ class InstalledData(object):
         raises DataInitializationException if the existing data is not
         compatible and cannot be upgraded.
         """
+        logging.debug("--")
         version = self.get_version()
         available_version= self.get_available_version()
         if self.is_versioned():
@@ -141,10 +148,12 @@ class InstalledData(object):
         self._ddbb.create_tables()
         
     def upgrade(self):
+        logging.debug(">>")
         logging.info("Upgrading data from version '%s' to version '%s'.", self.get_version(), self.get_available_version())
         self._ddbb.create_backup()
         pytrainer.upgrade.context.UPGRADE_CONTEXT = self._upgrade_context
         self._migratable_db.upgrade()
+        logging.debug("<<")
         
 class DataInitializationException(Exception):
     
