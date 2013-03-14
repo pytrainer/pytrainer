@@ -20,6 +20,7 @@
 import locale
 import sys
 import os
+import traceback
 import pygtk
 import gobject
 pygtk.require('2.0')
@@ -28,7 +29,6 @@ import gtk.glade
 from optparse import OptionParser
 import logging
 import logging.handlers
-import traceback
 from datetime import datetime
 
 from os import path
@@ -56,7 +56,7 @@ from lib.uc import UC
 
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
-        # Based in Django's approach -> http://code.djangoproject.com/svn/django/trunk/django/__init__.py
+        # Based on Django's approach -> http://code.djangoproject.com/svn/django/trunk/django/__init__.py
         self.version = __import__('pytrainer').get_version()
         #Process command line options
         self.startup_options = self.get_options()
@@ -65,39 +65,71 @@ class pyTrainer:
         self.environment.create_directories()
         self.set_logging(self.startup_options.log_level, self.startup_options.log_type)
         logging.debug('>>')
-        logging.debug("pytrainer version %s" % (self.version))
+        logging.info("pytrainer version %s" % (self.version))
         self.data_path = data_path
-        self.date = Date()
-        self.ddbb = None
+
         # Checking profile
         logging.debug('Checking configuration and profile...')
         self.profile = Profile(self.environment, self.data_path,self)
         self.uc = UC()
-        self.windowmain = None
         self.ddbb = DDBB(self.profile, self)
         logging.debug('connecting to DDBB')
         self.ddbb.connect()
-        
+
+        logging.info('Checking if some upgrade action is needed...')
         initialize_data(self.ddbb, self.environment.conf_dir)
-            
+
+        # Loading shared services
+        logging.debug('Loading sport service...')
         self._sport_service = SportService(self.ddbb)
+        logging.debug('Loading record service...')
         self.record = Record(self._sport_service, data_path, self)
-        self.athlete = Athlete(data_path,self)
+        logging.debug('Loading athlete service...')
+        self.athlete = Athlete(data_path, self)
+        logging.debug('Loading stats service...')
         self.stats = Stats(self._sport_service, self)
+        logging.debug('Initializing activity pool...')
         pool_size = self.profile.getIntValue("pytraining","activitypool_size", default=1)
         self.activitypool = ActivityPool(self, size=pool_size)
-        #preparamos la ventana principal
+
+        #Loading main window
+        self.windowmain = None
+        logging.debug('Loading main window...')
         self.windowmain = Main(self._sport_service, data_path,self,self.version, gpxDir=self.profile.gpxdir)
+        # self.windowmain.calendar comes from SimpleGladeApp initialisation, not really sure how... :?
+
         self.date = Date(self.windowmain.calendar)
+        if self.profile.getValue("pytraining","prf_startscreen") == "last_entry":
+            logging.info("User selection is to display last entry in start screen")
+            last_entry_date = self.record.getLastRecordDateString()
+            try:
+                logging.info("Last activity found on %s" %last_entry_date)
+                self.date.setDate(last_entry_date)
+            except:
+                logging.error("No data available regarding last activity date. Default date will be today")
+                traceback.print_exc()
+        else:
+            logging.info("User selection is to display current day in start screen")
+
+        
+        logging.debug('Setting date to %s' % self.date.getDate().strftime("%Y-%m-%d"))
+        logging.debug('Loading waypoint service...')
         self.waypoint = Waypoint(data_path,self)
+        logging.debug('Loading extension service...')
         self.extension = Extension(data_path, self)
+        logging.debug('Loading plugins service...')
         self.plugins = Plugins(data_path, self)
         self.importdata = Importdata(self._sport_service, data_path, self, self.profile)
+        logging.debug('Loading plugins...')
         self.loadPlugins()
+        logging.debug('Loading extensions...')
         self.loadExtensions()
+        logging.debug('Setting values for graphs, maps and waypoint editor...')
         self.windowmain.setup()
         self.windowmain.on_calendar_selected(None)
+        logging.debug('Refreshing sport list... is this needed?')
         self.refreshMainSportList()
+        logging.debug('Launching main window...')
         self.windowmain.run()
         logging.debug('<<')
 
@@ -162,7 +194,7 @@ class pyTrainer:
                     txtbutton = self.plugins.loadPlugin(plugin)
                     self.windowmain.addImportPlugin(txtbutton)
                 else:
-                    logging.debug('From version 1.10 on file import plugins are managed via File -> Import. Not displaying plugin ' + plugin_name)
+                    logging.debug('From version 1.10 on, file import plugins are managed via File -> Import. Not displaying plugin ' + plugin_name)
         logging.debug('<<')
 
     def loadExtensions(self):
