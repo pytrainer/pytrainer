@@ -153,10 +153,7 @@ class Sql:
             sql = "%s where %s" % (sql, condition)
         if mod is not None:
             sql = "%s %s" % (sql, mod)
-        '''if condition != None:
-            sql = "select %s from %s where %s" %(cells,table,condition)
-        else:
-            sql = "select %s from %s " %(cells,table)'''
+        logging.debug('SQL sentence: %s' % sql)
         cur.execute(sql)
         retorno = []
         for row in cur:

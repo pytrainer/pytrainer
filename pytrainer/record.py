@@ -428,6 +428,19 @@ class Record:
 				sport = self._sport_service.store_sport(new_sport)
 		return None if sport is None else sport.id
 
+	def getLastRecordDateString(self, sport_id = None):
+		"""
+		Retrieve date (string format) of last record stored in DB. It may select per sport
+		"""
+		logging.debug("--")
+		#select date from records order by date desc limit 1;
+		query_cond = None
+		if sport_id is not None:
+			query_cond = "sport = %s" % sport_id
+		result = self.pytrainer_main.ddbb.select("records", "date", query_cond, "order by date desc limit 1")
+        # It returns a list of tuples, so we take first element of list (tuple) and then select first element
+		return result[0][0]
+
 	def getAllrecord(self):
 		"""
 		Retrieve all record data (no lap nor equipment) stored in database. Initially intended for csv export
@@ -444,7 +457,7 @@ class Record:
 			"sports.id_sports = records.sport order by date desc")
 
 	def getRecordListByCondition(self,condition):
-		logging.debug('--')
+		logging.debug('>>')
 		if condition is None:
 			return self.getAllRecordList()
 		else:
