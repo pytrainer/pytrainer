@@ -34,11 +34,21 @@ from pytrainer.core.sport import Sport
 class Record:
 	def __init__(self, sport_service, data_path = None, parent = None):
 		logging.debug('>>')
-		self._sport_service = sport_service
-		self.parent = parent
-		self.pytrainer_main = parent
-		self._equipment_service = EquipmentService(self.pytrainer_main.ddbb)
-		self.data_path = data_path
+		if sport_service is not None:
+			self._sport_service = sport_service
+		else:
+			logging.info("No sport service provided, testing?")
+		if parent is not None:
+			self.parent = parent
+			self.pytrainer_main = parent
+			self.ddbb = self.pytrainer_main.ddbb # Added for simplicity to support unit testing
+			self._equipment_service = EquipmentService(self.ddbb)
+		else:
+			logging.info("No parent provided, testing?")
+		if data_path is not None:
+			self.data_path = data_path
+		else:
+			logging.info("No data_path provided, testing?")
 		logging.debug('setting date...')
 		self.date = Date()
 		logging.debug('<<')
@@ -430,16 +440,18 @@ class Record:
 
 	def getLastRecordDateString(self, sport_id = None):
 		"""
-		Retrieve date (string format) of last record stored in DB. It may select per sport
+		Retrieve date (string format Y-m-d) of last record stored in DB. It may select per sport
 		"""
 		logging.debug("--")
-		#select date from records order by date desc limit 1;
 		query_cond = None
+		result = None
 		if sport_id is not None:
 			query_cond = "sport = %s" % sport_id
-		result = self.pytrainer_main.ddbb.select("records", "date", query_cond, "order by date desc limit 1")
-        # It returns a list of tuples, so we take first element of list (tuple) and then select first element
-		return result[0][0]
+		db_result = self.ddbb.select("records", "date", query_cond, "order by date desc limit 1")
+		if db_result:
+			# It returns a list of tuples, so we take first element of list and then select first element of the tuple
+			result = db_result[0][0]
+		return result
 
 	def getAllrecord(self):
 		"""
