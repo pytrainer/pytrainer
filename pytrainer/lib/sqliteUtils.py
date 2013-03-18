@@ -19,7 +19,9 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
-import sys, traceback, commands
+import sys
+import traceback
+import commands
 import datetime
 try:
     from sqlite3 import dbapi2 as sqlite
