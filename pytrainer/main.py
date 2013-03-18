@@ -95,23 +95,10 @@ class pyTrainer:
         self.windowmain = None
         logging.debug('Loading main window...')
         self.windowmain = Main(self._sport_service, data_path,self,self.version, gpxDir=self.profile.gpxdir)
-        # self.windowmain.calendar comes from SimpleGladeApp initialisation, not really sure how... :?
 
-        self.date = Date(self.windowmain.calendar)
-        if self.profile.getValue("pytraining","prf_startscreen") == "last_entry":
-            logging.info("User selection is to display last entry in start screen")
-            last_entry_date = self.record.getLastRecordDateString()
-            try:
-                logging.info("Last activity found on %s" %last_entry_date)
-                self.date.setDate(last_entry_date)
-            except:
-                logging.error("No data available regarding last activity date. Default date will be today")
-                traceback.print_exc()
-        else:
-            logging.info("User selection is to display current day in start screen")
-
+        # Select initial date depending on user's preference
+        self.selectInitialDate()
         
-        logging.debug('Setting date to %s' % self.date.getDate().strftime("%Y-%m-%d"))
         logging.debug('Loading waypoint service...')
         self.waypoint = Waypoint(data_path,self)
         logging.debug('Loading extension service...')
@@ -178,6 +165,24 @@ class pyTrainer:
         self.windowmain.gtk_main_quit()
         logging.shutdown()
         sys.exit() # Any nonzero value is considered "abnormal termination" by shells and the like
+
+    def selectInitialDate(self):
+        logging.debug('>>')
+        # self.windowmain.calendar comes from SimpleGladeApp initialisation, not really sure how... :?
+        self.date = Date(self.windowmain.calendar)
+        if self.profile.getValue("pytraining","prf_startscreen") == "last_entry":
+            logging.info("User selection is to display last entry in start screen")
+            last_entry_date = self.record.getLastRecordDateString()
+            try:
+                logging.info("Last activity found on %s" %last_entry_date)
+                self.date.setDate(last_entry_date)
+            except:
+                logging.error("No data available regarding last activity date. Default date will be today")
+                logging.debug("Traceback: %s" % traceback.format_exc())
+        else:
+            logging.info("User selection is to display current day in start screen")
+        logging.debug('Setting date to %s' % self.date.getDate().strftime("%Y-%m-%d"))
+        logging.debug('<<')
 
     def loadPlugins(self):
         logging.debug('>>')
