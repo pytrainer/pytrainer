@@ -16,6 +16,6 @@ for LANGUAGE in `ls -l $LOCALE_BASE_PATH | awk {'print $9'}`; do
     mv pytrainer_$LANGUAGE.po.tmp pytrainer_$LANGUAGE.po
     rm pytrainer_$LANGUAGE.po_new
     echo -n "Statistics for $LANGUAGE: "
-    msgfmt --statistics pytrainer_$LANGUAGE.po
+    msgfmt --statistics pytrainer_$LANGUAGE.po -o ./pytrainer.mo
     cd ../../../
 done
