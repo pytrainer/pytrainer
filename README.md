@@ -1,4 +1,4 @@
-[pytrainer](http://sourceforge.net/projects/pytrainer/) - Free your sports
+pytrainer - Free your sports
 ==================================================
 
 Source Repository Structure
@@ -6,7 +6,7 @@ Source Repository Structure
 * **bin** pytrainer executable *python script* files
 * **extensions** addons to extend pytrainer basic functionality
 * **glade** user interface design
-* **import** files to parse different source formats
+* **imports** files to parse different source formats
 * **locale** localization files
 * **man** source manpage
 * **plugins** files to retrieve data from different sources

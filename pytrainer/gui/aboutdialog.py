@@ -40,8 +40,8 @@ class About:
         about_dialog.set_name("pytrainer")
         about_dialog.set_version(self.version)
         about_dialog.set_copyright("Copyright \xc2\xa9 2005-09 Fiz Vázquez")
-        about_dialog.set_website("http://sourceforge.net/projects/pytrainer")
-        about_dialog.set_website_label("http://sourceforge.net/projects/pytrainer")
+        about_dialog.set_website("https://github.com/pytrainer/pytrainer")
+        about_dialog.set_website_label("https://github.com/pytrainer/pytrainer")
         about_dialog.set_comments("The free sport tracking center")
         about_dialog.set_license(license)
         

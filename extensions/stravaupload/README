@@ -1,0 +1,11 @@
+Summary:
+
+This extension that will upload the current record's gpx track to Strava.
+
+Usage:
+
+1) Select the record you want to upload.
+2) Click the 'Upload to Strava' button.
+3) Did you earn that KOM?
+
+pytrainer will let you know if the record already exists at Strava.

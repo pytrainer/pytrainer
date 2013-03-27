@@ -96,13 +96,13 @@ class WindowRecord(SimpleGladeApp):
             self.rcd_calories.set_text(calories)
             
         #populate labels with units        
-        self.label_rcd_distance.set_text('Distance (%s)' %self.uc.unit_distance)
-        self.label_rcd_maxvel.set_text('Max (%s)' %self.uc.unit_speed)
-        self.label_rcd_average.set_text('Average (%s)' %self.uc.unit_speed)
-        self.label_rcd_maxpace.set_text('Max (%s)' %self.uc.unit_pace)
-        self.label_rcd_pace.set_text('Pace (%s)' %self.uc.unit_pace)
-        self.label_rcd_upositive.set_text('Ascent (%s)' %self.uc.unit_height)
-        self.label_rcd_unegative.set_text('Descent (%s)' %self.uc.unit_height)        
+        self.label_rcd_distance.set_text(_('Distance') + ' (%s)' %self.uc.unit_distance)
+        self.label_rcd_maxvel.set_text(_('Max') + ' (%s)' %self.uc.unit_speed)
+        self.label_rcd_average.set_text(_('Average') + ' (%s)' %self.uc.unit_speed)
+        self.label_rcd_maxpace.set_text(_('Max') + ' (%s)' %self.uc.unit_pace)
+        self.label_rcd_pace.set_text(_('Pace') + ' (%s)' %self.uc.unit_pace)
+        self.label_rcd_upositive.set_text(_('Ascent') + ' (%s)' %self.uc.unit_height)
+        self.label_rcd_unegative.set_text(_('Descent') + ' (%s)' %self.uc.unit_height)        
 
         self._init_equipment(equipment, equipment_service)
         logging.debug("<<")

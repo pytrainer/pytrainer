@@ -37,12 +37,12 @@ class Save:
         filename = self.filewindow.filename
         records = self.record.getAllrecord()
         # CSV Header
-        content = "date,distance,time,beats,comments,average,calories\n"
+        content = "date_time_local,title,sports.name,distance,duration,average,maxspeed,pace,maxpace,beats,maxbeats,calories,upositive,unegative,comments\n"
         try:
             for record in records:
                 line = ""
                 for i, data in enumerate(record):
-                    if i in [1, 3, 5]:
+                    if i in [3, 5, 6, 7, 8, 12, 13]:
                         try:
                             data = round(data, 2)
                         except:

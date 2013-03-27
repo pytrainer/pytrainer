@@ -31,7 +31,7 @@ class GpxTest(unittest.TestCase):
             ("1525.68","42.84018606","-2.68670272","426","4973.64746","42.83504661","-2.67710888","active","167","181","4.52464294","manual"),
             ("374.23","42.83771038","-2.68647373","96","1098.94531","42.84018849","-2.68670733","active","159","163","4.30066299","manual")]
         try:
-            xml_file = os.path.dirname(__file__) + "/gpxplus_sample_old.gpx"
+            xml_file = os.path.dirname(os.path.abspath(__file__)) + "/gpxplus_sample_old.gpx"
             gpx = Gpx(None, None) # avoid launching _getValues
             gpx.tree = etree.ElementTree(file = xml_file).getroot()
             gpx_laps = gpx.getLaps()
@@ -53,7 +53,7 @@ class GpxTest(unittest.TestCase):
             ("330.64","43.54042768","-5.64873822","86","1000.000000","43.53726494","-5.63783269","active","149","154","3.56236672","distance"),
             ("41.96","43.54054570","-5.65028653","11","132.227539","43.54043892","-5.64874199","active","150","152","3.40324497","manual")]
         try:
-            xml_file = os.path.dirname(__file__) + "/gpxplus_sample.gpx"
+            xml_file = os.path.dirname(os.path.abspath(__file__)) + "/gpxplus_sample.gpx"
             gpx = Gpx(None, None) # avoid launching _getValues
             gpx.tree = etree.ElementTree(file = xml_file).getroot()
             gpx_laps = gpx.getLaps()

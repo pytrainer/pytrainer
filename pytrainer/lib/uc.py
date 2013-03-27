@@ -17,9 +17,9 @@
 from pytrainer.lib.singleton import Singleton
 
 """ Units of physical quantities [metric, imperial] """
-uc_units = {'distance' : ['km','mi'] , 'speed' : ['km/h', 'mph'], 
-            'pace' : ['min/km','min/mi'], 'height' : ['m', 'ft'],
-            'weight': ['kg', 'lb']}
+uc_units = {'distance' : [_('km'),_('mi')] , 'speed' : [_('km/h'), _('mph')], 
+            'pace' : [_('min/km'),_('min/mi')], 'height' : [_('m'), _('ft')],
+            'weight': [_('kg'), _('lb')]}
 
 """ Conversion factors from metric to imperial, units as in uc_units """ 
 uc_factors = {'distance' : 0.621371192, 'speed': 0.621371192, 'pace':1.609344, 
