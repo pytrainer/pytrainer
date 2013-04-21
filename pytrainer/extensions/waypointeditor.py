@@ -106,7 +106,7 @@ class WaypointEditor:
     <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
     <title>edit waypoints</title>
 
-    <script id="googleapiimport" src="http://maps.google.com/maps?file=api&amp;v=2"
+    <script id="googleapiimport" src="http://maps.google.com/maps/api/js?sensor=false"
             type="text/javascript"></script>
     <script type="text/javascript">
 """
