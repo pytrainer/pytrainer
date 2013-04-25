@@ -4,20 +4,21 @@
 # Fiz Vazquez <vud1@sindominio.net>, 2006.
 # Erik Pfannenstein <debianignatz@gmx.de>, 2011.
 # Andreas Mair <amair.sob@googlemail.com>, 2011.
+# Wilfried Goesgens <dothebart@citadel.org>, 2013.
 msgid ""
 msgstr ""
-"Project-Id-Version: pytrainer 1.9.1\n"
+"Project-Id-Version: pytrainer 1.10.0\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2013-03-26 10:40+0100\n"
-"PO-Revision-Date: 2011-11-25 18:55+0100\n"
-"Last-Translator: Andreas Mair <amair.sob@googlemail.com>\n"
-"Language-Team: debian-l10n-german@lists.debian.org\n"
+"PO-Revision-Date: 2013-03-28 21:17+0100\n"
+"Last-Translator: Wilfried Goesgens <dothebart@citadel.org>\n"
+"Language-Team: American English <kde-i18n-doc@kde.org>\n"
 "Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Virtaal 0.7.0\n"
+"X-Generator: Lokalize 1.4\n"
 
 #: glade/calendar.glade:7
 msgid "Calendar"
@@ -76,7 +77,7 @@ msgstr "<b>Erweiterungsdetails</b>"
 
 #: glade/extensions.glade:67
 msgid "name-entry"
-msgstr "name-entry"
+msgstr "Namens Eintrag"
 
 #: glade/extensions.glade:82 glade/plugins.glade:144 glade/profile.glade:728
 #: glade/pytrainer.glade:5703
@@ -94,11 +95,11 @@ msgstr "Beschreibung:"
 
 #: glade/extensions.glade:124 glade/plugins.glade:100
 msgid "status-entry"
-msgstr "status-entry"
+msgstr "Status Eintrag"
 
 #: glade/extensions.glade:139
 msgid "description-entry"
-msgstr "description-entry"
+msgstr "Beschreibungs Eintrag"
 
 #: glade/importdata.glade:7 glade/importdata.glade:325
 msgid "Import"
@@ -510,11 +511,11 @@ msgstr "<b>Erweiterungsdetails</b>"
 
 #: glade/plugins.glade:68
 msgid "description-entry "
-msgstr "description-entry "
+msgstr "beschreibungs eintrag "
 
 #: glade/plugins.glade:129
 msgid "nameEntry"
-msgstr "nameEntry"
+msgstr "Namens Eintrag"
 
 #: glade/profile.glade:7
 msgid "Preferences"
@@ -546,23 +547,23 @@ msgstr "<b>Voreingestellter Kartenbetrachter</b>"
 
 #: glade/profile.glade:176
 msgid "Database type:"
-msgstr "Typ:"
+msgstr "Datenbank Typ:"
 
 #: glade/profile.glade:187
 msgid "Database host:"
-msgstr "Host:"
+msgstr "Datenbank Server:"
 
 #: glade/profile.glade:213
 msgid "Database name:"
-msgstr "Name:"
+msgstr "Datenbank Name:"
 
 #: glade/profile.glade:252
 msgid "Database user:"
-msgstr "Benutzer:"
+msgstr "Datenbank Benutzer:"
 
 #: glade/profile.glade:267
 msgid "Database pass:"
-msgstr "Passwort:"
+msgstr "Datenbank Passwort:"
 
 #: glade/profile.glade:318
 msgid "<b>Database</b>"
@@ -1744,7 +1745,7 @@ msgstr "eingeschaltet"
 
 #: pytrainer/gui/windowimportdata.py:204
 msgid "Checking for tools"
-msgstr ""
+msgstr "Suche nach Werkzeugen"
 
 #: pytrainer/gui/windowimportdata.py:231
 msgid "GPS device found"
@@ -1764,7 +1765,7 @@ msgstr "Homepage"
 
 #: pytrainer/gui/windowimportdata.py:263
 msgid "Checking file type for: "
-msgstr ""
+msgstr "Suche nach Typ für: "
 
 #: pytrainer/gui/windowimportdata.py:296
 msgid "File"
@@ -1829,11 +1830,11 @@ msgstr "%d Aktivitäten werden importiert"
 
 #: pytrainer/gui/windowimportdata.py:647
 msgid "No activity has been imported"
-msgstr ""
+msgstr "Keine Aktivität wurde importiert"
 
 #: pytrainer/gui/windowimportdata.py:649
 msgid "Imported one activity"
-msgstr "Eine Aktivität importiert"
+msgstr "Eine Aktivität wurde importiert"
 
 #: pytrainer/gui/windowimportdata.py:651
 #, python-format
@@ -1842,12 +1843,12 @@ msgstr "%d Aktivitäten importiert"
 
 #: pytrainer/gui/windowimportdata.py:655
 msgid " Activity selected was already present in DB"
-msgstr ""
+msgstr "Die ausgewählte Aktivität war schon in der Datenbank"
 
 #: pytrainer/gui/windowimportdata.py:657
 #, python-format
 msgid " %d selected activities were already present in DB"
-msgstr ""
+msgstr "%d ausgewählte Aktivitäten waren schon in der Datenbank"
 
 #: pytrainer/gui/windowimportdata.py:665
 msgid "Choose a file (or files) to import activities from"
@@ -1862,7 +1863,7 @@ msgstr "Datei des Typs %s gefunden"
 
 #: pytrainer/gui/windowimportdata.py:705
 msgid "Found in database"
-msgstr "In Datenbank gefunden"
+msgstr "In der Datenbank gefunden"
 
 #: pytrainer/gui/windowimportdata.py:723
 #, python-format
@@ -1870,9 +1871,8 @@ msgid "File %s is of unknown or unsupported file type"
 msgstr "Datei %s hat einen unbekannten oder nicht unterstützten Dateityp"
 
 #: pytrainer/gui/windowimportdata.py:760
-#, fuzzy
 msgid "Got file: "
-msgstr "GPX-Datei:"
+msgstr "Habe Datei: "
 
 #: pytrainer/gui/windowimportdata.py:797
 #, python-format
@@ -1881,12 +1881,12 @@ msgstr "Spalte %d"
 
 #: pytrainer/gui/windowimportdata.py:854
 msgid "ERROR: Must define at least a date column"
-msgstr ""
+msgstr "FEHLER: zumindest eine Datumsspalte muss definiert sein"
 
 #: pytrainer/gui/windowimportdata.py:986
 #, python-format
 msgid "Import completed. %d rows processed"
-msgstr ""
+msgstr "Import beendet. %d Zeilen bearbeitet"
 
 #: pytrainer/gui/drawArea.py:166 pytrainer/extensions/googlemaps.py:130
 #: pytrainer/extensions/osm.py:102
@@ -1898,19 +1898,16 @@ msgid "rest"
 msgstr "Ruhe"
 
 #: pytrainer/gui/windowrecord.py:100 pytrainer/gui/windowrecord.py:102
-#, fuzzy
 msgid "Max"
-msgstr "Höchste Herzfrequenz"
+msgstr "Maximale"
 
 #: pytrainer/gui/windowrecord.py:104
-#, fuzzy
 msgid "Ascent"
-msgstr "Anstieg:"
+msgstr "Anstieg"
 
 #: pytrainer/gui/windowrecord.py:105
-#, fuzzy
 msgid "Descent"
-msgstr "Abstieg:"
+msgstr "Abstie:"
 
 #: pytrainer/gui/windowrecord.py:211
 msgid "GPX File"
@@ -1967,12 +1964,12 @@ msgstr "Schläge (bpm)"
 
 #: pytrainer/recordgraph.py:142
 msgid "Cadence (rpm)"
-msgstr "Rhythmus (rpm)"
+msgstr "Trittfrequenz (rpm)"
 
 #: pytrainer/recordgraph.py:142 pytrainer/lib/activity.py:462
 #: pytrainer/lib/activity.py:464
 msgid "Cadence"
-msgstr "Rhythmus"
+msgstr "Trittfrequenz"
 
 #: pytrainer/recordgraph.py:144
 msgid "Beats (%)"
@@ -2077,28 +2074,25 @@ msgstr "%"
 
 #: pytrainer/lib/activity.py:464
 msgid "rpm"
-msgstr "rpm"
+msgstr "u/min"
 
 #: pytrainer/lib/activity.py:523
 msgid "Heart Rate zone"
 msgstr "Herzfrequenz-Zone"
 
 #: pytrainer/lib/uc.py:20
-#, fuzzy
 msgid "mi"
 msgstr "min"
 
 #: pytrainer/lib/uc.py:20
 msgid "mph"
-msgstr ""
+msgstr "m/h"
 
 #: pytrainer/lib/uc.py:21
-#, fuzzy
 msgid "min/mi"
 msgstr "min/Meile"
 
 #: pytrainer/lib/uc.py:21
-#, fuzzy
 msgid "ft"
 msgstr "Fuß"
 
@@ -2232,7 +2226,7 @@ msgstr "GPS-eXchange-Datei"
 
 #: imports/file_kml20.py:47
 msgid "Geodistance kml version 2.0 file"
-msgstr "Geodistance kml-Datei Version 2.0"
+msgstr "Geodistanz kml-Datei Version 2.0"
 
 #: imports/file_garmintcxv1.py:45
 msgid "Garmin training center database file version 1"
@@ -2318,20 +2312,8 @@ msgstr "Wordpress-Erweiterung Hochladen abgeschlossen"
 
 #: extensions/stravaupload/stravaupload.py:161
 msgid "Strava Upload"
-msgstr ""
+msgstr "Strava Hochladen"
 
 #: extensions/gpx2garmin/gpx2garmin.py:50
-#, fuzzy
 msgid "gpx2garmin Extension"
-msgstr "Erweiterungen"
-
-#, fuzzy
-#~ msgid "Last entry"
-#~ msgstr "status-entry"
-
-#, fuzzy
-#~ msgid "<b>Start screen</b>"
-#~ msgstr "<b>Sportarten</b>"
-
-#~ msgid "Run"
-#~ msgstr "Ausführen"
+msgstr "gpx2garmin Erweiterung"

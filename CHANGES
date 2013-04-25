@@ -35,6 +35,14 @@ d8f864f New "pace" column in ranking tab (thanks to cz8s)
 
 - Improvements:
 
+Localizations updated, added update_localizations script to automate process under utils directory
+    037d91d Updated FR localization. Thanks to Christian Perrier
+    09e40df Updating DE localization. Thanks to Wilfried
+    f174af1 Amended filename in update_localizations script for mo files. Updated files
+    dc21fa7 Removing mo binary files from repository
+    9780a89 Updating localizations for 1.10.0 version. Includes script to automate process under utils directory
+    286cba9 Updating GL localization - thanks to Aníbal
+    8689009 Updating ES localization
 c5ccfe9 Retrieving all record related data from DB when exporting to csv - #11
 cdc639d Amended path issue when testing gpx files
 ba37e2a Setting current date for new athlete log entry - on behalf of Andreas Mair
@@ -59,6 +67,7 @@ d256862 Added tests to check lap parsing with samples
 
 - Bugs fixed:
 
+dc795e9 Texts and units which can change when switching unit system are localized separately - ticket #16
 46a1775 Fix year tab text labels/units (thanks to spaceyjase)
 d4d988f Fixed unhandled exception by removing the Osmarender layer
 41df1d8 Amended wrong value to average speed in totals graph. Thnx to lifo2 - ticket:173
