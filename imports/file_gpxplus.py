@@ -102,7 +102,8 @@ class gpxplus():
 	def startTimeFromFile(self, tree):
 		""" Function to return the first time element from a GPX 1.1 file """
 		root = tree.getroot()
-		timeElement = root.find(".//{http://www.topografix.com/GPX/1/1}time")
+		trackseg = root.find(".//{http://www.topografix.com/GPX/1/1}trk/{http://www.topografix.com/GPX/1/1}trkseg")
+		timeElement = trackseg[0].find(".//{http://www.topografix.com/GPX/1/1}time")
 		if timeElement is not None:
 			return timeElement.text
 		return None
