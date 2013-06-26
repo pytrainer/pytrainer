@@ -84,7 +84,7 @@ class Record:
 	def pace_to_float(self, value):
 		'''Take a mm:ss or mm.ss and return float'''
 		try:
-			value = float(value)			
+			value = float(value)
 		except:
 			if ":" in value: # 'mm:ss' found
 				mins, sec = value.split(":")
@@ -218,6 +218,22 @@ class Record:
 		logging.debug('<<')
 		return laps
 
+	def hrFromLaps(self, laps):
+		logging.debug('>>')
+		lap_avg_hr = 0 
+		lap_max_hr = 0
+		total_duration = 0
+		ponderate_hr = 0;
+		for lap in laps:
+			if int(lap['max_hr']) > lap_max_hr:
+				lap_max_hr = int(lap['max_hr'])
+			total_duration = total_duration + float(lap['elapsed_time'])
+			ponderate_hr = ponderate_hr + float(lap['elapsed_time'])*int(lap['avg_hr'])
+			logging.debug("Lap number: %s | Duration: %s | Average hr: %s | Maximum hr: %s" % (lap['lap_number'], lap['elapsed_time'], lap['avg_hr'], lap['max_hr']))
+		lap_avg_hr = int(round(ponderate_hr/total_duration)) # ceil?, floor?, round?
+		logging.debug('<<')
+		return lap_avg_hr, lap_max_hr
+
 	def summaryFromGPX(self, gpxOrig, entry):
 		"""29.03.2008 - dgranda
 		Retrieves info which will be stored in DB from GPX file
@@ -268,6 +284,19 @@ class Record:
 			print "#TODO fix record summaryRecord local and utc time..."											#
 		logging.debug('summary: '+str(summaryRecord))
 		laps = self.lapsFromGPX(gpx)
+		# Heartrate data can't be retrieved if no trackpoints present, calculating from lap info
+		lap_avg_hr, lap_max_hr = self.hrFromLaps(laps)
+		logging.debug("HR data from laps. Average: %s | Maximum hr: %s" % (lap_avg_hr, lap_max_hr))
+		if int(summaryRecord['rcd_beats']) > 0:
+			logging.debug("Average heartbeat - Summary: %s | Laps: %s" % (summaryRecord['rcd_beats'], lap_avg_hr))
+		else:
+			logging.debug("No average heartbeat found, setting value (%s) from laps", lap_avg_hr)
+			summaryRecord['rcd_beats'] = lap_avg_hr
+		if int(summaryRecord['rcd_maxbeats']) > 0:
+			logging.debug("Max heartbeat - Summary: %s | Laps: %s" % (summaryRecord['rcd_maxbeats'], lap_max_hr))
+		else:
+			logging.debug("No max heartbeat found, setting value (%s) from laps", lap_max_hr)
+			summaryRecord['rcd_maxbeats'] = lap_max_hr
 		logging.debug('<<')
 		return summaryRecord, laps
 
