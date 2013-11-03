@@ -71,6 +71,7 @@ class gpxplus():
 				return True
 		except:
 			#Not gpx file
+			logging.debug("Traceback: %s" % traceback.format_exc())
 			return False
 		return False
 
@@ -100,9 +101,9 @@ class gpxplus():
 		return None
 
 	def startTimeFromFile(self, tree):
-		""" Function to return the first time element from a GPX 1.1 file """
+		""" Function to return the first time element from a GPX 1.1 file (skipping not mandatory metadata section) """
 		root = tree.getroot()
-		timeElement = root.find(".//{http://www.topografix.com/GPX/1/1}time")
+		timeElement = root.xpath(".//g:time[not(parent::g:metadata)]", namespaces={'g':'http://www.topografix.com/GPX/1/1'})[0]
 		if timeElement is not None:
 			return timeElement.text
 		return None
