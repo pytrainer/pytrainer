@@ -196,18 +196,17 @@ class Record:
 		logging.debug('>>')
 		laps = []
 		gpxLaps = gpx.getLaps()
-		for lap in gpxLaps:
-			lap_number = gpxLaps.index(lap)
+		for lap_number, lap in enumerate(gpxLaps):
 			tmp_lap = {}
 			tmp_lap['record'] = ""
 			tmp_lap['lap_number'] = lap_number
 			tmp_lap['elapsed_time'] = lap[0]
-			tmp_lap['distance'] = lap[4]
-			tmp_lap['start_lat'] = lap[5]
-			tmp_lap['start_lon'] = lap[6]
 			tmp_lap['end_lat'] = lap[1]
 			tmp_lap['end_lon'] = lap[2]
 			tmp_lap['calories'] = lap[3]
+			tmp_lap['distance'] = lap[4]
+			tmp_lap['start_lat'] = lap[5]
+			tmp_lap['start_lon'] = lap[6]
 			tmp_lap['intensity'] = lap[7]
 			tmp_lap['avg_hr'] = lap[8]
 			tmp_lap['max_hr'] = lap[9]
@@ -220,19 +219,22 @@ class Record:
 
 	def hrFromLaps(self, laps):
 		logging.debug('>>')
-		lap_avg_hr = 0 
-		lap_max_hr = 0
 		total_duration = 0
-		ponderate_hr = 0;
-		for lap in laps:
-			if int(lap['max_hr']) > lap_max_hr:
-				lap_max_hr = int(lap['max_hr'])
-			total_duration = total_duration + float(lap['elapsed_time'])
-			ponderate_hr = ponderate_hr + float(lap['elapsed_time'])*int(lap['avg_hr'])
-			logging.debug("Lap number: %s | Duration: %s | Average hr: %s | Maximum hr: %s" % (lap['lap_number'], lap['elapsed_time'], lap['avg_hr'], lap['max_hr']))
-		lap_avg_hr = int(round(ponderate_hr/total_duration)) # ceil?, floor?, round?
+		ponderate_hr = 0
+
+		max_hr = max([int(lap.get('max_hr', 0) or 0) for lap in laps])
+
+		avg_hr_time_pairs = [(lap.get('avg_hr', None), float(lap.get('elapsed_time', 0) or 0)) for lap in laps]
+
+		for lap_avg_hr, elapsed_time in avg_hr_time_pairs:
+			if lap_avg_hr is not None:
+				total_duration += elapsed_time
+				ponderate_hr += elapsed_time * int(lap_avg_hr)
+
+		avg_hr = int(round(ponderate_hr / total_duration))  # ceil?, floor?, round?
+
 		logging.debug('<<')
-		return lap_avg_hr, lap_max_hr
+		return avg_hr, max_hr
 
 	def summaryFromGPX(self, gpxOrig, entry):
 		"""29.03.2008 - dgranda

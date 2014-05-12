@@ -16,15 +16,8 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-# Need to set this stuff up so that the translation functions work.  Seems like
-# the module that needs translation ought to have some way of setting this up.
-import gettext, gtk.glade
-DIR = "../../locale"
-gettext.bindtextdomain("pytrainer", DIR)
-gtk.glade.bindtextdomain("pytrainer", DIR)
-gtk.glade.textdomain("pytrainer")
-gettext.textdomain("pytrainer")
-gettext.install("pytrainer",DIR,unicode=1)
+from pytrainer.test.util.gettext_setup import gettext_setup
+gettext_setup()
 
 import unittest
 import gpx
