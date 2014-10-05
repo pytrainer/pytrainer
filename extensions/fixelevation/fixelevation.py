@@ -2,6 +2,7 @@
 import os #, stat, sys
 import logging
 import gtk
+import re
 from lxml import etree
 from pytrainer.lib.srtmlayer import SrtmLayer
 
@@ -20,6 +21,8 @@ class fixelevation:
         logging.debug(">>")
         gpx_file = "%s/gpx/%s.gpx" % (self.conf_dir, aid)
         ele_fixed = True
+
+        alreadyfixed = fixcheck = False
         
         if os.path.isfile(gpx_file):
             # Backup original raw data as *.orig.gpx
@@ -60,6 +63,23 @@ class fixelevation:
             """
             trackpoints = self._data.findall(self._trkpt_path)
             for trkpt in trackpoints:
+                if not(fixcheck):
+                    fixcheck = True
+                    for sub in trackpoints[0].getchildren():
+                        if re.search('extensions', sub.tag):
+                            if sub[0].prefix == 'ns0':
+                                alreadyfixed = True
+                                res_msg = "Elevation fix has already performed."
+                                md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, res_msg)
+                                md.set_title(_("Elevation Correction Already Performed"))
+                                md.set_modal(False)
+                                md.run()
+                                md.destroy()
+                                break
+                    if alreadyfixed:
+                        ele_fixed = False
+                        break
+
                 lat = float(trkpt.attrib['lat'])
                 lon = float(trkpt.attrib['lon'])
             
