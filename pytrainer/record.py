@@ -358,21 +358,12 @@ class Record:
         return self.pytrainer_main.ddbb.select("records,sports", "date_time_local,title,sports.name,distance,duration,average,maxspeed,pace,maxpace,beats,maxbeats,calories,upositive,unegative,comments",
     "sports.id_sports = records.sport","order by date_time_local asc")
 
-    def getAllRecordList(self):
-        logging.debug('--')
-        return self.pytrainer_main.ddbb.select("records,sports",
-                "date,distance,average,title,sports.name,id_record,duration,beats,calories",
-                "sports.id_sports = records.sport order by date desc")
-
-    def getRecordListByCondition(self,condition):
+    def getRecordListByCondition(self, condition):
         logging.debug('>>')
         if condition is None:
-            return self.getAllRecordList()
+            return self.pytrainer_main.ddbb.session.query(Activity).order_by(Activity.date)
         else:
-            logging.debug("condition: %s" % condition)
-            return self.pytrainer_main.ddbb.select("records,sports",
-                    "date,distance,average,title,sports.name,id_record,duration,beats,calories",
-                    "sports.id_sports = records.sport and %s order by date desc" %condition)
+            return self.pytrainer_main.ddbb.session.query(Activity).filter(condition).order_by(Activity.date)
 
     def getRecordDayList(self, date, sport=None):
         logging.debug('>>')

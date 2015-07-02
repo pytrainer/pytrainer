@@ -1181,10 +1181,6 @@ class Main(SimpleBuilderApp):
 
     def actualize_listview(self,record_list):
         logging.debug(">>")
-        #recod list tiene:
-        #date,distance,average,title,sports.name,id_record,time,beats,caloriesi
-        #Laas columnas son:
-        #column_names=[_("id"),_("Title"),_("Date"),_("Distance"),_("Sport"),_("Time"),_("Beats"),_("Average"),("Calories")]
         store = Gtk.ListStore(
             GObject.TYPE_INT,
             GObject.TYPE_STRING,
@@ -1198,35 +1194,35 @@ class Main(SimpleBuilderApp):
             object)
         for i in record_list:
             try:
-                hour,min,sec = second2time(int(i[6]))
+                hour,min,sec = date.second2time(i.duration)
             except  (ValueError, TypeError):
                 hour,min,sec = (0,0,0)
             _time = "%2d:%02d:%02d" %(hour,min,sec)
             try:
-                _id = int(i[5])
+                _id = i.id
             except (ValueError, TypeError) as e:
                 logging.debug("Unable to determine id for record: %s" % str(i))
                 logging.debug(str(e))
                 continue
-            _title = i[3]
-            _date = str(i[0])
+            _title = i.title
+            _date = i.date
             try:
-                _distance = float(i[1])
+                _distance = float(i.distance)
             except (ValueError, TypeError):
                 _distance = 0
-            _sport = i[4]
+            _sport = i.sport.name
             try:
-                _average = float(i[2])
+                _average = i.average
             except (ValueError, TypeError):
                 _average = 0
             try:
-                _calories = int(i[8])
+                _calories = i.calories
             except (ValueError, TypeError):
                 _calories = 0
             try:
-                _beats = round(float(i[7]))
+                _beats = round(i.beats)
             except (ValueError, TypeError) as e:
-                logging.debug("Unable to parse beats for %s" % str(i[7]) )
+                logging.debug("Unable to parse beats for %s" % str(i.beats) )
                 logging.debug(str(e))
                 _beats = 0.0
 
