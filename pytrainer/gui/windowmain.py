@@ -46,6 +46,8 @@ from pytrainer.gui.drawGraph import DrawGraph
 from pytrainer.gui.windowcalendar import WindowCalendar
 from pytrainer.lib.listview import ListSearch
 from pytrainer.lib.uc import UC
+from pytrainer.core.activity import Activity
+from sqlalchemy import and_
 
 
 class Main(SimpleBuilderApp):
@@ -855,15 +857,15 @@ class Main(SimpleBuilderApp):
             percentage = widget.get_value() / 100
         else:
             percentage = .05
-        records = self.pytrainer_main.ddbb.select_dict("records", ["distance","time","id_record","date","average","pace"], "distance > %f AND distance < %f AND sport=%d order by average desc" % (activity.distance * (1-percentage), activity.distance * (1+percentage), activity.sport_id))
+        records = self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.distance.between(activity.distance * (1-percentage), activity.distance * (1+percentage)), Activity.Sport == activity.Sport)).all()
         
         count = 1
         for r in records:
-            if r['average'] > activity.average:
+            if r.average > activity.average:
                 count += 1
 
         import numpy
-        speeds = [r['average'] for r in records]
+        speeds = [r.average for r in records]
         self.label_ranking_range.set_text("%.2f - %.2f %s" % (self.uc.distance(activity.distance * (1-percentage)), self.uc.distance(activity.distance * (1+percentage)), self.uc.unit_distance))
         self.label_ranking_rank.set_text("%s/%s" % (count, len(records)))
         self.label_ranking_avg.set_text("%.2f %s" % (self.uc.speed(numpy.average(speeds)), self.uc.unit_speed))
@@ -897,11 +899,11 @@ class Main(SimpleBuilderApp):
                 iter,
                 0, i,
                 1, rank,
-                2, r['date'],         
-                3, self.uc.distance(r['distance']),
-                4, str(r['time']),
-                5, r['average'],
-                6, r['pace'],
+                2, r.date,
+                3, self.uc.distance(r.distance),
+                4, str(r.duration),
+                5, r.average,
+                6, r.pace,
                 7, '#3AA142' if rank==count else '#000000',
             )
             
