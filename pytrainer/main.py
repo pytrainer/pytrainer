@@ -81,7 +81,7 @@ class pyTrainer:
         logging.debug('Loading athlete service...')
         self.athlete = Athlete(data_path, self)
         logging.debug('Loading stats service...')
-        self.stats = Stats(self._sport_service, self)
+        self.stats = Stats(self)
         logging.debug('Initializing activity pool...')
         pool_size = self.profile.getIntValue("pytraining","activitypool_size", default=1)
         self.activitypool = ActivityService(self, size=pool_size)
