@@ -23,7 +23,6 @@ class Stats:
         logging.debug('>>')
         self._sport_service = sport_service
         self.pytrainer_main = parent
-        self.data = self.get_stats()
         logging.debug('<<')
 
     def refresh(self):
