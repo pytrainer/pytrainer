@@ -5,16 +5,15 @@ from SimpleGladeApp import SimpleBuilderApp
 import gtk
 import gobject
 import os, glob, sys
-import StringIO
 import logging
 import types
-from lxml import etree
 import csv
 import locale
 
 from pytrainer.plugins import Plugins
 from pytrainer.gui.dialogs import fileChooserDialog
 from pytrainer.lib.date import getDateTime
+from pytrainer.core.activity import Activity
 
 class WindowImportdata(SimpleBuilderApp):
     def __init__(self, sport_service, data_path = None, parent=None, config=None, pytrainer_main=None):
@@ -866,23 +865,23 @@ class WindowImportdata(SimpleBuilderApp):
                 continue
             if not row:
                 continue
-            data = {}
+            data = Activity()
             #Determine dates
             _date = getDateTime(row[dateCol-1])
             #year, month, day = date.split("-")
             date = _date[1].strftime("%Y-%m-%d")
             zuluDateTime = _date[0].strftime("%Y-%m-%dT%H:%M:%SZ")
             localDateTime = str(_date[1])
-            data['date'] = date
-            data['date_time_utc'] = zuluDateTime
-            data['date_time_local'] = localDateTime
+            data.date = _date[1].date()
+            data.date_time_utc = zuluDateTime
+            data.date_time_local = localDateTime
             if distanceCol:
                 try:
-                    data['distance'] = locale.atof(row[distanceCol-1])
+                    data.distance = locale.atof(row[distanceCol-1])
                 except:
-                    data['distance'] = 0
+                    data.distance = 0
             else:
-                data['distance'] = 0
+                data.distance = 0
             if durationCol:
                 #calculate duration in sec...
                 try:
@@ -905,80 +904,80 @@ class WindowImportdata(SimpleBuilderApp):
                         logging.debug("Could not determine duration for '%s'" % _duration)
                         durationSec = None
                 if durationSec is not None:
-                    data['duration'] = durationSec
-                    data['time'] = str(durationSec)
+                    data.duration = durationSec
+                    data.time = str(durationSec)
             if titleCol:
                 try:
-                    data['title'] = row[titleCol-1]
+                    data.title = row[titleCol-1]
                 except:
                     pass
             if self.checkbCSVForceSport.get_active():
-                sport_id = self.pytrainer_main.record.getSportId(self.comboCSVForceSport.get_active_text(),add=True)
-                data['sport'] = sport_id
+                sport = self.pytrainer_main.record.getSport(self.comboCSVForceSport.get_active_text(),add=True)
+                data.sport = sport
             elif sportCol:
                 #retrieving sport id (adding sport if it doesn't exist yet)
-                sport_id = self.pytrainer_main.record.getSportId(row[sportCol-1],add=True)
-                data['sport'] = sport_id
+                sport = self.pytrainer_main.record.getSport(row[sportCol-1],add=True)
+                data.sport = sport
             else:
                 self.comboCSVForceSport.set_active(0)
-                sport_id = self.pytrainer_main.record.getSportId(self.comboCSVForceSport.get_active_text(),add=True)
-                data['sport'] = sport_id
+                sport = self.pytrainer_main.record.getSport(self.comboCSVForceSport.get_active_text(),add=True)
+                data.sport = sport
 
             if avgspeedCol:
                 #
                 try:
-                    data['average'] = locale.atof(row[avgspeedCol-1])
+                    data.average = locale.atof(row[avgspeedCol-1])
                 except:
                     pass
             if maxspeedCol:
                 try:
-                    data['maxspeed'] = locale.atof(row[maxspeedCol-1])
+                    data.maxspeed = locale.atof(row[maxspeedCol-1])
                 except:
                     pass
             if calCol:
                 try:
-                    data['calories'] = locale.atoi(row[calCol-1])
+                    data.calories = locale.atoi(row[calCol-1])
                 except:
                     pass
             if accCol:
                 try:
-                    data['upositive'] = locale.atof(row[accCol-1])
+                    data.upositive = locale.atof(row[accCol-1])
                 except:
                     pass
             if desCol:
                 try:
-                    data['unegative'] = locale.atof(row[desCol-1])
+                    data.unegative = locale.atof(row[desCol-1])
                 except:
                     pass
             if hrCol:
                 try:
-                    data['beats'] = locale.atof(row[hrCol-1])
+                    data.beats = locale.atof(row[hrCol-1])
                 except:
                     pass
             if maxHRCol:
                 try:
-                    data['maxbeats'] = locale.atof(row[maxHRCol-1])
+                    data.maxbeats = locale.atof(row[maxHRCol-1])
                 except:
                     pass
             if paceCol:
                 try:
-                    data['pace'] = locale.atof(row[paceCol-1])
+                    data.pace = locale.atof(row[paceCol-1])
                 except:
                     pass
             if maxPaceCol:
                 try:
-                    data['maxpace'] = locale.atof(row[maxPaceCol-1])
+                    data.maxpace = locale.atof(row[maxPaceCol-1])
                 except:
                     pass
             if commentsCol:
                 try:
-                    data['comments'] = row[commentsCol--1]
+                    data.comments = row[commentsCol--1]
                 except:
                     pass
 
             #Insert into DB
-            logging.debug("Data", data)
-            self.pytrainer_main.ddbb.insert_dict('records', data)
+            self.pytrainer_main.ddbb.session.add(data)
+            self.pytrainer_main.ddbb.session.commit()
         #Display message....
         self.updateStatusbar(self.statusbarCSVImport, _("Import completed. %d rows processed") % i)
         #Disable import button
