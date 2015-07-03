@@ -25,19 +25,16 @@ from pytrainer.lib.graphdata import GraphData
 
 class Athlete:
     def __init__(self, data_path = None, parent = None):
-        logging.debug('>>')
         self.parent = parent
         self.pytrainer_main = parent
         self.data_path = data_path
+
+    def refresh(self):
+        logging.debug('>>')
         self.init_from_conf()
         self.data = self.get_athlete_stats()
         self.graphdata = self.get_athlete_data()
         logging.debug('<<')
-
-    def refresh(self):
-        self.init_from_conf()
-        self.data = self.get_athlete_stats()
-        self.graphdata = self.get_athlete_data()
 
     def init_from_conf(self):
         logging.debug('>>')
