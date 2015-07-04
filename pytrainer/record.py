@@ -68,6 +68,7 @@ class Record:
 		self.recordwindow.setValuesFromActivity(activity)
 		logging.debug('launching window')
 		self.recordwindow.run()
+                self.pytrainer_main.refreshMainSportList()
 		logging.debug('<<')
 
 	def removeRecord(self,id_record):
