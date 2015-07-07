@@ -42,7 +42,6 @@ class WaypointService(object):
 	
 	def removeWaypoint(self,id_waypoint):
 		logging.debug(">>")
-		#self.pytrainer_main.ddbb.connect()
 		logging.debug("Deleting id_waypoint=%s" %id_waypoint)
 		waypoint = self.pytrainer_main.ddbb.session.query(Waypoint).filter(Waypoint.id == id_waypoint).one()
 		self.pytrainer_main.ddbb.session.delete(waypoint)
@@ -51,7 +50,6 @@ class WaypointService(object):
 
 	def updateWaypoint(self,id_waypoint,lat,lon,name,desc,sym):
 		logging.debug(">>")
-		#self.pytrainer_main.ddbb.connect()
 		logging.debug("Updating waypoint id: %d with lat %s,lon %s,comment %s,name %s,sym %s" %(id_waypoint,lat,lon,desc,name,sym) )
 		waypoint = self.pytrainer_main.ddbb.session.query(Waypoint).filter(Waypoint.id == id_waypoint).one()
 		waypoint.lat = lat
@@ -73,25 +71,20 @@ class WaypointService(object):
 
 	def getwaypointInfo(self,id_waypoint):
 		logging.debug(">>")
-		#self.pytrainer_main.ddbb.connect()
 		retorno = self.pytrainer_main.ddbb.select("waypoints",
 					"lat,lon,ele,comment,time,name,sym",
 					"id_waypoint=\"%s\"" %id_waypoint)
-		#self.pytrainer_main.ddbb.disconnect()
 		logging.debug("<<")
 		return retorno
 	
 	def getAllWaypoints(self):
 		logging.debug(">>")
-		#self.pytrainer_main.ddbb.connect()
 		retorno = self.pytrainer_main.ddbb.select("waypoints","id_waypoint,lat,lon,ele,comment,time,name,sym","1=1 order by name")
-		#self.pytrainer_main.ddbb.disconnect()
 		logging.debug("<<")
 		return retorno
 	
 	def actualize_fromgpx(self,gpxfile):
 		logging.debug(">>")
-		#self.pytrainer_main.ddbb.connect()
 		from lib.gpx import Gpx
 		gpx = Gpx(self.data_path,gpxfile)
 		tracks = gpx.getTrackRoutes()
@@ -106,7 +99,6 @@ class WaypointService(object):
 			warning = Warning(self.data_path,self._actualize_fromgpx,[gpx])
                         warning.set_text(msg)
                         warning.run()
-		#self.pytrainer_main.ddbb.disconnect()
 		logging.debug("<<")
 
 	def _actualize_fromgpx(self, gpx):
