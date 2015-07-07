@@ -20,9 +20,19 @@
 import logging
 import dateutil
 
-from pytrainer.lib.ddbb import DDBB
+from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger
+from sqlalchemy import Column, Float, Date, Integer
 from pytrainer.lib.graphdata import GraphData
 from pytrainer.lib.uc import UC
+
+class Athletestat(DeclarativeBase):
+    __tablename__ = 'athletestats'
+    bodyfat = Column(Float)
+    date = Column(Date)
+    id_athletestat = Column(Integer, primary_key=True)
+    maxhr = Column(ForcedInteger)
+    restinghr = Column(ForcedInteger)
+    weight = Column(Float)
 
 class Athlete:
     def __init__(self, data_path = None, parent = None):
@@ -47,15 +57,12 @@ class Athlete:
 
     def get_athlete_stats(self):
         logging.debug('>>')
-        results = self.pytrainer_main.ddbb.select_dict("athletestats", ('id_athletestat', 'date', 'weight', 'bodyfat', 'restinghr', 'maxhr'), mod="order by date")
-        #Remove None values
-        for i, row in enumerate(results):
-            for cell in results[i]:
-                if results[i][cell] == None:
-                    results[i][cell] = ""
-        logging.debug('Found %d athlete stats results' % len(results))
-        logging.debug('<<')
-        return results
+        ret = []
+        for stat in self.pytrainer_main.ddbb.session.query(Athletestat).order_by('date'):
+            d = dict(stat.__dict__)
+            d.pop('_sa_instance_state', None)
+            ret.append(d)
+        return ret
 
     def get_athlete_data(self):
         logging.debug('>>')
@@ -100,16 +107,19 @@ class Athlete:
     def update_athlete_stats(self, id_athletestat, date, weight, bodyfat, restinghr, maxhr):
         logging.debug('>>')
         try:
-            dateutil.parser.parse(date).date()
+            date = dateutil.parser.parse(date).date()
             logging.debug("update_athlete_stats called with invalid date")
             logging.debug('!<<')
         except ValueError:
             return
         #Update DB
-        data = {'date': date, 'weight': weight, 'bodyfat': bodyfat, 'restinghr': restinghr, 'maxhr': maxhr}
-        condition = "id_athletestat=%d" % int(id_athletestat)
-        self.pytrainer_main.ddbb.update_dict("athletestats",data, condition)
-        #self.pytrainer_main.ddbb.update("athletestats",cells,values," id_athletestat=%d" %int(id_athletestat))
+        data = self.pytrainer_main.ddbb.session.query(Athletestat).filter(Athletestat.id_athletestat == id_athletestat).one()
+        data.date = date
+        data.weight = weight
+        data.bodyfat = bodyfat
+        data.restinghr = restinghr
+        data.maxhr = maxhr
+        self.pytrainer_main.ddbb.session.commit()
         logging.debug('<<')
 
     def insert_athlete_stats(self, date, weight, bodyfat, restinghr, maxhr):
@@ -120,17 +130,19 @@ class Athlete:
             logging.debug('!<<')
             return
         try:
-            dateutil.parser.parse(date).date()
+            date = dateutil.parser.parse(date).date()
         except ValueError:
             logging.debug("insert_athlete_stats called with invalid date")
             logging.debug('!<<')
             return
         #Update DB
-        data = {'date': date, 'weight': weight, 'bodyfat': bodyfat, 'restinghr': restinghr, 'maxhr': maxhr}
-        self.pytrainer_main.ddbb.insert_dict("athletestats",data)
+        data = Athletestat(date=date, weight=weight, bodyfat=bodyfat, restinghr=restinghr, maxhr=maxhr)
+        self.pytrainer_main.ddbb.session.add(data)
+        self.pytrainer_main.ddbb.session.commit()
         logging.debug('<<')
 
     def delete_record(self, data):
         logging.debug('>>')
-        self.pytrainer_main.ddbb.delete("athletestats","id_athletestat=%d" % int(data))
+        self.pytrainer_main.ddbb.session.query(Athletestat).filter(Athletestat.id_athletestat == int(data)).delete()
+        self.pytrainer_main.ddbb.session.commit()
         logging.debug('<<')
