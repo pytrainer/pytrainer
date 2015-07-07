@@ -42,7 +42,7 @@ class Sql:
 
     def connect(self):
         self.engine.connect()
-        return (True, "OK")
+        return self.engine
 
     def disconnect(self):
         self.engine.dispose()
