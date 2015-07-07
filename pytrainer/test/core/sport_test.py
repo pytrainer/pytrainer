@@ -19,7 +19,7 @@
 import unittest
 from pytrainer.core.sport import Sport, SportService, SportServiceException
 import mock
-from pytrainer.lib.sqliteUtils import Sql
+from pytrainer.lib.alchemyUtils import Sql
 import pytrainer.core
 
 class SportTest(unittest.TestCase):
