@@ -162,9 +162,9 @@ class EquipmentUi(gtk.HBox):
         notes = notes_buffer.get_text(notes_buffer.get_start_iter(), notes_buffer.get_end_iter())
         new_equipment = Equipment()
         new_equipment.description = unicode(description)
-        new_equipment.active = active
-        new_equipment.life_expectancy = life_expectancy
-        new_equipment.prior_usage = prior_usage
+        new_equipment.active = bool(active)
+        new_equipment.life_expectancy = int(life_expectancy)
+        new_equipment.prior_usage = int(prior_usage)
         new_equipment.notes = unicode(notes)
         self._equipment_store.add_equipment(new_equipment)
         self.show_page_equipment_list()
