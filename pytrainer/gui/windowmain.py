@@ -427,9 +427,8 @@ class Main(SimpleBuilderApp):
             buffer = self.record_comments.get_buffer()
             start,end = buffer.get_bounds()
             buffer.set_text(activity.comments)
-            equipment = self.parent.record.get_record_equipment(activity.id)
-            if len(equipment) > 0:
-                equipment_text = ", ".join(map(lambda(item): item.description, equipment))
+            if len(activity.equipment) > 0:
+                equipment_text = ", ".join(map(lambda(item): item.description, activity.equipment))
                 self.label_record_equipment.set_text(equipment_text)
             else:
                 self.label_record_equipment.set_markup("<i>None</i>")    

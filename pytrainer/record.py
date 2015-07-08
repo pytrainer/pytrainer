@@ -61,9 +61,8 @@ class Record:
     def editRecord(self,id_record):
         logging.debug('>>')
         activity = self.pytrainer_main.activitypool.get_activity(id_record)
-        record_equipment = self.get_record_equipment(id_record)
         sports = self._sport_service.get_all_sports()
-        self.recordwindow = WindowRecord(self._equipment_service, self.data_path, sports, self, None, windowTitle=_("Edit Entry"), equipment=record_equipment)
+        self.recordwindow = WindowRecord(self._equipment_service, self.data_path, sports, self, None, windowTitle=_("Edit Entry"), equipment=activity.equipment)
         self.recordwindow.setValuesFromActivity(activity)
         logging.debug('launching window')
         self.recordwindow.run()
@@ -373,15 +372,6 @@ class Record:
         self.pytrainer_main.ddbb.delete("record_equipment", "record_id={0}".format(record_id))
         for id in equipment_ids:
             self._insert_record_equipment(record_id, id)
-
-    def get_record_equipment(self, record_id):
-        record_equipment = []
-        results = self.pytrainer_main.ddbb.select("record_equipment", "equipment_id", "record_id={0}".format(record_id))
-        for row in results:
-            id = row[0]
-            equipment_item = self._equipment_service.get_equipment_item(id)
-            record_equipment.append(equipment_item)
-        return record_equipment
 
     def getrecordPeriod(self, date_range, sport=None):
         #TODO This is essentially the same as getrecordPeriodSport (except date ranges) - need to look at merging the two
