@@ -21,6 +21,8 @@ import os, sys
 import logging
 from lxml import etree
 from pytrainer.lib.xmlUtils import XMLParser
+from pytrainer.core.activity import Activity
+from sqlalchemy.orm import exc
 
 import commands
 
@@ -157,11 +159,10 @@ class garminhr():
 			return False
 		else:
 			time = timeElement.text
-			#comparing date and start time (sport may have been changed in DB after import)
-			if self.pytrainer_main.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
-				logging.debug("Not importing track for time %s" % (time))
+			try:
+				self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date_time_utc == time).one()
 				return False
-			else:
+			except exc.NoResultFound:
 				return True
 
 	def createGPXfile(self, gpxfile, track):

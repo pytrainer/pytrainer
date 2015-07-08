@@ -25,6 +25,8 @@ import xml.etree.cElementTree
 
 from pytrainer.gui.dialogs import fileChooserDialog, guiFlush
 from pytrainer.lib.xmlUtils import XMLParser
+from pytrainer.core.activity import Activity
+from sqlalchemy.orm import exc
 
 class garmingpx():
 	""" Plugin to import from a GPX file or files
@@ -90,9 +92,10 @@ class garmingpx():
 			only valid for GPX files with a single activity 
 		"""
 		time = self.detailsFromGPX(filename)
-		if self.pytrainer_main.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
+		try:
+			self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date_time_utc == time).one()
 			return True
-		else:
+		except exc.NoResultFound:
 			return False
 
 	def getSport(self, filename):

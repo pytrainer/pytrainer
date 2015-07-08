@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
 
@@ -33,6 +33,7 @@ from lxml import etree
 from pytrainer.lib.xmlUtils import XMLParser
 from datetime import date, timedelta, datetime
 from dateutil.tz import * # for tzutc()
+from pytrainer.core.activity import Activity
 
 class garmintools_full():
 	""" Plugin to import from a Garmin device using garmintools
@@ -94,7 +95,7 @@ class garmintools_full():
 					if len(selectedFiles) > 0:
 						logging.info("Dumping "+str(len(selectedFiles))+" binary files found")
 						dumpFiles = self.dumpBinaries(selectedFiles)
-						self.listStringDBUTC = self.pytrainer_main.ddbb.select("records","date_time_utc")
+						self.listStringDBUTC = self.pytrainer_main.ddbb.session.query(Activity)
 						if self.maxGap > 0:
 							logging.info("Starting import. Comparison will be made with "+str(self.maxGap)+" seconds interval")
 						else:
@@ -214,16 +215,15 @@ class garmintools_full():
 			stringStartDate = stringStartUTC[0:10]
 			for entry in listStringStartUTC:
 				#logging.debug("start: "+str(startDatetime)+" | entry: "+str(entry)+" | gap: "+str(datetimePlusDelta))
-				if entry[0] is not None:
-					if str(entry[0]).startswith(stringStartDate):
-						deltaGap = timedelta(seconds=gap)
-						datetimeStartUTC = datetime.strptime(stringStartUTC,"%Y-%m-%dT%H:%M:%SZ")
-						datetimeStartUTCDB = datetime.strptime(entry[0],"%Y-%m-%dT%H:%M:%SZ")
-						datetimePlusDelta = datetimeStartUTC + deltaGap
-						if datetimeStartUTC <= datetimeStartUTCDB and datetimeStartUTCDB <= datetimePlusDelta:
-							found = True
-							logging.debug("Found: "+str(stringStartUTC)+" <= "+str(entry[0])+" <= "+str(datetimePlusDelta))
-							break
+                                if entry.date_time_utc.startswith(stringStartDate):
+                                        deltaGap = timedelta(seconds=gap)
+                                        datetimeStartUTC = datetime.strptime(stringStartUTC,"%Y-%m-%dT%H:%M:%SZ")
+                                        datetimeStartUTCDB = datetime.strptime(entry.date_time_utc, "%Y-%m-%dT%H:%M:%SZ")
+                                        datetimePlusDelta = datetimeStartUTC + deltaGap
+                                        if datetimeStartUTC <= datetimeStartUTCDB and datetimeStartUTCDB <= datetimePlusDelta:
+                                                found = True
+                                                logging.debug("Found: "+str(stringStartUTC)+" <= "+entry.date_time_utc+" <= "+str(datetimePlusDelta))
+                                                break
 		else:
 			if (stringStartUTC,) in listStringStartUTC: # strange way to store results from DB
 				found = True
