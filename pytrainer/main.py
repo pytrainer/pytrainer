@@ -28,7 +28,7 @@ from pytrainer.util.date import DateRange
 from upgrade.data import initialize_data
 from environment import Environment
 from record import Record
-from waypoint import Waypoint
+from waypoint import WaypointService
 from extension import Extension
 from importdata import Importdata
 from plugins import Plugins
@@ -95,7 +95,7 @@ class pyTrainer:
         self.selectInitialDate()
         
         logging.debug('Loading waypoint service...')
-        self.waypoint = Waypoint(data_path,self)
+        self.waypoint = WaypointService(data_path, self)
         logging.debug('Loading extension service...')
         self.extension = Extension(data_path, self)
         logging.debug('Loading plugins service...')

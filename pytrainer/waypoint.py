@@ -19,7 +19,7 @@
 import logging
 from pytrainer.lib.date import unixtime2date
 
-class Waypoint:
+class WaypointService(object):
 	def __init__(self, data_path = None, parent = None):
 		logging.debug(">>")
 		self.parent = parent

@@ -19,7 +19,7 @@ from datetime import date
 from mock import Mock
 
 from pytrainer.lib.ddbb import DDBB
-from pytrainer.waypoint import Waypoint
+from pytrainer.waypoint import WaypointService
 
 class WaypointTest(unittest.TestCase):
 
@@ -31,7 +31,7 @@ class WaypointTest(unittest.TestCase):
         main.ddbb = self.ddbb
         main.ddbb.connect()
         main.ddbb.create_tables(add_default=False)
-        self.waypoint = Waypoint(parent=main)
+        self.waypoint = WaypointService(parent=main)
 
     def tearDown(self):
         self.waypoint = None
