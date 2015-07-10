@@ -22,7 +22,7 @@ import time
 import datetime
 import calendar
 import dateutil.parser
-from dateutil.tz import * # for tzutc()
+from dateutil.tz import tzutc, tzlocal
 import logging
 
 def second2time(seconds):
