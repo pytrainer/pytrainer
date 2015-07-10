@@ -25,8 +25,6 @@ from dateutil.tz import *
 from StringIO import StringIO
 from lxml import etree
 
-from pytrainer.lib.date import Date
-
 class kml20():
 	def __init__(self, parent = None, data_path = None):
 		self.parent = parent
@@ -110,9 +108,6 @@ class kml20():
 				last_lat = tmp_lat
 				last_lon = tmp_lon
 		return round(total_dist, 2)
-		
-	def getDateTime(self, time_):
-		return Date().getDateTime(time_)
 
 	def getGPXFile(self, ID, file_id):
 		'''
