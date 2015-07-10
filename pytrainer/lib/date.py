@@ -28,11 +28,6 @@ import logging
 def second2time(seconds):
     if not seconds:
         return 0,0,0
-    #time_in_hour = seconds/3600.0
-    #hour = int(time_in_hour)
-    #min = int((time_in_hour-hour)*60)
-    #sec = (((time_in_hour-hour)*60)-min)*60
-    #sec = seconds-(hour*3600)-(min*60)
     hours = seconds // (60*60)
     seconds %= (60*60)
     minutes = seconds // 60
