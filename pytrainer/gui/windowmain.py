@@ -419,7 +419,7 @@ class Main(SimpleBuilderApp):
             self.record_duration.set_text(activity.get_value_f('time', '%s'))
             self.record_calories.set_text(activity.get_value_f('calories', "%0.0f"))
             self.record_title.set_text(activity.title)
-            hrun,mrun,srun = second2time(activity.time)
+            hrun,mrun,srun = second2time(activity.duration)
             hpause,mpause,spause = second2time(activity.time_pause)
             self.record_runrest.set_text("%02d:%02d:%02d / %02d:%02d:%02d" %(hrun,mrun,srun,hpause,mpause,spause)) 
             buffer = self.record_comments.get_buffer()
@@ -809,7 +809,7 @@ class Main(SimpleBuilderApp):
         record_list = activity.tracks
             
         def project(d,a):
-            return int(a.time * (d / a.distance)**1.06)
+            return int(a.duration * (d / a.distance)**1.06)
             
         DISTANCES = {
             .8    : _("800 m"),

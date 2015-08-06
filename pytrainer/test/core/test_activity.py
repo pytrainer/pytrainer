@@ -58,10 +58,10 @@ class ActivityTest(unittest.TestCase):
     def test_activity_sport_name(self):
         self.assertEquals(self.activity.sport_name, 'Mountain Bike')
 
-    def test_activity_time(self):
-        self.assertEquals(self.activity.time, 7426)
-
     def test_activity_duration(self):
+        self.assertEquals(self.activity.duration, 7426)
+
+    def test_activity_time(self):
         self.assertEquals(self.activity.time, self.activity.duration)
 
     def test_activity_starttime(self):

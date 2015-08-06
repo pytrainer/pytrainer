@@ -213,7 +213,7 @@ class Activity:
 
     @property
     def time_tuple(self):
-        return second2time(self.time)
+        return second2time(self.duration)
 
     @property
     def date_time(self):
@@ -274,7 +274,7 @@ tracks (%s)
 ''' % ('self.tracks', self.tracklist, self.laps, self.uc.us,
                 self.distance_data, self.time_data,
                 self.gpx_file, self.gpx, self.sport_name,
-                self.sport_id, self.title, self.date, self.time, self.time_tuple, self.beats,
+                self.sport_id, self.title, self.date, self.duration, self.time_tuple, self.beats,
                 self.maxbeats, self.comments, self.calories, self.id, self.date_time_local,
                 self.date_time_utc, self.date_time, self.starttime, self.distance, self.average,
                 self.upositive, self.unegative, self.maxspeed, self.maxpace, self.pace, self.has_data,
@@ -606,9 +606,9 @@ tracks (%s)
         elif param == 'calories':
             return self.calories
         elif param == 'time':
-            if not self.time:
+            if not self.duration:
                 return ""
-            _hour ,_min, _sec = second2time(self.time)
+            _hour ,_min, _sec = second2time(self.duration)
             if _hour == 0:
                 return "%02d:%02d" % (_min, _sec)
             else:
