@@ -21,6 +21,8 @@ from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger
 from sqlalchemy import Column, Boolean, UnicodeText, Integer, Unicode
 from sqlalchemy.orm import exc
 from sqlalchemy.exc import IntegrityError
+from pytrainer.core.activity import Activity
+from sqlalchemy.sql import func
 
 class Equipment(DeclarativeBase):
    """An equipment item that can be used during an activity, such as a pair of running shoes."""
@@ -106,9 +108,6 @@ class EquipmentService(object):
    
    def get_equipment_usage(self, equipment):
        """Get the total use of the given equipment."""
-       result = self._ddbb.select("records inner join record_equipment "
-                         "on records.id_record = record_equipment.record_id",
-                         "sum(distance)",
-                         "record_equipment.equipment_id = {0}".format(equipment.id))
-       usage = result[0][0]
-       return (0 if usage == None else usage) + equipment.prior_usage
+       result = self._ddbb.session.query(func.sum(Activity.distance).label('sum')).filter(Activity.equipment.contains(equipment))
+       usage = result.scalar()
+       return (0 if usage == None else float(usage)) + equipment.prior_usage
