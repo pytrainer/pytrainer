@@ -309,8 +309,11 @@ class DDBB:
     def create_tables(self, add_default=True):
         """Initialise the database schema from an empty database."""
         logging.info("Creating database tables")
+        from pytrainer.core.sport import Sport
+        DeclarativeBase.metadata.create_all(self.engine)
         for entry in tablesList:
-            self.ddbbObject.createTableDefault(entry, tablesList[entry])
+            if not entry in ['sports']: # Do not create tables already handled by Sqlalchemy
+                self.ddbbObject.createTableDefault(entry, tablesList[entry])
             if add_default and entry in tablesDefaultData:
                 logging.debug("Adding default data to %s" % entry)
                 for data_dict in tablesDefaultData[entry]:
