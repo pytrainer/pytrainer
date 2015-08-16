@@ -226,10 +226,10 @@ class Record:
 		total_duration = 0
 		ponderate_hr = 0;
 		for lap in laps:
-                        if (lap['max_hr'] is None):
-                            lap['max_hr'] = 0
-                        if (lap['avg_hr'] is None):
-                            lap['avg_hr'] = 0
+			if (lap['max_hr'] is None):
+				lap['max_hr'] = 0
+			if (lap['avg_hr'] is None):
+				lap['avg_hr'] = 0
 			if int(lap['max_hr']) > lap_max_hr:
 				lap_max_hr = int(lap['max_hr'])
 			total_duration = total_duration + float(lap['elapsed_time'])
