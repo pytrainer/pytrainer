@@ -89,11 +89,7 @@ class Date:
         self.calendar = calendar
         self.second2time = second2time
         self.time2second = time2second
-        self.getLocalTZ = getLocalTZ
-        self.time2string = time2string
         self.getNameMonth = getNameMonth
-        self.unixtime2date = unixtime2date
-        self.getDateTime = getDateTime
 
     def getDate(self):
         #hack for the gtk calendar widget
