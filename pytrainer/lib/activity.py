@@ -22,7 +22,7 @@ from lxml import etree
 import dateutil.parser
 from dateutil.tz import * # for tzutc()
 
-from pytrainer.lib.date import Date
+from pytrainer.lib.date import second2time
 from pytrainer.lib.gpx import Gpx
 from pytrainer.lib.graphdata import GraphData
 from pytrainer.lib.unitsconversor import *
@@ -252,7 +252,7 @@ class Activity:
 				self.title = ""
 			self.date = row[cols.index('date')]
 			self.time = self._int(row[cols.index('time')])
-			self.time_tuple = Date().second2time(self.time)
+			self.time_tuple = second2time(self.time)
 			self.beats = self._int(row[cols.index('beats')])
 			self.comments = row[cols.index('comments')]
 			if self.comments is None:
