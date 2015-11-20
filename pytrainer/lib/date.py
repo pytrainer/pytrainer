@@ -87,7 +87,6 @@ def getDateTime(time_):
 class Date:
     def __init__(self, calendar=None):
         self.calendar = calendar
-        self.getNameMonth = getNameMonth
 
     def getDate(self):
         #hack for the gtk calendar widget
