@@ -87,7 +87,6 @@ def getDateTime(time_):
 class Date:
     def __init__(self, calendar=None):
         self.calendar = calendar
-        self.second2time = second2time
         self.time2second = time2second
         self.getNameMonth = getNameMonth
 

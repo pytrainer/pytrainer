@@ -610,7 +610,7 @@ class Activity:
 		elif param == 'time':
 			if not self.time:
 				return ""
-			_hour,_min,_sec=self.pytrainer_main.date.second2time(self.time)
+			_hour,_min,_sec = second2time(self.time)
 			if _hour == 0:
 				return "%02d:%02d" % (_min, _sec)
 			else:

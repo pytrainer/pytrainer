@@ -20,7 +20,7 @@
 import xmlrpclib
 import SOAPpy
 import os
-from pytrainer.lib.date import Date
+from pytrainer.lib.date import second2time
 from pytrainer.lib.soapUtils import *
 
 from optparse import OptionParser
@@ -55,12 +55,11 @@ class Main:
 			print "can't connect the server"
 			
 	def loadRecordInfo(self):
-		date = Date()
       		record = self.webserviceserver.getRecordInfo(self.idrecord)
 		self.sport = record["sport"]
                 self.date = record["date"]
                 self.distance = record["distance"]
-                self.time = date.second2time(float(record["time"]))
+                self.time = second2time(float(record["time"]))
                 self.heure = self.time[0]
                 self.minute = self.time[1] 
                 self.seconde = self.time[2]
