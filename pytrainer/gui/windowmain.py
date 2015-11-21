@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# -*- coding: UTF-8 -*-
+# -*- coding: utf-8 -*-
 
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
 # Modified by dgranda

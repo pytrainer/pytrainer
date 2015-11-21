@@ -32,7 +32,6 @@ class Environment(object):
         
         """
         self.conf_dir = conf_dir if conf_dir is not None else platform.get_default_conf_dir()
-        logging.info("Initializing environment. Conf dir is: '{0}'.".format(self.conf_dir))
         self.conf_file = self.conf_dir + "/conf.xml"
         self.log_file = self.conf_dir + "/log.out"
         self.temp_dir = self.conf_dir + "/tmp"

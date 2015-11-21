@@ -325,9 +325,6 @@ class pyTrainer:
 
     def refreshListRecords(self):
         logging.debug('>>')
-        #Refresh list view
-        #self.refreshListView() # old variant
-        self.refreshListView(self.windowmain.listsearch.condition)
         #Refresh list records
         date = self.date.getDate()
         sport = self.windowmain.activeSport
