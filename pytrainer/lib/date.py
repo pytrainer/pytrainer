@@ -51,7 +51,6 @@ def getNameMonth(date):
     return monthName, daysInMonth
 
 def unixtime2date(unixtime):
-    print unixtime
     tm = time.gmtime(unixtime)
     year = tm[0]
     month = tm[1]
