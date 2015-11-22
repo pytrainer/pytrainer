@@ -139,6 +139,7 @@ class pyTrainer:
         '''Set level of information written to log'''
         logging.debug("Setting logger to level: "+ str(level))
         logging.getLogger('').setLevel(level)
+        logging.getLogger('sqlalchemy.engine').setLevel(level)
 
     def quit(self):
         logging.debug('--')

@@ -20,7 +20,7 @@ import unittest
 import mock
 from pytrainer.core.equipment import Equipment, EquipmentService,\
     EquipmentServiceException
-from pytrainer.lib.sqliteUtils import Sql
+from pytrainer.lib.alchemyUtils import Sql
 
 class EquipmentTest(unittest.TestCase):
 

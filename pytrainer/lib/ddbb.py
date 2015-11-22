@@ -21,6 +21,11 @@
 
 import logging
 import dateutil
+from pytrainer.lib.alchemyUtils import Sql
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
+DeclarativeBase = declarative_base()
 
 #Define the tables and their columns that should be in the database
 #Obviously, this is not a list but a dict -> TODO: ammend name to avoid confusion!!!
@@ -112,31 +117,18 @@ class DDBB:
         self.pytrainer_main = pytrainer_main
         self.configuration = configuration
         self.ddbb_type = self.configuration.getValue("pytraining","prf_ddbb")
-        if self.ddbb_type == "mysql": #TODO no longer supported?
-            from mysqlUtils import Sql
-        else:
-            from sqliteUtils import Sql
-
-        self.confdir = self.configuration.confdir
-        self.ddbb_path = "%s/pytrainer.ddbb" %self.confdir
-
-        ddbb_host = self.configuration.getValue("pytraining","prf_ddbbhost")
-        ddbb = self.configuration.getValue("pytraining","prf_ddbbname")
-        ddbb_user = self.configuration.getValue("pytraining","prf_ddbbuser")
-        ddbb_pass = self.configuration.getValue("pytraining","prf_ddbbpass")
-        self.ddbbObject = Sql(ddbb_host,ddbb,ddbb_user,ddbb_pass,self.configuration)
+        self.ddbbObject = Sql(self.configuration)
         
     def get_connection_url(self):
         return self.ddbbObject.get_connection_url()
 
     def connect(self):
-        connection_ok, connection_msg = self.ddbbObject.connect()
-        if not connection_ok:
-            print "ERROR: Unable to connect to database"
-            print connection_msg
-            sys.exit(connection_ok)
+        self.engine = self.ddbbObject.connect()
+        Session = sessionmaker(bind=self.engine)
+        self.session = Session()
 
     def disconnect(self):
+        self.session.close()
         self.ddbbObject.disconnect()
 
     def select(self,table,cells,condition=None, mod=None):
