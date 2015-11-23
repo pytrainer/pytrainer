@@ -64,8 +64,6 @@ def getDateTime(time_):
     try:
         dateTime = dateutil.parser.parse(time_)
     except ValueError as e:
-        print "Unable to parse '%s' as a date time" % time_
-        print e
         logging.debug("Unable to parse %s as a date time" % time_)
         logging.debug(str(e))
         return (None, None)
