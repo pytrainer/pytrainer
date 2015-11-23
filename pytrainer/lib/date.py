@@ -71,16 +71,12 @@ def getDateTime(time_):
         return (None, None)
     timezone = dateTime.tzinfo
     if timezone is None: #got a naive time, so assume is local time
-        #print 'Naive time'
         local_dateTime = dateTime.replace(tzinfo=tzlocal())
     elif timezone == tzutc(): #got a zulu time
-        #print 'zulu time'
         local_dateTime = dateTime.astimezone(tzlocal()) #datetime with localtime offset (from OS)
     else:
-        #print 'local time'
         local_dateTime = dateTime #use datetime as supplied
     utc_dateTime = local_dateTime.astimezone(tzutc()) #datetime with 00:00 offset
-    #print utc_dateTime, local_dateTime
     return (utc_dateTime,local_dateTime)
 
 class Date:
