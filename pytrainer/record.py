@@ -24,7 +24,6 @@ import traceback
 
 from gui.windowrecord import WindowRecord
 from gui.dialogselecttrack import DialogSelectTrack
-from lib.ddbb import DDBB
 from lib.xmlUtils import XMLParser
 from lib.date import Date
 from lib.gpx import Gpx
