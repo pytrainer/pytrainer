@@ -117,7 +117,6 @@ class DDBB:
             from sqliteUtils import Sql
 
         self.confdir = self.configuration.confdir
-        self.ddbb_path = "%s/pytrainer.ddbb" %self.confdir
 
         ddbb_host = self.configuration.getValue("pytraining","prf_ddbbhost")
         ddbb = self.configuration.getValue("pytraining","prf_ddbbname")
