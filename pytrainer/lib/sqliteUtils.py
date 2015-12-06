@@ -31,9 +31,13 @@ except ImportError:
 class Sql:
     def __init__(self,host=None, ddbb = None, user = None, password = None, configuration = None):
         self.db = None
-        confdir = configuration.confdir
-        self.ddbb = "%s/pytrainer.ddbb" %confdir
-        self.url = "sqlite:///" + self.ddbb
+        if ddbb == 'memory':
+            self.ddbb = ':memory:'
+            self.url = 'sqlite://'
+        else:
+            confdir = configuration.confdir
+            self.ddbb = "%s/pytrainer.ddbb" %confdir
+            self.url = "sqlite:///" + self.ddbb
         
     def get_connection_url(self):
         return self.url
