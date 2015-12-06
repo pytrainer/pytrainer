@@ -108,8 +108,7 @@ tablesDefaultData = { "sports": [
 
 
 class DDBB:
-    def __init__(self, configuration, pytrainer_main=None):
-        self.pytrainer_main = pytrainer_main
+    def __init__(self, configuration):
         self.configuration = configuration
         self.ddbb_type = self.configuration.getValue("pytraining","prf_ddbb")
         if self.ddbb_type == "mysql": #TODO no longer supported?
