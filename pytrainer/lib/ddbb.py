@@ -116,8 +116,6 @@ class DDBB:
         else:
             from sqliteUtils import Sql
 
-        self.confdir = self.configuration.confdir
-
         ddbb_host = self.configuration.getValue("pytraining","prf_ddbbhost")
         ddbb = self.configuration.getValue("pytraining","prf_ddbbname")
         ddbb_user = self.configuration.getValue("pytraining","prf_ddbbuser")
