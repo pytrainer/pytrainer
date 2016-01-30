@@ -310,14 +310,14 @@ class SportServiceTest(unittest.TestCase):
             self.fail()
         
     def test_get_sport_by_name_returns_none_for_nonexistant_sport(self):
-        sport = self.sport_service.get_sport("no such sport")
+        sport = self.sport_service.get_sport_by_name("no such sport")
         self.assertEquals(None, sport)
         
     def test_get_sport_by_name_returns_sport_with_name(self):
         sport1 = Sport()
         sport1.name = u"rugby"
         self.sport_service.store_sport(sport1)
-        sport2 = self.sport_service.get_sport("rugby")
+        sport2 = self.sport_service.get_sport_by_name("rugby")
         self.assertEquals(u"rugby", sport2.name)
         
     def test_get_sport_by_name_raises_error_for_none_sport_name(self):
