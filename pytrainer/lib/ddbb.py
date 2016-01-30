@@ -288,12 +288,12 @@ class DDBB:
         ret_val = self.ddbbObject.freeExec(sql)
         return ret_val[0][0]
         
-    def create_tables(self):
+    def create_tables(self, add_default=True):
         """Initialise the database schema from an empty database."""
         logging.info("Creating database tables")
         for entry in tablesList:
             self.ddbbObject.createTableDefault(entry, tablesList[entry])
-            if entry in tablesDefaultData:
+            if add_default and entry in tablesDefaultData:
                 logging.debug("Adding default data to %s" % entry)
                 for data_dict in tablesDefaultData[entry]:
                     self.insert_dict(entry, data_dict)
