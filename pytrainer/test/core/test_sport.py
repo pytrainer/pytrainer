@@ -22,8 +22,19 @@ import mock
 from pytrainer.lib.sqliteUtils import Sql
 import pytrainer.core
 from pytrainer.lib.ddbb import DDBB
+from sqlalchemy.exc import IntegrityError, StatementError, ProgrammingError, OperationalError, InterfaceError, DataError
 
 class SportTest(unittest.TestCase):
+
+    def setUp(self):
+        profile = mock.Mock()
+        profile.getValue = mock.Mock(return_value='memory')
+        self.ddbb = DDBB(profile)
+        self.ddbb.connect()
+        self.ddbb.create_tables(add_default=False)
+
+    def tearDown(self):
+        self.ddbb.disconnect()
     
     def test_id_should_default_to_none(self):
         sport = Sport()
@@ -37,26 +48,22 @@ class SportTest(unittest.TestCase):
     def test_id_should_accept_integer_string(self):
         sport = Sport()
         sport.id = "1"
+        self.ddbb.session.add(sport)
+        self.ddbb.session.commit()
+        sport = self.ddbb.session.query(Sport).filter(Sport.id == 1).one()
         self.assertEquals(1, sport.id)
         
     def test_id_should_not_accept_non_integer_string(self):
         sport = Sport()
         try:
-            sport.id = "1.1"
-        except(ValueError):
+            sport.id = "test"
+            self.ddbb.session.add(sport)
+            self.ddbb.session.flush()
+        except (IntegrityError, DataError):
             pass
         else:
             self.fail()
             
-    def test_id_should_not_accept_none(self):
-        sport = Sport()
-        try:
-            sport.id = None
-        except(TypeError):
-            pass
-        else:
-            self.fail()
-        
     def test_name_should_default_to_empty_string(self):
         sport = Sport()
         self.assertEquals(u"", sport.name)
@@ -68,18 +75,22 @@ class SportTest(unittest.TestCase):
         
     def test_name_should_not_accept_non_unicode_string(self):
         sport = Sport()
+        sport.name = "Juggling" + chr(255)
         try:
-            sport.name = "Juggling"
-        except(TypeError):
+            self.ddbb.session.add(sport)
+            self.ddbb.session.flush()
+        except (ProgrammingError, DataError):
             pass
         else:
             self.fail()
             
     def test_name_should_not_accept_none(self):
         sport = Sport()
+        sport.name = None
         try:
-            sport.name = None
-        except(TypeError):
+            self.ddbb.session.add(sport)
+            self.ddbb.session.commit()
+        except (IntegrityError, OperationalError):
             pass
         else:
             self.fail()
@@ -91,27 +102,37 @@ class SportTest(unittest.TestCase):
     def test_met_should_accept_float(self):
         sport = Sport()
         sport.met = 22.5
+        self.ddbb.session.add(sport)
+        self.ddbb.session.flush()
         self.assertEquals(22.5, sport.met)
         
     def test_met_should_accept_float_string(self):
         sport = Sport()
+        sport.name = "test1"
         sport.met = "22.5"
+        self.ddbb.session.add(sport)
+        self.ddbb.session.commit()
+        sport = self.ddbb.session.query(Sport).filter(Sport.id == 1).one()
         self.assertEquals(22.5, sport.met)
         
     def test_met_should_not_accept_non_float_string(self):
         sport = Sport()
+        sport.met = "22.5kg"
         try:
-            sport.met = "22.5kg"
-        except(ValueError):
+            self.ddbb.session.add(sport)
+            self.ddbb.session.flush()
+        except(ValueError, StatementError):
             pass
         else:
             self.fail()
                      
     def test_met_should_not_accept_negative_value(self):
         sport = Sport()
+        sport.met = -1
         try:
-            sport.met = -1
-        except(ValueError):
+            self.ddbb.session.add(sport)
+            self.ddbb.session.flush()
+        except (IntegrityError, InterfaceError):
             pass
         else:
             self.fail()
@@ -133,31 +154,39 @@ class SportTest(unittest.TestCase):
     def test_weight_should_accept_float_string(self):
         sport = Sport()
         sport.weight = "22.5"
+        self.ddbb.session.add(sport)
+        self.ddbb.session.commit()
         self.assertEquals(22.5, sport.weight)
         
     def test_weight_should_not_accept_non_float_string(self):
         sport = Sport()
+        sport.weight = "22.5kg"
         try:
-            sport.weight = "22.5kg"
-        except(ValueError):
+            self.ddbb.session.add(sport)
+            self.ddbb.session.flush()
+        except StatementError:
             pass
         else:
             self.fail()
             
     def test_weight_should_not_accept_negative_value(self):
         sport = Sport()
+        sport.weight = -1
         try:
-            sport.weight = -1
-        except(ValueError):
+            self.ddbb.session.add(sport)
+            self.ddbb.session.flush()
+        except (IntegrityError, InterfaceError):
             pass
         else:
             self.fail()
             
     def test_weight_should_not_accept_none(self):
         sport = Sport()
+        sport.weight = None
         try:
-            sport.weight = None
-        except(TypeError):
+            self.ddbb.session.add(sport)
+            self.ddbb.session.flush()
+        except (IntegrityError, OperationalError):
             pass
         else:
             self.fail()
@@ -169,18 +198,24 @@ class SportTest(unittest.TestCase):
     def test_max_pace_should_accept_integer(self):
         sport = Sport()
         sport.max_pace = 220
+        self.ddbb.session.add(sport)
+        self.ddbb.session.flush()
         self.assertEquals(220, sport.max_pace)
         
     def test_max_pace_should_accept_integer_string(self):
         sport = Sport()
         sport.max_pace = "220"
+        self.ddbb.session.add(sport)
+        self.ddbb.session.commit()
         self.assertEquals(220, sport.max_pace)
         
     def test_max_pace_should_not_accept_non_integer_string(self):
         sport = Sport()
+        sport.max_pace = "225s"
         try:
-            sport.max_pace = "225s"
-        except(ValueError):
+            self.ddbb.session.add(sport)
+            self.ddbb.session.flush()
+        except(ValueError, StatementError):
             pass
         else:
             self.fail()
@@ -188,13 +223,18 @@ class SportTest(unittest.TestCase):
     def test_max_pace_should_take_floor_of_float(self):
         sport = Sport()
         sport.max_pace = 220.6
+        self.ddbb.session.add(sport)
+        self.ddbb.session.commit()
+        sport = self.ddbb.session.query(Sport).filter(Sport.id == 1).one()
         self.assertEquals(220, sport.max_pace)
-            
+
     def test_max_pace_should_not_accept_negative_value(self):
         sport = Sport()
+        sport.max_pace = -1
         try:
-            sport.max_pace = -1
-        except(ValueError):
+            self.ddbb.session.add(sport)
+            self.ddbb.session.flush()
+        except (IntegrityError, InterfaceError):
             pass
         else:
             self.fail()
@@ -210,9 +250,11 @@ class SportTest(unittest.TestCase):
         
     def test_color_should_not_accept_none(self):
         sport = Sport()
+        sport.color = None
         try:
-            sport.color = None
-        except(ValueError):
+            self.ddbb.session.add(sport)
+            self.ddbb.session.commit()
+        except StatementError:
             pass
         else:
             self.fail()
@@ -252,16 +294,6 @@ class SportServiceTest(unittest.TestCase):
         stored_sport = self.sport_service.store_sport(sport)
         self.assertEquals(1, stored_sport.id)
     
-    def test_store_sport_should_error_when_sport_has_unknown_id(self):
-        sport = Sport()
-        sport.id = 100
-        try:
-            self.sport_service.store_sport(sport)
-        except(SportServiceException):
-            pass
-        else:
-            self.fail()
-            
     def test_store_sport_should_error_when_new_sport_has_duplicate_name(self):
         sport1 = Sport()
         sport1.name = u"Test name"
