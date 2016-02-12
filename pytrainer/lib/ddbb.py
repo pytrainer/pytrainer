@@ -24,6 +24,8 @@ import dateutil
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.types import TypeDecorator
+from sqlalchemy import Integer
 
 DeclarativeBase = declarative_base()
 
@@ -330,3 +332,13 @@ class DDBB:
                 with gzip.open(backup_path, 'wb') as backup_file:
                     backup_file.write(orig_file.read())
                     logging.info('Database backup successfully created')
+
+class ForcedInteger(TypeDecorator):
+    """Type to force values to int since sqlite doesn't do this"""
+    impl = Integer
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return None
+        else:
+            return int(value)
