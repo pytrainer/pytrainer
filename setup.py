@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 #
-# setup.py for gnuConcept
-from distutils.core import setup
+try:
+	from setuptools import setup
+except ImportError:
+	from distutils.core import setup
 from glob import glob
 
 def install_locale(lang):
@@ -74,5 +76,7 @@ setup( 	name = "pytrainer",
 		('share/pixmaps/',['pytrainer.png']),
 		('share/applications/',['pytrainer.desktop'])
 		],
-	scripts=['bin/pytrainer'] 
+	scripts=['bin/pytrainer'],
+	test_suite='pytrainer.test',
+	tests_require=['mock']
 )
