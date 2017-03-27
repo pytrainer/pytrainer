@@ -1,0 +1,9 @@
+sudo: required
+language: python
+before_install:
+  - sudo apt-get install python-gtk2 python-glade2 python-lxml python-matplotlib
+python:
+  - "2.7"
+script: "python setup.py test"
+virtualenv:
+  system_site_packages: true
