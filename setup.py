@@ -77,6 +77,11 @@ setup( 	name = "pytrainer",
 		('share/applications/',['pytrainer.desktop'])
 		],
 	scripts=['bin/pytrainer'],
+	install_requires=['sqlalchemy-migrate',
+			'SQLAlchemy',
+			'python-dateutil',
+			'matplotlib',
+			'lxml'],
 	test_suite='pytrainer.test',
 	tests_require=['mock']
 )
