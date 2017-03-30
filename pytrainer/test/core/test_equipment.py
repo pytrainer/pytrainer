@@ -343,6 +343,14 @@ class EquipmentServiceTest(unittest.TestCase):
         usage = self.equipment_service.get_equipment_usage(equipment)
         self.assertEquals(0, usage)
 
+    def test_get_equipment_prior_usage(self):
+        self.mock_ddbb.select.return_value = [(None,)]
+        equipment = Equipment()
+        equipment.id = 1
+        equipment.prior_usage = 250
+        usage = self.equipment_service.get_equipment_usage(equipment)
+        self.assertEquals(250, usage)
+
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

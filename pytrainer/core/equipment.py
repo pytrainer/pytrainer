@@ -213,5 +213,4 @@ class EquipmentService(object):
                          "sum(distance)",
                          "record_equipment.equipment_id = {0}".format(equipment.id))
        usage = result[0][0]
-       return 0 if usage == None else usage
-
+       return (0 if usage == None else usage) + equipment.prior_usage
