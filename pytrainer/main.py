@@ -74,7 +74,7 @@ class pyTrainer:
         self.profile = Profile(self.environment, self.data_path,self)
         self.uc = UC()
         self.windowmain = None
-        self.ddbb = DDBB(self.profile, self)
+        self.ddbb = DDBB(self.profile)
         logging.debug('connecting to DDBB')
         self.ddbb.connect()
         

@@ -22,7 +22,6 @@ import logging
 from StringIO import StringIO
 
 from lxml import etree
-from lib.ddbb import DDBB
 from lib.uc import UC
 
 class Profile:
@@ -71,7 +70,6 @@ class Profile:
         self.config_file = environment.conf_file
         self.configuration = self._parse_config_file(self.config_file)
         logging.debug("Configuration retrieved: "+str(self.configuration))
-        #self.pytrainer_main.ddbb = DDBB(self, pytrainer_main=self.pytrainer_main)
         self.uc.set_us(self.prf_us_system)
         self._setZones()
         logging.debug("<<")
