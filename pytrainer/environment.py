@@ -33,13 +33,31 @@ class Environment(object):
         """
         platform = get_platform()
         self.conf_dir = conf_dir if conf_dir is not None else platform.get_default_conf_dir()
-        self.conf_file = self.conf_dir + "/conf.xml"
-        self.log_file = self.conf_dir + "/log.out"
-        self.temp_dir = self.conf_dir + "/tmp"
-        self.gpx_dir = self.conf_dir + "/gpx"
-        self.extension_dir = self.conf_dir + "/extensions"
-        self.plugin_dir = self.conf_dir + "/plugins"
-            
+
+    @property
+    def conf_file(self):
+        return self.conf_dir + "/conf.xml"
+
+    @property
+    def log_file(self):
+        return self.conf_dir + "/log.out"
+
+    @property
+    def temp_dir(self):
+        return self.conf_dir + "/tmp"
+
+    @property
+    def gpx_dir(self):
+        return self.conf_dir + "/gpx"
+
+    @property
+    def extension_dir(self):
+        return self.conf_dir + "/extensions"
+
+    @property
+    def plugin_dir(self):
+        return self.conf_dir + "/plugins"
+
     def clear_temp_dir(self):
         """Remove all files from the tmp directory."""
         logging.debug("clearing tmp directory %s" % self.temp_dir)
