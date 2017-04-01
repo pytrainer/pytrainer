@@ -22,25 +22,26 @@ import logging
 from StringIO import StringIO
 
 from lxml import etree
+from environment import Environment
 from lib.uc import UC
 
 class Profile:
-    def __init__(self, environment, data_path = None, parent = None):
+    def __init__(self, data_path=None, parent=None):
         logging.debug(">>")
-        self.environment = environment
+        self.environment = Environment()
         self.pytrainer_main = parent
         self.data_path = data_path
         self.xml_tree = None
-        self.tmpdir = environment.temp_dir
-        self.confdir = environment.conf_dir
-        self.conffile = environment.conf_file
-        self.gpxdir = environment.gpx_dir
-        self.extensiondir = environment.extension_dir
-        self.plugindir = environment.plugin_dir
+        self.tmpdir = self.environment.temp_dir
+        self.confdir = self.environment.conf_dir
+        self.conffile = self.environment.conf_file
+        self.gpxdir = self.environment.gpx_dir
+        self.extensiondir = self.environment.extension_dir
+        self.plugindir = self.environment.plugin_dir
         self.uc = UC()
         self.profilewindow = None
         
-        environment.clear_temp_dir()
+        self.environment.clear_temp_dir()
 
         #Profile Options and Defaults
         self.profile_options = {
@@ -67,7 +68,7 @@ class Profile:
             }
 
         #Parse pytrainer configuration file
-        self.config_file = environment.conf_file
+        self.config_file = self.environment.conf_file
         self.configuration = self._parse_config_file(self.config_file)
         logging.debug("Configuration retrieved: "+str(self.configuration))
         self.uc.set_us(self.prf_us_system)

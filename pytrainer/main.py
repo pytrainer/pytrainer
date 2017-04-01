@@ -70,7 +70,7 @@ class pyTrainer:
         self.ddbb = None
         # Checking profile
         logging.debug('Checking configuration and profile...')
-        self.profile = Profile(self.environment, self.data_path,self)
+        self.profile = Profile(self.data_path, self)
         self.uc = UC()
         self.windowmain = None
         self.ddbb = DDBB(self.profile)
