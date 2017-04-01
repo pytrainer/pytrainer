@@ -70,8 +70,13 @@ class Profile:
 
         #Parse pytrainer configuration file
         self.config_file = self.environment.conf_file
+        self.refreshConfiguration()
+        logging.debug("<<")
+
+    def refreshConfiguration(self):
+        logging.debug(">>")
         self.configuration = self._parse_config_file(self.config_file)
-        logging.debug("Configuration retrieved: "+str(self.configuration))
+        logging.debug("Configuration retrieved:", str(self.configuration))
         self.uc.set_us(self.prf_us_system)
         self._setZones()
         logging.debug("<<")
@@ -227,9 +232,7 @@ class Profile:
     def editProfile(self, sport_service):
         logging.debug(">>")
         from gui.windowprofile import WindowProfile
-        logging.debug("retrieving configuration data")
-        #Refresh configuration
-        self.configuration = self._parse_config_file(self.config_file)
+        self.refreshConfiguration()
         if self.profilewindow is None:
             self.profilewindow = WindowProfile(sport_service, self.data_path, self, pytrainer_main=self.pytrainer_main)
             logging.debug("setting data values")
@@ -239,7 +242,7 @@ class Profile:
         else:
             self.profilewindow.setValues(self.configuration)
             self.profilewindow.present()
-        self.configuration = self._parse_config_file(self.config_file)
+        self.refreshConfiguration()
         logging.debug("<<")
 
     def actualize_mainsportlist(self):
