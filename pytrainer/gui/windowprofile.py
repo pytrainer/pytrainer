@@ -323,7 +323,7 @@ class WindowProfile(SimpleGladeApp):
             md.destroy()
             return
         self._sport_service.store_sport(sport)
-        self.parent.actualize_mainsportlist()
+        self.pytrainer_main.refreshMainSportList()
         self.on_switch_page(None,None,2)
         self.hidesportsteps()
         self.buttonbox.set_sensitive(1)
@@ -342,7 +342,7 @@ class WindowProfile(SimpleGladeApp):
         sport_name = self.sportnamedel.get_text()
         sport = self._sport_service.get_sport_by_name(sport_name)
         self._sport_service.remove_sport(sport)
-        self.parent.actualize_mainsportlist()
+        self.pytrainer_main.refreshMainSportList()
         self.on_switch_page(None,None,2)
         self.hidesportsteps()
         self.buttonbox.set_sensitive(1)
@@ -397,7 +397,7 @@ class WindowProfile(SimpleGladeApp):
         sport.max_pace = self._trim_to_null(self.editmaxpace.get_text())
         sport.color = self.stored_color
         self._sport_service.store_sport(sport)
-        self.parent.actualize_mainsportlist()
+        self.pytrainer_main.refreshMainSportList()
         self.on_switch_page(None,None,2)
         self.hidesportsteps()
         self.buttonbox.set_sensitive(1)

@@ -244,9 +244,3 @@ class Profile:
             self.profilewindow.present()
         self.refreshConfiguration()
         logging.debug("<<")
-
-    def actualize_mainsportlist(self):
-        logging.debug("--")
-        self.pytrainer_main.refreshMainSportList()
-
-
