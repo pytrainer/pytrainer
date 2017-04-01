@@ -23,15 +23,16 @@ from StringIO import StringIO
 
 from lxml import etree
 from environment import Environment
+from pytrainer.lib.singleton import Singleton
 from lib.uc import UC
 
-class Profile:
+class Profile(Singleton):
     def __init__(self):
         logging.debug(">>")
+        # The first two variables are singletons themselves, profile_options
+        # doesn't change, only xml_tree needs to be protected by has_attr.
         self.environment = Environment()
-        self.xml_tree = None
         self.uc = UC()
-        
         #Profile Options and Defaults
         self.profile_options = {
             "prf_name":"default",
@@ -57,8 +58,11 @@ class Profile:
             "prf_startscreen":"current_day",
             }
 
-        #Parse pytrainer configuration file
-        self.refreshConfiguration()
+        if not hasattr(self, 'xml_tree'):
+            self.xml_tree = None
+            #Parse pytrainer configuration file
+            self.refreshConfiguration()
+
         logging.debug("<<")
 
     @property
