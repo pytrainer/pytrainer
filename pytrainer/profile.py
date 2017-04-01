@@ -30,11 +30,6 @@ class Profile:
         logging.debug(">>")
         self.environment = Environment()
         self.xml_tree = None
-        self.tmpdir = self.environment.temp_dir
-        self.confdir = self.environment.conf_dir
-        self.gpxdir = self.environment.gpx_dir
-        self.extensiondir = self.environment.extension_dir
-        self.plugindir = self.environment.plugin_dir
         self.uc = UC()
         
         #Profile Options and Defaults
@@ -63,13 +58,36 @@ class Profile:
             }
 
         #Parse pytrainer configuration file
-        self.config_file = self.environment.conf_file
         self.refreshConfiguration()
         logging.debug("<<")
 
     @property
     def data_path(self):
         return self.environment.data_path
+
+    @property
+    def tmpdir(self):
+        return self.environment.temp_dir
+
+    @property
+    def confdir(self):
+        return self.environment.conf_dir
+
+    @property
+    def config_file(self):
+        return self.environment.conf_file
+
+    @property
+    def gpxdir(self):
+        return self.environment.gpx_dir
+
+    @property
+    def extensiondir(self):
+        return self.environment.extension_dir
+
+    @property
+    def plugindir(self):
+        return self.environment.plugin_dir
 
     def refreshConfiguration(self):
         logging.debug(">>")
