@@ -60,7 +60,7 @@ class pyTrainer:
         #Process command line options
         self.startup_options = self.get_options()
         #Setup logging
-        self.environment = Environment(self.startup_options.conf_dir)
+        self.environment = Environment(self.startup_options.conf_dir, data_path)
         self.environment.create_directories()
         self.set_logging(self.startup_options.log_level, self.startup_options.log_type)
         logging.debug('>>')

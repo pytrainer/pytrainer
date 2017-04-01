@@ -23,11 +23,12 @@ from mock import Mock
 from pytrainer.environment import Environment
 
 TEST_DIR_NAME = "/test/.pytrainer_test"
+DATA_DIR_NAME = "/test/datadir"
 
 class Test(unittest.TestCase):
 
     def setUp(self):
-        self.environment = Environment(TEST_DIR_NAME)
+        self.environment = Environment(TEST_DIR_NAME, DATA_DIR_NAME)
 
     def tearDown(self):
         self.environment = None
@@ -35,9 +36,13 @@ class Test(unittest.TestCase):
     def test_get_conf_dir(self):
         self.assertEquals(TEST_DIR_NAME, self.environment.conf_dir)
 
+    def test_get_data_path(self):
+        self.assertEquals(DATA_DIR_NAME, self.environment.data_path)
+
     def test_environment_singleton(self):
         self.environment = Environment()
         self.assertEquals(TEST_DIR_NAME, self.environment.conf_dir)
+        self.assertEquals(DATA_DIR_NAME, self.environment.data_path)
         
     def test_get_conf_file(self):
         self.assertEquals(TEST_DIR_NAME + "/conf.xml", self.environment.conf_file)

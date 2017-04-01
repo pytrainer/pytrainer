@@ -25,7 +25,7 @@ class Environment(Singleton):
     
     """Describes the location of the program's configuration directories and files."""
     
-    def __init__(self, conf_dir=None):
+    def __init__(self, conf_dir=None, data_path=None):
         """Initialise an environment.
         
         Arguments:
@@ -37,6 +37,12 @@ class Environment(Singleton):
                 self.conf_dir = conf_dir
             else:
                 self.conf_dir = get_platform().get_default_conf_dir()
+
+        if not hasattr(self, 'data_path'):
+            if data_path:
+                self.data_path = data_path
+            else:
+                self.data_path = get_platform().get_default_data_path()
 
     @property
     def conf_file(self):
