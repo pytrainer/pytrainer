@@ -33,7 +33,6 @@ class Profile:
         self.xml_tree = None
         self.tmpdir = self.environment.temp_dir
         self.confdir = self.environment.conf_dir
-        self.conffile = self.environment.conf_file
         self.gpxdir = self.environment.gpx_dir
         self.extensiondir = self.environment.extension_dir
         self.plugindir = self.environment.plugin_dir
@@ -126,12 +125,6 @@ class Profile:
 
     def getZones(self):
         return self.zone5,self.zone4,self.zone3,self.zone2,self.zone1
-
-    def getConfFile(self):
-        if not os.path.isfile(self.conffile):
-            return False
-        else:
-            return self.conffile
 
     def _parse_config_file(self, config_file):
         '''
