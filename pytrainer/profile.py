@@ -26,10 +26,9 @@ from environment import Environment
 from lib.uc import UC
 
 class Profile:
-    def __init__(self, data_path=None, parent=None):
+    def __init__(self, data_path=None):
         logging.debug(">>")
         self.environment = Environment()
-        self.pytrainer_main = parent
         self.data_path = data_path
         self.xml_tree = None
         self.tmpdir = self.environment.temp_dir
@@ -39,7 +38,6 @@ class Profile:
         self.extensiondir = self.environment.extension_dir
         self.plugindir = self.environment.plugin_dir
         self.uc = UC()
-        self.profilewindow = None
         
         self.environment.clear_temp_dir()
 
@@ -227,20 +225,4 @@ class Profile:
             self.setValue("pytraining",option,value,delay_write=True)
         self.xml_tree.write(self.config_file, xml_declaration=True, encoding='UTF-8')
         self.uc.set_us(list_options['prf_us_system'])
-        logging.debug("<<")
-
-    def editProfile(self, sport_service):
-        logging.debug(">>")
-        from gui.windowprofile import WindowProfile
-        self.refreshConfiguration()
-        if self.profilewindow is None:
-            self.profilewindow = WindowProfile(sport_service, self.data_path, self, pytrainer_main=self.pytrainer_main)
-            logging.debug("setting data values")
-            self.profilewindow.setValues(self.configuration)
-            self.profilewindow.run()
-            self.profilewindow = None
-        else:
-            self.profilewindow.setValues(self.configuration)
-            self.profilewindow.present()
-        self.refreshConfiguration()
         logging.debug("<<")
