@@ -27,43 +27,35 @@ TEST_DIR_NAME = "/test/.pytrainer_test"
 class Test(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.environment = Environment(TEST_DIR_NAME)
 
     def tearDown(self):
-        pass
+        self.environment = None
 
     def test_get_conf_dir(self):
-        environment = Environment(TEST_DIR_NAME)
-        self.assertEquals(TEST_DIR_NAME, environment.conf_dir)
+        self.assertEquals(TEST_DIR_NAME, self.environment.conf_dir)
 
     def test_environment_singleton(self):
-        environment = Environment(TEST_DIR_NAME)
-        environment = Environment()
-        self.assertEquals(TEST_DIR_NAME, environment.conf_dir)
+        self.environment = Environment()
+        self.assertEquals(TEST_DIR_NAME, self.environment.conf_dir)
         
     def test_get_conf_file(self):
-        environment = Environment(TEST_DIR_NAME)
-        self.assertEquals(TEST_DIR_NAME + "/conf.xml", environment.conf_file)
+        self.assertEquals(TEST_DIR_NAME + "/conf.xml", self.environment.conf_file)
 
     def test_get_log_file(self):
-        environment = Environment(TEST_DIR_NAME)
-        self.assertEquals(TEST_DIR_NAME + "/log.out", environment.log_file)
+        self.assertEquals(TEST_DIR_NAME + "/log.out", self.environment.log_file)
 
     def test_get_temp_dir(self):
-        environment = Environment(TEST_DIR_NAME)
-        self.assertEquals(TEST_DIR_NAME + "/tmp", environment.temp_dir)
+        self.assertEquals(TEST_DIR_NAME + "/tmp", self.environment.temp_dir)
 
     def test_get_gpx_dir(self):
-        environment = Environment(TEST_DIR_NAME)
-        self.assertEquals(TEST_DIR_NAME + "/gpx", environment.gpx_dir)
+        self.assertEquals(TEST_DIR_NAME + "/gpx", self.environment.gpx_dir)
 
     def test_get_extension_dir(self):
-        environment = Environment(TEST_DIR_NAME)
-        self.assertEquals(TEST_DIR_NAME + "/extensions", environment.extension_dir)
+        self.assertEquals(TEST_DIR_NAME + "/extensions", self.environment.extension_dir)
 
     def test_get_plugin_dir(self):
-        environment = Environment(TEST_DIR_NAME)
-        self.assertEquals(TEST_DIR_NAME + "/plugins", environment.plugin_dir)
+        self.assertEquals(TEST_DIR_NAME + "/plugins", self.environment.plugin_dir)
         
 
 if __name__ == "__main__":
