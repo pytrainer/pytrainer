@@ -24,7 +24,7 @@ class Environment(object):
     
     """Describes the location of the program's configuration directories and files."""
     
-    def __init__(self, conf_dir):
+    def __init__(self, conf_dir=None):
         """Initialise an environment.
         
         Arguments:
