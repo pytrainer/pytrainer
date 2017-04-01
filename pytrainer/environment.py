@@ -19,8 +19,9 @@
 import os
 import logging
 from pytrainer.platform import get_platform
+from pytrainer.lib.singleton import Singleton
 
-class Environment(object):
+class Environment(Singleton):
     
     """Describes the location of the program's configuration directories and files."""
     
@@ -31,8 +32,11 @@ class Environment(object):
         conf_dir -- the directory where program configuration should be stored. If None, then the default for the platform is used.
         
         """
-        platform = get_platform()
-        self.conf_dir = conf_dir if conf_dir is not None else platform.get_default_conf_dir()
+        if not hasattr(self, 'conf_dir'):
+            if conf_dir:
+                self.conf_dir = conf_dir
+            else:
+                self.conf_dir = get_platform().get_default_conf_dir()
 
     @property
     def conf_file(self):

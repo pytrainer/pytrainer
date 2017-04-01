@@ -35,6 +35,11 @@ class Test(unittest.TestCase):
     def test_get_conf_dir(self):
         environment = Environment(TEST_DIR_NAME)
         self.assertEquals(TEST_DIR_NAME, environment.conf_dir)
+
+    def test_environment_singleton(self):
+        environment = Environment(TEST_DIR_NAME)
+        environment = Environment()
+        self.assertEquals(TEST_DIR_NAME, environment.conf_dir)
         
     def test_get_conf_file(self):
         environment = Environment(TEST_DIR_NAME)
