@@ -26,10 +26,9 @@ from environment import Environment
 from lib.uc import UC
 
 class Profile:
-    def __init__(self, data_path=None):
+    def __init__(self):
         logging.debug(">>")
         self.environment = Environment()
-        self.data_path = data_path
         self.xml_tree = None
         self.tmpdir = self.environment.temp_dir
         self.confdir = self.environment.conf_dir
@@ -67,6 +66,10 @@ class Profile:
         self.config_file = self.environment.conf_file
         self.refreshConfiguration()
         logging.debug("<<")
+
+    @property
+    def data_path(self):
+        return self.environment.data_path
 
     def refreshConfiguration(self):
         logging.debug(">>")
