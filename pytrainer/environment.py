@@ -18,19 +18,20 @@
 
 import os
 import logging
+from pytrainer.platform import get_platform
 
 class Environment(object):
     
     """Describes the location of the program's configuration directories and files."""
     
-    def __init__(self, platform, conf_dir):
+    def __init__(self, conf_dir):
         """Initialise an environment.
         
         Arguments:
-        platform -- the current system platform.
         conf_dir -- the directory where program configuration should be stored. If None, then the default for the platform is used.
         
         """
+        platform = get_platform()
         self.conf_dir = conf_dir if conf_dir is not None else platform.get_default_conf_dir()
         self.conf_file = self.conf_dir + "/conf.xml"
         self.log_file = self.conf_dir + "/log.out"
