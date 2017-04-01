@@ -39,8 +39,6 @@ class Profile:
         self.plugindir = self.environment.plugin_dir
         self.uc = UC()
         
-        self.environment.clear_temp_dir()
-
         #Profile Options and Defaults
         self.profile_options = {
             "prf_name":"default",

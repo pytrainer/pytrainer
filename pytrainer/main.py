@@ -62,6 +62,7 @@ class pyTrainer:
         #Setup logging
         self.environment = Environment(self.startup_options.conf_dir, data_path)
         self.environment.create_directories()
+        self.environment.clear_temp_dir()
         self.set_logging(self.startup_options.log_level, self.startup_options.log_type)
         logging.debug('>>')
         logging.info("pytrainer version %s" % (self.version))
