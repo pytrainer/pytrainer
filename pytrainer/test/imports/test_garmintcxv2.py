@@ -23,7 +23,7 @@ class GarminTCXv2Test(unittest.TestCase):
             self.fail()
 
     def test_workout_summary(self):
-        summary = [(0, False, '2012-10-14T10:02:42', '10.12', '00:39:51', 'Running')]
+        summary = [(0, False, '2012-10-14T12:02:42', '10.12', '00:39:51', 'Running')]
         try:
             current_path = os.path.dirname(os.path.abspath(__file__))
             data_path = os.path.dirname(os.path.dirname(os.path.dirname(current_path))) + "/"
