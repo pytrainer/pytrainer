@@ -1,5 +1,7 @@
 sudo: required
 language: python
+env:
+  - TZ=Europe/Kaliningrad
 before_install:
   - sudo apt-get install python-gtk2 python-glade2 python-lxml python-matplotlib
 python:
