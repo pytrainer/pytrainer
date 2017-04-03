@@ -19,13 +19,8 @@
 
 # Need to set this stuff up so that the translation functions work.  Seems like
 # the module that needs translation ought to have some way of setting this up.
-import gettext, gtk.glade
-DIR = "../../locale"
-gettext.bindtextdomain("pytrainer", DIR)
-gtk.glade.bindtextdomain("pytrainer", DIR)
-gtk.glade.textdomain("pytrainer")
-gettext.textdomain("pytrainer")
-gettext.install("pytrainer",DIR,unicode=1)
+import pytrainer.lib.localization
+pytrainer.lib.localization.initialize_gettext("../../locale")
 
 import unittest
 import os

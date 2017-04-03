@@ -17,11 +17,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import gettext
 import sys
-import pygtk
-pygtk.require('2.0')
-import gtk.glade
 import os
 import glob
 import commands
@@ -85,17 +81,13 @@ print "data_path: " + data_path
 print "gettext_path: " + gettext_path
 print "site_path: " + site_path
 
-gettext.bindtextdomain("pytrainer", gettext_path)
-gtk.glade.bindtextdomain("pytrainer", gettext_path)
-gtk.glade.textdomain("pytrainer")
-gettext.textdomain("pytrainer")
-gettext.install("pytrainer", gettext_path, unicode=1)
-
 #ensure pytrainer directory is included in import path
 sys.path.insert(0, site_path)
-from pytrainer.main import pyTrainer
 
 def main():
+    import pytrainer.lib.localization
+    pytrainer.lib.localization.initialize_gettext(gettext_path)
+    from pytrainer.main import pyTrainer
     pytrainer = pyTrainer(None, data_path)
 
 if __name__ == "__main__":
