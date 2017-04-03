@@ -71,6 +71,8 @@ class pyTrainer:
         # Checking profile
         logging.debug('Checking configuration and profile...')
         self.profile = Profile()
+        # Write the default config to disk
+        self.profile.saveProfile()
         self.uc = UC()
         self.profilewindow = None
         self.ddbb = DDBB(self.profile)

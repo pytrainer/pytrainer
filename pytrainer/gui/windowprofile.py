@@ -168,6 +168,7 @@ class WindowProfile(SimpleGladeApp):
             logging.info("Saving %s as %s" % (i, list_options[i]))
         logging.info("Updating profile...")
         self.parent.setProfile(list_options)
+        self.parent.saveProfile()
         logging.debug("<<")
     
     def on_calendar_clicked(self,widget):
