@@ -75,6 +75,7 @@ class Main(SimpleGladeApp):
 
         self.uc = UC()
         self.popup = PopupMenu(data_path,self)
+
         self.block = False
         self.activeSport = None
         self.gpxDir = gpxDir
@@ -215,11 +216,13 @@ class Main(SimpleGladeApp):
         return result
 
     def setup(self):
+        logging.debug(">>")
         self.createGraphs()
         self.createMap(MapViewer,self.pytrainer_main.waypoint)
         self.createWaypointEditor(WaypointEditor,self.pytrainer_main.waypoint, parent=self.pytrainer_main)
         page = self.notebook.get_current_page()
         self.on_page_change(None,None,page)
+        logging.debug("<<")
 
     def _createXmlListView(self,file):
         menufile = XMLParser(file)
@@ -271,6 +274,7 @@ class Main(SimpleGladeApp):
         self.parent.runExtension(extension,id)
 
     def createGraphs(self):
+        logging.debug(">>")
         self.drawarearecord = RecordGraph(self.record_graph_vbox, self.window1, self.record_combovalue, self.record_combovalue2, self.btnShowLaps, self.tableConfigY1, pytrainer_main=self.pytrainer_main)
         self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox, self.window1, self.heartrate_vbox2, pytrainer_main=self.pytrainer_main)
         self.day_vbox.hide()
@@ -279,15 +283,15 @@ class Main(SimpleGladeApp):
         self.drawareamonth = MonthGraph(sports, self.month_vbox, self.window1, self.month_combovalue,self.month_combovalue2, self.pytrainer_main)
         self.drawareayear = YearGraph(sports, self.year_vbox, self.window1, self.year_combovalue,self.year_combovalue2, self.pytrainer_main)
         self.drawareatotal = TotalGraph(sports, self.total_vbox, self.window1, self.total_combovalue,self.total_combovalue2, self.pytrainer_main)
+        logging.debug("<<")
 
     def createMap(self,MapViewer,waypoint):
+        logging.debug(">>")
         self.waypoint = waypoint
         if not getattr(self, 'mapviewer', None):
             self.mapviewer = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox)
             self.mapviewer_fs = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox_old)
-        #self.googlemaps = Googlemaps(self.data_path, self.map_vbox,waypoint, pytrainer_main=self.parent)
-        #self.osm = Osm(self.data_path, self.map_vbox,waypoint, pytrainer_main=self.parent)
-        #self.googlemaps_old = Googlemaps(self.data_path, self.map_vbox_old,waypoint, pytrainer_main=self.parent)
+        logging.debug("<<")
 
     def updateSportList(self,listSport):
         logging.debug(">>")
@@ -1915,8 +1919,9 @@ class Main(SimpleGladeApp):
         logging.debug("--")
         self.parent.refreshGraphView(self.selected_view)
 
-    def on_calendar_selected(self,widget):
-        logging.debug("--")
+    def on_calendar_selected(self, widget):
+        logging.debug(">>")
+        logging.debug("Block (%s) | Selected view: %s" % (self.block, self.selected_view))
         if self.block:
             self.block = False
         else:
@@ -1925,6 +1930,7 @@ class Main(SimpleGladeApp):
                 self.parent.refreshRecordGraphView("info")
             self.parent.refreshListRecords()
             self.parent.refreshGraphView(self.selected_view)
+        logging.debug("<<")
 
     def on_calendar_changemonth(self,widget):
         logging.debug("--")
