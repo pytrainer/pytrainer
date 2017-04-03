@@ -25,7 +25,7 @@ import traceback
 from gui.windowrecord import WindowRecord
 from gui.dialogselecttrack import DialogSelectTrack
 from lib.xmlUtils import XMLParser
-from lib.date import Date
+from lib.date import Date, time2second
 from lib.gpx import Gpx
 from pytrainer.core.equipment import EquipmentService
 from pytrainer.core.sport import Sport
@@ -116,7 +116,7 @@ class Record:
 		args: list with keys and values without valid format
 		returns: keys and values matching DB schema"""
 		logging.debug('>>')
-		time = self.date.time2second(list_options["rcd_time"])
+		time = time2second(list_options["rcd_time"])
 		average = self.parseFloatRecord(list_options["rcd_average"])
 		keys= "date,sport,distance,time,beats,comments,average,calories,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc,date_time_local, duration"
 		if (list_options["rcd_beats"] == ""):

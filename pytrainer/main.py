@@ -49,7 +49,7 @@ from stats import Stats
 
 from gui.windowmain import Main
 from gui.warning import Warning
-from lib.date import Date
+from lib.date import Date, getNameMonth
 from activitypool import ActivityPool
 from lib.ddbb import DDBB
 from lib.uc import UC
@@ -254,7 +254,7 @@ class pyTrainer:
              sport = self.windowmain.activeSport
              sport_id = self.record.getSportId(sport)
              record_list = self.record.getrecordPeriod(date_range, sport_id)
-             nameMonth, daysInMonth = self.date.getNameMonth(date_selected)
+             nameMonth, daysInMonth = getNameMonth(date_selected)
              self.windowmain.actualize_monthview(record_list, nameMonth)
              self.windowmain.actualize_monthgraph(record_list, daysInMonth)
         elif view=="year":

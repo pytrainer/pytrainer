@@ -26,7 +26,7 @@ import time
 from datetime import datetime
 import logging
 from lxml import etree
-from pytrainer.lib.date import Date
+from pytrainer.lib.date import getDateTime
 
 # use of namespaces is mandatory if defined
 mainNS = string.Template(".//{http://www.topografix.com/GPX/1/1}$tag")
@@ -76,7 +76,6 @@ class Gpx:
         self.hr_average = 0
         self.date = ""
         self.start_time = ""
-        #self.Date = Date()
         self.calories= 0
         self.tree = None
         if filename != None:
@@ -131,16 +130,13 @@ class Gpx:
             if timeResult is not None:
                 time_ = timeResult.text # check timezone
                 logging.debug("TimeResult: %s" %time_)
-                mk_time = self.getDateTime(time_)[0]
+                mk_time = getDateTime(time_)[0]
                 time_ = mk_time.strftime("%Y-%m-%d")
             else:
                 time_ = _("No Data")
             logging.debug("name: "+name+" | time: "+time_)
             tracks.append((name,time_))
         return tracks
-
-    def getDateTime(self, time_):
-        return Date().getDateTime(time_)
 
     def getUnevenness(self):
         return self.upositive,self.unegative
@@ -279,7 +275,7 @@ class Gpx:
             logging.info("time tag is blank")
             self.date = None
         else:
-            mk_time = self.getDateTime(date_)[1] #Local Date
+            mk_time = getDateTime(date_)[1] #Local Date
             self.date = mk_time.strftime("%Y-%m-%d")
             self.start_time = mk_time.strftime("%H:%M:%S")
         waiting_points = []
@@ -317,7 +313,7 @@ class Gpx:
             timeResult = trkpoint.find(timeTag)
             if timeResult is not None:
                 date_ = timeResult.text
-                mk_time = self.getDateTime(date_)[0]
+                mk_time = getDateTime(date_)[0]
                 time_ = time.mktime(mk_time.timetuple()) #Convert date to seconds
                 if i == 0:
                     time_elapsed = 0
@@ -516,7 +512,7 @@ class Gpx:
         if date_time is None:
             print "Problems when retrieving start time from "+gpxFile+". Please check data integrity"
             return 0
-        dateTime = self.getDateTime(date_time.text)
+        dateTime = getDateTime(date_time.text)
         zuluDateTime = dateTime[0].strftime("%Y-%m-%dT%H:%M:%SZ")
         localDateTime = dateTime[1]
         logging.debug(gpxFile+" | "+ date_time.text +" | " + zuluDateTime + " | " + str(localDateTime))

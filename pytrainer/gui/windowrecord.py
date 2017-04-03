@@ -25,7 +25,7 @@ from SimpleGladeApp import SimpleGladeApp
 from windowcalendar import WindowCalendar
 
 from filechooser import FileChooser
-from pytrainer.lib.date import Date
+from pytrainer.lib.date import getLocalTZ, time2second
 from pytrainer.lib.unitsconversor import *
 import pytrainer.record
 import dateutil.parser
@@ -283,7 +283,7 @@ class WindowRecord(SimpleGladeApp):
             # Added to change start time, only activities without GPX+ source file - dgranda 2011/06/10
             record_time = self.rcd_starttime.get_text()
             record_date = self.rcd_date.get_text()
-            localtz = Date().getLocalTZ()
+            localtz = getLocalTZ()
             date = dateutil.parser.parse(record_date+" "+record_time+" "+localtz)
             local_date = str(date)
             utc_date = date.astimezone(tzutc()).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -300,7 +300,7 @@ class WindowRecord(SimpleGladeApp):
                     #Manual entry, calculate time info
                     record_time = self.rcd_starttime.get_text()
                     record_date = self.rcd_date.get_text()
-                    localtz = Date().getLocalTZ()
+                    localtz = getLocalTZ()
                     date = dateutil.parser.parse(record_date+" "+record_time+" "+localtz)
                     local_date = str(date)
                     utc_date = date.astimezone(tzutc()).strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -518,7 +518,7 @@ class WindowRecord(SimpleGladeApp):
         gpx_file = self.activity_data[row]["rcd_gpxfile"]
         self.setValue("rcd_gpxfile", gpx_file, "%s")
         #set duration
-        time = Date().time2second(self.activity_data[row]["rcd_time"])      #TODO Fix to use timeinseconds!!
+        time = time2second(self.activity_data[row]["rcd_time"])      #TODO Fix to use timeinseconds!!
         self.setTime(time)                                                  #TODO Fix to use timeinseconds!!
         #Set distance
         self.setValue("rcd_distance",self.activity_data[row]["rcd_distance"], "%s")
@@ -549,7 +549,7 @@ class WindowRecord(SimpleGladeApp):
             #Get some info from gpx file
             self.update_activity_data(row, gpx_file, sport)
         self.setValue("rcd_distance",self.activity_data[row]["rcd_distance"], "%s") 
-        time = Date().time2second(self.activity_data[row]["rcd_time"])
+        time = time2second(self.activity_data[row]["rcd_time"])
         self.setTime(time)  
         self.setValue("rcd_date", self.activity_data[row]["rcd_date"], "%s")
         self.setValue("rcd_starttime", self.activity_data[row]["rcd_starttime"], "%s")

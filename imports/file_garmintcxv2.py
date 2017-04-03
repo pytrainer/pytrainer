@@ -21,7 +21,7 @@ import logging
 import os
 import traceback
 from lxml import etree
-from pytrainer.lib.date import Date
+from pytrainer.lib.date import getDateTime
 
 from pytrainer.lib.xmlUtils import XMLParser
 
@@ -82,7 +82,7 @@ class garmintcxv2():
                     #Try again without the last point (i.e work from end until find time and distance)
                     points = points[:-1]
                     continue
-            duration_hhmmss = self.getDateTime(time)[0]-startTime[0]
+            duration_hhmmss = getDateTime(time)[0]-startTime[0]
             logging.debug("Activity distance (m): %f | duration (hh:mm:ss): %s" % (distance, duration_hhmmss))
         logging.debug("<<")
         return float(distance), duration_hhmmss
@@ -98,7 +98,7 @@ class garmintcxv2():
         logging.debug(">>")
         self.activities = self.getActivities()
         for activity in self.activities:
-            startTime = self.getDateTime(self.getStartTimeFromActivity(activity))
+            startTime = getDateTime(self.getStartTimeFromActivity(activity))
             inDatabase = self.inDatabase(startTime)
             sport = self.getSport(activity)
             distance, duration  = self.getDetails(activity, startTime)
@@ -168,9 +168,6 @@ class garmintcxv2():
             return None
         else:
             return timeElement.text
-
-    def getDateTime(self, time_):
-        return Date().getDateTime(time_)
 
     def getGPXFile(self, ID, file_id):
         """ Generate GPX file based on activity ID

@@ -21,7 +21,7 @@ import logging
 import os
 #import StringIO
 from lxml import etree
-from pytrainer.lib.date import Date
+from pytrainer.lib.date import getDateTime
 
 class gpxplusNokia():
     def __init__(self, parent = None, data_path = None):
@@ -56,7 +56,7 @@ class gpxplusNokia():
             if (xmlschema.validate(xmldoc)):
                 #Valid gpx file
                 self.xmldoc = xmldoc
-                startTime = self.getDateTime(self.startTimeFromFile(xmldoc))
+                startTime = getDateTime(self.startTimeFromFile(xmldoc))
                 indatabase = self.inDatabase(xmldoc, startTime)
                 sport = self.getSport(xmldoc)
                 duration  = self.getDetails(xmldoc, startTime)
@@ -74,9 +74,6 @@ class gpxplusNokia():
             return False
         return False
 
-    def getDateTime(self, time_):
-        return Date().getDateTime(time_)
-
     def inDatabase(self, tree, startTime):
         #comparing date and start time (sport may have been changed in DB after import)
         time = startTime
@@ -93,7 +90,7 @@ class gpxplusNokia():
         #Get all times from file
         times = root.findall(".//{http://www.topografix.com/GPX/1/1}time")
         time = times[-1].text
-        return self.getDateTime(time)[0]-startTime[0]
+        return getDateTime(time)[0]-startTime[0]
 
     def getSport(self, tree):
         #No sport in GPX file

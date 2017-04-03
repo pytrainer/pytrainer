@@ -32,7 +32,7 @@ from popupmenu import PopupMenu
 from aboutdialog import About
 
 import pytrainer.record
-from pytrainer.lib.date import Date
+from pytrainer.lib.date import Date, second2time
 from pytrainer.lib.xmlUtils import XMLParser
 #from pytrainer.lib.gpx import Gpx
 from pytrainer.extensions.googlemaps import Googlemaps
@@ -307,7 +307,7 @@ class Main(SimpleGladeApp):
     def render_duration(self, column, cell, model, iter):
         orig = cell.get_property('text')
         if not ':' in orig:
-            h,m,s = self.parent.date.second2time(int(orig))
+            h,m,s = second2time(int(orig))
             new = '%d:%02d:%02d' % (h,m,s)
         else:
             new = orig
@@ -416,8 +416,8 @@ class Main(SimpleGladeApp):
             self.record_duration.set_text(activity.get_value_f('time', '%s'))
             self.record_calories.set_text(activity.get_value_f('calories', "%0.0f"))
             self.record_title.set_text(activity.title)
-            hrun,mrun,srun = self.pytrainer_main.date.second2time(activity.time)
-            hpause,mpause,spause = self.pytrainer_main.date.second2time(activity.time_pause)
+            hrun,mrun,srun = second2time(activity.time)
+            hpause,mpause,spause = second2time(activity.time_pause)
             self.record_runrest.set_text("%02d:%02d:%02d / %02d:%02d:%02d" %(hrun,mrun,srun,hpause,mpause,spause)) 
             buffer = self.record_comments.get_buffer()
             start,end = buffer.get_bounds()
@@ -970,7 +970,7 @@ class Main(SimpleGladeApp):
 
             self.dayview.set_sensitive(1)
             self.day_distance.set_text("%0.2f" %distance)
-            hour,min,sec=self.parent.date.second2time(timeinseconds)
+            hour,min,sec = second2time(timeinseconds)
             self.day_hour.set_text("%d" %hour)
             self.day_minute.set_text("%02d" %min)
             self.day_second.set_text("%02d" %sec)
@@ -1092,7 +1092,7 @@ class Main(SimpleGladeApp):
                 pace = "%d:%02d" %((3600/average)/60,(3600/average)%60)
 
             self.weeka_distance.set_text("%0.2f" %km)
-            hour,min,sec = self.parent.date.second2time(time)
+            hour,min,sec = second2time(time)
             self.weeka_hour.set_text("%d" %hour)
             self.weeka_minute.set_text("%02d" %min)
             self.weeka_second.set_text("%02d" %sec)
@@ -1174,7 +1174,7 @@ class Main(SimpleGladeApp):
                 pace = "%d:%02d" %((3600/average)/60,float(3600/average)%60)
 
             self.montha_distance.set_text("%0.2f" %km)
-            hour,min,sec = self.parent.date.second2time(time)
+            hour,min,sec = second2time(time)
             self.montha_hour.set_text("%d" %hour)
             self.montha_minute.set_text("%02d" %min)
             self.montha_second.set_text("%02d" %sec)
@@ -1259,7 +1259,7 @@ class Main(SimpleGladeApp):
                 pace = "%d:%02d" %((3600/average)/60,(3600/average)%60)
 
             self.yeara_distance.set_text("%0.2f" %km)
-            hour,min,sec = self.parent.date.second2time(time)
+            hour,min,sec = second2time(time)
             self.yeara_hour.set_text("%d" %hour)
             self.yeara_minute.set_text("%02d" %min)
             self.yeara_second.set_text("%02d" %sec)
@@ -1371,7 +1371,6 @@ class Main(SimpleGladeApp):
         #date,distance,average,title,sports.name,id_record,time,beats,caloriesi
         #Laas columnas son:
         #column_names=[_("id"),_("Title"),_("Date"),_("Distance"),_("Sport"),_("Time"),_("Beats"),_("Average"),("Calories")]
-        date = Date()
         store = gtk.ListStore(
             gobject.TYPE_INT,
             gobject.TYPE_STRING,
@@ -1385,7 +1384,7 @@ class Main(SimpleGladeApp):
             object)
         for i in record_list:
             try:
-                hour,min,sec = date.second2time(int(i[6]))
+                hour,min,sec = second2time(int(i[6]))
             except  (ValueError, TypeError):
                 hour,min,sec = (0,0,0)
             _time = "%2d:%02d:%02d" %(hour,min,sec)

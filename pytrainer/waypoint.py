@@ -17,6 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
+from pytrainer.lib.date import unixtime2date
 
 class Waypoint:
 	def __init__(self, data_path = None, parent = None):
@@ -80,7 +81,7 @@ class Waypoint:
 		tracks = gpx.getTrackRoutes()
 
 		if len(tracks) > 1:
-			time = self.date.unixtime2date(tracks[0][1])
+			time = unixtime2date(tracks[0][1])
 			self.recordwindow.rcd_date.set_text(time)
 			self._actualize_fromgpx(gpx)
 		else:

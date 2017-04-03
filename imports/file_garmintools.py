@@ -24,7 +24,7 @@ import logging
 import os
 import StringIO
 from lxml import etree
-from pytrainer.lib.date import Date
+from pytrainer.lib.date import getDateTime
 
 class garmintools():
 	def __init__(self, parent = None, data_path = None):
@@ -63,7 +63,7 @@ class garmintools():
 			if (xmlschema.validate(xmldoc)):
 				#Valid garmintools file
 				self.xmldoc = xmldoc
-				startTime = self.getDateTime(self.startTimeFromFile(xmldoc))
+				startTime = getDateTime(self.startTimeFromFile(xmldoc))
 				indatabase = self.inDatabase(xmldoc, startTime)
 				sport = self.getSport(xmldoc)
 				distance, duration  = self.getDetails(xmldoc, startTime)
@@ -80,9 +80,6 @@ class garmintools():
 			#Not garmintools dump file
 			return False
 		return False
-
-	def getDateTime(self, time_):
-		return Date().getDateTime(time_)
 
 	def inDatabase(self, tree, startTime):
 		#comparing date and start time (sport may have been changed in DB after import)
@@ -110,7 +107,7 @@ class garmintools():
 			except:
 				points = points[:-1]
 				continue
-		return float(distance), self.getDateTime(time)[0]-startTime[0]
+		return float(distance), getDateTime(time)[0]-startTime[0]
 
 	def getSport(self, tree):
 		#return sport from file

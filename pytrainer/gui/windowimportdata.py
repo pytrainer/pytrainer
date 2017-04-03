@@ -14,7 +14,7 @@ import locale
 
 from pytrainer.plugins import Plugins
 from pytrainer.gui.dialogs import fileChooserDialog
-from pytrainer.lib.date import Date
+from pytrainer.lib.date import getDateTime
 
 class WindowImportdata(SimpleGladeApp):
     def __init__(self, sport_service, data_path = None, parent=None, config=None, pytrainer_main=None):
@@ -871,7 +871,7 @@ class WindowImportdata(SimpleGladeApp):
                 continue
             data = {}
             #Determine dates
-            _date = Date().getDateTime(row[dateCol-1])
+            _date = getDateTime(row[dateCol-1])
             #year, month, day = date.split("-")
             date = _date[1].strftime("%Y-%m-%d")
             zuluDateTime = _date[0].strftime("%Y-%m-%dT%H:%M:%SZ")

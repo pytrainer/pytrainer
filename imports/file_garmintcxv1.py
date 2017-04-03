@@ -22,7 +22,7 @@ import os
 from lxml import etree
 
 from pytrainer.lib.xmlUtils import XMLParser
-from pytrainer.lib.date import Date
+from pytrainer.lib.date import getDateTime
 
 class garmintcxv1():
 	def __init__(self, parent = None, data_path = None):
@@ -59,7 +59,7 @@ class garmintcxv1():
 				#Try again without the last point (i.e work from end until find time)
 				points = points[:-1]
 				continue
-		return self.getDateTime(time)[0]-startTime[0]
+		return getDateTime(time)[0]-startTime[0]
 
 	def testFile(self, filename):
 		logging.debug('>>')
@@ -78,7 +78,7 @@ class garmintcxv1():
 				for (sport, activities) in self.activities:
 					logging.debug("Found %d tracks for %s sport in %s" % (len(activities), sport, filename))
 					for activity in activities:
-						startTime = self.getDateTime(self.getStartTimeFromActivity(activity))
+						startTime = getDateTime(self.getStartTimeFromActivity(activity))
 						inDatabase = self.inDatabase(activity, startTime)
 					 	duration  = self.getDetails(activity, startTime)
 						distance = ""
@@ -128,9 +128,6 @@ class garmintcxv1():
 			return None
 		else:
 			return timeElement.text
-
-	def getDateTime(self, time_):
-		return Date().getDateTime(time_)
 
 	def getGPXFile(self, ID, file_id):
 		"""
