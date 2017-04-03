@@ -20,56 +20,48 @@ import unittest
 
 from mock import Mock
 
-import pytrainer.platform
 from pytrainer.environment import Environment
 
 TEST_DIR_NAME = "/test/.pytrainer_test"
-
-PLATFORM = pytrainer.platform.get_platform()
+DATA_DIR_NAME = "/test/datadir"
 
 class Test(unittest.TestCase):
 
     def setUp(self):
-        pass
+        self.environment = Environment(TEST_DIR_NAME, DATA_DIR_NAME)
 
     def tearDown(self):
-        pass
+        self.environment = None
 
     def test_get_conf_dir(self):
-        environment = Environment(PLATFORM, TEST_DIR_NAME)
-        self.assertEquals(TEST_DIR_NAME, environment.conf_dir)
-        
-    def test_get_conf_dir_default(self):
-        test_platform = Mock(spec=pytrainer.platform.get_platform())
-        test_platform.get_default_conf_dir.return_value = "/test/.pytrainer_test"
-        environment = Environment(test_platform, None)
-        self.assertEquals("/test/.pytrainer_test", environment.conf_dir)
+        self.assertEquals(TEST_DIR_NAME, self.environment.conf_dir)
 
+    def test_get_data_path(self):
+        self.assertEquals(DATA_DIR_NAME, self.environment.data_path)
+
+    def test_environment_singleton(self):
+        self.environment = Environment()
+        self.assertEquals(TEST_DIR_NAME, self.environment.conf_dir)
+        self.assertEquals(DATA_DIR_NAME, self.environment.data_path)
+        
     def test_get_conf_file(self):
-        environment = Environment(PLATFORM, TEST_DIR_NAME)
-        self.assertEquals(TEST_DIR_NAME + "/conf.xml", environment.conf_file)
+        self.assertEquals(TEST_DIR_NAME + "/conf.xml", self.environment.conf_file)
 
     def test_get_log_file(self):
-        environment = Environment(PLATFORM, TEST_DIR_NAME)
-        self.assertEquals(TEST_DIR_NAME + "/log.out", environment.log_file)
+        self.assertEquals(TEST_DIR_NAME + "/log.out", self.environment.log_file)
 
     def test_get_temp_dir(self):
-        environment = Environment(PLATFORM, TEST_DIR_NAME)
-        self.assertEquals(TEST_DIR_NAME + "/tmp", environment.temp_dir)
+        self.assertEquals(TEST_DIR_NAME + "/tmp", self.environment.temp_dir)
 
     def test_get_gpx_dir(self):
-        environment = Environment(PLATFORM, TEST_DIR_NAME)
-        self.assertEquals(TEST_DIR_NAME + "/gpx", environment.gpx_dir)
+        self.assertEquals(TEST_DIR_NAME + "/gpx", self.environment.gpx_dir)
 
     def test_get_extension_dir(self):
-        environment = Environment(PLATFORM, TEST_DIR_NAME)
-        self.assertEquals(TEST_DIR_NAME + "/extensions", environment.extension_dir)
+        self.assertEquals(TEST_DIR_NAME + "/extensions", self.environment.extension_dir)
 
     def test_get_plugin_dir(self):
-        environment = Environment(PLATFORM, TEST_DIR_NAME)
-        self.assertEquals(TEST_DIR_NAME + "/plugins", environment.plugin_dir)
+        self.assertEquals(TEST_DIR_NAME + "/plugins", self.environment.plugin_dir)
         
 
 if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
     unittest.main()

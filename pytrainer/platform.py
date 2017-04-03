@@ -35,14 +35,20 @@ class _Platform(object):
         """Get the path to the default configuration directory for the platform."""
         return self._home_dir + "/" + self._conf_dir_name
 
+    def get_default_data_path(self):
+        """Get the path to the default data directory for the platform."""
+        return self._data_path
+
 class _Linux(_Platform):
     
     def __init__(self):
         self._home_dir = os.environ['HOME']
         self._conf_dir_name = ".pytrainer"
+        self._data_path = "/usr/share/pytrainer/"
 
 class _Windows(_Platform):
     
     def __init__(self):
         self._home_dir = os.environ['USERPROFILE']
         self._conf_dir_name = "pytrainer"
+        self._data_path = os.getcwd() + os.sep
