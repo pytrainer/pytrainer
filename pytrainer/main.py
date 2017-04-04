@@ -62,6 +62,7 @@ class pyTrainer:
         #Setup logging
         self.environment = Environment(self.startup_options.conf_dir, data_path)
         self.environment.create_directories()
+        self.environment.clear_temp_dir()
         self.set_logging(self.startup_options.log_level, self.startup_options.log_type)
         logging.debug('>>')
         logging.info("pytrainer version %s" % (self.version))
@@ -69,8 +70,11 @@ class pyTrainer:
 
         # Checking profile
         logging.debug('Checking configuration and profile...')
-        self.profile = Profile(self.data_path, self)
+        self.profile = Profile()
+        # Write the default config to disk
+        self.profile.saveProfile()
         self.uc = UC()
+        self.profilewindow = None
         self.ddbb = DDBB(self.profile)
         logging.debug('connecting to DDBB')
         self.ddbb.connect()
@@ -522,7 +526,19 @@ class pyTrainer:
 
     def editProfile(self):
         logging.debug('>>')
-        self.profile.editProfile(self._sport_service)
+        from gui.windowprofile import WindowProfile
+        self.profile.refreshConfiguration()
+        if self.profilewindow is None:
+            self.profilewindow = WindowProfile(self._sport_service, self.data_path, self.profile, pytrainer_main=self)
+            logging.debug("setting data values")
+            self.profilewindow.setValues(self.profile.configuration)
+            self.profilewindow.run()
+            self.profilewindow = None
+        else:
+            self.profilewindow.setValues(self.profile.configuration)
+            self.profilewindow.present()
+        self.profile.refreshConfiguration()
+
         self.activitypool.clear_pool()
         self.windowmain.setup()
         logging.debug('<<')

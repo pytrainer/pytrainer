@@ -23,26 +23,16 @@ from StringIO import StringIO
 
 from lxml import etree
 from environment import Environment
+from pytrainer.lib.singleton import Singleton
 from lib.uc import UC
 
-class Profile:
-    def __init__(self, data_path=None, parent=None):
+class Profile(Singleton):
+    def __init__(self):
         logging.debug(">>")
+        # The first two variables are singletons themselves, profile_options
+        # doesn't change, only xml_tree needs to be protected by has_attr.
         self.environment = Environment()
-        self.pytrainer_main = parent
-        self.data_path = data_path
-        self.xml_tree = None
-        self.tmpdir = self.environment.temp_dir
-        self.confdir = self.environment.conf_dir
-        self.conffile = self.environment.conf_file
-        self.gpxdir = self.environment.gpx_dir
-        self.extensiondir = self.environment.extension_dir
-        self.plugindir = self.environment.plugin_dir
         self.uc = UC()
-        self.profilewindow = None
-        
-        self.environment.clear_temp_dir()
-
         #Profile Options and Defaults
         self.profile_options = {
             "prf_name":"default",
@@ -68,10 +58,45 @@ class Profile:
             "prf_startscreen":"current_day",
             }
 
-        #Parse pytrainer configuration file
-        self.config_file = self.environment.conf_file
+        if not hasattr(self, 'xml_tree'):
+            self.xml_tree = None
+            #Parse pytrainer configuration file
+            self.refreshConfiguration()
+
+        logging.debug("<<")
+
+    @property
+    def data_path(self):
+        return self.environment.data_path
+
+    @property
+    def tmpdir(self):
+        return self.environment.temp_dir
+
+    @property
+    def confdir(self):
+        return self.environment.conf_dir
+
+    @property
+    def config_file(self):
+        return self.environment.conf_file
+
+    @property
+    def gpxdir(self):
+        return self.environment.gpx_dir
+
+    @property
+    def extensiondir(self):
+        return self.environment.extension_dir
+
+    @property
+    def plugindir(self):
+        return self.environment.plugin_dir
+
+    def refreshConfiguration(self):
+        logging.debug(">>")
         self.configuration = self._parse_config_file(self.config_file)
-        logging.debug("Configuration retrieved: "+str(self.configuration))
+        logging.debug("Configuration retrieved:", str(self.configuration))
         self.uc.set_us(self.prf_us_system)
         self._setZones()
         logging.debug("<<")
@@ -126,12 +151,6 @@ class Profile:
     def getZones(self):
         return self.zone5,self.zone4,self.zone3,self.zone2,self.zone1
 
-    def getConfFile(self):
-        if not os.path.isfile(self.conffile):
-            return False
-        else:
-            return self.conffile
-
     def _parse_config_file(self, config_file):
         '''
         Parse the xml configuration file and convert to a dict
@@ -142,40 +161,39 @@ class Profile:
             logging.error("Configuration file value not set")
             logging.error("Fatal error, exiting")
             exit(-3)
-        if not os.path.isfile(config_file): #File not found
+        elif not os.path.isfile(config_file): #File not found
             logging.error("Configuration '%s' file does not exist" % config_file)
             logging.info("No profile found. Creating default one")
             self.setProfile(self.profile_options)
-        if os.stat(config_file)[stat.ST_SIZE] == 0: #File is empty
+        elif os.stat(config_file)[stat.ST_SIZE] == 0: #File is empty
             logging.error("Configuration '%s' file is empty" % config_file)
             logging.info("Creating default profile")
             self.setProfile(self.profile_options)
-        logging.debug("Attempting to parse content from "+ config_file)
-        try:
+        else:
+            logging.debug("Attempting to parse content from %s", config_file)
             parser = etree.XMLParser(encoding='UTF8', recover=True)
-            self.xml_tree = etree.parse(config_file, parser=parser)
-            #Have a populated xml tree, get pytraining node (root) and convert it to a dict
-            pytraining_tag = self.xml_tree.getroot()
-            config = {}
-            config_needs_update = False
-            for key, default in self.profile_options.items():
-                value = pytraining_tag.get(key)
-                #If property is not found, set it to the default
-                if value is None:
-                    config_needs_update = True
-                    value = default
-                config[key] = value
-            #Added a property, so update config
-            if config_needs_update:
-                self.setProfile(config)
-            #Set shorthand var for units of measurement
-            self.prf_us_system = True if config["prf_us_system"] == "True" else False
-            return config
-        except Exception as e:
-            logging.error("Error parsing file: %s. Exiting" % config_file)
-            logging.error(str(e))
-            logging.error("Fatal error, exiting")
-            exit(-3)
+            try:
+                self.xml_tree = etree.parse(config_file, parser=parser)
+            except Exception as e:
+                logging.error("Error %s while parsing file %s. Exiting", e, config_file)
+                exit(-3)
+        #Have a populated xml tree, get pytraining node (root) and convert it to a dict
+        pytraining_tag = self.xml_tree.getroot()
+        config = {}
+        config_needs_update = False
+        for key, default in self.profile_options.items():
+            value = pytraining_tag.get(key)
+            #If property is not found, set it to the default
+            if value is None:
+                config_needs_update = True
+                value = default
+            config[key] = value
+        #Added a property, so update config
+        if config_needs_update:
+            self.setProfile(config)
+        #Set shorthand var for units of measurement
+        self.prf_us_system = True if config["prf_us_system"] == "True" else False
+        return config
 
     def getIntValue(self, tag, variable, default=0):
         ''' Function to return conf value as int
@@ -211,8 +229,7 @@ class Profile:
             self.xml_tree = etree.parse(StringIO('''<?xml version='1.0' encoding='UTF-8'?><pytraining />'''))
         self.xml_tree.getroot().set(variable, value.decode('utf-8'))
         if not delay_write:
-            logging.debug("Writing...")
-            self.xml_tree.write(self.config_file, xml_declaration=True, encoding='UTF-8')
+            self.saveProfile()
         logging.debug("<<")
 
     def setProfile(self,list_options):
@@ -220,30 +237,10 @@ class Profile:
         for option, value in list_options.items():
             logging.debug("Adding "+option+"|"+value)
             self.setValue("pytraining",option,value,delay_write=True)
-        self.xml_tree.write(self.config_file, xml_declaration=True, encoding='UTF-8')
         self.uc.set_us(list_options['prf_us_system'])
         logging.debug("<<")
 
-    def editProfile(self, sport_service):
-        logging.debug(">>")
-        from gui.windowprofile import WindowProfile
-        logging.debug("retrieving configuration data")
-        #Refresh configuration
-        self.configuration = self._parse_config_file(self.config_file)
-        if self.profilewindow is None:
-            self.profilewindow = WindowProfile(sport_service, self.data_path, self, pytrainer_main=self.pytrainer_main)
-            logging.debug("setting data values")
-            self.profilewindow.setValues(self.configuration)
-            self.profilewindow.run()
-            self.profilewindow = None
-        else:
-            self.profilewindow.setValues(self.configuration)
-            self.profilewindow.present()
-        self.configuration = self._parse_config_file(self.config_file)
-        logging.debug("<<")
-
-    def actualize_mainsportlist(self):
-        logging.debug("--")
-        self.pytrainer_main.refreshMainSportList()
-
-
+    def saveProfile(self):
+        logging.debug("Writting configuration...")
+        self.xml_tree.write(self.config_file, xml_declaration=True,
+                            encoding='UTF-8')
