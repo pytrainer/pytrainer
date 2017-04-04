@@ -28,12 +28,10 @@ DATA_DIR_NAME = "/test/datadir"
 class Test(unittest.TestCase):
 
     def setUp(self):
-        self.environment = Environment(TEST_DIR_NAME, DATA_DIR_NAME)
-
-    def tearDown(self):
-        self.environment = None
-        # Environment is a singleton, reach in and destroy it
+        self.environment = Environment()
+        # Environment is a singleton, make sure to destroy it between tests
         del(Environment.self)
+        self.environment = Environment(TEST_DIR_NAME, DATA_DIR_NAME)
 
     def test_get_conf_dir(self):
         self.assertEquals(TEST_DIR_NAME, self.environment.conf_dir)
