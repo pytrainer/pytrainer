@@ -32,6 +32,8 @@ class Test(unittest.TestCase):
 
     def tearDown(self):
         self.environment = None
+        # Environment is a singleton, reach in and destroy it
+        del(Environment.self)
 
     def test_get_conf_dir(self):
         self.assertEquals(TEST_DIR_NAME, self.environment.conf_dir)
