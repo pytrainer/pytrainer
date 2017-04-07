@@ -21,37 +21,13 @@
 import logging
 import sys, traceback, commands
 import datetime
-try:
-    from sqlite3 import dbapi2 as sqlite
-except ImportError:
-    logging.error('Not able to find sqlite2 module (new in python 2.5)')
-    from pysqlite2 import dbapi2 as sqlite
-    logging.info('Using pysqlite2 module to access DB. Think about upgrading to python 2.5!')
     
 class Sql:
-    def __init__(self,host=None, ddbb = None, user = None, password = None, configuration = None):
+    def __init__(self):
         self.db = None
-        if ddbb == 'memory':
-            self.ddbb = ':memory:'
-            self.url = 'sqlite://'
-        else:
-            confdir = configuration.confdir
-            self.ddbb = "%s/pytrainer.ddbb" %confdir
-            self.url = "sqlite:///" + self.ddbb
-        
-    def get_connection_url(self):
-        return self.url
     
-    def connect(self):
-        #si devolvemos 1 ha ido todo con exito
-        self.db = sqlite.connect(self.ddbb)
-        return (True, "OK")
-        #probamos si estan las tablas creadas, y sino.. las creamos
-        '''try: 
-            self.select("records","id_record","1=1 limit 0,1")
-        except:
-            self.createTables()
-        return 1'''
+    def connect(self, connection):
+        self.db = connection
 
     def disconnect(self):
         self.db.close()

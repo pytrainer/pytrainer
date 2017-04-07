@@ -21,6 +21,7 @@
 
 import logging
 import dateutil
+from sqlalchemy import create_engine
 
 #Define the tables and their columns that should be in the database
 #Obviously, this is not a list but a dict -> TODO: ammend name to avoid confusion!!!
@@ -110,30 +111,38 @@ tablesDefaultData = { "sports": [
 class DDBB:
     def __init__(self, configuration):
         self.configuration = configuration
-        self.ddbb_type = self.configuration.getValue("pytraining","prf_ddbb")
-        if self.ddbb_type == "mysql": #TODO no longer supported?
-            from mysqlUtils import Sql
-        else:
-            from sqliteUtils import Sql
-
+        ddbb_type = self.configuration.getValue("pytraining","prf_ddbb")
         ddbb_host = self.configuration.getValue("pytraining","prf_ddbbhost")
         ddbb = self.configuration.getValue("pytraining","prf_ddbbname")
         ddbb_user = self.configuration.getValue("pytraining","prf_ddbbuser")
         ddbb_pass = self.configuration.getValue("pytraining","prf_ddbbpass")
-        self.ddbbObject = Sql(ddbb_host,ddbb,ddbb_user,ddbb_pass,self.configuration)
+        if ddbb_type == "sqlite":
+            from sqliteUtils import Sql
+            self.url = "sqlite:///%s/pytrainer.ddbb" % configuration.confdir
+        elif ddbb_type == "memory":
+            from sqliteUtils import Sql
+            self.url = "sqlite://"
+        else:
+            from mysqlUtils import Sql
+            self.url = "{type}://{user}:{passwd}@{host}/{db}".format(type=ddbb_type,
+                                                                      user=ddbb_user,
+                                                                      passwd=ddbb_pass,
+                                                                      host=ddbb_host,
+                                                                      db=ddbb)
+
+        logging.debug("Dburl is %s", self.url)
+        self.engine = create_engine(self.url, logging_name='db')
+        self.ddbbObject = Sql()
         
     def get_connection_url(self):
-        return self.ddbbObject.get_connection_url()
+        return self.url
 
     def connect(self):
-        connection_ok, connection_msg = self.ddbbObject.connect()
-        if not connection_ok:
-            print "ERROR: Unable to connect to database"
-            print connection_msg
-            sys.exit(connection_ok)
+        self.ddbbObject.connect(self.engine.raw_connection())
 
     def disconnect(self):
         self.ddbbObject.disconnect()
+        self.engine.dispose()
 
     def select(self,table,cells,condition=None, mod=None):
         return self.ddbbObject.select(table,cells,condition,mod)
