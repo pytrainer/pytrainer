@@ -22,6 +22,10 @@
 import logging
 import dateutil
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+
+DeclarativeBase = declarative_base()
 
 #Define the tables and their columns that should be in the database
 #Obviously, this is not a list but a dict -> TODO: ammend name to avoid confusion!!!
@@ -138,9 +142,12 @@ class DDBB:
         return self.url
 
     def connect(self):
+        Session = sessionmaker(bind=self.engine)
+        self.session = Session()
         self.ddbbObject.connect(self.engine.raw_connection())
 
     def disconnect(self):
+        self.session.close()
         self.ddbbObject.disconnect()
         self.engine.dispose()
 
