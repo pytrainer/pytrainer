@@ -16,15 +16,6 @@
 
 from pytrainer.lib.singleton import Singleton
 
-""" Units of physical quantities [metric, imperial] """
-uc_units = {'distance' : [_('km'),_('mi')] , 'speed' : [_('km/h'), _('mph')], 
-            'pace' : [_('min/km'),_('min/mi')], 'height' : [_('m'), _('ft')],
-            'weight': [_('kg'), _('lb')]}
-
-""" Conversion factors from metric to imperial, units as in uc_units """ 
-uc_factors = {'distance' : 0.621371192, 'speed': 0.621371192, 'pace':1.609344, 
-              'height': 3.2808399, 'weight': 2.204624}
-
 def pace2float(pace_str):
     if pace_str.count(':') != 1:
         return 0.0
@@ -56,6 +47,16 @@ class UC(Singleton):
       us = False; user system is metric
       us = True ; user system is imperial
     """
+
+    """ Units of physical quantities [metric, imperial] """
+    uc_units = {'distance' : [_('km'),_('mi')] , 'speed' : [_('km/h'), _('mph')],
+                'pace' : [_('min/km'),_('min/mi')], 'height' : [_('m'), _('ft')],
+                'weight': [_('kg'), _('lb')]}
+
+    """ Conversion factors from metric to imperial, units as in uc_units """
+    uc_factors = {'distance' : 0.621371192, 'speed': 0.621371192, 'pace':1.609344,
+                  'height': 3.2808399, 'weight': 2.204624}
+
     def __init__(self):
         if not hasattr(self, 'us'):
             self.us = False
@@ -72,9 +73,9 @@ class UC(Singleton):
         
     def get_unit(self, quantity):
         if self.us:
-            return uc_units[quantity][1]
+            return self.uc_units[quantity][1]
         else:
-            return uc_units[quantity][0]
+            return self.uc_units[quantity][0]
             
     unit_distance = property(lambda self: self.get_unit('distance') )      
     unit_speed = property( lambda self: self.get_unit('speed') ) 
@@ -89,7 +90,7 @@ class UC(Singleton):
         except (ValueError, TypeError):
             return None
         if self.us:
-            return _val * uc_factors[quantity]
+            return _val * self.uc_factors[quantity]
         else:
             return _val 
    
@@ -100,7 +101,7 @@ class UC(Singleton):
         except (ValueError, TypeError):
             return None        
         if self.us:
-            return _val / uc_factors[quantity]    
+            return _val / self.uc_factors[quantity]
         else:
             return _val
 
