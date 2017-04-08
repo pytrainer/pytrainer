@@ -17,7 +17,6 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import os
-import logging
 from pytrainer.platform import get_platform
 from pytrainer.lib.singleton import Singleton
 
@@ -70,7 +69,6 @@ class Environment(Singleton):
 
     def clear_temp_dir(self):
         """Remove all files from the tmp directory."""
-        logging.debug("clearing tmp directory %s" % self.temp_dir)
         if not os.path.isdir(self.temp_dir):
             return
         else:
