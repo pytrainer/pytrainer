@@ -147,6 +147,8 @@ class Activity:
         self.has_data = False
         self._distance_data = {}
         self._time_data = {}
+        self._lap_time = None
+        self._lap_distance = None
         self.time_pause = 0
         self.pace_limit = None
         self.starttime = None
@@ -157,7 +159,6 @@ class Activity:
         self._set_units()
         self._gpx = None
         self._init_from_db()
-        self._generate_per_lap_graphs()
         self.x_axis = "distance"
         self.x_limits = (None, None)
         self.y1_limits = (None, None)
@@ -206,6 +207,18 @@ class Activity:
         if not self._time_data:
             self._init_graph_data()
         return self._time_data
+
+    @property
+    def lap_time(self):
+        if not self._lap_time:
+            self._generate_per_lap_graphs()
+        return self._lap_time
+
+    @property
+    def lap_distance(self):
+        if not self._lap_distance:
+            self._generate_per_lap_graphs()
+        return self._lap_distance
 
     def __str__(self):
         return '''
@@ -391,12 +404,12 @@ tracks (%s)
             logging.debug("<<")
             return
         #Lap columns
-        self.lap_distance = GraphData()
-        self.lap_distance.set_color('#CCFF00', '#CCFF00')
-        self.lap_distance.graphType = "vspan"
-        self.lap_time = GraphData()
-        self.lap_time.set_color('#CCFF00', '#CCFF00')
-        self.lap_time.graphType = "vspan"
+        self._lap_distance = GraphData()
+        self._lap_distance.set_color('#CCFF00', '#CCFF00')
+        self._lap_distance.graphType = "vspan"
+        self._lap_time = GraphData()
+        self._lap_time.set_color('#CCFF00', '#CCFF00')
+        self._lap_time.graphType = "vspan"
         #Pace
         title = _("Pace by Lap")
         xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
@@ -434,15 +447,15 @@ tracks (%s)
                 logging.debug("Pace (%s) exceeds limit (%s). Setting to 0" % (str(pace), str(self.pace_limit)))
                 pace = 0.0
             logging.debug("Time: %f, Dist: %f, Pace: %f, Speed: %f" % (time, dist, pace, avg_speed))
-            self.lap_time.addBars(x=time, y=10)
+            self._lap_time.addBars(x=time, y=10)
             if self.us_system:
-                self.lap_distance.addBars(x=km2miles(dist), y=10)
+                self._lap_distance.addBars(x=km2miles(dist), y=10)
                 self.distance_data['pace_lap'].addBars(x=km2miles(dist), y=pacekm2miles(pace))
                 self.time_data['pace_lap'].addBars(x=time, y=pacekm2miles(pace))
                 self.distance_data['speed_lap'].addBars(x=km2miles(dist), y=km2miles(avg_speed))
                 self.time_data['speed_lap'].addBars(x=time, y=km2miles(avg_speed))
             else:
-                self.lap_distance.addBars(x=dist, y=10)
+                self._lap_distance.addBars(x=dist, y=10)
                 self.distance_data['pace_lap'].addBars(x=dist, y=pace)
                 self.time_data['pace_lap'].addBars(x=time, y=pace)
                 self.distance_data['speed_lap'].addBars(x=dist, y=avg_speed)
