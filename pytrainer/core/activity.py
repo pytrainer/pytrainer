@@ -26,6 +26,7 @@ from pytrainer.lib.gpx import Gpx
 from pytrainer.lib.graphdata import GraphData
 from pytrainer.lib.unitsconversor import *
 from pytrainer.environment import Environment
+from pytrainer.lib.uc import UC
 
 class ActivityService(object):
     '''
@@ -134,6 +135,7 @@ class Activity:
     def __init__(self, pytrainer_main=None, id=None):
         logging.debug(">>")
         self.environment = Environment()
+        self.uc = UC()
         self.id = id
         #It is an error to try to initialise with no id
         if self.id is None:
@@ -152,10 +154,6 @@ class Activity:
         self.time_pause = 0
         self.pace_limit = None
         self.starttime = None
-        if self.pytrainer_main.profile.getValue("pytraining", "prf_us_system") == "True":
-            self.us_system = True
-        else:
-            self.us_system = False
         self._set_units()
         self._gpx = None
         self._init_from_db()
@@ -268,7 +266,7 @@ tracks (%s)
         lap_distance (%s)
         lap_time (%s)
         pace_limit (%s)
-''' % ('self.tracks', self.tracklist, self.laps, self.us_system,
+''' % ('self.tracks', self.tracklist, self.laps, self.uc.us,
                 self.distance_unit, self.speed_unit, self.distance_data, self.time_data,
                 self.height_unit, self.pace_unit, self.gpx_file, self.gpx, self.sport_name,
                 self.sport_id, self.title, self.date, self.time, self.time_tuple, self.beats,
@@ -279,7 +277,7 @@ tracks (%s)
                 self.y2_limits_u, self.show_laps, self.lap_distance, self.lap_time, self.pace_limit)
 
     def _set_units(self):
-        if self.us_system:
+        if self.uc.us:
             self.distance_unit = _("miles")
             self.speed_unit = _("miles/h")
             self.pace_unit = _("min/mile")
@@ -448,7 +446,7 @@ tracks (%s)
                 pace = 0.0
             logging.debug("Time: %f, Dist: %f, Pace: %f, Speed: %f" % (time, dist, pace, avg_speed))
             self._lap_time.addBars(x=time, y=10)
-            if self.us_system:
+            if self.uc.us:
                 self._lap_distance.addBars(x=km2miles(dist), y=10)
                 self.distance_data['pace_lap'].addBars(x=km2miles(dist), y=pacekm2miles(pace))
                 self.time_data['pace_lap'].addBars(x=time, y=pacekm2miles(pace))
@@ -572,7 +570,7 @@ tracks (%s)
                 hr_p = float(track['hr'])/maxhr*100
             except:
                 hr_p = 0
-            if self.us_system:
+            if self.uc.us:
                 self._distance_data['elevation'].addPoints(x=km2miles(track['elapsed_distance']), y=m2feet(track['ele']))
                 self._distance_data['cor_elevation'].addPoints(x=km2miles(track['elapsed_distance']), y=m2feet(track['correctedElevation']))
                 self._distance_data['speed'].addPoints(x=km2miles(track['elapsed_distance']), y=km2miles(track['velocity']))
@@ -663,37 +661,37 @@ tracks (%s)
                 Automatically returns values converted to imperial if needed
         '''
         if param == 'distance':
-            if self.us_system:
+            if self.uc.us:
                 return km2miles(self.distance)
             else:
                 return self.distance
         elif param == 'average':
-            if self.us_system:
+            if self.uc.us:
                 return km2miles(self.average)
             else:
                 return self.average
         elif param == 'upositive':
-            if self.us_system:
+            if self.uc.us:
                 return m2feet(self.upositive)
             else:
                 return self.upositive
         elif param == 'unegative':
-            if self.us_system:
+            if self.uc.us:
                 return m2feet(self.unegative)
             else:
                 return self.unegative
         elif param == 'maxspeed':
-            if self.us_system:
+            if self.uc.us:
                 return km2miles(self.maxspeed)
             else:
                 return self.maxspeed
         elif param == 'maxpace':
-            if self.us_system:
+            if self.uc.us:
                 return self.pace_from_float(pacekm2miles(self.maxpace))
             else:
                 return self.pace_from_float(self.maxpace)
         elif param == 'pace':
-            if self.us_system:
+            if self.uc.us:
                 return self.pace_from_float(pacekm2miles(self.pace))
             else:
                 return self.pace_from_float(self.pace)
@@ -717,38 +715,38 @@ tracks (%s)
         '''
         _value = _float(value)
         if param == 'distance':
-            if self.us_system:
+            if self.uc.us:
                 self.distance = miles2mk(_value)
             else:
                 self.distance = _value
         elif param == 'average':
-            if self.us_system:
+            if self.uc.us:
                 self.average = miles2mk(_value)
             else:
                 self.average = _value
         elif param == 'upositive':
-            if self.us_system:
+            if self.uc.us:
                 self.upositive = feet2m(_value)
             else:
                 self.upositive = _value
         elif param == 'unegative':
-            if self.us_system:
+            if self.uc.us:
                 self.unegative = feet2m(_value)
             else:
                 self.unegative = _value
         elif param == 'maxspeed':
-            if self.us_system:
+            if self.uc.us:
                 self.maxspeed = miles2mk(_value)
             else:
                 self.maxspeed = _value
         elif param == 'maxpace':
-            if self.us_system:
+            if self.uc.us:
                 _maxpace = pacemiles2mk(_value)
             else:
                 _maxpace = _value
             self.maxpace = self.pace_to_float(_maxpace)
         elif param == 'pace':
-            if self.us_system:
+            if self.uc.us:
                 _pace = pacemiles2mk(_value)
             else:
                 _pace = _value

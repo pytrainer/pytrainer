@@ -25,6 +25,7 @@ pytrainer.lib.localization.initialize_gettext("../../locale")
 
 from pytrainer.lib.ddbb import DDBB
 from pytrainer.profile import Profile
+from pytrainer.lib.uc import UC
 from pytrainer.core.activity import ActivityService
 
 class ActivityTest(unittest.TestCase):
@@ -38,6 +39,8 @@ class ActivityTest(unittest.TestCase):
         main.profile = Profile()
         main.ddbb.connect()
         main.ddbb.create_tables(add_default=True) # We need a sport
+        self.uc = UC()
+        self.uc.set_us(False)
         self.service = ActivityService(pytrainer_main=main)
         self.ddbb.insert('records', 'distance,maxspeed,maxpace,title,upositive,average,date_time_local,calories,date_time_utc,comments,pace,unegative,duration,beats,time,date,sport,maxbeats', (46.18, 44.6695617695, 1.2, 'test activity', 553.05993673, 22.3882142185, '2016-07-24 12:58:23+0300', 1462, '2016-07-24T09:58:23Z', 'test comment', 2.4, 564.08076273, 7426, 115.0, '7426', '2016-07-24', 1, 120.0))
         self.ddbb.insert('laps', 'distance,lap_number,calories,avg_hr,elapsed_time,record,intensity,laptrigger,max_hr', (46181.9107740694, 0, 1462, 136, 7426.0, 1, 'active', 'manual', 173))
@@ -47,6 +50,7 @@ class ActivityTest(unittest.TestCase):
         self.service = None
         self.ddbb.disconnect()
         self.ddbb = None
+        self.uc.set_us(False)
 
     def test_activity_date_time(self):
         self.assertEquals(self.activity.date_time, datetime(2016, 7, 24, 12, 58, 23,
@@ -82,7 +86,7 @@ class ActivityTest(unittest.TestCase):
         self.assertEquals(self.activity.get_value_f('unegative', "%0.2f"), '564.08')
 
     def test_activity_get_value_f_us(self):
-        self.activity.us_system = True
+        self.uc.set_us(True)
         self.assertEquals(self.activity.get_value_f('distance', "%0.2f"), '28.69')
         self.assertEquals(self.activity.get_value_f('average', "%0.2f"), '13.91')
         self.assertEquals(self.activity.get_value_f('maxspeed', "%0.2f"), '27.76')
