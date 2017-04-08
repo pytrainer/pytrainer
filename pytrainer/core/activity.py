@@ -145,8 +145,8 @@ class Activity:
         self.pytrainer_main = pytrainer_main
         self.laps = None
         self.has_data = False
-        self.distance_data = {}
-        self.time_data = {}
+        self._distance_data = {}
+        self._time_data = {}
         self.time_pause = 0
         self.pace_limit = None
         self.starttime = None
@@ -157,7 +157,6 @@ class Activity:
         self._set_units()
         self._gpx = None
         self._init_from_db()
-        self._init_graph_data()
         self._generate_per_lap_graphs()
         self.x_axis = "distance"
         self.x_limits = (None, None)
@@ -195,6 +194,18 @@ class Activity:
             return self.gpx.trkpoints
         else:
             return None
+
+    @property
+    def distance_data(self):
+        if not self._distance_data:
+            self._init_graph_data()
+        return self._distance_data
+
+    @property
+    def time_data(self):
+        if not self._time_data:
+            self._init_graph_data()
+        return self._time_data
 
     def __str__(self):
         return '''
@@ -473,68 +484,68 @@ tracks (%s)
         title = _("Elevation")
         xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
         ylabel = "%s (%s)" % (_('Elevation'), self.height_unit)
-        self.distance_data['elevation'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-        self.distance_data['elevation'].set_color('#ff0000', '#ff0000')
-        self.distance_data['elevation'].show_on_y1 = True #Make graph show elevation by default
+        self._distance_data['elevation'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+        self._distance_data['elevation'].set_color('#ff0000', '#ff0000')
+        self._distance_data['elevation'].show_on_y1 = True #Make graph show elevation by default
         xlabel = _("Time (seconds)")
-        self.time_data['elevation'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
-        self.time_data['elevation'].set_color('#ff0000', '#ff0000')
-        self.time_data['elevation'].show_on_y1 = True #Make graph show elevation by default
+        self._time_data['elevation'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
+        self._time_data['elevation'].set_color('#ff0000', '#ff0000')
+        self._time_data['elevation'].show_on_y1 = True #Make graph show elevation by default
         #Corrected Elevation...
         title = _("Corrected Elevation")
         xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
         ylabel = "%s (%s)" % (_('Corrected Elevation'), self.height_unit)
-        self.distance_data['cor_elevation'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-        self.distance_data['cor_elevation'].set_color('#993333', '#993333')
+        self._distance_data['cor_elevation'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+        self._distance_data['cor_elevation'].set_color('#993333', '#993333')
         xlabel=_("Time (seconds)")
-        self.time_data['cor_elevation'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
-        self.time_data['cor_elevation'].set_color('#993333', '#993333')
+        self._time_data['cor_elevation'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
+        self._time_data['cor_elevation'].set_color('#993333', '#993333')
         #Speed
         title = _("Speed")
         xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
         ylabel = "%s (%s)" % (_('Speed'), self.speed_unit)
-        self.distance_data['speed'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-        self.distance_data['speed'].set_color('#000000', '#000000')
+        self._distance_data['speed'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+        self._distance_data['speed'].set_color('#000000', '#000000')
         xlabel = _("Time (seconds)")
-        self.time_data['speed'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
-        self.time_data['speed'].set_color('#000000', '#000000')
+        self._time_data['speed'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
+        self._time_data['speed'].set_color('#000000', '#000000')
         #Pace
         title = _("Pace")
         xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
         ylabel = "%s (%s)" % (_('Pace'), self.pace_unit)
-        self.distance_data['pace'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-        self.distance_data['pace'].set_color('#0000ff', '#0000ff')
+        self._distance_data['pace'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+        self._distance_data['pace'].set_color('#0000ff', '#0000ff')
         xlabel = _("Time (seconds)")
-        self.time_data['pace'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
-        self.time_data['pace'].set_color('#0000ff', '#0000ff')
+        self._time_data['pace'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
+        self._time_data['pace'].set_color('#0000ff', '#0000ff')
         #Heartrate
         title = _("Heart Rate")
         xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
         ylabel = "%s (%s)" % (_('Heart Rate'), _('bpm'))
-        self.distance_data['hr'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-        self.distance_data['hr'].set_color('#00ff00', '#00ff00')
+        self._distance_data['hr'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+        self._distance_data['hr'].set_color('#00ff00', '#00ff00')
         xlabel = _("Time (seconds)")
-        self.time_data['hr'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
-        self.time_data['hr'].set_color('#00ff00', '#00ff00')
+        self._time_data['hr'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
+        self._time_data['hr'].set_color('#00ff00', '#00ff00')
         #Heartrate as %
         maxhr = self.pytrainer_main.profile.getMaxHR()
         title = _("Heart Rate (% of max)")
         xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
         ylabel = "%s (%s)" % (_('Heart Rate'), _('%'))
-        self.distance_data['hr_p'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-        self.distance_data['hr_p'].set_color('#00ff00', '#00ff00')
+        self._distance_data['hr_p'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+        self._distance_data['hr_p'].set_color('#00ff00', '#00ff00')
         xlabel = _("Time (seconds)")
-        self.time_data['hr_p'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-        self.time_data['hr_p'].set_color('#00ff00', '#00ff00')
+        self._time_data['hr_p'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+        self._time_data['hr_p'].set_color('#00ff00', '#00ff00')
         #Cadence
         title = _("Cadence")
         xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
         ylabel = "%s (%s)" % (_('Cadence'), _('rpm'))
-        self.distance_data['cadence'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-        self.distance_data['cadence'].set_color('#cc00ff', '#cc00ff')
+        self._distance_data['cadence'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+        self._distance_data['cadence'].set_color('#cc00ff', '#cc00ff')
         xlabel = _("Time (seconds)")
-        self.time_data['cadence'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-        self.time_data['cadence'].set_color('#cc00ff', '#cc00ff')
+        self._time_data['cadence'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+        self._time_data['cadence'].set_color('#cc00ff', '#cc00ff')
         for track in self.tracklist:
             try:
                 pace = 60/track['velocity']
@@ -549,57 +560,57 @@ tracks (%s)
             except:
                 hr_p = 0
             if self.us_system:
-                self.distance_data['elevation'].addPoints(x=km2miles(track['elapsed_distance']), y=m2feet(track['ele']))
-                self.distance_data['cor_elevation'].addPoints(x=km2miles(track['elapsed_distance']), y=m2feet(track['correctedElevation']))
-                self.distance_data['speed'].addPoints(x=km2miles(track['elapsed_distance']), y=km2miles(track['velocity']))
-                self.distance_data['pace'].addPoints(x=km2miles(track['elapsed_distance']), y=pacekm2miles(pace))
-                self.distance_data['hr'].addPoints(x=km2miles(track['elapsed_distance']), y=track['hr'])
-                self.distance_data['hr_p'].addPoints(x=km2miles(track['elapsed_distance']), y=hr_p)
-                self.distance_data['cadence'].addPoints(x=km2miles(track['elapsed_distance']), y=track['cadence'])
-                self.time_data['elevation'].addPoints(x=track['time_elapsed'], y=m2feet(track['ele']))
-                self.time_data['cor_elevation'].addPoints(x=track['time_elapsed'], y=m2feet(track['correctedElevation']))
-                self.time_data['speed'].addPoints(x=track['time_elapsed'], y=km2miles(track['velocity']))
-                self.time_data['pace'].addPoints(x=track['time_elapsed'], y=pacekm2miles(pace))
+                self._distance_data['elevation'].addPoints(x=km2miles(track['elapsed_distance']), y=m2feet(track['ele']))
+                self._distance_data['cor_elevation'].addPoints(x=km2miles(track['elapsed_distance']), y=m2feet(track['correctedElevation']))
+                self._distance_data['speed'].addPoints(x=km2miles(track['elapsed_distance']), y=km2miles(track['velocity']))
+                self._distance_data['pace'].addPoints(x=km2miles(track['elapsed_distance']), y=pacekm2miles(pace))
+                self._distance_data['hr'].addPoints(x=km2miles(track['elapsed_distance']), y=track['hr'])
+                self._distance_data['hr_p'].addPoints(x=km2miles(track['elapsed_distance']), y=hr_p)
+                self._distance_data['cadence'].addPoints(x=km2miles(track['elapsed_distance']), y=track['cadence'])
+                self._time_data['elevation'].addPoints(x=track['time_elapsed'], y=m2feet(track['ele']))
+                self._time_data['cor_elevation'].addPoints(x=track['time_elapsed'], y=m2feet(track['correctedElevation']))
+                self._time_data['speed'].addPoints(x=track['time_elapsed'], y=km2miles(track['velocity']))
+                self._time_data['pace'].addPoints(x=track['time_elapsed'], y=pacekm2miles(pace))
             else:
-                self.distance_data['elevation'].addPoints(x=track['elapsed_distance'], y=track['ele'])
-                self.distance_data['cor_elevation'].addPoints(x=track['elapsed_distance'], y=track['correctedElevation'])
-                self.distance_data['speed'].addPoints(x=track['elapsed_distance'], y=track['velocity'])
-                self.distance_data['pace'].addPoints(x=track['elapsed_distance'], y=pace)
-                self.distance_data['hr'].addPoints(x=track['elapsed_distance'], y=track['hr'])
-                self.distance_data['hr_p'].addPoints(x=track['elapsed_distance'], y=hr_p)
-                self.distance_data['cadence'].addPoints(x=track['elapsed_distance'], y=track['cadence'])
-                self.time_data['elevation'].addPoints(x=track['time_elapsed'], y=track['ele'])
-                self.time_data['cor_elevation'].addPoints(x=track['time_elapsed'], y=track['correctedElevation'])
-                self.time_data['speed'].addPoints(x=track['time_elapsed'], y=track['velocity'])
-                self.time_data['pace'].addPoints(x=track['time_elapsed'], y=pace)
-            self.time_data['hr'].addPoints(x=track['time_elapsed'], y=track['hr'])
-            self.time_data['hr_p'].addPoints(x=track['time_elapsed'], y=hr_p)
-            self.time_data['cadence'].addPoints(x=track['time_elapsed'], y=track['cadence'])
+                self._distance_data['elevation'].addPoints(x=track['elapsed_distance'], y=track['ele'])
+                self._distance_data['cor_elevation'].addPoints(x=track['elapsed_distance'], y=track['correctedElevation'])
+                self._distance_data['speed'].addPoints(x=track['elapsed_distance'], y=track['velocity'])
+                self._distance_data['pace'].addPoints(x=track['elapsed_distance'], y=pace)
+                self._distance_data['hr'].addPoints(x=track['elapsed_distance'], y=track['hr'])
+                self._distance_data['hr_p'].addPoints(x=track['elapsed_distance'], y=hr_p)
+                self._distance_data['cadence'].addPoints(x=track['elapsed_distance'], y=track['cadence'])
+                self._time_data['elevation'].addPoints(x=track['time_elapsed'], y=track['ele'])
+                self._time_data['cor_elevation'].addPoints(x=track['time_elapsed'], y=track['correctedElevation'])
+                self._time_data['speed'].addPoints(x=track['time_elapsed'], y=track['velocity'])
+                self._time_data['pace'].addPoints(x=track['time_elapsed'], y=pace)
+            self._time_data['hr'].addPoints(x=track['time_elapsed'], y=track['hr'])
+            self._time_data['hr_p'].addPoints(x=track['time_elapsed'], y=hr_p)
+            self._time_data['cadence'].addPoints(x=track['time_elapsed'], y=track['cadence'])
         #Remove data with no values
-        for item in self.distance_data.keys():
-            if len(self.distance_data[item]) == 0:
+        for item in self._distance_data.keys():
+            if len(self._distance_data[item]) == 0:
                 logging.debug( "No values for %s. Removing...." % item )
-                del self.distance_data[item]
-        for item in self.time_data.keys():
-            if len(self.time_data[item]) == 0:
+                del self._distance_data[item]
+        for item in self._time_data.keys():
+            if len(self._time_data[item]) == 0:
                 logging.debug( "No values for %s. Removing...." % item )
-                del self.time_data[item]
+                del self._time_data[item]
         logging.debug("<<")
         #Add Heartrate zones graphs
-        if 'hr' in self.distance_data:
+        if 'hr' in self._distance_data:
             zones = self.pytrainer_main.profile.getZones()
             title = _("Heart Rate zone")
             xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
             ylabel = "%s (%s)" % (_('Heart Rate'), _('bpm'))
-            self.distance_data['hr_z'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
-            self.distance_data['hr_z'].graphType = "hspan"
-            self.distance_data['hr_z'].set_color(None, None)
+            self._distance_data['hr_z'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
+            self._distance_data['hr_z'].graphType = "hspan"
+            self._distance_data['hr_z'].set_color(None, None)
             xlabel = _("Time (seconds)")
-            self.time_data['hr_z'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
-            self.time_data['hr_z'].set_color(None, None)
+            self._time_data['hr_z'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
+            self._time_data['hr_z'].set_color(None, None)
             for zone in zones:
-                self.distance_data['hr_z'].addPoints(x=zone[0], y=zone[1], label=zone[3], color=zone[2])
-                self.time_data['hr_z'].addPoints(x=zone[0], y=zone[1], label=zone[3], color=zone[2])
+                self._distance_data['hr_z'].addPoints(x=zone[0], y=zone[1], label=zone[3], color=zone[2])
+                self._time_data['hr_z'].addPoints(x=zone[0], y=zone[1], label=zone[3], color=zone[2])
 
     def _float(self, value):
         try:
