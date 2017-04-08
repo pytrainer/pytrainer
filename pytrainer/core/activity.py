@@ -155,8 +155,7 @@ class Activity:
         else:
             self.us_system = False
         self._set_units()
-        if self.gpx_file is not None:
-            self._init_from_gpx_file()
+        self._gpx = None
         self._init_from_db()
         self._init_graph_data()
         self._generate_per_lap_graphs()
@@ -268,20 +267,30 @@ tracks (%s)
             self.height_unit = _("m")
         self.units = {'distance': self.distance_unit, 'average': self.speed_unit, 'upositive': self.height_unit, 'unegative': self.height_unit, 'maxspeed': self.speed_unit, 'pace': self.pace_unit, 'maxpace': self.pace_unit}
 
-    def _init_from_gpx_file(self):
+    @property
+    def gpx(self):
         '''
         Get activity information from the GPX file
         '''
         logging.debug(">>")
-        #Parse GPX file
-        #print "Activity initing GPX.. ",
-        self.gpx = Gpx(filename=self.gpx_file) #TODO change GPX code to do less....
-        logging.info("GPX Distance: %s | distance (trkpts): %s | duration: %s | duration (trkpts): %s" % (self.gpx.total_dist, self.gpx.total_dist_trkpts, self.gpx.total_time, self.gpx.total_time_trkpts))
-        time_diff = self.gpx.total_time_trkpts - self.gpx.total_time
-        acceptable_lapse = 4 # number of seconds that duration calculated using lap and trkpts data can differ
-        if time_diff > acceptable_lapse:
-            self.time_pause = time_diff
-            logging.debug("Identified non active time: %s s" % self.time_pause)
+        if self._gpx:
+            logging.debug("Return pre-created GPX")
+            return self._gpx
+        elif self.gpx_file:
+            logging.debug("Parse GPX")
+            #Parse GPX file
+            #print "Activity initing GPX.. ",
+            self._gpx = Gpx(filename=self.gpx_file) #TODO change GPX code to do less....
+            logging.info("GPX Distance: %s | distance (trkpts): %s | duration: %s | duration (trkpts): %s" % (self.gpx.total_dist, self.gpx.total_dist_trkpts, self.gpx.total_time, self.gpx.total_time_trkpts))
+            time_diff = self.gpx.total_time_trkpts - self.gpx.total_time
+            acceptable_lapse = 4 # number of seconds that duration calculated using lap and trkpts data can differ
+            if time_diff > acceptable_lapse:
+                self.time_pause = time_diff
+                logging.debug("Identified non active time: %s s" % self.time_pause)
+            return self._gpx
+        else:
+            logging.debug("No GPX file found")
+            return None
         logging.debug("<<")
 
     def _init_from_db(self):
