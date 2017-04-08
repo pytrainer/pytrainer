@@ -18,9 +18,8 @@
 
 import logging
 import os
-from lxml import etree
 import dateutil.parser
-from dateutil.tz import * # for tzutc()
+from dateutil.tz import tzlocal
 
 from pytrainer.lib.date import second2time
 from pytrainer.lib.gpx import Gpx
