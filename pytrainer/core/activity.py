@@ -150,9 +150,6 @@ class Activity:
         self.time_pause = 0
         self.pace_limit = None
         self.starttime = None
-        self.gpx_distance = None
-        #self.upositive = 0
-        #self.unegative = 0
         if self.pytrainer_main.profile.getValue("pytraining", "prf_us_system") == "True":
             self.us_system = True
         else:
@@ -279,8 +276,7 @@ tracks (%s)
         #Parse GPX file
         #print "Activity initing GPX.. ",
         self.gpx = Gpx(filename=self.gpx_file) #TODO change GPX code to do less....
-        self.gpx_distance = self.gpx.total_dist
-        logging.info("GPX Distance: %s | distance (trkpts): %s | duration: %s | duration (trkpts): %s" % (self.gpx_distance, self.gpx.total_dist_trkpts, self.gpx.total_time, self.gpx.total_time_trkpts))
+        logging.info("GPX Distance: %s | distance (trkpts): %s | duration: %s | duration (trkpts): %s" % (self.gpx.total_dist, self.gpx.total_dist_trkpts, self.gpx.total_time, self.gpx.total_time_trkpts))
         time_diff = self.gpx.total_time_trkpts - self.gpx.total_time
         acceptable_lapse = 4 # number of seconds that duration calculated using lap and trkpts data can differ
         if time_diff > acceptable_lapse:
@@ -346,7 +342,7 @@ tracks (%s)
             #else:
             self.distance = self._float(row[cols.index('distance')])
             if not self.distance:
-                self.distance = self.gpx_distance
+                self.distance = self.gpx.total_dist
             self.average = self._float(row[cols.index('average')])
             self.upositive = self._float(row[cols.index('upositive')])
             self.unegative = self._float(row[cols.index('unegative')])
