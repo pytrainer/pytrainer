@@ -87,7 +87,6 @@ class Activity:
     tracks                  - (list) tracklist from gpx
     tracklist               - (list of dict) trackpoint data from gpx
     laps                    - (list of dict) lap list
-    tree                    - (ElementTree) parsed xml of gpx file
     us_system               - (bool) True: imperial measurement False: metric measurement
     distance_unit   - (string) unit to use for distance
     speed_unit              - (string) unit to use for speed
@@ -147,7 +146,6 @@ class Activity:
         self.tracks = None
         self.tracklist = None
         self.laps = None
-        self.tree = None
         self.has_data = False
         self.distance_data = {}
         self.time_data = {}
@@ -195,7 +193,6 @@ class Activity:
 tracks (%s)
         tracklist (%s)
         laps (%s)
-        tree (%s)
         us_system (%s)
         distance_unit (%s)
         speed_unit (%s)
@@ -239,7 +236,7 @@ tracks (%s)
         lap_distance (%s)
         lap_time (%s)
         pace_limit (%s)
-''' % ('self.tracks', self.tracklist, self.laps, self.tree, self.us_system,
+''' % ('self.tracks', self.tracklist, self.laps, self.us_system,
                 self.distance_unit, self.speed_unit, self.distance_data, self.time_data,
                 self.height_unit, self.pace_unit, self.gpx_file, self.gpx, self.sport_name,
                 self.sport_id, self.title, self.date, self.time, self.time_tuple, self.beats,
@@ -270,7 +267,6 @@ tracks (%s)
         #Parse GPX file
         #print "Activity initing GPX.. ",
         self.gpx = Gpx(filename=self.gpx_file) #TODO change GPX code to do less....
-        self.tree = self.gpx.tree
         self.tracks = self.gpx.getTrackList() #TODO fix - this should removed and replaced with self.tracklist functionality
         self.tracklist = self.gpx.trkpoints
         self.gpx_distance = self.gpx.total_dist
