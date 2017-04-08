@@ -25,6 +25,7 @@ from pytrainer.lib.date import second2time
 from pytrainer.lib.gpx import Gpx
 from pytrainer.lib.graphdata import GraphData
 from pytrainer.lib.unitsconversor import *
+from pytrainer.environment import Environment
 
 class ActivityService(object):
     '''
@@ -133,6 +134,7 @@ class Activity:
     '''
     def __init__(self, pytrainer_main=None, id=None):
         logging.debug(">>")
+        self.environment = Environment()
         self.id = id
         #It is an error to try to initialise with no id
         if self.id is None:
@@ -160,11 +162,6 @@ class Activity:
         else:
             self.us_system = False
         self._set_units()
-        self.gpx_file = "%s/%s.gpx" % (self.pytrainer_main.profile.gpxdir, id)
-        #It is OK to not have a GPX file for an activity - this just limits us to information in the DB
-        if not os.path.isfile(self.gpx_file):
-            self.gpx_file = None
-            logging.debug("No GPX file found for record id: %s" % id)
         if self.gpx_file is not None:
             self._init_from_gpx_file()
         self._init_from_db()
@@ -182,6 +179,16 @@ class Activity:
         self.x_grid = False
         self.show_laps = False
         logging.debug("<<")
+
+    @property
+    def gpx_file(self):
+        if self.id:
+            filename = "%s/%s.gpx" % (self.environment.gpx_dir, self.id)
+            #It is OK to not have a GPX file for an activity - this just limits us to information in the DB
+            if os.path.isfile(filename):
+                return filename
+        logging.debug("No GPX file found for record id: %s", self.id)
+        return None
 
     def __str__(self):
         return '''
