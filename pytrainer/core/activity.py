@@ -143,8 +143,6 @@ class Activity:
             print("Error - must initialise with a reference to the main pytrainer class")
             return
         self.pytrainer_main = pytrainer_main
-        self.tracks = None
-        self.tracklist = None
         self.laps = None
         self.has_data = False
         self.distance_data = {}
@@ -187,6 +185,20 @@ class Activity:
                 return filename
         logging.debug("No GPX file found for record id: %s", self.id)
         return None
+
+    @property
+    def tracks(self):
+        if self.gpx:
+            return self.gpx.getTrackList()
+        else:
+            return None
+
+    @property
+    def tracklist(self):
+        if self.gpx:
+            return self.gpx.trkpoints
+        else:
+            return None
 
     def __str__(self):
         return '''
@@ -267,8 +279,6 @@ tracks (%s)
         #Parse GPX file
         #print "Activity initing GPX.. ",
         self.gpx = Gpx(filename=self.gpx_file) #TODO change GPX code to do less....
-        self.tracks = self.gpx.getTrackList() #TODO fix - this should removed and replaced with self.tracklist functionality
-        self.tracklist = self.gpx.trkpoints
         self.gpx_distance = self.gpx.total_dist
         logging.info("GPX Distance: %s | distance (trkpts): %s | duration: %s | duration (trkpts): %s" % (self.gpx_distance, self.gpx.total_dist_trkpts, self.gpx.total_time, self.gpx.total_time_trkpts))
         time_diff = self.gpx.total_time_trkpts - self.gpx.total_time
