@@ -384,14 +384,9 @@ tracks (%s)
         else:
             raise Exception("Error - multiple results from DB for id: %s" % self.id)
         #Get lap information
-        laps = self.pytrainer_main.ddbb.select_dict("laps",
+        self.laps = self.pytrainer_main.ddbb.select_dict("laps",
                                 ("id_lap", "record", "elapsed_time", "distance", "start_lat", "start_lon", "end_lat", "end_lon", "calories", "lap_number", "intensity", "avg_hr", "max_hr", "max_speed", "laptrigger", "comments"),
                                 "record=\"%s\"" % self.id)
-        if laps is None or laps == [] or len(laps) < 1:  #No laps found
-            logging.debug("No laps in DB for record %d" % self.id)
-            if self.gpx_file is not None:
-                laps = self._get_laps_from_gpx()
-        self.laps = laps
         logging.debug("<<")
 
     def _generate_per_lap_graphs(self):
@@ -459,31 +454,6 @@ tracks (%s)
                 self.distance_data['speed_lap'].addBars(x=dist, y=avg_speed)
                 self.time_data['speed_lap'].addBars(x=time, y=avg_speed)
         logging.debug("<<")
-
-    def _get_laps_from_gpx(self):
-        logging.debug(">>")
-        laps = []
-        gpxLaps = self.gpx.getLaps()
-        for lap in gpxLaps:
-            lap_number = gpxLaps.index(lap)
-            tmp_lap = {}
-            tmp_lap['record'] = self.id
-            tmp_lap['lap_number'] = lap_number
-            tmp_lap['elapsed_time'] = lap[0]
-            tmp_lap['distance'] = lap[4]
-            tmp_lap['start_lat'] = lap[5]
-            tmp_lap['start_lon'] = lap[6]
-            tmp_lap['end_lat'] = lap[1]
-            tmp_lap['end_lon'] = lap[2]
-            tmp_lap['calories'] = lap[3]
-            laps.append(tmp_lap)
-        if laps is not None:
-            for lap in laps:
-                lap_keys = ", ".join(map(str, lap.keys()))
-                lap_values = lap.values()
-                self.pytrainer_main.record.insertLaps(lap_keys, lap.values())
-        logging.debug("<<")
-        return laps
 
     def _init_graph_data(self):
         logging.debug(">>")
