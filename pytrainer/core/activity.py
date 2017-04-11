@@ -107,7 +107,7 @@ class Activity:
     maxbeats                - (int) maximum heartrate for activity
     comments                - (string) activity comments
     calories                - (int) calories of activity
-    id_record               - (string) id for activity in records table
+    id                      - (int) id for activity in records table
     date_time_local - (string) date and time of activity in local timezone
     date_time_utc   - (string) date and time of activity in UTC timezone
     date_time               - (datetime) date and time of activity in local timezone
@@ -242,7 +242,7 @@ tracks (%s)
         maxbeats (%s)
         comments (%s)
         calories (%s)
-        id_record (%s)
+        id (%s)
         date_time_local (%s)
         date_time_utc (%s)
         date_time (%s)
@@ -270,7 +270,7 @@ tracks (%s)
                 self.distance_unit, self.speed_unit, self.distance_data, self.time_data,
                 self.height_unit, self.pace_unit, self.gpx_file, self.gpx, self.sport_name,
                 self.sport_id, self.title, self.date, self.time, self.time_tuple, self.beats,
-                self.maxbeats, self.comments, self.calories, self.id_record, self.date_time_local,
+                self.maxbeats, self.comments, self.calories, self.id, self.date_time_local,
                 self.date_time_utc, self.date_time, self.starttime, self.distance, self.average,
                 self.upositive, self.unegative, self.maxspeed, self.maxpace, self.pace, self.has_data,
                 self.x_axis, self.x_limits, self.y1_limits, self.y2_limits, self.x_limits_u, self.y1_limits_u,
@@ -348,7 +348,6 @@ tracks (%s)
             if self.comments is None:
                 self.comments = ""
             self.calories = self._int(row[cols.index('calories')])
-            self.id_record = row[cols.index('id_record')]
             self.maxbeats = self._int(row[cols.index('maxbeats')])
             #Sort time....
             # ... use local time if available otherwise use date_time_utc and create a local datetime...
