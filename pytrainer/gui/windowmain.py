@@ -35,8 +35,6 @@ import pytrainer.record
 from pytrainer.lib.date import Date, second2time
 from pytrainer.lib.xmlUtils import XMLParser
 #from pytrainer.lib.gpx import Gpx
-from pytrainer.extensions.googlemaps import Googlemaps
-from pytrainer.extensions.osm import Osm
 
 from pytrainer.recordgraph import RecordGraph
 from pytrainer.daygraph import DayGraph
@@ -45,7 +43,6 @@ from pytrainer.monthgraph import MonthGraph
 from pytrainer.yeargraph import YearGraph
 from pytrainer.totalgraph import TotalGraph
 from pytrainer.heartrategraph import HeartRateGraph
-from pytrainer.extensions.mapviewer import MapViewer
 from pytrainer.extensions.waypointeditor import WaypointEditor
 from pytrainer.core.equipment import EquipmentService
 
@@ -87,6 +84,8 @@ class Main(SimpleGladeApp):
         self.listsearch = ListSearch(sport_service, self, self.pytrainer_main)
         
         self.aboutwindow = None
+        self.mapviewer = None
+        self.mapviewer_fs = None
 
     def new(self):
         self.menublocking = 0
@@ -209,7 +208,7 @@ class Main(SimpleGladeApp):
     def setup(self):
         logging.debug(">>")
         self.createGraphs()
-        self.createMap(MapViewer,self.pytrainer_main.waypoint)
+        self.createMap()
         self.createWaypointEditor(WaypointEditor,self.pytrainer_main.waypoint, parent=self.pytrainer_main)
         page = self.notebook.get_current_page()
         self.on_page_change(None,None,page)
@@ -276,11 +275,17 @@ class Main(SimpleGladeApp):
         self.drawareatotal = TotalGraph(sports, self.total_vbox, self.window1, self.total_combovalue,self.total_combovalue2, self.pytrainer_main)
         logging.debug("<<")
 
-    def createMap(self,MapViewer,waypoint):
+    def createMap(self):
         logging.debug(">>")
-        if not getattr(self, 'mapviewer', None):
-            self.mapviewer = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox)
-            self.mapviewer_fs = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox_old)
+        if not self.mapviewer and not self.mapviewer_fs:
+            try:
+                from pytrainer.extensions.mapviewer import MapViewer
+                from pytrainer.extensions.googlemaps import Googlemaps
+                from pytrainer.extensions.osm import Osm
+                self.mapviewer = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox)
+                self.mapviewer_fs = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox_old)
+            except ImportError:
+                logging.error("Webkit not found, map functionality not available")
         logging.debug("<<")
 
     def updateSportList(self,listSport):
@@ -987,26 +992,27 @@ class Main(SimpleGladeApp):
 
     def actualize_map(self,activity, full_screen=False):
         logging.debug(">>")
-        #Check which type of map viewer to use
-        if self.radiobuttonOSM.get_active():
-            #Use OSM to draw map
-            logging.debug("Using OSM to draw map....")
-            htmlfile = Osm(data_path=self.data_path, waypoint=self.pytrainer_main.waypoint, pytrainer_main=self.parent).drawMap(activity, self.comboMapLineType.get_active())
-        elif self.radiobuttonGMap.get_active():
-            #Use Google to draw map
-            logging.debug("Using Google to draw map")
-            htmlfile = Googlemaps(data_path=self.data_path, waypoint=self.pytrainer_main.waypoint, pytrainer_main=self.parent).drawMap(activity, self.comboMapLineType.get_active())
-        else:
-            #Unknown map type...
-            logging.error("Unknown map viewer requested")
-            htmlfile = self.mapviewer.createErrorHtml()
-        logging.debug("Displaying htmlfile: %s" % htmlfile)
-        if full_screen:
-            logging.debug("Displaying in full screen mode")
-            self.mapviewer_fs.display_map(htmlfile=htmlfile)
-        else:
-            logging.debug("Displaying in embedded mode")
-            self.mapviewer.display_map(htmlfile=htmlfile)
+        if self.mapviewer and self.mapviewer_fs:
+            #Check which type of map viewer to use
+            if self.radiobuttonOSM.get_active():
+                #Use OSM to draw map
+                logging.debug("Using OSM to draw map....")
+                htmlfile = Osm(data_path=self.data_path, waypoint=self.pytrainer_main.waypoint, pytrainer_main=self.parent).drawMap(activity, self.comboMapLineType.get_active())
+            elif self.radiobuttonGMap.get_active():
+                #Use Google to draw map
+                logging.debug("Using Google to draw map")
+                htmlfile = Googlemaps(data_path=self.data_path, waypoint=self.pytrainer_main.waypoint, pytrainer_main=self.parent).drawMap(activity, self.comboMapLineType.get_active())
+            else:
+                #Unknown map type...
+                logging.error("Unknown map viewer requested")
+                htmlfile = self.mapviewer.createErrorHtml()
+            logging.debug("Displaying htmlfile: %s" % htmlfile)
+            if full_screen:
+                logging.debug("Displaying in full screen mode")
+                self.mapviewer_fs.display_map(htmlfile=htmlfile)
+            else:
+                logging.debug("Displaying in embedded mode")
+                self.mapviewer.display_map(htmlfile=htmlfile)
         logging.debug("<<")
 
     def actualize_weekview(self, record_list, date_range):
