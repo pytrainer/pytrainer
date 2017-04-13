@@ -43,7 +43,6 @@ from pytrainer.monthgraph import MonthGraph
 from pytrainer.yeargraph import YearGraph
 from pytrainer.totalgraph import TotalGraph
 from pytrainer.heartrategraph import HeartRateGraph
-from pytrainer.extensions.waypointeditor import WaypointEditor
 from pytrainer.core.equipment import EquipmentService
 
 from pytrainer.gui.drawGraph import DrawGraph
@@ -86,6 +85,7 @@ class Main(SimpleGladeApp):
         self.aboutwindow = None
         self.mapviewer = None
         self.mapviewer_fs = None
+        self.waypointeditor = None
 
     def new(self):
         self.menublocking = 0
@@ -209,7 +209,6 @@ class Main(SimpleGladeApp):
         logging.debug(">>")
         self.createGraphs()
         self.createMap()
-        self.createWaypointEditor(WaypointEditor,self.pytrainer_main.waypoint, parent=self.pytrainer_main)
         page = self.notebook.get_current_page()
         self.on_page_change(None,None,page)
         logging.debug("<<")
@@ -277,13 +276,17 @@ class Main(SimpleGladeApp):
 
     def createMap(self):
         logging.debug(">>")
-        if not self.mapviewer and not self.mapviewer_fs:
+        if not self.mapviewer and not self.mapviewer_fs and not self.waypointeditor:
             try:
                 from pytrainer.extensions.mapviewer import MapViewer
                 from pytrainer.extensions.googlemaps import Googlemaps
                 from pytrainer.extensions.osm import Osm
+                from pytrainer.extensions.waypointeditor import WaypointEditor
                 self.mapviewer = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox)
                 self.mapviewer_fs = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox_old)
+                self.waypointeditor = WaypointEditor(self.data_path, self.waypointvbox,
+                                                     self.pytrainer_main.waypoint,
+                                                     parent=self.pytrainer_main)
             except ImportError:
                 logging.error("Webkit not found, map functionality not available")
         logging.debug("<<")
@@ -1440,7 +1443,7 @@ class Main(SimpleGladeApp):
             self.waypoint_name.set_text(str(record_list[default_id][6]))
             self.waypoint_description.set_text(str(record_list[default_id][4]))
             self.set_waypoint_type(str(record_list[default_id][7]))
-        if redrawmap == 1:
+        if redrawmap == 1 and self.waypointeditor:
             self.waypointeditor.createHtml(default_waypoint)
             self.waypointeditor.drawMap()
         logging.debug("<<")
@@ -1556,9 +1559,6 @@ class Main(SimpleGladeApp):
             if numcolumn != 0 and self.menublocking != 1:
                 menuItems[numcolumn-1].set_active(visible)
         self.menublocking = 1
-
-    def createWaypointEditor(self,WaypointEditor,waypoint, parent=None):
-        self.waypointeditor = WaypointEditor(self.data_path, self.waypointvbox,waypoint,parent)
 
     def zoom_graph(self, y1limits=None, y1color=None, y1_linewidth=1):
         logging.debug(">>")
