@@ -278,7 +278,6 @@ class Main(SimpleGladeApp):
 
     def createMap(self,MapViewer,waypoint):
         logging.debug(">>")
-        self.waypoint = waypoint
         if not getattr(self, 'mapviewer', None):
             self.mapviewer = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox)
             self.mapviewer_fs = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox_old)
@@ -992,11 +991,11 @@ class Main(SimpleGladeApp):
         if self.radiobuttonOSM.get_active():
             #Use OSM to draw map
             logging.debug("Using OSM to draw map....")
-            htmlfile = Osm(data_path=self.data_path, waypoint=self.waypoint, pytrainer_main=self.parent).drawMap(activity, self.comboMapLineType.get_active())
+            htmlfile = Osm(data_path=self.data_path, waypoint=self.pytrainer_main.waypoint, pytrainer_main=self.parent).drawMap(activity, self.comboMapLineType.get_active())
         elif self.radiobuttonGMap.get_active():
             #Use Google to draw map
             logging.debug("Using Google to draw map")
-            htmlfile = Googlemaps(data_path=self.data_path, waypoint=self.waypoint, pytrainer_main=self.parent).drawMap(activity, self.comboMapLineType.get_active())
+            htmlfile = Googlemaps(data_path=self.data_path, waypoint=self.pytrainer_main.waypoint, pytrainer_main=self.parent).drawMap(activity, self.comboMapLineType.get_active())
         else:
             #Unknown map type...
             logging.error("Unknown map viewer requested")
