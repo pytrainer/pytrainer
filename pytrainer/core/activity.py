@@ -218,6 +218,10 @@ class Activity:
             self._generate_per_lap_graphs()
         return self._lap_distance
 
+    @property
+    def time_tuple(self):
+        return second2time(self.time)
+
     def __str__(self):
         return '''
 tracks (%s)
@@ -342,7 +346,6 @@ tracks (%s)
                 self.title = ""
             self.date = row[cols.index('date')]
             self.time = self._int(row[cols.index('time')])
-            self.time_tuple = second2time(self.time)
             self.beats = self._int(row[cols.index('beats')])
             self.comments = row[cols.index('comments')]
             if self.comments is None:
