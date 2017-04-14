@@ -632,40 +632,19 @@ tracks (%s)
                 Automatically returns values converted to imperial if needed
         '''
         if param == 'distance':
-            if self.uc.us:
-                return km2miles(self.distance)
-            else:
-                return self.distance
+            return self.uc.distance(self.distance)
         elif param == 'average':
-            if self.uc.us:
-                return km2miles(self.average)
-            else:
-                return self.average
+            return self.uc.speed(self.average)
         elif param == 'upositive':
-            if self.uc.us:
-                return m2feet(self.upositive)
-            else:
-                return self.upositive
+            return self.uc.height(self.upositive)
         elif param == 'unegative':
-            if self.uc.us:
-                return m2feet(self.unegative)
-            else:
-                return self.unegative
+            return self.uc.height(self.unegative)
         elif param == 'maxspeed':
-            if self.uc.us:
-                return km2miles(self.maxspeed)
-            else:
-                return self.maxspeed
+            return self.uc.speed(self.maxspeed)
         elif param == 'maxpace':
-            if self.uc.us:
-                return uc.float2pace(pacekm2miles(self.maxpace))
-            else:
-                return uc.float2pace(self.maxpace)
+            return uc.float2pace(self.uc.pace(self.maxpace))
         elif param == 'pace':
-            if self.uc.us:
-                return uc.float2pace(pacekm2miles(self.pace))
-            else:
-                return uc.float2pace(self.pace)
+            return uc.float2pace(self.uc.pace(self.pace))
         elif param == 'calories':
             return self.calories
         elif param == 'time':
