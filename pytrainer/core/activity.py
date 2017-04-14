@@ -153,7 +153,6 @@ class Activity:
         self._lap_distance = None
         self.time_pause = 0
         self.pace_limit = None
-        self.starttime = None
         self._set_units()
         self._gpx = None
         self._init_from_db()
@@ -221,6 +220,18 @@ class Activity:
     @property
     def time_tuple(self):
         return second2time(self.time)
+
+    @property
+    def date_time(self):
+        if self.date_time_local: #Have a local time stored in DB
+            return dateutil.parser.parse(self.date_time_local)
+        else: #No local time in DB
+            #datetime with localtime offset (using value from OS)
+            return dateutil.parser.parse(self.date_time_utc).astimezone(tzlocal())
+
+    @property
+    def starttime(self):
+        return self.date_time.strftime("%X")
 
     def __str__(self):
         return '''
@@ -352,17 +363,8 @@ tracks (%s)
                 self.comments = ""
             self.calories = self._int(row[cols.index('calories')])
             self.maxbeats = self._int(row[cols.index('maxbeats')])
-            #Sort time....
-            # ... use local time if available otherwise use date_time_utc and create a local datetime...
             self.date_time_local = row[cols.index('date_time_local')]
             self.date_time_utc = row[cols.index('date_time_utc')]
-            if self.date_time_local is not None: #Have a local time stored in DB
-                self.date_time = dateutil.parser.parse(self.date_time_local)
-                self.starttime = self.date_time.strftime("%X")
-            else: #No local time in DB
-                tmpDateTime = dateutil.parser.parse(self.date_time_utc)
-                self.date_time = tmpDateTime.astimezone(tzlocal()) #datetime with localtime offset (using value from OS)
-                self.starttime = self.date_time.strftime("%X")
             #Sort data that changes for the US etc
             #if self.us_system:
             #       self.distance = km2miles(self._float(row[cols.index('distance')]))
