@@ -606,7 +606,7 @@ tracks (%s)
             result = 0
         return result
 
-    def get_value_f(self, param, format=None, with_units=False):
+    def get_value_f(self, param, format=None):
         ''' Function to return a value formated as a string
                 - takes into account US/metric
                 - also appends units if required
@@ -619,10 +619,6 @@ tracks (%s)
             result = format % value
         else:
             result = str(value)
-        if with_units:
-            if param in self.units:
-                result += self.units[param]
-        #print "activity: 509", result
         return result
 
     def get_value(self, param):
