@@ -89,12 +89,8 @@ class Activity:
     tracklist               - (list of dict) trackpoint data from gpx
     laps                    - (list of dict) lap list
     us_system               - (bool) True: imperial measurement False: metric measurement
-    distance_unit   - (string) unit to use for distance
-    speed_unit              - (string) unit to use for speed
     distance_data   - (dict of graphdata classes) contains the graph data with x axis distance
     time_data               - (dict of graphdata classes) contains the graph data with x axis time
-    height_unit             - (string) unit to use for height
-    pace_unit               - (string) unit to use for pace
     gpx_file                - (string) gpx file name
     gpx                             - (Gpx class) actual gpx instance
     sport_name              - (string) sport name
@@ -153,7 +149,6 @@ class Activity:
         self._lap_distance = None
         self.time_pause = 0
         self.pace_limit = None
-        self._set_units()
         self._gpx = None
         self._init_from_db()
         self.x_axis = "distance"
@@ -239,12 +234,8 @@ tracks (%s)
         tracklist (%s)
         laps (%s)
         us_system (%s)
-        distance_unit (%s)
-        speed_unit (%s)
         distance_data (%s)
         time_data (%s)
-        height_unit (%s)
-        pace_unit (%s)
         gpx_file (%s)
         gpx (%s)
         sport_name (%s)
@@ -282,27 +273,14 @@ tracks (%s)
         lap_time (%s)
         pace_limit (%s)
 ''' % ('self.tracks', self.tracklist, self.laps, self.uc.us,
-                self.distance_unit, self.speed_unit, self.distance_data, self.time_data,
-                self.height_unit, self.pace_unit, self.gpx_file, self.gpx, self.sport_name,
+                self.distance_data, self.time_data,
+                self.gpx_file, self.gpx, self.sport_name,
                 self.sport_id, self.title, self.date, self.time, self.time_tuple, self.beats,
                 self.maxbeats, self.comments, self.calories, self.id, self.date_time_local,
                 self.date_time_utc, self.date_time, self.starttime, self.distance, self.average,
                 self.upositive, self.unegative, self.maxspeed, self.maxpace, self.pace, self.has_data,
                 self.x_axis, self.x_limits, self.y1_limits, self.y2_limits, self.x_limits_u, self.y1_limits_u,
                 self.y2_limits_u, self.show_laps, self.lap_distance, self.lap_time, self.pace_limit)
-
-    def _set_units(self):
-        if self.uc.us:
-            self.distance_unit = _("miles")
-            self.speed_unit = _("miles/h")
-            self.pace_unit = _("min/mile")
-            self.height_unit = _("feet")
-        else:
-            self.distance_unit = _("km")
-            self.speed_unit = _("km/h")
-            self.pace_unit = _("min/km")
-            self.height_unit = _("m")
-        self.units = {'distance': self.distance_unit, 'average': self.speed_unit, 'upositive': self.height_unit, 'unegative': self.height_unit, 'maxspeed': self.speed_unit, 'pace': self.pace_unit, 'maxpace': self.pace_unit}
 
     @property
     def gpx(self):
@@ -410,8 +388,8 @@ tracks (%s)
         self._lap_time.graphType = "vspan"
         #Pace
         title = _("Pace by Lap")
-        xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
-        ylabel = "%s (%s)" % (_('Pace'), self.pace_unit)
+        xlabel = "%s (%s)" % (_('Distance'), self.uc.unit_distance)
+        ylabel = "%s (%s)" % (_('Pace'), self.uc.unit_pace)
         self.distance_data['pace_lap'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
         self.distance_data['pace_lap'].set_color('#99CCFF', '#99CCFF')
         self.distance_data['pace_lap'].graphType = "bar"
@@ -421,8 +399,8 @@ tracks (%s)
         self.time_data['pace_lap'].graphType = "bar"
         #Speed
         title = _("Speed by Lap")
-        xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
-        ylabel = "%s (%s)" % (_('Speed'), self.speed_unit)
+        xlabel = "%s (%s)" % (_('Distance'), self.uc.unit_distance)
+        ylabel = "%s (%s)" % (_('Speed'), self.uc.unit_speed)
         self.distance_data['speed_lap'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
         self.distance_data['speed_lap'].set_color('#336633', '#336633')
         self.distance_data['speed_lap'].graphType = "bar"
@@ -468,8 +446,8 @@ tracks (%s)
             return
         #Profile
         title = _("Elevation")
-        xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
-        ylabel = "%s (%s)" % (_('Elevation'), self.height_unit)
+        xlabel = "%s (%s)" % (_('Distance'), self.uc.unit_distance)
+        ylabel = "%s (%s)" % (_('Elevation'), self.uc.unit_height)
         self._distance_data['elevation'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
         self._distance_data['elevation'].set_color('#ff0000', '#ff0000')
         self._distance_data['elevation'].show_on_y1 = True #Make graph show elevation by default
@@ -479,8 +457,8 @@ tracks (%s)
         self._time_data['elevation'].show_on_y1 = True #Make graph show elevation by default
         #Corrected Elevation...
         title = _("Corrected Elevation")
-        xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
-        ylabel = "%s (%s)" % (_('Corrected Elevation'), self.height_unit)
+        xlabel = "%s (%s)" % (_('Distance'), self.uc.unit_distance)
+        ylabel = "%s (%s)" % (_('Corrected Elevation'), self.uc.unit_height)
         self._distance_data['cor_elevation'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
         self._distance_data['cor_elevation'].set_color('#993333', '#993333')
         xlabel=_("Time (seconds)")
@@ -488,8 +466,8 @@ tracks (%s)
         self._time_data['cor_elevation'].set_color('#993333', '#993333')
         #Speed
         title = _("Speed")
-        xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
-        ylabel = "%s (%s)" % (_('Speed'), self.speed_unit)
+        xlabel = "%s (%s)" % (_('Distance'), self.uc.unit_distance)
+        ylabel = "%s (%s)" % (_('Speed'), self.uc.unit_speed)
         self._distance_data['speed'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
         self._distance_data['speed'].set_color('#000000', '#000000')
         xlabel = _("Time (seconds)")
@@ -497,8 +475,8 @@ tracks (%s)
         self._time_data['speed'].set_color('#000000', '#000000')
         #Pace
         title = _("Pace")
-        xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
-        ylabel = "%s (%s)" % (_('Pace'), self.pace_unit)
+        xlabel = "%s (%s)" % (_('Distance'), self.uc.unit_distance)
+        ylabel = "%s (%s)" % (_('Pace'), self.uc.unit_pace)
         self._distance_data['pace'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
         self._distance_data['pace'].set_color('#0000ff', '#0000ff')
         xlabel = _("Time (seconds)")
@@ -506,7 +484,7 @@ tracks (%s)
         self._time_data['pace'].set_color('#0000ff', '#0000ff')
         #Heartrate
         title = _("Heart Rate")
-        xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
+        xlabel = "%s (%s)" % (_('Distance'), self.uc.unit_distance)
         ylabel = "%s (%s)" % (_('Heart Rate'), _('bpm'))
         self._distance_data['hr'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
         self._distance_data['hr'].set_color('#00ff00', '#00ff00')
@@ -516,7 +494,7 @@ tracks (%s)
         #Heartrate as %
         maxhr = self.pytrainer_main.profile.getMaxHR()
         title = _("Heart Rate (% of max)")
-        xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
+        xlabel = "%s (%s)" % (_('Distance'), self.uc.unit_distance)
         ylabel = "%s (%s)" % (_('Heart Rate'), _('%'))
         self._distance_data['hr_p'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
         self._distance_data['hr_p'].set_color('#00ff00', '#00ff00')
@@ -525,7 +503,7 @@ tracks (%s)
         self._time_data['hr_p'].set_color('#00ff00', '#00ff00')
         #Cadence
         title = _("Cadence")
-        xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
+        xlabel = "%s (%s)" % (_('Distance'), self.uc.unit_distance)
         ylabel = "%s (%s)" % (_('Cadence'), _('rpm'))
         self._distance_data['cadence'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
         self._distance_data['cadence'].set_color('#cc00ff', '#cc00ff')
@@ -586,7 +564,7 @@ tracks (%s)
         if 'hr' in self._distance_data:
             zones = self.pytrainer_main.profile.getZones()
             title = _("Heart Rate zone")
-            xlabel = "%s (%s)" % (_('Distance'), self.distance_unit)
+            xlabel = "%s (%s)" % (_('Distance'), self.uc.unit_distance)
             ylabel = "%s (%s)" % (_('Heart Rate'), _('bpm'))
             self._distance_data['hr_z'] = GraphData(title=title, xlabel=xlabel, ylabel=ylabel)
             self._distance_data['hr_z'].graphType = "hspan"
