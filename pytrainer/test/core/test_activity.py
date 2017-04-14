@@ -80,8 +80,8 @@ class ActivityTest(unittest.TestCase):
         self.assertEquals(self.activity.get_value_f('maxspeed', "%0.2f"), '44.67')
         self.assertEquals(self.activity.get_value_f('time', '%s'), '2:03:46')
         self.assertEquals(self.activity.get_value_f('calories', "%0.0f"), '1462')
-        self.assertEquals(self.activity.get_value_f('pace', "%s"), '2:40')
-        self.assertEquals(self.activity.get_value_f('maxpace', "%s"), '1:20')
+        self.assertEquals(self.activity.get_value_f('pace', "%s"), '2:24')
+        self.assertEquals(self.activity.get_value_f('maxpace', "%s"), '1:12')
         self.assertEquals(self.activity.get_value_f('upositive', "%0.2f"), '553.06')
         self.assertEquals(self.activity.get_value_f('unegative', "%0.2f"), '564.08')
 
@@ -92,8 +92,8 @@ class ActivityTest(unittest.TestCase):
         self.assertEquals(self.activity.get_value_f('maxspeed', "%0.2f"), '27.76')
         self.assertEquals(self.activity.get_value_f('time', '%s'), '2:03:46')
         self.assertEquals(self.activity.get_value_f('calories', "%0.0f"), '1462')
-        self.assertEquals(self.activity.get_value_f('pace', "%s"), '3:86')
-        self.assertEquals(self.activity.get_value_f('maxpace', "%s"), '1:93')
+        self.assertEquals(self.activity.get_value_f('pace', "%s"), '3:52')
+        self.assertEquals(self.activity.get_value_f('maxpace', "%s"), '1:56')
         self.assertEquals(self.activity.get_value_f('upositive', "%0.2f"), '1814.50')
         self.assertEquals(self.activity.get_value_f('unegative', "%0.2f"), '1850.66')
 

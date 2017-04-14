@@ -26,7 +26,7 @@ from pytrainer.lib.gpx import Gpx
 from pytrainer.lib.graphdata import GraphData
 from pytrainer.lib.unitsconversor import *
 from pytrainer.environment import Environment
-from pytrainer.lib.uc import UC
+from pytrainer.lib import uc
 
 class ActivityService(object):
     '''
@@ -135,7 +135,7 @@ class Activity:
     def __init__(self, pytrainer_main=None, id=None):
         logging.debug(">>")
         self.environment = Environment()
-        self.uc = UC()
+        self.uc = uc.UC()
         self.id = id
         #It is an error to try to initialise with no id
         if self.id is None:
@@ -656,14 +656,14 @@ tracks (%s)
                 return self.maxspeed
         elif param == 'maxpace':
             if self.uc.us:
-                return self.pace_from_float(pacekm2miles(self.maxpace))
+                return uc.float2pace(pacekm2miles(self.maxpace))
             else:
-                return self.pace_from_float(self.maxpace)
+                return uc.float2pace(self.maxpace)
         elif param == 'pace':
             if self.uc.us:
-                return self.pace_from_float(pacekm2miles(self.pace))
+                return uc.float2pace(pacekm2miles(self.pace))
             else:
-                return self.pace_from_float(self.pace)
+                return uc.float2pace(self.pace)
         elif param == 'calories':
             return self.calories
         elif param == 'time':
@@ -732,14 +732,3 @@ tracks (%s)
         except ValueError:
             value = None
         return value
-
-    def pace_from_float(self, value):
-        '''Helper to generate mm:ss from float representation mm.ss (or mm,ss?)'''
-        #Check that value supplied is a float
-        if not value:
-            return ""
-        try:
-            _value = "%0.2f" % float(value)
-        except ValueError:
-            _value = str(value)
-        return _value.replace('.', ':')
