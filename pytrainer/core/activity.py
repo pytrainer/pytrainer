@@ -336,7 +336,7 @@ tracks (%s)
         '''
         logging.debug(">>")
         #Get base information
-        cols = ("sports.name","id_sports", "date","distance","time","beats","comments",
+        cols = ("sports.name","id_sports", "date","distance","time","beats","comments","duration",
                                         "average","calories","id_record","title","upositive","unegative",
                                         "maxspeed","maxpace","pace","maxbeats","date_time_utc","date_time_local", "sports.max_pace")
         # outer join on sport id to workaround bug where sport reference is null on records from GPX import
@@ -357,6 +357,7 @@ tracks (%s)
                 self.title = ""
             self.date = row[cols.index('date')]
             self.time = self._int(row[cols.index('time')])
+            self.duration = self._int(row[cols.index('duration')])
             self.beats = self._int(row[cols.index('beats')])
             self.comments = row[cols.index('comments')]
             if self.comments is None:
