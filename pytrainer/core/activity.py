@@ -24,7 +24,6 @@ from dateutil.tz import tzlocal
 from pytrainer.lib.date import second2time
 from pytrainer.lib.gpx import Gpx
 from pytrainer.lib.graphdata import GraphData
-from pytrainer.lib.unitsconversor import *
 from pytrainer.environment import Environment
 from pytrainer.lib import uc
 
@@ -344,16 +343,6 @@ tracks (%s)
             self.maxbeats = self._int(row[cols.index('maxbeats')])
             self.date_time_local = row[cols.index('date_time_local')]
             self.date_time_utc = row[cols.index('date_time_utc')]
-            #Sort data that changes for the US etc
-            #if self.us_system:
-            #       self.distance = km2miles(self._float(row[cols.index('distance')]))
-            #       self.average = km2miles(self._float(row[cols.index('average')]))
-            #       self.upositive = m2feet(self._float(row[cols.index('upositive')]))
-            #       self.unegative = m2feet(self._float(row[cols.index('unegative')]))
-            #       self.maxspeed = km2miles(self._float(row[cols.index('maxspeed')]))
-            #       self.maxpace = pacekm2miles(self._float(row[cols.index('maxpace')]))
-            #       self.pace = pacekm2miles(self._float(row[cols.index('pace')]))
-            #else:
             self.distance = self._float(row[cols.index('distance')])
             if not self.distance:
                 self.distance = self.gpx.total_dist
@@ -424,18 +413,11 @@ tracks (%s)
                 pace = 0.0
             logging.debug("Time: %f, Dist: %f, Pace: %f, Speed: %f" % (time, dist, pace, avg_speed))
             self._lap_time.addBars(x=time, y=10)
-            if self.uc.us:
-                self._lap_distance.addBars(x=km2miles(dist), y=10)
-                self.distance_data['pace_lap'].addBars(x=km2miles(dist), y=pacekm2miles(pace))
-                self.time_data['pace_lap'].addBars(x=time, y=pacekm2miles(pace))
-                self.distance_data['speed_lap'].addBars(x=km2miles(dist), y=km2miles(avg_speed))
-                self.time_data['speed_lap'].addBars(x=time, y=km2miles(avg_speed))
-            else:
-                self._lap_distance.addBars(x=dist, y=10)
-                self.distance_data['pace_lap'].addBars(x=dist, y=pace)
-                self.time_data['pace_lap'].addBars(x=time, y=pace)
-                self.distance_data['speed_lap'].addBars(x=dist, y=avg_speed)
-                self.time_data['speed_lap'].addBars(x=time, y=avg_speed)
+            self._lap_distance.addBars(x=self.uc.distance(dist), y=10)
+            self.distance_data['pace_lap'].addBars(x=self.uc.distance(dist), y=pacekm2miles(pace))
+            self.time_data['pace_lap'].addBars(x=time, y=self.uc.speed(pace))
+            self.distance_data['speed_lap'].addBars(x=self.uc.distance(dist), y=self.uc.speed(avg_speed))
+            self.time_data['speed_lap'].addBars(x=time, y=self.uc.speed(avg_speed))
         logging.debug("<<")
 
     def _init_graph_data(self):
@@ -523,30 +505,28 @@ tracks (%s)
                 hr_p = float(track['hr'])/maxhr*100
             except:
                 hr_p = 0
-            if self.uc.us:
-                self._distance_data['elevation'].addPoints(x=km2miles(track['elapsed_distance']), y=m2feet(track['ele']))
-                self._distance_data['cor_elevation'].addPoints(x=km2miles(track['elapsed_distance']), y=m2feet(track['correctedElevation']))
-                self._distance_data['speed'].addPoints(x=km2miles(track['elapsed_distance']), y=km2miles(track['velocity']))
-                self._distance_data['pace'].addPoints(x=km2miles(track['elapsed_distance']), y=pacekm2miles(pace))
-                self._distance_data['hr'].addPoints(x=km2miles(track['elapsed_distance']), y=track['hr'])
-                self._distance_data['hr_p'].addPoints(x=km2miles(track['elapsed_distance']), y=hr_p)
-                self._distance_data['cadence'].addPoints(x=km2miles(track['elapsed_distance']), y=track['cadence'])
-                self._time_data['elevation'].addPoints(x=track['time_elapsed'], y=m2feet(track['ele']))
-                self._time_data['cor_elevation'].addPoints(x=track['time_elapsed'], y=m2feet(track['correctedElevation']))
-                self._time_data['speed'].addPoints(x=track['time_elapsed'], y=km2miles(track['velocity']))
-                self._time_data['pace'].addPoints(x=track['time_elapsed'], y=pacekm2miles(pace))
-            else:
-                self._distance_data['elevation'].addPoints(x=track['elapsed_distance'], y=track['ele'])
-                self._distance_data['cor_elevation'].addPoints(x=track['elapsed_distance'], y=track['correctedElevation'])
-                self._distance_data['speed'].addPoints(x=track['elapsed_distance'], y=track['velocity'])
-                self._distance_data['pace'].addPoints(x=track['elapsed_distance'], y=pace)
-                self._distance_data['hr'].addPoints(x=track['elapsed_distance'], y=track['hr'])
-                self._distance_data['hr_p'].addPoints(x=track['elapsed_distance'], y=hr_p)
-                self._distance_data['cadence'].addPoints(x=track['elapsed_distance'], y=track['cadence'])
-                self._time_data['elevation'].addPoints(x=track['time_elapsed'], y=track['ele'])
-                self._time_data['cor_elevation'].addPoints(x=track['time_elapsed'], y=track['correctedElevation'])
-                self._time_data['speed'].addPoints(x=track['time_elapsed'], y=track['velocity'])
-                self._time_data['pace'].addPoints(x=track['time_elapsed'], y=pace)
+            self._distance_data['elevation'].addPoints(x=self.uc.distance(track['elapsed_distance']),
+                                                       y=self.uc.height(track['ele']))
+            self._distance_data['cor_elevation'].addPoints(x=self.uc.distance(track['elapsed_distance']),
+                                                           y=self.uc.height(track['correctedElevation']))
+            self._distance_data['speed'].addPoints(x=self.uc.distance(track['elapsed_distance']),
+                                                   y=self.uc.speed(track['velocity']))
+            self._distance_data['pace'].addPoints(x=self.uc.distance(track['elapsed_distance']),
+                                                  y=self.uc.distance(pace))
+            self._distance_data['hr'].addPoints(x=self.uc.distance(track['elapsed_distance']),
+                                                y=track['hr'])
+            self._distance_data['hr_p'].addPoints(x=self.uc.distance(track['elapsed_distance']),
+                                                  y=hr_p)
+            self._distance_data['cadence'].addPoints(x=self.uc.distance(track['elapsed_distance']),
+                                                     y=track['cadence'])
+            self._time_data['elevation'].addPoints(x=track['time_elapsed'],
+                                                   y=self.uc.height(track['ele']))
+            self._time_data['cor_elevation'].addPoints(x=track['time_elapsed'],
+                                                       y=self.uc.height(track['correctedElevation']))
+            self._time_data['speed'].addPoints(x=track['time_elapsed'],
+                                               y=self.uc.speed(track['velocity']))
+            self._time_data['pace'].addPoints(x=track['time_elapsed'],
+                                              y=self.uc.distance(pace))
             self._time_data['hr'].addPoints(x=track['time_elapsed'], y=track['hr'])
             self._time_data['hr_p'].addPoints(x=track['time_elapsed'], y=hr_p)
             self._time_data['cadence'].addPoints(x=track['time_elapsed'], y=track['cadence'])
