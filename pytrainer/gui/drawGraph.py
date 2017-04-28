@@ -24,12 +24,14 @@ from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanva
 import matplotlib.pyplot as plt
 #import pylab
 import logging
+from pytrainer.lib.uc import UC
 
 class DrawGraph:
     def __init__(self, parent = None, pytrainer_main = None):
         logging.debug('>>')
         self.parent = parent
         self.pytrainer_main = pytrainer_main
+        self.uc = UC()
         #self.NEARLY_ZERO = 0.0000000000000000000001
         self.ax1 = None
         self.ax2 = None
@@ -188,9 +190,9 @@ class DrawGraph:
 
         if activity.x_axis == "distance":
             if activity.title is None or activity.title == "":
-                _title = "%s %s of %s on %s" % (str(activity.get_value_f('distance', "%0.2f")), activity.distance_unit, activity.sport_name, activity.date)
+                _title = "%s %s of %s on %s" % (str(activity.get_value_f('distance', "%0.2f")), self.uc.unit_distance, activity.sport_name, activity.date)
             else:
-                _title = "%s: %s %s of %s on %s" % (activity.title, str(activity.get_value_f('distance', "%0.2f")), activity.distance_unit, activity.sport_name, activity.date)
+                _title = "%s: %s %s of %s on %s" % (activity.title, str(activity.get_value_f('distance', "%0.2f")), self.uc.unit_distance, activity.sport_name, activity.date)
 
             #Loop through data items and graph the selected ones
             for item in activity.distance_data:
