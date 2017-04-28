@@ -24,12 +24,9 @@ import gtk, gobject
 from SimpleGladeApp import SimpleGladeApp
 from windowcalendar import WindowCalendar
 
-from filechooser import FileChooser
 from pytrainer.lib.date import getLocalTZ, time2second
-from pytrainer.lib.unitsconversor import *
-import pytrainer.record
 import dateutil.parser
-from dateutil.tz import * # for tzutc()
+from dateutil.tz import tzutc
 from pytrainer.lib.uc import UC
 
 class WindowRecord(SimpleGladeApp):
