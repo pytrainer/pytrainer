@@ -44,10 +44,6 @@ class AthleteTest(unittest.TestCase):
         self.ddbb.disconnect()
         self.ddbb = None
 
-    def test_athlete_init(self):
-        self.athlete.init_from_conf()
-        self.assertEquals(self.athlete.weight_unit, "kg")
-
     def test_athlete_insert_and_get(self):
         data = {'date': date(2017, 4, 3), 'weight': 60.0, 'bodyfat': 20.0,
                 'restinghr': 60, 'maxhr': 190, 'id_athletestat': 1}

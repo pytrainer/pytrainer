@@ -22,12 +22,14 @@ import dateutil
 
 from pytrainer.lib.ddbb import DDBB
 from pytrainer.lib.graphdata import GraphData
+from pytrainer.lib.uc import UC
 
 class Athlete:
     def __init__(self, data_path = None, parent = None):
         self.parent = parent
         self.pytrainer_main = parent
         self.data_path = data_path
+        self.uc = UC()
 
     def refresh(self):
         logging.debug('>>')
@@ -41,14 +43,6 @@ class Athlete:
         self.name = self.pytrainer_main.profile.getValue("pytraining","prf_name")
         self.age = self.pytrainer_main.profile.getValue("pytraining","prf_age")
         self.height = self.pytrainer_main.profile.getValue("pytraining","prf_height")
-        if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
-            self.us_system = True
-        else:
-            self.us_system = False
-        if self.us_system:
-            self.weight_unit = _("lb")
-        else:
-            self.weight_unit = _("kg")
         logging.debug('<<')
 
     def get_athlete_stats(self):
@@ -66,10 +60,10 @@ class Athlete:
     def get_athlete_data(self):
         logging.debug('>>')
         graphdata = {}
-        graphdata['weight'] = GraphData(title="Weight", xlabel="Date", ylabel="Weight (%s)" % (self.weight_unit))
+        graphdata['weight'] = GraphData(title="Weight", xlabel="Date", ylabel="Weight (%s)" % (self.uc.unit_weight))
         graphdata['weight'].set_color('#3300FF', '#3300FF')
         #graphdata['weight'].graphType = 'date'
-        graphdata['bodyfat'] = GraphData(title="Body Fat", xlabel="Date", ylabel="Body Fat (%s)" % (self.weight_unit))
+        graphdata['bodyfat'] = GraphData(title="Body Fat", xlabel="Date", ylabel="Body Fat (%s)" % (self.uc.unit_weight))
         graphdata['bodyfat'].set_color('#FF6600', '#FF6600')
         #graphdata['bf'].graphType = 'date'
         graphdata['restinghr'] = GraphData(title="Resting Heartrate", xlabel="Date", ylabel="Resting Heartrate (bpm)")
