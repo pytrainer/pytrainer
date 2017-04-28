@@ -37,7 +37,6 @@ from pytrainer.lib.xmlUtils import XMLParser
 #from pytrainer.lib.gpx import Gpx
 from pytrainer.extensions.googlemaps import Googlemaps
 from pytrainer.extensions.osm import Osm
-from pytrainer.lib.unitsconversor import *
 
 from pytrainer.recordgraph import RecordGraph
 from pytrainer.daygraph import DayGraph
@@ -67,13 +66,13 @@ class Main(SimpleGladeApp):
         self.parent = parent
         self.pytrainer_main = parent
         self.data_path = data_path
+        self.uc = UC()
         glade_path="glade/pytrainer.glade"
         root = "window1"
         domain = None
 
         SimpleGladeApp.__init__(self, self.data_path+glade_path, root, domain)
 
-        self.uc = UC()
         self.popup = PopupMenu(data_path,self)
 
         self.block = False
@@ -104,11 +103,7 @@ class Main(SimpleGladeApp):
             pass
         self.record_list = []
         #create the columns for the listdayrecord
-        if self.pytrainer_main.profile.prf_us_system:
-            distance_unit = _("Miles")
-        else:
-            distance_unit = _("Km")
-        columns = [{'name':_("id"), 'visible':False},{'name':_("Start"), }, {'name':_("Sport")},{'name':distance_unit}]
+        columns = [{'name':_("id"), 'visible':False},{'name':_("Start"), }, {'name':_("Sport")},{'name':self.uc.unit_distance}]
         self.create_treeview(self.recordTreeView,columns)
         #create the columns for the listarea
         # different codings for mean see eg http://de.wikipedia.org/wiki/%C3%98#Kodierung
@@ -389,13 +384,13 @@ class Main(SimpleGladeApp):
             logging.debug("<<")
             return
         #Set the units for the activity results, e.g. km, km/h etc
-        self.r_distance_unit.set_text(activity.distance_unit)
-        self.r_speed_unit.set_text(activity.speed_unit)
-        self.r_maxspeed_unit.set_text(activity.speed_unit)
-        self.r_pace_unit.set_text(activity.pace_unit)
-        self.r_maxpace_unit.set_text(activity.pace_unit)
-        self.r_ascent_unit.set_text(activity.height_unit)
-        self.r_descent_unit.set_text(activity.height_unit)
+        self.r_distance_unit.set_text(self.uc.unit_distance)
+        self.r_speed_unit.set_text(self.uc.unit_speed)
+        self.r_maxspeed_unit.set_text(self.uc.unit_speed)
+        self.r_pace_unit.set_text(self.uc.unit_pace)
+        self.r_maxpace_unit.set_text(self.uc.unit_pace)
+        self.r_ascent_unit.set_text(self.uc.unit_height)
+        self.r_descent_unit.set_text(self.uc.unit_height)
 
         if activity.has_data:
             self.recordview.set_sensitive(1)
@@ -452,8 +447,7 @@ class Main(SimpleGladeApp):
                     t = lap['elapsed_time'] 
                     m = lap['distance']
                     
-                    if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
-                        m = km2miles(m)
+                    m = self.uc.speed(m)
                     
                     s = m / float(t) * 3.6
                     max_speed = lap['max_speed'] * 3.6
@@ -866,14 +860,11 @@ class Main(SimpleGladeApp):
 
         import numpy
         speeds = [r['average'] for r in records]
-        if self.pytrainer_main.profile.prf_us_system:
-            self.label_ranking_range.set_text("%.2f - %.2f %s" % (km2miles(activity.distance * (1-percentage)), km2miles(activity.distance * (1+percentage)), activity.distance_unit))
-        else:
-            self.label_ranking_range.set_text("%.2f - %.2f %s" % (activity.distance * (1-percentage), activity.distance * (1+percentage), activity.distance_unit))
+        self.label_ranking_range.set_text("%.2f - %.2f %s" % (self.uc.distance(activity.distance * (1-percentage)), self.uc.distance(activity.distance * (1+percentage)), self.uc.unit_distance))
         self.label_ranking_rank.set_text("%s/%s" % (count, len(records)))
-        self.label_ranking_avg.set_text("%.2f %s" % (km2miles(numpy.average(speeds)) if self.pytrainer_main.profile.prf_us_system else numpy.average(speeds), activity.speed_unit))
-        self.label_ranking_speed.set_text("%.2f %s" % (km2miles(activity.average) if self.pytrainer_main.profile.prf_us_system else activity.average, activity.speed_unit))
-        self.label_ranking_stddev.set_text("%.4f" % (km2miles(numpy.std(speeds)) if self.pytrainer_main.profile.prf_us_system else numpy.std(speeds)))
+        self.label_ranking_avg.set_text("%.2f %s" % (self.uc.speed(numpy.average(speeds))))
+        self.label_ranking_speed.set_text("%.2f %s" % (self.uc.speed(activity.average)))
+        self.label_ranking_stddev.set_text("%.4f" % (self.uc.speed(numpy.std(speeds))))
         self.label_ranking_dev.set_text("%+.2fσ" % ((activity.average - numpy.average(speeds)) / numpy.std(speeds)))
 
         rank_store = gtk.ListStore(
@@ -903,7 +894,7 @@ class Main(SimpleGladeApp):
                 0, i,
                 1, rank,
                 2, r['date'],         
-                3, km2miles(r['distance']) if self.pytrainer_main.profile.prf_us_system else r['distance'],
+                3, self.uc.distance(r['distance']),
                 4, str(r['time']),
                 5, r['average'],
                 6, r['pace'],
@@ -919,18 +910,11 @@ class Main(SimpleGladeApp):
 
     def actualize_dayview(self,record_list=None, activity_list=None):
         logging.debug(">>")
-        if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
-            self.d_distance_unit.set_text(_("miles"))
-            self.d_speed_unit.set_text(_("miles/h"))
-            self.d_maxspeed_unit.set_text(_("miles/h"))
-            self.d_pace_unit.set_text(_("min/mile"))
-            self.d_maxpace_unit.set_text(_("min/mile"))
-        else:
-            self.d_distance_unit.set_text(_("km"))
-            self.d_speed_unit.set_text(_("km/h"))
-            self.d_maxspeed_unit.set_text(_("km/h"))
-            self.d_pace_unit.set_text(_("min/km"))
-            self.d_maxpace_unit.set_text(_("min/km"))
+        self.d_distance_unit.set_text(self.uc.unit_distance)
+        self.d_speed_unit.set_text(self.uc.unit_speed)
+        self.d_maxspeed_unit.set_text(self.uc.unit_speed)
+        self.d_pace_unit.set_text(self.uc.unit_pace)
+        self.d_maxpace_unit.set_text(self.uc.unit_pace)
 
         if len(record_list)>0:
             tbeats = 0
@@ -959,9 +943,8 @@ class Main(SimpleGladeApp):
                 if record[10] > maxbeats:
                     maxbeats = self.parseFloat(record[10])
 
-            if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
-                distance = km2miles(distance)
-                maxspeed = km2miles(maxspeed)
+            distance = self.uc.distance(distance)
+            maxspeed = self.uc.speed(maxspeed)
 
             if tbeats > 0 and timeinseconds > 0:
                 tbeats = tbeats/(timeinseconds/60/60)
@@ -1045,18 +1028,12 @@ class Main(SimpleGladeApp):
         maxbeats = 0
         totalascent = 0
         totaldescent = 0
-        if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
-            self.w_distance_unit.set_text(_("miles"))
-            self.w_speed_unit.set_text(_("miles/h"))
-            self.w_maxspeed_unit.set_text(_("miles/h"))
-            self.w_pace_unit.set_text(_("min/mile"))
-            self.w_maxpace_unit.set_text(_("min/mile"))
-        else:
-            self.w_distance_unit.set_text(_("km"))
-            self.w_speed_unit.set_text(_("km/h"))
-            self.w_maxspeed_unit.set_text(_("km/h"))
-            self.w_pace_unit.set_text(_("min/km"))
-            self.w_maxpace_unit.set_text(_("min/km"))
+
+        self.w_distance_unit.set_text(self.uc.unit_distance)
+        self.w_speed_unit.set_text(self.uc.unit_speed)
+        self.w_maxspeed_unit.set_text(self.uc.unit_speed)
+        self.w_pace_unit.set_text(self.uc.unit_pace)
+        self.w_maxpace_unit.set_text(self.uc.unit_pace)
 
         if num_records>0:
             for record in record_list:
@@ -1075,9 +1052,8 @@ class Main(SimpleGladeApp):
                 if record[8] > maxbeats:
                     maxbeats = self.parseFloat(record[8])
 
-            if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
-                km = km2miles(km)
-                maxspeed = km2miles(maxspeed)
+            km = self.uc.distance(km)
+            maxspeed = self.uc.speed(maxspeed)
 
             if time_in_min > 0:
                 tbeats = tbeats/time_in_min
@@ -1127,18 +1103,11 @@ class Main(SimpleGladeApp):
         maxbeats = 0
         totalascent = 0
         totaldescent = 0
-        if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
-            self.m_distance_unit.set_text(_("miles"))
-            self.m_speed_unit.set_text(_("miles/h"))
-            self.m_maxspeed_unit.set_text(_("miles/h"))
-            self.m_pace_unit.set_text(_("min/mile"))
-            self.m_maxpace_unit.set_text(_("min/mile"))
-        else:
-            self.m_distance_unit.set_text(_("km"))
-            self.m_speed_unit.set_text(_("km/h"))
-            self.m_maxspeed_unit.set_text(_("km/h"))
-            self.m_pace_unit.set_text(_("min/km"))
-            self.m_maxpace_unit.set_text(_("min/km"))
+        self.m_distance_unit.set_text(self.uc.unit_distance)
+        self.m_speed_unit.set_text(self.uc.unit_speed)
+        self.m_maxspeed_unit.set_text(self.uc.unit_speed)
+        self.m_pace_unit.set_text(self.uc.unit_pace)
+        self.m_maxpace_unit.set_text(self.uc.unit_pace)
 
         if num_records>0:
             for record in record_list:
@@ -1157,9 +1126,8 @@ class Main(SimpleGladeApp):
                 if record[8] > maxbeats:
                     maxbeats = self.parseFloat(record[8])
 
-            if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
-                km = km2miles(km)
-                maxspeed = km2miles(maxspeed)
+            km = self.uc.distance(km)
+            maxspeed = self.uc.speed(maxspeed)
 
             if time_in_min > 0:
                 tbeats = tbeats/time_in_min
@@ -1213,18 +1181,11 @@ class Main(SimpleGladeApp):
         maxbeats = 0
         totalascent = 0 
         totaldescent = 0
-        if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
-            self.y_distance_unit.set_text(_("miles"))
-            self.y_speed_unit.set_text(_("miles/h"))
-            self.y_maxspeed_unit.set_text(_("miles/h"))
-            self.y_pace_unit.set_text(_("min/mile"))
-            self.y_maxpace_unit.set_text(_("min/mile"))
-        else:
-            self.y_distance_unit.set_text(_("km"))
-            self.y_speed_unit.set_text(_("km/h"))
-            self.y_maxspeed_unit.set_text(_("km/h"))
-            self.y_pace_unit.set_text(_("min/km"))
-            self.y_maxpace_unit.set_text(_("min/km"))
+        self.y_distance_unit.set_text(self.uc.unit_distance)
+        self.y_speed_unit.set_text(self.uc.unit_speed)
+        self.y_maxspeed_unit.set_text(self.uc.unit_speed)
+        self.y_pace_unit.set_text(self.uc.unit_pace)
+        self.y_maxpace_unit.set_text(self.uc.unit_pace)
         if num_records>0:
             for record in record_list:
                 km += self.parseFloat(record[1])
@@ -1242,9 +1203,8 @@ class Main(SimpleGladeApp):
                 if record[8] > maxbeats:
                     maxbeats = self.parseFloat(record[8])
 
-            if self.pytrainer_main.profile.getValue("pytraining","prf_us_system") == "True":
-                km = km2miles(km)
-                maxspeed = km2miles(maxspeed)
+            km = self.uc.distance(km)
+            maxspeed = self.uc.speed(maxspeed)
 
             if time_in_min > 0:
                 tbeats = tbeats/time_in_min
@@ -2067,10 +2027,7 @@ class Main(SimpleGladeApp):
                 localTime = dateutil.parser.parse(dateTime).strftime("%H:%M")
             else:
                 localTime = ""
-            if self.pytrainer_main.profile.prf_us_system:
-                dist = km2miles(i[2])
-            else:
-                dist = i[2]
+            dist = self.uc.distance(i[2])
             distance = "%0.2f" % (float(dist) )
             store.set (
                 iter,
@@ -2083,10 +2040,7 @@ class Main(SimpleGladeApp):
                 for lap in laps:
                     #"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number",
                     lapNumber = "%s %02d" % ( _("lap"), int(lap[9])+1 )
-                    if self.pytrainer_main.profile.prf_us_system:
-                        dist = km2miles(lap[3])
-                    else:
-                        dist = lap[3]
+                    dist = self.uc.distance(lap[3])
                     distance = "%0.2f" % (float(dist) / 1000.0)
                     timeHours = int(float(lap[2]) / 3600)
                     timeMin = int((float(lap[2]) / 3600.0 - timeHours) * 60)
