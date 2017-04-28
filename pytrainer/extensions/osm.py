@@ -13,6 +13,7 @@ from pytrainer.lib.gpx import Gpx
 import pytrainer.lib.points as Points
 from pytrainer.lib.fileUtils import fileUtils
 from pytrainer.record import Record
+from pytrainer.lib.uc import UC
 
 class Osm:
     # Default URLS
@@ -28,6 +29,7 @@ class Osm:
         self.pytrainer_main = pytrainer_main
         self.tmpdir = (self.pytrainer_main.profile.tmpdir)
         self.htmlfile = "%s/osm.html" % (self.tmpdir)
+        self.uc = UC()
         logging.debug("<<")
 
     def download(self,url,localfile):
@@ -102,7 +104,7 @@ class Osm:
                 time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
                 startinfo = "<div class='info_content'>%s: %s</div>" % (activity.sport_name, activity.title)
                 finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), \
-                            time, _("Distance"), activity.distance, activity.distance_unit)
+                            time, _("Distance"), activity.distance, self.uc.distance_unit)
                 startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
                 finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
 
