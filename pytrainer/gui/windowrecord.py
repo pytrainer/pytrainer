@@ -352,7 +352,7 @@ class WindowRecord(SimpleGladeApp):
             logging.debug("activity is None")
             logging.debug("<<")
             return
-        self.id_record = activity.id_record
+        self.id_record = activity.id
         (h, m, s) = activity.time_tuple
         self.rcd_hour.set_value(h)
         self.rcd_min.set_value(m)

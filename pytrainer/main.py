@@ -49,7 +49,7 @@ from stats import Stats
 from gui.windowmain import Main
 from gui.warning import Warning
 from lib.date import Date, getNameMonth
-from activitypool import ActivityPool
+from pytrainer.core.activity import ActivityService
 from lib.ddbb import DDBB
 from lib.uc import UC
 
@@ -93,7 +93,7 @@ class pyTrainer:
         self.stats = Stats(self._sport_service, self)
         logging.debug('Initializing activity pool...')
         pool_size = self.profile.getIntValue("pytraining","activitypool_size", default=1)
-        self.activitypool = ActivityPool(self, size=pool_size)
+        self.activitypool = ActivityService(self, size=pool_size)
 
         #Loading main window
         self.windowmain = None
