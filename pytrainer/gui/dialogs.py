@@ -22,27 +22,23 @@ pygtk.require('2.0')
 import gtk
 
 class fileChooserDialog():
-	def __init__(self, title = "Choose a file", multiple = False):
-		self.inputfiles = None
-		dialog = gtk.FileChooserDialog(title, None, gtk.FILE_CHOOSER_ACTION_OPEN,(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
-		dialog.set_default_response(gtk.RESPONSE_OK)
-		dialog.set_select_multiple(multiple)
-		response = dialog.run()
-		if response == gtk.RESPONSE_OK:
-			self.inputfiles = dialog.get_filenames()
-		elif response == gtk.RESPONSE_CANCEL:
-			self.inputfiles = None
-		dialog.destroy()
+    def __init__(self, title = "Choose a file", multiple = False):
+        self.inputfiles = None
+        dialog = gtk.FileChooserDialog(title, None, gtk.FILE_CHOOSER_ACTION_OPEN,(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+        dialog.set_default_response(gtk.RESPONSE_OK)
+        dialog.set_select_multiple(multiple)
+        response = dialog.run()
+        if response == gtk.RESPONSE_OK:
+            self.inputfiles = dialog.get_filenames()
+        elif response == gtk.RESPONSE_CANCEL:
+            self.inputfiles = None
+        dialog.destroy()
 
-	def getFiles(self):
-		return self.inputfiles
+    def getFiles(self):
+        return self.inputfiles
 
 class guiFlush():
-	def __init__(self):
-		dialog = gtk.Dialog(title=None, parent=None, flags=0, buttons=None)
-		dialog.show()
-		dialog.destroy()
-
-
-
-
+    def __init__(self):
+        dialog = gtk.Dialog(title=None, parent=None, flags=0, buttons=None)
+        dialog.show()
+        dialog.destroy()
