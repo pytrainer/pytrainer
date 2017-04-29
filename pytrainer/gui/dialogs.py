@@ -59,3 +59,19 @@ def save_file_chooser_dialog(title="Choose a file", pattern="*.csv"):
         result = dialog.get_filename()
     dialog.destroy()
     return result
+
+def warning_dialog(text="", title="Warning", cancel=False):
+    if cancel:
+        dialog = gtk.MessageDialog(type=gtk.MESSAGE_QUESTION,
+                                       buttons=gtk.BUTTONS_OK_CANCEL,
+                                       message_format=text,
+                                       flags=gtk.DIALOG_MODAL)
+    else:
+        dialog = gtk.MessageDialog(type=gtk.MESSAGE_WARNING,
+                                       buttons=gtk.BUTTONS_OK,
+                                       message_format=text,
+                                       flags=gtk.DIALOG_MODAL)
+    dialog.set_title(title)
+    result = dialog.run()
+    dialog.destroy()
+    return result
