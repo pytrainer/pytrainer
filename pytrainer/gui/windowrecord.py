@@ -735,8 +735,6 @@ class WindowRecord(SimpleGladeApp):
 
     def on_selectfile_clicked(self,widget):
         logging.debug(">>")
-        #self.filechooser = FileChooser(self.data_path,self,"set_gpxfile","open")
-        #self.filechooser.run()
         from pytrainer.gui.dialogs import fileChooserDialog
         selectedFile = fileChooserDialog(title="Choose a Google Earth file (.kml) to import", multiple=False).getFiles()
         if selectedFile is not None:
@@ -745,8 +743,6 @@ class WindowRecord(SimpleGladeApp):
 
     def set_gpxfile(self):
         logging.debug(">>")
-        #namefile = self.filechooser.filename
-        #self.rcd_gpxfile.set_text(namefile)
         logging.debug("<<")
 
     def on_calculatevalues_clicked(self,widget):
