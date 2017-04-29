@@ -17,7 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from lib.fileUtils import fileUtils
-from gui.filechooser import FileChooser
+from pytrainer.gui.dialogs import save_file_chooser_dialog
 import logging
 import traceback
 
@@ -28,13 +28,7 @@ class Save:
 
     def run(self):
         logging.debug('>>')
-        self.filewindow = FileChooser(self.data_path, self, "savecsvfile")
-        #self.filewindow.run()
-        logging.debug('<<')
-    
-    def savecsvfile(self):
-        logging.debug('>>')
-        filename = self.filewindow.filename
+        filename = save_file_chooser_dialog(title="savecsvfile", pattern="*.csv")
         records = self.record.getAllrecord()
         # CSV Header
         content = "date_time_local,title,sports.name,distance,duration,average,maxspeed,pace,maxpace,beats,maxbeats,calories,upositive,unegative,comments\n"

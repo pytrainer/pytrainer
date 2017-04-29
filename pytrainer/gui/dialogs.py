@@ -46,3 +46,16 @@ def open_file_chooser_dialog(title="Choose a file", multiple=False):
         result = dialog.get_filenames()
     dialog.destroy()
     return result
+
+def save_file_chooser_dialog(title="Choose a file", pattern="*.csv"):
+    dialog = gtk.FileChooserDialog(title, None, gtk.FILE_CHOOSER_ACTION_SAVE,
+                                       (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
+                                            gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+    dialog.set_default_response(gtk.RESPONSE_OK)
+    dialog.set_current_name(pattern)
+    response = dialog.run()
+    result = None
+    if response == gtk.RESPONSE_OK:
+        result = dialog.get_filename()
+    dialog.destroy()
+    return result
