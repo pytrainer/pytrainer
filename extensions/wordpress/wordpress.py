@@ -28,12 +28,14 @@ import wordpresslib     #TODO remove need for this library
 from pytrainer.extensions.googlemaps import Googlemaps
 import pytrainer.lib.points as Points
 from pytrainer.lib.date import Date
+from pytrainer.lib.uc import UC
 
 class wordpress:
     def __init__(self, parent = None, pytrainer_main = None, conf_dir = None, options = None):
         #TODO could use some logging
         self.parent = parent
         self.pytrainer_main = pytrainer_main
+        self.uc = UC()
         self.options = options
         self.conf_dir = conf_dir
         self.tmpdir = self.pytrainer_main.profile.tmpdir
@@ -189,10 +191,6 @@ class wordpress:
         self.maxpace = self.activity.maxpace
         self.pace = self.activity.pace
         self.maxbeats = self.activity.maxbeats
-        self.distance_unit = self.activity.distance_unit
-        self.speed_unit = self.activity.speed_unit
-        self.pace_unit = self.activity.pace_unit
-        self.height_unit = self.activity.height_unit
 
     def createBody(self):
         if self.comments is None or self.comments == "":
@@ -241,9 +239,9 @@ class wordpress:
                     <td>%.2f</td>
                 </tr>
             </table>
-            ''' %(  self.sport, self.date, self.distance_unit, self.distance, self.time, self.speed_unit, self.maxspeed,
-                    self.speed_unit, self.average, self.pace_unit, self.maxpace,self.pace_unit, self.pace,
-                    self.maxbeats, self.beats, self.height_unit, self.upositive, self.height_unit, self.unegative)
+            ''' %(  self.sport, self.date, self.uc.unit_distance, self.distance, self.time, self.uc.unit_speed, self.maxspeed,
+                    self.uc.unit_speed, self.average, self.uc.unit_pace, self.maxpace, self.uc.unit_pace, self.pace,
+                    self.maxbeats, self.beats, self.uc.unit_height, self.upositive, self.uc.unit_height, self.unegative)
         return description_table
 
     def createFigureHR(self):

@@ -25,6 +25,7 @@ import traceback
 
 import pytrainer.lib.points as Points
 from pytrainer.lib.fileUtils import fileUtils
+from pytrainer.lib.uc import UC
 
 class Googlemaps:
     def __init__(self, data_path = None, waypoint = None, pytrainer_main=None):
@@ -33,6 +34,7 @@ class Googlemaps:
         self.waypoint=waypoint
         self.pytrainer_main = pytrainer_main
         self.htmlfile = "%s/googlemaps.html" % (self.pytrainer_main.profile.tmpdir)
+        self.uc = UC()
         logging.debug("<<")
         
     def colorLine(self, polyline, average, variance):
@@ -129,7 +131,7 @@ class Googlemaps:
             timeMin = (float(activity.time) / 3600.0 - timeHours) * 60
             time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
             startinfo = "<div class='info_content'>%s: %s</div>" % (activity.sport_name, activity.title)
-            finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), activity.distance, activity.distance_unit)
+            finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), activity.distance, self.uc.unit_distance)
             startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
             finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
             self.createHtml_api3(polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps, linetype)
