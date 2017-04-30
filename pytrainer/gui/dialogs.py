@@ -75,3 +75,25 @@ def warning_dialog(text="", title="Warning", cancel=False):
     result = dialog.run()
     dialog.destroy()
     return result
+
+def calendar_dialog(title="Calendar", date=None):
+    dialog = gtk.Dialog(title=title, flags=gtk.DIALOG_MODAL)
+    dialog.add_buttons(gtk.STOCK_OK, gtk.RESPONSE_OK,
+                       gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
+    calendar = gtk.Calendar()
+    if date:
+        try:
+            year, month, day = date.split("-")
+            calendar.select_month(int(month)-1, int(year))
+            calendar.select_day(int(day))
+        except:
+            pass
+    dialog.vbox.pack_start(calendar, True, True, 0)
+    calendar.show()
+    result = dialog.run()
+    dialog.destroy()
+    if result == gtk.RESPONSE_OK:
+        date = calendar.get_date()
+        return "%0.4d-%0.2d-%0.2d" % (date[0], date[1] + 1, date[2])
+    elif result == gtk.RESPONSE_CANCEL:
+        return None
