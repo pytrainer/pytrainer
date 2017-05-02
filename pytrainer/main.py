@@ -134,10 +134,12 @@ class pyTrainer:
         For more help on valid options try:
            %prog -h '''
         parser = OptionParser(usage=usage)
-        parser.set_defaults(log_level=logging.ERROR, validate=False, equip=False, newgraph=True, conf_dir=None, log_type="file")
+        parser.set_defaults(log_level=logging.WARNING, validate=False, equip=False, newgraph=True, conf_dir=None, log_type="file")
         parser.add_option("-d", "--debug", action="store_const", const=logging.DEBUG, dest="log_level", help="enable logging at debug level")
         parser.add_option("-i", "--info", action="store_const", const=logging.INFO, dest="log_level", help="enable logging at info level")
         parser.add_option("-w", "--warn", action="store_const", const=logging.WARNING, dest="log_level", help="enable logging at warning level")
+        parser.add_option("--error", action="store_const", const=logging.ERROR,
+                          dest="log_level", help="enable logging at error level")
         parser.add_option("--valid", action="store_true", dest="validate", help="enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation")
         parser.add_option("--oldgraph", action="store_false", dest="newgraph", help="Turn off new graphing approach")
         parser.add_option("--newgraph", action="store_true", dest="newgraph", help="Deprecated Option: Turn on new graphing approach")
