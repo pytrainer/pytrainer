@@ -19,7 +19,7 @@
 
 import logging
 import os
-#import StringIO
+import traceback
 from lxml import etree
 from pytrainer.lib.date import getDateTime
 
