@@ -17,15 +17,10 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 # USA
 
-try:
-    import os
-    import sys
-    #import gnome
-    import gtk
-    import gtk.glade
-except ImportError:
-    print "Error importing pygtk2 and pygtk2-libglade"
-    sys.exit(1)
+import os
+import sys
+import gtk
+import gtk.glade
 
 class SimpleGladeApp(dict):
     def __init__(self, glade_filename, main_widget_name="", domain=""):
