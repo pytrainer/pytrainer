@@ -67,6 +67,10 @@ class Environment(Singleton):
     def plugin_dir(self):
         return os.path.join(self.conf_dir, "plugins")
 
+    @property
+    def glade_dir(self):
+        return os.path.join(self.data_path, "glade")
+
     def clear_temp_dir(self):
         """Remove all files from the tmp directory."""
         if not os.path.isdir(self.temp_dir):

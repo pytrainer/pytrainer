@@ -23,11 +23,8 @@ import os
 
 class WindowPlugins(SimpleGladeApp):
 	def __init__(self, data_path = None, parent=None):
-		glade_path="glade/plugins.glade"
-		root = "plugins"
-		domain = None
 		self.parent = parent
-		SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
+		SimpleGladeApp.__init__(self, "plugins.glade")
 	def new(self):
 		column_names=["id","name"]
 		self.create_treeview(self.pluginsTreeview,column_names)

@@ -23,11 +23,8 @@ import os
 
 class WindowExtensions(SimpleGladeApp):
 	def __init__(self, data_path = None, parent=None):
-		glade_path="glade/extensions.glade"
-		root = "extensions"
-		domain = None
 		self.parent = parent
-		SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
+		SimpleGladeApp.__init__(self, "extensions.glade")
 
 	def new(self):
 		column_names=["id","name"]

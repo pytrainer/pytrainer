@@ -34,19 +34,15 @@ class WindowRecord(SimpleGladeApp):
         logging.debug(">>")
         self.parent = parent
         self.pytrainer_main = parent.pytrainer_main
-        #self.us = self.pytrainer_main.profile.prf_us_system #DEPRECATED
         self.uc = UC()
         logging.debug("Using US system: "+ str(self.uc.us))
         self.data_path = data_path
-        glade_path="glade/newrecord.glade"
-        root = "newrecord"
-        domain = None
         self.mode = "newrecord"
         self.id_record = ""
         self.store = None
         self.active_row = None
         self.activity_data = [] 
-        SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
+        SimpleGladeApp.__init__(self, "newrecord.glade")
         self.conf_options = [
             "rcd_date",
             "rcd_sport",

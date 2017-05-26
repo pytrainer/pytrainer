@@ -20,9 +20,6 @@ class WindowImportdata(SimpleGladeApp):
     def __init__(self, sport_service, data_path = None, parent=None, config=None, pytrainer_main=None):
         self._sport_service = sport_service
         self.data_path = data_path
-        self.glade_path=data_path+"glade/importdata.glade"
-        self.root = "win_importdata"
-        self.domain = None
         self.parent = parent
         self.pytrainer_main = pytrainer_main
         self.configuration = config
@@ -30,7 +27,7 @@ class WindowImportdata(SimpleGladeApp):
         self.files_store = None # gtk.ListStore containing gtk.TreeModelRow, see build_files_tree_view
         self.processClasses = []
         self.plugins = Plugins(data_path, self.parent.parent)
-        SimpleGladeApp.__init__(self, self.glade_path, self.root, self.domain)
+        SimpleGladeApp.__init__(self, "importdata.glade")
 
     def new(self):
         logging.debug(">>")

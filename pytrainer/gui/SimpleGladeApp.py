@@ -21,20 +21,14 @@ import os
 import sys
 import gtk
 import gtk.glade
+from pytrainer.environment import Environment
 
 class SimpleGladeApp(dict):
-    def __init__(self, glade_filename, main_widget_name="", domain=""):
+    def __init__(self, glade_filename):
         gtk.glade.set_custom_handler(self.custom_handler)
-        if os.path.isfile(glade_filename):
-            self.glade_path = glade_filename
-        else:
-            glade_dir = os.path.split( sys.argv[0] )[0]
-            self.glade_path = os.path.join(glade_dir, glade_filename)
-        self.glade = gtk.glade.XML(self.glade_path, main_widget_name, domain)
-        if main_widget_name:
-            self.main_widget = self.glade.get_widget(main_widget_name)
-        else:
-            self.main_widget = None
+        env = Environment()
+        glade_path = os.path.join(env.glade_dir, glade_filename)
+        self.glade = gtk.glade.XML(glade_path, None, None)
         self.signal_autoconnect()
         self.new()
 
