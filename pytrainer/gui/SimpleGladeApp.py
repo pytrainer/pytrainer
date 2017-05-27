@@ -113,3 +113,32 @@ class SimpleGladeApp(dict):
                 column.set_visible(False)
             column.set_sort_column_id(i)
             treeview.append_column(column)
+
+class SimpleBuilderApp(SimpleGladeApp):
+    def __init__(self, ui_filename):
+        self._builder = gtk.Builder()
+        env = Environment()
+        file_path = os.path.join(env.glade_dir, ui_filename)
+        self._builder.add_from_file(file_path)
+        self._builder.connect_signals(self)
+        self.new()
+
+    def signal_autoconnect(self):
+        signals = {}
+        for attr_name in dir(self):
+            attr = getattr(self, attr_name)
+            if callable(attr):
+                signals[attr_name] = attr
+        self._builder.connect_signals(signals)
+
+    def __getattr__(self, data_name):
+        if data_name in self:
+            data = self[data_name]
+            return data
+        else:
+            widget = self._builder.get_object(data_name)
+            if widget != None:
+                self[data_name] = widget
+                return widget
+            else:
+                raise AttributeError, data_name
