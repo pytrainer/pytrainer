@@ -81,7 +81,7 @@ class EquipmentUi(gtk.HBox):
         gtk.HBox.__init__(self)
         self._equipment_store = EquipmentStore(equipment_service)
         self._builder = gtk.Builder()
-        self._builder.add_from_file(glade_conf_dir + "/equipment.glade")
+        self._builder.add_from_file(glade_conf_dir + "/equipment.ui")
         self._init_tree_view()
         self._init_signals()
         self.add(self._get_notebook())
