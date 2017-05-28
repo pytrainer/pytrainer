@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<glade-interface>
- <widget class="GtkWindow" id="selecttrackdialog">
+<interface>
+  <object class="GtkWindow" id="selecttrackdialog">
     <property name="width_request">350</property>
     <property name="height_request">235</property>
     <property name="visible">True</property>
@@ -9,47 +9,47 @@
     <property name="skip_taskbar_hint">True</property>
     <property name="skip_pager_hint">True</property>
     <child>
-      <widget class="GtkVBox" id="vbox23">
+      <object class="GtkVBox" id="vbox23">
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <child>
-          <widget class="GtkScrolledWindow" id="trkpTreeViewl">
+          <object class="GtkScrolledWindow" id="trkpTreeViewl">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="shadow_type">in</property>
             <child>
-              <widget class="GtkTreeView" id="trkpTreeView">
+              <object class="GtkTreeView" id="trkpTreeView">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-              </widget>
+              </object>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
-          <widget class="GtkHBox" id="hbox45">
+          <object class="GtkHBox" id="hbox45">
             <property name="visible">True</property>
             <property name="border_width">3</property>
             <property name="spacing">5</property>
             <child>
-              <widget class="GtkLabel" id="label-2147483648">
+              <object class="GtkLabel" id="label-2147483648">
                 <property name="visible">True</property>
-              </widget>
+              </object>
               <packing>
                 <property name="position">0</property>
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="button41">
+              <object class="GtkButton" id="button41">
                 <property name="label">gtk-cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_cancel_clicked"/>
-              </widget>
+                <signal handler="on_cancel_clicked" name="clicked"/>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
@@ -57,28 +57,28 @@
               </packing>
             </child>
             <child>
-              <widget class="GtkButton" id="button40">
+              <object class="GtkButton" id="button40">
                 <property name="label">gtk-ok</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="use_stock">True</property>
-                <signal name="clicked" handler="on_ok_clicked"/>
-              </widget>
+                <signal handler="on_ok_clicked" name="clicked"/>
+              </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">False</property>
                 <property name="position">2</property>
               </packing>
             </child>
-          </widget>
+          </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">False</property>
             <property name="position">1</property>
           </packing>
         </child>
-      </widget>
+      </object>
     </child>
-  </widget>
-</glade-interface>
+  </object>
+</interface>

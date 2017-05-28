@@ -18,18 +18,18 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from SimpleGladeApp import SimpleGladeApp
+from SimpleGladeApp import SimpleBuilderApp
 import gtk
 import gobject
 import logging
 
-class DialogSelectTrack(SimpleGladeApp):
+class DialogSelectTrack(SimpleBuilderApp):
 	def __init__(self, data_path = None, tracks = None, okmethod = None, gpx = None):
 		logging.debug(">>")
 		self.okmethod = okmethod
 		self.tracks = tracks
 		self.gpx = gpx
-		SimpleGladeApp.__init__(self, "selecttrackdialog.glade")
+		SimpleBuilderApp.__init__(self, "selecttrackdialog.ui")
 		logging.debug("<<")
 
 	def new(self):		
