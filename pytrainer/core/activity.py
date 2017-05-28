@@ -344,7 +344,7 @@ tracks (%s)
             self.date_time_local = row[cols.index('date_time_local')]
             self.date_time_utc = row[cols.index('date_time_utc')]
             self.distance = self._float(row[cols.index('distance')])
-            if not self.distance:
+            if not self.distance and self.gpx:
                 self.distance = self.gpx.total_dist
             self.average = self._float(row[cols.index('average')])
             self.upositive = self._float(row[cols.index('upositive')])
