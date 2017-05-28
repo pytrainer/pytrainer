@@ -1,6 +1,7 @@
 # -*- coding: iso-8859-1 -*-
 
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
+#Copyright (C) Arto Jantunen <viiru@iki.fi>
 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -16,35 +17,43 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from SimpleGladeApp import SimpleGladeApp
+import gtk
 
-class PopupMenu(SimpleGladeApp):
+class PopupMenu(gtk.Menu):
     def __init__(self, data_path = None, parent = None):
-        self.parent = parent
-        glade_path="glade/pytrainer.glade"
-        root = "popup"
-        domain = None
-        SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
+        super(gtk.Menu, self).__init__()
+        self.windowmain = parent
+        edit_record = gtk.ImageMenuItem(gtk.STOCK_EDIT)
+        edit_record.set_label(_("Edit Record"))
+        edit_record.connect("activate", self.on_editrecord_activate)
+        self.attach(edit_record, 0, 1, 0, 1)
+        show_graph = gtk.ImageMenuItem(gtk.STOCK_FIND)
+        show_graph.set_label(_("Show graph in classic view"))
+        show_graph.connect("activate", self.on_showclassic_activate)
+        self.attach(show_graph, 0, 1, 1, 2)
+        self.attach(gtk.SeparatorMenuItem(), 0, 1, 2, 3)
+        remove_record = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+        remove_record.connect("activate", self.on_remove_activate)
+        self.attach(remove_record, 0, 1, 3, 4)
     
     def show(self,id_record,event_button, time, date=None):
         self.id_record = id_record
         self.date = date
         self.iter = iter
-        self.popup.popup( None, None, None, event_button, time)
+        self.show_all()
+        self.popup(None, None, None, event_button, time)
 
     def on_editrecord_activate(self,widget):
-        self.parent.parent.editRecord(self.id_record, view=self.parent.selected_view)
+        self.windowmain.parent.editRecord(self.id_record, view=self.windowmain.selected_view)
 
     def on_showclassic_activate(self,widget):
         #Set date in classic view
         if self.date is not None:
-            self.parent.parent.date.setDate(self.date)
-        self.parent.classicview_item.set_active(True)
-        #self.parent.on_calendar_selected(None)
-        self.parent.notebook.set_current_page(0)
-        #self.parent.parent.refreshGraphView("record")
-        self.parent.recordview.set_current_page(0)
-        self.parent.parent.refreshRecordGraphView("info", id_record=self.id_record)
+            self.windowmain.parent.date.setDate(self.date)
+        self.windowmain.classicview_item.set_active(True)
+        self.windowmain.notebook.set_current_page(0)
+        self.windowmain.recordview.set_current_page(0)
+        self.windowmain.parent.refreshRecordGraphView("info", id_record=self.id_record)
 
     def on_remove_activate(self,widget):
-        self.parent.parent.removeRecord(self.id_record, view=self.parent.selected_view)
+        self.windowmain.parent.removeRecord(self.id_record, view=self.windowmain.selected_view)

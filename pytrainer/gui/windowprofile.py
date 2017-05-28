@@ -31,13 +31,10 @@ from pytrainer.gui.color import ColorConverter
 
 class WindowProfile(SimpleGladeApp):
     def __init__(self, sport_service, data_path = None, parent=None, pytrainer_main=None):
-        glade_path="glade/profile.glade"
-        root = "newprofile"
-        domain = None
         self.parent = parent
         self.pytrainer_main = pytrainer_main
         self.data_path = data_path
-        SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
+        SimpleGladeApp.__init__(self, "profile.glade")
         self.conf_options = parent.profile_options
         self.stored_color = pytrainer.util.color.Color(0)
         self._sport_service = sport_service

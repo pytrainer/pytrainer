@@ -17,21 +17,12 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import locale
 import sys
 import os
-import pygtk
-import gobject
-pygtk.require('2.0')
-import gtk
-import gtk.glade
 from optparse import OptionParser
 import logging
 import logging.handlers
 import traceback
-from datetime import datetime
-
-from os import path
 
 from pytrainer.util.date import DateRange
 from upgrade.data import initialize_data

@@ -26,12 +26,10 @@ import logging
 class DialogSelectTrack(SimpleGladeApp):
 	def __init__(self, data_path = None, tracks = None, okmethod = None, gpx = None):
 		logging.debug(">>")
-		self.data_path = data_path
 		self.okmethod = okmethod
 		self.tracks = tracks
 		self.gpx = gpx
-		root="selecttrackdialog"
-		SimpleGladeApp.__init__(self, data_path+"glade/selecttrackdialog.glade", root, None)
+		SimpleGladeApp.__init__(self, "selecttrackdialog.glade")
 		logging.debug("<<")
 
 	def new(self):		

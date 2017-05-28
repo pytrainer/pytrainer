@@ -34,19 +34,15 @@ class WindowRecord(SimpleGladeApp):
         logging.debug(">>")
         self.parent = parent
         self.pytrainer_main = parent.pytrainer_main
-        #self.us = self.pytrainer_main.profile.prf_us_system #DEPRECATED
         self.uc = UC()
         logging.debug("Using US system: "+ str(self.uc.us))
         self.data_path = data_path
-        glade_path="glade/newrecord.glade"
-        root = "newrecord"
-        domain = None
         self.mode = "newrecord"
         self.id_record = ""
         self.store = None
         self.active_row = None
         self.activity_data = [] 
-        SimpleGladeApp.__init__(self, data_path+glade_path, root, domain)
+        SimpleGladeApp.__init__(self, "newrecord.glade")
         self.conf_options = [
             "rcd_date",
             "rcd_sport",
@@ -735,8 +731,6 @@ class WindowRecord(SimpleGladeApp):
 
     def on_selectfile_clicked(self,widget):
         logging.debug(">>")
-        #self.filechooser = FileChooser(self.data_path,self,"set_gpxfile","open")
-        #self.filechooser.run()
         from pytrainer.gui.dialogs import fileChooserDialog
         selectedFile = fileChooserDialog(title="Choose a Google Earth file (.kml) to import", multiple=False).getFiles()
         if selectedFile is not None:
@@ -745,8 +739,6 @@ class WindowRecord(SimpleGladeApp):
 
     def set_gpxfile(self):
         logging.debug(">>")
-        #namefile = self.filechooser.filename
-        #self.rcd_gpxfile.set_text(namefile)
         logging.debug("<<")
 
     def on_calculatevalues_clicked(self,widget):

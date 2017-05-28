@@ -67,11 +67,7 @@ class Main(SimpleGladeApp):
         self.pytrainer_main = parent
         self.data_path = data_path
         self.uc = UC()
-        glade_path="glade/pytrainer.glade"
-        root = "window1"
-        domain = None
-
-        SimpleGladeApp.__init__(self, self.data_path+glade_path, root, domain)
+        SimpleGladeApp.__init__(self, "pytrainer.glade")
 
         self.popup = PopupMenu(data_path,self)
 
