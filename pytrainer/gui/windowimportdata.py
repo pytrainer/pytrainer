@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from SimpleGladeApp import SimpleGladeApp
+from SimpleGladeApp import SimpleBuilderApp
 import gtk
 import gobject
 import os, glob, sys
@@ -16,7 +16,7 @@ from pytrainer.plugins import Plugins
 from pytrainer.gui.dialogs import fileChooserDialog
 from pytrainer.lib.date import getDateTime
 
-class WindowImportdata(SimpleGladeApp):
+class WindowImportdata(SimpleBuilderApp):
     def __init__(self, sport_service, data_path = None, parent=None, config=None, pytrainer_main=None):
         self._sport_service = sport_service
         self.data_path = data_path
@@ -27,7 +27,7 @@ class WindowImportdata(SimpleGladeApp):
         self.files_store = None # gtk.ListStore containing gtk.TreeModelRow, see build_files_tree_view
         self.processClasses = []
         self.plugins = Plugins(data_path, self.parent.parent)
-        SimpleGladeApp.__init__(self, "importdata.glade")
+        SimpleBuilderApp.__init__(self, "importdata.ui")
 
     def new(self):
         logging.debug(">>")
