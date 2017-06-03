@@ -719,6 +719,7 @@
                                 <property name="active">0</property>
                                 <signal handler="on_sportlist_changed" name="changed"/>
                                 <property name="model">model1</property>
+				<property name="text-column">0</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="renderer1"/>
                                   <attributes>
@@ -1574,6 +1575,7 @@
                                             <property name="visible">True</property>
                                             <signal handler="on_day_combovalue_changed" name="changed"/>
                                             <property name="model">model2</property>
+					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer2"/>
                                               <attributes>
@@ -1602,6 +1604,7 @@
                                             <property name="visible">True</property>
                                             <signal handler="on_day_combovalue_changed" name="changed"/>
                                             <property name="model">model3</property>
+					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer3"/>
                                               <attributes>
@@ -2484,6 +2487,7 @@
                                             <property name="visible">True</property>
                                             <signal handler="on_comboMapLineType_changed" name="changed"/>
                                             <property name="model">model4</property>
+					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer4"/>
                                               <attributes>
@@ -4043,6 +4047,7 @@
                                             <property name="visible">True</property>
                                             <signal handler="on_day_combovalue_changed" name="changed"/>
                                             <property name="model">model5</property>
+					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer5"/>
                                               <attributes>
@@ -4680,6 +4685,7 @@
                                             <property name="visible">True</property>
                                             <signal handler="on_week_combovalue_changed" name="changed"/>
                                             <property name="model">model6</property>
+					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer6"/>
                                               <attributes>
@@ -4708,6 +4714,7 @@
                                             <property name="visible">True</property>
                                             <signal handler="on_week_combovalue_changed" name="changed"/>
                                             <property name="model">model7</property>
+					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer7"/>
                                               <attributes>
@@ -5330,6 +5337,7 @@
                                             <property name="visible">True</property>
                                             <signal handler="on_month_combovalue_changed" name="changed"/>
                                             <property name="model">model8</property>
+					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer8"/>
                                               <attributes>
@@ -5358,6 +5366,7 @@
                                             <property name="visible">True</property>
                                             <signal handler="on_month_combovalue_changed" name="changed"/>
                                             <property name="model">model9</property>
+					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer9"/>
                                               <attributes>
@@ -5979,6 +5988,7 @@
                                             <property name="visible">True</property>
                                             <signal handler="on_year_combovalue_changed" name="changed"/>
                                             <property name="model">model10</property>
+					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer10"/>
                                               <attributes>
@@ -6007,6 +6017,7 @@
                                             <property name="visible">True</property>
                                             <signal handler="on_year_combovalue_changed" name="changed"/>
                                             <property name="model">model11</property>
+					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer11"/>
                                               <attributes>
@@ -6328,6 +6339,7 @@
                                                         <property name="visible">True</property>
                                                         <signal handler="on_total_combovalue_changed" name="changed"/>
                                                         <property name="model">model12</property>
+							<property name="text-column">0</property>
                                                         <child>
                                                           <object class="GtkCellRendererText" id="renderer12"/>
                                                           <attributes>
@@ -6356,6 +6368,7 @@
                                                         <property name="visible">True</property>
                                                         <signal handler="on_total_combovalue_changed" name="changed"/>
                                                         <property name="model">model13</property>
+							<property name="text-column">0</property>
                                                         <child>
                                                           <object class="GtkCellRendererText" id="renderer13"/>
                                                           <attributes>
@@ -6856,6 +6869,7 @@
                                   <object class="GtkComboBoxEntry" id="waypoint_type">
                                     <property name="visible">True</property>
                                     <property name="model">model18</property>
+				    <property name="text-column">0</property>
                                     <child>
                                       <object class="GtkCellRendererText" id="renderer18"/>
                                       <attributes>
