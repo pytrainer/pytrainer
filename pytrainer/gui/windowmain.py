@@ -297,9 +297,7 @@ class Main(SimpleBuilderApp):
     def updateSportList(self,listSport):
         logging.debug(">>")
         liststore =  self.sportlist.get_model()
-        if self.sportlist.get_active() is not 0:
-            self.sportlist.set_active(0) #Set first item active if it isnt
-        firstEntry = self.sportlist.get_active_text()
+        firstEntry = _("All Sports")
         liststore.clear() #Delete all items
         #Re-add "All Sports"
         liststore.append([firstEntry])
