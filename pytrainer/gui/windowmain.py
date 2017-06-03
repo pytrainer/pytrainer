@@ -18,16 +18,13 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import gobject
-import sys
 import os
 import logging
-import datetime
 import matplotlib
+import gobject
 import gtk
 
 import dateutil.parser
-from dateutil.tz import * # for tzutc()
 
 from SimpleGladeApp import SimpleBuilderApp
 from popupmenu import PopupMenu
@@ -39,13 +36,11 @@ from pytrainer.lib.xmlUtils import XMLParser
 #from pytrainer.lib.gpx import Gpx
 
 from pytrainer.recordgraph import RecordGraph
-from pytrainer.daygraph import DayGraph
 from pytrainer.weekgraph import WeekGraph
 from pytrainer.monthgraph import MonthGraph
 from pytrainer.yeargraph import YearGraph
 from pytrainer.totalgraph import TotalGraph
 from pytrainer.heartrategraph import HeartRateGraph
-from pytrainer.core.equipment import EquipmentService
 
 from pytrainer.gui.drawGraph import DrawGraph
 from pytrainer.gui.windowcalendar import WindowCalendar
