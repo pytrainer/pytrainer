@@ -6717,6 +6717,16 @@
                         <child>
                           <object class="GtkMenuBar" constructor="uimanager2" id="listviewOptions">
                             <property name="visible">True</property>
+                            <child>
+                              <object class="GtkMenuItem" id="menuitem_columns">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Columns</property>
+                                <property name="use_underline">True</property>
+                                <child type="submenu">
+                                  <object class="GtkMenu" id="menulistviewOptions"/>
+                                </child>
+			      </object>
+			    </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>
