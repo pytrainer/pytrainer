@@ -20,14 +20,16 @@
 
 import gobject
 import sys
+import os
 import logging
 import datetime
 import matplotlib
+import gtk
 
 import dateutil.parser
 from dateutil.tz import * # for tzutc()
 
-from SimpleGladeApp import *
+from SimpleGladeApp import SimpleBuilderApp
 from popupmenu import PopupMenu
 from aboutdialog import About
 
@@ -51,7 +53,7 @@ from pytrainer.lib.listview import ListSearch
 from pytrainer.lib.uc import UC
 
 
-class Main(SimpleGladeApp):
+class Main(SimpleBuilderApp):
     def __init__(self, sport_service, data_path = None, parent = None, version = None, gpxDir = None):
         self._sport_service = sport_service
         def url_hook(dialog, url):
@@ -63,7 +65,7 @@ class Main(SimpleGladeApp):
         self.pytrainer_main = parent
         self.data_path = data_path
         self.uc = UC()
-        SimpleGladeApp.__init__(self, "pytrainer.glade")
+        SimpleBuilderApp.__init__(self, "pytrainer.ui")
 
         self.popup = PopupMenu(data_path,self)
 
