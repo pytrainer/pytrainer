@@ -2179,7 +2179,7 @@ Cadence</property>
                                                 <property name="column_spacing">3</property>
                                                 <property name="row_spacing">5</property>
                                                 <child>
-                                                  <widget class="GtkLabel" id="label11125">
+                                                  <widget class="GtkLabel" id="label_beats">
                                                     <property name="visible">True</property>
                                                     <property name="xalign">0</property>
                                                     <property name="label" translatable="yes">&lt;b&gt;Beats:&lt;/b&gt;</property>
@@ -2191,7 +2191,7 @@ Cadence</property>
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <widget class="GtkLabel" id="label11127">
+                                                  <widget class="GtkLabel" id="label_calories">
                                                     <property name="visible">True</property>
                                                     <property name="xalign">0</property>
                                                     <property name="label" translatable="yes">&lt;b&gt;Calories: &lt;/b&gt;</property>
@@ -2205,7 +2205,7 @@ Cadence</property>
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <widget class="GtkLabel" id="wssdadadsada">
+                                                  <widget class="GtkLabel" id="label_max_beats">
                                                     <property name="visible">True</property>
                                                     <property name="xalign">0</property>
                                                     <property name="label" translatable="yes">&lt;b&gt;Max Beats:&lt;/b&gt;</property>
@@ -2219,7 +2219,7 @@ Cadence</property>
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <widget class="GtkLabel" id="label-2">
+                                                  <widget class="GtkLabel" id="label_hr_zones_method">
                                                     <property name="visible">True</property>
                                                     <property name="xalign">0</property>
                                                     <property name="label" translatable="yes">&lt;b&gt;HR Zones Method:&lt;/b&gt;</property>
@@ -2233,7 +2233,7 @@ Cadence</property>
                                                   </packing>
                                                 </child>
                                                 <child>
-                                                  <widget class="GtkLabel" id="label-3">
+                                                  <widget class="GtkLabel" id="label_hr_zone5">
                                                     <property name="width_request">90</property>
                                                     <property name="visible">True</property>
                                                     <property name="xalign">0</property>
@@ -2793,7 +2793,7 @@ Cadence</property>
 			                                          <widget class="GtkVBox" id="vbox_ranking">
 						                                <property name="visible">True</property>
 					                                    <child>
-					                                      <widget class="GtkLabel" id="label11125">
+					                                      <widget class="GtkLabel" id="label_rank_relative">
 					                                        <property name="visible">True</property>
 					                                        <property name="xalign">0</property>
 					                                        <property name="label" translatable="yes">&lt;i&gt;Rank relative to same-sport activities for distances ± x%:&lt;/i&gt;</property>
@@ -2826,7 +2826,7 @@ Cadence</property>
 										                            <property name="column_spacing">3</property>
 										                            <property name="row_spacing">5</property>
 										                            <child>
-										                              <widget class="GtkLabel" id="label11125">
+										                              <widget class="GtkLabel" id="label_range">
 										                                <property name="visible">True</property>
 										                                <property name="xalign">0</property>
 										                                <property name="label" translatable="yes">&lt;b&gt;Range:&lt;/b&gt;</property>
@@ -2839,7 +2839,7 @@ Cadence</property>
 										                              </packing>
 										                            </child>
 										                            <child>
-										                              <widget class="GtkLabel" id="label11125">
+										                              <widget class="GtkLabel" id="label_rank">
 										                                <property name="visible">True</property>
 										                                <property name="xalign">0</property>
 										                                <property name="label" translatable="yes">&lt;b&gt;Rank:&lt;/b&gt;</property>
@@ -2852,7 +2852,7 @@ Cadence</property>
 										                              </packing>
 										                            </child>
 										                            <child>
-										                              <widget class="GtkLabel" id="label11127">
+										                              <widget class="GtkLabel" id="label_speed">
 										                                <property name="visible">True</property>
 										                                <property name="xalign">0</property>
 										                                <property name="label" translatable="yes">&lt;b&gt;Speed: &lt;/b&gt;</property>
@@ -2865,7 +2865,7 @@ Cadence</property>
 										                              </packing>
 										                            </child>
 										                            <child>
-										                              <widget class="GtkLabel" id="wssdadadsada">
+										                              <widget class="GtkLabel" id="label_avg_speed">
 										                                <property name="visible">True</property>
 										                                <property name="xalign">0</property>
 										                                <property name="label" translatable="yes">&lt;b&gt;Avg speed:&lt;/b&gt;</property>
@@ -2878,7 +2878,7 @@ Cadence</property>
 										                              </packing>
 										                            </child>
 										                            <child>
-										                              <widget class="GtkLabel" id="label-2">
+										                              <widget class="GtkLabel" id="label_std_deviation">
 										                                <property name="visible">True</property>
 										                                <property name="xalign">0</property>
 										                                <property name="label" translatable="yes">&lt;b&gt;Standard deviation:&lt;/b&gt;</property>
@@ -2891,7 +2891,7 @@ Cadence</property>
 										                              </packing>
 										                            </child>
 										                            <child>
-										                              <widget class="GtkLabel" id="label-3">
+										                              <widget class="GtkLabel" id="label_deviation">
 										                                <property name="width_request">90</property>
 										                                <property name="visible">True</property>
 										                                <property name="xalign">0</property>
@@ -4116,7 +4116,7 @@ Stage Profile/velocity</property>
                                               </packing>
                                             </child>
                                             <child>
-                                              <widget class="GtkLabel" id="label-2147483641">
+                                              <widget class="GtkLabel" id="label_bpm147483641">
                                                 <property name="visible">True</property>
                                                 <property name="xalign">0</property>
                                                 <property name="xpad">5</property>
