@@ -858,8 +858,8 @@ class Main(SimpleGladeApp):
         speeds = [r['average'] for r in records]
         self.label_ranking_range.set_text("%.2f - %.2f %s" % (self.uc.distance(activity.distance * (1-percentage)), self.uc.distance(activity.distance * (1+percentage)), self.uc.unit_distance))
         self.label_ranking_rank.set_text("%s/%s" % (count, len(records)))
-        self.label_ranking_avg.set_text("%.2f %s" % (self.uc.speed(numpy.average(speeds))))
-        self.label_ranking_speed.set_text("%.2f %s" % (self.uc.speed(activity.average)))
+        self.label_ranking_avg.set_text("%.2f %s" % (self.uc.speed(numpy.average(speeds)), self.uc.unit_speed))
+        self.label_ranking_speed.set_text("%.2f %s" % (self.uc.speed(activity.average), self.uc.unit_speed))
         self.label_ranking_stddev.set_text("%.4f" % (self.uc.speed(numpy.std(speeds))))
         self.label_ranking_dev.set_text("%+.2fσ" % ((activity.average - numpy.average(speeds)) / numpy.std(speeds)))
 
