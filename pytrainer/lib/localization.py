@@ -15,14 +15,10 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+import locale
 import gettext
-import pygtk
-pygtk.require('2.0')
-import gtk.glade
 
 def initialize_gettext(gettext_path):
-    gettext.bindtextdomain("pytrainer", gettext_path)
-    gtk.glade.bindtextdomain("pytrainer", gettext_path)
-    gtk.glade.textdomain("pytrainer")
-    gettext.textdomain("pytrainer")
+    locale.bindtextdomain("pytrainer", gettext_path)
+    locale.textdomain("pytrainer")
     gettext.install("pytrainer", gettext_path, unicode=1)
