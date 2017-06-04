@@ -104,7 +104,7 @@ class Osm:
                 time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
                 startinfo = "<div class='info_content'>%s: %s</div>" % (activity.sport_name, activity.title)
                 finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), \
-                            time, _("Distance"), activity.distance, self.uc.distance_unit)
+                            time, _("Distance"), activity.distance, self.uc.unit_distance)
                 startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
                 finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
 
