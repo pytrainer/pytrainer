@@ -707,13 +707,12 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBoxEntry" id="sportlist">
-                                <property name="width_request">52</property>
+                              <object class="GtkComboBoxText" id="sportlist">
+                                <property name="width-request">52</property>
                                 <property name="visible">True</property>
                                 <property name="active">0</property>
                                 <signal handler="on_sportlist_changed" name="changed"/>
                                 <property name="model">model1</property>
-				<property name="text-column">0</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="renderer1"/>
                                   <attributes>
@@ -1565,11 +1564,10 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkComboBoxEntry" id="record_combovalue">
+                                          <object class="GtkComboBoxText" id="record_combovalue">
                                             <property name="visible">True</property>
                                             <signal handler="on_day_combovalue_changed" name="changed"/>
                                             <property name="model">model2</property>
-					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer2"/>
                                               <attributes>
@@ -1594,11 +1592,10 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkComboBoxEntry" id="record_combovalue2">
+                                          <object class="GtkComboBoxText" id="record_combovalue2">
                                             <property name="visible">True</property>
                                             <signal handler="on_day_combovalue_changed" name="changed"/>
                                             <property name="model">model3</property>
-					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer3"/>
                                               <attributes>
@@ -1652,8 +1649,8 @@
                                             <property name="vscrollbar_policy">automatic</property>
                                             <child>
                                               <object class="GtkViewport" id="viewportGraphOptions">
-                                                <property name="visible">True</property>
-                                                <property name="resize_mode">queue</property>
+                                                <property name="visible">1</property>
+                                                <property name="resize-mode">queue</property>
                                                 <child>
                                                   <object class="GtkHBox" id="graph_data_hbox">
                                                     <property name="visible">True</property>
@@ -2476,11 +2473,10 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkComboBoxEntry" id="comboMapLineType">
+                                          <object class="GtkComboBoxText" id="comboMapLineType">
                                             <property name="visible">True</property>
                                             <signal handler="on_comboMapLineType_changed" name="changed"/>
                                             <property name="model">model4</property>
-					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer4"/>
                                               <attributes>
@@ -4036,11 +4032,10 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkComboBoxEntry" id="day_combovalue">
+                                          <object class="GtkComboBoxText" id="day_combovalue">
                                             <property name="visible">True</property>
                                             <signal handler="on_day_combovalue_changed" name="changed"/>
                                             <property name="model">model5</property>
-					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer5"/>
                                               <attributes>
@@ -4674,11 +4669,10 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkComboBoxEntry" id="week_combovalue">
+                                          <object class="GtkComboBoxText" id="week_combovalue">
                                             <property name="visible">True</property>
                                             <signal handler="on_week_combovalue_changed" name="changed"/>
                                             <property name="model">model6</property>
-					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer6"/>
                                               <attributes>
@@ -4703,11 +4697,10 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkComboBoxEntry" id="week_combovalue2">
+                                          <object class="GtkComboBoxText" id="week_combovalue2">
                                             <property name="visible">True</property>
                                             <signal handler="on_week_combovalue_changed" name="changed"/>
                                             <property name="model">model7</property>
-					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer7"/>
                                               <attributes>
@@ -5326,11 +5319,10 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkComboBoxEntry" id="month_combovalue">
+                                          <object class="GtkComboBoxText" id="month_combovalue">
                                             <property name="visible">True</property>
                                             <signal handler="on_month_combovalue_changed" name="changed"/>
                                             <property name="model">model8</property>
-					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer8"/>
                                               <attributes>
@@ -5355,11 +5347,10 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkComboBoxEntry" id="month_combovalue2">
+                                          <object class="GtkComboBoxText" id="month_combovalue2">
                                             <property name="visible">True</property>
                                             <signal handler="on_month_combovalue_changed" name="changed"/>
                                             <property name="model">model9</property>
-					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer9"/>
                                               <attributes>
@@ -5977,11 +5968,10 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkComboBoxEntry" id="year_combovalue">
+                                          <object class="GtkComboBoxText" id="year_combovalue">
                                             <property name="visible">True</property>
                                             <signal handler="on_year_combovalue_changed" name="changed"/>
                                             <property name="model">model10</property>
-					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer10"/>
                                               <attributes>
@@ -6006,11 +5996,10 @@
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkComboBoxEntry" id="year_combovalue2">
+                                          <object class="GtkComboBoxText" id="year_combovalue2">
                                             <property name="visible">True</property>
                                             <signal handler="on_year_combovalue_changed" name="changed"/>
                                             <property name="model">model11</property>
-					    <property name="text-column">0</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer11"/>
                                               <attributes>
@@ -6327,11 +6316,10 @@
                                                   <object class="GtkVBox" id="vbox123">
                                                     <property name="visible">True</property>
                                                     <child>
-                                                      <object class="GtkComboBoxEntry" id="total_combovalue">
+                                                      <object class="GtkComboBoxText" id="total_combovalue">
                                                         <property name="visible">True</property>
                                                         <signal handler="on_total_combovalue_changed" name="changed"/>
                                                         <property name="model">model12</property>
-							<property name="text-column">0</property>
                                                         <child>
                                                           <object class="GtkCellRendererText" id="renderer12"/>
                                                           <attributes>
@@ -6356,11 +6344,10 @@
                                                       </packing>
                                                     </child>
                                                     <child>
-                                                      <object class="GtkComboBoxEntry" id="total_combovalue2">
+                                                      <object class="GtkComboBoxText" id="total_combovalue2">
                                                         <property name="visible">True</property>
                                                         <signal handler="on_total_combovalue_changed" name="changed"/>
                                                         <property name="model">model13</property>
-							<property name="text-column">0</property>
                                                         <child>
                                                           <object class="GtkCellRendererText" id="renderer13"/>
                                                           <attributes>
@@ -6646,8 +6633,8 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="lsa_distance">
-                            <property name="visible">True</property>
+                          <object class="GtkComboBoxText" id="lsa_distance">
+                            <property name="visible">1</property>
                             <property name="model">model14</property>
                             <child>
                               <object class="GtkCellRendererText" id="renderer14"/>
@@ -6661,8 +6648,8 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="lsa_duration">
-                            <property name="visible">True</property>
+                          <object class="GtkComboBoxText" id="lsa_duration">
+                            <property name="visible">1</property>
                             <property name="model">model15</property>
                             <child>
                               <object class="GtkCellRendererText" id="renderer15"/>
@@ -6676,8 +6663,8 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="lsa_past">
-                            <property name="visible">True</property>
+                          <object class="GtkComboBoxText" id="lsa_past">
+                            <property name="visible">1</property>
                             <property name="active">0</property>
                             <property name="model">model16</property>
                             <child>
@@ -6692,8 +6679,8 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="lsa_sport">
-                            <property name="visible">True</property>
+                          <object class="GtkComboBoxText" id="lsa_sport">
+                            <property name="visible">1</property>
                             <property name="model">model17</property>
                             <child>
                               <object class="GtkCellRendererText" id="renderer17"/>
@@ -6858,10 +6845,9 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkComboBoxEntry" id="waypoint_type">
+                                  <object class="GtkComboBoxText" id="waypoint_type">
                                     <property name="visible">True</property>
                                     <property name="model">model18</property>
-				    <property name="text-column">0</property>
                                     <child>
                                       <object class="GtkCellRendererText" id="renderer18"/>
                                       <attributes>
