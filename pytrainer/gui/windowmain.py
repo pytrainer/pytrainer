@@ -289,6 +289,12 @@ class Main(SimpleGladeApp):
                                                      parent=self.pytrainer_main)
             except ImportError:
                 logging.error("Webkit not found, map functionality not available")
+                for container in self.map_vbox, self.map_vbox_old, self.waypointvbox:
+                    message = gtk.Label(_("Webkit not found, map functionality not available"))
+                    message.set_selectable(True)
+                    container.foreach(lambda widget:container.remove(widget))
+                    container.add(message)
+                    container.show_all()
         logging.debug("<<")
 
     def updateSportList(self,listSport):
