@@ -527,7 +527,6 @@
           <object class="GtkAction" id="tools1">
             <property name="name">tools1</property>
             <property name="label" translatable="yes">Tools</property>
-            <signal handler="on_tools1_activate" name="activate"/>
           </object>
         </child>
         <child>
@@ -6293,7 +6292,6 @@
                                                   <object class="GtkTreeView" id="statsTreeView">
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
-                                                    <signal handler="on_sportstatsTreeView_button_press" name="button_press_event"/>
                                                   </object>
                                                 </child>
                                               </object>
