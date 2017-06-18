@@ -1654,7 +1654,6 @@
                                               <object class="GtkViewport" id="viewportGraphOptions">
                                                 <property name="visible">True</property>
                                                 <property name="resize_mode">queue</property>
-                                                <property name="vadjustment">0 0 1 0.10000000000000001 0.90000000000000002 1</property>
                                                 <child>
                                                   <object class="GtkHBox" id="graph_data_hbox">
                                                     <property name="visible">True</property>
