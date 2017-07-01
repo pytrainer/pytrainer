@@ -19,6 +19,16 @@
       </row>
     </data>
   </object>
+  <object class="GtkListStore" id="ddbb-model">
+    <columns>
+      <column type="gchararray"/>
+    </columns>
+  </object>
+  <object class="GtkListStore" id="gender-model">
+    <columns>
+      <column type="gchararray"/>
+    </columns>
+  </object>
   <!-- interface-requires gtk+ 2.10 -->
   <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkWindow" id="newprofile">
@@ -316,6 +326,8 @@
                               <object class="GtkComboBoxEntry" id="prf_ddbb">
                                 <property name="visible">True</property>
                                 <signal handler="on_prf_ddbb_changed" name="changed"/>
+				<property name="model">ddbb-model</property>
+				<property name="text-column">0</property>
                               </object>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -455,6 +467,8 @@
                         <child>
                           <object class="GtkComboBoxEntry" id="prf_gender">
                             <property name="visible">True</property>
+			    <property name="model">gender-model</property>
+			    <property name="text-column">0</property>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
