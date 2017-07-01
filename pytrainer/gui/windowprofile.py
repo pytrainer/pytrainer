@@ -17,7 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from __future__ import division
-from SimpleGladeApp import SimpleGladeApp
+from SimpleGladeApp import SimpleBuilderApp
 from windowcalendar import WindowCalendar
 from pytrainer.core.equipment import EquipmentService
 from pytrainer.gui.equipment import EquipmentUi
@@ -29,12 +29,12 @@ import pytrainer
 import pytrainer.util.color
 from pytrainer.gui.color import ColorConverter
 
-class WindowProfile(SimpleGladeApp):
+class WindowProfile(SimpleBuilderApp):
     def __init__(self, sport_service, data_path = None, parent=None, pytrainer_main=None):
         self.parent = parent
         self.pytrainer_main = pytrainer_main
         self.data_path = data_path
-        SimpleGladeApp.__init__(self, "profile.glade")
+        SimpleBuilderApp.__init__(self, "profile.ui")
         self.conf_options = parent.profile_options
         self.stored_color = pytrainer.util.color.Color(0)
         self._sport_service = sport_service
