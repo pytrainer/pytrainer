@@ -870,7 +870,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="label-10">
+                                  <object class="GtkLabel" id="label-maximum-pace">
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Maximum Pace:</property>
@@ -897,7 +897,7 @@
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="hboxcolor">
+                                  <object class="GtkHBox" id="hbox-new-color">
                                     <property name="visible">True</property>
                                     <child>
                                       <object class="GtkImage" id="newcolor">
@@ -909,7 +909,7 @@
 		                              </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkButton" id="buttoncolor">
+                                      <object class="GtkButton" id="button-color-new">
                                         <property name="label">gtk-edit</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
@@ -1299,7 +1299,7 @@ Continue?</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkLabel" id="label-10">
+                                  <object class="GtkLabel" id="label-color">
                                     <property name="visible">True</property>
                                     <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Color</property>
@@ -1312,7 +1312,7 @@ Continue?</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="hboxcolor">
+                                  <object class="GtkHBox" id="hbox-edit-color">
                                     <property name="visible">True</property>
                                     <child>
                                       <object class="GtkImage" id="editcolor">
@@ -1324,7 +1324,7 @@ Continue?</property>
 		                              </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkButton" id="buttoncolor">
+                                      <object class="GtkButton" id="button-color-edit">
                                         <property name="label">gtk-edit</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
