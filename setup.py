@@ -39,6 +39,7 @@ setup( 	name = "pytrainer",
 	},
 	data_files=[
 		('share/pytrainer/glade/',glob("glade/*.glade")),
+		('share/pytrainer/glade/',glob("glade/*.ui")),
 		('share/pytrainer/glade/',glob("glade/*.png")),
 		('share/pytrainer/glade/',glob("glade/*.jpg")),
 		('share/pytrainer/schemas/',glob("schemas/*.xsd")),

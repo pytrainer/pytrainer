@@ -21,7 +21,7 @@ import os
 import logging
 import traceback
 import gtk, gobject
-from SimpleGladeApp import SimpleGladeApp
+from SimpleGladeApp import SimpleBuilderApp
 from windowcalendar import WindowCalendar
 
 from pytrainer.lib.date import getLocalTZ, time2second
@@ -29,7 +29,7 @@ import dateutil.parser
 from dateutil.tz import tzutc
 from pytrainer.lib.uc import UC
 
-class WindowRecord(SimpleGladeApp):
+class WindowRecord(SimpleBuilderApp):
     def __init__(self, equipment_service, data_path = None, listSport = None, parent = None, date = None, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None, windowTitle=None, equipment=[]):
         logging.debug(">>")
         self.parent = parent
@@ -42,7 +42,7 @@ class WindowRecord(SimpleGladeApp):
         self.store = None
         self.active_row = None
         self.activity_data = [] 
-        SimpleGladeApp.__init__(self, "newrecord.glade")
+        SimpleBuilderApp.__init__(self, "newrecord.ui")
         self.conf_options = [
             "rcd_date",
             "rcd_sport",

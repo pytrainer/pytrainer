@@ -16,15 +16,15 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from SimpleGladeApp import SimpleGladeApp
+from SimpleGladeApp import SimpleBuilderApp
 import gtk
 import gobject
 import os
 
-class WindowPlugins(SimpleGladeApp):
+class WindowPlugins(SimpleBuilderApp):
 	def __init__(self, data_path = None, parent=None):
 		self.parent = parent
-		SimpleGladeApp.__init__(self, "plugins.glade")
+		SimpleBuilderApp.__init__(self, "plugins.ui")
 	def new(self):
 		column_names=["id","name"]
 		self.create_treeview(self.pluginsTreeview,column_names)

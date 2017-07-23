@@ -18,16 +18,15 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import gobject
-import sys
+import os
 import logging
-import datetime
 import matplotlib
+import gobject
+import gtk
 
 import dateutil.parser
-from dateutil.tz import * # for tzutc()
 
-from SimpleGladeApp import *
+from SimpleGladeApp import SimpleBuilderApp
 from popupmenu import PopupMenu
 from aboutdialog import About
 
@@ -37,13 +36,11 @@ from pytrainer.lib.xmlUtils import XMLParser
 #from pytrainer.lib.gpx import Gpx
 
 from pytrainer.recordgraph import RecordGraph
-from pytrainer.daygraph import DayGraph
 from pytrainer.weekgraph import WeekGraph
 from pytrainer.monthgraph import MonthGraph
 from pytrainer.yeargraph import YearGraph
 from pytrainer.totalgraph import TotalGraph
 from pytrainer.heartrategraph import HeartRateGraph
-from pytrainer.core.equipment import EquipmentService
 
 from pytrainer.gui.drawGraph import DrawGraph
 from pytrainer.gui.windowcalendar import WindowCalendar
@@ -51,7 +48,7 @@ from pytrainer.lib.listview import ListSearch
 from pytrainer.lib.uc import UC
 
 
-class Main(SimpleGladeApp):
+class Main(SimpleBuilderApp):
     def __init__(self, sport_service, data_path = None, parent = None, version = None, gpxDir = None):
         self._sport_service = sport_service
         def url_hook(dialog, url):
@@ -63,7 +60,7 @@ class Main(SimpleGladeApp):
         self.pytrainer_main = parent
         self.data_path = data_path
         self.uc = UC()
-        SimpleGladeApp.__init__(self, "pytrainer.glade")
+        SimpleBuilderApp.__init__(self, "pytrainer.ui")
 
         self.popup = PopupMenu(data_path,self)
 
@@ -300,9 +297,7 @@ class Main(SimpleGladeApp):
     def updateSportList(self,listSport):
         logging.debug(">>")
         liststore =  self.sportlist.get_model()
-        if self.sportlist.get_active() is not 0:
-            self.sportlist.set_active(0) #Set first item active if it isnt
-        firstEntry = self.sportlist.get_active_text()
+        firstEntry = _("All Sports")
         liststore.clear() #Delete all items
         #Re-add "All Sports"
         liststore.append([firstEntry])
