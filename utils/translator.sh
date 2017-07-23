@@ -8,7 +8,7 @@ if [ $? != 0 ]; then exit ; fi
 cd ../
 
 echo "Extracting translatable strings from input files"
-xgettext glade/*.glade -o ./messages.pot
+xgettext glade/*.ui -o ./messages.pot
 if [ $? != 0 ]; then echo "WARNING: xgettext not found. Please install gettext package"; exit; fi
 find ./ -iname "*.py" -exec xgettext -k_ -j -o ./messages.pot {} \;
 

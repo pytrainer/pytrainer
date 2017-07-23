@@ -2,7 +2,7 @@
 LOCALE_BASE_PATH="locale"
 cd ../
 echo -n "Extracting translatable strings... "
-xgettext glade/*.glade glade/*.ui -o ./messages.pot
+xgettext glade/*.ui -o ./messages.pot
 find ./ -iname "*.py" -exec xgettext -k_ -j -o ./messages.pot {} \;
 echo "OK"
 
