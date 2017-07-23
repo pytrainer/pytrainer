@@ -1473,24 +1473,6 @@ Continue?</property>
               </packing>
             </child>
             <child>
-              <object class="GtkAlignment" id="equipment_container">
-                <property name="visible">True</property>
-                <child>
-                  <placeholder/>
-                </child>
-              </object>
-            </child>
-            <child type="tab">
-              <object class="GtkLabel" id="labelEquipment">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Equipment</property>
-              </object>
-              <packing>
-                <property name="position">5</property>
-                <property name="tab_fill">False</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkVBox" id="vbox25">
                 <property name="visible">True</property>
                 <child>
@@ -1971,6 +1953,24 @@ Continue?</property>
               </object>
               <packing>
                 <property name="position">4</property>
+                <property name="tab_fill">False</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkAlignment" id="equipment_container">
+                <property name="visible">True</property>
+                <child>
+                  <placeholder/>
+                </child>
+              </object>
+            </child>
+            <child type="tab">
+              <object class="GtkLabel" id="labelEquipment">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Equipment</property>
+              </object>
+              <packing>
+                <property name="position">5</property>
                 <property name="tab_fill">False</property>
               </packing>
             </child>
