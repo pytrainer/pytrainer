@@ -18,16 +18,15 @@
 
 import logging
 from lxml import etree
+import os
 import pytrainer
 from pytrainer.upgrade.context import UpgradeContext
 from pytrainer.upgrade.migratedb import MigratableDb
 
-MIGRATE_REPOSITORY_PATH = "pytrainer/upgrade"
-
 def initialize_data(ddbb, conf_dir):
     """Initializes the installation's data."""
     db_url = ddbb.get_connection_url()
-    migratable_db = MigratableDb(MIGRATE_REPOSITORY_PATH, db_url)
+    migratable_db = MigratableDb(os.path.dirname(__file__), db_url)
     InstalledData(migratable_db, ddbb, LegacyVersionProvider(conf_dir), UpgradeContext(conf_dir, db_url)).update_to_current()
         
 class InstalledData(object):
