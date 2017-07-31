@@ -73,6 +73,9 @@ if (os.path.exists(base_path + "/INSTALL")
     gettext_path = base_path + "/locale"
 else:
     print("running pytrainer from egg installation")
+    parts = os.path.split(base_path)
+    if parts[1] == 'EGG-INFO':
+        base_path = parts[0]
     data_path = base_path + "/share/pytrainer/"
     site_path =  "%s/lib/python%s.%s/site-packages" % (base_path, ver[0], ver[1])
     gettext_path = base_path + "/share/locale"
