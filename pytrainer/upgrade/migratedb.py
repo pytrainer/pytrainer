@@ -26,7 +26,6 @@ except:
     from migrate.versioning.exceptions import DatabaseNotControlledError
 from sqlalchemy.schema import MetaData
 import logging
-import os
 import sqlalchemy
 import sys
 
@@ -41,7 +40,7 @@ class MigratableDb(object):
             pypath.
         db_url -- the connection URL string for the DB.
         """
-        self._repository_path = _get_resource_absolute_path(repository_path)
+        self._repository_path = repository_path
         self._db_url = db_url
         
     def is_empty(self):
@@ -85,12 +84,3 @@ class MigratableDb(object):
     def upgrade(self):
         """Run all available upgrade scripts for the repository."""
         upgrade(self._db_url, self._repository_path)
-        
-def _get_resource_absolute_path(resource_name):
-    """Get the absolute path to a resource on the python system path."""
-    for path in sys.path:
-        candidate = os.path.join(path, resource_name)
-        if os.path.exists(candidate):
-            logging.debug("Found resource: %s", candidate)
-            return candidate
-    raise ValueError("Resource '{0}' could not be found".format(resource_name))

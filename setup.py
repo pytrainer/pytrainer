@@ -83,5 +83,6 @@ setup( 	name = "pytrainer",
 			'matplotlib',
 			'lxml'],
 	test_suite='pytrainer.test',
-	tests_require=['mock']
+	tests_require=['mock'],
+	zip_safe=False
 )
