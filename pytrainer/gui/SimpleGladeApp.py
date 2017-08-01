@@ -20,16 +20,15 @@
 import os
 import sys
 import gtk
-import gtk.glade
 from pytrainer.environment import Environment
 
-class SimpleGladeApp(dict):
-    def __init__(self, glade_filename):
-        gtk.glade.set_custom_handler(self.custom_handler)
+class SimpleBuilderApp(dict):
+    def __init__(self, ui_filename):
+        self._builder = gtk.Builder()
         env = Environment()
-        glade_path = os.path.join(env.glade_dir, glade_filename)
-        self.glade = gtk.glade.XML(glade_path, None, None)
-        self.signal_autoconnect()
+        file_path = os.path.join(env.glade_dir, ui_filename)
+        self._builder.add_from_file(file_path)
+        self._builder.connect_signals(self)
         self.new()
 
     def signal_autoconnect(self):
@@ -38,21 +37,14 @@ class SimpleGladeApp(dict):
             attr = getattr(self, attr_name)
             if callable(attr):
                 signals[attr_name] = attr
-        self.glade.signal_autoconnect(signals)
-
-    def custom_handler(self,
-                    glade, function_name, widget_name,
-                    str1, str2, int1, int2):
-        if hasattr(self, function_name):
-            handler = getattr(self, function_name)
-            return handler(str1, str2, int1, int2)
+        self._builder.connect_signals(signals)
 
     def __getattr__(self, data_name):
         if data_name in self:
             data = self[data_name]
             return data
         else:
-            widget = self.glade.get_widget(data_name)
+            widget = self._builder.get_object(data_name)
             if widget != None:
                 self[data_name] = widget
                 return widget
@@ -114,31 +106,3 @@ class SimpleGladeApp(dict):
             column.set_sort_column_id(i)
             treeview.append_column(column)
 
-class SimpleBuilderApp(SimpleGladeApp):
-    def __init__(self, ui_filename):
-        self._builder = gtk.Builder()
-        env = Environment()
-        file_path = os.path.join(env.glade_dir, ui_filename)
-        self._builder.add_from_file(file_path)
-        self._builder.connect_signals(self)
-        self.new()
-
-    def signal_autoconnect(self):
-        signals = {}
-        for attr_name in dir(self):
-            attr = getattr(self, attr_name)
-            if callable(attr):
-                signals[attr_name] = attr
-        self._builder.connect_signals(signals)
-
-    def __getattr__(self, data_name):
-        if data_name in self:
-            data = self[data_name]
-            return data
-        else:
-            widget = self._builder.get_object(data_name)
-            if widget != None:
-                self[data_name] = widget
-                return widget
-            else:
-                raise AttributeError, data_name

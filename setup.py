@@ -38,7 +38,6 @@ setup( 	name = "pytrainer",
 		'pytrainer.upgrade': ['migrate.cfg', 'versions/*.sql', 'versions/*.py']
 	},
 	data_files=[
-		('share/pytrainer/glade/',glob("glade/*.glade")),
 		('share/pytrainer/glade/',glob("glade/*.ui")),
 		('share/pytrainer/glade/',glob("glade/*.png")),
 		('share/pytrainer/glade/',glob("glade/*.jpg")),
