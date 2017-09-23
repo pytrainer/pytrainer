@@ -1,5 +1,46 @@
 We have migrated to GitHub, for more details about changelog please see git log documentation (http://git-scm.com/docs/git-log). One simple approach: git log --oneline --stat --decorate <since>..<until>
 
+- pytrainer changes for 1.11.0:
+
+- Known issues:
+  Gtk outputs warnings about extra properties when loading the main window
+
+- Improvements:
+  1a237adba0fb, 640ef4e55da8, 30fdfd9e83eb Performance improvements
+  fcc8f3361d4f FIT conversion updated to work with Perl 5.22
+  92d6a33aed16 Setuptools is now used for installation where available
+  4bb91436522b Start screen can now be configured (ticket #12)
+  086a0dd81549 The map functionality is now optional (and python-webkit is no
+               longer required)
+
+- Bugs fixed:
+  9d1c670ea1ac Logging now works as configured
+  10b04c8b38e1 Sports list stays up to date
+  0a23585c2d25 Prior usage is included in equipment usage stats
+  acbe61ddbf16 Strings are now quoted correctly with sqlite
+  8ca54a97a9f6 Fix pace unit conversion
+  f52235a9d921 Missing import in gpxplus
+  c2f41e97022f Check that Activity.gpx exists before using it
+
+- Internals:
+  a6f80a252a1d All tests are now found and executed
+  d82fbeee3a06 Use DDBB with an in-memory database when testing Equipment
+  b284fdffee3a Use DDBB with an in-memory database when testing Sport
+  3ade6e1dd822 Date methods converted into simple utility functions
+  80805b326cd0 Test cases added for date utility functions
+  321206a797ea Environment converted into a singleton
+  96e471f38958 Profile converted into a singleton
+  2573955d9c0c Tests added for the Athlete class
+  29db339f41fc Tests added for the Waypoint class
+  bfacd6d55598 Tests added for unit conversion
+  f9a93daffc28, 37982f5e214b Heavily refactor the Activity class
+  4c84abf522ba Tests added for the Activity class
+  5eab5b0a38fa unitsconversor was fully replaced with UC and removed
+  1ac7db0049a1 Default log level was changed to warning
+  005accf46b2f Stop using glade for the popup menu
+  0303a92fb0ef Use the locale module instead of the gtk.glade helper
+  4601b5f1c703 Migrated from gtk.glade to gtk.Builder
+
 - pytrainer changes for 1.10.0:
 
 - Known issues
