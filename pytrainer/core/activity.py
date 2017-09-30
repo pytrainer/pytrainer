@@ -26,6 +26,7 @@ from pytrainer.lib.gpx import Gpx
 from pytrainer.lib.graphdata import GraphData
 from pytrainer.environment import Environment
 from pytrainer.lib import uc
+from pytrainer.profile import Profile
 from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger
 from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String
 
@@ -152,6 +153,7 @@ class Activity:
         logging.debug(">>")
         self.environment = Environment()
         self.uc = uc.UC()
+        self.profile = Profile()
         self.id = id
         #It is an error to try to initialise with no id
         if self.id is None:
@@ -500,7 +502,7 @@ tracks (%s)
         self._time_data['hr'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
         self._time_data['hr'].set_color('#00ff00', '#00ff00')
         #Heartrate as %
-        maxhr = self.pytrainer_main.profile.getMaxHR()
+        maxhr = self.profile.getMaxHR()
         title = _("Heart Rate (% of max)")
         xlabel = "%s (%s)" % (_('Distance'), self.uc.unit_distance)
         ylabel = "%s (%s)" % (_('Heart Rate'), _('%'))
@@ -568,7 +570,7 @@ tracks (%s)
         logging.debug("<<")
         #Add Heartrate zones graphs
         if 'hr' in self._distance_data:
-            zones = self.pytrainer_main.profile.getZones()
+            zones = self.profile.getZones()
             title = _("Heart Rate zone")
             xlabel = "%s (%s)" % (_('Distance'), self.uc.unit_distance)
             ylabel = "%s (%s)" % (_('Heart Rate'), _('bpm'))
