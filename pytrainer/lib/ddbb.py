@@ -25,9 +25,18 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.types import TypeDecorator
-from sqlalchemy import Integer
+from sqlalchemy import Integer, Table, Column, ForeignKey
 
 DeclarativeBase = declarative_base()
+
+record_to_equipment = Table('record_equipment', DeclarativeBase.metadata,
+                            Column('id', Integer, primary_key=True),
+                            Column('equipment_id', Integer,
+                                   ForeignKey('equipment.id'),
+                                   index=True, nullable=False),
+                            Column('record_id', Integer,
+                                   ForeignKey('records.id_record'),
+                                   index=True, nullable=False))
 
 #Define the tables and their columns that should be in the database
 #Obviously, this is not a list but a dict -> TODO: ammend name to avoid confusion!!!
@@ -315,13 +324,10 @@ class DDBB:
         from pytrainer.core.activity import Lap
         from pytrainer.athlete import Athletestat
         DeclarativeBase.metadata.create_all(self.engine)
-        for entry in tablesList:
-            # Do not create tables already handled by Sqlalchemy
-            if not entry in ['sports', 'equipment', 'waypoints', 'laps', 'athletestats']:
-                self.ddbbObject.createTableDefault(entry, tablesList[entry])
-            if add_default and entry in tablesDefaultData:
+        if add_default:
+            for entry, data in tablesDefaultData.iteritems():
                 logging.debug("Adding default data to %s" % entry)
-                for data_dict in tablesDefaultData[entry]:
+                for data_dict in data:
                     self.insert_dict(entry, data_dict)
                 
     def create_backup(self):
