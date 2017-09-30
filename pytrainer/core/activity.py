@@ -26,6 +26,27 @@ from pytrainer.lib.gpx import Gpx
 from pytrainer.lib.graphdata import GraphData
 from pytrainer.environment import Environment
 from pytrainer.lib import uc
+from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger
+from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String
+
+class Lap(DeclarativeBase):
+    __tablename__ = 'laps'
+    avg_hr = Column(ForcedInteger)
+    calories = Column(ForcedInteger)
+    comments = Column(UnicodeText)
+    distance = Column(Float)
+    elapsed_time = Column(String(length=20))
+    end_lat = Column(Float)
+    end_lon = Column(Float)
+    id_lap = Column(Integer, primary_key=True)
+    intensity = Column(String(length=7))
+    lap_number = Column(ForcedInteger)
+    laptrigger = Column(String(length=9))
+    max_hr = Column(ForcedInteger)
+    max_speed = Column(Float)
+    record = Column(Integer, index=True, nullable=False)
+    start_lat = Column(Float)
+    start_lon = Column(Float)
 
 class ActivityService(object):
     '''
@@ -140,7 +161,6 @@ class Activity:
             print("Error - must initialise with a reference to the main pytrainer class")
             return
         self.pytrainer_main = pytrainer_main
-        self.laps = None
         self.has_data = False
         self._distance_data = {}
         self._time_data = {}
@@ -226,6 +246,16 @@ class Activity:
     @property
     def starttime(self):
         return self.date_time.strftime("%X")
+
+    @property
+    def laps(self):
+        ret = []
+        for lap in self.pytrainer_main.ddbb.session.query(Lap).filter(
+                Lap.record == self.id):
+            d = dict(lap.__dict__)
+            d.pop('_sa_instance_state', None)
+            ret.append(d)
+        return ret
 
     def __str__(self):
         return '''
@@ -355,10 +385,6 @@ tracks (%s)
             self.has_data = True
         else:
             raise Exception("Error - multiple results from DB for id: %s" % self.id)
-        #Get lap information
-        self.laps = self.pytrainer_main.ddbb.select_dict("laps",
-                                ("id_lap", "record", "elapsed_time", "distance", "start_lat", "start_lon", "end_lat", "end_lon", "calories", "lap_number", "intensity", "avg_hr", "max_hr", "max_speed", "laptrigger", "comments"),
-                                "record=\"%s\"" % self.id)
         logging.debug("<<")
 
     def _generate_per_lap_graphs(self):

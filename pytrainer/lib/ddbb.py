@@ -312,10 +312,11 @@ class DDBB:
         from pytrainer.core.sport import Sport
         from pytrainer.core.equipment import Equipment
         from pytrainer.waypoint import Waypoint
+        from pytrainer.core.activity import Lap
         DeclarativeBase.metadata.create_all(self.engine)
         for entry in tablesList:
             # Do not create tables already handled by Sqlalchemy
-            if not entry in ['sports', 'equipment', 'waypoints']:
+            if not entry in ['sports', 'equipment', 'waypoints', 'laps']:
                 self.ddbbObject.createTableDefault(entry, tablesList[entry])
             if add_default and entry in tablesDefaultData:
                 logging.debug("Adding default data to %s" % entry)
