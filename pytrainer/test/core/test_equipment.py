@@ -334,7 +334,7 @@ class EquipmentServiceTest(unittest.TestCase):
     def test_get_equipment_usage(self):
         self.mock_ddbb.insert("equipment", "life_expectancy,notes,description,prior_usage,active",
                               (500, u"Test notes.", u"test item", 0, 1))
-        self.mock_ddbb.insert("records", "distance", (250,))
+        self.mock_ddbb.insert("records", "distance,sport", (250,1,))
         self.mock_ddbb.insert("record_equipment", "record_id,equipment_id", (1, 1))
         equipment = self.equipment_service.get_equipment_item(1)
         usage = self.equipment_service.get_equipment_usage(equipment)
