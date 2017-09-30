@@ -19,10 +19,6 @@ from datetime import datetime
 from mock import Mock
 from dateutil.tz import tzoffset
 
-# Gettext needs to be initialized before UC is imported (via profile)
-import pytrainer.lib.localization
-pytrainer.lib.localization.initialize_gettext("../../locale")
-
 from pytrainer.lib.ddbb import DDBB
 from pytrainer.profile import Profile
 from pytrainer.lib.uc import UC

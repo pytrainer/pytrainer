@@ -15,6 +15,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from pytrainer.lib.singleton import Singleton
+from gettext import gettext as _
 
 def pace2float(pace_str):
     if pace_str.count(':') != 1:

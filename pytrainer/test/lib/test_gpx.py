@@ -17,11 +17,6 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-# Need to set this stuff up so that the translation functions work.  Seems like
-# the module that needs translation ought to have some way of setting this up.
-import pytrainer.lib.localization
-pytrainer.lib.localization.initialize_gettext("../../locale")
-
 import unittest
 import os
 from lxml import etree
