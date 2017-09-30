@@ -20,6 +20,7 @@
 import os, stat
 import logging
 from StringIO import StringIO
+from gettext import gettext as _
 
 from lxml import etree
 from environment import Environment

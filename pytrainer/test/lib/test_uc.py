@@ -18,10 +18,7 @@ import unittest
 from datetime import date
 from mock import Mock
 
-import pytrainer.lib.localization
 from pytrainer.lib.uc import *
-
-pytrainer.lib.localization.initialize_gettext("../../locale")
 
 class UCUtilTest(unittest.TestCase):
 

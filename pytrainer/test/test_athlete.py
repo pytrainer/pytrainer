@@ -18,10 +18,6 @@ import unittest
 from datetime import date
 from mock import Mock
 
-# Gettext needs to be initialized before UC is imported (via profile)
-import pytrainer.lib.localization
-pytrainer.lib.localization.initialize_gettext("../../locale")
-
 from pytrainer.lib.ddbb import DDBB
 from pytrainer.profile import Profile
 from pytrainer.athlete import Athlete
