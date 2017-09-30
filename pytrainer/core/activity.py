@@ -339,6 +339,11 @@ tracks (%s)
             return None
         logging.debug("<<")
 
+    @property
+    def time(self):
+        logging.warning("Deprecated property Activity.time called")
+        return self.duration
+
     def _init_from_db(self):
         '''
         Get activity information from the DB
@@ -365,7 +370,6 @@ tracks (%s)
             if self.title is None:
                 self.title = ""
             self.date = row[cols.index('date')]
-            self.time = self._int(row[cols.index('time')])
             self.duration = self._int(row[cols.index('duration')])
             self.beats = self._int(row[cols.index('beats')])
             self.comments = row[cols.index('comments')]
