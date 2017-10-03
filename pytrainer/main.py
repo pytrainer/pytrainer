@@ -66,7 +66,7 @@ class pyTrainer:
         self.profile.saveProfile()
         self.uc = UC()
         self.profilewindow = None
-        self.ddbb = DDBB(self.profile)
+        self.ddbb = DDBB(self.profile.sqlalchemy_url)
         logging.debug('connecting to DDBB')
         self.ddbb.connect()
 

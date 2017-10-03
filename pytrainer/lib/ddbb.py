@@ -124,31 +124,21 @@ tablesDefaultData = { "sports": [
 
 
 class DDBB:
-    def __init__(self, configuration):
-        self.configuration = configuration
-        ddbb_type = self.configuration.getValue("pytraining","prf_ddbb")
-        ddbb_host = self.configuration.getValue("pytraining","prf_ddbbhost")
-        ddbb = self.configuration.getValue("pytraining","prf_ddbbname")
-        ddbb_user = self.configuration.getValue("pytraining","prf_ddbbuser")
-        ddbb_pass = self.configuration.getValue("pytraining","prf_ddbbpass")
-        if ddbb_type == "sqlite":
-            from sqliteUtils import Sql
-            self.url = "sqlite:///%s/pytrainer.ddbb" % configuration.confdir
-        elif ddbb_type == "memory":
-            from sqliteUtils import Sql
-            self.url = "sqlite://"
+    def __init__(self, url=None):
+        """Initialize database connection, defaulting to SQLite in-memory
+if no url is provided"""
+        if url:
+            self.url = url
         else:
+            self.url = "sqlite://"
+        if self.url.startswith("sqlite"):
+            from sqliteUtils import Sql
+        elif self.url.startswith("mysql"):
             from mysqlUtils import Sql
-            self.url = "{type}://{user}:{passwd}@{host}/{db}".format(type=ddbb_type,
-                                                                      user=ddbb_user,
-                                                                      passwd=ddbb_pass,
-                                                                      host=ddbb_host,
-                                                                      db=ddbb)
-
-        logging.debug("Dburl is %s", self.url)
         self.engine = create_engine(self.url, logging_name='db')
         self.ddbbObject = Sql()
-        
+        logging.info("DDBB created with url %s", self.url)
+
     def get_connection_url(self):
         return self.url
 

@@ -28,9 +28,7 @@ from pytrainer.core.activity import ActivityService
 class ActivityTest(unittest.TestCase):
 
     def setUp(self):
-        profile = Mock()
-        profile.getValue = Mock(return_value='memory')
-        self.ddbb = DDBB(profile)
+        self.ddbb = DDBB()
         main = Mock()
         main.ddbb = self.ddbb
         main.profile = Profile()

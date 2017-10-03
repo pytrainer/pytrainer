@@ -19,7 +19,6 @@
 import unittest
 from pytrainer.core.sport import Sport, SportService, SportServiceException
 import mock
-from pytrainer.lib.sqliteUtils import Sql
 import pytrainer.core
 from pytrainer.lib.ddbb import DDBB
 from sqlalchemy.exc import IntegrityError, StatementError, ProgrammingError, OperationalError, InterfaceError, DataError
@@ -27,9 +26,7 @@ from sqlalchemy.exc import IntegrityError, StatementError, ProgrammingError, Ope
 class SportTest(unittest.TestCase):
 
     def setUp(self):
-        profile = mock.Mock()
-        profile.getValue = mock.Mock(return_value='memory')
-        self.ddbb = DDBB(profile)
+        self.ddbb = DDBB()
         self.ddbb.connect()
         self.ddbb.create_tables(add_default=False)
 
@@ -263,9 +260,7 @@ class SportTest(unittest.TestCase):
 class SportServiceTest(unittest.TestCase):
     
     def setUp(self):
-        profile = mock.Mock()
-        profile.getValue = mock.Mock(return_value='memory')
-        self.mock_ddbb = DDBB(profile)
+        self.mock_ddbb = DDBB()
         self.mock_ddbb.connect()
         self.mock_ddbb.create_tables(add_default=False)
         self.sport_service = SportService(self.mock_ddbb)

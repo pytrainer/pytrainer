@@ -26,9 +26,7 @@ from sqlalchemy.exc import StatementError, IntegrityError, ProgrammingError, Ope
 class EquipmentTest(unittest.TestCase):
 
     def setUp(self):
-        profile = mock.Mock()
-        profile.getValue = mock.Mock(return_value='memory')
-        self.ddbb = DDBB(profile)
+        self.ddbb = DDBB()
         self.ddbb.connect()
         self.ddbb.create_tables()
 
@@ -211,9 +209,7 @@ class EquipmentTest(unittest.TestCase):
 class EquipmentServiceTest(unittest.TestCase):
     
     def setUp(self):
-        profile = mock.Mock()
-        profile.getValue = mock.Mock(return_value='memory')
-        self.mock_ddbb = DDBB(profile)
+        self.mock_ddbb = DDBB()
         self.mock_ddbb.connect()
         self.mock_ddbb.create_tables()
         self.equipment_service = EquipmentService(self.mock_ddbb)
