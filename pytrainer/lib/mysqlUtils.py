@@ -124,6 +124,7 @@ class Sql:
             count = count+1
         sql = '''insert into %s (%s) values (%s)'''  %(table,cells,string)
         self.db.query(sql)
+        self.db.commit()
 
     def freeExec(self,sql):
         #self.db.query(sql)
@@ -138,6 +139,7 @@ class Sql:
     def delete(self,table,condition):
         sql = "delete from %s where %s"  %(table,condition)
         self.db.query(sql)
+        self.db.commit()
 
     def select(self,table,cells,condition, mod=None):
         if condition != None:
@@ -167,6 +169,7 @@ class Sql:
         string +=" where %s" %condition
         sql = "update %s set %s" %(table,string)
         self.db.query(sql)
+        self.db.commit()
         
     def retrieveTableInfo(self,tableName):
         cur = self.db.cursor()
