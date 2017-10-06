@@ -34,7 +34,7 @@ class WaypointTest(unittest.TestCase):
     def tearDown(self):
         self.waypoint = None
         self.ddbb.disconnect()
-        self.ddbb = None
+        self.ddbb.drop_tables()
 
     def test_waypoint_add_and_get(self):
         data = (30.0, 20.0, None, u'Comment', None, u'Test', u'sym')

@@ -70,7 +70,7 @@ class ActivityTest(unittest.TestCase):
     def tearDown(self):
         self.service = None
         self.ddbb.disconnect()
-        self.ddbb = None
+        self.ddbb.drop_tables()
         self.uc.set_us(False)
 
     def test_activity_date_time(self):

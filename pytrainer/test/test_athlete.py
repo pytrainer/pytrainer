@@ -36,7 +36,7 @@ class AthleteTest(unittest.TestCase):
     def tearDown(self):
         self.athlete = None
         self.ddbb.disconnect()
-        self.ddbb = None
+        self.ddbb.drop_tables()
 
     def test_athlete_insert_and_get(self):
         data = {'date': date(2017, 4, 3), 'weight': 60.0, 'bodyfat': 20.0,

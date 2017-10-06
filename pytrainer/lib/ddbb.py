@@ -319,6 +319,10 @@ if no url is provided"""
                 logging.debug("Adding default data to %s" % entry)
                 for data_dict in data:
                     self.insert_dict(entry, data_dict)
+
+    def drop_tables(self):
+        """Drop the database schema"""
+        DeclarativeBase.metadata.drop_all(self.engine)
                 
     def create_backup(self):
         """Create a backup of the current database."""

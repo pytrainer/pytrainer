@@ -32,6 +32,7 @@ class EquipmentTest(unittest.TestCase):
 
     def tearDown(self):
         self.ddbb.disconnect()
+        self.ddbb.drop_tables()
     
     def test_id_defaults_to_none(self):
         equipment = Equipment()
@@ -217,6 +218,7 @@ class EquipmentServiceTest(unittest.TestCase):
         
     def tearDown(self):
         self.mock_ddbb.disconnect()
+        self.mock_ddbb.drop_tables()
     
     def test_get_equipment_item(self):
         self.mock_ddbb.session.execute(self.equipment_table.insert(),

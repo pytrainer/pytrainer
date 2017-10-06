@@ -32,6 +32,7 @@ class SportTest(unittest.TestCase):
 
     def tearDown(self):
         self.ddbb.disconnect()
+        self.ddbb.drop_tables()
     
     def test_id_should_default_to_none(self):
         sport = Sport()
@@ -267,6 +268,7 @@ class SportServiceTest(unittest.TestCase):
 
     def tearDown(self):
         self.mock_ddbb.disconnect()
+        self.mock_ddbb.drop_tables()
         
     def test_store_sport_should_insert_row_when_sport_has_no_id(self):
         sport = Sport()
