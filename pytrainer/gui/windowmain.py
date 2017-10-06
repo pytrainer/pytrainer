@@ -500,8 +500,8 @@ class Main(SimpleBuilderApp):
 
                 def edited_cb(cell, path, new_text, (liststore, activity)):
                     liststore[path][12] = new_text
-                    activity.laps[int(path)]['comments'] = new_text
-                    self.pytrainer_main.ddbb.update("laps", "comments", [new_text,], "record=%s and lap_number=%s" % (activity.id, path))
+                    activity.Laps[int(path)].comments = new_text
+                    self.pytrainer_main.ddbb.session.commit()
                     
                 def show_tooltip(widget, x, y, keyboard_mode, tooltip, user_param1):
                      path = self.lapsTreeView.get_path_at_pos(x,y-20)
