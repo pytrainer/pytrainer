@@ -68,7 +68,7 @@ class ActivityTest(unittest.TestCase):
         self.activity = self.service.get_activity(1)
 
     def tearDown(self):
-        self.service = None
+        self.service.clear_pool()
         self.ddbb.disconnect()
         self.ddbb.drop_tables()
         self.uc.set_us(False)
