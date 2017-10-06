@@ -20,7 +20,7 @@ import unittest
 import mock
 from pytrainer.core.equipment import Equipment, EquipmentService,\
     EquipmentServiceException
-from pytrainer.lib.ddbb import DDBB
+from pytrainer.lib.ddbb import DDBB, DeclarativeBase
 from sqlalchemy.exc import StatementError, IntegrityError, ProgrammingError, OperationalError, DataError
 
 class EquipmentTest(unittest.TestCase):
@@ -217,13 +217,17 @@ class EquipmentServiceTest(unittest.TestCase):
         self.mock_ddbb.connect()
         self.mock_ddbb.create_tables()
         self.equipment_service = EquipmentService(self.mock_ddbb)
+        self.equipment_table = DeclarativeBase.metadata.tables['equipment']
         
     def tearDown(self):
         self.mock_ddbb.disconnect()
     
     def test_get_equipment_item(self):
-        self.mock_ddbb.insert("equipment", "life_expectancy,notes,description,prior_usage,active",
-                              (500, u"Test notes.", u"Test Description", 200, 1))
+        self.mock_ddbb.session.execute(self.equipment_table.insert(),
+                                           {"life_expectancy": 500,
+                                                "notes": u"Test notes.",
+                                           "description": u"Test Description",
+                                           "prior_usage": 200, "active": True})
         item = self.equipment_service.get_equipment_item(1)
         self.assertEquals(1, item.id)
         self.assertEquals("Test Description", item.description)
@@ -233,8 +237,11 @@ class EquipmentServiceTest(unittest.TestCase):
         self.assertEquals("Test notes.", item.notes)
     
     def test_get_equipment_item_non_unicode(self):
-        self.mock_ddbb.insert("equipment", "life_expectancy,notes,description,prior_usage,active",
-                              (500, u"Test notes.", u"Test Description", 200, 1))
+        self.mock_ddbb.session.execute(self.equipment_table.insert(),
+                                           {"life_expectancy": 500,
+                                                "notes": u"Test notes.",
+                                           "description": u"Test Description",
+                                           "prior_usage": 200, "active": True})
         item = self.equipment_service.get_equipment_item(1)
         self.assertEquals("Test Description", item.description)
         self.assertEquals("Test notes.", item.notes)
@@ -244,10 +251,16 @@ class EquipmentServiceTest(unittest.TestCase):
         self.assertEquals(None, item)
         
     def test_get_all_equipment(self):
-        self.mock_ddbb.insert("equipment", "life_expectancy,notes,description,prior_usage,active",
-                              (500, u"Test notes 1.", u"Test item 1", 200, 1))
-        self.mock_ddbb.insert("equipment", "life_expectancy,notes,description,prior_usage,active",
-                              (600, u"Test notes 2.", u"Test item 2", 300, 0))
+        self.mock_ddbb.session.execute(self.equipment_table.insert(),
+                                           {"life_expectancy": 500,
+                                                "notes": u"Test notes 1.",
+                                           "description": u"Test item 1",
+                                           "prior_usage": 200, "active": True})
+        self.mock_ddbb.session.execute(self.equipment_table.insert(),
+                                           {"life_expectancy": 600,
+                                                "notes": u"Test notes 2.",
+                                           "description": u"Test item 2",
+                                           "prior_usage": 300, "active": False})
         items = self.equipment_service.get_all_equipment()
         item = items[0]
         self.assertEquals(1, item.id)
@@ -269,10 +282,16 @@ class EquipmentServiceTest(unittest.TestCase):
         self.assertEquals([], items)
         
     def test_get_active_equipment(self):
-        self.mock_ddbb.insert("equipment", "life_expectancy,notes,description,prior_usage,active",
-                              (500, u"Test notes 1.", u"Test item 1", 200, 1))
-        self.mock_ddbb.insert("equipment", "life_expectancy,notes,description,prior_usage,active",
-                              (600, u"Test notes 2.", u"Test item 2", 300, 1))
+        self.mock_ddbb.session.execute(self.equipment_table.insert(),
+                                           {"life_expectancy": 500,
+                                                "notes": u"Test notes 1.",
+                                           "description": u"Test item 1",
+                                           "prior_usage": 200, "active": True})
+        self.mock_ddbb.session.execute(self.equipment_table.insert(),
+                                           {"life_expectancy": 600,
+                                                "notes": u"Test notes 2.",
+                                           "description": u"Test item 2",
+                                           "prior_usage": 300, "active": True})
         items = self.equipment_service.get_active_equipment()
         item = items[0]
         self.assertEquals(1, item.id)
@@ -300,8 +319,11 @@ class EquipmentServiceTest(unittest.TestCase):
         self.assertEquals(1, stored_equipment.id)
         
     def test_store_equipment_duplicate_description(self):
-        self.mock_ddbb.insert("equipment", "life_expectancy,notes,description,prior_usage,active",
-                              (500, u"Test notes.", u"test item", 200, 1))
+        self.mock_ddbb.session.execute(self.equipment_table.insert(),
+                                           {"life_expectancy": 500,
+                                                "notes": u"Test notes.",
+                                           "description": u"test item",
+                                           "prior_usage": 200, "active": True})
         equipment = Equipment()
         equipment.description = u"test item"
         try:
@@ -311,8 +333,11 @@ class EquipmentServiceTest(unittest.TestCase):
             pass
         
     def test_update_equipment(self):
-        self.mock_ddbb.insert("equipment", "life_expectancy,notes,description,prior_usage,active",
-                              (500, u"Test notes.", u"old description", 200, 1))
+        self.mock_ddbb.session.execute(self.equipment_table.insert(),
+                                           {"life_expectancy": 500,
+                                                "notes": u"Test notes.",
+                                           "description": u"old description",
+                                           "prior_usage": 200, "active": True})
         equipment = self.equipment_service.get_equipment_item(1)
         equipment.description = u"new description"
         self.equipment_service.store_equipment(equipment)
@@ -320,8 +345,11 @@ class EquipmentServiceTest(unittest.TestCase):
         self.assertEquals("new description", equipment.description)
         
     def test_update_equipment_duplicate_description(self):
-        self.mock_ddbb.insert("equipment", "life_expectancy,notes,description,prior_usage,active",
-                              (500, u"Test notes.", u"test item", 200, 1))
+        self.mock_ddbb.session.execute(self.equipment_table.insert(),
+                                           {"life_expectancy": 500,
+                                                "notes": u"Test notes.",
+                                           "description": u"test item",
+                                           "prior_usage": 200, "active": True})
         equipment = Equipment()
         equipment.id = 2
         equipment.description = u"test item"
@@ -332,17 +360,23 @@ class EquipmentServiceTest(unittest.TestCase):
             pass
         
     def test_get_equipment_usage(self):
-        self.mock_ddbb.insert("equipment", "life_expectancy,notes,description,prior_usage,active",
-                              (500, u"Test notes.", u"test item", 0, 1))
-        self.mock_ddbb.insert("records", "distance,sport", (250,1,))
-        self.mock_ddbb.insert("record_equipment", "record_id,equipment_id", (1, 1))
+        self.mock_ddbb.session.execute(self.equipment_table.insert(),
+                                           {"life_expectancy": 500,
+                                                "notes": u"Test notes.",
+                                           "description": u"test item",
+                                           "prior_usage": 0, "active": True})
+        self.mock_ddbb.session.execute("insert into records (distance,sport) values (250,1)")
+        self.mock_ddbb.session.execute("insert into record_equipment (record_id,equipment_id) values (1,1)")
         equipment = self.equipment_service.get_equipment_item(1)
         usage = self.equipment_service.get_equipment_usage(equipment)
         self.assertEquals(250, usage)
         
     def test_get_equipment_usage_none(self):
-        self.mock_ddbb.insert("equipment", "life_expectancy,notes,description,prior_usage,active",
-                              (500, u"Test notes.", u"test item", 0, 1))
+        self.mock_ddbb.session.execute(self.equipment_table.insert(),
+                                           {"life_expectancy": 500,
+                                                "notes": u"Test notes.",
+                                           "description": u"test item",
+                                           "prior_usage": 0, "active": True})
         equipment = self.equipment_service.get_equipment_item(1)
         usage = self.equipment_service.get_equipment_usage(equipment)
         self.assertEquals(0, usage)

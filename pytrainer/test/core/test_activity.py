@@ -15,11 +15,11 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import unittest
-from datetime import datetime
+import datetime
 from mock import Mock
 from dateutil.tz import tzoffset
 
-from pytrainer.lib.ddbb import DDBB
+from pytrainer.lib.ddbb import DDBB, DeclarativeBase
 from pytrainer.profile import Profile
 from pytrainer.lib.uc import UC
 from pytrainer.core.activity import ActivityService
@@ -38,8 +38,34 @@ class ActivityTest(unittest.TestCase):
         self.uc = UC()
         self.uc.set_us(False)
         self.service = ActivityService(pytrainer_main=main)
-        self.ddbb.insert('records', 'distance,maxspeed,maxpace,title,upositive,average,date_time_local,calories,date_time_utc,comments,pace,unegative,duration,beats,date,sport,maxbeats', (46.18, 44.6695617695, 1.2, 'test activity', 553.05993673, 22.3882142185, '2016-07-24 12:58:23+0300', 1462, '2016-07-24T09:58:23Z', 'test comment', 2.4, 564.08076273, 7426, 115.0, '2016-07-24', 1, 120.0))
-        self.ddbb.insert('laps', 'distance,lap_number,calories,avg_hr,elapsed_time,record,intensity,laptrigger,max_hr', (46181.9107740694, 0, 1462, 136, 7426.0, 1, 'active', 'manual', 173))
+        records_table = DeclarativeBase.metadata.tables['records']
+        self.ddbb.session.execute(records_table.insert({'distance': 46.18,
+                                                            'maxspeed': 44.6695617695,
+                                                            'maxpace': 1.2,
+                                                            'title': u'test activity',
+                                                            'unegative': 564.08076273,
+                                                            'upositive': 553.05993673,
+                                                            'average': 22.3882142185,
+                                                            'date_time_local': u'2016-07-24 12:58:23+0300',
+                                                            'calories': 1462,
+                                                            'beats': 115.0,
+                                                            'comments': u'test comment',
+                                                            'pace': 2.4,
+                                                            'date_time_utc': u'2016-07-24T09:58:23Z',
+                                                            'date': datetime.date(2016, 7, 24),
+                                                            'duration': 7426,
+                                                            'sport': 1,
+                                                            'maxbeats': 120.0}))
+        laps_table = DeclarativeBase.metadata.tables['laps']
+        self.ddbb.session.execute(laps_table.insert({'distance': 46181.9107741,
+                                                     'lap_number': 0,
+                                                     'calories': 1462,
+                                                         'elapsed_time': u'7426.0',
+                                                         'record': 1,
+                                                         'intensity': u'active',
+                                                         'avg_hr': 136,
+                                                         'max_hr': 173,
+                                                         'laptrigger': u'manual'}))
         self.activity = self.service.get_activity(1)
 
     def tearDown(self):
@@ -49,8 +75,9 @@ class ActivityTest(unittest.TestCase):
         self.uc.set_us(False)
 
     def test_activity_date_time(self):
-        self.assertEquals(self.activity.date_time, datetime(2016, 7, 24, 12, 58, 23,
-                                                            tzinfo=tzoffset(None, 10800)))
+        self.assertEquals(self.activity.date_time, datetime.datetime(2016, 7, 24,
+                                                                        12, 58, 23,
+                                                    tzinfo=tzoffset(None, 10800)))
 
     def test_activity_distance(self):
         self.assertEquals(self.activity.distance, 46.18)
