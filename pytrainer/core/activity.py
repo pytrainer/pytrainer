@@ -75,7 +75,7 @@ class ActivityService(object):
         self.pool_queue = []
         logging.debug("<<")
 
-    def remove_activity(self, id):
+    def remove_activity_from_cache(self, id):
         sid = str(id)
         if sid in self.pool.keys():
             logging.debug("Found activity in pool")

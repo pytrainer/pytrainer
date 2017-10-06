@@ -307,7 +307,7 @@ class Record:
 	def updateRecord(self, list_options, id_record, equipment=None): # ToDo: update only fields that can change if GPX file is present
 		logging.debug('>>')
 		#Remove activity from pool so data is updated
-		self.pytrainer_main.activitypool.remove_activity(id_record)
+		self.pytrainer_main.activitypool.remove_activity_from_cache(id_record)
 		gpxfile = self.pytrainer_main.profile.gpxdir+"/%d.gpx"%int(id_record)
 		gpxOrig = list_options["rcd_gpxfile"]
 		if os.path.isfile(gpxOrig):
