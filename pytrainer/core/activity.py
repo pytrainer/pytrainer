@@ -50,6 +50,14 @@ class Lap(DeclarativeBase):
     start_lat = Column(Float)
     start_lon = Column(Float)
 
+class ActivityServiceException(Exception):
+
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
+
 class ActivityService(object):
     '''
     Class maintains a pool of activities
@@ -104,6 +112,19 @@ class ActivityService(object):
         logging.debug("ActivityPool queue length: %d" % len(self.pool_queue))
         logging.debug("ActivityPool queue: %s" % str(self.pool_queue))
         return self.pool[sid]
+
+    def remove_activity_from_db(self, activity):
+        """Delete a stored Activity."""
+
+        if not activity.id:
+            raise ActivityServiceException("Cannot remove activity which has not been stored: '{0}'.".format(activity.name))
+        try:
+            self.remove_activity_from_cache(activity.id)
+            self.pytrainer_main.ddbb.session.delete(activity)
+            self.pytrainer_main.ddbb.session.commit()
+        except InvalidRequestError:
+             raise ActivityServiceException("Activity id %s not found" % activity.id)
+        logging.debug("Deleted activity: %s", activity.title)
 
 class Activity(DeclarativeBase):
     '''

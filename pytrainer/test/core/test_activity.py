@@ -18,6 +18,7 @@ import unittest
 import datetime
 from mock import Mock
 from dateutil.tz import tzoffset
+from sqlalchemy.orm.exc import NoResultFound
 
 from pytrainer.lib.ddbb import DDBB, DeclarativeBase
 from pytrainer.profile import Profile
@@ -126,3 +127,12 @@ class ActivityTest(unittest.TestCase):
     def test_activity_service_null(self):
         none_activity = self.service.get_activity(None)
         self.assertIsNone(none_activity.id)
+
+    def test_activity_remove(self):
+        self.service.remove_activity_from_db(self.activity)
+        try:
+            self.service.get_activity(1)
+        except NoResultFound:
+            pass
+        else:
+            self.fail()

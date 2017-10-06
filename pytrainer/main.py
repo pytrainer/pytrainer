@@ -480,7 +480,8 @@ class pyTrainer:
     def removeRecord(self, id_record, confirm = False, view=None):
         logging.debug('>>')
         if confirm:
-             self.record.removeRecord(id_record)
+             activity = self.activitypool.get_activity(id_record)
+             self.activitypool.remove_activity_from_db(activity)
         else:
              msg = _("Delete this database entry?")
              params = [id_record,True]

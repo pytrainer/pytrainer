@@ -70,17 +70,6 @@ class Record:
                 self.pytrainer_main.refreshMainSportList()
 		logging.debug('<<')
 
-	def removeRecord(self,id_record):
-		logging.debug('>>')
-		record = self.pytrainer_main.ddbb.delete("records", "id_record=\"%s\"" %id_record)
-		laps = self.pytrainer_main.ddbb.delete("laps", "record=\"%s\"" %id_record)
-		logging.debug('removed record '+str(id_record)+' (and associated laps) from DB')
-		gpxfile = self.pytrainer_main.profile.gpxdir+"/%d.gpx"%int(id_record)
-		if os.path.isfile(gpxfile):
-			os.remove(gpxfile)
-			logging.debug('removed gpxfile '+gpxfile)
-		logging.debug('<<')
-
 	def pace_to_float(self, value):
 		'''Take a mm:ss or mm.ss and return float'''
 		try:
