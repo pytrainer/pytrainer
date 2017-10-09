@@ -339,11 +339,11 @@ class Record:
 		if not id_sport:
 			# outer join on sport id to workaround bug where sport reference is null on records from GPX import
 			return self.pytrainer_main.ddbb.select("records left outer join sports on records.sport=sports.id_sports",
-					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
+					"sports.name,date,distance,duration,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
 					"date=\"%s\" " %self.format_date(date))
 		else:
 			return self.pytrainer_main.ddbb.select("records,sports",
-					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
+					"sports.name,date,distance,duration,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
 					"date=\"%s\" and sports.id_sports=\"%s\" and records.sport=sports.id_sports" %(self.format_date(date),id_sport))
 
 	def getLaps(self, id_record):
@@ -402,7 +402,7 @@ class Record:
 		else:
 			condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports and sports.id_sports=\"%s\"" %(date_ini,date_end, sport)
 
-		return self.pytrainer_main.ddbb.select(tables,"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats, sports.name,upositive,unegative", condition)
+		return self.pytrainer_main.ddbb.select(tables,"date,distance,duration,beats,comments,average,calories,maxspeed,maxbeats, sports.name,upositive,unegative", condition)
 
 	def getrecordPeriodSport(self,date_ini, date_end,sport):
 		if not sport:
@@ -475,7 +475,7 @@ class Record:
 	def getAllRecordList(self):
 		logging.debug('--')
 		return self.pytrainer_main.ddbb.select("records,sports",
-			"date,distance,average,title,sports.name,id_record,time,beats,calories",
+			"date,distance,average,title,sports.name,id_record,duration,beats,calories",
 			"sports.id_sports = records.sport order by date desc")
 
 	def getRecordListByCondition(self,condition):
@@ -485,7 +485,7 @@ class Record:
 		else:
 			logging.debug("condition: %s" % condition)
 			return self.pytrainer_main.ddbb.select("records,sports",
-				"date,distance,average,title,sports.name,id_record,time,beats,calories",
+				"date,distance,average,title,sports.name,id_record,duration,beats,calories",
 				"sports.id_sports = records.sport and %s order by date desc" %condition)
 
 	def getRecordDayList(self,date, id_sport=None):
