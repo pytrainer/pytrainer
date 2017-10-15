@@ -73,7 +73,7 @@ class WaypointService(object):
 		logging.debug(">>")
 		retorno = self.pytrainer_main.ddbb.select("waypoints",
 					"lat,lon,ele,comment,time,name,sym",
-					"id_waypoint=\"%s\"" %id_waypoint)
+					"id_waypoint=%s" %id_waypoint)
 		logging.debug("<<")
 		return retorno
 	
