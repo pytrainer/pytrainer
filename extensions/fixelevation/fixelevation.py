@@ -120,7 +120,7 @@ class fixelevation:
                                 pretty_print=False)
                 res_msg = "Elevation has been fixed."
                 #TODO Expire activity out of pool - so get updated info
-                self.pytrainer_main.activitypool.remove_activity(aid)
+                self.pytrainer_main.activitypool.remove_activity_from_cache(aid)
             else:
                 res_msg = "Elevation could not be fixed!"
 

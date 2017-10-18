@@ -21,6 +21,22 @@
 
 import logging
 import dateutil
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.types import TypeDecorator
+from sqlalchemy import Integer, Table, Column, ForeignKey
+
+DeclarativeBase = declarative_base()
+
+record_to_equipment = Table('record_equipment', DeclarativeBase.metadata,
+                            Column('id', Integer, primary_key=True),
+                            Column('equipment_id', Integer,
+                                   ForeignKey('equipment.id'),
+                                   index=True, nullable=False),
+                            Column('record_id', Integer,
+                                   ForeignKey('records.id_record'),
+                                   index=True, nullable=False))
 
 #Define the tables and their columns that should be in the database
 #Obviously, this is not a list but a dict -> TODO: ammend name to avoid confusion!!!
@@ -108,32 +124,33 @@ tablesDefaultData = { "sports": [
 
 
 class DDBB:
-    def __init__(self, configuration):
-        self.configuration = configuration
-        self.ddbb_type = self.configuration.getValue("pytraining","prf_ddbb")
-        if self.ddbb_type == "mysql": #TODO no longer supported?
-            from mysqlUtils import Sql
+    def __init__(self, url=None):
+        """Initialize database connection, defaulting to SQLite in-memory
+if no url is provided"""
+        if url:
+            self.url = url
         else:
+            self.url = "sqlite://"
+        if self.url.startswith("sqlite"):
             from sqliteUtils import Sql
+        elif self.url.startswith("mysql"):
+            from mysqlUtils import Sql
+        self.engine = create_engine(self.url, logging_name='db')
+        self.ddbbObject = Sql()
+        logging.info("DDBB created with url %s", self.url)
 
-        ddbb_host = self.configuration.getValue("pytraining","prf_ddbbhost")
-        ddbb = self.configuration.getValue("pytraining","prf_ddbbname")
-        ddbb_user = self.configuration.getValue("pytraining","prf_ddbbuser")
-        ddbb_pass = self.configuration.getValue("pytraining","prf_ddbbpass")
-        self.ddbbObject = Sql(ddbb_host,ddbb,ddbb_user,ddbb_pass,self.configuration)
-        
     def get_connection_url(self):
-        return self.ddbbObject.get_connection_url()
+        return self.url
 
     def connect(self):
-        connection_ok, connection_msg = self.ddbbObject.connect()
-        if not connection_ok:
-            print "ERROR: Unable to connect to database"
-            print connection_msg
-            sys.exit(connection_ok)
+        Session = sessionmaker(bind=self.engine)
+        self.session = Session()
+        self.ddbbObject.connect(self.engine.raw_connection())
 
     def disconnect(self):
+        self.session.close()
         self.ddbbObject.disconnect()
+        self.engine.dispose()
 
     def select(self,table,cells,condition=None, mod=None):
         return self.ddbbObject.select(table,cells,condition,mod)
@@ -291,13 +308,45 @@ class DDBB:
     def create_tables(self, add_default=True):
         """Initialise the database schema from an empty database."""
         logging.info("Creating database tables")
-        for entry in tablesList:
-            self.ddbbObject.createTableDefault(entry, tablesList[entry])
-            if add_default and entry in tablesDefaultData:
+        from pytrainer.core.sport import Sport
+        from pytrainer.core.equipment import Equipment
+        from pytrainer.waypoint import Waypoint
+        from pytrainer.core.activity import Lap
+        from pytrainer.athlete import Athletestat
+        DeclarativeBase.metadata.create_all(self.engine)
+        if add_default:
+            for entry, data in tablesDefaultData.iteritems():
                 logging.debug("Adding default data to %s" % entry)
-                for data_dict in tablesDefaultData[entry]:
+                for data_dict in data:
                     self.insert_dict(entry, data_dict)
+
+    def drop_tables(self):
+        """Drop the database schema"""
+        DeclarativeBase.metadata.drop_all(self.engine)
                 
     def create_backup(self):
         """Create a backup of the current database."""
-        self.ddbbObject.createDatabaseBackup()
+        import urlparse
+        scheme, netloc, path, params, query, fragment = urlparse.urlparse(self.url)
+        if scheme == 'sqlite':
+            import urllib
+            import datetime
+            import gzip
+            logging.info("Creating compressed copy of current DB")
+            logging.debug('Database path: %s', self.url)
+            path = urllib.url2pathname(path)
+            backup_path = '%s_%s.gz' % (path, datetime.datetime.now().strftime('%Y%m%d_%H%M'))
+            with open(path, 'rb') as orig_file:
+                with gzip.open(backup_path, 'wb') as backup_file:
+                    backup_file.write(orig_file.read())
+                    logging.info('Database backup successfully created')
+
+class ForcedInteger(TypeDecorator):
+    """Type to force values to int since sqlite doesn't do this"""
+    impl = Integer
+
+    def process_bind_param(self, value, dialect):
+        if value is None:
+            return None
+        else:
+            return int(value)

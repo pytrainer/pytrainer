@@ -70,17 +70,6 @@ class Record:
                 self.pytrainer_main.refreshMainSportList()
 		logging.debug('<<')
 
-	def removeRecord(self,id_record):
-		logging.debug('>>')
-		record = self.pytrainer_main.ddbb.delete("records", "id_record=\"%s\"" %id_record)
-		laps = self.pytrainer_main.ddbb.delete("laps", "record=\"%s\"" %id_record)
-		logging.debug('removed record '+str(id_record)+' (and associated laps) from DB')
-		gpxfile = self.pytrainer_main.profile.gpxdir+"/%d.gpx"%int(id_record)
-		if os.path.isfile(gpxfile):
-			os.remove(gpxfile)
-			logging.debug('removed gpxfile '+gpxfile)
-		logging.debug('<<')
-
 	def pace_to_float(self, value):
 		'''Take a mm:ss or mm.ss and return float'''
 		try:
@@ -307,7 +296,7 @@ class Record:
 	def updateRecord(self, list_options, id_record, equipment=None): # ToDo: update only fields that can change if GPX file is present
 		logging.debug('>>')
 		#Remove activity from pool so data is updated
-		self.pytrainer_main.activitypool.remove_activity(id_record)
+		self.pytrainer_main.activitypool.remove_activity_from_cache(id_record)
 		gpxfile = self.pytrainer_main.profile.gpxdir+"/%d.gpx"%int(id_record)
 		gpxOrig = list_options["rcd_gpxfile"]
 		if os.path.isfile(gpxOrig):
@@ -350,11 +339,11 @@ class Record:
 		if not id_sport:
 			# outer join on sport id to workaround bug where sport reference is null on records from GPX import
 			return self.pytrainer_main.ddbb.select("records left outer join sports on records.sport=sports.id_sports",
-					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
+					"sports.name,date,distance,duration,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
 					"date=\"%s\" " %self.format_date(date))
 		else:
 			return self.pytrainer_main.ddbb.select("records,sports",
-					"sports.name,date,distance,time,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
+					"sports.name,date,distance,duration,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
 					"date=\"%s\" and sports.id_sports=\"%s\" and records.sport=sports.id_sports" %(self.format_date(date),id_sport))
 
 	def getLaps(self, id_record):
@@ -413,7 +402,7 @@ class Record:
 		else:
 			condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports and sports.id_sports=\"%s\"" %(date_ini,date_end, sport)
 
-		return self.pytrainer_main.ddbb.select(tables,"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats, sports.name,upositive,unegative", condition)
+		return self.pytrainer_main.ddbb.select(tables,"date,distance,duration,beats,comments,average,calories,maxspeed,maxbeats, sports.name,upositive,unegative", condition)
 
 	def getrecordPeriodSport(self,date_ini, date_end,sport):
 		if not sport:
@@ -486,7 +475,7 @@ class Record:
 	def getAllRecordList(self):
 		logging.debug('--')
 		return self.pytrainer_main.ddbb.select("records,sports",
-			"date,distance,average,title,sports.name,id_record,time,beats,calories",
+			"date,distance,average,title,sports.name,id_record,duration,beats,calories",
 			"sports.id_sports = records.sport order by date desc")
 
 	def getRecordListByCondition(self,condition):
@@ -496,7 +485,7 @@ class Record:
 		else:
 			logging.debug("condition: %s" % condition)
 			return self.pytrainer_main.ddbb.select("records,sports",
-				"date,distance,average,title,sports.name,id_record,time,beats,calories",
+				"date,distance,average,title,sports.name,id_record,duration,beats,calories",
 				"sports.id_sports = records.sport and %s order by date desc" %condition)
 
 	def getRecordDayList(self,date, id_sport=None):

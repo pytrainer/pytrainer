@@ -94,6 +94,22 @@ class Profile(Singleton):
     def plugindir(self):
         return self.environment.plugin_dir
 
+    @property
+    def sqlalchemy_url(self):
+        ddbb_type = self.getValue("pytraining","prf_ddbb")
+        ddbb_host = self.getValue("pytraining","prf_ddbbhost")
+        ddbb = self.getValue("pytraining","prf_ddbbname")
+        ddbb_user = self.getValue("pytraining","prf_ddbbuser")
+        ddbb_pass = self.getValue("pytraining","prf_ddbbpass")
+        if ddbb_type == "sqlite":
+            return "sqlite:///%s/pytrainer.ddbb" % self.confdir
+        else:
+            return "{type}://{user}:{passwd}@{host}/{db}".format(type=ddbb_type,
+                                                                 user=ddbb_user,
+                                                                 passwd=ddbb_pass,
+                                                                 host=ddbb_host,
+                                                                 db=ddbb)
+
     def refreshConfiguration(self):
         logging.debug(">>")
         self.configuration = self._parse_config_file(self.config_file)

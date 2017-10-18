@@ -99,8 +99,8 @@ class Osm:
                 points,levels = Points.encodePoints(pointlist)
                 points = points.replace("\\","\\\\")
                 laps = activity.laps
-                timeHours = int(activity.time) / 3600
-                timeMin = (float(activity.time) / 3600.0 - timeHours) * 60
+                timeHours = activity.duration / 3600
+                timeMin = (float(activity.duration) / 3600.0 - timeHours) * 60
                 time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
                 startinfo = "<div class='info_content'>%s: %s</div>" % (activity.sport_name, activity.title)
                 finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), \

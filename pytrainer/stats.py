@@ -17,11 +17,11 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
+from pytrainer.core.activity import Activity
 
 class Stats:
-    def __init__(self, sport_service, parent = None):
+    def __init__(self, parent = None):
         logging.debug('>>')
-        self._sport_service = sport_service
         self.pytrainer_main = parent
         logging.debug('<<')
 
@@ -41,43 +41,39 @@ class Stats:
         
         for f in fields:
             data[f] = 0
-        
-        results = self.pytrainer_main.ddbb.select_dict("records", ('id_record', 'date', 'sport', 'distance', 'duration', 'maxbeats', 'maxspeed', 'maxpace', 'average','pace','beats'))
-        for r in results:
-            if r['sport'] is None or r['sport'] is 0:
-                # temporary fix to ignore corrupt records caused by GPX import bug
-                continue
-            if r['sport'] not in data['sports']:
-                sport = self._sport_service.get_sport(r['sport'])
-                data['sports'][r['sport']] = {'name': sport.name, 'count': 0}
+
+        for r in self.pytrainer_main.ddbb.session.query(Activity):
+            if r.sport not in data['sports']:
+                data['sports'][r.sport] = {'name': r.sport.name, 'count': 0}
                 for f in fields:
-                    data['sports'][r['sport']][f] = 0
-                    data['sports'][r['sport']]['total_'+f] = 0
-            data['sports'][r['sport']]['count'] += 1
+                    data['sports'][r.sport][f] = 0
+                    data['sports'][r.sport]['total_'+f] = 0
+            data['sports'][r.sport]['count'] += 1
             for f in fields:
-                data['sports'][r['sport']][f] = max(data['sports'][r['sport']][f], r[f])
-                if r[f] is not None:
-                    data['sports'][r['sport']]['total_'+f] += r[f]
-                    data[f] = max(data[f], r[f])
+                field = getattr(r, f)
+                data['sports'][r.sport][f] = max(data['sports'][r.sport][f], field)
+                if field is not None:
+                    data['sports'][r.sport]['total_'+f] += field
+                    data[f] = max(data[f], field)
                 else:
                     logging.info('Skipping null values')
                     
-            if 'avg_hr' not in data['sports'][r['sport']]:
-                data['sports'][r['sport']]['avg_hr'] = [0, 0]
-            if r['beats']:
-                data['sports'][r['sport']]['avg_hr'][0] += 1
-                data['sports'][r['sport']]['avg_hr'][1] += r['beats']
+            if 'avg_hr' not in data['sports'][r.sport]:
+                data['sports'][r.sport]['avg_hr'] = [0, 0]
+            if r.beats:
+                data['sports'][r.sport]['avg_hr'][0] += 1
+                data['sports'][r.sport]['avg_hr'][1] += r.beats
                 
-            data['total_duration'] += r['duration']
-            data['total_distance'] += r['distance']
+            data['total_duration'] += r.duration
+            data['total_distance'] += r.distance
             
-            if not r['maxspeed'] and r['duration']:
-                data['sports'][r['sport']]['maxspeed'] = max(data['sports'][r['sport']]['maxspeed'], r['distance'] / r['duration'] * 3600)
+            if not r.maxspeed and r.duration:
+                data['sports'][r.sport]['maxspeed'] = max(data['sports'][r.sport]['maxspeed'], r.distance / r.duration * 3600)
             
-            if not 'start_date' in data: data['start_date'] = r['date']
-            data['start_date'] = min(data['start_date'], r['date'])
-            if not 'end_date' in data: data['end_date'] = r['date']
-            data['end_date'] = max(data['end_date'], r['date'])
+            if not 'start_date' in data: data['start_date'] = r.date
+            data['start_date'] = min(data['start_date'], r.date)
+            if not 'end_date' in data: data['end_date'] = r.date
+            data['end_date'] = max(data['end_date'], r.date)
             
         for s in data['sports']:
             if data['sports'][s]['avg_hr'][0]:

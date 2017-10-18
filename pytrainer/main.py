@@ -28,7 +28,7 @@ from pytrainer.util.date import DateRange
 from upgrade.data import initialize_data
 from environment import Environment
 from record import Record
-from waypoint import Waypoint
+from waypoint import WaypointService
 from extension import Extension
 from importdata import Importdata
 from plugins import Plugins
@@ -66,7 +66,7 @@ class pyTrainer:
         self.profile.saveProfile()
         self.uc = UC()
         self.profilewindow = None
-        self.ddbb = DDBB(self.profile)
+        self.ddbb = DDBB(self.profile.sqlalchemy_url)
         logging.debug('connecting to DDBB')
         self.ddbb.connect()
 
@@ -81,7 +81,7 @@ class pyTrainer:
         logging.debug('Loading athlete service...')
         self.athlete = Athlete(data_path, self)
         logging.debug('Loading stats service...')
-        self.stats = Stats(self._sport_service, self)
+        self.stats = Stats(self)
         logging.debug('Initializing activity pool...')
         pool_size = self.profile.getIntValue("pytraining","activitypool_size", default=1)
         self.activitypool = ActivityService(self, size=pool_size)
@@ -95,7 +95,7 @@ class pyTrainer:
         self.selectInitialDate()
         
         logging.debug('Loading waypoint service...')
-        self.waypoint = Waypoint(data_path,self)
+        self.waypoint = WaypointService(data_path, self)
         logging.debug('Loading extension service...')
         self.extension = Extension(data_path, self)
         logging.debug('Loading plugins service...')
@@ -154,6 +154,7 @@ class pyTrainer:
         '''Set level of information written to log'''
         logging.debug("Setting logger to level: "+ str(level))
         logging.getLogger('').setLevel(level)
+        logging.getLogger('sqlalchemy.engine').setLevel(level)
 
     def quit(self):
         logging.debug('--')
@@ -479,7 +480,8 @@ class pyTrainer:
     def removeRecord(self, id_record, confirm = False, view=None):
         logging.debug('>>')
         if confirm:
-             self.record.removeRecord(id_record)
+             activity = self.activitypool.get_activity(id_record)
+             self.activitypool.remove_activity_from_db(activity)
         else:
              msg = _("Delete this database entry?")
              params = [id_record,True]

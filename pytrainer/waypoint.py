@@ -18,8 +18,21 @@
 
 import logging
 from pytrainer.lib.date import unixtime2date
+from sqlalchemy import Column, Unicode, Float, Integer, Date
+from pytrainer.lib.ddbb import DeclarativeBase
 
-class Waypoint:
+class Waypoint(DeclarativeBase):
+	__tablename__ = 'waypoints'
+	comment = Column(Unicode(length=240))
+	ele = Column(Float)
+	id = Column('id_waypoint', Integer, primary_key=True)
+	lat = Column(Float)
+	lon = Column(Float)
+	name = Column(Unicode(length=200))
+	sym = Column(Unicode(length=200))
+	time = Column(Date)
+
+class WaypointService(object):
 	def __init__(self, data_path = None, parent = None):
 		logging.debug(">>")
 		self.parent = parent
@@ -29,53 +42,49 @@ class Waypoint:
 	
 	def removeWaypoint(self,id_waypoint):
 		logging.debug(">>")
-		#self.pytrainer_main.ddbb.connect()
 		logging.debug("Deleting id_waypoint=%s" %id_waypoint)
-		self.pytrainer_main.ddbb.delete("waypoints", "id_waypoint=\"%s\"" %id_waypoint)
-		#self.pytrainer_main.ddbb.disconnect()
+		waypoint = self.pytrainer_main.ddbb.session.query(Waypoint).filter(Waypoint.id == id_waypoint).one()
+		self.pytrainer_main.ddbb.session.delete(waypoint)
+		self.pytrainer_main.ddbb.session.commit()
 		logging.debug("<<")
 
 	def updateWaypoint(self,id_waypoint,lat,lon,name,desc,sym):
 		logging.debug(">>")
-		#self.pytrainer_main.ddbb.connect()
 		logging.debug("Updating waypoint id: %d with lat %s,lon %s,comment %s,name %s,sym %s" %(id_waypoint,lat,lon,desc,name,sym) )
-		self.pytrainer_main.ddbb.update("waypoints","lat,lon,comment,name,sym",[lat,lon,desc,name,sym]," id_waypoint=%d" %id_waypoint)
-		#self.pytrainer_main.ddbb.disconnect()
+		waypoint = self.pytrainer_main.ddbb.session.query(Waypoint).filter(Waypoint.id == id_waypoint).one()
+		waypoint.lat = lat
+		waypoint.lon = lon
+		waypoint.name = name
+		waypoint.comment = desc
+		waypoint.sym = sym
+		self.pytrainer_main.ddbb.session.commit()
 		logging.debug("<<")
 		
 	def addWaypoint(self,lon=None,lat=None,name=None,comment=None,sym=None): 
 		logging.debug(">>") 
-		#self.pytrainer_main.ddbb.connect() 
-		cells = "lat,lon,comment,name,sym" 
-		values = (lat,lon,comment,name,sym) 
+		waypoint = Waypoint(lon=lon, lat=lat, name=name, comment=comment, sym=sym)
 		logging.debug("Adding waypoint with details lat %s,lon %s,comment %s,name %s,sym %s" % (lat,lon,comment,name,sym)  )
-		self.pytrainer_main.ddbb.insert("waypoints",cells,values) 
-		id_waypoint = self.pytrainer_main.ddbb.lastRecord("waypoints") 
-		#self.pytrainer_main.ddbb.disconnect() 
+		self.pytrainer_main.ddbb.session.add(waypoint)
+		self.pytrainer_main.ddbb.session.commit()
 		logging.debug("<<") 
-		return id_waypoint
+		return waypoint.id
 
 	def getwaypointInfo(self,id_waypoint):
 		logging.debug(">>")
-		#self.pytrainer_main.ddbb.connect()
 		retorno = self.pytrainer_main.ddbb.select("waypoints",
 					"lat,lon,ele,comment,time,name,sym",
-					"id_waypoint=\"%s\"" %id_waypoint)
-		#self.pytrainer_main.ddbb.disconnect()
+					"id_waypoint=%s" %id_waypoint)
 		logging.debug("<<")
 		return retorno
 	
 	def getAllWaypoints(self):
 		logging.debug(">>")
-		#self.pytrainer_main.ddbb.connect()
 		retorno = self.pytrainer_main.ddbb.select("waypoints","id_waypoint,lat,lon,ele,comment,time,name,sym","1=1 order by name")
-		#self.pytrainer_main.ddbb.disconnect()
 		logging.debug("<<")
 		return retorno
 	
 	def actualize_fromgpx(self,gpxfile):
 		logging.debug(">>")
-		#self.pytrainer_main.ddbb.connect()
 		from lib.gpx import Gpx
 		gpx = Gpx(self.data_path,gpxfile)
 		tracks = gpx.getTrackRoutes()
@@ -90,7 +99,6 @@ class Waypoint:
 			warning = Warning(self.data_path,self._actualize_fromgpx,[gpx])
                         warning.set_text(msg)
                         warning.run()
-		#self.pytrainer_main.ddbb.disconnect()
 		logging.debug("<<")
 
 	def _actualize_fromgpx(self, gpx):

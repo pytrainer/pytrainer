@@ -18,60 +18,16 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import _mysql_exceptions
-import MySQLdb
 import logging
 
 # Fixed some issues with MySql tables creation (email from Jonas Liljenfeldt)
 class Sql:
-    def __init__(self,host=None, ddbb = None, user = None, password = None, configuration = None):
-        self.ddbb_user = user
-        self.ddbb_pass = password
-        self.ddbb_host = host
-        self.ddbb = ddbb
+    def __init__(self):
         self.db = None
-        
-    def get_connection_url(self):
-        return "mysql://{user}:{passwd}@{host}/{db}".format(user=self.ddbb_user, passwd=self.ddbb_pass, host=self.ddbb_host, db=self.ddbb)
     
-    def connect(self):
-        #si devolvemos 1 ha ido todo con exito
-        #con 0 es que no estaba la bbdd creada
-        #con -1 imposible conectar a la maquina.
-        try:
-            self.db=MySQLdb.connect(
-                host=self.ddbb_host,
-                user=self.ddbb_user,
-                passwd=self.ddbb_pass,
-                db=self.ddbb)
-            return (True, "OK")
-        except _mysql_exceptions.OperationalError as e:
-            error_no, error_description = e
-            print "ERROR: An error occured while connecting to MySQL DB (%s) %s" % (error_no, error_description)
-            if error_no == 1049:
-                #Unknown DB - try to create?
-                print "Unknown DB given, attempting to create a new DB"
-                try:
-                    #Connect to DB without specifying the DB
-                    self.db=MySQLdb.connect(host=self.ddbb_host, user=self.ddbb_user, passwd=self.ddbb_pass)
-                    #Create DB
-                    self.createDDBB()
-                    #Reconnect to new DB
-                    self.db=MySQLdb.connect(host=self.ddbb_host, user=self.ddbb_user, passwd=self.ddbb_pass, db=self.ddbb)
-                    return (True, "OK")
-                except Exception as e:
-                    #No good - so stop
-                    print type(e)
-                    print e
-                    logging.error("Unable to connect to MySQL DB")
-                    return (False, "Unable to connect to MySQL DB")
-        except Exception as e:
-            logging.error("Unable to connect to MySQL DB")
-            print "ERROR: Unable to connect to MySQL DB"
-            print type(e)
-            print e
-            return (False, "Unable to connect to MySQL DB")
-    
+    def connect(self, connection):
+        self.db = connection
+
     def disconnect(self):
         self.db.close()
     
@@ -124,6 +80,7 @@ class Sql:
             count = count+1
         sql = '''insert into %s (%s) values (%s)'''  %(table,cells,string)
         self.db.query(sql)
+        self.db.commit()
 
     def freeExec(self,sql):
         #self.db.query(sql)
@@ -138,6 +95,7 @@ class Sql:
     def delete(self,table,condition):
         sql = "delete from %s where %s"  %(table,condition)
         self.db.query(sql)
+        self.db.commit()
 
     def select(self,table,cells,condition, mod=None):
         if condition != None:
@@ -167,6 +125,7 @@ class Sql:
         string +=" where %s" %condition
         sql = "update %s set %s" %(table,string)
         self.db.query(sql)
+        self.db.commit()
         
     def retrieveTableInfo(self,tableName):
         cur = self.db.cursor()

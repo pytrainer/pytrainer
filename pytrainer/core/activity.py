@@ -26,6 +26,37 @@ from pytrainer.lib.gpx import Gpx
 from pytrainer.lib.graphdata import GraphData
 from pytrainer.environment import Environment
 from pytrainer.lib import uc
+from pytrainer.profile import Profile
+from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger, record_to_equipment
+from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String, Unicode
+from sqlalchemy.orm import relationship, backref, reconstructor, deferred, joinedload
+
+class Lap(DeclarativeBase):
+    __tablename__ = 'laps'
+    avg_hr = Column(ForcedInteger)
+    calories = Column(ForcedInteger)
+    comments = Column(UnicodeText)
+    distance = Column(Float)
+    elapsed_time = Column(String(length=20))
+    end_lat = Column(Float)
+    end_lon = Column(Float)
+    id_lap = Column(Integer, primary_key=True)
+    intensity = Column(String(length=7))
+    lap_number = Column(ForcedInteger)
+    laptrigger = Column(String(length=9))
+    max_hr = Column(ForcedInteger)
+    max_speed = Column(Float)
+    record = Column(Integer, ForeignKey('records.id_record'), index=True, nullable=False)
+    start_lat = Column(Float)
+    start_lon = Column(Float)
+
+class ActivityServiceException(Exception):
+
+    def __init__(self, value):
+        self.value = value
+
+    def __str__(self):
+        return repr(self.value)
 
 class ActivityService(object):
     '''
@@ -52,7 +83,7 @@ class ActivityService(object):
         self.pool_queue = []
         logging.debug("<<")
 
-    def remove_activity(self, id):
+    def remove_activity_from_cache(self, id):
         sid = str(id)
         if sid in self.pool.keys():
             logging.debug("Found activity in pool")
@@ -60,6 +91,9 @@ class ActivityService(object):
             del self.pool[sid]
 
     def get_activity(self, id):
+        if id is None:
+            logging.warning("Deprecated call to get_activity with None id")
+            return Activity()
         sid = str(id)
         if sid in self.pool.keys():
             logging.debug("Found activity in pool")
@@ -68,7 +102,8 @@ class ActivityService(object):
             self.pool_queue.append(sid)
         else:
             logging.debug("Activity NOT found in pool")
-            self.pool[sid] = Activity(pytrainer_main=self.pytrainer_main, id=id)
+            self.pool[sid] = self.pytrainer_main.ddbb.session.query(Activity).options(
+                joinedload('sport'), joinedload('equipment')).filter(Activity.id == id).one()
             self.pool_queue.append(sid)
         if len(self.pool_queue) > self.max_size:
             sid_to_remove = self.pool_queue.pop(0)
@@ -78,7 +113,20 @@ class ActivityService(object):
         logging.debug("ActivityPool queue: %s" % str(self.pool_queue))
         return self.pool[sid]
 
-class Activity:
+    def remove_activity_from_db(self, activity):
+        """Delete a stored Activity."""
+
+        if not activity.id:
+            raise ActivityServiceException("Cannot remove activity which has not been stored: '{0}'.".format(activity.name))
+        try:
+            self.remove_activity_from_cache(activity.id)
+            self.pytrainer_main.ddbb.session.delete(activity)
+            self.pytrainer_main.ddbb.session.commit()
+        except InvalidRequestError:
+             raise ActivityServiceException("Activity id %s not found" % activity.id)
+        logging.debug("Deleted activity: %s", activity.title)
+
+class Activity(DeclarativeBase):
     '''
     Class that knows everything about a particular activity
 
@@ -127,21 +175,48 @@ class Activity:
     lap_time                - (graphdata)
     pace_limit              - (int) maximum pace that is valid for this activity
     '''
-    def __init__(self, pytrainer_main=None, id=None):
+    __tablename__ = 'records'
+    average = Column(Float)
+    beats = Column(Float)
+    calories = Column(ForcedInteger)
+    comments = Column(UnicodeText)
+    date = Column(Date)
+    date_time_local = Column(String(length=40))
+    date_time_utc = Column(String(length=40))
+    distance = Column(Float)
+    duration = Column(ForcedInteger)
+    gpslog = deferred(Column(String(length=200)))
+    id = Column("id_record", Integer, primary_key=True)
+    maxbeats = Column(Float)
+    maxpace = Column(Float)
+    maxspeed = Column(Float)
+    pace = Column(Float)
+    sport_id = Column("sport", Integer, ForeignKey('sports.id_sports'),
+                          index=True, nullable=False)
+    title = Column(Unicode(length=200))
+    unegative = Column(Float)
+    upositive = Column(Float)
+
+    #relation definitions
+    sport = relationship("Sport", backref=backref("activities", order_by=date,
+                                                  cascade='all, delete-orphan'))
+    equipment = relationship("Equipment", secondary=record_to_equipment,
+                             backref=backref("activities", order_by=date))
+    Laps = relationship('Lap', backref=backref('activity'),
+                        order_by='Lap.lap_number',
+                        cascade='all, delete-orphan')
+
+    def __init__(self, **kwargs):
+        self._initialize()
+        super(Activity, self).__init__(**kwargs)
+
+    @reconstructor
+    def _initialize(self):
         logging.debug(">>")
         self.environment = Environment()
         self.uc = uc.UC()
-        self.id = id
-        #It is an error to try to initialise with no id
-        if self.id is None:
-            return
-        #It is an error to try to initialise with no reference to pytrainer_main
-        if pytrainer_main is None:
-            print("Error - must initialise with a reference to the main pytrainer class")
-            return
-        self.pytrainer_main = pytrainer_main
-        self.laps = None
-        self.has_data = False
+        self.profile = Profile()
+        self.has_data = True
         self._distance_data = {}
         self._time_data = {}
         self._lap_time = None
@@ -149,7 +224,6 @@ class Activity:
         self.time_pause = 0
         self.pace_limit = None
         self._gpx = None
-        self._init_from_db()
         self.x_axis = "distance"
         self.x_limits = (None, None)
         self.y1_limits = (None, None)
@@ -213,7 +287,7 @@ class Activity:
 
     @property
     def time_tuple(self):
-        return second2time(self.time)
+        return second2time(self.duration)
 
     @property
     def date_time(self):
@@ -226,6 +300,16 @@ class Activity:
     @property
     def starttime(self):
         return self.date_time.strftime("%X")
+
+    @property
+    def laps(self):
+        logging.warning("Deprecated property Activity.laps called")
+        ret = []
+        for lap in self.Laps:
+            d = dict(lap.__dict__)
+            d.pop('_sa_instance_state', None)
+            ret.append(d)
+        return ret
 
     def __str__(self):
         return '''
@@ -274,7 +358,7 @@ tracks (%s)
 ''' % ('self.tracks', self.tracklist, self.laps, self.uc.us,
                 self.distance_data, self.time_data,
                 self.gpx_file, self.gpx, self.sport_name,
-                self.sport_id, self.title, self.date, self.time, self.time_tuple, self.beats,
+                self.sport_id, self.title, self.date, self.duration, self.time_tuple, self.beats,
                 self.maxbeats, self.comments, self.calories, self.id, self.date_time_local,
                 self.date_time_utc, self.date_time, self.starttime, self.distance, self.average,
                 self.upositive, self.unegative, self.maxspeed, self.maxpace, self.pace, self.has_data,
@@ -307,59 +391,15 @@ tracks (%s)
             return None
         logging.debug("<<")
 
-    def _init_from_db(self):
-        '''
-        Get activity information from the DB
-        '''
-        logging.debug(">>")
-        #Get base information
-        cols = ("sports.name","id_sports", "date","distance","time","beats","comments","duration",
-                                        "average","calories","id_record","title","upositive","unegative",
-                                        "maxspeed","maxpace","pace","maxbeats","date_time_utc","date_time_local", "sports.max_pace")
-        # outer join on sport id to workaround bug where sport reference is null on records from GPX import
-        db_result = self.pytrainer_main.ddbb.select("records left outer join sports on records.sport=sports.id_sports",
-                                ", ".join(cols),
-                                "id_record=\"%s\" " %self.id)
-        if len(db_result) == 1:
-            row = db_result[0]
-            self.sport_name = row[cols.index('sports.name')]
-            if self.sport_name == None:
-                self.sport_name = ""
-            self.sport_id = row[cols.index('id_sports')]
-            self.pace_limit = row[cols.index('sports.max_pace')]
-            if self.pace_limit == 0 or self.pace_limit == "":
-                self.pace_limit = None
-            self.title = row[cols.index('title')]
-            if self.title is None:
-                self.title = ""
-            self.date = row[cols.index('date')]
-            self.time = self._int(row[cols.index('time')])
-            self.duration = self._int(row[cols.index('duration')])
-            self.beats = self._int(row[cols.index('beats')])
-            self.comments = row[cols.index('comments')]
-            if self.comments is None:
-                self.comments = ""
-            self.calories = self._int(row[cols.index('calories')])
-            self.maxbeats = self._int(row[cols.index('maxbeats')])
-            self.date_time_local = row[cols.index('date_time_local')]
-            self.date_time_utc = row[cols.index('date_time_utc')]
-            self.distance = self._float(row[cols.index('distance')])
-            if not self.distance and self.gpx:
-                self.distance = self.gpx.total_dist
-            self.average = self._float(row[cols.index('average')])
-            self.upositive = self._float(row[cols.index('upositive')])
-            self.unegative = self._float(row[cols.index('unegative')])
-            self.maxspeed = self._float(row[cols.index('maxspeed')])
-            self.maxpace = self._float(row[cols.index('maxpace')])
-            self.pace = self._float(row[cols.index('pace')])
-            self.has_data = True
-        else:
-            raise Exception("Error - multiple results from DB for id: %s" % self.id)
-        #Get lap information
-        self.laps = self.pytrainer_main.ddbb.select_dict("laps",
-                                ("id_lap", "record", "elapsed_time", "distance", "start_lat", "start_lon", "end_lat", "end_lon", "calories", "lap_number", "intensity", "avg_hr", "max_hr", "max_speed", "laptrigger", "comments"),
-                                "record=\"%s\"" % self.id)
-        logging.debug("<<")
+    @property
+    def time(self):
+        logging.warning("Deprecated property Activity.time called")
+        return self.duration
+
+    @property
+    def sport_name(self):
+        logging.warning("Deprecated property Activity.sport_name called")
+        return self.sport.name
 
     def _generate_per_lap_graphs(self):
         '''Build lap based graphs...'''
@@ -474,7 +514,7 @@ tracks (%s)
         self._time_data['hr'] = GraphData(title=title,xlabel=xlabel, ylabel=ylabel)
         self._time_data['hr'].set_color('#00ff00', '#00ff00')
         #Heartrate as %
-        maxhr = self.pytrainer_main.profile.getMaxHR()
+        maxhr = self.profile.getMaxHR()
         title = _("Heart Rate (% of max)")
         xlabel = "%s (%s)" % (_('Distance'), self.uc.unit_distance)
         ylabel = "%s (%s)" % (_('Heart Rate'), _('%'))
@@ -542,7 +582,7 @@ tracks (%s)
         logging.debug("<<")
         #Add Heartrate zones graphs
         if 'hr' in self._distance_data:
-            zones = self.pytrainer_main.profile.getZones()
+            zones = self.profile.getZones()
             title = _("Heart Rate zone")
             xlabel = "%s (%s)" % (_('Distance'), self.uc.unit_distance)
             ylabel = "%s (%s)" % (_('Heart Rate'), _('bpm'))
@@ -606,9 +646,9 @@ tracks (%s)
         elif param == 'calories':
             return self.calories
         elif param == 'time':
-            if not self.time:
+            if not self.duration:
                 return ""
-            _hour ,_min, _sec = second2time(self.time)
+            _hour ,_min, _sec = second2time(self.duration)
             if _hour == 0:
                 return "%02d:%02d" % (_min, _sec)
             else:
