@@ -17,7 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
-import os
+import os, os.path
 import dateutil.parser
 from dateutil.tz import tzlocal
 
@@ -122,6 +122,8 @@ class ActivityService(object):
             self.remove_activity_from_cache(activity.id)
             self.pytrainer_main.ddbb.session.delete(activity)
             self.pytrainer_main.ddbb.session.commit()
+            if activity.gpx_file and os.path.isfile(activity.gpx_file):
+                os.remove(activity.gpx_file)
         except InvalidRequestError:
              raise ActivityServiceException("Activity id %s not found" % activity.id)
         logging.debug("Deleted activity: %s", activity.title)
