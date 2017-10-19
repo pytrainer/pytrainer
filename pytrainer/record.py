@@ -107,7 +107,7 @@ class Record:
 		logging.debug('>>')
 		time = time2second(list_options["rcd_time"])
 		average = self.parseFloatRecord(list_options["rcd_average"])
-		keys= "date,sport,distance,time,beats,comments,average,calories,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc,date_time_local, duration"
+		keys= "date,sport,distance,beats,comments,average,calories,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc,date_time_local, duration"
 		if (list_options["rcd_beats"] == ""):
 			list_options["rcd_beats"] = 0
 
@@ -118,7 +118,6 @@ class Record:
 			list_options["rcd_date"],
 			sport_id,
 			self.parseFloatRecord(list_options["rcd_distance"]),
-			time,
 			self.parseFloatRecord(list_options["rcd_beats"]),
 			list_options["rcd_comments"],
 			average,
@@ -328,7 +327,7 @@ class Record:
 		if id_record is None or id_record == "":
 			return []
 		return self.pytrainer_main.ddbb.select("records,sports",
-					"sports.name,date,distance,time,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc,date_time_local",
+					"sports.name,date,distance,beats,comments,average,calories,id_record,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc,date_time_local",
 					"id_record=\"%s\" and records.sport=sports.id_sports" %id_record)
 
 	def format_date(self, date):
@@ -413,7 +412,7 @@ class Record:
 			condition = "date>\"%s\" and date<\"%s\" and records.sport=sports.id_sports and sports.id_sports=\"%s\"" %(date_ini,date_end,sport)
 
 		return self.pytrainer_main.ddbb.select(tables,
-					"date,distance,time,beats,comments,average,calories,maxspeed,maxbeats,upositive,unegative",
+					"date,distance,beats,comments,average,calories,maxspeed,maxbeats,upositive,unegative",
 					condition)
 		
 	def _get_sport(self, sport_name):
