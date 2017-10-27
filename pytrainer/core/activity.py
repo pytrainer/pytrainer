@@ -30,6 +30,7 @@ from pytrainer.profile import Profile
 from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger, record_to_equipment
 from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String, Unicode
 from sqlalchemy.orm import relationship, backref, reconstructor, deferred, joinedload
+from sqlalchemy.exc import InvalidRequestError
 
 class Lap(DeclarativeBase):
     __tablename__ = 'laps'
