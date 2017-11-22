@@ -278,8 +278,6 @@ class Main(SimpleBuilderApp):
         if not self.mapviewer and not self.mapviewer_fs and not self.waypointeditor:
             try:
                 from pytrainer.extensions.mapviewer import MapViewer
-                from pytrainer.extensions.googlemaps import Googlemaps
-                from pytrainer.extensions.osm import Osm
                 from pytrainer.extensions.waypointeditor import WaypointEditor
                 self.mapviewer = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox)
                 self.mapviewer_fs = MapViewer(self.data_path, pytrainer_main=self.parent, box=self.map_vbox_old)
@@ -969,10 +967,12 @@ class Main(SimpleBuilderApp):
             if self.radiobuttonOSM.get_active():
                 #Use OSM to draw map
                 logging.debug("Using OSM to draw map....")
+                from pytrainer.extensions.osm import Osm
                 htmlfile = Osm(data_path=self.data_path, waypoint=self.pytrainer_main.waypoint, pytrainer_main=self.parent).drawMap(activity, self.comboMapLineType.get_active())
             elif self.radiobuttonGMap.get_active():
                 #Use Google to draw map
                 logging.debug("Using Google to draw map")
+                from pytrainer.extensions.googlemaps import Googlemaps
                 htmlfile = Googlemaps(data_path=self.data_path, waypoint=self.pytrainer_main.waypoint, pytrainer_main=self.parent).drawMap(activity, self.comboMapLineType.get_active())
             else:
                 #Unknown map type...
