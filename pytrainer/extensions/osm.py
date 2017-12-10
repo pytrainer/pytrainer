@@ -72,7 +72,7 @@ class Osm:
                 self.URLS[localfile]='file://' + cachedir + '/' + localfile;
                 logging.info("Using %s file " % (self.URLS[localfile]))
         except Exception as e:
-            loggin.error("(%s) Error while downloading %s to local cache, using default hosted file instaed." \
+            logging.error("(%s) Error while downloading %s to local cache, using default hosted file instead." \
                            % (str(e), self.URLS[localfile]))
         logging.debug("<<")
     
