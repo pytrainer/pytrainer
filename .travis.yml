@@ -3,7 +3,7 @@ language: python
 env:
   - TZ=Europe/Kaliningrad
 before_install:
-  - sudo apt-get install python-gtk2 python-glade2 python-lxml python-matplotlib
+  - sudo apt-get install --no-install-recommends python-gtk2 python-glade2 python-lxml python-matplotlib python-tornado
 python:
   - "2.7"
 script: "python setup.py test"
