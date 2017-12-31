@@ -29,7 +29,7 @@ class Equipment(DeclarativeBase):
 
    __tablename__ = 'equipment'
    active = Column(Boolean)
-   description = Column(Unicode(length=200), unique=True, index=True)
+   description = Column(Unicode(length=100), unique=True, index=True)
    id = Column(Integer, primary_key=True)
    life_expectancy = Column(ForcedInteger)
    notes = Column(UnicodeText)
