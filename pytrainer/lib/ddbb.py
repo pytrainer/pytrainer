@@ -157,7 +157,13 @@ if no url is provided"""
         self.engine.dispose()
 
     def select(self,table,cells,condition=None, mod=None):
-        return self.ddbbObject.select(table,cells,condition,mod)
+        logging.warning("Deprecated call to ddbb.select")
+        sql = "select %s from %s" %(cells,table)
+        if condition is not None:
+            sql = "%s where %s" % (sql, condition)
+        if mod is not None:
+            sql = "%s %s" % (sql, mod)
+        return list(self.session.execute(sql))
 
     def select_dict(self,table,cells,condition=None, mod=None):
         '''
@@ -180,7 +186,7 @@ if no url is provided"""
                 #TODO fix so works....
                 logging.info('TODO fix select_dict to work with multiple tables')
                 cellString = ','.join(cells) #create cell list string
-                results = self.ddbbObject.select(table,cellString,condition,mod)
+                results = self.select(table,cellString,condition,mod)
                 for result in results:
                     dict = {}
                     #Loop through cells and create dict of results
@@ -190,7 +196,7 @@ if no url is provided"""
                     return_value.append(dict)
             elif table in tablesList:
                 cellString = ','.join(cells) #create cell list string
-                results = self.ddbbObject.select(table,cellString,condition,mod)
+                results = self.select(table,cellString,condition,mod)
                 for result in results:
                     dict = {}
                     #Loop through cells and create dict of results
