@@ -20,6 +20,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
+import os
 import dateutil
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -130,7 +131,10 @@ if no url is provided"""
         if url:
             self.url = url
         else:
-            self.url = "sqlite://"
+            if 'PYTRAINER_ALCHEMYURL' in os.environ:
+                self.url = os.environ['PYTRAINER_ALCHEMYURL']
+            else:
+                self.url = "sqlite://"
         if self.url.startswith("sqlite"):
             from sqliteUtils import Sql
         elif self.url.startswith("mysql"):
