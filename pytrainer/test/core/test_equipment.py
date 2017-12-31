@@ -71,7 +71,7 @@ class EquipmentTest(unittest.TestCase):
         try:
             self.ddbb.session.add(equipment)
             self.ddbb.session.flush()
-        except (ProgrammingError, DataError):
+        except (ProgrammingError, DataError, OperationalError):
             pass
         else:
             self.fail("Should not be able to set description to non unicode string value.")
@@ -171,7 +171,7 @@ class EquipmentTest(unittest.TestCase):
         try:
             self.ddbb.session.add(equipment)
             self.ddbb.session.flush()
-        except (ProgrammingError, DataError):
+        except (ProgrammingError, DataError, OperationalError):
             pass
         else:
             self.fail("Should not be able to set notes to non-unicode string value.")

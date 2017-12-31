@@ -57,7 +57,7 @@ class SportTest(unittest.TestCase):
             sport.id = "test"
             self.ddbb.session.add(sport)
             self.ddbb.session.flush()
-        except (IntegrityError, DataError):
+        except (IntegrityError, DataError, OperationalError):
             pass
         else:
             self.fail()
@@ -77,7 +77,7 @@ class SportTest(unittest.TestCase):
         try:
             self.ddbb.session.add(sport)
             self.ddbb.session.flush()
-        except (ProgrammingError, DataError):
+        except (ProgrammingError, DataError, OperationalError):
             pass
         else:
             self.fail()
