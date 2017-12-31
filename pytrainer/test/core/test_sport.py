@@ -125,6 +125,8 @@ class SportTest(unittest.TestCase):
             self.fail()
                      
     def test_met_should_not_accept_negative_value(self):
+        if self.ddbb.engine.name == 'mysql':
+            self.skipTest('Check constraints not available on Mysql')
         sport = Sport()
         sport.met = -1
         try:
@@ -168,6 +170,8 @@ class SportTest(unittest.TestCase):
             self.fail()
             
     def test_weight_should_not_accept_negative_value(self):
+        if self.ddbb.engine.name == 'mysql':
+            self.skipTest('Check constraints not available on Mysql')
         sport = Sport()
         sport.weight = -1
         try:
@@ -227,6 +231,8 @@ class SportTest(unittest.TestCase):
         self.assertEquals(220, sport.max_pace)
 
     def test_max_pace_should_not_accept_negative_value(self):
+        if self.ddbb.engine.name == 'mysql':
+            self.skipTest('Check constraints not available on Mysql')
         sport = Sport()
         sport.max_pace = -1
         try:
