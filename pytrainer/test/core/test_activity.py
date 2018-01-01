@@ -56,7 +56,7 @@ class ActivityTest(unittest.TestCase):
                                                             'sport': 1,
                                                             'maxbeats': 120.0}))
         laps_table = DeclarativeBase.metadata.tables['laps']
-        self.ddbb.session.execute(laps_table.insert({'distance': 46181.9107741,
+        self.ddbb.session.execute(laps_table.insert({'distance': 46181.9,
                                                      'lap_number': 0,
                                                      'calories': 1462,
                                                          'elapsed_time': u'7426.0',
@@ -97,7 +97,8 @@ class ActivityTest(unittest.TestCase):
         self.assertEquals(self.activity.time_tuple, (2, 3, 46))
 
     def test_activity_lap(self):
-        self.assertEquals(self.activity.laps[0], {'distance': 46181.9107741, 'end_lon': None, 'lap_number': 0, 'start_lon': None, 'id_lap': 1, 'calories': 1462, 'comments': None, 'laptrigger': u'manual', 'elapsed_time': u'7426.0', 'record': 1, 'intensity': u'active', 'avg_hr': 136, 'max_hr': 173, 'end_lat': None, 'start_lat': None, 'max_speed': None})
+        self.maxDiff = None
+        self.assertEquals(self.activity.laps[0], {'distance': 46181.9, 'end_lon': None, 'lap_number': 0, 'start_lon': None, 'id_lap': 1, 'calories': 1462, 'comments': None, 'laptrigger': u'manual', 'elapsed_time': u'7426.0', 'record': 1, 'intensity': u'active', 'avg_hr': 136, 'max_hr': 173, 'end_lat': None, 'start_lat': None, 'max_speed': None})
 
     def test_activity_get_value_f(self):
         self.assertEquals(self.activity.get_value_f('distance', "%0.2f"), '46.18')

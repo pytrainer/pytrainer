@@ -51,6 +51,8 @@ class EquipmentTest(unittest.TestCase):
         self.assertEquals(3, equipment.id)
 
     def test_id_set_to_non_numeric_string(self):
+        if self.ddbb.engine.name == 'mysql':
+            self.skipTest('Not supported on Mysql 5.6')
         equipment = Equipment()
         equipment.id = "test"
         try:
@@ -66,12 +68,14 @@ class EquipmentTest(unittest.TestCase):
         self.assertEquals(u"", equipment.description)
             
     def test_description_set_to_non_unicode_string(self):
+        if self.ddbb.engine.name == 'mysql':
+            self.skipTest('Not supported on Mysql 5.6')
         equipment = Equipment()
         equipment.description = "100$ Shoes" + chr(255)
         try:
             self.ddbb.session.add(equipment)
             self.ddbb.session.flush()
-        except (ProgrammingError, DataError):
+        except (ProgrammingError, DataError, OperationalError):
             pass
         else:
             self.fail("Should not be able to set description to non unicode string value.")
@@ -166,12 +170,14 @@ class EquipmentTest(unittest.TestCase):
         self.assertEquals(u"", equipment.notes)
             
     def test_notes_set_to_string(self):
+        if self.ddbb.engine.name == 'mysql':
+            self.skipTest('Not supported on Mysql 5.6')
         equipment = Equipment()
         equipment.notes = "100$ Shoes" + chr(255)
         try:
             self.ddbb.session.add(equipment)
             self.ddbb.session.flush()
-        except (ProgrammingError, DataError):
+        except (ProgrammingError, DataError, OperationalError):
             pass
         else:
             self.fail("Should not be able to set notes to non-unicode string value.")

@@ -52,12 +52,14 @@ class SportTest(unittest.TestCase):
         self.assertEquals(1, sport.id)
         
     def test_id_should_not_accept_non_integer_string(self):
+        if self.ddbb.engine.name == 'mysql':
+            self.skipTest('Not supported on Mysql 5.6')
         sport = Sport()
         try:
             sport.id = "test"
             self.ddbb.session.add(sport)
             self.ddbb.session.flush()
-        except (IntegrityError, DataError):
+        except (IntegrityError, DataError, OperationalError):
             pass
         else:
             self.fail()
@@ -72,12 +74,14 @@ class SportTest(unittest.TestCase):
         self.assertEquals(u"Unicycling", sport.name)
         
     def test_name_should_not_accept_non_unicode_string(self):
+        if self.ddbb.engine.name == 'mysql':
+            self.skipTest('Not supported on Mysql 5.6')
         sport = Sport()
         sport.name = "Juggling" + chr(255)
         try:
             self.ddbb.session.add(sport)
             self.ddbb.session.flush()
-        except (ProgrammingError, DataError):
+        except (ProgrammingError, DataError, OperationalError):
             pass
         else:
             self.fail()
@@ -114,6 +118,8 @@ class SportTest(unittest.TestCase):
         self.assertEquals(22.5, sport.met)
         
     def test_met_should_not_accept_non_float_string(self):
+        if self.ddbb.engine.name == 'mysql':
+            self.skipTest('Not supported on Mysql 5.6')
         sport = Sport()
         sport.met = "22.5kg"
         try:
@@ -125,6 +131,8 @@ class SportTest(unittest.TestCase):
             self.fail()
                      
     def test_met_should_not_accept_negative_value(self):
+        if self.ddbb.engine.name == 'mysql':
+            self.skipTest('Check constraints not available on Mysql')
         sport = Sport()
         sport.met = -1
         try:
@@ -157,6 +165,8 @@ class SportTest(unittest.TestCase):
         self.assertEquals(22.5, sport.weight)
         
     def test_weight_should_not_accept_non_float_string(self):
+        if self.ddbb.engine.name == 'mysql':
+            self.skipTest('Not supported on Mysql 5.6')
         sport = Sport()
         sport.weight = "22.5kg"
         try:
@@ -168,6 +178,8 @@ class SportTest(unittest.TestCase):
             self.fail()
             
     def test_weight_should_not_accept_negative_value(self):
+        if self.ddbb.engine.name == 'mysql':
+            self.skipTest('Check constraints not available on Mysql')
         sport = Sport()
         sport.weight = -1
         try:
@@ -227,6 +239,8 @@ class SportTest(unittest.TestCase):
         self.assertEquals(220, sport.max_pace)
 
     def test_max_pace_should_not_accept_negative_value(self):
+        if self.ddbb.engine.name == 'mysql':
+            self.skipTest('Check constraints not available on Mysql')
         sport = Sport()
         sport.max_pace = -1
         try:

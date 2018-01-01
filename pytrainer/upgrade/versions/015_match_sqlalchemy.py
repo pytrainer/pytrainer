@@ -88,6 +88,7 @@ def upgrade(migrate_engine):
     record_equipment.c.equipment_id.alter(nullable=False)
     record_equipment.c.record_id.alter(nullable=False)
     laps.c.record.alter(nullable=False)
+    equipment.c.description.alter(type=Unicode(100))
     equipment_description_index = Index('ix_equipment_description',
                                             equipment.c.description,
                                             unique=True)
@@ -132,6 +133,7 @@ def downgrade(migrate_engine):
                                             equipment.c.description,
                                             unique=True)
     equipment_description_index.drop()
+    equipment.c.description.alter(type=TEXT(200))
     sport_name_index = Index('ix_sports_name',
                                  sports.c.name,
                                  unique=True)
