@@ -20,15 +20,14 @@
 import os
 import shutil
 import logging
-import traceback
 
 from gui.windowrecord import WindowRecord
 from gui.dialogselecttrack import DialogSelectTrack
-from lib.xmlUtils import XMLParser
 from lib.date import Date, time2second
 from lib.gpx import Gpx
-from pytrainer.core.equipment import EquipmentService
+from pytrainer.core.equipment import EquipmentService, Equipment
 from pytrainer.core.sport import Sport
+from pytrainer.core.activity import Activity
 
 class Record:
     def __init__(self, sport_service, data_path = None, parent = None):
@@ -98,42 +97,37 @@ class Record:
             pace = mins + ":" + "%02d" %round(int(sec_dec)*3/5)
         return pace
 
-    def _formatRecordNew (self, list_options):
+    def _formatRecordNew(self, list_options, record):
         """20.07.2008 - dgranda
         New records handle date_time_utc field which is transparent when updating, so logic method has been splitted
         args: list with keys and values without valid format
         returns: keys and values matching DB schema"""
         logging.debug('>>')
-        time = time2second(list_options["rcd_time"])
-        average = self.parseFloatRecord(list_options["rcd_average"])
-        keys= "date,sport,distance,beats,comments,average,calories,title,upositive,unegative,maxspeed,maxpace,pace,maxbeats,date_time_utc,date_time_local, duration"
         if (list_options["rcd_beats"] == ""):
             list_options["rcd_beats"] = 0
 
-        #retrieving sport id (adding sport if it doesn't exist yet)
-        sport_id = self.getSportId(list_options["rcd_sport"],add=True)
-
-        values= (
-                list_options["rcd_date"],
-                sport_id,
-                self.parseFloatRecord(list_options["rcd_distance"]),
-                self.parseFloatRecord(list_options["rcd_beats"]),
-                list_options["rcd_comments"],
-                average,
-                self.parseFloatRecord(list_options["rcd_calories"]),
-                list_options["rcd_title"],
-                self.parseFloatRecord(list_options["rcd_upositive"]),
-                self.parseFloatRecord(list_options["rcd_unegative"]),
-                self.parseFloatRecord(list_options["rcd_maxvel"]),
-                self.pace_to_float(list_options["rcd_maxpace"]),
-                self.pace_to_float(list_options["rcd_pace"]),
-                self.parseFloatRecord(list_options["rcd_maxbeats"]),
-                list_options["date_time_utc"],
-                list_options["date_time_local"],
-                time,
-                )
-        logging.debug('<<')
-        return keys,values
+        #retrieving sport (adding sport if it doesn't exist yet)
+        sport = self._get_sport(list_options["rcd_sport"])
+        if not sport:
+            sport = Sport(name=list_options["rcd_sport"])
+        record.title = unicode(list_options["rcd_title"])
+        record.beats = self.parseFloatRecord(list_options["rcd_beats"])
+        record.pace = self.pace_to_float(list_options["rcd_pace"])
+        record.maxbeats = self.parseFloatRecord(list_options["rcd_maxbeats"])
+        record.distance = self.parseFloatRecord(list_options["rcd_distance"])
+        record.average = self.parseFloatRecord(list_options["rcd_average"])
+        record.calories = self.parseFloatRecord(list_options["rcd_calories"])
+        record.comments = unicode(list_options["rcd_comments"])
+        record.date = list_options["date_time_local"].date()
+        record.unegative = self.parseFloatRecord(list_options["rcd_unegative"])
+        record.upositive = self.parseFloatRecord(list_options["rcd_upositive"])
+        record.maxspeed = self.parseFloatRecord(list_options["rcd_maxvel"])
+        record.maxpace = self.pace_to_float(list_options["rcd_maxpace"])
+        record.date_time_utc = list_options["date_time_utc"]
+        record.duration = time2second(list_options["rcd_time"])
+        record.date_time_local = list_options["date_time_local"].strftime("%Y-%m-%d %H:%M:%S%z")
+        record.sport = sport
+        return record
 
     def insertRecord(self, list_options, laps=None, equipment=None):
         logging.debug('>>')
@@ -142,10 +136,10 @@ class Record:
             logging.info('No data provided, abort adding entry')
             return None
         logging.debug('list_options: '+str(list_options))
-        cells,values = self._formatRecordNew(list_options)
-        self.pytrainer_main.ddbb.insert("records",cells,values)
-        logging.debug('DB updated: '+str(cells)+' | '+str(values))
-        id_record = self.pytrainer_main.ddbb.lastRecord("records")
+        record = self._formatRecordNew(list_options, Activity())
+        self.pytrainer_main.ddbb.session.add(record)
+        self.pytrainer_main.ddbb.session.commit()
+        id_record = record.id
         #Create entry(s) for activity in laps table
         if laps is not None:
             for lap in laps:
@@ -153,9 +147,8 @@ class Record:
                 lap_keys = ", ".join(map(str, lap.keys()))
                 lap_values = lap.values()
                 self.insertLaps(lap_keys,lap.values())
-        if equipment is not None:
-            for equipment_id in equipment:
-                self._insert_record_equipment(id_record, equipment_id)
+        if equipment:
+            record.equipment = self.pytrainer_main.ddbb.session.query(Equipment).filter(Equipment.id.in_(equipment)).all()
         gpxOrig = list_options["rcd_gpxfile"]
         if os.path.isfile(gpxOrig):
             gpxDest = self.pytrainer_main.profile.gpxdir
@@ -165,9 +158,8 @@ class Record:
             #logging.debug('Moving '+gpxOrig+' to '+gpxNew)
             shutil.copy(gpxOrig, gpxNew)
             logging.debug('Copying '+gpxOrig+' to '+gpxNew)
-        #self.parent.refreshListRecords()
         logging.debug('<<')
-        return self.pytrainer_main.ddbb.lastRecord("records")
+        return record.id
 
     def insertNewRecord(self, gpxOrig, entry): #TODO consolidate with insertRecord
         """29.03.2008 - dgranda
@@ -293,9 +285,10 @@ class Record:
 
     def updateRecord(self, list_options, id_record, equipment=None): # ToDo: update only fields that can change if GPX file is present
         logging.debug('>>')
-        #Remove activity from pool so data is updated
-        self.pytrainer_main.activitypool.remove_activity_from_cache(id_record)
-        gpxfile = self.pytrainer_main.profile.gpxdir+"/%d.gpx"%int(id_record)
+        logging.debug('list_options: '+str(list_options))
+        # No need to remove from the pool, sqlalchemy keeps things in sync
+        record = self.pytrainer_main.activitypool.get_activity(id_record)
+        gpxfile = self.pytrainer_main.profile.gpxdir+"/%d.gpx"%int(record.id)
         gpxOrig = list_options["rcd_gpxfile"]
         if os.path.isfile(gpxOrig):
             if gpxfile != gpxOrig:
@@ -304,10 +297,10 @@ class Record:
             if (list_options["rcd_gpxfile"]==""):
                 logging.debug('Activity not based in GPX file') # ein?
         logging.debug('Updating bbdd')
-        cells,values = self._formatRecordNew(list_options)
-        self.pytrainer_main.ddbb.update("records",cells,values," id_record=%d" %int(id_record))
-        if equipment is not None:
-            self._update_record_equipment(id_record, equipment)
+        self._formatRecordNew(list_options, record)
+        if equipment:
+            record.equipment = self.pytrainer_main.ddbb.session.query(Equipment).filter(Equipment.id.in_(equipment)).all()
+        self.pytrainer_main.ddbb.session.commit()
         self.pytrainer_main.refreshListView()
         logging.debug('<<')
 
@@ -364,14 +357,6 @@ class Record:
         logging.debug('--')
         logging.debug("Adding lap information: " + ", ".join(map(str, values)))
         self.pytrainer_main.ddbb.insert("laps",cells,values)
-
-    def _insert_record_equipment(self, record_id, equipment_id):
-        self.pytrainer_main.ddbb.insert("record_equipment", "record_id, equipment_id", [record_id, equipment_id])
-
-    def _update_record_equipment(self, record_id, equipment_ids):
-        self.pytrainer_main.ddbb.delete("record_equipment", "record_id={0}".format(record_id))
-        for id in equipment_ids:
-            self._insert_record_equipment(record_id, id)
 
     def getrecordPeriod(self, date_range, sport=None):
         #TODO This is essentially the same as getrecordPeriodSport (except date ranges) - need to look at merging the two
