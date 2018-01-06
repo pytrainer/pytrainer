@@ -140,6 +140,11 @@ class Record:
         self.pytrainer_main.ddbb.session.add(record)
         self.pytrainer_main.ddbb.session.commit()
         id_record = record.id
+        gpxOrig = list_options["rcd_gpxfile"]
+        # Load laps from gpx if not provided by the caller
+        if laps is None and os.path.isfile(gpxOrig):
+            gpx = Gpx(self.data_path, gpxOrig)
+            laps = self.lapsFromGPX(gpx)
         #Create entry(s) for activity in laps table
         if laps is not None:
             for lap in laps:
@@ -149,7 +154,6 @@ class Record:
                 self.insertLaps(lap_keys,lap.values())
         if equipment:
             record.equipment = self.pytrainer_main.ddbb.session.query(Equipment).filter(Equipment.id.in_(equipment)).all()
-        gpxOrig = list_options["rcd_gpxfile"]
         if os.path.isfile(gpxOrig):
             gpxDest = self.pytrainer_main.profile.gpxdir
             gpxNew = gpxDest+"/%d.gpx"%id_record
