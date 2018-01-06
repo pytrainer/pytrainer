@@ -27,7 +27,7 @@ from lib.date import Date, time2second
 from lib.gpx import Gpx
 from pytrainer.core.equipment import EquipmentService, Equipment
 from pytrainer.core.sport import Sport
-from pytrainer.core.activity import Activity
+from pytrainer.core.activity import Activity, Lap
 
 class Record:
     def __init__(self, sport_service, data_path = None, parent = None):
@@ -138,7 +138,6 @@ class Record:
         logging.debug('list_options: '+str(list_options))
         record = self._formatRecordNew(list_options, Activity())
         self.pytrainer_main.ddbb.session.add(record)
-        self.pytrainer_main.ddbb.session.commit()
         id_record = record.id
         gpxOrig = list_options["rcd_gpxfile"]
         # Load laps from gpx if not provided by the caller
@@ -148,12 +147,11 @@ class Record:
         #Create entry(s) for activity in laps table
         if laps is not None:
             for lap in laps:
-                lap['record'] = id_record #Add reference to entry in record table
-                lap_keys = ", ".join(map(str, lap.keys()))
-                lap_values = lap.values()
-                self.insertLaps(lap_keys,lap.values())
+                new_lap = Lap(**lap)
+                record.Laps.append(new_lap)
         if equipment:
             record.equipment = self.pytrainer_main.ddbb.session.query(Equipment).filter(Equipment.id.in_(equipment)).all()
+        self.pytrainer_main.ddbb.session.commit()
         if os.path.isfile(gpxOrig):
             gpxDest = self.pytrainer_main.profile.gpxdir
             gpxNew = gpxDest+"/%d.gpx"%id_record
@@ -338,11 +336,6 @@ class Record:
         return self.pytrainer_main.ddbb.select("laps",
                                 "id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number, intensity, max_speed, avg_hr, max_hr, laptrigger, comments",
                                 "record=%s" % id_record)
-
-    def insertLaps(self, cells, values):
-        logging.debug('--')
-        logging.debug("Adding lap information: " + ", ".join(map(str, values)))
-        self.pytrainer_main.ddbb.insert("laps",cells,values)
 
     def getrecordPeriod(self, date_range, sport=None):
         #TODO This is essentially the same as getrecordPeriodSport (except date ranges) - need to look at merging the two
