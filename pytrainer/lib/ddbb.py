@@ -130,12 +130,7 @@ if no url is provided"""
                 self.url = os.environ['PYTRAINER_ALCHEMYURL']
             else:
                 self.url = "sqlite://"
-        if self.url.startswith("sqlite"):
-            from sqliteUtils import Sql
-        elif self.url.startswith("mysql"):
-            from mysqlUtils import Sql
         self.engine = create_engine(self.url, logging_name='db')
-        self.ddbbObject = Sql()
         logging.info("DDBB created with url %s", self.url)
 
     def get_connection_url(self):
@@ -144,11 +139,9 @@ if no url is provided"""
     def connect(self):
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
-        self.ddbbObject.connect(self.engine.raw_connection())
 
     def disconnect(self):
         self.session.close()
-        self.ddbbObject.disconnect()
         self.engine.dispose()
 
     def select(self,table,cells,condition=None, mod=None):
@@ -253,63 +246,6 @@ if no url is provided"""
         print "Unknown datatype: (%s) for data (%s)" % (cell_type, value)
         return None
 
-    def insert(self,table,cells,values):
-        self.ddbbObject.insert(table,cells,values)
-
-    def insert_dict(self, table, data):
-        logging.debug(">>")
-        global tablesList
-        if not table or not data or table not in tablesList:
-            print "insert_dict called with invalid table or no data"
-            logging.debug("!<<")
-            return False
-        cells = []
-        values = []
-        for cell in data:
-            cell_type = tablesList[table][cell]
-            cell_value = self.parseByCellType(data[cell], cell_type)
-            if cell_value is not None:
-                cells.append(cell)
-                values.append(cell_value)
-        #Create string of cell names for sql...
-        #TODO fix sql objects so dont need to join...
-        cells_string = ",".join(cells)
-        self.ddbbObject.insert(table,cells_string,values)
-        logging.debug("<<")
-
-    def delete(self,table,condition):
-        self.ddbbObject.delete(table,condition)
-
-    def update(self,table,cells,value,condition):
-        self.ddbbObject.update(table,cells,value,condition)
-
-    def update_dict(self, table, data, condition):
-        logging.debug(">>")
-        global tablesList
-        if not table or not data or table not in tablesList:
-            print "update_dict called with invalid table or no data"
-            logging.debug("!<<")
-            return False
-        cells = []
-        values = []
-        for cell in data:
-            cell_type = tablesList[table][cell]
-            cell_value = self.parseByCellType(data[cell], cell_type)
-            if cell_value is not None:
-                cells.append(cell)
-                values.append(cell_value)
-        #Create string of cell names for sql...
-        #TODO fix sql objects so dont need to join...
-        cells_string = ",".join(cells)
-        self.ddbbObject.update(table,cells_string,values,condition)
-        logging.debug("<<")
-
-    def lastRecord(self,table):
-        id = "id_" + table[:-1] #prune 's' of table name and pre-pend 'id_' to get id column
-        sql = "select %s from %s order by %s Desc limit 0,1" %(id,table,id)
-        ret_val = self.ddbbObject.freeExec(sql)
-        return ret_val[0][0]
-        
     def create_tables(self, add_default=True):
         """Initialise the database schema from an empty database."""
         logging.info("Creating database tables")
