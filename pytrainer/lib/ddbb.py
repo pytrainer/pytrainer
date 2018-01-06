@@ -22,6 +22,7 @@
 import logging
 import os
 import dateutil
+from pytrainer.util.color import color_from_hex_string
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -117,12 +118,6 @@ tablesList = {  "records":{     "id_record":"integer primary key autoincrement",
                                      "equipment_id": "int",
                                      }
                         }
-tablesDefaultData = { "sports": [
-    ({ "name": u"Mountain Bike", "weight": 0.0, "color": "0000ff" } ),
-    ({ "name": u"Bike", "weight": 0.0, "color": "00ff00"}),
-    ({ "name": u"Run", "weight": 0.0, "color": "ffff00"})
-]}
-
 
 class DDBB:
     def __init__(self, url=None):
@@ -325,10 +320,11 @@ if no url is provided"""
         from pytrainer.athlete import Athletestat
         DeclarativeBase.metadata.create_all(self.engine)
         if add_default:
-            for entry, data in tablesDefaultData.iteritems():
-                logging.debug("Adding default data to %s" % entry)
-                for data_dict in data:
-                    self.insert_dict(entry, data_dict)
+            for item in [Sport(name=u"Mountain Bike", weight=0.0, color=color_from_hex_string("0000ff")),
+                         Sport(name=u"Bike", weight=0.0, color=color_from_hex_string("00ff00")),
+                         Sport(name=u"Run", weight=0.0, color=color_from_hex_string("ffff00"))]:
+                self.session.add(item)
+            self.session.commit()
 
     def drop_tables(self):
         """Drop the database schema"""
