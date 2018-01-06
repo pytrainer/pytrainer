@@ -335,27 +335,9 @@ class Record:
 
     def getLaps(self, id_record):
         logging.debug('--')
-        laps = self.pytrainer_main.ddbb.select("laps",
+        return self.pytrainer_main.ddbb.select("laps",
                                 "id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number, intensity, max_speed, avg_hr, max_hr, laptrigger, comments",
-                                "record=\"%s\"" % id_record)
-        if laps is None or laps == []:  #No laps stored - update DB
-            logging.debug("No laps in DB for record %d" % id_record)
-            #print ("No laps in DB for record %d" % id_record)
-            gpx_dest = self.pytrainer_main.profile.gpxdir
-            gpxfile = gpx_dest+"/%d.gpx"%id_record
-            gpx = Gpx(self.data_path,gpxfile)
-            laps = self.lapsFromGPX(gpx)
-            if laps is not None:
-                for lap in laps:
-                    lap['record'] = id_record #Add reference to entry in record table
-                    lap_keys = ", ".join(map(str, lap.keys()))
-                    lap_values = lap.values()
-                    self.insertLaps(lap_keys,lap.values())
-            #Try to get lap info again #TODO? refactor
-            laps = self.pytrainer_main.ddbb.select("laps",
-                            "id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number, intensity, max_speed, avg_hr, max_hr, laptrigger, comments",
-                            "record=\"%s\"" % id_record)
-        return laps
+                                "record=%s" % id_record)
 
     def insertLaps(self, cells, values):
         logging.debug('--')
