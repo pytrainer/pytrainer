@@ -2,14 +2,18 @@ sudo: required
 language: python
 services:
   - mysql
+  - postgresql
 env:
   - TZ=Europe/Kaliningrad PYTRAINER_ALCHEMYURL="sqlite://"
   - TZ=Europe/Kaliningrad PYTRAINER_ALCHEMYURL="mysql://pytrainer@localhost/pytrainer?charset=utf8"
+  - TZ=Europe/Kaliningrad PYTRAINER_ALCHEMYURL="postgresql://pytrainer@localhost/pytrainer"
 before_install:
   - sudo apt-get install --no-install-recommends python-gtk2 python-glade2 python-lxml python-matplotlib python-tornado
   - mysql -e "CREATE USER 'pytrainer'@'localhost';"
   - mysql -e "CREATE DATABASE pytrainer;"
   - mysql -e "GRANT ALL PRIVILEGES ON pytrainer . * TO 'pytrainer'@'localhost';"
+  - createuser -U postgres pytrainer
+  - createdb -U postgres -O pytrainer pytrainer
 python:
   - "2.7"
 script: "python setup.py test"
