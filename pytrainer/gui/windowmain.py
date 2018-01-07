@@ -432,7 +432,7 @@ class Main(SimpleBuilderApp):
                 self.label_record_equipment.set_text(equipment_text)
             else:
                 self.label_record_equipment.set_markup("<i>None</i>")    
-            if len(activity.laps)>1:
+            if len(activity.Laps)>1:
                 store = gtk.ListStore(
                     gobject.TYPE_INT,
                     gtk.gdk.Pixbuf,
@@ -448,14 +448,14 @@ class Main(SimpleBuilderApp):
                     gobject.TYPE_STRING,
                     gobject.TYPE_STRING,
                     )
-                for lap in activity.laps:
-                    t = lap['elapsed_time'] 
-                    m = lap['distance']
+                for lap in activity.Laps:
+                    t = lap.duration
+                    m = lap.distance
                     
                     m = self.uc.speed(m)
                     
                     s = m / float(t) * 3.6
-                    max_speed = lap['max_speed'] * 3.6
+                    max_speed = lap.max_speed * 3.6
                     if s > 0:
                         pace = "%d:%02d" %((3600/s)/60,(3600/s)%60)
                         if max_speed >0:
@@ -472,11 +472,11 @@ class Main(SimpleBuilderApp):
                         'resting' : '#808080',
                     }
                     
-                    pic = gtk.gdk.pixbuf_new_from_file(self.data_path+"glade/trigger_%s.png" % lap['laptrigger'])
+                    pic = gtk.gdk.pixbuf_new_from_file(self.data_path+"glade/trigger_%s.png" % lap.laptrigger)
                         
                     iter = store.append()
                     store.set(iter, 
-                        0, lap['lap_number']+1, 
+                        0, lap.lap_number + 1,
                         1, pic, 
                         2, m/1000, 
                         3, str(int(float(t))), 
@@ -484,11 +484,11 @@ class Main(SimpleBuilderApp):
                         5, max_speed, 
                         6, pace, 
                         7, max_pace, 
-                        8, lap['avg_hr'] if lap['avg_hr'] else 0, 
-                        9, lap['max_hr'] if lap['max_hr'] else 0, 
-                        10, lap['calories'], 
-                        11, color[lap['intensity']], 
-                        12, '' if not lap['comments'] else (lap['comments'] if len(lap['comments'])<40 else "%s..." % lap['comments'][:40]),
+                        8, lap.avg_hr if lap.avg_hr else 0,
+                        9, lap.max_hr if lap.max_hr else 0,
+                        10, lap.calories,
+                        11, color[lap.intensity],
+                        12, '' if not lap.comments else (lap.comments if len(lap.comments)<40 else "%s..." % lap.comments[:40]),
                         )
                 self.lapsTreeView.set_model(store)
                 self.lapsTreeView.set_rules_hint(True)
