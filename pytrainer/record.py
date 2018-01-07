@@ -331,12 +331,6 @@ class Record:
                             "sports.name,date,distance,duration,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
                             "date=\"%s\" and sports.id_sports=\"%s\" and records.sport=sports.id_sports" %(self.format_date(date),id_sport))
 
-    def getLaps(self, id_record):
-        logging.debug('--')
-        return self.pytrainer_main.ddbb.select("laps",
-                                "id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number, intensity, max_speed, avg_hr, max_hr, laptrigger, comments",
-                                "record=%s" % id_record)
-
     def getrecordPeriod(self, date_range, sport=None):
         #TODO This is essentially the same as getrecordPeriodSport (except date ranges) - need to look at merging the two
         date_ini = self.format_date(date_range.start_date)

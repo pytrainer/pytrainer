@@ -2018,50 +2018,41 @@ class Main(SimpleBuilderApp):
             gobject.TYPE_STRING,        #Distance
             object)
         for i in record_list:
-            #Get lap info
-            #Could get an activity from the pool here, but is slow??
-            id_record = i[8]
-            laps = self.parent.record.getLaps(id_record)
+            activity = self.pytrainer_main.activitypool.get_activity(i[8])
             iter = store.append(None)
             if not iterOne:
                 iterOne = iter
-            dateTime = i[12]
-            if dateTime is not None:
-                localTime = dateutil.parser.parse(dateTime).strftime("%H:%M")
-            else:
-                localTime = ""
-            dist = self.uc.distance(i[2])
+            localTime = activity.date_time.strftime("%H:%M")
+            dist = self.uc.distance(activity.distance)
             distance = "%0.2f" % (float(dist) )
             store.set (
                 iter,
-                0, int(i[8]),
-                1, str(localTime),
-                2, str(i[0]),
+                0, activity.id,
+                1, localTime,
+                2, activity.sport.name,
                 3, str(distance)  #Needs to be US pref aware....
                 )
-            if laps is not None:
-                for lap in laps:
-                    #"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number",
-                    lapNumber = "%s %02d" % ( _("lap"), int(lap[9])+1 )
-                    dist = self.uc.distance(lap[3])
-                    distance = "%0.2f" % (float(dist) / 1000.0)
-                    timeHours = int(float(lap[2]) / 3600)
-                    timeMin = int((float(lap[2]) / 3600.0 - timeHours) * 60)
-                    timeSec = float(lap[2]) - (timeHours * 3600) - (timeMin * 60)
-                    if timeHours > 0:
-                        duration = "%d%s%02d%s%02d%s" % (timeHours, _("h"), timeMin, _("m"), timeSec, _("s"))
-                    else:
-                        duration = "%2d%s%02d%s" % (timeMin, _("m"), timeSec, _("s"))
+            for lap in activity.Laps:
+                lapNumber = "%s %02d" % (_("lap"), lap.lap_number + 1)
+                dist = self.uc.distance(lap.distance)
+                distance = "%0.2f" % (float(dist) / 1000.0)
+                timeHours = int(lap.duration / 3600)
+                timeMin = int((lap.duration / 3600.0 - timeHours) * 60)
+                timeSec = lap.duration - (timeHours * 3600) - (timeMin * 60)
+                if timeHours > 0:
+                    duration = "%d%s%02d%s%02d%s" % (timeHours, _("h"), timeMin, _("m"), timeSec, _("s"))
+                else:
+                    duration = "%2d%s%02d%s" % (timeMin, _("m"), timeSec, _("s"))
 
-                    child_iter = store.append(iter)
-                    store.set (
-                        child_iter,
-                        0, int(i[8]),
-                        1, lapNumber,
-                        2, duration,
-                        3, distance
-                        )
-                    store.set_sort_column_id(1, gtk.SORT_ASCENDING)
+                child_iter = store.append(iter)
+                store.set (
+                    child_iter,
+                    0, activity.id,
+                    1, lapNumber,
+                    2, duration,
+                    3, distance
+                    )
+                store.set_sort_column_id(1, gtk.SORT_ASCENDING)
         self.recordTreeView.set_model(store)
         if iterOne:
             self.recordTreeView.get_selection().select_iter(iterOne)

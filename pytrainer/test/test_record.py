@@ -91,7 +91,3 @@ class RecordTest(unittest.TestCase):
         activity = self.main.activitypool.get_activity(newid)
         self.assertEquals(activity.title, u'test 2')
         self.assertEquals(activity.sport, self.record._sport_service.get_sport_by_name(u"Bike"))
-
-    def test_get_laps(self):
-        newid = self.record.insertRecord(self.summary, laps=self.laps)
-        self.assertEquals(self.record.getLaps(newid), [(1, 1, u'7426.0', 46181.9, None, None, None, None, 1462, 0, u'active', None, 136, 173, u'manual', None)])
