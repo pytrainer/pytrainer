@@ -104,7 +104,8 @@ class ActivityService(object):
         else:
             logging.debug("Activity NOT found in pool")
             self.pool[sid] = self.pytrainer_main.ddbb.session.query(Activity).options(
-                joinedload('sport'), joinedload('equipment')).filter(Activity.id == id).one()
+                joinedload('sport'), joinedload('equipment'), joinedload('Laps')
+            ).filter(Activity.id == id).one()
             self.pool_queue.append(sid)
         if len(self.pool_queue) > self.max_size:
             sid_to_remove = self.pool_queue.pop(0)
