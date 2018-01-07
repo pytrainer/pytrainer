@@ -51,6 +51,10 @@ class Lap(DeclarativeBase):
     start_lat = Column(Float)
     start_lon = Column(Float)
 
+    @property
+    def duration(self):
+        return float(self.elapsed_time)
+
 class ActivityServiceException(Exception):
 
     def __init__(self, value):

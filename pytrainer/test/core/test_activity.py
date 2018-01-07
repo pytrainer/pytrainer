@@ -99,6 +99,16 @@ class ActivityTest(unittest.TestCase):
     def test_activity_lap(self):
         self.maxDiff = None
         self.assertEquals(self.activity.laps[0], {'distance': 46181.9, 'end_lon': None, 'lap_number': 0, 'start_lon': None, 'id_lap': 1, 'calories': 1462, 'comments': None, 'laptrigger': u'manual', 'elapsed_time': u'7426.0', 'record': 1, 'intensity': u'active', 'avg_hr': 136, 'max_hr': 173, 'end_lat': None, 'start_lat': None, 'max_speed': None})
+        lap = self.activity.Laps[0]
+        self.assertEquals(lap.distance, 46181.9)
+        self.assertEquals(lap.duration, 7426.0)
+        self.assertEquals(lap.calories, 1462)
+        self.assertEquals(lap.avg_hr, 136)
+        self.assertEquals(lap.max_hr, 173)
+        self.assertEquals(lap.activity, self.activity)
+        self.assertEquals(lap.lap_number, 0)
+        self.assertEquals(lap.intensity, u'active')
+        self.assertEquals(lap.laptrigger, u'manual')
 
     def test_activity_get_value_f(self):
         self.assertEquals(self.activity.get_value_f('distance', "%0.2f"), '46.18')
