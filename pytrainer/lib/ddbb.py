@@ -22,6 +22,7 @@
 import logging
 import os
 import dateutil
+from pytrainer.util.color import color_from_hex_string
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
@@ -117,12 +118,6 @@ tablesList = {  "records":{     "id_record":"integer primary key autoincrement",
                                      "equipment_id": "int",
                                      }
                         }
-tablesDefaultData = { "sports": [
-    ({ "name": u"Mountain Bike", "weight": 0.0, "color": "0000ff" } ),
-    ({ "name": u"Bike", "weight": 0.0, "color": "00ff00"}),
-    ({ "name": u"Run", "weight": 0.0, "color": "ffff00"})
-]}
-
 
 class DDBB:
     def __init__(self, url=None):
@@ -135,12 +130,7 @@ if no url is provided"""
                 self.url = os.environ['PYTRAINER_ALCHEMYURL']
             else:
                 self.url = "sqlite://"
-        if self.url.startswith("sqlite"):
-            from sqliteUtils import Sql
-        elif self.url.startswith("mysql"):
-            from mysqlUtils import Sql
         self.engine = create_engine(self.url, logging_name='db')
-        self.ddbbObject = Sql()
         logging.info("DDBB created with url %s", self.url)
 
     def get_connection_url(self):
@@ -149,15 +139,19 @@ if no url is provided"""
     def connect(self):
         Session = sessionmaker(bind=self.engine)
         self.session = Session()
-        self.ddbbObject.connect(self.engine.raw_connection())
 
     def disconnect(self):
         self.session.close()
-        self.ddbbObject.disconnect()
         self.engine.dispose()
 
     def select(self,table,cells,condition=None, mod=None):
-        return self.ddbbObject.select(table,cells,condition,mod)
+        logging.warning("Deprecated call to ddbb.select")
+        sql = "select %s from %s" %(cells,table)
+        if condition is not None:
+            sql = "%s where %s" % (sql, condition)
+        if mod is not None:
+            sql = "%s %s" % (sql, mod)
+        return list(self.session.execute(sql))
 
     def select_dict(self,table,cells,condition=None, mod=None):
         '''
@@ -180,7 +174,7 @@ if no url is provided"""
                 #TODO fix so works....
                 logging.info('TODO fix select_dict to work with multiple tables')
                 cellString = ','.join(cells) #create cell list string
-                results = self.ddbbObject.select(table,cellString,condition,mod)
+                results = self.select(table,cellString,condition,mod)
                 for result in results:
                     dict = {}
                     #Loop through cells and create dict of results
@@ -190,7 +184,7 @@ if no url is provided"""
                     return_value.append(dict)
             elif table in tablesList:
                 cellString = ','.join(cells) #create cell list string
-                results = self.ddbbObject.select(table,cellString,condition,mod)
+                results = self.select(table,cellString,condition,mod)
                 for result in results:
                     dict = {}
                     #Loop through cells and create dict of results
@@ -252,63 +246,6 @@ if no url is provided"""
         print "Unknown datatype: (%s) for data (%s)" % (cell_type, value)
         return None
 
-    def insert(self,table,cells,values):
-        self.ddbbObject.insert(table,cells,values)
-
-    def insert_dict(self, table, data):
-        logging.debug(">>")
-        global tablesList
-        if not table or not data or table not in tablesList:
-            print "insert_dict called with invalid table or no data"
-            logging.debug("!<<")
-            return False
-        cells = []
-        values = []
-        for cell in data:
-            cell_type = tablesList[table][cell]
-            cell_value = self.parseByCellType(data[cell], cell_type)
-            if cell_value is not None:
-                cells.append(cell)
-                values.append(cell_value)
-        #Create string of cell names for sql...
-        #TODO fix sql objects so dont need to join...
-        cells_string = ",".join(cells)
-        self.ddbbObject.insert(table,cells_string,values)
-        logging.debug("<<")
-
-    def delete(self,table,condition):
-        self.ddbbObject.delete(table,condition)
-
-    def update(self,table,cells,value,condition):
-        self.ddbbObject.update(table,cells,value,condition)
-
-    def update_dict(self, table, data, condition):
-        logging.debug(">>")
-        global tablesList
-        if not table or not data or table not in tablesList:
-            print "update_dict called with invalid table or no data"
-            logging.debug("!<<")
-            return False
-        cells = []
-        values = []
-        for cell in data:
-            cell_type = tablesList[table][cell]
-            cell_value = self.parseByCellType(data[cell], cell_type)
-            if cell_value is not None:
-                cells.append(cell)
-                values.append(cell_value)
-        #Create string of cell names for sql...
-        #TODO fix sql objects so dont need to join...
-        cells_string = ",".join(cells)
-        self.ddbbObject.update(table,cells_string,values,condition)
-        logging.debug("<<")
-
-    def lastRecord(self,table):
-        id = "id_" + table[:-1] #prune 's' of table name and pre-pend 'id_' to get id column
-        sql = "select %s from %s order by %s Desc limit 0,1" %(id,table,id)
-        ret_val = self.ddbbObject.freeExec(sql)
-        return ret_val[0][0]
-        
     def create_tables(self, add_default=True):
         """Initialise the database schema from an empty database."""
         logging.info("Creating database tables")
@@ -319,10 +256,11 @@ if no url is provided"""
         from pytrainer.athlete import Athletestat
         DeclarativeBase.metadata.create_all(self.engine)
         if add_default:
-            for entry, data in tablesDefaultData.iteritems():
-                logging.debug("Adding default data to %s" % entry)
-                for data_dict in data:
-                    self.insert_dict(entry, data_dict)
+            for item in [Sport(name=u"Mountain Bike", weight=0.0, color=color_from_hex_string("0000ff")),
+                         Sport(name=u"Bike", weight=0.0, color=color_from_hex_string("00ff00")),
+                         Sport(name=u"Run", weight=0.0, color=color_from_hex_string("ffff00"))]:
+                self.session.add(item)
+            self.session.commit()
 
     def drop_tables(self):
         """Drop the database schema"""
