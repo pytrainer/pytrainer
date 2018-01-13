@@ -28,7 +28,7 @@ from pytrainer.environment import Environment
 from pytrainer.lib import uc
 from pytrainer.profile import Profile
 from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger, record_to_equipment
-from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String, Unicode
+from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String, Unicode, and_
 from sqlalchemy.orm import relationship, backref, reconstructor, deferred, joinedload
 from sqlalchemy.exc import InvalidRequestError
 
@@ -133,6 +133,21 @@ class ActivityService(object):
         except InvalidRequestError:
              raise ActivityServiceException("Activity id %s not found" % activity.id)
         logging.debug("Deleted activity: %s", activity.title)
+
+    def get_activities_for_day(self, date, sport=None):
+        """Iterates the activities for a specific date, optionally restricted by Sport)"""
+        if not sport:
+            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date == date).options(joinedload('Laps'))
+        else:
+            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.date == date, Activity.sport == sport)).options(joinedload('Laps'))
+        for activity in activities:
+            sid = str(activity.id)
+            if sid in self.pool:
+                yield self.pool[sid]
+            else:
+                self.pool[sid] = activity
+                self.pool_queue.append(sid)
+                yield activity
 
 class Activity(DeclarativeBase):
     '''

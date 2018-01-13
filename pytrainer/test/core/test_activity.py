@@ -145,3 +145,7 @@ class ActivityTest(unittest.TestCase):
             pass
         else:
             self.fail()
+
+    def test_activities_for_day(self):
+        activity = list(self.service.get_activities_for_day(datetime.date(2016, 7, 24)))[0]
+        self.assertEquals(self.activity, activity)
