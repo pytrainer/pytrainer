@@ -24,6 +24,7 @@ from pytrainer.lib.ddbb import DDBB, DeclarativeBase
 from pytrainer.profile import Profile
 from pytrainer.lib.uc import UC
 from pytrainer.core.activity import ActivityService
+from pytrainer.util.date import DateRange
 
 class ActivityTest(unittest.TestCase):
 
@@ -148,4 +149,8 @@ class ActivityTest(unittest.TestCase):
 
     def test_activities_for_day(self):
         activity = list(self.service.get_activities_for_day(datetime.date(2016, 7, 24)))[0]
+        self.assertEquals(self.activity, activity)
+
+    def test_activities_period(self):
+        activity = list(self.service.get_activities_period(DateRange.for_week_containing(datetime.date(2016, 7, 24))))[0]
         self.assertEquals(self.activity, activity)

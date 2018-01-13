@@ -149,6 +149,14 @@ class ActivityService(object):
                 self.pool_queue.append(sid)
                 yield activity
 
+    def get_activities_period(self, date_range, sport=None):
+        """Iterate over activities for a specific time period, optionally restricted by Sport.
+Does not add them to the cache."""
+        if not sport:
+            return self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date.between(date_range.start_date, date_range.end_date))
+        else:
+            return self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.date.between(date_range.start_date, date_range.end_date), Activity.sport == sport))
+
 class Activity(DeclarativeBase):
     '''
     Class that knows everything about a particular activity
