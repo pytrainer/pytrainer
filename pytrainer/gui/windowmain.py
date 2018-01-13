@@ -913,77 +913,44 @@ class Main(SimpleBuilderApp):
             
         self.rankingTreeView.set_model(rank_store)
 
-    def actualize_dayview(self,record_list=None, activity_list=None):
+    def actualize_dayview(self, date):
         logging.debug(">>")
         self.d_distance_unit.set_text(self.uc.unit_distance)
         self.d_speed_unit.set_text(self.uc.unit_speed)
         self.d_maxspeed_unit.set_text(self.uc.unit_speed)
         self.d_pace_unit.set_text(self.uc.unit_pace)
         self.d_maxpace_unit.set_text(self.uc.unit_pace)
+        if self.activeSport:
+            sport = self._sport_service.get_sport_by_name(self.activeSport)
+        else:
+            sport = None
+        activity_list = self.pytrainer_main.activitypool.get_activities_for_day(date, sport=sport)
 
-        if len(record_list)>0:
-            tbeats = 0
-            distance = 0
-            calories = 0
-            timeinseconds = 0
-            beats = 0
-            maxbeats = 0
-            maxspeed = 0
-            average = 0
-            maxpace = "0:00"
-            pace = "0:00"
-            totalascent = 0 
-            totaldescent = 0
-            for record in record_list:
-                distance += self.parseFloat(record[2])
-                calories += self.parseFloat(record[7])
-                timeinseconds += self.parseFloat(record[3])
-                beats = self.parseFloat(record[4])
-                totalascent += self.parseFloat(record[13]) 
-                totaldescent += self.parseFloat(record[14]) 
-                if float(beats)>0:
-                    tbeats += beats*(self.parseFloat(record[3])/60/60)
-                if record[9] > maxspeed:
-                    maxspeed = self.parseFloat(record[9])
-                if record[10] > maxbeats:
-                    maxbeats = self.parseFloat(record[10])
-
-            distance = self.uc.distance(distance)
-            maxspeed = self.uc.speed(maxspeed)
-
-            if tbeats > 0 and timeinseconds > 0:
-                tbeats = tbeats/(timeinseconds/60/60)
-            if distance > 0 and timeinseconds > 0:
-                average = distance/(timeinseconds/60/60)
-            if maxspeed > 0:
-                maxpace = "%d:%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
-            if average > 0:
-                pace = "%d:%02d" %((3600/average)/60,(3600/average)%60)
-
+        tbeats, distance, calories, timeinseconds, beats, maxbeats, maxspeed, average, maxpace, pace, totalascent, totaldescent = self._totals_from_activities(activity_list)
+        if timeinseconds:
             self.dayview.set_sensitive(1)
-            self.day_distance.set_text("%0.2f" %distance)
-            hour,min,sec = second2time(timeinseconds)
-            self.day_hour.set_text("%d" %hour)
-            self.day_minute.set_text("%02d" %min)
-            self.day_second.set_text("%02d" %sec)
-            if tbeats:
-                self.day_beats.set_text("%0.0f" %tbeats)
-            else:
-                self.day_beats.set_text("")
-            self.day_maxbeats.set_text("%0.0f" %maxbeats)
-            if average:
-                self.day_average.set_text("%0.2f" %average)
-            else:
-                self.day_average.set_text("")
-            self.day_maxspeed.set_text("%0.2f" %maxspeed)
-            self.day_pace.set_text("%s" %pace)
-            self.day_maxpace.set_text("%s" %maxpace)
-            self.day_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
-            self.day_calories.set_text("%0.0f" %calories)
-            self.day_topic.set_text(str(record[1]))
-
         else:
             self.dayview.set_sensitive(0)
+        self.day_distance.set_text("%0.2f" %distance)
+        hour,min,sec = second2time(timeinseconds)
+        self.day_hour.set_text("%d" %hour)
+        self.day_minute.set_text("%02d" %min)
+        self.day_second.set_text("%02d" %sec)
+        if tbeats:
+            self.day_beats.set_text("%0.0f" %tbeats)
+        else:
+            self.day_beats.set_text("")
+        self.day_maxbeats.set_text("%0.0f" %maxbeats)
+        if average:
+            self.day_average.set_text("%0.2f" %average)
+        else:
+            self.day_average.set_text("")
+        self.day_maxspeed.set_text("%0.2f" %maxspeed)
+        self.day_pace.set_text("%s" %pace)
+        self.day_maxpace.set_text("%s" %maxpace)
+        self.day_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
+        self.day_calories.set_text("%0.0f" %calories)
+        self.day_topic.set_text(str(date))
         logging.debug("<<")
 
     def actualize_daygraph(self,record_list):

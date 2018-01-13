@@ -270,11 +270,7 @@ class pyTrainer:
                 self.refreshRecordGraphView("analytics")
         elif view=="day":
              logging.debug('day view')
-             sport = self.windowmain.activeSport
-             sport_id = self.record.getSportId(sport)
-             record_list = self.record.getrecordList(date_selected, sport_id)
-             self.windowmain.actualize_dayview(record_list=record_list)
-             #selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+             self.windowmain.actualize_dayview(date_selected)
         elif view=="week":
              logging.debug('week view')
              date_range = DateRange.for_week_containing(date_selected)
