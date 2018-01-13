@@ -2008,7 +2008,7 @@ class Main(SimpleBuilderApp):
         logging.debug("<<")
         return False
 
-    def actualize_recordTreeView(self, record_list):
+    def actualize_recordTreeView(self, date):
         logging.debug(">>")
         iterOne = False
         store = gtk.TreeStore(
@@ -2017,8 +2017,11 @@ class Main(SimpleBuilderApp):
             gobject.TYPE_STRING,        #Sport
             gobject.TYPE_STRING,        #Distance
             object)
-        for i in record_list:
-            activity = self.pytrainer_main.activitypool.get_activity(i[8])
+        if self.activeSport:
+            sport = self._sport_service.get_sport_by_name(self.activeSport)
+        else:
+            sport = None
+        for activity in self.pytrainer_main.activitypool.get_activities_for_day(date, sport=sport):
             iter = store.append(None)
             if not iterOne:
                 iterOne = iter
