@@ -293,7 +293,7 @@ class pyTrainer:
              sport = self.windowmain.activeSport
              sport_id = self.record.getSportId(sport)
              record_list = self.record.getrecordPeriod(date_range, sport_id)
-             self.windowmain.actualize_yearview(record_list, date_selected.year)
+             self.windowmain.actualize_yearview(record_list, date_selected.year, date_range)
              self.windowmain.actualize_yeargraph(record_list)
         elif view=="listview":
             logging.debug('list view')

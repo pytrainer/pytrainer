@@ -1062,77 +1062,38 @@ class Main(SimpleBuilderApp):
         self.drawareamonth.drawgraph(record_list, daysInMonth)
         logging.debug("<<")
 
-    def actualize_yearview(self,record_list, year):
+    def actualize_yearview(self, record_list, year, date_range):
         logging.debug(">>")
         self.year_date.set_text("%d" %int(year))
-        km = calories = time = average = beats = 0
-        num_records = len(record_list)
-        time_in_min = 0
-        tbeats = 0
-        maxspeed = 0
-        pace = "0:00"
-        maxpace = "0:00"
-        maxbeats = 0
-        totalascent = 0 
-        totaldescent = 0
+        if self.activeSport:
+            sport = self._sport_service.get_sport_by_name(self.activeSport)
+        else:
+            sport = None
+        activity_list = self.pytrainer_main.activitypool.get_activities_period(date_range, sport=sport)
+        tbeats, distance, calories, timeinseconds, beats, maxbeats, maxspeed, average, maxpace, pace, totalascent, totaldescent = self._totals_from_activities(activity_list)
+        if timeinseconds:
+            self.yearview.set_sensitive(1)
+        else:
+            self.yearview.set_sensitive(0)
+            self.drawareayear.drawgraph([])
         self.y_distance_unit.set_text(self.uc.unit_distance)
         self.y_speed_unit.set_text(self.uc.unit_speed)
         self.y_maxspeed_unit.set_text(self.uc.unit_speed)
         self.y_pace_unit.set_text(self.uc.unit_pace)
         self.y_maxpace_unit.set_text(self.uc.unit_pace)
-        if num_records>0:
-            for record in record_list:
-                km += self.parseFloat(record[1])
-                time += self.parseFloat(record[2])
-                average += self.parseFloat(record[5])
-                calories += self.parseFloat(record[6])
-                beats = self.parseFloat(record[3])
-                totalascent += self.parseFloat(record[10])
-                totaldescent += self.parseFloat(record[11])
-                if float(beats) > 0:
-                    time_in_min += time/60
-                    tbeats += beats*(time/60)
-                if record[7] > maxspeed:
-                    maxspeed = self.parseFloat(record[7])
-                if record[8] > maxbeats:
-                    maxbeats = self.parseFloat(record[8])
-
-            km = self.uc.distance(km)
-            maxspeed = self.uc.speed(maxspeed)
-
-            if time_in_min > 0:
-                tbeats = tbeats/time_in_min
-            else:
-                tbeats = 0
-            if km > 0:
-                average = (km/(time/3600))
-            else:
-                average = 0
-
-            if maxspeed > 0:
-                #maxpace = 60/maxspeed
-                maxpace = "%d:%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
-            if average > 0:
-                #pace = 60/average
-                pace = "%d:%02d" %((3600/average)/60,(3600/average)%60)
-
-            self.yeara_distance.set_text("%0.2f" %km)
-            hour,min,sec = second2time(time)
-            self.yeara_hour.set_text("%d" %hour)
-            self.yeara_minute.set_text("%02d" %min)
-            self.yeara_second.set_text("%02d" %sec)
-            self.yeara_beats.set_text("%0.0f" %tbeats)
-            self.yeara_maxbeats.set_text("%0.0f" %(maxbeats))
-            self.yeara_average.set_text("%0.2f" %average)
-            self.yeara_maxspeed.set_text("%0.2f" %maxspeed)
-            self.yeara_pace.set_text(pace)
-            self.yeara_maxpace.set_text(maxpace)
-            self.yeara_ascdesc.set_text("%d/%d " %(totalascent,totaldescent))
-            self.yeara_calories.set_text("%0.0f" %calories)
-            self.yearview.set_sensitive(1)
-        else:
-            self.yearview.set_sensitive(0)
-            self.drawareayear.drawgraph([])
+        self.yeara_distance.set_text("%0.2f" %distance)
+        hour,min,sec = second2time(timeinseconds)
+        self.yeara_hour.set_text("%d" %hour)
+        self.yeara_minute.set_text("%02d" %min)
+        self.yeara_second.set_text("%02d" %sec)
+        self.yeara_beats.set_text("%0.0f" %tbeats)
+        self.yeara_maxbeats.set_text("%0.0f" %(maxbeats))
+        self.yeara_average.set_text("%0.2f" %average)
+        self.yeara_maxspeed.set_text("%0.2f" %maxspeed)
+        self.yeara_pace.set_text(pace)
+        self.yeara_maxpace.set_text(maxpace)
+        self.yeara_ascdesc.set_text("%d/%d " %(totalascent,totaldescent))
+        self.yeara_calories.set_text("%0.0f" %calories)
         logging.debug("<<")
 
     def actualize_yeargraph(self,record_list):
