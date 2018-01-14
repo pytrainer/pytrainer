@@ -990,76 +990,36 @@ class Main(SimpleBuilderApp):
     def actualize_weekview(self, record_list, date_range):
         logging.debug(">>")
         self.week_date.set_text("%s - %s (%d)" % (date_range.start_date.strftime("%a %d %b"), date_range.end_date.strftime("%a %d %b"), int(date_range.end_date.strftime("%V"))) )
-        km = calories = time = average = beats = 0
-        num_records = len(record_list)
-        logging.info("Number of records selected week: "+str(num_records))
-        time_in_min = 0
-        tbeats = 0
-        maxspeed = 0
-        pace = "0:00"
-        maxpace = "0:00"
-        maxbeats = 0
-        totalascent = 0
-        totaldescent = 0
+        if self.activeSport:
+            sport = self._sport_service.get_sport_by_name(self.activeSport)
+        else:
+            sport = None
+        activity_list = self.pytrainer_main.activitypool.get_activities_period(date_range, sport=sport)
+        tbeats, distance, calories, timeinseconds, beats, maxbeats, maxspeed, average, maxpace, pace, totalascent, totaldescent = self._totals_from_activities(activity_list)
+        if timeinseconds:
+            self.weekview.set_sensitive(1)
+        else:
+            self.weekview.set_sensitive(0)
 
         self.w_distance_unit.set_text(self.uc.unit_distance)
         self.w_speed_unit.set_text(self.uc.unit_speed)
         self.w_maxspeed_unit.set_text(self.uc.unit_speed)
         self.w_pace_unit.set_text(self.uc.unit_pace)
         self.w_maxpace_unit.set_text(self.uc.unit_pace)
-
-        if num_records>0:
-            for record in record_list:
-                km += self.parseFloat(record[1])
-                time += self.parseFloat(record[2])
-                average += self.parseFloat(record[5])
-                calories += self.parseFloat(record[6])
-                beats = self.parseFloat(record[3])
-                totalascent += self.parseFloat(record[10])
-                totaldescent += self.parseFloat(record[11])
-                if float(beats) > 0:
-                    time_in_min += time/60
-                    tbeats += beats*(time/60)
-                if record[7] > maxspeed:
-                    maxspeed = self.parseFloat(record[7])
-                if record[8] > maxbeats:
-                    maxbeats = self.parseFloat(record[8])
-
-            km = self.uc.distance(km)
-            maxspeed = self.uc.speed(maxspeed)
-
-            if time_in_min > 0:
-                tbeats = tbeats/time_in_min
-            else:
-                tbeats = 0
-            if km > 0:
-                average = (km/(time/3600))
-            else:
-                average = 0
-
-            if maxspeed > 0:
-                #maxpace = 60/maxspeed
-                maxpace = "%d:%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
-            if average > 0:
-                #pace = 60/average
-                pace = "%d:%02d" %((3600/average)/60,(3600/average)%60)
-
-            self.weeka_distance.set_text("%0.2f" %km)
-            hour,min,sec = second2time(time)
-            self.weeka_hour.set_text("%d" %hour)
-            self.weeka_minute.set_text("%02d" %min)
-            self.weeka_second.set_text("%02d" %sec)
-            self.weeka_maxbeats.set_text("%0.0f" %(maxbeats))
-            self.weeka_beats.set_text("%0.0f" %(tbeats))
-            self.weeka_average.set_text("%0.2f" %average)
-            self.weeka_maxspeed.set_text("%0.2f" %maxspeed)
-            self.weeka_pace.set_text(pace)
-            self.weeka_maxpace.set_text(maxpace)
-            self.weeka_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
-            self.weeka_calories.set_text("%0.0f" %calories)
-            self.weekview.set_sensitive(1)
-        else:
-            self.weekview.set_sensitive(0)
+        self.weeka_distance.set_text("%0.2f" %distance)
+        hour,min,sec = second2time(timeinseconds)
+        self.weeka_hour.set_text("%d" %hour)
+        self.weeka_minute.set_text("%02d" %min)
+        self.weeka_second.set_text("%02d" %sec)
+        self.weeka_maxbeats.set_text("%0.0f" %(maxbeats))
+        self.weeka_beats.set_text("%0.0f" %(tbeats))
+        self.weeka_average.set_text("%0.2f" %average)
+        self.weeka_maxspeed.set_text("%0.2f" %maxspeed)
+        self.weeka_pace.set_text(pace)
+        self.weeka_maxpace.set_text(maxpace)
+        self.weeka_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
+        self.weeka_calories.set_text("%0.0f" %calories)
+        self.weekview.set_sensitive(1)
         self.drawareaweek.drawgraph(record_list, date_range.start_date)
         logging.debug("<<")
 
