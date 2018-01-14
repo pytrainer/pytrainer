@@ -1913,7 +1913,7 @@ class Main(SimpleBuilderApp):
         self.calendar.clear_marks()
         #Mark each day that has activity
         for i in record_list:
-            self.calendar.mark_day(int(i))
+            self.calendar.mark_day(i)
         #Turn on displaying of week numbers
         display_options = self.calendar.get_display_options()
         self.calendar.set_display_options(display_options|gtk.CALENDAR_SHOW_WEEK_NUMBERS)

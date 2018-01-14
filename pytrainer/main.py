@@ -346,11 +346,13 @@ class pyTrainer:
         logging.debug('>>')
         #Refresh list records
         date = self.date.getDate()
-        sport = self.windowmain.activeSport
-        id_sport = self.record.getSportId(sport)
+        if self.windowmain.activeSport:
+            sport = self._sport_service.get_sport_by_name(self.windowmain.activeSport)
+        else:
+            sport = None
         self.windowmain.actualize_recordTreeView(date)
         #Mark the monthly calendar to show which days have activity?
-        record_list = self.record.getRecordDayList(date, id_sport)
+        record_list = self.record.getRecordDayList(date, sport)
         self.windowmain.actualize_calendar(record_list)
         logging.debug('<<')
 

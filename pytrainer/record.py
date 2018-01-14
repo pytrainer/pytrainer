@@ -28,6 +28,7 @@ from lib.gpx import Gpx
 from pytrainer.core.equipment import EquipmentService, Equipment
 from pytrainer.core.sport import Sport
 from pytrainer.core.activity import Activity, Lap
+from pytrainer.util.date import DateRange
 
 class Record:
     def __init__(self, sport_service, data_path = None, parent = None):
@@ -415,22 +416,12 @@ class Record:
                     "date,distance,average,title,sports.name,id_record,duration,beats,calories",
                     "sports.id_sports = records.sport and %s order by date desc" %condition)
 
-    def getRecordDayList(self,date, id_sport=None):
+    def getRecordDayList(self, date, sport=None):
         logging.debug('>>')
         logging.debug('Retrieving data for ' + str(date))
-        # Why is looking for all days of the same month?
-        if not id_sport:
-            records = self.pytrainer_main.ddbb.select("records","date","date LIKE '" +str(date.year)+"-"+date.strftime("%m")+"-%'")
-        else:
-            records = self.pytrainer_main.ddbb.select("records","date","date LIKE \"%d-%0.2d-%%\" and sport=\"%s\"" %(date.year,date.month,id_sport))
-        logging.debug('Found '+str(len(records))+' entries')
-        day_list = []
-        for i in records:
-            record = str(i[0]).split("-")
-            logging.debug('date:'+str(i[0]))
-            day_list.append(record[2])
-        logging.debug('<<')
-        return day_list
+        date_range = DateRange.for_month_containing(date)
+        for activity in self.pytrainer_main.activitypool.get_activities_period(date_range, sport=sport):
+            yield activity.date.day
 
     def actualize_fromgpx(self,gpxfile): #TODO remove? - should never have multiple tracks per GPX file
         logging.debug('>>')
