@@ -157,6 +157,10 @@ Does not add them to the cache."""
         else:
             return self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.date.between(date_range.start_date, date_range.end_date), Activity.sport == sport))
 
+    def get_all_activities(self):
+        """Iterates over all activities ordered by date"""
+        return self.pytrainer_main.ddbb.session.query(Activity).order_by('date')
+
 class Activity(DeclarativeBase):
     '''
     Class that knows everything about a particular activity

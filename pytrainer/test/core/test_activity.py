@@ -154,3 +154,7 @@ class ActivityTest(unittest.TestCase):
     def test_activities_period(self):
         activity = list(self.service.get_activities_period(DateRange.for_week_containing(datetime.date(2016, 7, 24))))[0]
         self.assertEquals(self.activity, activity)
+
+    def test_all_activities(self):
+        activity = list(self.service.get_all_activities())[0]
+        self.assertEquals(self.activity, activity)
