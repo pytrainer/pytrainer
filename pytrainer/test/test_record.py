@@ -91,3 +91,8 @@ class RecordTest(unittest.TestCase):
         activity = self.main.activitypool.get_activity(newid)
         self.assertEquals(activity.title, u'test 2')
         self.assertEquals(activity.sport, self.record._sport_service.get_sport_by_name(u"Bike"))
+
+    def test_get_day_list(self):
+        self.record.insertRecord(self.summary)
+        daylist = list(self.record.getRecordDayList(datetime(2016, 7, 24, 9, 58, 23)))
+        self.assertEquals(daylist, ['24'])
