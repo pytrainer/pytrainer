@@ -856,7 +856,7 @@ class Main(SimpleBuilderApp):
             percentage = widget.get_value() / 100
         else:
             percentage = .05
-        records = self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.distance.between(activity.distance * (1-percentage), activity.distance * (1+percentage)), Activity.Sport == activity.Sport)).all()
+        records = self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.distance.between(activity.distance * (1-percentage), activity.distance * (1+percentage)), Activity.sport == activity.sport)).all()
         
         count = 1
         for r in records:
