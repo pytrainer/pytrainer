@@ -274,27 +274,16 @@ class pyTrainer:
         elif view=="week":
              logging.debug('week view')
              date_range = DateRange.for_week_containing(date_selected)
-             sport = self.windowmain.activeSport
-             sport_id = self.record.getSportId(sport)
-             record_list = self.record.getrecordPeriod(date_range, sport_id)
-             self.windowmain.actualize_weekview(record_list, date_range)
+             self.windowmain.actualize_weekview(date_range)
         elif view=="month":
              logging.debug('month view')
              date_range = DateRange.for_month_containing(date_selected)
-             sport = self.windowmain.activeSport
-             sport_id = self.record.getSportId(sport)
-             record_list = self.record.getrecordPeriod(date_range, sport_id)
              nameMonth, daysInMonth = getNameMonth(date_selected)
-             self.windowmain.actualize_monthview(record_list, nameMonth, date_range)
-             self.windowmain.actualize_monthgraph(record_list, daysInMonth)
+             self.windowmain.actualize_monthview(date_range, nameMonth, daysInMonth)
         elif view=="year":
              logging.debug('year view')
              date_range = DateRange.for_year_containing(date_selected)
-             sport = self.windowmain.activeSport
-             sport_id = self.record.getSportId(sport)
-             record_list = self.record.getrecordPeriod(date_range, sport_id)
-             self.windowmain.actualize_yearview(record_list, date_selected.year, date_range)
-             self.windowmain.actualize_yeargraph(record_list)
+             self.windowmain.actualize_yearview(date_range, date_selected.year)
         elif view=="listview":
             logging.debug('list view')
             self.refreshListView()
@@ -374,7 +363,7 @@ class pyTrainer:
     def refreshStatsView(self):
         logging.debug('>>')
         self.stats.refresh()
-        self.windowmain.actualize_statsview(self.stats, self.record.getAllRecordList())
+        self.windowmain.actualize_statsview(self.stats, self.activitypool.get_all_activities())
         logging.debug('<<')
 
     def refreshListView(self,condition=None):

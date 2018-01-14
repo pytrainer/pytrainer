@@ -987,7 +987,7 @@ class Main(SimpleBuilderApp):
                 self.mapviewer.display_map(htmlfile=htmlfile)
         logging.debug("<<")
 
-    def actualize_weekview(self, record_list, date_range):
+    def actualize_weekview(self, date_range):
         logging.debug(">>")
         self.week_date.set_text("%s - %s (%d)" % (date_range.start_date.strftime("%a %d %b"), date_range.end_date.strftime("%a %d %b"), int(date_range.end_date.strftime("%V"))) )
         if self.activeSport:
@@ -1020,10 +1020,10 @@ class Main(SimpleBuilderApp):
         self.weeka_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
         self.weeka_calories.set_text("%0.0f" %calories)
         self.weekview.set_sensitive(1)
-        self.drawareaweek.drawgraph(record_list, date_range.start_date)
+        self.drawareaweek.drawgraph(activity_list, date_range.start_date)
         logging.debug("<<")
 
-    def actualize_monthview(self, record_list, nameMonth, date_range):
+    def actualize_monthview(self, date_range, nameMonth, daysInMonth):
         logging.debug(">>")
         self.month_date.set_text(nameMonth)
         if self.activeSport:
@@ -1055,14 +1055,10 @@ class Main(SimpleBuilderApp):
         self.montha_maxpace.set_text(maxpace)
         self.montha_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
         self.montha_calories.set_text("%0.0f" %calories)
+        self.drawareamonth.drawgraph(activity_list, daysInMonth)
         logging.debug("<<")
 
-    def actualize_monthgraph(self,record_list, daysInMonth):
-        logging.debug(">>")
-        self.drawareamonth.drawgraph(record_list, daysInMonth)
-        logging.debug("<<")
-
-    def actualize_yearview(self, record_list, year, date_range):
+    def actualize_yearview(self, date_range, year):
         logging.debug(">>")
         self.year_date.set_text("%d" %int(year))
         if self.activeSport:
@@ -1094,11 +1090,7 @@ class Main(SimpleBuilderApp):
         self.yeara_maxpace.set_text(maxpace)
         self.yeara_ascdesc.set_text("%d/%d " %(totalascent,totaldescent))
         self.yeara_calories.set_text("%0.0f" %calories)
-        logging.debug("<<")
-
-    def actualize_yeargraph(self,record_list):
-        logging.debug(">>")
-        self.drawareayear.drawgraph(record_list)
+        self.drawareayear.drawgraph(activity_list)
         logging.debug("<<")
 
     def actualize_athleteview(self, athlete):

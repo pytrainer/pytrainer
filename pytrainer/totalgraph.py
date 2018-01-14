@@ -47,17 +47,15 @@ class TotalGraph(TimeGraph):
     def getValue(self,record,value_selected):
         #hacemos una relacion entre el value_selected y los values / we make a relation between value_selected and the values
         conv = {
-            0: 1, #value 0 es kilometros (1)
-            1: 6, #value 1 es tiempo (2)
-            2: 7, #value 2 es pulsaciones(3)
-            3: 2, #value 3 es media (2)
-            4: 8 #value 4 es calorias(6)
+            0: 'distance', #value 0 es kilometros (1)
+            1: 'duration', #value 1 es tiempo (2)
+            2: 'beats', #value 2 es pulsaciones(3)
+            3: 'average', #value 3 es media(5)
+            4: 'calories' #value 4 es calorias(6)
             }
         value_sel = conv[value_selected]
         #si la opcion es tiempo lo pasamos a horas / if the option is time we passed it to hours
-        if (value_sel == 6):
-            return self.getFloatValue(record[value_sel])/3600
+        if (value_sel == 'duration'):
+            return self.getFloatValue(getattr(record, value_sel))/3600
         else:
-            return self.getFloatValue(record[value_sel])
-    
-
+            return self.getFloatValue(getattr(record, value_sel))

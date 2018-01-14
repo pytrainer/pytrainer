@@ -35,18 +35,18 @@ class TimeGraph(object):
     def getValue(self,record,value_selected):
         #hacemos una relacion entre el value_selected y los values / we make a relation between value_selected and the values
         conv = {
-            0: 1, #value 0 es kilometros (1)
-            1: 2, #value 1 es tiempo (2)
-            2: 3, #value 2 es pulsaciones(3)
-            3: 5, #value 3 es media(5)
-            4: 6 #value 4 es calorias(6)
+            0: 'distance', #value 0 es kilometros (1)
+            1: 'duration', #value 1 es tiempo (2)
+            2: 'beats', #value 2 es pulsaciones(3)
+            3: 'average', #value 3 es media(5)
+            4: 'calories' #value 4 es calorias(6)
             }
         value_sel = conv[value_selected]
         #si la opcion es tiempo lo pasamos a horas / if the option is time we passed it to hours
-        if (value_sel == 2):
-            return self.getFloatValue(record[value_sel])/3600
+        if (value_sel == 'duration'):
+            return self.getFloatValue(getattr(record, value_sel))/3600
         else:
-            return self.getFloatValue(record[value_sel])
+            return self.getFloatValue(getattr(record, value_sel))
     
     def get_values(self, values, value_selected, key_format, sportfield=9):
         valueDict = {} #Stores the totals
@@ -54,9 +54,9 @@ class TimeGraph(object):
         sportColors = {}
 
         for record in values:
-            if record[0]:
-                day = unicode(datetime.datetime.strptime(record[0], "%Y-%m-%d").strftime(key_format)) # Gives year for this record
-                sport = record[sportfield]
+            if record.date:
+                day = unicode(record.date.strftime(key_format)) # Gives year for this record
+                sport = record.sport.name
                 value = self.getValue(record, value_selected)
                 if sport in valueDict: #Already got this sport
                     if day in valueDict[sport]: #Already got this sport on this day
@@ -105,8 +105,6 @@ class TimeGraph(object):
         tit.append(title)
 
         yvalues, valuesAreTime = self.get_values(values,value_selected, self.KEY_FORMAT, sportfield=self.SPORT_FIELD)
-        if not len(values): return
-        
         xvalues = x_func(yvalues) 
         
         yval.append(yvalues)
