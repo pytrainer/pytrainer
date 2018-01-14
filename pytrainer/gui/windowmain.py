@@ -2328,3 +2328,43 @@ class Main(SimpleBuilderApp):
     def on_hrplotbutton_clicked(self,widget):
         self.heartrate_vbox.show()
         self.heartrate_vbox2.hide()
+
+    def _totals_from_activities(self, activity_list):
+        tbeats = 0
+        distance = 0
+        calories = 0
+        timeinseconds = 0
+        beats = 0
+        maxbeats = 0
+        maxspeed = 0
+        average = 0
+        maxpace = "0:00"
+        pace = "0:00"
+        totalascent = 0
+        totaldescent = 0
+        for activity in activity_list:
+            distance += activity.distance
+            calories += activity.calories
+            timeinseconds += activity.duration
+            beats = activity.beats
+            totalascent += activity.upositive
+            totaldescent += activity.unegative
+            if float(beats)>0:
+                tbeats += beats*(activity.duration/60/60)
+            if activity.maxspeed > maxspeed:
+                maxspeed = activity.maxspeed
+            if activity.maxbeats > maxbeats:
+                maxbeats = activity.maxbeats
+
+        distance = self.uc.distance(distance)
+        maxspeed = self.uc.speed(maxspeed)
+
+        if tbeats > 0 and timeinseconds > 0:
+            tbeats = tbeats/(timeinseconds/60/60)
+        if distance > 0 and timeinseconds > 0:
+            average = distance/(float(timeinseconds)/60/60)
+        if maxspeed > 0:
+            maxpace = "%d:%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
+        if average > 0:
+            pace = "%d:%02d" %((3600/average)/60,(3600/average)%60)
+        return tbeats, distance, calories, timeinseconds, beats, maxbeats, maxspeed, average, maxpace, pace, totalascent, totaldescent
