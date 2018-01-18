@@ -130,6 +130,8 @@ if no url is provided"""
                 self.url = os.environ['PYTRAINER_ALCHEMYURL']
             else:
                 self.url = "sqlite://"
+        if self.url.startswith('mysql'):
+            self.url = '%s%s' % (self.url, '?charset=utf8')
         self.engine = create_engine(self.url, logging_name='db')
         logging.info("DDBB created with url %s", self.url)
 
