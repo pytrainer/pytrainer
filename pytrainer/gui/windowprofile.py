@@ -48,7 +48,8 @@ class WindowProfile(SimpleBuilderApp):
 
         self.ddbb_type = {
             0:"sqlite",
-            1:"mysql"
+            1:"mysql",
+            2:"postgresql",
             }
     
         #anhadimos las opciones al combobox gender
@@ -295,10 +296,10 @@ class WindowProfile(SimpleBuilderApp):
 
     def on_prf_ddbb_changed(self,widget):
         i = self.prf_ddbb.get_active_text()
-        if i == "mysql":
-            self._ddbb_value_active()
-        else:
+        if i == "sqlite":
             self._ddbb_value_deactive()
+        else:
+            self._ddbb_value_active()
 
     def on_addsport_clicked(self,widget):
         self.hidesportsteps()
