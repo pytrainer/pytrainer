@@ -6,10 +6,25 @@ __license__ = "GPL v2 or later"
 
 import unittest
 import os
+import mock
 from lxml import etree
 from imports.file_garmintcxv2 import garmintcxv2
+from pytrainer.lib.ddbb import DDBB
 
 class GarminTCXv2Test(unittest.TestCase):
+
+    def setUp(self):
+        self.ddbb = DDBB()
+        self.ddbb.connect()
+        self.ddbb.create_tables(add_default=True)
+        self.parent = mock.Mock()
+        self.parent.parent = mock.Mock()
+        self.parent.parent.ddbb = self.ddbb
+
+    def tearDown(self):
+        self.ddbb.disconnect()
+        self.ddbb.drop_tables()
+
     def test_valid_file(self):
         try:
             current_path = os.path.dirname(os.path.abspath(__file__))
@@ -28,7 +43,7 @@ class GarminTCXv2Test(unittest.TestCase):
             current_path = os.path.dirname(os.path.abspath(__file__))
             data_path = os.path.dirname(os.path.dirname(os.path.dirname(current_path))) + "/"
             tcx_file = current_path + "/sample.tcx"
-            garmin_tcxv2 = garmintcxv2(None, data_path)
+            garmin_tcxv2 = garmintcxv2(self.parent, data_path)
             garmin_tcxv2.xmldoc = etree.parse(tcx_file)
             garmin_tcxv2.buildActivitiesSummary()
             self.assertEquals(summary, garmin_tcxv2.activitiesSummary)
