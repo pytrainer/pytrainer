@@ -28,6 +28,7 @@ from lib.gpx import Gpx
 from pytrainer.core.equipment import EquipmentService, Equipment
 from pytrainer.core.sport import Sport
 from pytrainer.core.activity import Activity, Lap
+from pytrainer.util.date import DateRange
 
 class Record:
     def __init__(self, sport_service, data_path = None, parent = None):
@@ -319,36 +320,6 @@ class Record:
     def format_date(self, date):
         return date.strftime("%Y-%m-%d")
 
-    def getrecordList(self,date, id_sport=None):
-        logging.debug('--')
-        if not id_sport:
-            # outer join on sport id to workaround bug where sport reference is null on records from GPX import
-            return self.pytrainer_main.ddbb.select("records left outer join sports on records.sport=sports.id_sports",
-                            "sports.name,date,distance,duration,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
-                            "date=\"%s\" " %self.format_date(date))
-        else:
-            return self.pytrainer_main.ddbb.select("records,sports",
-                            "sports.name,date,distance,duration,beats,comments,average,calories,id_record,maxspeed,maxbeats,date_time_utc,date_time_local,upositive,unegative",
-                            "date=\"%s\" and sports.id_sports=\"%s\" and records.sport=sports.id_sports" %(self.format_date(date),id_sport))
-
-    def getLaps(self, id_record):
-        logging.debug('--')
-        return self.pytrainer_main.ddbb.select("laps",
-                                "id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number, intensity, max_speed, avg_hr, max_hr, laptrigger, comments",
-                                "record=%s" % id_record)
-
-    def getrecordPeriod(self, date_range, sport=None):
-        #TODO This is essentially the same as getrecordPeriodSport (except date ranges) - need to look at merging the two
-        date_ini = self.format_date(date_range.start_date)
-        date_end = self.format_date(date_range.end_date)
-        tables = "records,sports"
-        if not sport:
-            condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports" %(date_ini,date_end)
-        else:
-            condition = "date>=\"%s\" and date<=\"%s\" and records.sport=sports.id_sports and sports.id_sports=\"%s\"" %(date_ini,date_end, sport)
-
-        return self.pytrainer_main.ddbb.select(tables,"date,distance,duration,beats,comments,average,calories,maxspeed,maxbeats, sports.name,upositive,unegative", condition)
-
     def _get_sport(self, sport_name):
         return self._sport_service.get_sport_by_name(sport_name)
 
@@ -361,27 +332,6 @@ class Record:
         """Deprecated: use sport.weight"""
         logging.debug('--')
         return self._get_sport(sport_name).weight
-
-    def getSportId(self, sport_name, add=None):
-        """Deprecated: use sport_service.get_sport_by_name()
-
-        Get the id of a sport by name, optionally adding a new sport if
-        none exists with the given name.
-        arguments:
-                sport_name: sport's name to get id for
-                add: whether the sport should be added if not found
-        returns: id for sport with given name or None"""
-        if sport_name is None:
-            return None
-        sport = self._get_sport(sport_name)
-        if sport is None:
-            logging.debug("No sport with name: '%s'", str(sport_name))
-            if add is not None:
-                logging.debug("Adding sport '%s'", str(sport_name))
-                new_sport = Sport()
-                new_sport.name = unicode(sport_name)
-                sport = self._sport_service.store_sport(new_sport)
-        return None if sport is None else sport.id
 
     def getLastRecordDateString(self, sport_id = None):
         """
@@ -421,22 +371,12 @@ class Record:
                     "date,distance,average,title,sports.name,id_record,duration,beats,calories",
                     "sports.id_sports = records.sport and %s order by date desc" %condition)
 
-    def getRecordDayList(self,date, id_sport=None):
+    def getRecordDayList(self, date, sport=None):
         logging.debug('>>')
         logging.debug('Retrieving data for ' + str(date))
-        # Why is looking for all days of the same month?
-        if not id_sport:
-            records = self.pytrainer_main.ddbb.select("records","date","date LIKE '" +str(date.year)+"-"+date.strftime("%m")+"-%'")
-        else:
-            records = self.pytrainer_main.ddbb.select("records","date","date LIKE \"%d-%0.2d-%%\" and sport=\"%s\"" %(date.year,date.month,id_sport))
-        logging.debug('Found '+str(len(records))+' entries')
-        day_list = []
-        for i in records:
-            record = str(i[0]).split("-")
-            logging.debug('date:'+str(i[0]))
-            day_list.append(record[2])
-        logging.debug('<<')
-        return day_list
+        date_range = DateRange.for_month_containing(date)
+        for activity in self.pytrainer_main.activitypool.get_activities_period(date_range, sport=sport):
+            yield activity.date.day
 
     def actualize_fromgpx(self,gpxfile): #TODO remove? - should never have multiple tracks per GPX file
         logging.debug('>>')

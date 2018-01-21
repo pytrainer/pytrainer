@@ -270,35 +270,20 @@ class pyTrainer:
                 self.refreshRecordGraphView("analytics")
         elif view=="day":
              logging.debug('day view')
-             sport = self.windowmain.activeSport
-             sport_id = self.record.getSportId(sport)
-             record_list = self.record.getrecordList(date_selected, sport_id)
-             self.windowmain.actualize_dayview(record_list=record_list)
-             #selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
+             self.windowmain.actualize_dayview(date_selected)
         elif view=="week":
              logging.debug('week view')
              date_range = DateRange.for_week_containing(date_selected)
-             sport = self.windowmain.activeSport
-             sport_id = self.record.getSportId(sport)
-             record_list = self.record.getrecordPeriod(date_range, sport_id)
-             self.windowmain.actualize_weekview(record_list, date_range)
+             self.windowmain.actualize_weekview(date_range)
         elif view=="month":
              logging.debug('month view')
              date_range = DateRange.for_month_containing(date_selected)
-             sport = self.windowmain.activeSport
-             sport_id = self.record.getSportId(sport)
-             record_list = self.record.getrecordPeriod(date_range, sport_id)
              nameMonth, daysInMonth = getNameMonth(date_selected)
-             self.windowmain.actualize_monthview(record_list, nameMonth)
-             self.windowmain.actualize_monthgraph(record_list, daysInMonth)
+             self.windowmain.actualize_monthview(date_range, nameMonth, daysInMonth)
         elif view=="year":
              logging.debug('year view')
              date_range = DateRange.for_year_containing(date_selected)
-             sport = self.windowmain.activeSport
-             sport_id = self.record.getSportId(sport)
-             record_list = self.record.getrecordPeriod(date_range, sport_id)
-             self.windowmain.actualize_yearview(record_list, date_selected.year)
-             self.windowmain.actualize_yeargraph(record_list)
+             self.windowmain.actualize_yearview(date_range, date_selected.year)
         elif view=="listview":
             logging.debug('list view')
             self.refreshListView()
@@ -361,12 +346,13 @@ class pyTrainer:
         logging.debug('>>')
         #Refresh list records
         date = self.date.getDate()
-        sport = self.windowmain.activeSport
-        id_sport = self.record.getSportId(sport)
-        record_ids = self.record.getrecordList(date, id_sport)
-        self.windowmain.actualize_recordTreeView(record_ids)
+        if self.windowmain.activeSport:
+            sport = self._sport_service.get_sport_by_name(self.windowmain.activeSport)
+        else:
+            sport = None
+        self.windowmain.actualize_recordTreeView(date)
         #Mark the monthly calendar to show which days have activity?
-        record_list = self.record.getRecordDayList(date, id_sport)
+        record_list = self.record.getRecordDayList(date, sport)
         self.windowmain.actualize_calendar(record_list)
         logging.debug('<<')
 
@@ -379,7 +365,7 @@ class pyTrainer:
     def refreshStatsView(self):
         logging.debug('>>')
         self.stats.refresh()
-        self.windowmain.actualize_statsview(self.stats, self.record.getAllRecordList())
+        self.windowmain.actualize_statsview(self.stats, self.activitypool.get_all_activities())
         logging.debug('<<')
 
     def refreshListView(self,condition=None):

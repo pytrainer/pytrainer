@@ -432,7 +432,7 @@ class Main(SimpleBuilderApp):
                 self.label_record_equipment.set_text(equipment_text)
             else:
                 self.label_record_equipment.set_markup("<i>None</i>")    
-            if len(activity.laps)>1:
+            if len(activity.Laps)>1:
                 store = gtk.ListStore(
                     gobject.TYPE_INT,
                     gtk.gdk.Pixbuf,
@@ -448,14 +448,14 @@ class Main(SimpleBuilderApp):
                     gobject.TYPE_STRING,
                     gobject.TYPE_STRING,
                     )
-                for lap in activity.laps:
-                    t = lap['elapsed_time'] 
-                    m = lap['distance']
+                for lap in activity.Laps:
+                    t = lap.duration
+                    m = lap.distance
                     
                     m = self.uc.speed(m)
                     
                     s = m / float(t) * 3.6
-                    max_speed = lap['max_speed'] * 3.6
+                    max_speed = lap.max_speed * 3.6
                     if s > 0:
                         pace = "%d:%02d" %((3600/s)/60,(3600/s)%60)
                         if max_speed >0:
@@ -472,11 +472,11 @@ class Main(SimpleBuilderApp):
                         'resting' : '#808080',
                     }
                     
-                    pic = gtk.gdk.pixbuf_new_from_file(self.data_path+"glade/trigger_%s.png" % lap['laptrigger'])
+                    pic = gtk.gdk.pixbuf_new_from_file(self.data_path+"glade/trigger_%s.png" % lap.laptrigger)
                         
                     iter = store.append()
                     store.set(iter, 
-                        0, lap['lap_number']+1, 
+                        0, lap.lap_number + 1,
                         1, pic, 
                         2, m/1000, 
                         3, str(int(float(t))), 
@@ -484,11 +484,11 @@ class Main(SimpleBuilderApp):
                         5, max_speed, 
                         6, pace, 
                         7, max_pace, 
-                        8, lap['avg_hr'] if lap['avg_hr'] else 0, 
-                        9, lap['max_hr'] if lap['max_hr'] else 0, 
-                        10, lap['calories'], 
-                        11, color[lap['intensity']], 
-                        12, '' if not lap['comments'] else (lap['comments'] if len(lap['comments'])<40 else "%s..." % lap['comments'][:40]),
+                        8, lap.avg_hr if lap.avg_hr else 0,
+                        9, lap.max_hr if lap.max_hr else 0,
+                        10, lap.calories,
+                        11, color[lap.intensity],
+                        12, '' if not lap.comments else (lap.comments if len(lap.comments)<40 else "%s..." % lap.comments[:40]),
                         )
                 self.lapsTreeView.set_model(store)
                 self.lapsTreeView.set_rules_hint(True)
@@ -856,7 +856,7 @@ class Main(SimpleBuilderApp):
             percentage = widget.get_value() / 100
         else:
             percentage = .05
-        records = self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.distance.between(activity.distance * (1-percentage), activity.distance * (1+percentage)), Activity.Sport == activity.Sport)).all()
+        records = self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.distance.between(activity.distance * (1-percentage), activity.distance * (1+percentage)), Activity.sport == activity.sport)).all()
         
         count = 1
         for r in records:
@@ -913,77 +913,44 @@ class Main(SimpleBuilderApp):
             
         self.rankingTreeView.set_model(rank_store)
 
-    def actualize_dayview(self,record_list=None, activity_list=None):
+    def actualize_dayview(self, date):
         logging.debug(">>")
         self.d_distance_unit.set_text(self.uc.unit_distance)
         self.d_speed_unit.set_text(self.uc.unit_speed)
         self.d_maxspeed_unit.set_text(self.uc.unit_speed)
         self.d_pace_unit.set_text(self.uc.unit_pace)
         self.d_maxpace_unit.set_text(self.uc.unit_pace)
+        if self.activeSport:
+            sport = self._sport_service.get_sport_by_name(self.activeSport)
+        else:
+            sport = None
+        activity_list = self.pytrainer_main.activitypool.get_activities_for_day(date, sport=sport)
 
-        if len(record_list)>0:
-            tbeats = 0
-            distance = 0
-            calories = 0
-            timeinseconds = 0
-            beats = 0
-            maxbeats = 0
-            maxspeed = 0
-            average = 0
-            maxpace = "0:00"
-            pace = "0:00"
-            totalascent = 0 
-            totaldescent = 0
-            for record in record_list:
-                distance += self.parseFloat(record[2])
-                calories += self.parseFloat(record[7])
-                timeinseconds += self.parseFloat(record[3])
-                beats = self.parseFloat(record[4])
-                totalascent += self.parseFloat(record[13]) 
-                totaldescent += self.parseFloat(record[14]) 
-                if float(beats)>0:
-                    tbeats += beats*(self.parseFloat(record[3])/60/60)
-                if record[9] > maxspeed:
-                    maxspeed = self.parseFloat(record[9])
-                if record[10] > maxbeats:
-                    maxbeats = self.parseFloat(record[10])
-
-            distance = self.uc.distance(distance)
-            maxspeed = self.uc.speed(maxspeed)
-
-            if tbeats > 0 and timeinseconds > 0:
-                tbeats = tbeats/(timeinseconds/60/60)
-            if distance > 0 and timeinseconds > 0:
-                average = distance/(timeinseconds/60/60)
-            if maxspeed > 0:
-                maxpace = "%d:%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
-            if average > 0:
-                pace = "%d:%02d" %((3600/average)/60,(3600/average)%60)
-
+        tbeats, distance, calories, timeinseconds, beats, maxbeats, maxspeed, average, maxpace, pace, totalascent, totaldescent = self._totals_from_activities(activity_list)
+        if timeinseconds:
             self.dayview.set_sensitive(1)
-            self.day_distance.set_text("%0.2f" %distance)
-            hour,min,sec = second2time(timeinseconds)
-            self.day_hour.set_text("%d" %hour)
-            self.day_minute.set_text("%02d" %min)
-            self.day_second.set_text("%02d" %sec)
-            if tbeats:
-                self.day_beats.set_text("%0.0f" %tbeats)
-            else:
-                self.day_beats.set_text("")
-            self.day_maxbeats.set_text("%0.0f" %maxbeats)
-            if average:
-                self.day_average.set_text("%0.2f" %average)
-            else:
-                self.day_average.set_text("")
-            self.day_maxspeed.set_text("%0.2f" %maxspeed)
-            self.day_pace.set_text("%s" %pace)
-            self.day_maxpace.set_text("%s" %maxpace)
-            self.day_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
-            self.day_calories.set_text("%0.0f" %calories)
-            self.day_topic.set_text(str(record[1]))
-
         else:
             self.dayview.set_sensitive(0)
+        self.day_distance.set_text("%0.2f" %distance)
+        hour,min,sec = second2time(timeinseconds)
+        self.day_hour.set_text("%d" %hour)
+        self.day_minute.set_text("%02d" %min)
+        self.day_second.set_text("%02d" %sec)
+        if tbeats:
+            self.day_beats.set_text("%0.0f" %tbeats)
+        else:
+            self.day_beats.set_text("")
+        self.day_maxbeats.set_text("%0.0f" %maxbeats)
+        if average:
+            self.day_average.set_text("%0.2f" %average)
+        else:
+            self.day_average.set_text("")
+        self.day_maxspeed.set_text("%0.2f" %maxspeed)
+        self.day_pace.set_text("%s" %pace)
+        self.day_maxpace.set_text("%s" %maxpace)
+        self.day_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
+        self.day_calories.set_text("%0.0f" %calories)
+        self.day_topic.set_text(str(date))
         logging.debug("<<")
 
     def actualize_daygraph(self,record_list):
@@ -1020,236 +987,110 @@ class Main(SimpleBuilderApp):
                 self.mapviewer.display_map(htmlfile=htmlfile)
         logging.debug("<<")
 
-    def actualize_weekview(self, record_list, date_range):
+    def actualize_weekview(self, date_range):
         logging.debug(">>")
         self.week_date.set_text("%s - %s (%d)" % (date_range.start_date.strftime("%a %d %b"), date_range.end_date.strftime("%a %d %b"), int(date_range.end_date.strftime("%V"))) )
-        km = calories = time = average = beats = 0
-        num_records = len(record_list)
-        logging.info("Number of records selected week: "+str(num_records))
-        time_in_min = 0
-        tbeats = 0
-        maxspeed = 0
-        pace = "0:00"
-        maxpace = "0:00"
-        maxbeats = 0
-        totalascent = 0
-        totaldescent = 0
+        if self.activeSport:
+            sport = self._sport_service.get_sport_by_name(self.activeSport)
+        else:
+            sport = None
+        activity_list = self.pytrainer_main.activitypool.get_activities_period(date_range, sport=sport)
+        tbeats, distance, calories, timeinseconds, beats, maxbeats, maxspeed, average, maxpace, pace, totalascent, totaldescent = self._totals_from_activities(activity_list)
+        if timeinseconds:
+            self.weekview.set_sensitive(1)
+        else:
+            self.weekview.set_sensitive(0)
 
         self.w_distance_unit.set_text(self.uc.unit_distance)
         self.w_speed_unit.set_text(self.uc.unit_speed)
         self.w_maxspeed_unit.set_text(self.uc.unit_speed)
         self.w_pace_unit.set_text(self.uc.unit_pace)
         self.w_maxpace_unit.set_text(self.uc.unit_pace)
-
-        if num_records>0:
-            for record in record_list:
-                km += self.parseFloat(record[1])
-                time += self.parseFloat(record[2])
-                average += self.parseFloat(record[5])
-                calories += self.parseFloat(record[6])
-                beats = self.parseFloat(record[3])
-                totalascent += self.parseFloat(record[10])
-                totaldescent += self.parseFloat(record[11])
-                if float(beats) > 0:
-                    time_in_min += time/60
-                    tbeats += beats*(time/60)
-                if record[7] > maxspeed:
-                    maxspeed = self.parseFloat(record[7])
-                if record[8] > maxbeats:
-                    maxbeats = self.parseFloat(record[8])
-
-            km = self.uc.distance(km)
-            maxspeed = self.uc.speed(maxspeed)
-
-            if time_in_min > 0:
-                tbeats = tbeats/time_in_min
-            else:
-                tbeats = 0
-            if km > 0:
-                average = (km/(time/3600))
-            else:
-                average = 0
-
-            if maxspeed > 0:
-                #maxpace = 60/maxspeed
-                maxpace = "%d:%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
-            if average > 0:
-                #pace = 60/average
-                pace = "%d:%02d" %((3600/average)/60,(3600/average)%60)
-
-            self.weeka_distance.set_text("%0.2f" %km)
-            hour,min,sec = second2time(time)
-            self.weeka_hour.set_text("%d" %hour)
-            self.weeka_minute.set_text("%02d" %min)
-            self.weeka_second.set_text("%02d" %sec)
-            self.weeka_maxbeats.set_text("%0.0f" %(maxbeats))
-            self.weeka_beats.set_text("%0.0f" %(tbeats))
-            self.weeka_average.set_text("%0.2f" %average)
-            self.weeka_maxspeed.set_text("%0.2f" %maxspeed)
-            self.weeka_pace.set_text(pace)
-            self.weeka_maxpace.set_text(maxpace)
-            self.weeka_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
-            self.weeka_calories.set_text("%0.0f" %calories)
-            self.weekview.set_sensitive(1)
-        else:
-            self.weekview.set_sensitive(0)
-        self.drawareaweek.drawgraph(record_list, date_range.start_date)
+        self.weeka_distance.set_text("%0.2f" %distance)
+        hour,min,sec = second2time(timeinseconds)
+        self.weeka_hour.set_text("%d" %hour)
+        self.weeka_minute.set_text("%02d" %min)
+        self.weeka_second.set_text("%02d" %sec)
+        self.weeka_maxbeats.set_text("%0.0f" %(maxbeats))
+        self.weeka_beats.set_text("%0.0f" %(tbeats))
+        self.weeka_average.set_text("%0.2f" %average)
+        self.weeka_maxspeed.set_text("%0.2f" %maxspeed)
+        self.weeka_pace.set_text(pace)
+        self.weeka_maxpace.set_text(maxpace)
+        self.weeka_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
+        self.weeka_calories.set_text("%0.0f" %calories)
+        self.weekview.set_sensitive(1)
+        self.drawareaweek.drawgraph(activity_list, date_range.start_date)
         logging.debug("<<")
 
-    def actualize_monthview(self,record_list, nameMonth):
+    def actualize_monthview(self, date_range, nameMonth, daysInMonth):
         logging.debug(">>")
         self.month_date.set_text(nameMonth)
-        km = calories = time = average = beats = 0
-        num_records = len(record_list)
-        time_in_min = 0
-        tbeats = 0
-        maxspeed = 0
-        pace = "0:00"
-        maxpace = "0:00"
-        maxbeats = 0
-        totalascent = 0
-        totaldescent = 0
+        if self.activeSport:
+            sport = self._sport_service.get_sport_by_name(self.activeSport)
+        else:
+            sport = None
+        activity_list = self.pytrainer_main.activitypool.get_activities_period(date_range, sport=sport)
+        tbeats, distance, calories, timeinseconds, beats, maxbeats, maxspeed, average, maxpace, pace, totalascent, totaldescent = self._totals_from_activities(activity_list)
+        if timeinseconds:
+            self.monthview.set_sensitive(1)
+        else:
+            self.monthview.set_sensitive(0)
         self.m_distance_unit.set_text(self.uc.unit_distance)
         self.m_speed_unit.set_text(self.uc.unit_speed)
         self.m_maxspeed_unit.set_text(self.uc.unit_speed)
         self.m_pace_unit.set_text(self.uc.unit_pace)
         self.m_maxpace_unit.set_text(self.uc.unit_pace)
 
-        if num_records>0:
-            for record in record_list:
-                km += self.parseFloat(record[1])
-                time += self.parseFloat(record[2])
-                average += self.parseFloat(record[5])
-                calories += self.parseFloat(record[6])
-                beats = self.parseFloat(record[3])
-                totalascent += self.parseFloat(record[10])
-                totaldescent += self.parseFloat(record[11])
-                if float(beats) > 0:
-                    time_in_min += time/60
-                    tbeats += beats*(time/60)
-                if record[7] > maxspeed:
-                    maxspeed = self.parseFloat(record[7])
-                if record[8] > maxbeats:
-                    maxbeats = self.parseFloat(record[8])
-
-            km = self.uc.distance(km)
-            maxspeed = self.uc.speed(maxspeed)
-
-            if time_in_min > 0:
-                tbeats = tbeats/time_in_min
-            else:
-                tbeats = 0
-            if km > 0 and time > 0:        # time can be zero when a new year starts
-                average = (km/(time/3600))
-            else:
-                average = 0
-
-            if maxspeed > 0:
-                #maxpace = 60/maxspeed
-                maxpace = "%d:%02d" %((3600/maxspeed)/60,float(3600/maxspeed)%60)
-            if average > 0:
-                #pace = 60/average
-                pace = "%d:%02d" %((3600/average)/60,float(3600/average)%60)
-
-            self.montha_distance.set_text("%0.2f" %km)
-            hour,min,sec = second2time(time)
-            self.montha_hour.set_text("%d" %hour)
-            self.montha_minute.set_text("%02d" %min)
-            self.montha_second.set_text("%02d" %sec)
-            self.montha_maxbeats.set_text("%0.0f" %(maxbeats))
-            self.montha_beats.set_text("%0.0f" %(tbeats))
-            self.montha_average.set_text("%0.2f" %average)
-            self.montha_maxspeed.set_text("%0.2f" %maxspeed)
-            self.montha_pace.set_text(pace)
-            self.montha_maxpace.set_text(maxpace)
-            self.montha_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
-            self.montha_calories.set_text("%0.0f" %calories)
-            self.monthview.set_sensitive(1)
-        else:
-            self.monthview.set_sensitive(0)
+        self.montha_distance.set_text("%0.2f" %distance)
+        hour,min,sec = second2time(timeinseconds)
+        self.montha_hour.set_text("%d" %hour)
+        self.montha_minute.set_text("%02d" %min)
+        self.montha_second.set_text("%02d" %sec)
+        self.montha_maxbeats.set_text("%0.0f" %(maxbeats))
+        self.montha_beats.set_text("%0.0f" %(tbeats))
+        self.montha_average.set_text("%0.2f" %average)
+        self.montha_maxspeed.set_text("%0.2f" %maxspeed)
+        self.montha_pace.set_text(pace)
+        self.montha_maxpace.set_text(maxpace)
+        self.montha_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
+        self.montha_calories.set_text("%0.0f" %calories)
+        self.drawareamonth.drawgraph(activity_list, daysInMonth)
         logging.debug("<<")
 
-    def actualize_monthgraph(self,record_list, daysInMonth):
-        logging.debug(">>")
-        self.drawareamonth.drawgraph(record_list, daysInMonth)
-        logging.debug("<<")
-
-    def actualize_yearview(self,record_list, year):
+    def actualize_yearview(self, date_range, year):
         logging.debug(">>")
         self.year_date.set_text("%d" %int(year))
-        km = calories = time = average = beats = 0
-        num_records = len(record_list)
-        time_in_min = 0
-        tbeats = 0
-        maxspeed = 0
-        pace = "0:00"
-        maxpace = "0:00"
-        maxbeats = 0
-        totalascent = 0 
-        totaldescent = 0
+        if self.activeSport:
+            sport = self._sport_service.get_sport_by_name(self.activeSport)
+        else:
+            sport = None
+        activity_list = self.pytrainer_main.activitypool.get_activities_period(date_range, sport=sport)
+        tbeats, distance, calories, timeinseconds, beats, maxbeats, maxspeed, average, maxpace, pace, totalascent, totaldescent = self._totals_from_activities(activity_list)
+        if timeinseconds:
+            self.yearview.set_sensitive(1)
+        else:
+            self.yearview.set_sensitive(0)
+            self.drawareayear.drawgraph([])
         self.y_distance_unit.set_text(self.uc.unit_distance)
         self.y_speed_unit.set_text(self.uc.unit_speed)
         self.y_maxspeed_unit.set_text(self.uc.unit_speed)
         self.y_pace_unit.set_text(self.uc.unit_pace)
         self.y_maxpace_unit.set_text(self.uc.unit_pace)
-        if num_records>0:
-            for record in record_list:
-                km += self.parseFloat(record[1])
-                time += self.parseFloat(record[2])
-                average += self.parseFloat(record[5])
-                calories += self.parseFloat(record[6])
-                beats = self.parseFloat(record[3])
-                totalascent += self.parseFloat(record[10])
-                totaldescent += self.parseFloat(record[11])
-                if float(beats) > 0:
-                    time_in_min += time/60
-                    tbeats += beats*(time/60)
-                if record[7] > maxspeed:
-                    maxspeed = self.parseFloat(record[7])
-                if record[8] > maxbeats:
-                    maxbeats = self.parseFloat(record[8])
-
-            km = self.uc.distance(km)
-            maxspeed = self.uc.speed(maxspeed)
-
-            if time_in_min > 0:
-                tbeats = tbeats/time_in_min
-            else:
-                tbeats = 0
-            if km > 0:
-                average = (km/(time/3600))
-            else:
-                average = 0
-
-            if maxspeed > 0:
-                #maxpace = 60/maxspeed
-                maxpace = "%d:%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
-            if average > 0:
-                #pace = 60/average
-                pace = "%d:%02d" %((3600/average)/60,(3600/average)%60)
-
-            self.yeara_distance.set_text("%0.2f" %km)
-            hour,min,sec = second2time(time)
-            self.yeara_hour.set_text("%d" %hour)
-            self.yeara_minute.set_text("%02d" %min)
-            self.yeara_second.set_text("%02d" %sec)
-            self.yeara_beats.set_text("%0.0f" %tbeats)
-            self.yeara_maxbeats.set_text("%0.0f" %(maxbeats))
-            self.yeara_average.set_text("%0.2f" %average)
-            self.yeara_maxspeed.set_text("%0.2f" %maxspeed)
-            self.yeara_pace.set_text(pace)
-            self.yeara_maxpace.set_text(maxpace)
-            self.yeara_ascdesc.set_text("%d/%d " %(totalascent,totaldescent))
-            self.yeara_calories.set_text("%0.0f" %calories)
-            self.yearview.set_sensitive(1)
-        else:
-            self.yearview.set_sensitive(0)
-            self.drawareayear.drawgraph([])
-        logging.debug("<<")
-
-    def actualize_yeargraph(self,record_list):
-        logging.debug(">>")
-        self.drawareayear.drawgraph(record_list)
+        self.yeara_distance.set_text("%0.2f" %distance)
+        hour,min,sec = second2time(timeinseconds)
+        self.yeara_hour.set_text("%d" %hour)
+        self.yeara_minute.set_text("%02d" %min)
+        self.yeara_second.set_text("%02d" %sec)
+        self.yeara_beats.set_text("%0.0f" %tbeats)
+        self.yeara_maxbeats.set_text("%0.0f" %(maxbeats))
+        self.yeara_average.set_text("%0.2f" %average)
+        self.yeara_maxspeed.set_text("%0.2f" %maxspeed)
+        self.yeara_pace.set_text(pace)
+        self.yeara_maxpace.set_text(maxpace)
+        self.yeara_ascdesc.set_text("%d/%d " %(totalascent,totaldescent))
+        self.yeara_calories.set_text("%0.0f" %calories)
+        self.drawareayear.drawgraph(activity_list)
         logging.debug("<<")
 
     def actualize_athleteview(self, athlete):
@@ -2008,7 +1849,7 @@ class Main(SimpleBuilderApp):
         logging.debug("<<")
         return False
 
-    def actualize_recordTreeView(self, record_list):
+    def actualize_recordTreeView(self, date):
         logging.debug(">>")
         iterOne = False
         store = gtk.TreeStore(
@@ -2017,51 +1858,45 @@ class Main(SimpleBuilderApp):
             gobject.TYPE_STRING,        #Sport
             gobject.TYPE_STRING,        #Distance
             object)
-        for i in record_list:
-            #Get lap info
-            #Could get an activity from the pool here, but is slow??
-            id_record = i[8]
-            laps = self.parent.record.getLaps(id_record)
+        if self.activeSport:
+            sport = self._sport_service.get_sport_by_name(self.activeSport)
+        else:
+            sport = None
+        for activity in self.pytrainer_main.activitypool.get_activities_for_day(date, sport=sport):
             iter = store.append(None)
             if not iterOne:
                 iterOne = iter
-            dateTime = i[12]
-            if dateTime is not None:
-                localTime = dateutil.parser.parse(dateTime).strftime("%H:%M")
-            else:
-                localTime = ""
-            dist = self.uc.distance(i[2])
+            localTime = activity.date_time.strftime("%H:%M")
+            dist = self.uc.distance(activity.distance)
             distance = "%0.2f" % (float(dist) )
             store.set (
                 iter,
-                0, int(i[8]),
-                1, str(localTime),
-                2, str(i[0]),
+                0, activity.id,
+                1, localTime,
+                2, activity.sport.name,
                 3, str(distance)  #Needs to be US pref aware....
                 )
-            if laps is not None:
-                for lap in laps:
-                    #"id_lap, record, elapsed_time, distance, start_lat, start_lon, end_lat, end_lon, calories, lap_number",
-                    lapNumber = "%s %02d" % ( _("lap"), int(lap[9])+1 )
-                    dist = self.uc.distance(lap[3])
-                    distance = "%0.2f" % (float(dist) / 1000.0)
-                    timeHours = int(float(lap[2]) / 3600)
-                    timeMin = int((float(lap[2]) / 3600.0 - timeHours) * 60)
-                    timeSec = float(lap[2]) - (timeHours * 3600) - (timeMin * 60)
-                    if timeHours > 0:
-                        duration = "%d%s%02d%s%02d%s" % (timeHours, _("h"), timeMin, _("m"), timeSec, _("s"))
-                    else:
-                        duration = "%2d%s%02d%s" % (timeMin, _("m"), timeSec, _("s"))
+            for lap in activity.Laps:
+                lapNumber = "%s %02d" % (_("lap"), lap.lap_number + 1)
+                dist = self.uc.distance(lap.distance)
+                distance = "%0.2f" % (float(dist) / 1000.0)
+                timeHours = int(lap.duration / 3600)
+                timeMin = int((lap.duration / 3600.0 - timeHours) * 60)
+                timeSec = lap.duration - (timeHours * 3600) - (timeMin * 60)
+                if timeHours > 0:
+                    duration = "%d%s%02d%s%02d%s" % (timeHours, _("h"), timeMin, _("m"), timeSec, _("s"))
+                else:
+                    duration = "%2d%s%02d%s" % (timeMin, _("m"), timeSec, _("s"))
 
-                    child_iter = store.append(iter)
-                    store.set (
-                        child_iter,
-                        0, int(i[8]),
-                        1, lapNumber,
-                        2, duration,
-                        3, distance
-                        )
-                    store.set_sort_column_id(1, gtk.SORT_ASCENDING)
+                child_iter = store.append(iter)
+                store.set (
+                    child_iter,
+                    0, activity.id,
+                    1, lapNumber,
+                    2, duration,
+                    3, distance
+                    )
+                store.set_sort_column_id(1, gtk.SORT_ASCENDING)
         self.recordTreeView.set_model(store)
         if iterOne:
             self.recordTreeView.get_selection().select_iter(iterOne)
@@ -2078,7 +1913,7 @@ class Main(SimpleBuilderApp):
         self.calendar.clear_marks()
         #Mark each day that has activity
         for i in record_list:
-            self.calendar.mark_day(int(i))
+            self.calendar.mark_day(i)
         #Turn on displaying of week numbers
         display_options = self.calendar.get_display_options()
         self.calendar.set_display_options(display_options|gtk.CALENDAR_SHOW_WEEK_NUMBERS)
@@ -2334,3 +2169,43 @@ class Main(SimpleBuilderApp):
     def on_hrplotbutton_clicked(self,widget):
         self.heartrate_vbox.show()
         self.heartrate_vbox2.hide()
+
+    def _totals_from_activities(self, activity_list):
+        tbeats = 0
+        distance = 0
+        calories = 0
+        timeinseconds = 0
+        beats = 0
+        maxbeats = 0
+        maxspeed = 0
+        average = 0
+        maxpace = "0:00"
+        pace = "0:00"
+        totalascent = 0
+        totaldescent = 0
+        for activity in activity_list:
+            distance += activity.distance
+            calories += activity.calories
+            timeinseconds += activity.duration
+            beats = activity.beats
+            totalascent += activity.upositive
+            totaldescent += activity.unegative
+            if float(beats)>0:
+                tbeats += beats*(activity.duration/60/60)
+            if activity.maxspeed > maxspeed:
+                maxspeed = activity.maxspeed
+            if activity.maxbeats > maxbeats:
+                maxbeats = activity.maxbeats
+
+        distance = self.uc.distance(distance)
+        maxspeed = self.uc.speed(maxspeed)
+
+        if tbeats > 0 and timeinseconds > 0:
+            tbeats = tbeats/(timeinseconds/60/60)
+        if distance > 0 and timeinseconds > 0:
+            average = distance/(float(timeinseconds)/60/60)
+        if maxspeed > 0:
+            maxpace = "%d:%02d" %((3600/maxspeed)/60,(3600/maxspeed)%60)
+        if average > 0:
+            pace = "%d:%02d" %((3600/average)/60,(3600/average)%60)
+        return tbeats, distance, calories, timeinseconds, beats, maxbeats, maxspeed, average, maxpace, pace, totalascent, totaldescent

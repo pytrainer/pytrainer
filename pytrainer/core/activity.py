@@ -28,7 +28,7 @@ from pytrainer.environment import Environment
 from pytrainer.lib import uc
 from pytrainer.profile import Profile
 from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger, record_to_equipment
-from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String, Unicode
+from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String, Unicode, and_
 from sqlalchemy.orm import relationship, backref, reconstructor, deferred, joinedload
 from sqlalchemy.exc import InvalidRequestError
 
@@ -50,6 +50,10 @@ class Lap(DeclarativeBase):
     record = Column(Integer, ForeignKey('records.id_record'), index=True, nullable=False)
     start_lat = Column(Float)
     start_lon = Column(Float)
+
+    @property
+    def duration(self):
+        return float(self.elapsed_time)
 
 class ActivityServiceException(Exception):
 
@@ -104,7 +108,8 @@ class ActivityService(object):
         else:
             logging.debug("Activity NOT found in pool")
             self.pool[sid] = self.pytrainer_main.ddbb.session.query(Activity).options(
-                joinedload('sport'), joinedload('equipment')).filter(Activity.id == id).one()
+                joinedload('sport'), joinedload('equipment'), joinedload('Laps')
+            ).filter(Activity.id == id).one()
             self.pool_queue.append(sid)
         if len(self.pool_queue) > self.max_size:
             sid_to_remove = self.pool_queue.pop(0)
@@ -128,6 +133,33 @@ class ActivityService(object):
         except InvalidRequestError:
              raise ActivityServiceException("Activity id %s not found" % activity.id)
         logging.debug("Deleted activity: %s", activity.title)
+
+    def get_activities_for_day(self, date, sport=None):
+        """Iterates the activities for a specific date, optionally restricted by Sport)"""
+        if not sport:
+            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date == date).options(joinedload('Laps'))
+        else:
+            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.date == date, Activity.sport == sport)).options(joinedload('Laps'))
+        for activity in activities:
+            sid = str(activity.id)
+            if sid in self.pool:
+                yield self.pool[sid]
+            else:
+                self.pool[sid] = activity
+                self.pool_queue.append(sid)
+                yield activity
+
+    def get_activities_period(self, date_range, sport=None):
+        """Iterate over activities for a specific time period, optionally restricted by Sport.
+Does not add them to the cache."""
+        if not sport:
+            return self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date.between(date_range.start_date, date_range.end_date))
+        else:
+            return self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.date.between(date_range.start_date, date_range.end_date), Activity.sport == sport))
+
+    def get_all_activities(self):
+        """Iterates over all activities ordered by date"""
+        return self.pytrainer_main.ddbb.session.query(Activity).order_by('date')
 
 class Activity(DeclarativeBase):
     '''
