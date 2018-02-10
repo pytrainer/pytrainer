@@ -1,0 +1,12 @@
+<?xml version="1.0" ?>
+<pytrainer-extension 
+	name="Elevation smoothing" 
+	description="Smoothing GPX elevation"
+	extensionbutton="Smooth Elevation" 
+	extensioncode="smoothelevation"
+	type="record" 
+	helpfile="README.txt"
+	executable="smoothelevation"
+>
+
+</pytrainer-extension>
