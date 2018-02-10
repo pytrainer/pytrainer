@@ -233,8 +233,12 @@ class Gpx:
             totalDistance = 0
             totalDuration = 0
             for lap in laps:
-                lapCalories = lap.findtext(calorieTag)                
-                self.calories += int(lapCalories)
+                try:
+                    lapCalories = lap.findtext(calorieTag)
+                    self.calories += int(lapCalories)
+                except NoneType:
+                    # dummy entry if no per-lap calorie info is stored
+                    self.calories += 0
                 lapDistance = lap.findtext(distanceTag)
                 totalDistance += float(lapDistance)
                 lapDuration_tmp = lap.findtext(elapsedTimeTag)
