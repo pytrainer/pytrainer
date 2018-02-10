@@ -8,6 +8,8 @@ import subprocess
 from lxml import etree
 from pytrainer.lib.date import getDateTime
 from pytrainer.lib.xmlUtils import XMLParser
+from pytrainer.core.activity import Activity
+from sqlalchemy.orm import exc
 
 class garminfit():
     '''First approach to parse Garmin FIT files is to use perl scripts (http://pub.ks-and-ks.ne.jp/cycling/fit2tcx.shtml) from Kiyokazu SUTO (suto@ks-and-ks.ne.jp) to convert first to TCXv2 and then to GPX+ format.
@@ -137,8 +139,11 @@ class garminfit():
         if startTime is not None:
             logging.info("Checking if activity from %s exists in db" % startTime[0])
             time = startTime[0].strftime("%Y-%m-%dT%H:%M:%SZ")
-            if self.parent.parent.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
+            try:
+                self.parent.parent.ddbb.session.query(Activity).filter(Activity.date_time_utc == time).one()
                 result = True
+            except exc.NoResultFound:
+                pass
         else:
             logging.info("No start time provided, nothing to check")
         logging.debug('<<')

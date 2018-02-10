@@ -22,6 +22,8 @@ import os
 import traceback
 from lxml import etree
 from pytrainer.lib.date import getDateTime
+from pytrainer.core.activity import Activity
+from sqlalchemy.orm import exc
 
 from pytrainer.lib.xmlUtils import XMLParser
 
@@ -139,21 +141,15 @@ class garmintcxv2():
 
     def inDatabase(self, startTime):
         #comparing date and start time (sport may have been changed in DB after import)
-        logging.debug('>>')
-        result = False
-        if startTime is not None:
-            logging.info("Checking if activity from %s exists in db" % startTime[0]) # 2012-10-14 10:02:42+00:00
-            time = startTime[0].strftime("%Y-%m-%dT%H:%M:%SZ")
-            # No parent provided when unit testing (EAFP approach)
-            try:
-                if self.parent.parent.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
-                    result = True
-            except AttributeError:
-                logging.error("No parent attribute in current instance (testing?), skipping db check")
-        else:
-            logging.info("No start time provided, nothing to check")
-        logging.debug('<<')
-        return result
+        if startTime is None:
+            return False
+        logging.info("Checking if activity from %s exists in db" % startTime[0]) # 2012-10-14 10:02:42+00:00
+        time = startTime[0].strftime("%Y-%m-%dT%H:%M:%SZ")
+        try:
+            self.parent.parent.ddbb.session.query(Activity).filter(Activity.date_time_utc == time).one()
+            return True
+        except exc.NoResultFound:
+            return False
 
     def getSport(self, activity):
         try:
