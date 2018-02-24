@@ -1,5 +1,104 @@
 We have migrated to GitHub, for more details about changelog please see git log documentation (http://git-scm.com/docs/git-log). One simple approach: git log --oneline --stat --decorate <since>..<until>
 
+- pytrainer changes for 1.12.0:
+
+- Known issues:
+  Gtk outputs warnings about extra properties when loading the main window
+
+- Improvements:
+  2a5877ac2ff9 Add support for Postgresql
+
+- Bugs fixed:
+  fb0e135657fa WindowMain: Move Osm and Googlemaps imports later
+  fe19bf5995d8 Waypoint: Fix invalid quoting in getwaypointInfo
+  96501a642bea Fix typo in the osm extension (#104)
+
+- Internals:
+  1d176c7724ac Convert plugins to sqlalchemy
+  6d177a94b756 Add simple test case for the Garmin TCX v2 plugin
+  94cf81f771c6 Convert import tools to sqlalchemy
+  8f89e7f1746f Add import test case where activity exists in the db
+  95a60568e3f6 Make import test database queries testable
+  ca15fca002ab Always add mysql charset setting
+  ef910fff869c Remove unused DDBB methods select_dict and parseByCellType
+  748363f3f5dc Fixup WindowMain analytics query
+  58072380d4e7 Remove now unused Record methods getSportId, getrecordList and getrecordPeriod
+  a1023628c17b Convert Record.getRecordDayList to use get_activities_period
+  88bb17f62410 Add test for Record.getRecordDayList
+  204438c8eca3 Convert graphs to sqlalchemy
+  b59bf03013cb Add get_all_activities method to the activity service
+  f56e9da0faf1 Convert actualize_yearview to use Activity and the new helper method
+  b532f2023908 Convert actualize_monthview to use Activity and the new helper method
+  97d5335ca771 Convert actualize_weekview to use Activity and the new helper method
+  c5ec865304a1 Add a get_activities_period method to ActivityService
+  888d7072282a Use the new get_activities_for_day method in main window actualize_dayview
+  d721bbc43bcf Add utility method to main window for calculating activity totals
+  3b812970b3ec Use the new get_activities_for_day method in main window actualize_recordTreeView
+  84d71e79ae98 Add a get_activities_for_day method to ActivityService
+  6f6c6e2a95ec Convert main window lap data to sqlalchemy
+  c703edfc0b89 Use an Activity in main window actualize_recordTreeView
+  f8fb5fb4634d Add a duration property to Lap
+  049a2f7bf2bf Also load lap data while fetching an Activity
+  a994a4220778 Enable running tests against Postgresql
+  29b1a0a6e328 Remove the database utils and ddbbObject
+  159e85c09ead DDBB: Convert default data importing to sqlalchemy
+  94d976eac2fb Promote ddbb.select from the sqlobjects to ddbb itself
+  f7a381ef324e Use sqlalchemy to insert lap data
+  ab254aa5576e Simplify Record.getLaps to just get the laps
+  29fc0d15f408 Make sure that Record.insertRecord always loads lap data
+  227bd486b76f Add test for Record.getLaps
+  db8c4725415c Convert Record._formatRecordNew to Sqlalchemy
+  88481e97a543 Add tests for Record methods insertRecord and updateRecord
+  524384fb5ac6 Replace Record.get_record_equipment with Activity.equipment
+  04a776f8a012 Remove the unused Record.getrecordInfo and Record.getrecordPeriodSport methods
+  be02b31344b9 Reindent record.py
+  5b793b767c54 Skip tests that aren't supported on Mysql version 5.6
+  a9b7561cc3b8 Add mysqlclient to tests_require
+  d46d15db16ff Pre-truncate the lap distance in the test case
+  5f848ce16617 Skip tests involving check constraints on Mysql
+  ccb0945acec5 Also accept OperationalError for some test cases
+  806066c04092 Enable running tests against Mysql as well
+  00ddb41fade9 Shorten equipment.description column to 100 chars
+  850ed70963cd Add environment override for the test database url
+  7617b2b878e7 Travis: Attempt to work around issues between new Tornado and old Ubuntu
+  a256a7d4e9d9 Activity: Import sqlalchemy InvalidRequestError
+  3fdfcc70b05c Remove missed records.time users
+  003791a8e9c3 Remove the gpx file when deleting an Activity
+  75e941baa0a7 Call ActivityService.clear_pool between tests
+  8d3ee3c4aa65 Add DDBB.drop_tables, and use it in the tests
+  344e736b985b Move Sqlalchemy url generation from DDBB into Profile
+  b9704d763d6c Add database migration to match sqlalchemy generated db
+  c75318b69778 Remove the last users of the records time column
+  45038284d355 Convert windowmain analytics to sqlalchemy
+  beecf0d18bdd Convert stats to sqlalchemy
+  63253ae5b479 Convert csv import to sqlalchemy
+  8e747ce22c31 Convert main window lap comment editing to sqlalchemy
+  8c0328c8fb04 Add ActivityService.remove_activity_from_db method to replace Record.removeRecord
+  8b223ee50e65 Rename ActivityService.remove_activity to remove_activity_from_pool
+  812bf2e3d87e Convert tests to use sqlalchemy session api instead of ddbb.insert
+  2522e98eada1 Convert EquipmentService.get_equipment_usage to sqlalchemy
+  95ac0e622d62 Convert Activity to sqlalchemy
+  d31d4f90f536 EquipmentServiceTest: Specify a sport when inserting a record
+  5edcb1085699 Convert Activity.time into a deprecated property
+  4f36db9e37b5 Activity: Remove a couple of dependencies on Activity.pytrainer_main
+  33049a5677ed Convert Athlete to sqlalchemy
+  e39e1fb91c5b Convert laps to sqlalchemy
+  bbceb33d60af Use Activity.duration instead of Activity.time
+  ccca87b9a760 Waypoint: remove commented out connect & disconnect
+  340b87fb2a9f Waypoint: convert remove, update and add to sqlalchemy
+  80d5f0abb6be Waypoint: rename Waypoint to WaypointService
+  921f40d9a4c9 Modify Equipment tests to work with sqlalchemy
+  56e8289775ea Convert Equipment to sqlalchemy
+  1c4b18a1e43b When creating an Equipment object do type conversions immediately
+  519cee8d3d73 Modify Sport tests to work with sqlalchemy
+  25f0a79d9cc6 Convert Sport to sqlalchemy
+  062788cb829d Add a sqlalchemy type for forcing columns to integers
+  ff74cb8f8ee9 Create sqlalchemy Session and declarative_base
+  6647bcff8f15 Convert database backup functionality to sqlalchemy
+  1ed3884be018 Use an sqlalchemy Engine instead of using DBAPI directly
+  40edb1f9e655 Call commit when changing the database in mysqlUtils
+  4be273e3af95 Directly import gettext in uc.py and profile.py
+
 - pytrainer changes for 1.11.0:
 
 - Known issues:
