@@ -54,10 +54,6 @@ from sqlalchemy import and_
 class Main(SimpleBuilderApp):
     def __init__(self, sport_service, data_path = None, parent = None, version = None, gpxDir = None):
         self._sport_service = sport_service
-        def url_hook(dialog, url):
-            pytrainer.lib.webUtils.open_url_in_browser(url)
-        # Available in PyGTK 2.6 and above
-        Gtk.about_dialog_set_url_hook(url_hook)
         self.version = version
         self.parent = parent
         self.pytrainer_main = parent
