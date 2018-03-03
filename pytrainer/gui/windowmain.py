@@ -769,7 +769,7 @@ class Main(SimpleBuilderApp):
             # ToDo: check why vertical container is shared
             for child in vboxChildren:
                 #Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
-                if isinstance(child, matplotlib.backends.backend_gtkagg.FigureCanvasGTK) or isinstance(child, matplotlib.backends.backend_gtkagg.NavigationToolbar2GTKAgg):
+                if isinstance(child, matplotlib.backends.backend_gtk3agg.FigureCanvasGTK3Agg) or isinstance(child, matplotlib.backends.backend_gtk3.NavigationToolbar2GTK3):
                     logging.debug('Removing child: '+str(child))
                     self.record_graph_vbox.remove(child)
             self.record_vbox.set_sensitive(0)

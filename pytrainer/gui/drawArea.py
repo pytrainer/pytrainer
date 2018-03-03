@@ -17,10 +17,10 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import matplotlib
-matplotlib.use('GTKAgg')
+matplotlib.use('GTK3Agg')
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvasGTK
-from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
+from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvasGTK
+from matplotlib.backends.backend_gtk3 import NavigationToolbar2GTK3 as NavigationToolbar
 import matplotlib.pyplot as plt
 import pylab
 import logging
@@ -527,7 +527,7 @@ class DrawArea:
         # ToDo: check why vertical container is shared
         for child in vboxChildren:
             #Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
-            if isinstance(child, matplotlib.backends.backend_gtkagg.FigureCanvasGTK) or isinstance(child, matplotlib.backends.backend_gtkagg.NavigationToolbar2GTKAgg):
+            if isinstance(child, FigureCanvasGTK) or isinstance(child, NavigationToolbar):
                 logging.debug('Removing child: '+str(child))
                 self.vbox.remove(child)
         logging.debug('<<')
