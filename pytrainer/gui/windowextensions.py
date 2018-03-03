@@ -17,8 +17,8 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from SimpleGladeApp import SimpleBuilderApp
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import GObject
 import os
 from pytrainer.lib.localization import gtk_str
 
@@ -33,9 +33,9 @@ class WindowExtensions(SimpleBuilderApp):
 
     def setList(self, list):
         iterOne = False
-        store = gtk.ListStore(
-                gobject.TYPE_STRING,
-                gobject.TYPE_STRING
+        store = Gtk.ListStore(
+                GObject.TYPE_STRING,
+                GObject.TYPE_STRING
                 )
         for i in list:
             iter = store.append()
@@ -53,7 +53,7 @@ class WindowExtensions(SimpleBuilderApp):
     def create_treeview(self,treeview,column_names):
         i=0
         for column_index, column_name in enumerate(column_names):
-            column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
+            column = Gtk.TreeViewColumn(column_name, Gtk.CellRendererText(), text=column_index)
             if i==0:
                 column.set_visible(False)
             treeview.append_column(column)
@@ -74,20 +74,20 @@ class WindowExtensions(SimpleBuilderApp):
         name,description,status,helpfile,type = self.parent.getExtensionInfo(selected.get_value(iter,0))
         prefs = self.parent.getExtensionConfParams(selected.get_value(iter,0))
 
-        self.prefwindow = gtk.Window()
+        self.prefwindow = Gtk.Window()
         self.prefwindow.set_border_width(20)
         self.prefwindow.set_title(_("%s settings" %name))
 
-        table = gtk.Table(1,2)
+        table = Gtk.Table(1,2)
         i=0
         self.entryList = []
         #print prefs
         for key in prefs.keys():
             #print key, prefs[key]
-            label = gtk.Label("<b>%s</b>"%key)
+            label = Gtk.Label(label="<b>%s</b>"%key)
             label.set_use_markup(True)
             if key != "status":
-                entry = gtk.Entry()
+                entry = Gtk.Entry()
                 if prefs[key] is None:
                     entry.set_text("")
                 else:
@@ -95,7 +95,7 @@ class WindowExtensions(SimpleBuilderApp):
                 self.entryList.append(entry)
                 table.attach(entry,1,2,i,i+1)
             else:
-                combobox = gtk.combo_box_new_text()
+                combobox = Gtk.ComboBoxText()
                 combobox.append_text("Disable")
                 combobox.append_text("Enable")
                 if prefs[key] is None:
@@ -107,7 +107,7 @@ class WindowExtensions(SimpleBuilderApp):
             table.attach(label,0,1,i,i+1)
             i+=1
 
-        button = gtk.Button(_("OK"))
+        button = Gtk.Button(_("OK"))
         button.connect("clicked", self.on_acceptSettings_clicked, None)
         table.attach(button,0,2,i,i+1)
         self.prefwindow.add(table)
@@ -119,15 +119,15 @@ class WindowExtensions(SimpleBuilderApp):
         file = os.open(helpfile,0)
         text = os.read(file,2000)
         os.close(file)
-        helpwindow = gtk.Window()
-        button = gtk.Button(_("OK"))
+        helpwindow = Gtk.Window()
+        button = Gtk.Button(_("OK"))
         button.connect("clicked", self.on_accepthelp_clicked, helpwindow)
-        vbox = gtk.VBox()
-        buffer = gtk.TextBuffer()
+        vbox = Gtk.VBox()
+        buffer = Gtk.TextBuffer()
         buffer.set_text(text)
-        textview = gtk.TextView()
+        textview = Gtk.TextView()
         textview.set_buffer(buffer)
-        scrolledwindow = gtk.ScrolledWindow()
+        scrolledwindow = Gtk.ScrolledWindow()
         scrolledwindow.add(textview)
         vbox.pack_start(scrolledwindow, True)
         vbox.pack_start(button, False)

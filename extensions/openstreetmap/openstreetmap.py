@@ -3,7 +3,7 @@ from optparse import OptionParser
 import os, stat
 import sys
 import logging
-import gtk
+from gi.repository import Gtk
 
 import string
 from lxml import etree
@@ -56,7 +56,7 @@ class openstreetmap:
                 f = open(gpx_file, 'r')     #Reopen in readonly mode
             #Get extra info from user
             response=self.display_options_window()
-            if not response==gtk.RESPONSE_ACCEPT:
+            if not response==Gtk.ResponseType.ACCEPT:
                 f.close()
                 logging.debug("User abort")
                 return
@@ -81,12 +81,12 @@ class openstreetmap:
             h.add_credentials(username, password)
             #Show user something is happening
             msg = _("Posting GPX trace to Openstreetmap\n\nPlease wait this could take several minutes")
-            md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_NONE, msg)
+            md = Gtk.MessageDialog(self.pytrainer_main.windowmain.window1, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, Gtk.ButtonsType.NONE, msg)
             md.set_title(_("Openstreetmap Extension Processing"))
             md.set_modal(True)
             md.show()
-            while gtk.events_pending(): # This allows the GUI to update
-                gtk.main_iteration()    # before completion of this entire action
+            while Gtk.events_pending(): # This allows the GUI to update
+                Gtk.main_iteration()    # before completion of this entire action
             logging.debug("before request posting")
             #POST request to OSM
             res, content = h.request(uri, 'POST', body=body, headers=headers)
@@ -99,14 +99,14 @@ class openstreetmap:
             #Close 'Please wait' dialog
             md.destroy()
             #Show the user the result
-            md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, res_msg)
+            md = Gtk.MessageDialog(self.pytrainer_main.windowmain.window1, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, res_msg)
             md.set_title(_("Openstreetmap Extension Upload Complete"))
             md.set_modal(False)
             md.run()
             md.destroy()
         except Exception as e:
                 msg = _("Error while uploading file to OSM: " + str(e))
-                md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
+                md = Gtk.MessageDialog(self.pytrainer_main.windowmain.window1, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE, msg)
                 md.set_title(_("Openstreetmap Extension Error"))
                 md.run()
                 md.destroy()
@@ -115,28 +115,28 @@ class openstreetmap:
             logging.debug("<<")
 
     def display_options_window(self):
-        self.prefwindow = gtk.Dialog(title=_("Please add any additional information for this upload"), parent=None, flags=gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT, buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+        self.prefwindow = Gtk.Dialog(title=_("Please add any additional information for this upload"), parent=None, flags=Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT, buttons=(Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT, Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT))
         self.prefwindow.set_modal(False)
-        table = gtk.Table(1,3)
+        table = Gtk.Table(1,3)
         self.entryList = []
         #Add description
-        label = gtk.Label("<b>Description</b>")
+        label = Gtk.Label(label="<b>Description</b>")
         label.set_use_markup(True)
-        entry = gtk.Entry()
+        entry = Gtk.Entry()
         self.entryList.append(entry)
         table.attach(label,0,1,0,1)
         table.attach(entry,1,2,0,1)
         #Add tags
-        label = gtk.Label("<b>Tags</b>")
+        label = Gtk.Label(label="<b>Tags</b>")
         label.set_use_markup(True)
-        entry = gtk.Entry()
+        entry = Gtk.Entry()
         self.entryList.append(entry)
         table.attach(label,0,1,1,2)
         table.attach(entry,1,2,1,2)
         #Add visibility
-        label = gtk.Label("<b>Visibility</b>")
+        label = Gtk.Label(label="<b>Visibility</b>")
         label.set_use_markup(True)
-        combobox = gtk.combo_box_new_text()
+        combobox = Gtk.ComboBoxText()
         combobox.append_text("private")
         combobox.append_text("public")
         combobox.append_text("trackable")
@@ -146,19 +146,19 @@ class openstreetmap:
         self.entryList.append(combobox)
         table.attach(label,0,1,2,3)
         #Add anonymize GPX option
-        label = gtk.Label("<b>Anonymize GPX Data</b>")
+        label = Gtk.Label(label="<b>Anonymize GPX Data</b>")
         label.set_use_markup(True)
         table.attach(label,0,1,3,4)
-        checkbutton = gtk.CheckButton()
+        checkbutton = Gtk.CheckButton()
         table.attach(checkbutton,1,2,3,4)
         self.entryList.append(checkbutton)
         #Add anon area selection button
-        button = gtk.Button("Area selection")
+        button = Gtk.Button("Area selection")
         button.connect("clicked",self.areaSelect)
         table.attach(button,1,2,4,5)
         self.entryList.append(button)
         #Build dialog and show
-        self.prefwindow.vbox.pack_start(table)
+        self.prefwindow.vbox.pack_start(table, True, True, 0)
         self.prefwindow.show_all()
         self.prefwindow.connect("response", self.on_options_ok_clicked)
         response=self.prefwindow.run()
@@ -166,7 +166,7 @@ class openstreetmap:
         return response
 
     def on_options_ok_clicked(self, widget, response_id):
-        if not response_id == gtk.RESPONSE_ACCEPT:
+        if not response_id == Gtk.ResponseType.ACCEPT:
             return response_id
         self.description = gtk_str(self.entryList[0].get_text())
         if self.description == "":
@@ -183,7 +183,7 @@ class openstreetmap:
             all GPX dots in this area will be removed before uploading to OSM
         """       
         try:
-            wTree = gtk.glade.XML(self.pytrainer_main.data_path+"extensions/openstreetmap/OSM_AnonSelection.glade")
+            wTree = Gtk.glade.XML(self.pytrainer_main.data_path+"extensions/openstreetmap/OSM_AnonSelection.glade")
             self.privAreaWindow = wTree.get_widget("OSM_AnonSelection")
             dic = {
                 "on_buttonOk_clicked" : self.privArea_Ok,
@@ -201,7 +201,7 @@ class openstreetmap:
 
         except Exception as e:
                 msg = "Could not init map selection screen, Error: " + str(e)
-                md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
+                md = Gtk.MessageDialog(self.pytrainer_main.windowmain.window1, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE, msg)
                 md.set_title(_("Error"))
                 md.run()
                 md.destroy()
@@ -242,7 +242,7 @@ class openstreetmap:
         except Exception as e:
             logging.error(str(e))    
             msg = _(str(e))
-            md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
+            md = Gtk.MessageDialog(self.pytrainer_main.windowmain.window1, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE, msg)
             md.set_title(_("Error while saving extension configuration"))
             md.run()
             md.destroy()

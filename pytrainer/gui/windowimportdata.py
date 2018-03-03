@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from SimpleGladeApp import SimpleBuilderApp
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import GObject
 import os, glob, sys
 import logging
 import types
@@ -24,8 +24,8 @@ class WindowImportdata(SimpleBuilderApp):
         self.parent = parent
         self.pytrainer_main = pytrainer_main
         self.configuration = config
-        self.activities_store = None # gtk.ListStore containing gtk.TreeModelRow, see build_activities_tree_view
-        self.files_store = None # gtk.ListStore containing gtk.TreeModelRow, see build_files_tree_view
+        self.activities_store = None # Gtk.ListStore containing Gtk.TreeModelRow, see build_activities_tree_view
+        self.files_store = None # Gtk.ListStore containing Gtk.TreeModelRow, see build_files_tree_view
         self.processClasses = []
         self.plugins = Plugins(data_path, self.parent.parent)
         SimpleBuilderApp.__init__(self, "importdata.ui")
@@ -107,8 +107,8 @@ class WindowImportdata(SimpleBuilderApp):
         self.buttonRemoveSelectedFiles.set_sensitive(0)
         self.buttonFileImport.set_sensitive(0)
         if first and self.auto_launch:
-            while gtk.events_pending(): # This allows the GUI to update
-                gtk.main_iteration()    # before completion of this entire action
+            while Gtk.events_pending(): # This allows the GUI to update
+                Gtk.main_iteration()    # before completion of this entire action
             logging.debug("autolaunch active")
             self.buttonSelectFiles.clicked()
         logging.debug(">>")
@@ -118,7 +118,7 @@ class WindowImportdata(SimpleBuilderApp):
         logging.debug(">>")
         #Remove components in vbox - in case of re-detection
         for child in self.vboxPlugins.get_children():
-            if isinstance(child, gtk.Table):
+            if isinstance(child, Gtk.Table):
                 self.vboxPlugins.remove(child)
         pluginList = self.plugins.getPluginsList()
         logging.debug(pluginList)
@@ -128,10 +128,10 @@ class WindowImportdata(SimpleBuilderApp):
             pluginName = plugin[1]
             pluginDescription = plugin[2]
             #Build frame with name and description
-            pluginFrame = gtk.Frame(label="<b>"+pluginName+"</b>")
+            pluginFrame = Gtk.Frame(label="<b>"+pluginName+"</b>")
             pluginFrameLabel = pluginFrame.get_label_widget()
             pluginFrameLabel.set_use_markup(True)
-            description = gtk.Label("<small>"+pluginDescription+"</small>")
+            description = Gtk.Label(label="<small>"+pluginDescription+"</small>")
             description.set_alignment(0,0)
             description.set_use_markup(True)
             description.set_line_wrap(True)
@@ -139,21 +139,21 @@ class WindowImportdata(SimpleBuilderApp):
             #Get plugin information
             name,description,status = self.plugins.getPluginInfo(pluginClass)
             #Create labels and buttons
-            configButton = gtk.Button(label=_("Configure"))
+            configButton = Gtk.Button(label=_("Configure"))
             #Connect button handlers
             configButton.connect('clicked', self.on_pluginsButton_Configure_clicked, pluginClass)
             if status == 0 or status == "0":
                 #Plugin disabled
                 pluginFrame.set_sensitive(0)
-                statusLabel = gtk.Label(_("Disabled"))
+                statusLabel = Gtk.Label(label=_("Disabled"))
             else:
-                statusLabel = gtk.Label(_("Enabled"))
+                statusLabel = Gtk.Label(label=_("Enabled"))
 
             #Create a table for the frame and button
-            pluginTable = gtk.Table()
-            pluginTable.attach(pluginFrame, 0, 1, 0, 1, xoptions=gtk.EXPAND|gtk.FILL, xpadding=5)
-            pluginTable.attach(statusLabel, 1, 2, 0, 1, xoptions=gtk.FILL, yoptions=gtk.SHRINK, xpadding=5, ypadding=5)
-            pluginTable.attach(configButton, 2, 3, 0, 1, xoptions=gtk.FILL, yoptions=gtk.SHRINK, xpadding=5, ypadding=5)
+            pluginTable = Gtk.Table()
+            pluginTable.attach(pluginFrame, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL, xpadding=5)
+            pluginTable.attach(statusLabel, 1, 2, 0, 1, xoptions=Gtk.AttachOptions.FILL, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5, ypadding=5)
+            pluginTable.attach(configButton, 2, 3, 0, 1, xoptions=Gtk.AttachOptions.FILL, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5, ypadding=5)
             #Add frame to tab
             self.vboxPlugins.pack_start(pluginTable, expand=False, fill=False, padding=5)
         self.win_importdata.show_all()
@@ -219,29 +219,29 @@ class WindowImportdata(SimpleBuilderApp):
             toolClass = toolMain(self.parent, self.data_path)
             #Get info from class
             toolName = toolClass.getName()
-            toolTable = gtk.Table()
-            toolFrame = gtk.Frame(label=toolName)
+            toolTable = Gtk.Table()
+            toolFrame = Gtk.Frame(label=toolName)
             toolFrame.add(toolTable)
             if toolClass.isPresent():
-                version = gtk.Label("Version: " + toolClass.getVersion())
+                version = Gtk.Label(label="Version: " + toolClass.getVersion())
                 version.set_alignment(0,0)
                 if toolClass.deviceExists():
-                    deviceExists = gtk.Label(_("GPS device found") )
+                    deviceExists = Gtk.Label(label=_("GPS device found") )
                     deviceExists.set_alignment(0,0)
                 else:
-                    deviceExists = gtk.Label(_("GPS device <b>not</b> found"))
+                    deviceExists = Gtk.Label(label=_("GPS device <b>not</b> found"))
                     deviceExists.set_alignment(0,0)
                     deviceExists.set_use_markup(True)
-                toolTable.attach(version, 0, 1, 0, 1, xoptions=gtk.EXPAND|gtk.FILL, xpadding=5)
-                toolTable.attach(deviceExists, 0, 1, 1, 2, xoptions=gtk.EXPAND|gtk.FILL, xpadding=5)
+                toolTable.attach(version, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL, xpadding=5)
+                toolTable.attach(deviceExists, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL, xpadding=5)
                 toolFrame.set_sensitive(1)
             else:
-                info = gtk.Label(_("This tool was not found on the system") )
+                info = Gtk.Label(label=_("This tool was not found on the system") )
                 info.set_alignment(0,0.5)
-                location = gtk.LinkButton(toolClass.getSourceLocation(), toolName +_(" Homepage"))
+                location = Gtk.LinkButton(toolClass.getSourceLocation(), toolName +_(" Homepage"))
                 info.set_sensitive(0)
-                toolTable.attach(info, 0, 1, 0, 1, xoptions=gtk.EXPAND|gtk.FILL, xpadding=5)
-                toolTable.attach(location, 1, 2, 0, 1, xoptions=gtk.EXPAND|gtk.FILL, xpadding=5)
+                toolTable.attach(info, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL, xpadding=5)
+                toolTable.attach(location, 1, 2, 0, 1, xoptions=Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL, xpadding=5)
                 #toolFrame.set_sensitive(0)
             self.vboxImportTools.pack_start(toolFrame, expand=False, fill=False, padding=5)
         self.win_importdata.show_all()
@@ -286,24 +286,24 @@ class WindowImportdata(SimpleBuilderApp):
     def build_files_tree_view(self):
         ''' Build tree view to hold files from which the activities are read '''
         logging.debug('>>')
-        store = gtk.ListStore(  gobject.TYPE_STRING,
-                                gobject.TYPE_BOOLEAN,
-                                gobject.TYPE_STRING,
-                                gobject.TYPE_STRING,
-                                gobject.TYPE_STRING, )
+        store = Gtk.ListStore(  GObject.TYPE_STRING,
+                                GObject.TYPE_BOOLEAN,
+                                GObject.TYPE_STRING,
+                                GObject.TYPE_STRING,
+                                GObject.TYPE_STRING, )
         column_names=["id", "", _("File"), _("Type"), _("Activities")]
         for column_index, column_name in enumerate(column_names):
             if column_index == 1:
                 #Add button column
-                self.renderer1 = gtk.CellRendererToggle()
+                self.renderer1 = Gtk.CellRendererToggle()
                 self.renderer1.set_property('activatable', True)
                 self.renderer1.connect( 'toggled', self.treeviewImportFiles_toggled_checkbox, store )
-                column = gtk.TreeViewColumn(column_name, self.renderer1 )
+                column = Gtk.TreeViewColumn(column_name, self.renderer1 )
                 column.add_attribute( self.renderer1, "active", column_index)
                 column.set_sort_column_id(-1)
             else:
                 #Add other columns
-                column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
+                column = Gtk.TreeViewColumn(column_name, Gtk.CellRendererText(), text=column_index)
                 column.set_sort_column_id(column_index)
             if column_name == "id":
                 column.set_visible(False)
@@ -317,29 +317,29 @@ class WindowImportdata(SimpleBuilderApp):
     def build_activities_tree_view(self):
         ''' Build tree view to hold activities that can be selected for import '''
         logging.debug('>>')
-        store = gtk.ListStore(  gobject.TYPE_STRING,
-                                gobject.TYPE_BOOLEAN,
-                                gobject.TYPE_STRING,
-                                gobject.TYPE_STRING,
-                                gobject.TYPE_STRING,
-                                gobject.TYPE_STRING,
-                                gobject.TYPE_STRING,
-                                gobject.TYPE_STRING,
-                                gobject.TYPE_BOOLEAN )
+        store = Gtk.ListStore(  GObject.TYPE_STRING,
+                                GObject.TYPE_BOOLEAN,
+                                GObject.TYPE_STRING,
+                                GObject.TYPE_STRING,
+                                GObject.TYPE_STRING,
+                                GObject.TYPE_STRING,
+                                GObject.TYPE_STRING,
+                                GObject.TYPE_STRING,
+                                GObject.TYPE_BOOLEAN )
         column_names=["id", "", _("Start Time"), _("Distance"), _("Duration"), _("Sport"), _("Notes"), "file_id", "in_db"]
         for column_index, column_name in enumerate(column_names):
             if column_index == 1:
                 #Add checkbox column
-                self.renderer1 = gtk.CellRendererToggle()
+                self.renderer1 = Gtk.CellRendererToggle()
                 self.renderer1.set_property('activatable', True)
                 self.renderer1.connect( 'toggled', self.treeviewImportEvents_toggled_checkbox, store )
-                column = gtk.TreeViewColumn(column_name, self.renderer1 )
+                column = Gtk.TreeViewColumn(column_name, self.renderer1 )
                 column.add_attribute( self.renderer1, "active", column_index)
                 column.set_sort_column_id(-1)
                 column.connect('clicked', self.treeviewImportEvents_header_checkbox, store)
             else:
                 #Add other columns
-                column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
+                column = Gtk.TreeViewColumn(column_name, Gtk.CellRendererText(), text=column_index)
                 column.set_sort_column_id(column_index)
             if column_name == "id" or column_name == "file_id" or column_name == "in_db":
                 column.set_visible(False)
@@ -527,23 +527,23 @@ class WindowImportdata(SimpleBuilderApp):
         name,description,status = self.plugins.getPluginInfo(pluginClass)
         prefs = self.plugins.getPluginConfParams(pluginClass)
 
-        self.prefwindow = gtk.Window()
+        self.prefwindow = Gtk.Window()
         self.prefwindow.set_border_width(20)
         self.prefwindow.set_title(_("%s settings" %name))
 
-        table = gtk.Table(1,2)
+        table = Gtk.Table(1,2)
         i=0
         self.entryList = []
         for pref in prefs:
-            label = gtk.Label("<b>%s</b>"%pref[0])
+            label = Gtk.Label(label="<b>%s</b>"%pref[0])
             label.set_use_markup(True)
             if pref[0] != "status":
-                entry = gtk.Entry()
+                entry = Gtk.Entry()
                 entry.set_text(pref[1])
                 self.entryList.append(entry)
                 table.attach(entry,1,2,i,i+1)
             else:
-                combobox = gtk.combo_box_new_text()
+                combobox = Gtk.ComboBoxText()
                 combobox.append_text(_("Disable"))
                 combobox.append_text(_("Enable"))
                 combobox.set_active(int(pref[1]))
@@ -552,7 +552,7 @@ class WindowImportdata(SimpleBuilderApp):
             table.attach(label,0,1,i,i+1)
             i+=1
 
-        button = gtk.Button(_("Ok"))
+        button = Gtk.Button(_("Ok"))
         button.connect("clicked", self.on_pluginAcceptSettings_clicked, pluginClass)
         table.attach(button,0,2,i,i+1)
         self.prefwindow.add(table)
@@ -637,8 +637,8 @@ class WindowImportdata(SimpleBuilderApp):
                 msgImporting = _("Importing %d activities") % selectedCount
             self.updateStatusbar(self.statusbarImportFile, msgImporting)
             logging.debug(msgImporting)
-            while gtk.events_pending(): # This allows the GUI to update
-                gtk.main_iteration()    # before completion of this entire action
+            while Gtk.events_pending(): # This allows the GUI to update
+                Gtk.main_iteration()    # before completion of this entire action
             importedActivities = self.importSelectedActivities(selectedActivities)
             # Preparing feedback for user
             if importedActivities == 0:
@@ -661,8 +661,8 @@ class WindowImportdata(SimpleBuilderApp):
     def on_buttonSelectFiles_clicked(self, widget):
         logging.debug('>>')
         selectedFiles = fileChooserDialog(title=_("Choose a file (or files) to import activities from"), multiple=True).getFiles()
-        while gtk.events_pending(): # This allows the GUI to update
-            gtk.main_iteration()    # before completion of this entire action
+        while Gtk.events_pending(): # This allows the GUI to update
+            Gtk.main_iteration()    # before completion of this entire action
         if selectedFiles is None or len(selectedFiles) == 0:
             #Nothing selected
             logging.debug("No files selected")
@@ -719,7 +719,7 @@ class WindowImportdata(SimpleBuilderApp):
                 #Display error
                 logging.debug("File %s is of unknown or unsupported file type" % filename)
                 msg = _("File %s is of unknown or unsupported file type") % filename
-                md = gtk.MessageDialog(self.win_importdata, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
+                md = Gtk.MessageDialog(self.win_importdata, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE, msg)
                 md.set_title("Error")
                 md.run()
                 md.destroy()

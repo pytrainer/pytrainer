@@ -19,8 +19,8 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from SimpleGladeApp import SimpleBuilderApp
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import GObject
 import logging
 
 class DialogSelectTrack(SimpleBuilderApp):
@@ -64,7 +64,7 @@ class DialogSelectTrack(SimpleBuilderApp):
 		logging.debug(">>")
 		i=0
 		for column_index, column_name in enumerate(column_names):
-			column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
+			column = Gtk.TreeViewColumn(column_name, Gtk.CellRendererText(), text=column_index)
 			column.set_resizable(True)
 			column.set_sort_column_id(i)
 			treeview.append_column(column)
@@ -74,9 +74,9 @@ class DialogSelectTrack(SimpleBuilderApp):
 	def actualize_treeview(self, treeview, record_list):
 		logging.debug(">>")
 		iterOne = False
-		store = gtk.ListStore(
-			gobject.TYPE_STRING,
-			gobject.TYPE_STRING,
+		store = Gtk.ListStore(
+			GObject.TYPE_STRING,
+			GObject.TYPE_STRING,
 			object)
 		for i in record_list:
 			iter = store.append()

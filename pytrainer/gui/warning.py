@@ -17,7 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from pytrainer.gui.dialogs import warning_dialog
-import gtk
+from gi.repository import Gtk
 import logging
 
 class Warning(object):
@@ -61,7 +61,7 @@ class Warning(object):
             response = warning_dialog(text=self.text, title=self.title, cancel=True)
         else:
             response = warning_dialog(text=self.text, title=self.title, cancel=False)
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             self.on_accept_clicked()
-        elif response == gtk.RESPONSE_CANCEL:
+        elif response == Gtk.ResponseType.CANCEL:
             self.on_cancel_clicked()

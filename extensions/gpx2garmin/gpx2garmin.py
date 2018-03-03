@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-import gtk
+from gi.repository import Gtk
 import subprocess
 import re
 
@@ -46,7 +46,7 @@ class gpx2garmin:
                 self.log = self.log + "succeeded!" 
         except:
             self.log = self.log + "failed!"
-        md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, self.log)
+        md = Gtk.MessageDialog(self.pytrainer_main.windowmain.window1, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, self.log)
         md.set_title(_("gpx2garmin Extension"))
         md.set_modal(False)
         md.run()

@@ -21,7 +21,7 @@ import sys
 import shutil
 import logging
 
-import gtk
+from gi.repository import Gtk
 import httplib2
 
 import wordpresslib     #TODO remove need for this library
@@ -46,12 +46,12 @@ class wordpress:
     def run(self, id, activity=None):
         #Show user something is happening
         msg = _("Posting to Wordpress blog")
-        md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_NONE, msg)
+        md = Gtk.MessageDialog(self.pytrainer_main.windowmain.window1, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, Gtk.ButtonsType.NONE, msg)
         md.set_title(_("Wordpress Extension Processing"))
         md.set_modal(True)
         md.show()
-        while gtk.events_pending(): # This allows the GUI to update
-            gtk.main_iteration()    # before completion of this entire action
+        while Gtk.events_pending(): # This allows the GUI to update
+            Gtk.main_iteration()    # before completion of this entire action
         logging.debug("before request posting")
         options = self.options
         self.wordpressurl = options["wordpressurl"]
@@ -141,7 +141,7 @@ class wordpress:
         #Close 'Please wait' dialog
         md.destroy()
         #Show the user the result
-        md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, res_msg)
+        md = Gtk.MessageDialog(self.pytrainer_main.windowmain.window1, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, res_msg)
         md.set_title(_("Wordpress Extension Upload Complete"))
         md.set_modal(False)
         md.run()

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import os #, stat, sys
 import logging
-import gtk
+from gi.repository import Gtk
 from lxml import etree
 from pytrainer.lib.srtmlayer import SrtmLayer
 
@@ -125,7 +125,7 @@ class fixelevation:
                 res_msg = "Elevation could not be fixed!"
 
             #Show the user the result
-            md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, res_msg)
+            md = Gtk.MessageDialog(self.pytrainer_main.windowmain.window1, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, res_msg)
             md.set_title(_("Elevation Correction Complete"))
             md.set_modal(False)
             md.run()

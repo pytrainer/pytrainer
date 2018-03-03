@@ -19,12 +19,12 @@
 
 import os
 import sys
-import gtk
+from gi.repository import Gtk
 from pytrainer.environment import Environment
 
 class SimpleBuilderApp(dict):
     def __init__(self, ui_filename):
-        self._builder = gtk.Builder()
+        self._builder = Gtk.Builder()
         env = Environment()
         file_path = os.path.join(env.glade_dir, ui_filename)
         self._builder.add_from_file(file_path)
@@ -76,19 +76,19 @@ class SimpleBuilderApp(dict):
         widget.activate_default()
 
     def gtk_true(self, *args):
-        return gtk.TRUE
+        return True
 
     def gtk_false(self, *args):
-        return gtk.FALSE
+        return False
 
     def gtk_main_quit(self, *args):
-        gtk.main_quit()
+        Gtk.main_quit()
 
     def main(self):
-        gtk.main()
+        Gtk.main()
 
     def quit(self, widget=None):
-        gtk.main_quit()
+        Gtk.main_quit()
 
     def run(self):
         try:
@@ -99,7 +99,7 @@ class SimpleBuilderApp(dict):
     def create_treeview(self,treeview,column_names):
         i=0
         for column_index, column_name in enumerate(column_names):
-            column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
+            column = Gtk.TreeViewColumn(column_name, Gtk.CellRendererText(), text=column_index)
             column.set_resizable(True)
             if i==0:
                 column.set_visible(False)

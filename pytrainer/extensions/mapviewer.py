@@ -17,9 +17,9 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from pytrainer.lib.fileUtils import fileUtils
-import gtk
+from gi.repository import Gtk
 import logging
-import webkit
+from gi.repository import WebKit
 
 class MapViewer:
 	def __init__(self, data_path = None, pytrainer_main=None, box=None):
@@ -36,7 +36,7 @@ class MapViewer:
 
 	def pack_box(self):
 		logging.debug(">>")
-		scrolled_window = gtk.ScrolledWindow()
+		scrolled_window = Gtk.ScrolledWindow()
 		scrolled_window.add(self.wkview)
 		self.box.pack_start(scrolled_window, True, True)
 		self.box.show_all()

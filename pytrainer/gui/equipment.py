@@ -16,11 +16,11 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import gtk
+from gi.repository import Gtk
 from pytrainer.core.equipment import Equipment
 from pytrainer.lib.localization import gtk_str
 
-class EquipmentStore(gtk.ListStore):
+class EquipmentStore(Gtk.ListStore):
     
     def __init__(self, equipment_service):
         super(EquipmentStore, self).__init__(int, str, float, str, bool)
@@ -28,7 +28,7 @@ class EquipmentStore(gtk.ListStore):
         for equipment in equipment_service.get_all_equipment():
             self._append_row(equipment)
         self.set_default_sort_func(self._sort)
-        self.set_sort_column_id(-1, gtk.SORT_ASCENDING)
+        self.set_sort_column_id(-1, Gtk.SortType.ASCENDING)
         
     def _sort(self, store, x, y):
         if self.get_value(x, 4) != self.get_value(y, 4):
@@ -76,12 +76,12 @@ class EquipmentStore(gtk.ListStore):
         self._equipment_service.remove_equipment(item)
         self.remove(self.get_iter(item_path))
 
-class EquipmentUi(gtk.HBox):
+class EquipmentUi(Gtk.HBox):
     
     def __init__(self, glade_conf_dir, equipment_service):
-        gtk.HBox.__init__(self)
+        GObject.GObject.__init__(self)
         self._equipment_store = EquipmentStore(equipment_service)
-        self._builder = gtk.Builder()
+        self._builder = Gtk.Builder()
         self._builder.add_from_file(glade_conf_dir + "/equipment.ui")
         self._init_tree_view()
         self._init_signals()
@@ -96,13 +96,13 @@ class EquipmentUi(gtk.HBox):
 
     def _init_tree_view(self):
         tree_view = self._get_tree_view()
-        column = gtk.TreeViewColumn(_("Description"), gtk.CellRendererText(), text=1)
+        column = Gtk.TreeViewColumn(_("Description"), Gtk.CellRendererText(), text=1)
         column.set_resizable(True)
         tree_view.append_column(column)
-        tree_view.append_column(gtk.TreeViewColumn(_("Usage"), gtk.CellRendererProgress(), value=2, text=3))
-        tree_view.append_column(gtk.TreeViewColumn(_("Active"), gtk.CellRendererToggle(), active=4))
+        tree_view.append_column(Gtk.TreeViewColumn(_("Usage"), Gtk.CellRendererProgress(), value=2, text=3))
+        tree_view.append_column(Gtk.TreeViewColumn(_("Active"), Gtk.CellRendererToggle(), active=4))
         # add filler column
-        tree_view.append_column(gtk.TreeViewColumn())
+        tree_view.append_column(Gtk.TreeViewColumn())
         tree_view.set_model(self._equipment_store)
         
     def _init_signals(self):

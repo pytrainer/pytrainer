@@ -3,7 +3,7 @@
 import json
 import urllib
 import urllib2
-import gtk
+from gi.repository import Gtk
 import logging
 import webbrowser
 from subprocess import Popen, PIPE
@@ -157,7 +157,7 @@ class StravaUpload:
         except Exception, e:
             log = "Unknown exception: %s." % e
         logging.debug(log)
-        md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_INFO, gtk.BUTTONS_OK, log)
+        md = Gtk.MessageDialog(self.pytrainer_main.windowmain.window1, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, log)
         md.set_title(_("Strava Upload"))
         md.set_modal(False)
         md.run()

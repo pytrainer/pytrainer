@@ -39,10 +39,10 @@ class DrawGraph:
 
     def draw(self, datalist=None, box=None, figure=None, title=None, y2=False, xgrid=False, ygrid=False):
         '''
-            Draw a graph using supplied information into supplied gtk.box
+            Draw a graph using supplied information into supplied Gtk.box
 
             datalist = populated graphdata class (required)
-            box = gtk.box object (required)
+            box = Gtk.box object (required)
             figure = matplotlib figure (optional) if supplied will add graph to this figure
             title =
             y2 =
@@ -74,7 +74,7 @@ class DrawGraph:
 
 
         #Create canvas
-        canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
+        canvas = FigureCanvasGTK(figure) # a Gtk.DrawingArea
         canvas.show()
 
         #Display title etc
