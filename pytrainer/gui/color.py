@@ -16,7 +16,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import Gtk.gdk
+from gi.repository import Gdk
 from pytrainer.util.color import Color
 
 class ColorConverter(object):

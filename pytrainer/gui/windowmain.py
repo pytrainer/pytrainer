@@ -23,6 +23,7 @@ import logging
 import matplotlib
 from gi.repository import GObject
 from gi.repository import Gtk
+from gi.repository import Gdk
 
 import dateutil.parser
 

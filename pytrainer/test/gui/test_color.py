@@ -18,7 +18,7 @@
 
 from pytrainer.gui.color import ColorConverter
 from pytrainer.util.color import Color
-import Gtk.gdk
+from gi.repository import Gdk
 import unittest
 
 class ColorConverterTest(unittest.TestCase):
