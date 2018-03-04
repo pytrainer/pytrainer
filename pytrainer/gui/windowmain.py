@@ -618,8 +618,8 @@ class Main(SimpleBuilderApp):
                 maxlabel.set_use_markup(True)
                 xlimlabel = Gtk.Label(label="X")
                 limits = {}
-                xminlabel = Gtk.Entry(max=10)
-                xmaxlabel = Gtk.Entry(max=10)
+                xminlabel = Gtk.Entry(max_length=10)
+                xmaxlabel = Gtk.Entry(max_length=10)
                 limits['xminlabel'] = xminlabel
                 limits['xmaxlabel'] = xmaxlabel
                 xminlabel.set_width_chars(5)
@@ -627,8 +627,8 @@ class Main(SimpleBuilderApp):
                 xmaxlabel.set_width_chars(5)
                 xmaxlabel.set_alignment(1.0)
                 y1limlabel = Gtk.Label(label="Y1")
-                y1minlabel = Gtk.Entry(max=10)
-                y1maxlabel = Gtk.Entry(max=10)
+                y1minlabel = Gtk.Entry(max_length=10)
+                y1maxlabel = Gtk.Entry(max_length=10)
                 limits['y1minlabel'] = y1minlabel
                 limits['y1maxlabel'] = y1maxlabel
                 y1minlabel.set_width_chars(5)
@@ -636,8 +636,8 @@ class Main(SimpleBuilderApp):
                 y1maxlabel.set_width_chars(5)
                 y1maxlabel.set_alignment(1.0)
                 y2limlabel = Gtk.Label(label="Y2")
-                y2minlabel = Gtk.Entry(max=10)
-                y2maxlabel = Gtk.Entry(max=10)
+                y2minlabel = Gtk.Entry(max_length=10)
+                y2maxlabel = Gtk.Entry(max_length=10)
                 limits['y2minlabel'] = y2minlabel
                 limits['y2maxlabel'] = y2maxlabel
                 y2minlabel.set_width_chars(5)
