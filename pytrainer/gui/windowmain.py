@@ -337,7 +337,7 @@ class Main(SimpleBuilderApp):
             else:
                 renderer = Gtk.CellRendererText()
             column = Gtk.TreeViewColumn(column_dict['name'])
-            column.pack_start(renderer, False, True, 0)
+            column.pack_start(renderer, False)
             if 'pixbuf' in column_dict:
                 column.add_attribute(renderer, 'pixbuf', column_index)
             else:
