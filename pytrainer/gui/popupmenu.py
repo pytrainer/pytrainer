@@ -21,7 +21,7 @@ from gi.repository import Gtk
 
 class PopupMenu(Gtk.Menu):
     def __init__(self, data_path = None, parent = None):
-        super(GObject.GObject.__init__())
+        super(PopupMenu, self).__init__()
         self.windowmain = parent
         edit_record = Gtk.ImageMenuItem(Gtk.STOCK_EDIT)
         edit_record.set_label(_("Edit Record"))

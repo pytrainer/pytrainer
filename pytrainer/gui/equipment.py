@@ -79,7 +79,7 @@ class EquipmentStore(Gtk.ListStore):
 class EquipmentUi(Gtk.HBox):
     
     def __init__(self, glade_conf_dir, equipment_service):
-        GObject.GObject.__init__(self)
+        super(EquipmentUi, self).__init__()
         self._equipment_store = EquipmentStore(equipment_service)
         self._builder = Gtk.Builder()
         self._builder.add_from_file(glade_conf_dir + "/equipment.ui")
