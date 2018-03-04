@@ -1918,7 +1918,7 @@ class Main(SimpleBuilderApp):
             self.calendar.mark_day(i)
         #Turn on displaying of week numbers
         display_options = self.calendar.get_display_options()
-        self.calendar.set_display_options(display_options|Gtk.CALENDAR_SHOW_WEEK_NUMBERS)
+        self.calendar.set_display_options(display_options|Gtk.CalendarDisplayOptions.SHOW_WEEK_NUMBERS)
         logging.debug("<<")
 
     def on_about_activate(self,widget):
