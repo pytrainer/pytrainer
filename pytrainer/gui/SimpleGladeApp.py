@@ -28,6 +28,7 @@ class SimpleBuilderApp(dict):
         env = Environment()
         file_path = os.path.join(env.glade_dir, ui_filename)
         self._builder.add_from_file(file_path)
+        self.signal_autoconnect()
         self._builder.connect_signals(self)
         self.new()
 
