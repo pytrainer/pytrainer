@@ -19,7 +19,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 
-from gi.repository import Gtk
+from gi.repository import Gtk, GdkPixbuf
 
 class About:
     def __init__(self,data_path = None, version = None):
