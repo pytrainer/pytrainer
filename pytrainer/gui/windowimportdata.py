@@ -181,7 +181,7 @@ class WindowImportdata(SimpleBuilderApp):
         #Populate Force Sport to combobox
         sport_list = self._sport_service.get_all_sports()
         #Remove placeholder item (needed to ensure correct model for combobox)
-        self.comboCSVForceSport.remove_text(0)
+        self.comboCSVForceSport.remove(0)
         for sport in sport_list:
             logging.debug('Adding sport: %s' % sport.name)
             self.comboCSVForceSport.append_text(sport.name)
@@ -684,11 +684,11 @@ class WindowImportdata(SimpleBuilderApp):
                 iter = self.files_store.append()
                 self.files_store.set(
                     iter,
-                    0, class_index,
+                    0, str(class_index),
                     1, True,
                     2, filename,
                     3, self.processClasses[class_index].getFileType(),
-                    4, activity_count
+                    4, str(activity_count)
                     )
                 #File valid, so enable remove button
                 self.buttonRemoveSelectedFiles.set_sensitive(1)
@@ -705,15 +705,15 @@ class WindowImportdata(SimpleBuilderApp):
                     # Status (#1) can be changed by user (via checkbox), we need another field to know if activity is in DB 
                     self.activities_store.set(
                         activity_iter,
-                        0, activity[0],
+                        0, str(activity[0]),
                         1, not activity[1],
                         2, activity[2],
                         3, activity[3],
                         4, activity[4],
                         5, activity[5],
                         6, note,
-                        7, class_index,
-                        8, activity [1],
+                        7, str(class_index),
+                        8, activity[1],
                         )
             else: #Selected file not understood by any of the process files
                 #Display error
