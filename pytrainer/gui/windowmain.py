@@ -24,6 +24,7 @@ import matplotlib
 from gi.repository import GObject
 from gi.repository import Gtk
 from gi.repository import Gdk
+from gi.repository import GdkPixbuf
 
 import dateutil.parser
 
@@ -305,7 +306,7 @@ class Main(SimpleBuilderApp):
         self.sportlist.set_active(0)
         logging.debug("<<")
 
-    def render_duration(self, column, cell, model, iter):
+    def render_duration(self, column, cell, model, iter, notif):
         orig = cell.get_property('text')
         if not ':' in orig:
             h,m,s = second2time(int(orig))
@@ -496,7 +497,7 @@ class Main(SimpleBuilderApp):
                 
                 # Use grey color for "rest" laps
                 for c in self.lapsTreeView.get_columns():
-                    for cr in c.get_cell_renderers():
+                    for cr in c.get_cells():
                         if type(cr)==Gtk.CellRendererText:
                             c.add_attribute(cr, 'foreground', 11)
 
@@ -519,14 +520,16 @@ class Main(SimpleBuilderApp):
                     self.lapsTreeView.disconnect(self.lapsTreeView.tooltip_handler_id)
                 self.lapsTreeView.tooltip_handler_id = self.lapsTreeView.connect('query-tooltip', show_tooltip, (store, activity))
                 i = 0
-                for cr in self.lapsTreeView.get_columns()[12].get_cell_renderers():
+                for cr in self.lapsTreeView.get_columns()[12].get_cells():
                     cr.set_property('editable', True)
                     if getattr(self, 'lapview_handler_id', None):
                         cr.disconnect(self.lapview_handler_id)
                     self.lapview_handler_id = cr.connect('edited', edited_cb, (store, activity))
                     tooltip = Gtk.Tooltip()
                     tooltip.set_text(activity.laps[i]['comments'])
-                    self.lapsTreeView.set_tooltip_cell(tooltip, i, self.lapsTreeView.get_columns()[12], cr)
+                    # FIXME Use TreePath to set tooltip
+                    #self.lapsTreeView.set_tooltip_cell(tooltip, i, self.lapsTreeView.get_columns()[12], cr)
+                    self.lapsTreeView.set_tooltip_cell(tooltip, None, self.lapsTreeView.get_columns()[12], cr)
                     i += 1
                 self.frame_laps.show()
             else:
@@ -908,7 +911,7 @@ class Main(SimpleBuilderApp):
             )
             
             for c in self.rankingTreeView.get_columns()[:-1]:
-                for cr in c.get_cell_renderers():
+                for cr in c.get_cells():
                     if type(cr)==Gtk.CellRendererText:
                         c.add_attribute(cr, 'foreground', 7)
             

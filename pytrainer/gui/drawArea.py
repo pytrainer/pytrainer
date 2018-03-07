@@ -141,7 +141,7 @@ class DrawArea:
         logging.debug("Got canvas: %s" % (str(canvas)))
         canvas.show()
         logging.debug("Adding canvas to vbox")
-        self.vbox.pack_start(canvas, True, True)
+        self.vbox.pack_start(canvas, True, True, 0)
         #toolbar = NavigationToolbar(canvas, self.window)
         #self.vbox.pack_start(toolbar, False, False)
 
@@ -299,7 +299,7 @@ class DrawArea:
         axis.grid(True)
         canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
         canvas.show()
-        self.vbox.pack_start(canvas, True, True)
+        self.vbox.pack_start(canvas, True, True, 0)
         #toolbar = NavigationToolbar(canvas, self.window)
         #self.vbox.pack_start(toolbar, False, False)
 
@@ -376,7 +376,7 @@ class DrawArea:
         canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
         logging.debug("Canvas: %s" % str(canvas))
         canvas.show()
-        self.vbox.pack_start(canvas, True, True)
+        self.vbox.pack_start(canvas, True, True, 0)
         toolbar = NavigationToolbar(canvas, self.window)
         self.vbox.pack_start(toolbar, False, False)
 
@@ -475,7 +475,7 @@ class DrawArea:
         for child in self.vbox.get_children():
             logging.debug('Child available: '+str(child))
 
-        self.vbox.pack_start(canvas, True, True)
+        self.vbox.pack_start(canvas, True, True, 0)
         logging.debug('<<')
 
     def drawDefault(self):
@@ -488,7 +488,7 @@ class DrawArea:
         self.canvas.destroy()
         self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
         self.canvas.show()
-        self.vbox.pack_start(self.canvas, True, True)
+        self.vbox.pack_start(self.canvas, True, True, 0)
         logging.debug('<<')
 
     def fill_over(self, ax, x, y, val, color, over=True):
