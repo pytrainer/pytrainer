@@ -143,7 +143,7 @@ class DrawGraph:
         #axis.set_ylim(0, data.max_y_value)
 
         #Display plot
-        box.pack_start(canvas, True, True)
+        box.pack_start(canvas, True, True, 0)
 
         logging.debug("<<")
         return figure

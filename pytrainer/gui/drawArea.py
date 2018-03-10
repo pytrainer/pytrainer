@@ -378,7 +378,7 @@ class DrawArea:
         canvas.show()
         self.vbox.pack_start(canvas, True, True, 0)
         toolbar = NavigationToolbar(canvas, self.window)
-        self.vbox.pack_start(toolbar, False, False)
+        self.vbox.pack_start(toolbar, False, False, 0)
 
         for child in self.vbox.get_children():
             logging.debug('Child available: '+str(child))
