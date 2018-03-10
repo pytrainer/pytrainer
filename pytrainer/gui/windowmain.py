@@ -897,7 +897,7 @@ class Main(SimpleBuilderApp):
                 0, i,
                 1, rank,
                 2, r.date,
-                3, self.uc.distance(r.distance),
+                3, r.distance,
                 4, str(r.duration),
                 5, r.average,
                 6, r.pace,
