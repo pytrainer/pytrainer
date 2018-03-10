@@ -880,11 +880,11 @@ class Main(SimpleBuilderApp):
             GObject.TYPE_INT,       #id
             GObject.TYPE_INT,       #rank
             GObject.TYPE_STRING,    #date
-            GObject.TYPE_STRING,    #distance
-            GObject.TYPE_STRING,       #time
-            GObject.TYPE_STRING,       #speed
-            GObject.TYPE_STRING,       #pace
-            GObject.TYPE_STRING,       #color
+            GObject.TYPE_FLOAT,     #distance
+            GObject.TYPE_INT,       #time
+            GObject.TYPE_FLOAT,     #speed
+            GObject.TYPE_FLOAT,     #pace
+            GObject.TYPE_STRING,    #color
             )
 
         length = len(records)
@@ -902,9 +902,9 @@ class Main(SimpleBuilderApp):
                 iter,
                 0, i,
                 1, rank,
-                2, r.date,
+                2, str(r.date),
                 3, r.distance,
-                4, str(r.duration),
+                4, r.duration,
                 5, r.average,
                 6, r.pace,
                 7, '#3AA142' if rank==count else '#000000',
@@ -1107,26 +1107,23 @@ class Main(SimpleBuilderApp):
 
         #Create history treeview
         history_store = Gtk.ListStore(
-            GObject.TYPE_STRING,       #id
+            GObject.TYPE_INT,       #id
             GObject.TYPE_STRING,    #date
-            GObject.TYPE_STRING,    #weight
-            GObject.TYPE_STRING,    #body fat %
-            GObject.TYPE_STRING,       #resting HR
-            GObject.TYPE_STRING        #max HR
+            GObject.TYPE_FLOAT,     #weight
+            GObject.TYPE_FLOAT,     #body fat %
+            GObject.TYPE_INT,       #resting HR
+            GObject.TYPE_INT        #max HR
             )
         for data in athlete.data:
-            weight = data['weight']
-            date = data['date']
-
             iter = history_store.append()
             history_store.set (
                 iter,
-                0, (data['id_athletestat']),
-                1, date,
-                2, weight,
-                3, (data['bodyfat']),
-                4, (data['restinghr']),
-                5, (data['maxhr']),
+                0, data['id_athletestat'],
+                1, str(data['date']),
+                2, data['weight'],
+                3, data['bodyfat'],
+                4, data['restinghr'],
+                5, data['maxhr'],
                 )
         self.athleteTreeView.set_model(history_store)
         self.grapher.drawAthleteGraph(athlete=athlete, box=self.boxAthleteGraph)
