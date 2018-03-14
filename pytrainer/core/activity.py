@@ -72,7 +72,7 @@ class ActivityService(object):
         logging.debug(">>")
         #It is an error to try to initialise with no reference to pytrainer_main
         if pytrainer_main is None:
-            print("Error - must initialise with a reference to the main pytrainer class")
+            logging.critical("Error - must initialise with a reference to the main pytrainer class")
             return
         self.pytrainer_main = pytrainer_main
         self.max_size = size
@@ -689,5 +689,5 @@ tracks (%s)
             else:
                 return "%0d:%02d:%02d" % (_hour, _min, _sec)
         else:
-            print "Unable to provide value for unknown parameter (%s) for activity" % param
+            logging.error("Unable to provide value for unknown parameter (%s) for activity", param)
             return None

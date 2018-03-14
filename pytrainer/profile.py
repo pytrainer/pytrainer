@@ -230,7 +230,7 @@ class Profile(Singleton):
 
     def getValue(self, tag, variable):
         if tag != "pytraining":
-            print "ERROR - pytraining is the only profile tag supported"
+            logging.critical("ERROR - pytraining is the only profile tag supported")
             return None
         elif not self.configuration.has_key(variable):
             return None

@@ -21,6 +21,7 @@ import os
 import sys
 import subprocess
 import datetime
+import logging
     
 def get_platform():
     if os.name == "posix":
@@ -28,7 +29,7 @@ def get_platform():
     elif os.name == "nt":
         return _Windows()
     else:
-        print "Unsupported os.name: %s." % os.name
+        logging.critical("Unsupported os.name: %s.", os.name)
         sys.exit(1)
         
 class _Platform(object):
