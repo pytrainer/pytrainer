@@ -387,8 +387,6 @@ class SportServiceTest(unittest.TestCase):
     
     def test_get_all_sports_should_return_no_sports_when_query_result_empty(self):
         sports = self.sport_service.get_all_sports()
-        for i in sports:
-            print i.name
         self.assertEquals(0, len(sports))
         
     def test_remove_sport_should_error_when_sport_has_no_id(self):
