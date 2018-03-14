@@ -119,7 +119,7 @@ class Main(SimpleBuilderApp):
         #create the columns for the athlete history treeview
         columns=[   {'name':_("id"), 'visible':False},
                     {'name':_("Date")},
-                    {'name':_("Weight"), 'xalign':1.0},
+                    {'name':_("Weight"), 'xalign':1.0, 'quantity':'weight', 'format_float':'%.1f'},
                     {'name':_("Body Fat %"), 'xalign':1.0},
                     {'name':_("Resting HR"), 'xalign':1.0},
                     {'name':_("Max HR"), 'xalign':1.0}
@@ -897,7 +897,7 @@ class Main(SimpleBuilderApp):
                 0, i,
                 1, rank,
                 2, r.date,
-                3, self.uc.distance(r.distance),
+                3, r.distance,
                 4, str(r.duration),
                 5, r.average,
                 6, r.pace,
