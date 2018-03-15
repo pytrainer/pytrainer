@@ -430,7 +430,7 @@ class Main(SimpleBuilderApp):
             else:
                 buffer.set_text('')
             if len(activity.equipment) > 0:
-                equipment_text = ", ".join(map(lambda(item): item.description, activity.equipment))
+                equipment_text = ", ".join([item.description for item in activity.equipment])
                 self.label_record_equipment.set_text(equipment_text)
             else:
                 self.label_record_equipment.set_markup("<i>None</i>")
