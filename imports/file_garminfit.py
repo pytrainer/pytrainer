@@ -151,7 +151,7 @@ class garminfit():
 
     def getSport(self, activity):
         try:
-            sport = activity.get("Sport")
+            sport = activity.get("Sport").decode("utf-8")
         except:
             sport = "import"
         return sport
