@@ -301,13 +301,13 @@ class pyTrainer:
         logging.debug('>>')
         logging.info('Working on '+view+' graph')
         if id_record is not None:
-			#Refresh called for a specific record
+            #Refresh called for a specific record
             #Select correct record in treeview
             model = self.windowmain.recordTreeView.get_model()
             #Loop through all records in treeview looking for the correct one to highlight
             for i,row in enumerate(model):
-				if row[0] == id_record:
-					self.windowmain.recordTreeView.set_cursor(i)
+                if row[0] == id_record:
+                    self.windowmain.recordTreeView.set_cursor(i)
         else:
             selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
             if iter:
