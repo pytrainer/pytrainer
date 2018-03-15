@@ -501,7 +501,8 @@ class Main(SimpleBuilderApp):
                         if type(cr)==Gtk.CellRendererText:
                             cr.set_property('foreground', 'gray')
 
-                def edited_cb(cell, path, new_text, (liststore, activity)):
+                def edited_cb(cell, path, new_text, data):
+                    liststore, activity = data
                     liststore[path][12] = new_text
                     activity.Laps[int(path)].comments = gtk_str(new_text)
                     self.pytrainer_main.ddbb.session.commit()
