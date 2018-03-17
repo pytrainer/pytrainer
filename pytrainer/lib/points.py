@@ -2,6 +2,7 @@
 Matt King, 2005-06-16
 """
 
+from __future__ import print_function
 import random
 
 def decodePoints(points):
@@ -94,10 +95,10 @@ if __name__ == '__main__':
     locs = [(38.5, -120.2), (40.7, -120.95), (43.252, -126.453)]
     locs = [(37.4419, -122.1419),(37.4519, -122.1519),( 37.4619, -122.1819)]
     points, levels = encodePoints(locs)
-    print points
-    print levels
+    print(points)
+    print(levels)
     decodedLocs = decodePoints(points)
-    print decodePoints(points)
+    print(decodePoints(points))
     def _cmpFloat(x,y):
         if abs(x-y) > 0.0001: return 0
         return 1
