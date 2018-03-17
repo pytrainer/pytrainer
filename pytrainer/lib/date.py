@@ -25,6 +25,8 @@ import dateutil.parser
 from dateutil.tz import tzutc, tzlocal
 import logging
 
+from pytrainer.platform import get_platform
+
 def second2time(seconds):
     if not seconds:
         return 0,0,0
@@ -93,3 +95,83 @@ class Date:
         year,month,day = newdate.split("-")
         self.calendar.select_month(int(month)-1,int(year))
         self.calendar.select_day(int(day))
+
+class DateRange(object):
+
+    """A date range consisting of a start date and an end date."""
+
+    def __init__(self, start_date, end_date):
+        if not isinstance(start_date, datetime.date):
+            raise TypeError("Start date must be datetime.date, not {0}.".format(type(start_date).__name__))
+        if not isinstance(end_date, datetime.date):
+            raise TypeError("End date must be datetime.date, not {0}.".format(type(start_date).__name__))
+        if start_date > end_date:
+            raise ValueError("End date cannot be before start date.")
+        self._start_date = start_date
+        self._end_date = end_date
+
+    @property
+    def start_date(self):
+        return self._start_date
+
+    @property
+    def end_date(self):
+        return self._end_date
+
+    def __str__(self):
+        fmt = "%Y%m%d"
+        return self._start_date.strftime(fmt) + "-" + self._end_date.strftime(fmt)
+
+    @classmethod
+    def for_week_containing(clazz, date):
+        """Get the date range for the week containing the given date.
+
+        The date range will start on the first day of the week and end on the
+        last day of the week. The week start and end days are locale dependent.
+
+        Args:
+            date (datetime.date): a date within the week to get the date range for.
+        Returns:
+            (DateRange): the date range for a week.
+        """
+        day_of_week = (int(date.strftime("%w")) - get_platform().get_first_day_of_week()) % 7
+        date_start = date + datetime.timedelta(days = 0 - day_of_week)
+        date_end = date + datetime.timedelta(days = 6 - day_of_week)
+        return DateRange(date_start, date_end)
+
+    @classmethod
+    def for_month_containing(clazz, date):
+        """Get the date range for the month containing the given date.
+
+        The date range will start on the first day of the month and end on the
+        last day of the month.
+
+        Args:
+            date (datetime.date): a date within the month to get the date range for.
+        Returns:
+            (DateRange): the date range for a month.
+        """
+        date_start = datetime.date(date.year, date.month, 1)
+        next_month = date.month + 1
+        next_month_year = date.year
+        if (next_month == 13):
+            next_month = 1
+            next_month_year += 1
+        date_end = datetime.date(next_month_year, next_month, 1) - datetime.timedelta(days=1)
+        return DateRange(date_start, date_end)
+
+    @classmethod
+    def for_year_containing(clazz, date):
+        """Get the date range for the year containing the given date.
+
+        The date range will start on the first day of the year and end on the
+        last day of the year.
+
+        Args:
+            date (datetime.date): a date within the year to get the date range for.
+        Returns:
+            (DateRange): the date range for a year.
+        """
+        date_start = datetime.date(date.year, 1, 1)
+        date_end = datetime.date(date.year, 12, 31)
+        return DateRange(date_start, date_end)

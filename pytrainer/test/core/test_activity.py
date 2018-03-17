@@ -24,7 +24,7 @@ from pytrainer.lib.ddbb import DDBB, DeclarativeBase
 from pytrainer.profile import Profile
 from pytrainer.lib.uc import UC
 from pytrainer.core.activity import ActivityService
-from pytrainer.util.date import DateRange
+from pytrainer.lib.date import DateRange
 
 class ActivityTest(unittest.TestCase):
 
