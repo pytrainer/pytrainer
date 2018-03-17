@@ -28,7 +28,7 @@ from lib.gpx import Gpx
 from pytrainer.core.equipment import EquipmentService, Equipment
 from pytrainer.core.sport import Sport
 from pytrainer.core.activity import Activity, Lap
-from pytrainer.util.date import DateRange
+from pytrainer.lib.date import DateRange
 
 class Record:
     def __init__(self, sport_service, data_path = None, parent = None):

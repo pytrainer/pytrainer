@@ -24,7 +24,7 @@ import logging
 import logging.handlers
 import traceback
 
-from pytrainer.util.date import DateRange
+from pytrainer.lib.date import DateRange
 from upgrade.data import initialize_data
 from environment import Environment
 from record import Record
