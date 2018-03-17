@@ -22,7 +22,7 @@ from matplotlib.figure import Figure
 from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvasGTK
 from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
 import matplotlib.pyplot as plt
-import pylab 
+import pylab
 import logging
 
 class DrawArea:
@@ -38,7 +38,7 @@ class DrawArea:
         logging.debug('<<')
 
     def stadistics(self,type,xvalues,yvalues,xlabel,ylabel,title,color=None,zones=None):
-        logging.debug('>>') 
+        logging.debug('>>')
         if len(xvalues[0]) < 1:
             #self.drawDefault()
             return False
@@ -54,7 +54,7 @@ class DrawArea:
         logging.debug('<<')
 
     def drawBars(self,xvalues,yvalues,xlabel,ylabel,title,color):
-        logging.debug('>>') 
+        logging.debug('>>')
         logging.debug("Type: bars | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
         self.removeVboxChildren()
         #figure = Figure(figsize=(6,4), dpi=72)
@@ -92,7 +92,7 @@ class DrawArea:
             yvals[i] = yval
         if self.showGraph:
             logging.debug("Drawing bars")
-            axis.bar(xvals, yvals, barWidth, color=color[0], align='edge')      
+            axis.bar(xvals, yvals, barWidth, color=color[0], align='edge')
         else:   #Only zero results
             logging.debug("No results to draw")
             pass
@@ -129,14 +129,14 @@ class DrawArea:
             _title = "%s vs %s" %(title[0],title[1])
             logging.debug("Axis 2: Setting title to: %s" % _title)
             axis.set_title(_title)
-        
+
         logging.debug("Setting x ticks")
         tickLocations = [x+0.5 for x in xrange(0, numCols)]
         axis.set_xticks(tickLocations)
         axis.set_xticklabels(xvalues[0])
         logging.debug("Setting x limits")
         axis.set_xlim(0, numCols)
-        
+
         canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
         logging.debug("Got canvas: %s" % (str(canvas)))
         canvas.show()
@@ -155,7 +155,7 @@ class DrawArea:
         if x >= len(colors):
             x = x % len(colors)
         return colors[x]
-    
+
     def fmtTableText(self, x, valuesAreTime):
         if x <= 0.0001:
             return ' '
@@ -177,7 +177,7 @@ class DrawArea:
             yvalues needs to be a list of dicts e.g. [0]{'Kayak': {'Tue': 10.08, 'Fri': 17.579999999999998, 'Thu': 15.66, 'Sat': 30.619999999999997}, {'Run': {'Mon': 9.65, 'Sun': 15.59}}
         '''
         #TODO tidy
-        logging.debug('>>') 
+        logging.debug('>>')
         logging.debug("Title: %s", (title, ))
         logging.debug("X values received: %s", str(xvalues))
         logging.debug("Y values received: %s", str(yvalues))
@@ -199,7 +199,7 @@ class DrawArea:
         if numRows == 0:
             return
         width = .8
-        #figure = plt.figure(figsize=(6,4), dpi=72) 
+        #figure = plt.figure(figsize=(6,4), dpi=72)
         figure = plt.figure()
         logging.debug("Figure: %s" % str(figure) )
         axis = plt.subplot(111)
@@ -210,9 +210,9 @@ class DrawArea:
         xvals = [x+barOffset for x in range(0, numCols)]
         cellText = []
         self.showGraph=False
-        
+
         for k in colors:
-        	if colors[k]==None: colors[k]=''
+            if colors[k]==None: colors[k]=''
 
         #Display first axis
         xticks = []
@@ -243,14 +243,14 @@ class DrawArea:
         if len(xvalues) == 1:
             plt.title(title[0])
             axis.legend(loc=0)
-            
+
         axis.set_xlim(0,numCols)
 
         logging.debug("X values first axis: %s", str(xvals))
         logging.debug("Y values first axis: %s", str(yheights))
 
         #Display twin axis
-        if len(xvalues) == 2: 
+        if len(xvalues) == 2:
             self.showGraph=False
             ax2 = axis.twinx()
             keys = yvalues[1].keys()
@@ -277,7 +277,7 @@ class DrawArea:
                         row = keys.index(key)
                         col = index
                         cellText[row][col] += " | %s" % (self.fmtTableText(height, valuesAreTime[1]))
-                        #print "Would add %s to %s %s" % (self.fmtTableText(height, valuesAreTime[1]), index, keys.index(key))                      
+                        #print "Would add %s to %s %s" % (self.fmtTableText(height, valuesAreTime[1]), index, keys.index(key))
                 if self.showGraph:
                     xvals = [x+barOffset+barWidth for x in range(0, numCols)]
                     #print "ax2", xvals, yheights, ybottoms
@@ -309,7 +309,7 @@ class DrawArea:
         logging.debug('<<')
 
     def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None,xzones=None, ylimits=None, y1_linewidth=None):
-        logging.debug('>>')  
+        logging.debug('>>')
         logging.debug("Type: plot | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
         logging.debug('xlabel: '+str(xlabel)+' | ylabel: '+str(ylabel)+' | title: '+str(title))
         self.removeVboxChildren()
@@ -327,7 +327,7 @@ class DrawArea:
                 if y1_linewidth is not None:
                     line[0].set_linewidth(y1_linewidth)
                 linewidth = line[0].get_linewidth()
-                    
+
                 axis.grid(True)
                 logging.debug("Axis grid on" )
                 for tl in axis.get_yticklabels():
@@ -379,13 +379,13 @@ class DrawArea:
         self.vbox.pack_start(canvas, True, True)
         toolbar = NavigationToolbar(canvas, self.window)
         self.vbox.pack_start(toolbar, False, False)
-        
+
         for child in self.vbox.get_children():
             logging.debug('Child available: '+str(child))
-        
+
         logging.debug('<<')
         return {'y1_min': ylim_min, 'y1_max': ylim_max, 'y1_linewidth': linewidth}
-    
+
     def drawPie(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
         logging.debug('>>')
         logging.debug("Type: pie | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
@@ -406,10 +406,10 @@ class DrawArea:
         for zone in zones:
             labels.insert(0,zone[3])
             colors.insert(0,zone[2])
-    
+
         labels.insert(0,_("rest"))
         colors.insert(0,"#ffffff")
-    
+
         for value in yvalues[0]:
             if value <= zones[4][0]:
                 frac0+=1
@@ -423,7 +423,7 @@ class DrawArea:
                 frac4+=1
             elif value > zones[0][0] and value <= zones[0][1]:
                 frac5+=1
-            
+
         fracs = []
         explode=[]
         if frac5 == 0:
@@ -439,28 +439,28 @@ class DrawArea:
         else:
             fracs.insert(0, frac4)
             explode.insert(0, 0)
-            
+
         if frac3 == 0:
             labels.pop(3)
             colors.pop(3)
         else:
             fracs.insert(0, frac3)
             explode.insert(0, 0)
-            
+
         if frac2 == 0:
             labels.pop(2)
             colors.pop(2)
         else:
             fracs.insert(0, frac2)
             explode.insert(0, 0)
-            
+
         if frac1 == 0:
             labels.pop(1)
             colors.pop(1)
         else:
             fracs.insert(0, frac1)
             explode.insert(0, 0)
-            
+
         if frac0 == 0:
             labels.pop(0)
             colors.pop(0)
@@ -521,7 +521,7 @@ class DrawArea:
             there must a better way to do this - pyplot?
         '''
         logging.debug('>>')
-        #Tidy up draw areas 
+        #Tidy up draw areas
         vboxChildren = self.vbox.get_children()
         logging.debug('Vbox has %d children %s' % (len(vboxChildren), str(vboxChildren) ))
         # ToDo: check why vertical container is shared

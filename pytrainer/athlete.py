@@ -98,9 +98,9 @@ class Athlete:
             graphdata['maxhr'].addPoints(x=date, y=row['maxhr'])
         #Remove empty data
         for item in graphdata.keys():
-			if len(graphdata[item]) == 0:
-				logging.debug( "No values for %s. Removing...." % item )
-				del graphdata[item]
+            if len(graphdata[item]) == 0:
+                logging.debug( "No values for %s. Removing...." % item )
+                del graphdata[item]
         return graphdata
 
 
