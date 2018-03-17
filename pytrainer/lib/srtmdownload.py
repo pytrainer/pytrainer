@@ -18,7 +18,7 @@ import os
 import gtk
 import urllib2
 import zipfile
-from cStringIO import StringIO
+from io import StringIO
 import logging
 
 """
