@@ -237,7 +237,7 @@ class WindowRecord(SimpleBuilderApp):
                 index = self.activity_data.index(activity)
                 if activity["complete"] is False:
                     #Did not view or modify this record - need to get all the details
-                    print "Activity incomplete.. " + activity["rcd_gpxfile"]
+                    logging.debug("Activity incomplete.. %s", activity["rcd_gpxfile"])
                     self.update_activity_data(row, activity["rcd_gpxfile"], activity["rcd_sport"])
                 activity["rcd_title"] = activity["rcd_title"].replace("\"","'")
                 #Add activity to DB etc
@@ -335,7 +335,7 @@ class WindowRecord(SimpleBuilderApp):
             valueString = format % value
             var.set_text(valueString)
         except Exception as e:
-            print var_name, value, e
+            logging.debug("setValue: %s, %s, %s", var_name, value, e)
             pass
     
     def setValuesFromActivity(self, activity):
@@ -388,7 +388,7 @@ class WindowRecord(SimpleBuilderApp):
     def setValues(self,values):
         #(24, u'2009-12-26', 4, 23.48, u'9979', 0.0, 8.4716666232200009, 2210, u'', None, u'', 573.0, 562.0, 11.802745244400001, 5.0499999999999998, 7.04, 0.0, u'2009-12-25T19:41:48Z', u'2009-12-26 08:41:48+13:00')
         #(50, u'2006-10-13', 1, 25.0, u'5625', 0.0, 16.0, 0, u'', gpsfile, title,upositive,unegative,maxspeed|maxpace|pace|maxbeats
-        print "windowrecord setValues called"
+        logging.debug("windowrecord setValues called")
         self.mode = "editrecord"
         self.id_record = values[0]
         self.setTime(values[4])
