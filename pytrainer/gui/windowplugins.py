@@ -22,106 +22,106 @@ import gobject
 import os
 
 class WindowPlugins(SimpleBuilderApp):
-	def __init__(self, data_path = None, parent=None):
-		self.parent = parent
-		SimpleBuilderApp.__init__(self, "plugins.ui")
-	def new(self):
-		column_names=["id","name"]
-		self.create_treeview(self.pluginsTreeview,column_names)
+    def __init__(self, data_path = None, parent=None):
+        self.parent = parent
+        SimpleBuilderApp.__init__(self, "plugins.ui")
+    def new(self):
+        column_names=["id","name"]
+        self.create_treeview(self.pluginsTreeview,column_names)
 
-	def setList(self, list):
-		iterOne = False
-		store = gtk.ListStore(
-			gobject.TYPE_STRING,
-			gobject.TYPE_STRING
-			)
-		for i in list:
-			iter = store.append()
-			if not iterOne:
-				iterOne = iter
-			store.set (iter, 
-				0, i[0],
-				1, i[1]
-				)
-		self.pluginsTreeview.set_model(store)
-		if iterOne:
-			self.pluginsTreeview.get_selection().select_iter(iterOne)
-		self.on_pluginsTree_clicked(None,None)
-	
-	def create_treeview(self,treeview,column_names):
-		i=0
-		for column_index, column_name in enumerate(column_names):
-			column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
-			if i==0:
-				column.set_visible(False)
-			treeview.append_column(column)
-			i+=1
+    def setList(self, list):
+        iterOne = False
+        store = gtk.ListStore(
+                gobject.TYPE_STRING,
+                gobject.TYPE_STRING
+                )
+        for i in list:
+            iter = store.append()
+            if not iterOne:
+                iterOne = iter
+            store.set (iter,
+                    0, i[0],
+                    1, i[1]
+                    )
+        self.pluginsTreeview.set_model(store)
+        if iterOne:
+            self.pluginsTreeview.get_selection().select_iter(iterOne)
+        self.on_pluginsTree_clicked(None,None)
 
-	def on_pluginsTree_clicked(self,widget,widget2):
-		selected,iter = self.pluginsTreeview.get_selection().get_selected()
-		name,description,status = self.parent.getPluginInfo(selected.get_value(iter,0))
-		self.nameEntry.set_text(name)
-		self.descriptionEntry.set_text(description)
-		if int(status) > 0:
-			self.statusEntry.set_text(_("Enable"))
-		else:
-			self.statusEntry.set_text(_("Disable"))
+    def create_treeview(self,treeview,column_names):
+        i=0
+        for column_index, column_name in enumerate(column_names):
+            column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
+            if i==0:
+                column.set_visible(False)
+            treeview.append_column(column)
+            i+=1
 
-	def on_preferences_clicked(self,widget):
-		selected,iter = self.pluginsTreeview.get_selection().get_selected()
-		name,description,status = self.parent.getPluginInfo(selected.get_value(iter,0))
-		prefs = self.parent.getPluginConfParams(selected.get_value(iter,0))
-		
-		self.prefwindow = gtk.Window()
-		self.prefwindow.set_border_width(20)
-  	    	self.prefwindow.set_title(_("%s settings" %name))
-          	
-		table = gtk.Table(1,2)
-		i=0
-		self.entryList = []
-		for pref in prefs:
-			label = gtk.Label("<b>%s</b>"%pref[0])
-			label.set_use_markup(True)
-			if pref[0] != "status":
-				entry = gtk.Entry()
-				entry.set_text(pref[1])
-				self.entryList.append(entry)	
-				table.attach(entry,1,2,i,i+1)
-			else:
-				combobox = gtk.combo_box_new_text()
-				combobox.append_text(_("Disable"))	
-				combobox.append_text(_("Enable"))	
-				combobox.set_active(int(pref[1]))
-				table.attach(combobox,1,2,i,i+1)
-				self.entryList.append(combobox)	
-			table.attach(label,0,1,i,i+1)
-			i+=1
-				
-		button = gtk.Button(_("Ok"))
-		button.connect("clicked", self.on_acceptSettings_clicked, None)
-		table.attach(button,0,2,i,i+1)
-          	self.prefwindow.add(table)
-          	self.prefwindow.show_all()
-	
-	def on_acceptSettings_clicked(self, widget, widget2):
-		selected,iter = self.pluginsTreeview.get_selection().get_selected()
-		prefs = self.parent.getPluginConfParams(selected.get_value(iter,0))
-		savedOptions = []
-		i = 0
-		for pref in prefs:
-			try:
-				savedOptions.append((pref[0],self.entryList[i].get_text()))
-			except:
-				combobox = self.entryList[i]
-        			index = combobox.get_active()
-				savedOptions.append((pref[0],"%s" %index))
-			i+=1
-		self.prefwindow.hide()
-		self.prefwindow = None
-		self.parent.setPluginConfParams(selected.get_value(iter,0),savedOptions)
-		self.on_pluginsTree_clicked(None,None)
+    def on_pluginsTree_clicked(self,widget,widget2):
+        selected,iter = self.pluginsTreeview.get_selection().get_selected()
+        name,description,status = self.parent.getPluginInfo(selected.get_value(iter,0))
+        self.nameEntry.set_text(name)
+        self.descriptionEntry.set_text(description)
+        if int(status) > 0:
+            self.statusEntry.set_text(_("Enable"))
+        else:
+            self.statusEntry.set_text(_("Disable"))
 
-	def on_accept_clicked(self,widget):
-		self.plugins.hide()
-		self.plugins = None
-		self.quit()
+    def on_preferences_clicked(self,widget):
+        selected,iter = self.pluginsTreeview.get_selection().get_selected()
+        name,description,status = self.parent.getPluginInfo(selected.get_value(iter,0))
+        prefs = self.parent.getPluginConfParams(selected.get_value(iter,0))
+
+        self.prefwindow = gtk.Window()
+        self.prefwindow.set_border_width(20)
+        self.prefwindow.set_title(_("%s settings" %name))
+
+        table = gtk.Table(1,2)
+        i=0
+        self.entryList = []
+        for pref in prefs:
+            label = gtk.Label("<b>%s</b>"%pref[0])
+            label.set_use_markup(True)
+            if pref[0] != "status":
+                entry = gtk.Entry()
+                entry.set_text(pref[1])
+                self.entryList.append(entry)
+                table.attach(entry,1,2,i,i+1)
+            else:
+                combobox = gtk.combo_box_new_text()
+                combobox.append_text(_("Disable"))
+                combobox.append_text(_("Enable"))
+                combobox.set_active(int(pref[1]))
+                table.attach(combobox,1,2,i,i+1)
+                self.entryList.append(combobox)
+            table.attach(label,0,1,i,i+1)
+            i+=1
+
+        button = gtk.Button(_("Ok"))
+        button.connect("clicked", self.on_acceptSettings_clicked, None)
+        table.attach(button,0,2,i,i+1)
+        self.prefwindow.add(table)
+        self.prefwindow.show_all()
+
+    def on_acceptSettings_clicked(self, widget, widget2):
+        selected,iter = self.pluginsTreeview.get_selection().get_selected()
+        prefs = self.parent.getPluginConfParams(selected.get_value(iter,0))
+        savedOptions = []
+        i = 0
+        for pref in prefs:
+            try:
+                savedOptions.append((pref[0],self.entryList[i].get_text()))
+            except:
+                combobox = self.entryList[i]
+                index = combobox.get_active()
+                savedOptions.append((pref[0],"%s" %index))
+            i+=1
+        self.prefwindow.hide()
+        self.prefwindow = None
+        self.parent.setPluginConfParams(selected.get_value(iter,0),savedOptions)
+        self.on_pluginsTree_clicked(None,None)
+
+    def on_accept_clicked(self,widget):
+        self.plugins.hide()
+        self.plugins = None
+        self.quit()

@@ -36,7 +36,7 @@ class Googlemaps:
         self.htmlfile = "%s/googlemaps.html" % (self.pytrainer_main.profile.tmpdir)
         self.uc = UC()
         logging.debug("<<")
-        
+
     def colorLine(self, polyline, average, variance):
         stdev = math.sqrt(variance)
         for i in polyline:
@@ -46,7 +46,7 @@ class Googlemaps:
             rgb_tuple = colorsys.hsv_to_rgb(0.66-(speed*0.66), 1, 0.8)
             rgb_tuple = (rgb_tuple[0] * 255,rgb_tuple[1] * 255,rgb_tuple[2] * 255)
             i[2] = '#%02x%02x%02x' % rgb_tuple
-            
+
     def colorLineAbs(self, polyline):
         for i in polyline:
             speed = i[1]
@@ -60,10 +60,10 @@ class Googlemaps:
                 rgb_tuple = colorsys.hsv_to_rgb(1-speed, 1, 0.8+speed*0.2)
             else: # fast cycle
                 rgb_tuple = colorsys.hsv_to_rgb(0, 1, 1)
-            
+
             rgb_tuple = (rgb_tuple[0] * 255,rgb_tuple[1] * 255,rgb_tuple[2] * 255)
             i[2] = '#%02x%02x%02x' % rgb_tuple
-                
+
 
     def drawMap(self,activity, linetype):
         '''Draw google map
@@ -76,14 +76,14 @@ class Googlemaps:
         pointlist = []
         polyline = []
 
-        list_values = activity.tracks 
+        list_values = activity.tracks
         # (accum distance, elevation, total duration, speed, lat, lon, bpm, cadence, corrected elevation)
         # (19.963867183986643, 7.34716797, 6488, 13.791899119294959, 43.53392358, -5.634736, 146, None, None)
         if list_values is not None and list_values != [] and len(list_values) > 0:
             minlat, minlon = float(list_values[0][4]),float(list_values[0][5])
             maxlat=minlat
             maxlon=minlon
-            
+
             av_sum = 0
             variance_sum = 0
             n = 0
@@ -96,16 +96,16 @@ class Googlemaps:
                         val = 0
                         logging.error("No valid speed value for trackpoint: distance: %s | lat: %s | lon: %s" %(i[0],i[4],i[5]))
                 elif linetype==2:
-                	val = i[6] if i[6] else 0
+                    val = i[6] if i[6] else 0
                 elif linetype==3:
-                	val = i[7] if i[7]!=None else 1
+                    val = i[7] if i[7]!=None else 1
                 else:
                     val = 1
-                    
+
                 variance_sum += (val)**2
                 av_sum += val
                 n += 1
-                
+
                 lat, lon = float(i[4]), float(i[5])
                 minlat = min(minlat, lat)
                 maxlat = max(maxlat, lat)
@@ -113,14 +113,14 @@ class Googlemaps:
                 maxlon = max(maxlon, lon)
                 pointlist.append((lat,lon))
                 polyline.append(["new google.maps.LatLng(%s, %s)" % (lat, lon), val, ""])
-                
+
             av_speed = av_sum / float(n)
             variance = (variance_sum / float(n)) - av_speed**2
             variance = max(variance, 16)
 
             self.colorLine(polyline, av_speed, variance)
             #self.colorLineAbs(polyline)
-            
+
             logging.debug("minlat: %s, maxlat: %s" % (minlat, maxlat))
             logging.debug("minlon: %s, maxlon: %s" % (minlon, maxlon))
             points,levels = Points.encodePoints(pointlist)
@@ -262,7 +262,7 @@ class Googlemaps:
 
             var boundsBox = new google.maps.LatLngBounds(swlatlng, nelatlng );\n
             map.fitBounds(boundsBox);\n'''
-            
+
         pre = 0
         for point in polyline:
             if pre:
@@ -278,25 +278,25 @@ class Googlemaps:
                             strokeWeight: 5,\n
                             });\n
                 polyline.setMap(map);\n''' % point[2]
-                
+
                 contenttemplate = [
-                	"%s",
-                	"Speed: %0.1f km/h",
-                	"HR: %d bpm",
-                	"Cadence: %d",
+                        "%s",
+                        "Speed: %0.1f km/h",
+                        "HR: %d bpm",
+                        "Cadence: %d",
                 ]
-                
+
                 content += '''
                     google.maps.event.addListener(polyline, 'click', function(event) {
                         var marker = new google.maps.InfoWindow({
-                          position: event.latLng, 
+                          position: event.latLng,
                           content: "%s"
                         });
                         marker.setMap(map);
                     });
                     ''' % contenttemplate[linetype] % point[1]
             pre = point
-        
+
         content += '''
           }
 

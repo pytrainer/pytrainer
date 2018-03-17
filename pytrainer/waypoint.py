@@ -22,92 +22,92 @@ from sqlalchemy import Column, Unicode, Float, Integer, Date
 from pytrainer.lib.ddbb import DeclarativeBase
 
 class Waypoint(DeclarativeBase):
-	__tablename__ = 'waypoints'
-	comment = Column(Unicode(length=240))
-	ele = Column(Float)
-	id = Column('id_waypoint', Integer, primary_key=True)
-	lat = Column(Float)
-	lon = Column(Float)
-	name = Column(Unicode(length=200))
-	sym = Column(Unicode(length=200))
-	time = Column(Date)
+    __tablename__ = 'waypoints'
+    comment = Column(Unicode(length=240))
+    ele = Column(Float)
+    id = Column('id_waypoint', Integer, primary_key=True)
+    lat = Column(Float)
+    lon = Column(Float)
+    name = Column(Unicode(length=200))
+    sym = Column(Unicode(length=200))
+    time = Column(Date)
 
 class WaypointService(object):
-	def __init__(self, data_path = None, parent = None):
-		logging.debug(">>")
-		self.parent = parent
-		self.pytrainer_main = parent
-		self.data_path = data_path
-		logging.debug("<<")
-	
-	def removeWaypoint(self,id_waypoint):
-		logging.debug(">>")
-		logging.debug("Deleting id_waypoint=%s" %id_waypoint)
-		waypoint = self.pytrainer_main.ddbb.session.query(Waypoint).filter(Waypoint.id == id_waypoint).one()
-		self.pytrainer_main.ddbb.session.delete(waypoint)
-		self.pytrainer_main.ddbb.session.commit()
-		logging.debug("<<")
+    def __init__(self, data_path = None, parent = None):
+        logging.debug(">>")
+        self.parent = parent
+        self.pytrainer_main = parent
+        self.data_path = data_path
+        logging.debug("<<")
 
-	def updateWaypoint(self,id_waypoint,lat,lon,name,desc,sym):
-		logging.debug(">>")
-		logging.debug("Updating waypoint id: %d with lat %s,lon %s,comment %s,name %s,sym %s" %(id_waypoint,lat,lon,desc,name,sym) )
-		waypoint = self.pytrainer_main.ddbb.session.query(Waypoint).filter(Waypoint.id == id_waypoint).one()
-		waypoint.lat = lat
-		waypoint.lon = lon
-		waypoint.name = name
-		waypoint.comment = desc
-		waypoint.sym = sym
-		self.pytrainer_main.ddbb.session.commit()
-		logging.debug("<<")
-		
-	def addWaypoint(self,lon=None,lat=None,name=None,comment=None,sym=None): 
-		logging.debug(">>") 
-		waypoint = Waypoint(lon=lon, lat=lat, name=name, comment=comment, sym=sym)
-		logging.debug("Adding waypoint with details lat %s,lon %s,comment %s,name %s,sym %s" % (lat,lon,comment,name,sym)  )
-		self.pytrainer_main.ddbb.session.add(waypoint)
-		self.pytrainer_main.ddbb.session.commit()
-		logging.debug("<<") 
-		return waypoint.id
+    def removeWaypoint(self,id_waypoint):
+        logging.debug(">>")
+        logging.debug("Deleting id_waypoint=%s" %id_waypoint)
+        waypoint = self.pytrainer_main.ddbb.session.query(Waypoint).filter(Waypoint.id == id_waypoint).one()
+        self.pytrainer_main.ddbb.session.delete(waypoint)
+        self.pytrainer_main.ddbb.session.commit()
+        logging.debug("<<")
 
-	def getwaypointInfo(self,id_waypoint):
-		logging.debug(">>")
-		retorno = self.pytrainer_main.ddbb.select("waypoints",
-					"lat,lon,ele,comment,time,name,sym",
-					"id_waypoint=%s" %id_waypoint)
-		logging.debug("<<")
-		return retorno
-	
-	def getAllWaypoints(self):
-		logging.debug(">>")
-		retorno = self.pytrainer_main.ddbb.select("waypoints","id_waypoint,lat,lon,ele,comment,time,name,sym","1=1 order by name")
-		logging.debug("<<")
-		return retorno
-	
-	def actualize_fromgpx(self,gpxfile):
-		logging.debug(">>")
-		from lib.gpx import Gpx
-		gpx = Gpx(self.data_path,gpxfile)
-		tracks = gpx.getTrackRoutes()
+    def updateWaypoint(self,id_waypoint,lat,lon,name,desc,sym):
+        logging.debug(">>")
+        logging.debug("Updating waypoint id: %d with lat %s,lon %s,comment %s,name %s,sym %s" %(id_waypoint,lat,lon,desc,name,sym) )
+        waypoint = self.pytrainer_main.ddbb.session.query(Waypoint).filter(Waypoint.id == id_waypoint).one()
+        waypoint.lat = lat
+        waypoint.lon = lon
+        waypoint.name = name
+        waypoint.comment = desc
+        waypoint.sym = sym
+        self.pytrainer_main.ddbb.session.commit()
+        logging.debug("<<")
 
-		if len(tracks) > 1:
-			time = unixtime2date(tracks[0][1])
-			self.recordwindow.rcd_date.set_text(time)
-			self._actualize_fromgpx(gpx)
-		else:
-			msg = _("The gpx file seems to be a several days records. Perhaps you will need to edit your gpx file")
-			from gui.warning import Warning
-			warning = Warning(self.data_path,self._actualize_fromgpx,[gpx])
-                        warning.set_text(msg)
-                        warning.run()
-		logging.debug("<<")
+    def addWaypoint(self,lon=None,lat=None,name=None,comment=None,sym=None):
+        logging.debug(">>")
+        waypoint = Waypoint(lon=lon, lat=lat, name=name, comment=comment, sym=sym)
+        logging.debug("Adding waypoint with details lat %s,lon %s,comment %s,name %s,sym %s" % (lat,lon,comment,name,sym)  )
+        self.pytrainer_main.ddbb.session.add(waypoint)
+        self.pytrainer_main.ddbb.session.commit()
+        logging.debug("<<")
+        return waypoint.id
 
-	def _actualize_fromgpx(self, gpx):
-		logging.debug(">>")
-		distance, time = gpx.getMaxValues()
-		upositive,unegative = gpx.getUnevenness()
-		self.recordwindow.rcd_upositive.set_text(str(upositive))
-		self.recordwindow.rcd_unegative.set_text(str(unegative))
-		self.recordwindow.set_distance(distance)
-		self.recordwindow.set_recordtime(time/60.0/60.0)
-		self.recordwindow.on_calcavs_clicked(None)
-		logging.debug("<<")
+    def getwaypointInfo(self,id_waypoint):
+        logging.debug(">>")
+        retorno = self.pytrainer_main.ddbb.select("waypoints",
+                                "lat,lon,ele,comment,time,name,sym",
+                                "id_waypoint=%s" %id_waypoint)
+        logging.debug("<<")
+        return retorno
+
+    def getAllWaypoints(self):
+        logging.debug(">>")
+        retorno = self.pytrainer_main.ddbb.select("waypoints","id_waypoint,lat,lon,ele,comment,time,name,sym","1=1 order by name")
+        logging.debug("<<")
+        return retorno
+
+    def actualize_fromgpx(self,gpxfile):
+        logging.debug(">>")
+        from lib.gpx import Gpx
+        gpx = Gpx(self.data_path,gpxfile)
+        tracks = gpx.getTrackRoutes()
+
+        if len(tracks) > 1:
+            time = unixtime2date(tracks[0][1])
+            self.recordwindow.rcd_date.set_text(time)
+            self._actualize_fromgpx(gpx)
+        else:
+            msg = _("The gpx file seems to be a several days records. Perhaps you will need to edit your gpx file")
+            from gui.warning import Warning
+            warning = Warning(self.data_path,self._actualize_fromgpx,[gpx])
+            warning.set_text(msg)
+            warning.run()
+        logging.debug("<<")
+
+    def _actualize_fromgpx(self, gpx):
+        logging.debug(">>")
+        distance, time = gpx.getMaxValues()
+        upositive,unegative = gpx.getUnevenness()
+        self.recordwindow.rcd_upositive.set_text(str(upositive))
+        self.recordwindow.rcd_unegative.set_text(str(unegative))
+        self.recordwindow.set_distance(distance)
+        self.recordwindow.set_recordtime(time/60.0/60.0)
+        self.recordwindow.on_calcavs_clicked(None)
+        logging.debug("<<")
