@@ -17,7 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import datetime
-from subprocess import Popen, PIPE
+from pytrainer.platform import get_platform
 
 class DateRange(object):
     
@@ -57,7 +57,7 @@ class DateRange(object):
         Returns:
             (DateRange): the date range for a week.
         """
-        day_of_week = (int(date.strftime("%w")) - first_day_of_week()) % 7
+        day_of_week = (int(date.strftime("%w")) - get_platform().get_first_day_of_week()) % 7
         date_start = date + datetime.timedelta(days = 0 - day_of_week)
         date_end = date + datetime.timedelta(days = 6 - day_of_week)
         return DateRange(date_start, date_end)
@@ -98,25 +98,3 @@ class DateRange(object):
         date_start = datetime.date(date.year, 1, 1)
         date_end = datetime.date(date.year, 12, 31)
         return DateRange(date_start, date_end)
-    
-def first_day_of_week():
-    """Determine the first day of the week for the system locale.
-    
-    If the first day of the week cannot be determined then Sunday is assumed.
-    
-    Returns (int): a day of the week; 0: Sunday, 1: Monday, 6: Saturday.
-    """
-    # Python's locale does not have a first day of week so make a system call
-    # http://blogs.gnome.org/patrys/2008/09/29/how-to-determine-the-first-day-of-week/
-    CMD=("locale", "first_weekday", "week-1stday")
-    process = Popen(CMD, stdout=PIPE, stderr=PIPE)
-    stdout, stderr = process.communicate()
-    if  process.returncode != 0:
-        return 0
-    results = stdout.split("\n")
-    if len(results) < 2:
-        return 0
-    day_delta = datetime.timedelta(days=int(results[0]) - 1)
-    base_date = datetime.datetime.strptime(results[1], "%Y%m%d")
-    first_day = base_date + day_delta
-    return int(first_day.strftime("%w"))

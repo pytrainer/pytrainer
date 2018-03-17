@@ -23,16 +23,6 @@ from datetime import date
 from datetime import datetime
 from mock import Mock
 
-class DateModuleTest(unittest.TestCase):
-    
-    def test_first_day_of_week_should_be_non_negative_integer(self):
-        first_day = pytrainer.util.date.first_day_of_week()
-        self.assertTrue(first_day >= 0)
-    
-    def test_first_day_of_week_should_be_less_than_seven(self):
-        first_day = pytrainer.util.date.first_day_of_week()
-        self.assertTrue(first_day < 7)
-
 class DateRangeTest(unittest.TestCase):
     
     def setUp(self):

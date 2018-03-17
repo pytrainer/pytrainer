@@ -19,6 +19,8 @@
 
 import os
 import sys
+import subprocess
+import datetime
     
 def get_platform():
     if os.name == "posix":
@@ -39,12 +41,28 @@ class _Platform(object):
         """Get the path to the default data directory for the platform."""
         return self._data_path
 
+    def get_first_day_of_week(self):
+        """Determine the first day of the week for the system locale.
+        If the first day of the week cannot be determined then Sunday is assumed.
+        Returns (int): a day of the week; 0: Sunday, 1: Monday, 6: Saturday.
+"""
+        return self._first_day_of_week
+
 class _Linux(_Platform):
     
     def __init__(self):
         self._home_dir = os.environ['HOME']
         self._conf_dir_name = ".pytrainer"
         self._data_path = "/usr/share/pytrainer/"
+        try:
+            results = subprocess.check_output(("locale", "first_weekday", "week-1stday"),
+                                              universal_newlines=True).splitlines()
+            day_delta = datetime.timedelta(days=int(results[0]) - 1)
+            base_date = datetime.datetime.strptime(results[1], "%Y%m%d")
+            first_day = base_date + day_delta
+            self._first_day_of_week = int(first_day.strftime("%w"))
+        except subprocess.CalledProcessError:
+            self._first_day_of_week = 0
 
 class _Windows(_Platform):
     
@@ -52,3 +70,4 @@ class _Windows(_Platform):
         self._home_dir = os.environ['USERPROFILE']
         self._conf_dir_name = "pytrainer"
         self._data_path = os.getcwd() + os.sep
+        self._first_day_of_week = 0
