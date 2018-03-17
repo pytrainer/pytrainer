@@ -137,7 +137,7 @@ class WindowProfile(SimpleBuilderApp):
     def saveOptions(self):
         logging.debug(">>")
         list_options = {}
-        print self.conf_options
+        logging.debug(self.conf_options)
         for i in self.conf_options.keys():
             if i == "default_viewer":
                 if self.radiobuttonDefaultOSM.get_active():
@@ -216,7 +216,7 @@ class WindowProfile(SimpleBuilderApp):
             self.comboboxLogLevel.set_active(3)
         else:
             self.comboboxLogLevel.set_active(0)
-            print "Unknown logging level specified"
+            logging.error("Unknown logging level specified")
 
         #Show if validation requested
         if self.pytrainer_main.startup_options.validate:

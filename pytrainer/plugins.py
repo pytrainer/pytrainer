@@ -61,7 +61,7 @@ class Plugins:
 		#Only validate files if enabled at startup 
 		if self.pytrainer_main.startup_options.validate:
 			validate_inputfiles=True
-			print "validating plugin input files enabled"
+			logging.info("validating plugin input files enabled")
 		else:
 			validate_inputfiles=False
 		return pluginMain(self, validate_inputfiles) 

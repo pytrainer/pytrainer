@@ -134,7 +134,7 @@ class DrawGraph:
             else:
                 self.ax2.plot_date(datalist.x_values, datalist.y_values, color=datalist.y2linecolor, label=datalist.ylabel, alpha=0.5)
         else:
-            print "Unknown/unimplemented graph type: %s" % datalist.graphType
+            logging.error("Unknown/unimplemented graph type: %s", datalist.graphType)
             return figure
         #Set axis limits
         #plt.axis([datalist.min_x_value, datalist.max_x_value, datalist.min_y_value, datalist.max_y_value])

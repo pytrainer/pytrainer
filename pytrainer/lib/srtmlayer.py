@@ -50,7 +50,7 @@ class SrtmLayer(object):
                 if not result:
                     return False
             else:
-                print "File already downloaded (%s)" % srtm_filename
+                logging.info("File already downloaded (%s)", srtm_filename)
                             
             self._cache[srtm_filename] = SrtmTiff(srtm_path)
         

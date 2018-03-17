@@ -36,7 +36,7 @@ class Osm:
         """Copy the contents of a file from a given URL to pytrainer's tmpdir
         """    
         logging.debug(">>")
-        print "Downloading %s" % (url)
+        logging.info("Downloading %s", url)
         webFile = urllib.urlopen(url)
         # always store downloaded files in tmpdir/cache
         localFile = open(self.tmpdir + '/cache/' + localfile, 'w')
@@ -55,7 +55,7 @@ class Osm:
         try:
             cachedir = self.tmpdir + '/cache';
             if not os.path.isdir(cachedir):
-                print "Creating %s folder" % (cachedir)
+                logging.debug("Creating %s folder", cachedir)
                 os.mkdir(cachedir)
                 
             for localfile in self.URLS:

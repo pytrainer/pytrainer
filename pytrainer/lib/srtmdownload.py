@@ -87,7 +87,7 @@ class DownloadLoop:
             else:
                 loopActive = False                
         if size_rel == 1.0:
-            print "start unzip"
+            logging.debug("start unzip")
             z = zipfile.ZipFile(zobj)
             srtm_path = os.path.join(self.srtm_dir, srtm_filename)
             out_file = open(srtm_path, 'w')
@@ -105,14 +105,12 @@ class DownloadLoop:
         logging.debug('--')
         for server in srtm_server_list:
             url = '%s%s%s' % (server['url'], self.tile_name, server['ext']) 
-            print "Attempting to get URL: %s" % url
             logging.debug("Attempting to get URL: %s" % url)
             try:
                 urlfile = urllib2.urlopen( url )
                 self.label.set_text(str(url))
                 return urlfile
             except:
-                print '%s FAILED' % url
                 logging.debug('%s FAILED' % url)
                 pass
 
@@ -120,7 +118,7 @@ class DownloadLoop:
 def main_quit(obj):
     logging.debug("--")
     global loopActive
-    print 'main_quit entered'
+    logging.debug('main_quit entered')
     loopActive = False
 
 def download(tile_name):
