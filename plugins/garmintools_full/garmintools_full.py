@@ -25,7 +25,7 @@ import sys
 import logging
 import fnmatch
 import commands
-import StringIO
+from io import BytesIO
 import traceback
 import dateutil.parser
 
@@ -146,8 +146,7 @@ class garmintools_full():
                 with open(filename, 'r') as f:
                     xmlString = f.read()
                 # Double check encoding from dump files. ASCII?
-                # http://docs.python.org/library/stringio.html#module-cStringIO
-                fileString = StringIO.StringIO("<root>"+xmlString+"</root>")
+                fileString = BytesIO(b"<root>" + xmlString + b"</root>")
                 #parse string as xml
                 try:
                     tree = etree.parse(fileString)

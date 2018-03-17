@@ -22,7 +22,7 @@ import os
 import math
 import datetime
 from dateutil.tz import *
-from StringIO import StringIO
+from io import BytesIO
 from lxml import etree
 
 class kml20():
@@ -131,7 +131,7 @@ class kml20():
 	def createGPXfile(self, gpxfile, activity):
 		''' Function to transform a Garmin Training Center v2 Track to a valid GPX+ file
 		'''
-		tree = etree.parse(StringIO('''<?xml version='1.0' encoding='ASCII'?>
+		tree = etree.parse(BytesIO(b'''<?xml version='1.0' encoding='ASCII'?>
 							<gpx creator="pytrainer http://sourceforge.net/projects/pytrainer" 
 								version="1.1" 
 								xmlns="http://www.topografix.com/GPX/1/1" 

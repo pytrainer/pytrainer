@@ -22,7 +22,7 @@ from __future__ import with_statement
 
 import logging
 import os
-import StringIO
+from io import BytesIO
 from lxml import etree
 from pytrainer.lib.date import getDateTime
 from pytrainer.core.activity import Activity
@@ -56,7 +56,7 @@ class garmintools():
 			with open(filename, 'r') as f:
 				xmlString = f.read()
 			#add a root element to make correct xml
-			fileString = StringIO.StringIO("<root>"+xmlString+"</root>")
+			fileString = BytesIO(b"<root>" + xmlString + b"</root>")
 			#parse string as xml
 			xmldoc = etree.parse(fileString)
 			#Parse XML schema
