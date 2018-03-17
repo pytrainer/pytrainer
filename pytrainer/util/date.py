@@ -28,7 +28,7 @@ class DateRange(object):
             raise TypeError("Start date must be datetime.date, not {0}.".format(type(start_date).__name__))
         if not isinstance(end_date, datetime.date):
             raise TypeError("End date must be datetime.date, not {0}.".format(type(start_date).__name__))
-        if cmp(start_date, end_date) > 0:
+        if start_date > end_date:
             raise ValueError("End date cannot be before start date.")
         self._start_date = start_date
         self._end_date = end_date
