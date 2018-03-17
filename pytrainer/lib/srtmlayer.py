@@ -4,7 +4,6 @@ import logging
 
 import random, re, urllib2, zipfile
 from math import floor, ceil
-from cStringIO import StringIO
 from osgeo import gdal, gdalnumeric
 
 from pytrainer.lib.srtmtiff import SrtmTiff

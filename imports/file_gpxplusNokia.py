@@ -19,7 +19,6 @@
 
 import logging
 import os
-#import StringIO
 from lxml import etree
 from pytrainer.lib.date import getDateTime
 from pytrainer.core.activity import Activity

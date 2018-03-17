@@ -19,7 +19,7 @@
 
 import os, stat
 import logging
-from StringIO import StringIO
+from io import BytesIO
 from gettext import gettext as _
 
 from lxml import etree
@@ -243,7 +243,7 @@ class Profile(Singleton):
         logging.debug("Setting %s to %s" % (variable, value))
         if self.xml_tree is None:
             #new config file....
-            self.xml_tree = etree.parse(StringIO('''<?xml version='1.0' encoding='UTF-8'?><pytraining />'''))
+            self.xml_tree = etree.parse(BytesIO(b'''<?xml version='1.0' encoding='UTF-8'?><pytraining />'''))
         self.xml_tree.getroot().set(variable, value.decode('utf-8'))
         if not delay_write:
             self.saveProfile()

@@ -19,7 +19,6 @@
 
 import logging
 import os, sys, commands
-import StringIO
 from lxml import etree
 
 class gpsbabel():
