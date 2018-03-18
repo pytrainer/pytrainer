@@ -20,6 +20,7 @@
 import os
 import shutil
 import logging
+import datetime
 
 from gui.windowrecord import WindowRecord
 from gui.dialogselecttrack import DialogSelectTrack
@@ -119,14 +120,15 @@ class Record:
         record.average = self.parseFloatRecord(list_options["rcd_average"])
         record.calories = self.parseFloatRecord(list_options["rcd_calories"])
         record.comments = unicode(list_options["rcd_comments"])
-        record.date = list_options["date_time_local"].date()
+        record.date = datetime.datetime.strptime(list_options["date_time_utc"],
+                                                 "%Y-%m-%dT%H:%M:%SZ").date()
         record.unegative = self.parseFloatRecord(list_options["rcd_unegative"])
         record.upositive = self.parseFloatRecord(list_options["rcd_upositive"])
         record.maxspeed = self.parseFloatRecord(list_options["rcd_maxvel"])
         record.maxpace = self.pace_to_float(list_options["rcd_maxpace"])
         record.date_time_utc = list_options["date_time_utc"]
         record.duration = time2second(list_options["rcd_time"])
-        record.date_time_local = list_options["date_time_local"].strftime("%Y-%m-%d %H:%M:%S%z")
+        record.date_time_local = list_options["date_time_local"]
         record.sport = sport
         return record
 
