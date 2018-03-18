@@ -19,6 +19,7 @@
 
 import unittest
 import os
+from tempfile import NamedTemporaryFile
 from lxml import etree
 from pytrainer.lib.gpx import Gpx
 
@@ -79,14 +80,12 @@ class GpxTest(unittest.TestCase):
 """
         
         # Write a GPX file with no tracks
-        file_name = "test-missing.gpx"
-        tmpf = file(file_name,'w')
-        tmpf.write(trkdata)
-        tmpf.close()
-        self.tmp_files.append(file_name)
+        with NamedTemporaryFile(mode='w', delete=False) as tmpf:
+            tmpf.write(trkdata)
+        self.tmp_files.append(tmpf.name)
         
         try:
-            g = Gpx(filename=file_name)
+            g = Gpx(filename=tmpf.name)
         except IndexError:
             self.fail("Gpx parser crashed on file without tracks")
 
@@ -98,14 +97,12 @@ class GpxTest(unittest.TestCase):
 """
         
         # Write a GPX file with a nameless track
-        file_name = "test-noname.gpx"
-        tmpf = file(file_name,'w')
-        tmpf.write(trkdata)
-        tmpf.close()
-        self.tmp_files.append(file_name)
+        with NamedTemporaryFile(mode='w', delete=False) as tmpf:
+            tmpf.write(trkdata)
+        self.tmp_files.append(tmpf.name)
         
         try:
-            g = Gpx(filename=file_name)
+            g = Gpx(filename=tmpf.name)
         except IndexError:
             self.fail("Gpx parser crashed on file with a nameless track")
 
