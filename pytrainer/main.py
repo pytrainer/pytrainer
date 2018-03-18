@@ -294,7 +294,7 @@ class pyTrainer:
             logging.debug('stats view')
             self.windowmain.on_statsview_activate()
         else:
-            print "Unknown view %s" % view
+            logging.error("Unknown view %s", view)
         logging.debug('<<')
         
     def refreshRecordGraphView(self, view, id_record=None):
@@ -434,7 +434,7 @@ class pyTrainer:
         for extension in before:
             if extension not in after:
                 #disabled extension -> need to unload extension
-                print "Need to disable extension %s " % extension
+                logging.error("Need to disable extension %s", extension)
                 txtbutton = self.extension.loadExtension(extension)
                 self.windowmain.removeExtension(txtbutton)
         #Need to check for plugins that have been enabled (were not active and now are)

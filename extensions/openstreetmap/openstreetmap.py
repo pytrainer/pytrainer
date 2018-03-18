@@ -229,7 +229,6 @@ class openstreetmap:
             extensionDir = self.pytrainer_main.data_path + "/extensions" + "/openstreetmap"
             if not os.path.isdir(extensionDir):
                 loggin.error(str(e))
-                print ("Could not find extension path: " + str(extensionDir))
                 raise Exception("Could not find extension path: " + str(extensionDir))
             # save new options
             self.options['privPolygon'] = polygonString
@@ -241,7 +240,6 @@ class openstreetmap:
             self.parent.setExtensionConfParams(extensionDir, savedOptions)
         except Exception as e:
             logging.error(str(e))    
-            print "Error while saving extension configuration: " + str(e)
             msg = _(str(e))
             md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE, msg)
             md.set_title(_("Error while saving extension configuration"))

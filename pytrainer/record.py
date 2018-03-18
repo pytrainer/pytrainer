@@ -267,7 +267,7 @@ class Record:
         else: # coming from GPS device                                                                                                                                                          #
             summaryRecord['date_time_utc'] = entry[1]                                                                                                                               #
             summaryRecord['date_time_local'] = entry[1]                                                                                                                             #
-            print "#TODO fix record summaryRecord local and utc time..."                                                                                    #
+            #TODO fix record summaryRecord local and utc time...
         logging.debug('summary: '+str(summaryRecord))
         laps = self.lapsFromGPX(gpx)
         # Heartrate data can't be retrieved if no trackpoints present, calculating from lap info

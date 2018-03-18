@@ -30,9 +30,7 @@ class xmlValidator():
 			return False
 		if xsl.validate(doc):
 			logging.info("%s validates against %s" % (filename, xslfile))
-			print "%s validates against %s" % (filename, xslfile)
 			return True
 		else:
 			logging.info("%s did not validate against %s" % (filename, xslfile))
-			print "%s did not validate against %s" % (filename, xslfile)
 			return False

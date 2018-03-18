@@ -667,7 +667,7 @@ class Main(SimpleBuilderApp):
                 elif activity.x_axis == "time":
                     data = activity.time_data
                 else:
-                    print "x axis is unknown"
+                    logging.error("x axis is unknown")
                 #Sort data
                 keys = data.keys()
                 keys.sort()
@@ -1589,8 +1589,7 @@ class Main(SimpleBuilderApp):
         self.parent.refreshMapView()
 
     def on_hpaned1_move_handle(self, widget):
-        print "Handler"
-        print widget
+        logging.debug("Handler %s", widget)
 
     def on_spinbuttonY1_value_changed(self, widget):
         y1min = self.spinbuttonY1Min.get_value()
@@ -2115,9 +2114,7 @@ class Main(SimpleBuilderApp):
         try:
             _date = dateutil.parser.parse(date).date()
         except (ValueError) as e:
-            #TODO generate error message
-            print type(e)
-            print e
+            logging.error("Invalid date %s", e)
             return
         weight = data['weight']
         bodyfat = data['bf']
@@ -2143,7 +2140,7 @@ class Main(SimpleBuilderApp):
         logging.debug("<<")
 
     def setDate(self,date):
-        print date
+        logging.debug(date)
         #self.entryAthleteDate.set_text(date)
 
     ######## waypoints events ##########

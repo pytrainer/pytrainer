@@ -516,7 +516,7 @@ class WindowImportdata(SimpleBuilderApp):
     ############################
 
     def on_radiobuttonFile_toggled(self, *args):
-        print "radio button toggled"
+        logging.debug("radio button toggled")
 
     def on_pluginsButton_Configure_clicked(self, button, pluginClass):
         '''
@@ -789,7 +789,7 @@ class WindowImportdata(SimpleBuilderApp):
             columns = reader.fieldnames
         else:
             #Otherwise just label them with numbers
-            print len(reader.fieldnames)
+            logging.debug(len(reader.fieldnames))
             columns = [_("Column %d") % x for x in range(0, len(reader.fieldnames))]
 
         for column in columns:

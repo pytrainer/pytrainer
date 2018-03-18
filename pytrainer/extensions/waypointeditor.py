@@ -65,8 +65,7 @@ class WaypointEditor:
                     try:
                         lon, lat, id_waypoint = float(lon), float(lat), int(id_waypoint)
                     except ValueError as e:
-                        print "Error parsing addWaypoint parameters: " % args
-                        print e
+                        logging.error("Error parsing addWaypoint parameters: %s %s", args, e)
                     retorno = self.waypoint.getwaypointInfo(id_waypoint)
                     if retorno:
                         name, comment, sym = retorno[0][5], retorno[0][3], retorno[0][6]

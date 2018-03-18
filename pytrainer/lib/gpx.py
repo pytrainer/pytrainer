@@ -510,7 +510,8 @@ class Gpx:
         logging.debug(">>")
         date_time = self.tree.find(timeTag) #returns first instance found
         if date_time is None:
-            print "Problems when retrieving start time from "+gpxFile+". Please check data integrity"
+            logging.error("Problems when retrieving start time from %s. Please check data integrity",
+                          gpxFile)
             return 0
         dateTime = getDateTime(date_time.text)
         zuluDateTime = dateTime[0].strftime("%Y-%m-%dT%H:%M:%SZ")
