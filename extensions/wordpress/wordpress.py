@@ -68,7 +68,6 @@ class wordpress:
             self.wp = wordpresslib.WordPressClient(self.wordpressurl, self.user, self.password) #TODO remove need for wordpresslib??
             self.error = False
         except Exception as e:
-            print e
             self.error = True
             self.log = "Url, user or pass are incorrect. Please, check your configuration"
         self.loadRecordInfo()
