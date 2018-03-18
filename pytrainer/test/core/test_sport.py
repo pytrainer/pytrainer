@@ -17,6 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import unittest
+import sys
 from pytrainer.core.sport import Sport, SportService, SportServiceException
 import mock
 import pytrainer.core
@@ -72,7 +73,8 @@ class SportTest(unittest.TestCase):
         sport = Sport()
         sport.name = u"Unicycling"
         self.assertEquals(u"Unicycling", sport.name)
-        
+
+    @unittest.skipIf(sys.version_info > (3, 0), "All strings are unicode in Python 3")
     def test_name_should_not_accept_non_unicode_string(self):
         if self.ddbb.engine.name == 'mysql':
             self.skipTest('Not supported on Mysql 5.6')

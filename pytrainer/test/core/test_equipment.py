@@ -17,6 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import unittest
+import sys
 import mock
 from pytrainer.core.equipment import Equipment, EquipmentService,\
     EquipmentServiceException
@@ -66,7 +67,8 @@ class EquipmentTest(unittest.TestCase):
     def test_description_defaults_to_empty_string(self):
         equipment = Equipment()
         self.assertEquals(u"", equipment.description)
-            
+
+    @unittest.skipIf(sys.version_info > (3, 0), "All strings are unicode in Python 3")
     def test_description_set_to_non_unicode_string(self):
         if self.ddbb.engine.name == 'mysql':
             self.skipTest('Not supported on Mysql 5.6')
@@ -168,7 +170,8 @@ class EquipmentTest(unittest.TestCase):
     def test_notes_defaults_to_empty_string(self):
         equipment = Equipment()
         self.assertEquals(u"", equipment.notes)
-            
+
+    @unittest.skipIf(sys.version_info > (3, 0), "All strings are unicode in Python 3")
     def test_notes_set_to_string(self):
         if self.ddbb.engine.name == 'mysql':
             self.skipTest('Not supported on Mysql 5.6')
