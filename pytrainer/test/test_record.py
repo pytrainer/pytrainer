@@ -17,6 +17,7 @@
 import unittest
 import mock
 from datetime import datetime
+from dateutil.tz import tzoffset
 from pytrainer.lib.ddbb import DDBB
 from pytrainer.core.sport import SportService
 from pytrainer.record import Record
@@ -54,7 +55,7 @@ class RecordTest(unittest.TestCase):
         self.summary['rcd_maxbeats'] = 120
         self.summary['rcd_upositive'] = 553.1
         self.summary['rcd_unegative'] = 564.1
-        self.summary['date_time_local'] = datetime(2016, 7, 24, 9, 58, 23)
+        self.summary['date_time_local'] = u'2016-07-24 12:58:23+03:00'
         self.summary['date_time_utc'] = u'2016-07-24T09:58:23Z'
         self.laps = [{'distance': 46181.9,
                       'lap_number': 0,
@@ -76,7 +77,8 @@ class RecordTest(unittest.TestCase):
         self.assertEquals(activity.upositive, 553.1)
         self.assertEquals(activity.beats, 115.0)
         self.assertEquals(activity.maxbeats, 120)
-        self.assertEquals(activity.date_time, datetime(2016, 7, 24, 9, 58, 23))
+        self.assertEquals(activity.date_time, datetime(2016, 7, 24, 12, 58, 23,
+                                                       tzinfo=tzoffset(None, 10800)))
         self.assertEquals(activity.date_time_utc, u'2016-07-24T09:58:23Z')
         self.assertEquals(activity.sport, self.record._sport_service.get_sport_by_name(u"Run"))
         self.assertEquals(activity.title, u'test 1')
