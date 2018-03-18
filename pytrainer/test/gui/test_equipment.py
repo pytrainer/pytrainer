@@ -106,7 +106,7 @@ class EquipmentStoreTest(TestCase):
         equipment.id = 1
         equipment.life_expectancy = 200
         self.mock_equipment_service.get_all_equipment.return_value = [equipment]
-        self.mock_equipment_service.get_equipment_usage.return_value = 100.5
+        self.mock_equipment_service.get_equipment_usage.return_value = 100.6
         equipment_store = EquipmentStore(self.mock_equipment_service)
         iter = equipment_store.get_iter_first()
         self.assertEquals("101 / 200", equipment_store.get_value(iter, 3))
