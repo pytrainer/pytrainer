@@ -232,7 +232,7 @@ class Profile(Singleton):
         if tag != "pytraining":
             logging.critical("ERROR - pytraining is the only profile tag supported")
             return None
-        elif not self.configuration.has_key(variable):
+        elif variable not in self.configuration:
             return None
         return self.configuration[variable]
 

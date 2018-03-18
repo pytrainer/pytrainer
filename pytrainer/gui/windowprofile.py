@@ -88,7 +88,7 @@ class WindowProfile(SimpleBuilderApp):
         # Need to think if it does make sense to use pprint -> compatibility issues
         #print list_options
         for i in self.conf_options.keys():
-            if not list_options.has_key(i):
+            if i not in list_options:
                 logging.info('No list options for %s' %s)
                 continue
             if i == "default_viewer":

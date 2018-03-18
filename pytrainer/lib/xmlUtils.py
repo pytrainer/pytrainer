@@ -67,7 +67,7 @@ class XMLParser:
 
 	def setValue(self,tagname,variable,value):
 		root = self.xmldoc.getElementsByTagName(tagname)[0]
-		if root.attributes.has_key(variable):
+		if variable in root.attributes:
 			root.attributes[variable]._set_value(value)
 		else:
 			root.setAttribute(variable,value)

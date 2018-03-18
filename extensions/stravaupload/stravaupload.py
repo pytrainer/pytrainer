@@ -103,7 +103,7 @@ class StravaUpload:
         status = None
         values = { 'token': token }
         result = self.get_web_data(STATUS_URL % id, values, "Getting status...")
-        if result.has_key('activity_id'):
+        if 'activity_id' in result:
             status = result['activity_id']
         return status
 

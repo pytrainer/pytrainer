@@ -192,7 +192,7 @@ class openstreetmap:
             wTree.signal_autoconnect( dic )
             mapviewer = MapViewer(self.pytrainer_main.data_path, pytrainer_main=self.pytrainer_main, box=wTree.get_widget("mapBox"))
             json=None
-            if self.options.has_key('privPolygon'):
+            if 'privPolygon' in self.options:
                 json=self.options['privPolygon']
             htmlfile = Osm(data_path=self.pytrainer_main.data_path, waypoint=json, pytrainer_main=self.pytrainer_main).selectArea()
             mapviewer.display_map(htmlfile=htmlfile)
