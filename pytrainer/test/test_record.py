@@ -84,6 +84,23 @@ class RecordTest(unittest.TestCase):
         self.assertEquals(activity.title, u'test 1')
         self.assertEquals(activity.laps[0], {'distance': 46181.9, 'end_lon': None, 'lap_number': 0, 'start_lon': None, 'id_lap': 1, 'calories': 1462, 'comments': None, 'laptrigger': u'manual', 'elapsed_time': u'7426.0', 'record': 1, 'intensity': u'active', 'avg_hr': 136, 'max_hr': 173, 'end_lat': None, 'start_lat': None, 'max_speed': None})
 
+    def test_insert_record_datetime(self):
+        """Importing multiple activities uses a datetime object for
+list_options['date_time_local'], also test that code path"""
+        self.summary['date_time_local'] = datetime(2016, 7, 24, 12, 58, 23, tzinfo=tzoffset(None, 10800))
+        newid = self.record.insertRecord(self.summary, laps=self.laps)
+        activity = self.main.activitypool.get_activity(newid)
+        self.assertEquals(activity.unegative, 564.1)
+        self.assertEquals(activity.upositive, 553.1)
+        self.assertEquals(activity.beats, 115.0)
+        self.assertEquals(activity.maxbeats, 120)
+        self.assertEquals(activity.date_time, datetime(2016, 7, 24, 12, 58, 23,
+                                                       tzinfo=tzoffset(None, 10800)))
+        self.assertEquals(activity.date_time_utc, u'2016-07-24T09:58:23Z')
+        self.assertEquals(activity.sport, self.record._sport_service.get_sport_by_name(u"Run"))
+        self.assertEquals(activity.title, u'test 1')
+        self.assertEquals(activity.laps[0], {'distance': 46181.9, 'end_lon': None, 'lap_number': 0, 'start_lon': None, 'id_lap': 1, 'calories': 1462, 'comments': None, 'laptrigger': u'manual', 'elapsed_time': u'7426.0', 'record': 1, 'intensity': u'active', 'avg_hr': 136, 'max_hr': 173, 'end_lat': None, 'start_lat': None, 'max_speed': None})
+
     def test_update_record(self):
         newid = self.record.insertRecord(self.summary)
         update_dict = self.summary.copy()

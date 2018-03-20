@@ -128,7 +128,7 @@ class Record:
         record.maxpace = self.pace_to_float(list_options["rcd_maxpace"])
         record.date_time_utc = list_options["date_time_utc"]
         record.duration = time2second(list_options["rcd_time"])
-        record.date_time_local = list_options["date_time_local"]
+        record.date_time_local = str(list_options["date_time_local"])
         record.sport = sport
         return record
 
