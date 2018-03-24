@@ -22,7 +22,7 @@ from windowcalendar import WindowCalendar
 from pytrainer.core.equipment import EquipmentService
 from pytrainer.gui.equipment import EquipmentUi
 from pytrainer.core.sport import Sport
-from gi.repository import Gtk
+from gi.repository import Gtk, GdkPixbuf
 from gi.repository import GObject
 import logging
 import pytrainer
@@ -66,14 +66,11 @@ class WindowProfile(SimpleBuilderApp):
         for column_index, column_name in enumerate(column_names):
             if column_index==4:
                 renderer = Gtk.CellRendererPixbuf()
-            else:
-                renderer = Gtk.CellRendererText()
-            column = Gtk.TreeViewColumn(column_name, text=column_index)
-            column.pack_start(renderer, False, True, 0)
-            if column_index==4:
+                column = Gtk.TreeViewColumn(column_name, renderer)
                 column.add_attribute(renderer, 'pixbuf', column_index)
             else:
-                column.add_attribute(renderer, 'text', column_index)
+                renderer = Gtk.CellRendererText()
+                column = Gtk.TreeViewColumn(column_name, renderer, text=column_index)
             column.set_resizable(True)
             self.sportTreeView.append_column(column)
 
@@ -184,14 +181,14 @@ class WindowProfile(SimpleBuilderApp):
             sport_list = self._sport_service.get_all_sports()
             store = Gtk.ListStore(
                         GObject.TYPE_STRING,
-                        GObject.TYPE_STRING,
-                        GObject.TYPE_STRING,
-                        GObject.TYPE_STRING,
+                        GObject.TYPE_FLOAT,
+                        GObject.TYPE_FLOAT,
+                        GObject.TYPE_FLOAT,
                         GdkPixbuf.Pixbuf,
                         object)
             for sport in sport_list:
                 iter = store.append()
-                colorPixBuf = GdkPixbuf.Pixbuf(GdkPixbuf.Colorspace.RGB, False, 8, 25, 15)
+                colorPixBuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8, 25, 15)
                 colorPixBuf.fill(sport.color.rgba_val)
                 store.set(iter,
                     0, sport.name,
@@ -361,7 +358,7 @@ class WindowProfile(SimpleBuilderApp):
             self.editmetentry.set_text(met_str)
             max_pace_str = "" if sport.max_pace is None else str(sport.max_pace)
             self.editmaxpace.set_text(max_pace_str)
-            colorPixBuf = GdkPixbuf.Pixbuf(GdkPixbuf.Colorspace.RGB, False, 8, 250, 20)
+            colorPixBuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8, 250, 20)
             colorPixBuf.fill(sport.color.rgba_val)
             self.editcolor.set_from_pixbuf(colorPixBuf)
             self.hidesportsteps()
@@ -373,12 +370,12 @@ class WindowProfile(SimpleBuilderApp):
             sport_desc = selected.get_value(iter,0)
             sport = self._sport_service.get_sport_by_name(sport_desc)
             colorseldlg = Gtk.ColorSelectionDialog("test")
-            colorseldlg.colorsel.set_has_palette(True)
-            colorseldlg.colorsel.set_current_color(ColorConverter().convert_to_gdk_color(sport.color))
+            colorseldlg.get_color_selection().set_has_palette(True)
+            colorseldlg.get_color_selection().set_current_color(ColorConverter().convert_to_gdk_color(sport.color))
             colorseldlg.run()
-            gdk_color = colorseldlg.colorsel.get_current_color()
+            gdk_color = colorseldlg.get_color_selection().get_current_color()
             self.stored_color = ColorConverter().convert_to_color(gdk_color)
-            colorPixBuf = GdkPixbuf.Pixbuf(GdkPixbuf.Colorspace.RGB, False, 8, 250, 20)
+            colorPixBuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8, 250, 20)
             colorPixBuf.fill(self.stored_color.rgba_val)
             self.newcolor.set_from_pixbuf(colorPixBuf)
             self.editcolor.set_from_pixbuf(colorPixBuf)

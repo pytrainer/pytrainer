@@ -323,11 +323,10 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBoxEntry" id="prf_ddbb">
+                              <object class="GtkComboBoxText" id="prf_ddbb">
                                 <property name="visible">True</property>
                                 <signal handler="on_prf_ddbb_changed" name="changed"/>
 				<property name="model">ddbb-model</property>
-				<property name="text-column">0</property>
                               </object>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -465,10 +464,9 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBoxEntry" id="prf_gender">
+                          <object class="GtkComboBoxText" id="prf_gender">
                             <property name="visible">True</property>
 			    <property name="model">gender-model</property>
-			    <property name="text-column">0</property>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
