@@ -1,5 +1,6 @@
 import datetime
 from pytrainer.lib.localization import gtk_str
+from pytrainer.lib.uc import UC
 
 UC_LISTDISTANCE = {False : [[_('All Distances'), [0.0,999999.9]],
                             ['<1 km', [0.0, 1.0]],
@@ -18,10 +19,9 @@ UC_LISTDISTANCE = {False : [[_('All Distances'), [0.0,999999.9]],
                     }
 class ListSearch(object):
     """ Builds SQLite condition out of search parameters"""
-    def __init__(self, sport_service, parent = None, pytrainer_main = None):
+    def __init__(self, sport_service, parent=None):
         self.parent = parent    
-        self.pytrainer_main = pytrainer_main
-        self.uc = self.pytrainer_main.uc
+        self.uc = UC()
         """ Initialize all query parameters to valid default values""" 
         self.title = ''
         self.sport = 0

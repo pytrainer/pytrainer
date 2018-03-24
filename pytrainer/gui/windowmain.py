@@ -78,7 +78,7 @@ class Main(SimpleBuilderApp):
         self.y1_color = None
         self.y1_linewidth = 1
         # setup Search ListView
-        self.listsearch = ListSearch(sport_service, self, self.pytrainer_main)
+        self.listsearch = ListSearch(sport_service, self)
 
         self.aboutwindow = None
         self.mapviewer = None
