@@ -715,9 +715,6 @@
                                 <property name="model">model1</property>
                                 <child>
                                   <object class="GtkCellRendererText" id="renderer1"/>
-                                  <attributes>
-                                    <attribute name="text">0</attribute>
-                                  </attributes>
                                 </child>
                               </object>
                               <packing>
@@ -1570,9 +1567,6 @@
                                             <property name="model">model2</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer2"/>
-                                              <attributes>
-                                                <attribute name="text">0</attribute>
-                                              </attributes>
                                             </child>
                                           </object>
                                           <packing>
@@ -1598,9 +1592,6 @@
                                             <property name="model">model3</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer3"/>
-                                              <attributes>
-                                                <attribute name="text">0</attribute>
-                                              </attributes>
                                             </child>
                                           </object>
                                           <packing>
@@ -2479,9 +2470,6 @@
                                             <property name="model">model4</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer4"/>
-                                              <attributes>
-                                                <attribute name="text">0</attribute>
-                                              </attributes>
                                             </child>
                                           </object>
                                           <packing>
@@ -4038,9 +4026,6 @@
                                             <property name="model">model5</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer5"/>
-                                              <attributes>
-                                                <attribute name="text">0</attribute>
-                                              </attributes>
                                             </child>
                                           </object>
                                           <packing>
@@ -4675,9 +4660,6 @@
                                             <property name="model">model6</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer6"/>
-                                              <attributes>
-                                                <attribute name="text">0</attribute>
-                                              </attributes>
                                             </child>
                                           </object>
                                           <packing>
@@ -4703,9 +4685,6 @@
                                             <property name="model">model7</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer7"/>
-                                              <attributes>
-                                                <attribute name="text">0</attribute>
-                                              </attributes>
                                             </child>
                                           </object>
                                           <packing>
@@ -5325,9 +5304,6 @@
                                             <property name="model">model8</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer8"/>
-                                              <attributes>
-                                                <attribute name="text">0</attribute>
-                                              </attributes>
                                             </child>
                                           </object>
                                           <packing>
@@ -5353,9 +5329,6 @@
                                             <property name="model">model9</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer9"/>
-                                              <attributes>
-                                                <attribute name="text">0</attribute>
-                                              </attributes>
                                             </child>
                                           </object>
                                           <packing>
@@ -5974,9 +5947,6 @@
                                             <property name="model">model10</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer10"/>
-                                              <attributes>
-                                                <attribute name="text">0</attribute>
-                                              </attributes>
                                             </child>
                                           </object>
                                           <packing>
@@ -6002,9 +5972,6 @@
                                             <property name="model">model11</property>
                                             <child>
                                               <object class="GtkCellRendererText" id="renderer11"/>
-                                              <attributes>
-                                                <attribute name="text">0</attribute>
-                                              </attributes>
                                             </child>
                                           </object>
                                           <packing>
@@ -6322,9 +6289,6 @@
                                                         <property name="model">model12</property>
                                                         <child>
                                                           <object class="GtkCellRendererText" id="renderer12"/>
-                                                          <attributes>
-                                                            <attribute name="text">0</attribute>
-                                                          </attributes>
                                                         </child>
                                                       </object>
                                                       <packing>
@@ -6350,9 +6314,6 @@
                                                         <property name="model">model13</property>
                                                         <child>
                                                           <object class="GtkCellRendererText" id="renderer13"/>
-                                                          <attributes>
-                                                            <attribute name="text">0</attribute>
-                                                          </attributes>
                                                         </child>
                                                       </object>
                                                       <packing>
@@ -6638,9 +6599,6 @@
                             <property name="model">model14</property>
                             <child>
                               <object class="GtkCellRendererText" id="renderer14"/>
-                              <attributes>
-                                <attribute name="text">0</attribute>
-                              </attributes>
                             </child>
                           </object>
                           <packing>
@@ -6653,9 +6611,6 @@
                             <property name="model">model15</property>
                             <child>
                               <object class="GtkCellRendererText" id="renderer15"/>
-                              <attributes>
-                                <attribute name="text">0</attribute>
-                              </attributes>
                             </child>
                           </object>
                           <packing>
@@ -6669,9 +6624,6 @@
                             <property name="model">model16</property>
                             <child>
                               <object class="GtkCellRendererText" id="renderer16"/>
-                              <attributes>
-                                <attribute name="text">0</attribute>
-                              </attributes>
                             </child>
                           </object>
                           <packing>
@@ -6684,9 +6636,6 @@
                             <property name="model">model17</property>
                             <child>
                               <object class="GtkCellRendererText" id="renderer17"/>
-                              <attributes>
-                                <attribute name="text">0</attribute>
-                              </attributes>
                             </child>
                           </object>
                           <packing>
@@ -6850,9 +6799,6 @@
                                     <property name="model">model18</property>
                                     <child>
                                       <object class="GtkCellRendererText" id="renderer18"/>
-                                      <attributes>
-                                        <attribute name="text">0</attribute>
-                                      </attributes>
                                     </child>
                                   </object>
                                   <packing>
