@@ -30,7 +30,7 @@ class EquipmentStore(Gtk.ListStore):
         self.set_default_sort_func(self._sort)
         self.set_sort_column_id(-1, Gtk.SortType.ASCENDING)
         
-    def _sort(self, store, x, y):
+    def _sort(self, store, x, y, user_data):
         if self.get_value(x, 4) != self.get_value(y, 4):
             return self.get_value(y, 4)-self.get_value(x, 4)
         elif self.get_value(x, 2) == self.get_value(y, 2):
