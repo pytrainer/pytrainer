@@ -499,7 +499,7 @@ class Main(SimpleBuilderApp):
                 for c in self.lapsTreeView.get_columns():
                     for cr in c.get_cells():
                         if type(cr)==Gtk.CellRendererText:
-                            c.add_attribute(cr, 'foreground', 11)
+                            cr.set_property('foreground', 'gray')
 
                 def edited_cb(cell, path, new_text, (liststore, activity)):
                     liststore[path][12] = new_text
@@ -913,7 +913,7 @@ class Main(SimpleBuilderApp):
             for c in self.rankingTreeView.get_columns()[:-1]:
                 for cr in c.get_cells():
                     if type(cr)==Gtk.CellRendererText:
-                        c.add_attribute(cr, 'foreground', 7)
+                        cr.set_property('foreground', 'gray')
 
         self.rankingTreeView.set_model(rank_store)
 
