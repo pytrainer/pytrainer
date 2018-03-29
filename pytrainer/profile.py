@@ -252,7 +252,7 @@ class Profile(Singleton):
     def setProfile(self,list_options):
         logging.debug(">>")
         for option, value in list_options.items():
-            logging.debug("Adding "+option+"|"+value)
+            logging.debug("Adding %s|%s", option, value)
             self.setValue("pytraining",option,value,delay_write=True)
         self.uc.set_us(list_options['prf_us_system'])
         logging.debug("<<")
