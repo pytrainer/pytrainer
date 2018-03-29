@@ -141,7 +141,6 @@ class Record:
         logging.debug('list_options: '+str(list_options))
         record = self._formatRecordNew(list_options, Activity())
         self.pytrainer_main.ddbb.session.add(record)
-        id_record = record.id
         gpxOrig = list_options["rcd_gpxfile"]
         # Load laps from gpx if not provided by the caller
         if laps is None and os.path.isfile(gpxOrig):
@@ -157,7 +156,7 @@ class Record:
         self.pytrainer_main.ddbb.session.commit()
         if os.path.isfile(gpxOrig):
             gpxDest = self.pytrainer_main.profile.gpxdir
-            gpxNew = gpxDest+"/%d.gpx"%id_record
+            gpxNew = gpxDest+"/%d.gpx" % record.id
             #Leave original file in place...
             #shutil.move(gpxOrig, gpxNew)
             #logging.debug('Moving '+gpxOrig+' to '+gpxNew)
