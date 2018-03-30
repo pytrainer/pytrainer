@@ -17,8 +17,12 @@
 
 import locale
 import gettext
+import sys
 
 def initialize_gettext(gettext_path):
     locale.bindtextdomain("pytrainer", gettext_path)
     locale.textdomain("pytrainer")
-    gettext.install("pytrainer", gettext_path, unicode=1)
+    if sys.version_info[0] == 2:
+        gettext.install("pytrainer", gettext_path, unicode=1)
+    else:
+        gettext.install("pytrainer", gettext_path)
