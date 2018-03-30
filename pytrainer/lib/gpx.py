@@ -179,7 +179,7 @@ class Gpx:
                     stLat = startPoint.get("lat")
                     stLon = startPoint.get("lon")
                 else:
-                    stLat, stLon = "",""
+                    stLat, stLon = None, None
                 elapsedTime = lap.findtext(elapsedTimeTag)
                 if elapsedTime.count(":") == 2: # got a 0:41:42.14 type elasped time
                     hours, mins, secs = elapsedTime.split(":")
