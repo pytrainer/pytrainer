@@ -302,6 +302,9 @@ class WindowProfile(SimpleBuilderApp):
     def on_addsport_clicked(self,widget):
         self.hidesportsteps()
         self.buttonbox.set_sensitive(0)
+        colorPixBuf = GdkPixbuf.Pixbuf.new(GdkPixbuf.Colorspace.RGB, False, 8, 250, 20)
+        colorPixBuf.fill(self.stored_color.rgba_val)
+        self.newcolor.set_from_pixbuf(colorPixBuf)
         self.addsport.show()
 
     def on_newsport_accept_clicked(self,widget):
