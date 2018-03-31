@@ -17,6 +17,13 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from pytrainer.lib.fileUtils import fileUtils
+
+import gi
+try:
+        gi.require_version('WebKit', '3.0')
+except ValueError:
+        pass
+
 from gi.repository import Gtk
 import logging
 from gi.repository import WebKit
@@ -30,7 +37,7 @@ class MapViewer:
 			logging.debug("Display box (%s) is None" % ( str(box)))
 			return
 		self.box = box
-		self.wkview = webkit.WebView()
+		self.wkview = WebKit.WebView()
 		self.pack_box()
 		logging.debug("<<")
 
@@ -38,7 +45,7 @@ class MapViewer:
 		logging.debug(">>")
 		scrolled_window = Gtk.ScrolledWindow()
 		scrolled_window.add(self.wkview)
-		self.box.pack_start(scrolled_window, True, True)
+		self.box.pack_start(scrolled_window, True, True, 0)
 		self.box.show_all()
 		logging.debug("<<")
 

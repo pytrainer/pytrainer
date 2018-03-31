@@ -33,7 +33,7 @@ class WaypointEditor:
         self.wkview.connect('notify::title', self.handle_title_changed)
         scrolled_window = Gtk.ScrolledWindow()
         scrolled_window.add(self.wkview)
-        vbox.pack_start(scrolled_window, True, True)
+        vbox.pack_start(scrolled_window, True, True, 0)
         vbox.show_all()
         self.htmlfile = ""
         self.waypoint=waypoint
