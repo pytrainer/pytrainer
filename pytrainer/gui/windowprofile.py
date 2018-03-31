@@ -310,7 +310,7 @@ class WindowProfile(SimpleBuilderApp):
         sport = Sport()
         sport.name = unicode(self.newsportentry.get_text())
         sport.met = self._trim_to_null(self.newmetentry.get_text())
-        sport.weight = self.newweightentry.get_text()
+        sport.weight = self._float_or_zero(self.newweightentry.get_text())
         sport.max_pace = self._trim_to_null(self.newmaxpace.get_text())
         sport.color = self.stored_color
         if sport.name.lower() in [s.name.lower() for s in self._sport_service.get_all_sports()]:
@@ -391,7 +391,7 @@ class WindowProfile(SimpleBuilderApp):
         oldnamesport = self.sportnameedit.get_text()
         sport = self._sport_service.get_sport_by_name(oldnamesport)
         sport.name = unicode(self.editsportentry.get_text())
-        sport.weight = self.editweightentry.get_text()
+        sport.weight = self._float_or_zero(self.editweightentry.get_text())
         sport.met = self._trim_to_null(self.editmetentry.get_text())
         sport.max_pace = self._trim_to_null(self.editmaxpace.get_text())
         sport.color = self.stored_color
@@ -405,6 +405,14 @@ class WindowProfile(SimpleBuilderApp):
     def _trim_to_null(self, string):
         trimmed = string.strip()
         return None if trimmed == "" else trimmed
+
+    @staticmethod
+    def _float_or_zero(string):
+        try:
+          return float(string)
+        except ValueError:
+          pass
+        return 0.0
         
     def on_sportcancel_clicked(self,widget):
         self.hidesportsteps()
