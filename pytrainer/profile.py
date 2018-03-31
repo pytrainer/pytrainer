@@ -37,7 +37,7 @@ class Profile(Singleton):
         #Profile Options and Defaults
         self.profile_options = {
             "prf_name":"default",
-            "prf_gender":"",
+            "prf_gender":"Male",
             "prf_weight":"",
             "prf_height":"",
             "prf_age":"",
@@ -205,12 +205,29 @@ class Profile(Singleton):
                 config_needs_update = True
                 value = default
             config[key] = value
+        config_needs_update |= self.fixLocalizedGender(config)
         #Added a property, so update config
         if config_needs_update:
             self.setProfile(config)
         #Set shorthand var for units of measurement
         self.prf_us_system = True if config["prf_us_system"] == "True" else False
         return config
+
+    @staticmethod
+    def fixLocalizedGender(config):
+        ''' The gender used to be stored as the
+            localized string. This fixes it.
+        '''
+        femaleList = ("Weiblich", "Mujer", "Femme", "Muller", "Feminino", "Kvinna")
+        lgender = config["prf_gender"]
+        if lgender == "Male" or lgender == "Female":
+            return False
+        if lgender in femaleList:
+            config["prf_gender"] = "Female"
+        else:
+            # if it is not female, default to male
+            config["prf_gender"] = "Male"
+        return True
 
     def getIntValue(self, tag, variable, default=0):
         ''' Function to return conf value as int
@@ -252,7 +269,7 @@ class Profile(Singleton):
     def setProfile(self,list_options):
         logging.debug(">>")
         for option, value in list_options.items():
-            logging.debug("Adding "+option+"|"+value)
+            logging.debug("Adding "+str(option)+"|"+str(value))
             self.setValue("pytraining",option,value,delay_write=True)
         self.uc.set_us(list_options['prf_us_system'])
         logging.debug("<<")
