@@ -38,10 +38,9 @@ trackSegTag = mainNS.substitute(tag="trkseg")
 elevationTag = mainNS.substitute(tag="ele")
 nameTag = mainNS.substitute(tag="name")
 
+# cluetrust extensions
 gpxdataNS = string.Template(".//{http://www.cluetrust.com/XML/GPXDATA/1/0}$tag")
 calorieTag = gpxdataNS.substitute(tag="calories")
-hrTag = gpxdataNS.substitute(tag="hr")
-cadTag = gpxdataNS.substitute(tag="cadence")
 lapTag = gpxdataNS.substitute(tag="lap")
 endPointTag = gpxdataNS.substitute(tag="endPoint")
 startPointTag = gpxdataNS.substitute(tag="startPoint")
@@ -50,6 +49,12 @@ distanceTag = gpxdataNS.substitute(tag="distance")
 intensityTag = gpxdataNS.substitute(tag="intensity")
 triggerTag = gpxdataNS.substitute(tag="trigger")
 summaryTag = gpxdataNS.substitute(tag="summary")
+
+# garmin extensions
+gpxdataAlternateNS = string.Template(".//{http://www.garmin.com/xmlschemas/TrackPointExtension/v1}$tag")
+
+cadTags = (gpxdataNS.substitute(tag="cadence"), gpxdataAlternateNS.substitute(tag="cad"))
+hrTags  = (gpxdataNS.substitute(tag="hr"), gpxdataAlternateNS.substitute(tag="hr"))
 
 pytrainerNS = string.Template(".//{http://sourceforge.net/projects/pytrainer/GPX/0/1}$tag")
 pyt_eleTag = pytrainerNS.substitute(tag="ele")
@@ -294,21 +299,23 @@ class Gpx:
                 logging.debug("lat or lon is blank or zero")
                 continue
             #get the heart rate value from the gpx extended format file
-            hrResult = trkpoint.find(hrTag)
-            if hrResult is not None:
-                hr = int(hrResult.text)
-                len_validhrpoints += 1
-                total_hr += hr          #TODO fix
-                if hr>self.maxhr:
-                    self.maxhr = hr
-            else:
-                hr = None
+            hr = None
+            for hrTag in hrTags:
+                hrResult = trkpoint.find(hrTag)
+                if hrResult is not None:
+                    hr = int(hrResult.text)
+                    len_validhrpoints += 1
+                    total_hr += hr
+                    if hr>self.maxhr:
+                        self.maxhr = hr
+                    break
             #get the cadence (if present)
-            cadResult = trkpoint.find(cadTag)
-            if cadResult is not None:
-                cadence = int(cadResult.text)
-            else:
-                cadence = None
+            cadence = None
+            for cadTag in cadTags:
+                cadResult = trkpoint.find(cadTag)
+                if cadResult is not None:
+                    cadence = int(cadResult.text)
+                    break
 
             #get the time
             timeResult = trkpoint.find(timeTag)
