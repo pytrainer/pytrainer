@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
 # Modified by dgranda
@@ -37,7 +37,7 @@ class Profile(Singleton):
         #Profile Options and Defaults
         self.profile_options = {
             "prf_name":"default",
-            "prf_gender":"",
+            "prf_gender":"Male",
             "prf_weight":"",
             "prf_height":"",
             "prf_age":"",
@@ -205,12 +205,32 @@ class Profile(Singleton):
                 config_needs_update = True
                 value = default
             config[key] = value
+        config_needs_update |= self.fixLocalizedGender(config)
         #Added a property, so update config
         if config_needs_update:
             self.setProfile(config)
         #Set shorthand var for units of measurement
         self.prf_us_system = True if config["prf_us_system"] == "True" else False
         return config
+
+    @staticmethod
+    def fixLocalizedGender(config):
+        ''' The gender used to be stored as the
+            localized string. This fixes it.
+        '''
+        female_localized = ("Weiblich", "Mujer", "Femme", "Muller", "Feminino", "Kvinna")
+        male_localized = (u"Männlich", u"Varón", "Homme", "Home", "Masculino", u"Значение", "Man")
+        lgender = config["prf_gender"]
+        if lgender in ("Male", "Female"):
+            return False
+        elif lgender in female_localized:
+            config["prf_gender"] = "Female"
+        elif lgender in male_localized:
+            config["prf_gender"] = "Male"
+        else:
+            # default to not selected
+            config["prf_gender"] = ""
+        return True
 
     def getIntValue(self, tag, variable, default=0):
         ''' Function to return conf value as int
