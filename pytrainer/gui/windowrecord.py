@@ -173,7 +173,11 @@ class WindowRecord(SimpleBuilderApp):
             #details["rcd_time"] = (((float(hours) * 60) + float(mins)) * 60) + float(secs)
             details["activity_id"] = activity[0]
             details["rcd_time"] = (float(hours), float(mins), float(secs))
-            details["rcd_sport"] = activity[4]
+            if activity[4] is not None:
+                details["rcd_sport"] = activity[4]
+            else:
+                # No sport was provided, preliminary set the current selection from window
+                details["rcd_sport"] = self.rcd_sport.get_active_text()
             details["rcd_gpxfile"] = activity[5]
             details["file_id"] = activity[6]
             self.activity_data.append(details)
