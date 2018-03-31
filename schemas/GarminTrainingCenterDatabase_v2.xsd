@@ -328,7 +328,7 @@
 			<xsd:element name="TotalTimeSeconds" type="xsd:double"/>
 			<xsd:element name="DistanceMeters" type="xsd:double"/>
 			<xsd:element name="MaximumSpeed" type="xsd:double" minOccurs="0"/>
-			<xsd:element name="Calories" type="xsd:unsignedShort"/>
+			<xsd:element name="Calories" type="xsd:unsignedShort" minOccurs="0"/>
 			<xsd:element name="AverageHeartRateBpm" type="HeartRateInBeatsPerMinute_t" minOccurs="0"/>
 			<xsd:element name="MaximumHeartRateBpm" type="HeartRateInBeatsPerMinute_t" minOccurs="0"/>
 			<xsd:element name="Intensity" type="Intensity_t"/>
