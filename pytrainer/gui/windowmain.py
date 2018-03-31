@@ -1991,9 +1991,7 @@ class Main(SimpleBuilderApp):
                 menuitem.connect("activate", self.on_athleteTreeView_delete, idx)
                 popup.attach(menuitem, 0, 1, 3, 4)
                 popup.show_all()
-                popup.popup( None, None, None, event.button, time)
-                #self.popup.show(selected.get_value(iter,0), event.button, time)
-                #self.popup.popup( None, None, None, event_button, time)
+                popup.popup_at_pointer(None)
             else:
                 #Left mouse - so display this row
                 pass

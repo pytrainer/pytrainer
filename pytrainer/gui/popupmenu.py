@@ -41,7 +41,7 @@ class PopupMenu(Gtk.Menu):
         self.date = date
         self.iter = iter
         self.show_all()
-        self.popup(None, None, None, event_button, time)
+        self.popup_at_pointer(None)
 
     def on_editrecord_activate(self,widget):
         self.windowmain.parent.editRecord(self.id_record, view=self.windowmain.selected_view)
