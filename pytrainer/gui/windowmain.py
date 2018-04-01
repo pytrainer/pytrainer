@@ -264,7 +264,7 @@ class Main(SimpleBuilderApp):
     def createGraphs(self):
         logging.debug(">>")
         self.drawarearecord = RecordGraph(self.record_graph_vbox, self.window1, self.record_combovalue, self.record_combovalue2, self.btnShowLaps, self.tableConfigY1, pytrainer_main=self.pytrainer_main)
-        self.drawareaheartrate = HeartRateGraph(self.heartrate_vbox, self.window1, self.heartrate_vbox2, pytrainer_main=self.pytrainer_main)
+        self.drawareaheartrate = HeartRateGraph([self.heartrate_vbox, self.heartrate_vbox2, self.heartrate_vbox3], self.window1, pytrainer_main=self.pytrainer_main)
         self.day_vbox.hide()
         sports = self._sport_service.get_all_sports()
         self.drawareaweek = WeekGraph(sports, self.weekview, self.window1, self.week_combovalue, self.week_combovalue2, self.pytrainer_main)
@@ -2162,9 +2162,16 @@ class Main(SimpleBuilderApp):
     def on_hrpiebutton_clicked(self,widget):
         self.heartrate_vbox2.show()
         self.heartrate_vbox.hide()
+        self.heartrate_vbox3.hide()
 
     def on_hrplotbutton_clicked(self,widget):
         self.heartrate_vbox.show()
+        self.heartrate_vbox2.hide()
+        self.heartrate_vbox3.hide()
+
+    def on_hrhistobutton_clicked(self,widget):
+        self.heartrate_vbox3.show()
+        self.heartrate_vbox.hide()
         self.heartrate_vbox2.hide()
 
     def _totals_from_activities(self, activity_list):

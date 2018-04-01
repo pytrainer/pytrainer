@@ -49,8 +49,8 @@ class DrawArea:
             self.drawBars(xvalues,yvalues,xlabel,ylabel,title,color)
         elif type == "plot":
             self.drawPlot(xvalues,yvalues,xlabel,ylabel,title,color,zones)
-        elif type == "pie":
-            self.drawPie(xvalues,yvalues,xlabel,ylabel,title,color,zones)
+        elif type == "pie" or type == "histogram":
+            self.drawZones(type,xvalues,yvalues,xlabel,ylabel,title,color,zones)
         logging.debug('<<')
 
     def drawBars(self,xvalues,yvalues,xlabel,ylabel,title,color):
@@ -386,88 +386,44 @@ class DrawArea:
         logging.debug('<<')
         return {'y1_min': ylim_min, 'y1_max': ylim_max, 'y1_linewidth': linewidth}
 
-    def drawPie(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
+    def drawZones(self,shape,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
         logging.debug('>>')
-        logging.debug("Type: pie | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
+        logging.debug("Type: "+str(shape)+" | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
         self.removeVboxChildren()
-        #figure = Figure(figsize=(6,4), dpi=72)
         figure = Figure()
         logging.debug("Figure: %s" % str(figure) )
         axis = figure.add_subplot(111)
 
-        labels = []
-        colors = []
-        frac0 = 0
-        frac1 = 0
-        frac2 = 0
-        frac3 = 0
-        frac4 = 0
-        frac5 = 0
-        for zone in zones:
-            labels.insert(0,zone[3])
-            colors.insert(0,zone[2])
+        labels = [_("rest")]
+        colors = ["#ffffff"]
+        for zone in reversed(zones):
+            labels.append(zone[3])
+            colors.append(zone[2])
 
-        labels.insert(0,_("rest"))
-        colors.insert(0,"#ffffff")
-
+        zone_sum = [0]*6
         for value in yvalues[0]:
-            if value <= zones[4][0]:
-                frac0+=1
-            elif value > zones[4][0] and value <= zones[4][1]:
-                frac1+=1
-            elif value > zones[3][0] and value <= zones[3][1]:
-                frac2+=1
-            elif value > zones[2][0] and value <= zones[2][1]:
-                frac3+=1
-            elif value > zones[1][0] and value <= zones[1][1]:
-                frac4+=1
-            elif value > zones[0][0] and value <= zones[0][1]:
-                frac5+=1
+            # bisection, it's faster
+            if value <= zones[2][1]:
+                if value <= zones[4][1]:
+                    if value <= zones[4][0]:
+                        zone_sum[0] += 1
+                    else:
+                        zone_sum[1] += 1
+                else:
+                    if value <= zones[3][1]:
+                        zone_sum[2] += 1
+                    else:
+                        zone_sum[3] += 1
+            else:
+                if value <= zones[1][1]:
+                    zone_sum[4] += 1
+                else:
+                    zone_sum[5] += 1
 
-        fracs = []
-        explode=[]
-        if frac5 == 0:
-            labels.pop(5)
-            colors.pop(5)
-        else:
-            fracs.insert(0, frac5)
-            explode.insert(0, 0)
-
-        if frac4 == 0:
-            labels.pop(4)
-            colors.pop(4)
-        else:
-            fracs.insert(0, frac4)
-            explode.insert(0, 0)
-
-        if frac3 == 0:
-            labels.pop(3)
-            colors.pop(3)
-        else:
-            fracs.insert(0, frac3)
-            explode.insert(0, 0)
-
-        if frac2 == 0:
-            labels.pop(2)
-            colors.pop(2)
-        else:
-            fracs.insert(0, frac2)
-            explode.insert(0, 0)
-
-        if frac1 == 0:
-            labels.pop(1)
-            colors.pop(1)
-        else:
-            fracs.insert(0, frac1)
-            explode.insert(0, 0)
-
-        if frac0 == 0:
-            labels.pop(0)
-            colors.pop(0)
-        else:
-            fracs.insert(0, frac0)
-            explode.insert(0, 0)
-        axis.pie(fracs, explode=explode, labels=labels, colors=colors, autopct='%1.1f%%', shadow=True)
+        if shape == "pie":
+            self._piePlot(axis, zone_sum, colors, labels)
+        elif shape == "histogram":
+            self._barPlot(axis, zone_sum, colors, labels)
 
         canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
         canvas.show()
@@ -477,6 +433,23 @@ class DrawArea:
 
         self.vbox.pack_start(canvas, True, True)
         logging.debug('<<')
+
+    def _barPlot(self, axis, zone_sum, colors, labels):
+        invtotal = 100.0/sum(zone_sum)
+        fracs = [i*invtotal for i in zone_sum]
+        xticks = list(range(len(fracs)))
+
+        axis.bar(xticks, fracs, color=colors, align="center")
+        axis.set_xticks(xticks)
+        axis.set_xticklabels(labels)
+        axis.set_ylabel(_("Time in zone [%]"))
+
+    def _piePlot(self, axis, zone_sum, colors, labels):
+        labels_trunc = [l for z,l in zip(zone_sum, labels) if z > 0]
+        colors_trunc = [c for z,c in zip(zone_sum, colors) if z > 0]
+        zone_trunc   = [z for z in zone_sum if z > 0]
+        explode      = [0]*len(zone_trunc)
+        axis.pie(zone_trunc, explode=explode, labels=labels_trunc, colors=colors_trunc, autopct='%1.1f%%', shadow=True)
 
     def drawDefault(self):
         logging.debug('>>')

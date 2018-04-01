@@ -20,10 +20,9 @@ from gui.drawArea import DrawArea
 import logging
 
 class HeartRateGraph:
-	def __init__(self, vbox = None, window = None, vbox2 = None, pytrainer_main = None):
+	def __init__(self, vboxList = None, window = None, pytrainer_main = None):
 		logging.debug('>>')
-		self.drawarea = DrawArea(vbox, window)
-		self.drawarea2 = DrawArea(vbox2, window)
+		self.drawareas = [DrawArea(vbox, window) for vbox in vboxList]
 		self.pytrainer_main = pytrainer_main
 		logging.debug('<<')
 
@@ -31,11 +30,9 @@ class HeartRateGraph:
 		logging.debug('>>')
 		zones = self.pytrainer_main.profile.getZones()
 		xvalues, yvalues = self.get_values(values)
-		#logging.debug('xvalues: '+str(xvalues))
-		#logging.debug('yvalues: '+str(yvalues))
 		xlabel,ylabel,title,color = _("Distance (km)"),_("Beats (bpm)"),_("Heart Rate"),"#740074"
-		self.drawarea.stadistics("plot",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color],zones)
-		self.drawarea2.stadistics("pie",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color],zones)
+		for drawarea,shape in zip(self.drawareas,("plot","pie","histogram")):
+			drawarea.stadistics(shape,[xvalues],[yvalues],[xlabel],[ylabel],[title],[color],zones)
 		logging.debug('<<')
 
 	def get_values(self,values):
