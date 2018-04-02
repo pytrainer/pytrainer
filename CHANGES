@@ -1,5 +1,53 @@
 We have migrated to GitHub, for more details about changelog please see git log documentation (http://git-scm.com/docs/git-log). One simple approach: git log --oneline --stat --decorate <since>..<until>
 
+- pytrainer changes for 1.12.1:
+
+- Known issues:
+  Gtk outputs warnings about extra properties when loading the main window
+
+- Improvements:
+  99e55d2d9662 Update the Garmin FIT file conversion library
+  b02e53de540c Don't require the Calories element in tcx v2 files
+
+- Bugs fixed:
+  e77334afb081 Convert empty strings to None when importing lap data (#138)
+  e0de089989e2 Fixed adding of sports when no or an invalid "extra weight" is provided.
+  fa7a87602e20 Fixed importing activities without a sport (GPX).
+  9e23d98380d9 Calculate calories only when included in the data
+  6cdd6cc66eb8 Record: Stop storing a copy of Activity.id
+  a1655db8ffb7 Gpx: Set start_lat and start_lon to None if not available
+  32748d14ba0a Decode sport name when importing Garmin FIT files
+  8c959db29b54 Enforce date_time_local to a string
+  f7ed8aa344ed Fix date handling bug introduced when converting _formatRecordNew to sqlalchemy
+  4e33312a1af1 Fix record analytics view distance column being unitconverted twice
+  0665be634133 Fix unit conversion for the athlete weight table
+
+- Internals:
+  044a6e7a1bb1 Also test insertRecord using a datetime object
+  4a58974eb540 Remove unused pytrainer/lib/logs.py
+  8eb2a8d5cc89 Remove duplicated error prints from the openstreetmap extension
+  294b72fad130 Remove print statement from wordpress extension
+  5d68e4b51d16 Remove unused extra copy of points.py from the wordpress extension
+  61abc074f3e9 Convert some more print statements to logging
+  3f91bc86ab6e Remove duplicated debug prints from xmlValidation.py
+  ffd4b9cfe30d Convert points.py tests to use print as a function
+  7197a8ed071b Convert windowimportdata.py prints to logging
+  2aaa8a2f0718 Fully convert the startup script to print functions
+  b2b3404a2300 Convert main.py prints to logging
+  7654af35a09b Convert WindowRecord print statements to debug logging
+  33c4412e7cbe Convert some prints into logging calls
+  6235e270d9b6 Remove TODO print from Record
+  d53f0392e67c Remove random debug print from the Sport tests
+  18b7d53d5489 Update StringIO import path in srtmdownload.py
+  55aa7ab39d6c Convert some imports and plugins to use BytesIO
+  1b0178bce2d7 Use BytesIO in Profile
+  2cf2d8d696e4 Remove unused StringIO imports
+  9a018f80e1c9 Reindent remaining files with mixed tabs and spaces
+  40097cd61571 Move DateRange from util.date to lib.date
+  fa7b90d88250 DateRange: Replace the cmp call with a simple comparison
+  2dafed6a69c2 Move first day of week locale call to the platform
+  8f14f8a98e8a Remove tabs from pytrainer/main.py
+
 - pytrainer changes for 1.12.0:
 
 - Known issues:
