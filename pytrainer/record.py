@@ -185,16 +185,16 @@ class Record:
             tmp_lap['record'] = ""
             tmp_lap['lap_number'] = lap_number
             tmp_lap['elapsed_time'] = lap[0]
-            tmp_lap['distance'] = lap[4]
-            tmp_lap['start_lat'] = lap[5]
-            tmp_lap['start_lon'] = lap[6]
-            tmp_lap['end_lat'] = lap[1]
-            tmp_lap['end_lon'] = lap[2]
-            tmp_lap['calories'] = lap[3]
+            tmp_lap['distance'] = lap[4] or None
+            tmp_lap['start_lat'] = lap[5] or None
+            tmp_lap['start_lon'] = lap[6] or None
+            tmp_lap['end_lat'] = lap[1] or None
+            tmp_lap['end_lon'] = lap[2] or None
+            tmp_lap['calories'] = lap[3] or None
             tmp_lap['intensity'] = lap[7]
-            tmp_lap['avg_hr'] = lap[8]
-            tmp_lap['max_hr'] = lap[9]
-            tmp_lap['max_speed'] = lap[10]
+            tmp_lap['avg_hr'] = lap[8] or None
+            tmp_lap['max_hr'] = lap[9] or None
+            tmp_lap['max_speed'] = lap[10] or None
             tmp_lap['laptrigger'] = lap[11]
             tmp_lap['comments'] = ""
             laps.append(tmp_lap)
