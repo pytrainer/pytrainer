@@ -38,7 +38,7 @@ class YearGraph(TimeGraph):
         self.KEY_FORMAT = "%m"
 
     def drawgraph(self,values):
-        TimeGraph.drawgraph(self, values, x_func=lambda x: ["%02d" % m for m in xrange(1,13)])
+        TimeGraph.drawgraph(self, values, x_func=lambda x: ["%02d" % m for m in range(1,13)])
 
     def drawgraph2(self,values):
         

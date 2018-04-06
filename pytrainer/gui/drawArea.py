@@ -131,7 +131,7 @@ class DrawArea:
             axis.set_title(_title)
 
         logging.debug("Setting x ticks")
-        tickLocations = [x+0.5 for x in xrange(0, numCols)]
+        tickLocations = [x+0.5 for x in range(0, numCols)]
         axis.set_xticks(tickLocations)
         axis.set_xticklabels(xvalues[0])
         logging.debug("Setting x limits")
@@ -206,7 +206,7 @@ class DrawArea:
 
         ybottoms = [0] * numCols
         yheights = [0] * numCols
-        inds = xrange(0, numCols)
+        inds = range(0, numCols)
         xvals = [x+barOffset for x in range(0, numCols)]
         cellText = []
         self.showGraph=False

@@ -890,7 +890,7 @@ class Main(SimpleBuilderApp):
 
         length = len(records)
         rec_set = [0,]
-        for r in xrange(max(count-3, 1) if count>1 else count, min(count+3, length-2) if count < length else count):
+        for r in range(max(count-3, 1) if count>1 else count, min(count+3, length-2) if count < length else count):
             rec_set.append(r)
         if length>1 and count!=length:
             rec_set.append(-1)

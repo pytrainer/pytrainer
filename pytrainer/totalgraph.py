@@ -38,7 +38,7 @@ class TotalGraph(TimeGraph):
     def getYears(self, yvalues):
         years = set()
         for s in yvalues.values():
-            years |= set([str(x) for x in xrange(int(min(s.keys())), int(max(s.keys()))+1)])
+            years |= set([str(x) for x in range(int(min(s.keys())), int(max(s.keys()))+1)])
         return sorted(list(years))
 
     def drawgraph(self,values):

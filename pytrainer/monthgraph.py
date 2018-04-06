@@ -37,7 +37,7 @@ class MonthGraph(TimeGraph):
         self.KEY_FORMAT = "%d"
         
     def drawgraph(self,values, daysInMonth):
-        TimeGraph.drawgraph(self, values, x_func=lambda x: list([u'%02d' % d for d in xrange(1,daysInMonth+1)]))
+        TimeGraph.drawgraph(self, values, x_func=lambda x: list([u'%02d' % d for d in range(1,daysInMonth+1)]))
 
     def get_values2(self,values,value_selected,daysInMonth):
         #hacemos una relacion entre el value_selected y los values / we make a relation between value_selected and the values
