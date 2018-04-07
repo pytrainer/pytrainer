@@ -42,14 +42,14 @@ class EquipmentTest(unittest.TestCase):
     def test_id_set_to_integer(self):
         equipment = Equipment()
         equipment.id = 2
-        self.assertEquals(2, equipment.id)
+        self.assertEqual(2, equipment.id)
             
     def test_id_set_to_numeric_string(self):
         equipment = Equipment()
         equipment.id = "3"
         self.ddbb.session.add(equipment)
         self.ddbb.session.commit()
-        self.assertEquals(3, equipment.id)
+        self.assertEqual(3, equipment.id)
 
     def test_id_set_to_non_numeric_string(self):
         if self.ddbb.engine.name == 'mysql':
@@ -66,7 +66,7 @@ class EquipmentTest(unittest.TestCase):
             
     def test_description_defaults_to_empty_string(self):
         equipment = Equipment()
-        self.assertEquals(u"", equipment.description)
+        self.assertEqual(u"", equipment.description)
 
     @unittest.skipIf(sys.version_info > (3, 0), "All strings are unicode in Python 3")
     def test_description_set_to_non_unicode_string(self):
@@ -85,14 +85,14 @@ class EquipmentTest(unittest.TestCase):
     def test_description_set_to_unicode_string(self):
         equipment = Equipment()
         equipment.description = u"Zapatos de €100"
-        self.assertEquals(u"Zapatos de €100", equipment.description)
+        self.assertEqual(u"Zapatos de €100", equipment.description)
         
     def test_description_set_to_non_string(self):
         equipment = Equipment()
         equipment.description = 42
         self.ddbb.session.add(equipment)
         self.ddbb.session.commit()
-        self.assertEquals(u"42", equipment.description)
+        self.assertEqual(u"42", equipment.description)
             
     def test_active_defaults_to_true(self):
         equipment = Equipment()
@@ -120,14 +120,14 @@ class EquipmentTest(unittest.TestCase):
     def test_life_expectancy_set_to_integer(self):
         equipment = Equipment()
         equipment.life_expectancy = 2
-        self.assertEquals(2, equipment.life_expectancy)
+        self.assertEqual(2, equipment.life_expectancy)
             
     def test_life_expectancy_set_to_numeric_string(self):
         equipment = Equipment()
         equipment.life_expectancy = "3"
         self.ddbb.session.add(equipment)
         self.ddbb.session.commit()
-        self.assertEquals(3, equipment.life_expectancy)
+        self.assertEqual(3, equipment.life_expectancy)
 
     def test_life_expectancy_set_to_non_numeric_string(self):
         equipment = Equipment()
@@ -147,14 +147,14 @@ class EquipmentTest(unittest.TestCase):
     def test_prior_usage_set_to_integer(self):
         equipment = Equipment()
         equipment.prior_usage = 2
-        self.assertEquals(2, equipment.prior_usage)
+        self.assertEqual(2, equipment.prior_usage)
             
     def test_prior_usage_set_to_numeric_string(self):
         equipment = Equipment()
         equipment.prior_usage = "3"
         self.ddbb.session.add(equipment)
         self.ddbb.session.commit()
-        self.assertEquals(3, equipment.prior_usage)
+        self.assertEqual(3, equipment.prior_usage)
 
     def test_prior_usage_set_to_non_numeric_string(self):
         equipment = Equipment()
@@ -169,7 +169,7 @@ class EquipmentTest(unittest.TestCase):
             
     def test_notes_defaults_to_empty_string(self):
         equipment = Equipment()
-        self.assertEquals(u"", equipment.notes)
+        self.assertEqual(u"", equipment.notes)
 
     @unittest.skipIf(sys.version_info > (3, 0), "All strings are unicode in Python 3")
     def test_notes_set_to_string(self):
@@ -188,14 +188,14 @@ class EquipmentTest(unittest.TestCase):
     def test_notes_set_to_unicode_string(self):
         equipment = Equipment()
         equipment.notes = u"Zapatos de €100."
-        self.assertEquals(u"Zapatos de €100.", equipment.notes)
+        self.assertEqual(u"Zapatos de €100.", equipment.notes)
         
     def test_notes_set_to_non_string(self):
         equipment = Equipment()
         equipment.notes = 42
         self.ddbb.session.add(equipment)
         self.ddbb.session.commit()
-        self.assertEquals(u"42", equipment.notes)
+        self.assertEqual(u"42", equipment.notes)
             
     def test_equals_new_instances(self):
         equipment1 = Equipment()
@@ -236,12 +236,12 @@ class EquipmentServiceTest(unittest.TestCase):
                                            "description": u"Test Description",
                                            "prior_usage": 200, "active": True})
         item = self.equipment_service.get_equipment_item(1)
-        self.assertEquals(1, item.id)
-        self.assertEquals("Test Description", item.description)
+        self.assertEqual(1, item.id)
+        self.assertEqual("Test Description", item.description)
         self.assertTrue(item.active)
-        self.assertEquals(500, item.life_expectancy)
-        self.assertEquals(200, item.prior_usage)
-        self.assertEquals("Test notes.", item.notes)
+        self.assertEqual(500, item.life_expectancy)
+        self.assertEqual(200, item.prior_usage)
+        self.assertEqual("Test notes.", item.notes)
     
     def test_get_equipment_item_non_unicode(self):
         self.mock_ddbb.session.execute(self.equipment_table.insert(),
@@ -250,12 +250,12 @@ class EquipmentServiceTest(unittest.TestCase):
                                            "description": u"Test Description",
                                            "prior_usage": 200, "active": True})
         item = self.equipment_service.get_equipment_item(1)
-        self.assertEquals("Test Description", item.description)
-        self.assertEquals("Test notes.", item.notes)
+        self.assertEqual("Test Description", item.description)
+        self.assertEqual("Test notes.", item.notes)
     
     def test_get_equipment_item_non_existant(self):
         item = self.equipment_service.get_equipment_item(1)
-        self.assertEquals(None, item)
+        self.assertEqual(None, item)
         
     def test_get_all_equipment(self):
         self.mock_ddbb.session.execute(self.equipment_table.insert(),
@@ -270,23 +270,23 @@ class EquipmentServiceTest(unittest.TestCase):
                                            "prior_usage": 300, "active": False})
         items = self.equipment_service.get_all_equipment()
         item = items[0]
-        self.assertEquals(1, item.id)
-        self.assertEquals("Test item 1", item.description)
+        self.assertEqual(1, item.id)
+        self.assertEqual("Test item 1", item.description)
         self.assertTrue(item.active)
-        self.assertEquals(500, item.life_expectancy)
-        self.assertEquals(200, item.prior_usage)
-        self.assertEquals("Test notes 1.", item.notes)
+        self.assertEqual(500, item.life_expectancy)
+        self.assertEqual(200, item.prior_usage)
+        self.assertEqual("Test notes 1.", item.notes)
         item = items[1]
-        self.assertEquals(2, item.id)
-        self.assertEquals("Test item 2", item.description)
+        self.assertEqual(2, item.id)
+        self.assertEqual("Test item 2", item.description)
         self.assertFalse(item.active)
-        self.assertEquals(600, item.life_expectancy)
-        self.assertEquals(300, item.prior_usage)
-        self.assertEquals("Test notes 2.", item.notes)
+        self.assertEqual(600, item.life_expectancy)
+        self.assertEqual(300, item.prior_usage)
+        self.assertEqual("Test notes 2.", item.notes)
         
     def test_get_all_equipment_non_existant(self):
         items = self.equipment_service.get_all_equipment()
-        self.assertEquals([], items)
+        self.assertEqual([], items)
         
     def test_get_active_equipment(self):
         self.mock_ddbb.session.execute(self.equipment_table.insert(),
@@ -301,29 +301,29 @@ class EquipmentServiceTest(unittest.TestCase):
                                            "prior_usage": 300, "active": True})
         items = self.equipment_service.get_active_equipment()
         item = items[0]
-        self.assertEquals(1, item.id)
-        self.assertEquals("Test item 1", item.description)
+        self.assertEqual(1, item.id)
+        self.assertEqual("Test item 1", item.description)
         self.assertTrue(item.active)
-        self.assertEquals(500, item.life_expectancy)
-        self.assertEquals(200, item.prior_usage)
-        self.assertEquals("Test notes 1.", item.notes)
+        self.assertEqual(500, item.life_expectancy)
+        self.assertEqual(200, item.prior_usage)
+        self.assertEqual("Test notes 1.", item.notes)
         item = items[1]
-        self.assertEquals(2, item.id)
-        self.assertEquals("Test item 2", item.description)
+        self.assertEqual(2, item.id)
+        self.assertEqual("Test item 2", item.description)
         self.assertTrue(item.active)
-        self.assertEquals(600, item.life_expectancy)
-        self.assertEquals(300, item.prior_usage)
-        self.assertEquals("Test notes 2.", item.notes)
+        self.assertEqual(600, item.life_expectancy)
+        self.assertEqual(300, item.prior_usage)
+        self.assertEqual("Test notes 2.", item.notes)
         
     def test_get_active_equipment_non_existant(self):
         items = self.equipment_service.get_active_equipment()
-        self.assertEquals([], items)
+        self.assertEqual([], items)
         
     def test_store_equipment(self):
         equipment = Equipment()
         equipment.description = u"test description"
         stored_equipment = self.equipment_service.store_equipment(equipment)
-        self.assertEquals(1, stored_equipment.id)
+        self.assertEqual(1, stored_equipment.id)
         
     def test_store_equipment_duplicate_description(self):
         self.mock_ddbb.session.execute(self.equipment_table.insert(),
@@ -349,7 +349,7 @@ class EquipmentServiceTest(unittest.TestCase):
         equipment.description = u"new description"
         self.equipment_service.store_equipment(equipment)
         equipment = self.equipment_service.get_equipment_item(1)
-        self.assertEquals("new description", equipment.description)
+        self.assertEqual("new description", equipment.description)
         
     def test_update_equipment_duplicate_description(self):
         self.mock_ddbb.session.execute(self.equipment_table.insert(),
@@ -376,7 +376,7 @@ class EquipmentServiceTest(unittest.TestCase):
         self.mock_ddbb.session.execute("insert into record_equipment (record_id,equipment_id) values (1,1)")
         equipment = self.equipment_service.get_equipment_item(1)
         usage = self.equipment_service.get_equipment_usage(equipment)
-        self.assertEquals(250, usage)
+        self.assertEqual(250, usage)
         
     def test_get_equipment_usage_none(self):
         self.mock_ddbb.session.execute(self.equipment_table.insert(),
@@ -386,21 +386,21 @@ class EquipmentServiceTest(unittest.TestCase):
                                            "prior_usage": 0, "active": True})
         equipment = self.equipment_service.get_equipment_item(1)
         usage = self.equipment_service.get_equipment_usage(equipment)
-        self.assertEquals(0, usage)
+        self.assertEqual(0, usage)
 
     def test_get_equipment_prior_usage(self):
         equipment = Equipment()
         equipment.id = 1
         equipment.prior_usage = 250
         usage = self.equipment_service.get_equipment_usage(equipment)
-        self.assertEquals(250, usage)
+        self.assertEqual(250, usage)
 
     def test_get_equipment_prior_usage(self):
         equipment = Equipment()
         equipment.id = 1
         equipment.prior_usage = 250
         usage = self.equipment_service.get_equipment_usage(equipment)
-        self.assertEquals(250, usage)
+        self.assertEqual(250, usage)
 
 if __name__ == "__main__":
     #import sys;sys.argv = ['', 'Test.testName']

@@ -32,37 +32,37 @@ class InstalledDataTest(unittest.TestCase):
         
     def test_get_version_should_return_migrate_version_when_available(self):
         self._mock_migratable_db.get_version.return_value = 1
-        self.assertEquals(1, self._installed_data.get_version())
+        self.assertEqual(1, self._installed_data.get_version())
         
     def test_get_version_should_return_legacy_version_when_available(self):
         self._mock_migratable_db.is_versioned.return_value = False
         self._mock_version_provider.get_legacy_version.return_value = 2
-        self.assertEquals(2, self._installed_data.get_version())
+        self.assertEqual(2, self._installed_data.get_version())
         
     def test_get_version_should_return_none_when_no_existing_version(self):
         self._mock_migratable_db.is_versioned.return_value = False
         self._mock_version_provider.get_legacy_version.return_value = None
-        self.assertEquals(None, self._installed_data.get_version())
+        self.assertEqual(None, self._installed_data.get_version())
         
     def test_get_state_should_return_current_when_data_version_equals_repository_version(self):
         self._mock_migratable_db.get_version.return_value = 1
         self._mock_migratable_db.get_upgrade_version.return_value = 1
-        self.assertEquals(DataState.CURRENT, self._installed_data.get_state())
+        self.assertEqual(DataState.CURRENT, self._installed_data.get_state())
 
     def test_get_state_should_return_fresh_when_data_version_unavailable(self):
         self._mock_migratable_db.is_versioned.return_value = False
         self._mock_version_provider.get_legacy_version.return_value = None
-        self.assertEquals(DataState.FRESH, self._installed_data.get_state())
+        self.assertEqual(DataState.FRESH, self._installed_data.get_state())
 
     def test_get_state_should_return_stale_when_data_version_less_than_repository_version(self):
         self._mock_migratable_db.get_version.return_value = 1
         self._mock_migratable_db.get_upgrade_version.return_value = 2
-        self.assertEquals(DataState.STALE, self._installed_data.get_state())
+        self.assertEqual(DataState.STALE, self._installed_data.get_state())
 
     def test_get_state_should_return_legacy_when_data_version_is_legacy(self):
         self._mock_migratable_db.is_versioned.return_value = False
         self._mock_version_provider.get_legacy_version.return_value = 1
-        self.assertEquals(DataState.LEGACY, self._installed_data.get_state())
+        self.assertEqual(DataState.LEGACY, self._installed_data.get_state())
 
     def test_get_state_should_raise_error_when_version_too_large(self):
         self._mock_migratable_db.is_versioned.return_value = True
@@ -77,11 +77,11 @@ class InstalledDataTest(unittest.TestCase):
             
     def test_get_available_version_returns_migratable_db_upgrade_version(self):
         self._mock_migratable_db.get_upgrade_version.return_value = 1
-        self.assertEquals(1, self._installed_data.get_available_version())
+        self.assertEqual(1, self._installed_data.get_available_version())
         
     def test_is_versioned_returns_migratable_db_is_versioned(self):
         self._mock_migratable_db.is_versioned.return_value = True
-        self.assertEquals(True, self._installed_data.is_versioned())
+        self.assertEqual(True, self._installed_data.is_versioned())
         
     def test_initialize_version_versions_migratable_db(self):
         self._installed_data.initialize_version(1)

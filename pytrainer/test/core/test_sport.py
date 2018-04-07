@@ -37,12 +37,12 @@ class SportTest(unittest.TestCase):
     
     def test_id_should_default_to_none(self):
         sport = Sport()
-        self.assertEquals(None, sport.id)
+        self.assertEqual(None, sport.id)
         
     def test_id_should_accept_integer(self):
         sport = Sport()
         sport.id = 1
-        self.assertEquals(1, sport.id)
+        self.assertEqual(1, sport.id)
         
     def test_id_should_accept_integer_string(self):
         sport = Sport()
@@ -50,7 +50,7 @@ class SportTest(unittest.TestCase):
         self.ddbb.session.add(sport)
         self.ddbb.session.commit()
         sport = self.ddbb.session.query(Sport).filter(Sport.id == 1).one()
-        self.assertEquals(1, sport.id)
+        self.assertEqual(1, sport.id)
         
     def test_id_should_not_accept_non_integer_string(self):
         if self.ddbb.engine.name == 'mysql':
@@ -67,12 +67,12 @@ class SportTest(unittest.TestCase):
             
     def test_name_should_default_to_empty_string(self):
         sport = Sport()
-        self.assertEquals(u"", sport.name)
+        self.assertEqual(u"", sport.name)
         
     def test_name_should_accept_unicode_string(self):
         sport = Sport()
         sport.name = u"Unicycling"
-        self.assertEquals(u"Unicycling", sport.name)
+        self.assertEqual(u"Unicycling", sport.name)
 
     @unittest.skipIf(sys.version_info > (3, 0), "All strings are unicode in Python 3")
     def test_name_should_not_accept_non_unicode_string(self):
@@ -101,14 +101,14 @@ class SportTest(unittest.TestCase):
             
     def test_met_should_default_to_None(self):
         sport = Sport()
-        self.assertEquals(None, sport.met)
+        self.assertEqual(None, sport.met)
         
     def test_met_should_accept_float(self):
         sport = Sport()
         sport.met = 22.5
         self.ddbb.session.add(sport)
         self.ddbb.session.flush()
-        self.assertEquals(22.5, sport.met)
+        self.assertEqual(22.5, sport.met)
         
     def test_met_should_accept_float_string(self):
         sport = Sport()
@@ -117,7 +117,7 @@ class SportTest(unittest.TestCase):
         self.ddbb.session.add(sport)
         self.ddbb.session.commit()
         sport = self.ddbb.session.query(Sport).filter(Sport.id == 1).one()
-        self.assertEquals(22.5, sport.met)
+        self.assertEqual(22.5, sport.met)
         
     def test_met_should_not_accept_non_float_string(self):
         if self.ddbb.engine.name == 'mysql':
@@ -148,23 +148,23 @@ class SportTest(unittest.TestCase):
     def test_met_should_accept_none(self):
         sport = Sport()
         sport.met = None
-        self.assertEquals(None, sport.met)
+        self.assertEqual(None, sport.met)
             
     def test_weight_should_default_to_zero(self):
         sport = Sport()
-        self.assertEquals(0, sport.weight)
+        self.assertEqual(0, sport.weight)
         
     def test_weight_should_accept_float(self):
         sport = Sport()
         sport.weight = 22.5
-        self.assertEquals(22.5, sport.weight)
+        self.assertEqual(22.5, sport.weight)
         
     def test_weight_should_accept_float_string(self):
         sport = Sport()
         sport.weight = "22.5"
         self.ddbb.session.add(sport)
         self.ddbb.session.commit()
-        self.assertEquals(22.5, sport.weight)
+        self.assertEqual(22.5, sport.weight)
         
     def test_weight_should_not_accept_non_float_string(self):
         if self.ddbb.engine.name == 'mysql':
@@ -205,21 +205,21 @@ class SportTest(unittest.TestCase):
             
     def test_max_pace_should_default_to_none(self):
         sport = Sport()
-        self.assertEquals(None, sport.max_pace)
+        self.assertEqual(None, sport.max_pace)
         
     def test_max_pace_should_accept_integer(self):
         sport = Sport()
         sport.max_pace = 220
         self.ddbb.session.add(sport)
         self.ddbb.session.flush()
-        self.assertEquals(220, sport.max_pace)
+        self.assertEqual(220, sport.max_pace)
         
     def test_max_pace_should_accept_integer_string(self):
         sport = Sport()
         sport.max_pace = "220"
         self.ddbb.session.add(sport)
         self.ddbb.session.commit()
-        self.assertEquals(220, sport.max_pace)
+        self.assertEqual(220, sport.max_pace)
         
     def test_max_pace_should_not_accept_non_integer_string(self):
         sport = Sport()
@@ -238,7 +238,7 @@ class SportTest(unittest.TestCase):
         self.ddbb.session.add(sport)
         self.ddbb.session.commit()
         sport = self.ddbb.session.query(Sport).filter(Sport.id == 1).one()
-        self.assertEquals(220, sport.max_pace)
+        self.assertEqual(220, sport.max_pace)
 
     def test_max_pace_should_not_accept_negative_value(self):
         if self.ddbb.engine.name == 'mysql':
@@ -256,11 +256,11 @@ class SportTest(unittest.TestCase):
     def test_max_pace_should_accept_none(self):
         sport = Sport()
         sport.max_pace = None
-        self.assertEquals(None, sport.max_pace)
+        self.assertEqual(None, sport.max_pace)
         
     def test_color_should_default_to_blue(self):
         sport = Sport()
-        self.assertEquals(0x0000ff, sport.color.rgb_val)
+        self.assertEqual(0x0000ff, sport.color.rgb_val)
         
     def test_color_should_not_accept_none(self):
         sport = Sport()
@@ -290,7 +290,7 @@ class SportServiceTest(unittest.TestCase):
         sport = Sport()
         sport.name = u"Test name"
         sport = self.sport_service.store_sport(sport)
-        self.assertEquals(1, sport.id)
+        self.assertEqual(1, sport.id)
 
     
     def test_store_sport_should_update_row_when_sport_has_id(self):
@@ -300,12 +300,12 @@ class SportServiceTest(unittest.TestCase):
         sport.name = u"New name"
         self.sport_service.store_sport(sport)
         sport = self.sport_service.get_sport(1)
-        self.assertEquals(sport.name, u"New name")
+        self.assertEqual(sport.name, u"New name")
         
     def test_store_sport_should_return_stored_sport(self):
         sport = Sport()
         stored_sport = self.sport_service.store_sport(sport)
-        self.assertEquals(1, stored_sport.id)
+        self.assertEqual(1, stored_sport.id)
     
     def test_store_sport_should_error_when_new_sport_has_duplicate_name(self):
         sport1 = Sport()
@@ -337,14 +337,14 @@ class SportServiceTest(unittest.TestCase):
     
     def test_get_sport_returns_none_for_nonexistant_sport(self):
         sport = self.sport_service.get_sport(1)
-        self.assertEquals(None, sport)
+        self.assertEqual(None, sport)
         
     def test_get_sport_returns_sport_with_id(self):
         sport = Sport()
         sport.name = u"Test name"
         self.sport_service.store_sport(sport)
         sport = self.sport_service.get_sport(1)
-        self.assertEquals(1, sport.id)
+        self.assertEqual(1, sport.id)
         
     def test_get_sport_raises_error_for_id_none(self):
         try:
@@ -356,14 +356,14 @@ class SportServiceTest(unittest.TestCase):
         
     def test_get_sport_by_name_returns_none_for_nonexistant_sport(self):
         sport = self.sport_service.get_sport_by_name("no such sport")
-        self.assertEquals(None, sport)
+        self.assertEqual(None, sport)
         
     def test_get_sport_by_name_returns_sport_with_name(self):
         sport1 = Sport()
         sport1.name = u"rugby"
         self.sport_service.store_sport(sport1)
         sport2 = self.sport_service.get_sport_by_name("rugby")
-        self.assertEquals(u"rugby", sport2.name)
+        self.assertEqual(u"rugby", sport2.name)
         
     def test_get_sport_by_name_raises_error_for_none_sport_name(self):
         try:
@@ -381,15 +381,15 @@ class SportServiceTest(unittest.TestCase):
         sport2.name = u"Test name 2"
         self.sport_service.store_sport(sport2)
         sports = self.sport_service.get_all_sports()
-        self.assertEquals(2, len(sports))
+        self.assertEqual(2, len(sports))
         sport1 = sports[0]
-        self.assertEquals(1, sport1.id)
+        self.assertEqual(1, sport1.id)
         sport2 = sports[1]
-        self.assertEquals(2, sport2.id)
+        self.assertEqual(2, sport2.id)
     
     def test_get_all_sports_should_return_no_sports_when_query_result_empty(self):
         sports = self.sport_service.get_all_sports()
-        self.assertEquals(0, len(sports))
+        self.assertEqual(0, len(sports))
         
     def test_remove_sport_should_error_when_sport_has_no_id(self):
         sport = Sport()
@@ -416,4 +416,4 @@ class SportServiceTest(unittest.TestCase):
         sport = self.sport_service.store_sport(sport)
         self.sport_service.remove_sport(sport)
         result = self.sport_service.get_sport(1)
-        self.assertEquals(result, None)
+        self.assertEqual(result, None)

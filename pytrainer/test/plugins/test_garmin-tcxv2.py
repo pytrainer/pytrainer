@@ -37,4 +37,4 @@ class GarminTCXv2PluginTest(unittest.TestCase):
         self.assertTrue(self.plugin.inDatabase(self.activity))
 
     def test_detailsFromTCX(self):
-        self.assertEquals(self.plugin.detailsFromTCX(self.activity), '2012-10-14T10:02:42.000Z')
+        self.assertEqual(self.plugin.detailsFromTCX(self.activity), '2012-10-14T10:02:42.000Z')

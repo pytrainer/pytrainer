@@ -37,33 +37,33 @@ class Test(unittest.TestCase):
         del(Environment.self)
 
     def test_get_conf_dir(self):
-        self.assertEquals(TEST_DIR_NAME, self.environment.conf_dir)
+        self.assertEqual(TEST_DIR_NAME, self.environment.conf_dir)
 
     def test_get_data_path(self):
-        self.assertEquals(DATA_DIR_NAME, self.environment.data_path)
+        self.assertEqual(DATA_DIR_NAME, self.environment.data_path)
 
     def test_environment_singleton(self):
         self.environment = Environment()
-        self.assertEquals(TEST_DIR_NAME, self.environment.conf_dir)
-        self.assertEquals(DATA_DIR_NAME, self.environment.data_path)
+        self.assertEqual(TEST_DIR_NAME, self.environment.conf_dir)
+        self.assertEqual(DATA_DIR_NAME, self.environment.data_path)
         
     def test_get_conf_file(self):
-        self.assertEquals(TEST_DIR_NAME + "/conf.xml", self.environment.conf_file)
+        self.assertEqual(TEST_DIR_NAME + "/conf.xml", self.environment.conf_file)
 
     def test_get_log_file(self):
-        self.assertEquals(TEST_DIR_NAME + "/log.out", self.environment.log_file)
+        self.assertEqual(TEST_DIR_NAME + "/log.out", self.environment.log_file)
 
     def test_get_temp_dir(self):
-        self.assertEquals(TEST_DIR_NAME + "/tmp", self.environment.temp_dir)
+        self.assertEqual(TEST_DIR_NAME + "/tmp", self.environment.temp_dir)
 
     def test_get_gpx_dir(self):
-        self.assertEquals(TEST_DIR_NAME + "/gpx", self.environment.gpx_dir)
+        self.assertEqual(TEST_DIR_NAME + "/gpx", self.environment.gpx_dir)
 
     def test_get_extension_dir(self):
-        self.assertEquals(TEST_DIR_NAME + "/extensions", self.environment.extension_dir)
+        self.assertEqual(TEST_DIR_NAME + "/extensions", self.environment.extension_dir)
 
     def test_get_plugin_dir(self):
-        self.assertEquals(TEST_DIR_NAME + "/plugins", self.environment.plugin_dir)
+        self.assertEqual(TEST_DIR_NAME + "/plugins", self.environment.plugin_dir)
         
 
 if __name__ == "__main__":

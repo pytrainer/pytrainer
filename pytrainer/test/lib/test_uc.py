@@ -23,10 +23,10 @@ from pytrainer.lib.uc import *
 class UCUtilTest(unittest.TestCase):
 
     def test_uc_pace2float(self):
-        self.assertEquals(4.1, pace2float('4:06'))
+        self.assertEqual(4.1, pace2float('4:06'))
 
     def test_uc_float2pace(self):
-        self.assertEquals('4:06', float2pace(4.1))
+        self.assertEqual('4:06', float2pace(4.1))
 
 class UCTest(unittest.TestCase):
 
@@ -38,27 +38,27 @@ class UCTest(unittest.TestCase):
         self.uc = None
 
     def test_uc_units(self):
-        self.assertEquals(self.uc.unit_distance, "km")
-        self.assertEquals(self.uc.unit_speed, "km/h")
-        self.assertEquals(self.uc.unit_pace, "min/km")
-        self.assertEquals(self.uc.unit_height, "m")
-        self.assertEquals(self.uc.unit_weight, "kg")
+        self.assertEqual(self.uc.unit_distance, "km")
+        self.assertEqual(self.uc.unit_speed, "km/h")
+        self.assertEqual(self.uc.unit_pace, "min/km")
+        self.assertEqual(self.uc.unit_height, "m")
+        self.assertEqual(self.uc.unit_weight, "kg")
         self.uc.set_us(True)
-        self.assertEquals(self.uc.unit_distance, "mi")
-        self.assertEquals(self.uc.unit_speed, "mph")
-        self.assertEquals(self.uc.unit_pace, "min/mi")
-        self.assertEquals(self.uc.unit_height, "ft")
-        self.assertEquals(self.uc.unit_weight, "lb")
+        self.assertEqual(self.uc.unit_distance, "mi")
+        self.assertEqual(self.uc.unit_speed, "mph")
+        self.assertEqual(self.uc.unit_pace, "min/mi")
+        self.assertEqual(self.uc.unit_height, "ft")
+        self.assertEqual(self.uc.unit_weight, "lb")
 
     def test_uc_conversions(self):
-        self.assertEquals(self.uc.distance(10), 10)
-        self.assertEquals(self.uc.speed(10), 10)
-        self.assertEquals(self.uc.pace(10), 10)
-        self.assertEquals(self.uc.height(10), 10)
-        self.assertEquals(self.uc.weight(10), 10)
+        self.assertEqual(self.uc.distance(10), 10)
+        self.assertEqual(self.uc.speed(10), 10)
+        self.assertEqual(self.uc.pace(10), 10)
+        self.assertEqual(self.uc.height(10), 10)
+        self.assertEqual(self.uc.weight(10), 10)
         self.uc.set_us(True)
-        self.assertEquals(self.uc.distance(10), 6.21371192)
-        self.assertEquals(self.uc.speed(10), 6.21371192)
-        self.assertEquals(self.uc.pace(10), 16.09344)
-        self.assertEquals(self.uc.height(10), 32.808399)
-        self.assertEquals(self.uc.weight(10), 22.046239999999997)
+        self.assertEqual(self.uc.distance(10), 6.21371192)
+        self.assertEqual(self.uc.speed(10), 6.21371192)
+        self.assertEqual(self.uc.pace(10), 16.09344)
+        self.assertEqual(self.uc.height(10), 32.808399)
+        self.assertEqual(self.uc.weight(10), 22.046239999999997)

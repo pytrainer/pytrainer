@@ -29,9 +29,9 @@ class ColorConverterTest(unittest.TestCase):
     def test_convert_to_gdk_color_should_create_gdk_color_with_equivalent_rgb_values(self):
         color = Color(0xaaff33)
         gdk_color = self._converter.convert_to_gdk_color(color)
-        self.assertEquals(0x3333, gdk_color.blue)
-        self.assertEquals(0xffff, gdk_color.green)
-        self.assertEquals(0xaaaa, gdk_color.red)
+        self.assertEqual(0x3333, gdk_color.blue)
+        self.assertEqual(0xffff, gdk_color.green)
+        self.assertEqual(0xaaaa, gdk_color.red)
         
     def test_convert_to_color_should_create_color_with_equivalent_rgb_values(self):
         gdk_col = Gdk.color_parse("#aaff33")

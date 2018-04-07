@@ -47,7 +47,7 @@ class GpxTest(unittest.TestCase):
             gpx = Gpx(None, None) # avoid launching _getValues
             gpx.tree = etree.ElementTree(file = xml_file).getroot()
             gpx_laps = gpx.getLaps()
-            self.assertEquals(orig_laps, gpx_laps)
+            self.assertEqual(orig_laps, gpx_laps)
         except():
             self.fail()
 
@@ -69,7 +69,7 @@ class GpxTest(unittest.TestCase):
             gpx = Gpx(None, None) # avoid launching _getValues
             gpx.tree = etree.ElementTree(file = xml_file).getroot()
             gpx_laps = gpx.getLaps()
-            self.assertEquals(orig_laps, gpx_laps)
+            self.assertEqual(orig_laps, gpx_laps)
         except():
             self.fail()
 
