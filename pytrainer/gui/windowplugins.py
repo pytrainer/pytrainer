@@ -20,6 +20,7 @@ from SimpleGladeApp import SimpleBuilderApp
 import gtk
 import gobject
 import os
+from pytrainer.lib.localization import gtk_str
 
 class WindowPlugins(SimpleBuilderApp):
     def __init__(self, data_path = None, parent=None):
@@ -110,7 +111,7 @@ class WindowPlugins(SimpleBuilderApp):
         i = 0
         for pref in prefs:
             try:
-                savedOptions.append((pref[0],self.entryList[i].get_text()))
+                savedOptions.append((pref[0], gtk_str(self.entryList[i].get_text())))
             except:
                 combobox = self.entryList[i]
                 index = combobox.get_active()

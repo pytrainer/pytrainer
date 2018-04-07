@@ -112,14 +112,14 @@ class Record:
         sport = self._get_sport(list_options["rcd_sport"])
         if not sport:
             sport = Sport(name=list_options["rcd_sport"])
-        record.title = unicode(list_options["rcd_title"])
+        record.title = list_options["rcd_title"]
         record.beats = self.parseFloatRecord(list_options["rcd_beats"])
         record.pace = self.pace_to_float(list_options["rcd_pace"])
         record.maxbeats = self.parseFloatRecord(list_options["rcd_maxbeats"])
         record.distance = self.parseFloatRecord(list_options["rcd_distance"])
         record.average = self.parseFloatRecord(list_options["rcd_average"])
         record.calories = self.parseFloatRecord(list_options["rcd_calories"])
-        record.comments = unicode(list_options["rcd_comments"])
+        record.comments = list_options["rcd_comments"]
         record.date = datetime.datetime.strptime(list_options["date_time_utc"],
                                                  "%Y-%m-%dT%H:%M:%SZ").date()
         record.unegative = self.parseFloatRecord(list_options["rcd_unegative"])

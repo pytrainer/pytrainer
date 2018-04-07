@@ -15,6 +15,7 @@ from json import dumps, loads       #   for deserializing JSON data form javascr
 
 from pytrainer.extensions.mapviewer import MapViewer
 from pytrainer.extensions.osm import Osm
+from pytrainer.lib.localization import gtk_str
 
 class openstreetmap:
     def __init__(self, parent = None, pytrainer_main = None, conf_dir = None, options = None):
@@ -167,12 +168,12 @@ class openstreetmap:
     def on_options_ok_clicked(self, widget, response_id):
         if not response_id == gtk.RESPONSE_ACCEPT:
             return response_id
-        self.description = self.entryList[0].get_text()
+        self.description = gtk_str(self.entryList[0].get_text())
         if self.description == "":
             logging.debug("A description is required - setting to default")
             self.description = "Uploaded from pytrainer"
-        self.tags = self.entryList[1].get_text()
-        self.visibility = self.entryList[2].get_active_text()
+        self.tags = gtk_str(self.entryList[1].get_text())
+        self.visibility = gtk_str(self.entryList[2].get_active_text())
         self.makeanon = self.entryList[3].get_active()
         logging.debug("Description: %s, tags: %s, visibility: %s, makeanon: %s" % ( self.description, self.tags, self.visibility, self.makeanon) )
 

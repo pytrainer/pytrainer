@@ -47,6 +47,7 @@ from pytrainer.gui.windowcalendar import WindowCalendar
 from pytrainer.lib.listview import ListSearch
 from pytrainer.lib.uc import UC
 from pytrainer.core.activity import Activity
+from pytrainer.lib.localization import gtk_str
 from sqlalchemy import and_
 
 
@@ -1333,7 +1334,7 @@ class Main(SimpleBuilderApp):
             _("Average"):"average",
             _("Calories"):"calories"
             }
-        self.listsearch.title = self.lsa_searchvalue.get_text()
+        self.listsearch.title = gtk_str(self.lsa_searchvalue.get_text())
         self.listsearch.sport = self.lsa_sport.get_active()
         self.listsearch.past = self.lsa_past.get_active()
         self.listsearch.duration = self.lsa_duration.get_active()
@@ -1523,12 +1524,12 @@ class Main(SimpleBuilderApp):
             #Setting to limits in boxes
             logging.debug("Setting graph limits...")
             #Determine contents of boxes...
-            xmin = self._float_or(data['xminlabel'].get_text(), activity.x_limits[0])
-            xmax = self._float_or(data['xmaxlabel'].get_text(), activity.x_limits[1])
-            y1min = self._float_or(data['y1minlabel'].get_text(), activity.y1_limits[0])
-            y1max = self._float_or(data['y1maxlabel'].get_text(), activity.y1_limits[1])
-            y2min = self._float_or(data['y2minlabel'].get_text(), activity.y2_limits[0])
-            y2max = self._float_or(data['y2maxlabel'].get_text(), activity.y2_limits[1])
+            xmin = self._float_or(gtk_str(data['xminlabel'].get_text()), activity.x_limits[0])
+            xmax = self._float_or(gtk_str(data['xmaxlabel'].get_text()), activity.x_limits[1])
+            y1min = self._float_or(gtk_str(data['y1minlabel'].get_text()), activity.y1_limits[0])
+            y1max = self._float_or(gtk_str(data['y1maxlabel'].get_text()), activity.y1_limits[1])
+            y2min = self._float_or(gtk_str(data['y2minlabel'].get_text()), activity.y2_limits[0])
+            y2max = self._float_or(gtk_str(data['y2maxlabel'].get_text()), activity.y2_limits[1])
             logging.debug("Setting graph limits x: (%s,%s), y1: (%s,%s), y2: (%s,%s)" % (str(xmin), str(xmax), str(y1min), str(y1max), str(y2min), str(y2max)) )
             activity.x_limits_u = (xmin, xmax)
             activity.y1_limits_u = (y1min, y1max)
@@ -1649,8 +1650,8 @@ class Main(SimpleBuilderApp):
 
     def on_sportlist_changed(self,widget):
         logging.debug("--")
-        if self.sportlist.get_active_text() != self.activeSport:
-            self.activeSport = self.sportlist.get_active_text()
+        if gtk_str(self.sportlist.get_active_text()) != self.activeSport:
+            self.activeSport = gtk_str(self.sportlist.get_active_text())
             self.parent.refreshListRecords()
             self.parent.refreshGraphView(self.selected_view)
         else:
@@ -1928,7 +1929,7 @@ class Main(SimpleBuilderApp):
     def getSportSelected(self):
         sport = self.sportlist.get_active()
         if (sport > 0):
-            return self.sportlist.get_active_text()
+            return gtk_str(self.sportlist.get_active_text())
         else:
             return None
 
@@ -2079,11 +2080,11 @@ class Main(SimpleBuilderApp):
         #dialog.destroy()
         if response == gtk.RESPONSE_ACCEPT:
             #print "on_athleteTreeView_edit save called", data
-            data['date'] = self.entryList[0].get_text()
-            data['weight'] = self.entryList[1].get_text()
-            data['bf'] = self.entryList[2].get_text()
-            data['restingHR'] = self.entryList[3].get_text()
-            data['maxHR'] = self.entryList[4].get_text()
+            data['date'] = gtk_str(self.entryList[0].get_text())
+            data['weight'] = gtk_str(self.entryList[1].get_text())
+            data['bf'] = gtk_str(self.entryList[2].get_text())
+            data['restingHR'] = gtk_str(self.entryList[3].get_text())
+            data['maxHR'] = gtk_str(self.entryList[4].get_text())
             self.on_athleteSave(data)
             logging.debug('Athlete data saved: %s' % str(data))
         dialog.destroy()
@@ -2147,11 +2148,11 @@ class Main(SimpleBuilderApp):
     def on_savewaypoint_clicked(self,widget):
         selected,iter = self.waypointTreeView.get_selection().get_selected()
         id_waypoint = selected.get_value(iter,0)
-        lat = self.waypoint_latitude.get_text()
-        lon = self.waypoint_longitude.get_text()
-        name = self.waypoint_name.get_text()
-        desc = self.waypoint_description.get_text()
-        sym = self.waypoint_type.get_active_text()
+        lat = gtk_str(self.waypoint_latitude.get_text())
+        lon = gtk_str(self.waypoint_longitude.get_text())
+        name = gtk_str(self.waypoint_name.get_text())
+        desc = gtk_str(self.waypoint_description.get_text())
+        sym = gtk_str(self.waypoint_type.get_active_text())
         self.parent.updateWaypoint(id_waypoint,lat,lon,name,desc,sym)
 
     def on_removewaypoint_clicked(self,widget):

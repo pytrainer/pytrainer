@@ -33,3 +33,15 @@ def locale_str(string):
         return string.decode(encoding)
     else:
         return string
+
+def gtk_str(string):
+    """On Python 2 GTK returns all strings as UTF-8 encoded str. See
+https://python-gtk-3-tutorial.readthedocs.io/en/latest/unicode.html for
+more details."""
+    if sys.version_info[0] == 2:
+        if string is None:
+            return None
+        else:
+            return string.decode('utf-8')
+    else:
+        return string

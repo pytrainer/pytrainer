@@ -14,6 +14,8 @@ from pytrainer.plugins import Plugins
 from pytrainer.gui.dialogs import fileChooserDialog
 from pytrainer.lib.date import getDateTime
 from pytrainer.core.activity import Activity
+from pytrainer.lib.localization import gtk_str
+
 
 class WindowImportdata(SimpleBuilderApp):
     def __init__(self, sport_service, data_path = None, parent=None, config=None, pytrainer_main=None):
@@ -566,7 +568,7 @@ class WindowImportdata(SimpleBuilderApp):
         i = 0
         for pref in prefs:
             try:
-                savedOptions.append((pref[0],self.entryList[i].get_text()))
+                savedOptions.append((pref[0], gtk_str(self.entryList[i].get_text())))
             except:
                 combobox = self.entryList[i]
                 index = combobox.get_active()
@@ -770,7 +772,7 @@ class WindowImportdata(SimpleBuilderApp):
         elif self.rbCSVComma.get_active():
             self.delimiter = ","
         elif self.rbCSVOther.get_active():
-            self.delimiter = self.entryCSVOther.get_text()
+            self.delimiter = gtk_str(self.entryCSVOther.get_text())
         else:
             self.delimiter = " "
 
@@ -912,7 +914,8 @@ class WindowImportdata(SimpleBuilderApp):
                 except:
                     pass
             if self.checkbCSVForceSport.get_active():
-                sport = self.pytrainer_main.record.getSport(self.comboCSVForceSport.get_active_text(),add=True)
+                sport = self.pytrainer_main.record.getSport(
+                    gtk_str(self.comboCSVForceSport.get_active_text()), add=True)
                 data.sport = sport
             elif sportCol:
                 #retrieving sport id (adding sport if it doesn't exist yet)
@@ -920,7 +923,8 @@ class WindowImportdata(SimpleBuilderApp):
                 data.sport = sport
             else:
                 self.comboCSVForceSport.set_active(0)
-                sport = self.pytrainer_main.record.getSport(self.comboCSVForceSport.get_active_text(),add=True)
+                sport = self.pytrainer_main.record.getSport(
+                    gtk_str(self.comboCSVForceSport.get_active_text()), add=True)
                 data.sport = sport
 
             if avgspeedCol:

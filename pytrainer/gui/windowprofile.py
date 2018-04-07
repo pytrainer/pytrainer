@@ -28,6 +28,7 @@ import logging
 import pytrainer
 import pytrainer.util.color
 from pytrainer.gui.color import ColorConverter
+from pytrainer.lib.localization import gtk_str
 
 class WindowProfile(SimpleBuilderApp):
     def __init__(self, sport_service, data_path = None, parent=None, pytrainer_main=None):
@@ -160,9 +161,9 @@ class WindowProfile(SimpleBuilderApp):
                     else:
                         list_options[i] = "False"
                 elif i == "prf_gender" or i == "prf_ddbb":
-                    list_options[i] = var.get_active_text()
+                    list_options[i] = gtk_str(var.get_active_text())
                 else:
-                    list_options[i] = var.get_text()
+                    list_options[i] = gtk_str(var.get_text())
             logging.info("Saving %s as %s" % (i, list_options[i]))
         logging.info("Updating profile...")
         self.parent.setProfile(list_options)
@@ -295,7 +296,7 @@ class WindowProfile(SimpleBuilderApp):
         self.prf_ddbbpass.set_sensitive(0)
 
     def on_prf_ddbb_changed(self,widget):
-        i = self.prf_ddbb.get_active_text()
+        i = gtk_str(self.prf_ddbb.get_active_text())
         if i == "sqlite":
             self._ddbb_value_deactive()
         else:
@@ -308,10 +309,10 @@ class WindowProfile(SimpleBuilderApp):
 
     def on_newsport_accept_clicked(self,widget):
         sport = Sport()
-        sport.name = unicode(self.newsportentry.get_text())
-        sport.met = self._trim_to_null(self.newmetentry.get_text())
-        sport.weight = self._float_or_zero(self.newweightentry.get_text())
-        sport.max_pace = self._trim_to_null(self.newmaxpace.get_text())
+        sport.name = gtk_str(self.newsportentry.get_text())
+        sport.met = self._trim_to_null(gtk_str(self.newmetentry.get_text()))
+        sport.weight = self._float_or_zero(gtk_str(self.newweightentry.get_text()))
+        sport.max_pace = self._trim_to_null(gtk_str(self.newmaxpace.get_text()))
         sport.color = self.stored_color
         if sport.name.lower() in [s.name.lower() for s in self._sport_service.get_all_sports()]:
             msg = "Sport '%s' already exists" % sport.name
@@ -338,7 +339,7 @@ class WindowProfile(SimpleBuilderApp):
             self.deletesport.show()
 
     def on_deletesport_clicked(self,widget):
-        sport_name = self.sportnamedel.get_text()
+        sport_name = gtk_str(self.sportnamedel.get_text())
         sport = self._sport_service.get_sport_by_name(sport_name)
         self._sport_service.remove_sport(sport)
         self.pytrainer_main.refreshMainSportList()
@@ -388,12 +389,12 @@ class WindowProfile(SimpleBuilderApp):
         self.on_editsport_clicked(None)
     
     def on_editsport_accept_clicked(self,widget):
-        oldnamesport = self.sportnameedit.get_text()
+        oldnamesport = gtk_str(self.sportnameedit.get_text())
         sport = self._sport_service.get_sport_by_name(oldnamesport)
-        sport.name = unicode(self.editsportentry.get_text())
-        sport.weight = self._float_or_zero(self.editweightentry.get_text())
-        sport.met = self._trim_to_null(self.editmetentry.get_text())
-        sport.max_pace = self._trim_to_null(self.editmaxpace.get_text())
+        sport.name = gtk_str(self.editsportentry.get_text())
+        sport.weight = self._float_or_zero(gtk_str(self.editweightentry.get_text()))
+        sport.met = self._trim_to_null(gtk_str(self.editmetentry.get_text()))
+        sport.max_pace = self._trim_to_null(gtk_str(self.editmaxpace.get_text()))
         sport.color = self.stored_color
         self._sport_service.store_sport(sport)
         self.pytrainer_main.refreshMainSportList()
@@ -423,7 +424,7 @@ class WindowProfile(SimpleBuilderApp):
         import datetime
         today = "%s"%datetime.date.today()
         year1,month1,day1 = today.split("-")
-        year2,month2,day2 = self.prf_age.get_text().split("-")
+        year2,month2,day2 = gtk_str(self.prf_age.get_text()).split("-")
         diff = datetime.datetime(int(year1), int(month1), int(day1),0,0,0) - datetime.datetime(int(year2), int(month2), int(day2),0,0,0)
         self.prf_maxhr.set_text("%d" %(220-int(diff.days/365)))
 
