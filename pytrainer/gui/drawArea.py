@@ -193,7 +193,7 @@ class DrawArea:
         else: #Error
             return
 
-        keys = yvalues[0].keys() # days of the week
+        keys = list(yvalues[0].keys()) # days of the week
         numRows = len(keys)
         numCols = len(xvalues[0])
         if numRows == 0:
@@ -253,7 +253,7 @@ class DrawArea:
         if len(xvalues) == 2:
             self.showGraph=False
             ax2 = axis.twinx()
-            keys = yvalues[1].keys()
+            keys = list(yvalues[1].keys())
             ybottoms = [0] * numCols
             yheights = [self.NEARLY_ZERO] * numCols
             for key in keys:

@@ -203,7 +203,7 @@ class Gpx:
                 if num_elements > 0:
                     if num_elements == 1: # old _non compliant_ pytrainer estructure
                         #logging.debug("lap_summary[0]: %s" % etree.tostring(lap_summary[0]))
-                        for key in summary_dict.keys():
+                        for key in list(summary_dict.keys()):
                             summary_dict[key] = lap_summary[0].findtext(mainNS.substitute(tag=key))
                             logging.debug("%s: %s" % (key, summary_dict[key]))
                     else:

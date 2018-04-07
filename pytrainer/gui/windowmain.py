@@ -675,11 +675,8 @@ class Main(SimpleBuilderApp):
                     data = activity.time_data
                 else:
                     logging.error("x axis is unknown")
-                #Sort data
-                keys = data.keys()
-                keys.sort()
                 #Populate Y axis data
-                for graphdata in keys:
+                for graphdata in sorted(data.keys()):
                     #First Y axis...
                     #Create button
                     y1button = Gtk.CheckButton(label=data[graphdata].title)
@@ -835,9 +832,7 @@ class Main(SimpleBuilderApp):
             GObject.TYPE_STRING,       #time
             )
 
-        ds = DISTANCES.keys()
-        ds = sorted(ds)
-        for d in ds:
+        for d in sorted(DISTANCES.keys()):
             v = DISTANCES[d]
             iter = projected_store.append()
             projected_store.set (
