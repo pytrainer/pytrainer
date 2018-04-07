@@ -244,7 +244,7 @@ class Profile(Singleton):
         if self.xml_tree is None:
             #new config file....
             self.xml_tree = etree.parse(BytesIO(b'''<?xml version='1.0' encoding='UTF-8'?><pytraining />'''))
-        self.xml_tree.getroot().set(variable, value.decode('utf-8'))
+        self.xml_tree.getroot().set(variable, value)
         if not delay_write:
             self.saveProfile()
         logging.debug("<<")
