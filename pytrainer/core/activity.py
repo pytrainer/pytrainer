@@ -473,7 +473,7 @@ tracks (%s)
         self.time_data['speed_lap'].set_color('#336633', '#336633')
         self.time_data['speed_lap'].graphType = "bar"
         for lap in self.laps:
-            time = float(lap['elapsed_time'].decode('utf-8')) # time in sql is a unicode string
+            time = float(lap['elapsed_time']) # time in sql is a unicode string
             dist = lap['distance']/1000 #distance in km
             try:
                 pace = time/(60*dist) #min/km
