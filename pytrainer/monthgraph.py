@@ -18,7 +18,7 @@
 
 import dateutil
 import datetime
-from timegraph import TimeGraph
+from .timegraph import TimeGraph
 
 class MonthGraph(TimeGraph):
 

@@ -85,7 +85,7 @@ class WaypointService(object):
 
     def actualize_fromgpx(self,gpxfile):
         logging.debug(">>")
-        from lib.gpx import Gpx
+        from .lib.gpx import Gpx
         gpx = Gpx(self.data_path,gpxfile)
         tracks = gpx.getTrackRoutes()
 
@@ -95,7 +95,7 @@ class WaypointService(object):
             self._actualize_fromgpx(gpx)
         else:
             msg = _("The gpx file seems to be a several days records. Perhaps you will need to edit your gpx file")
-            from gui.warning import Warning
+            from .gui.warning import Warning
             warning = Warning(self.data_path,self._actualize_fromgpx,[gpx])
             warning.set_text(msg)
             warning.run()

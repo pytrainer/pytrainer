@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from SimpleGladeApp import SimpleBuilderApp
+from .SimpleGladeApp import SimpleBuilderApp
 from gi.repository import Gtk
 from gi.repository import GObject
 import os, glob, sys

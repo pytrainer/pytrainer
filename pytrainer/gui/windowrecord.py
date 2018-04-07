@@ -21,8 +21,8 @@ import os
 import logging
 import traceback
 from gi.repository import Gtk, GObject
-from SimpleGladeApp import SimpleBuilderApp
-from windowcalendar import WindowCalendar
+from .SimpleGladeApp import SimpleBuilderApp
+from .windowcalendar import WindowCalendar
 
 from pytrainer.lib.date import getLocalTZ, time2second
 import dateutil.parser

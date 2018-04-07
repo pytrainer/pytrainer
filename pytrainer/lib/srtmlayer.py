@@ -7,7 +7,7 @@ from math import floor, ceil
 from osgeo import gdal, gdalnumeric
 
 from pytrainer.lib.srtmtiff import SrtmTiff
-import srtmdownload
+from . import srtmdownload
 
 class SrtmLayer(object):
     """

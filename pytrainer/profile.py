@@ -23,9 +23,9 @@ from io import BytesIO
 from gettext import gettext as _
 
 from lxml import etree
-from environment import Environment
+from .environment import Environment
 from pytrainer.lib.singleton import Singleton
-from lib.uc import UC
+from .lib.uc import UC
 
 class Profile(Singleton):
     def __init__(self):

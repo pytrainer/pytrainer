@@ -28,9 +28,9 @@ from gi.repository import GdkPixbuf
 
 import dateutil.parser
 
-from SimpleGladeApp import SimpleBuilderApp
-from popupmenu import PopupMenu
-from aboutdialog import About
+from .SimpleGladeApp import SimpleBuilderApp
+from .popupmenu import PopupMenu
+from .aboutdialog import About
 
 import pytrainer.record
 from pytrainer.lib.date import Date, second2time

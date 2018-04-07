@@ -19,9 +19,9 @@
 import os, sys
 import logging
 
-from lib.xmlUtils import XMLParser
+from .lib.xmlUtils import XMLParser
 
-from gui.windowextensions import WindowExtensions
+from .gui.windowextensions import WindowExtensions
 
 class Extension:
 	def __init__(self, data_path = None, parent = None):

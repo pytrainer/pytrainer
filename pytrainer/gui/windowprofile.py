@@ -17,8 +17,8 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from __future__ import division
-from SimpleGladeApp import SimpleBuilderApp
-from windowcalendar import WindowCalendar
+from .SimpleGladeApp import SimpleBuilderApp
+from .windowcalendar import WindowCalendar
 from pytrainer.core.equipment import EquipmentService
 from pytrainer.gui.equipment import EquipmentUi
 from pytrainer.core.sport import Sport
