@@ -26,3 +26,10 @@ def initialize_gettext(gettext_path):
         gettext.install("pytrainer", gettext_path, unicode=1)
     else:
         gettext.install("pytrainer", gettext_path)
+
+def locale_str(string):
+    if sys.version_info[0] == 2:
+        lcname, encoding=locale.getlocale()
+        return string.decode(encoding)
+    else:
+        return string

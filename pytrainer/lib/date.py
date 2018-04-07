@@ -26,6 +26,7 @@ from dateutil.tz import tzutc, tzlocal
 import logging
 
 from pytrainer.platform import get_platform
+from pytrainer.lib.localization import locale_str
 
 def second2time(seconds):
     if not seconds:
@@ -49,7 +50,7 @@ def time2string(date):
 
 def getNameMonth(date):
     day, daysInMonth = calendar.monthrange(date.year, date.month)
-    monthName = calendar.month_name[date.month]
+    monthName = locale_str(calendar.month_name[date.month])
     return monthName, daysInMonth
 
 def unixtime2date(unixtime):

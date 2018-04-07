@@ -18,7 +18,8 @@
 
 import calendar
 import datetime
-from timegraph import TimeGraph
+from pytrainer.timegraph import TimeGraph
+from pytrainer.lib.localization import locale_str
 
 class YearGraph(TimeGraph):
 
@@ -118,7 +119,7 @@ class YearGraph(TimeGraph):
         xunits = []
         yunits = []
         for i in range (0,monthsnumber):
-            xunits.append(unicode(calendar.month_abbr[i+1]))
+            xunits.append(locale_str(calendar.month_abbr[i+1]))
             yunits.append(float(0))
         for value in list_values:
             if ((value_selected == 0) or (value_selected==1) or (value_selected==4)):

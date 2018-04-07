@@ -18,7 +18,8 @@
 
 import datetime
 import logging
-from gui.drawArea import DrawArea
+from pytrainer.gui.drawArea import DrawArea
+from pytrainer.lib.localization import locale_str
 
 class TimeGraph(object):
     def __init__(self, sports, vbox = None, window = None, combovalue = None, combovalue2 = None, main = None):
@@ -55,7 +56,7 @@ class TimeGraph(object):
 
         for record in values:
             if record.date:
-                day = unicode(record.date.strftime(key_format)) # Gives year for this record
+                day = locale_str(record.date.strftime(key_format)) # Gives year for this record
                 sport = record.sport.name
                 value = self.getValue(record, value_selected)
                 if sport in valueDict: #Already got this sport
