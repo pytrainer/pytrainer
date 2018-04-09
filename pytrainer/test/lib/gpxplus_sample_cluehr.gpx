@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<gpx xmlns="http://www.topografix.com/GPX/1/1" xmlns:gpxdata="http://www.cluetrust.com/XML/GPXDATA/1/0" xmlns:t="http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2" creator="pytrainer http://sourceforge.net/projects/pytrainer" version="1.1">
+<metadata>
+<name>Evening Ride</name>
+<link href="http://sourceforge.net/projects/pytrainer"/>
+<time>2018-03-25T19:13:17+02:00</time>
+</metadata>
+<trk>
+<name>Evening Ride</name>
+<trkseg>
+<trkpt lat="37.3012000" lon="12.3456789">
+<ele>497.4</ele>
+<time>2018-03-25T19:13:17+02:00</time>
+<extensions>
+<gpxdata:hr>76</gpxdata:hr>
+</extensions>
+</trkpt>
+<trkpt lat="37.3012050" lon="12.3466789">
+<ele>497.5</ele>
+<time>2018-03-25T19:13:18+02:00</time>
+<extensions>
+<gpxdata:hr>78</gpxdata:hr>
+</extensions>
+</trkpt>
+<trkpt lat="37.3012000" lon="12.3476789">
+<ele>498.0</ele>
+<time>2018-03-25T19:13:19+02:00</time>
+<extensions>
+<gpxdata:hr>80</gpxdata:hr>
+</extensions>
+</trkpt>
+<trkpt lat="37.3012090" lon="12.3486789">
+<ele>499.0</ele>
+<time>2018-03-25T19:13:20+02:00</time>
+<extensions>
+<gpxdata:hr>79</gpxdata:hr>
+</extensions>
+</trkpt>
+<trkpt lat="37.3012000" lon="12.3496789">
+<ele>500.0</ele>
+<time>2018-03-25T19:13:21+02:00</time>
+<extensions>
+<gpxdata:hr>83</gpxdata:hr>
+</extensions>
+</trkpt>
+
+</trkseg>
+</trk>
+
+<extensions>
+<gpxdata:lap>
+<gpxdata:index>1</gpxdata:index>
+<gpxdata:startPoint lat="37.3012000" lon="12.3456789"/>
+<gpxdata:endPoint lat="37.3012000" lon="12.3496789"/>
+<gpxdata:startTime>2018-03-25T19:13:17+02:00</gpxdata:startTime>
+<gpxdata:elapsedTime>4.0</gpxdata:elapsedTime>
+<gpxdata:calories>0</gpxdata:calories>
+<gpxdata:distance>354.16037011805446</gpxdata:distance>
+<gpxdata:summary name="MaximumSpeed" kind="max">318.7466890419602</gpxdata:summary>
+<gpxdata:summary name="AverageHeartRateBpm" kind="avg">79</gpxdata:summary>
+<gpxdata:summary name="MaximumHeartRateBpm" kind="max">83</gpxdata:summary>
+<gpxdata:trigger kind="manual"/>
+<gpxdata:intensity>active</gpxdata:intensity>
+</gpxdata:lap>
+</extensions>
+</gpx>

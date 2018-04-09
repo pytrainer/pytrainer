@@ -177,20 +177,22 @@ class Gpx:
         else:
             for lap in laps:
                 endPoint = lap.find(endPointTag)
-                lat = endPoint.get("lat")
-                lon = endPoint.get("lon")
+                lat = float(endPoint.get("lat"))
+                lon = float(endPoint.get("lon"))
                 startPoint = lap.find(startPointTag)
                 if startPoint is not None:
-                    stLat = startPoint.get("lat")
-                    stLon = startPoint.get("lon")
+                    stLat = float(startPoint.get("lat"))
+                    stLon = float(startPoint.get("lon"))
                 else:
                     stLat, stLon = None, None
                 elapsedTime = lap.findtext(elapsedTimeTag)
                 if elapsedTime.count(":") == 2: # got a 0:41:42.14 type elasped time
                     hours, mins, secs = elapsedTime.split(":")
-                    elapsedTime = str((int(hours) *3600) + (int(mins) * 60) + float(secs))
-                calories = lap.findtext(calorieTag)
-                distance = lap.findtext(distanceTag)
+                    elapsedTime = (int(hours) *3600) + (int(mins) * 60) + float(secs)
+                else:
+                    elapsedTime = float(elapsedTime)
+                calories = int(lap.findtext(calorieTag))
+                distance = float(lap.findtext(distanceTag))
                 logging.info("Found time: %s, start lat: %s, start lon: %s, end lat: %s end lon: %s cal: %s dist: %s " % (elapsedTime, stLat, stLon, lat, lon, calories, distance))
                 intensity = lap.findtext(intensityTag).lower()
                 trigger_element = lap.find(triggerTag)
@@ -215,9 +217,9 @@ class Gpx:
                         for summary_element in lap_summary:
                             summary_dict[summary_element.get('name')] = summary_element.text
                             logging.debug("%s: %s" % (summary_element.get('name'), summary_element.text))
-                    max_speed = summary_dict["MaximumSpeed"]
-                    avg_hr = summary_dict["AverageHeartRateBpm"]
-                    max_hr = summary_dict["MaximumHeartRateBpm"]
+                    max_speed = float(summary_dict["MaximumSpeed"])
+                    avg_hr = float(summary_dict["AverageHeartRateBpm"])
+                    max_hr = float(summary_dict["MaximumHeartRateBpm"])
                 else:
                     logging.info("No summary found")
                 logging.info("Intensity: %s | Trigger: %s | Max speed: %s | Average hr: %s | Maximum hr: %s" % (intensity, trigger, max_speed, avg_hr, max_hr))
@@ -449,7 +451,8 @@ class Gpx:
         logging.debug("<<")
         return retorno
 
-    def _distance_between_points(self, lat1, lon1, lat2, lon2):
+    @staticmethod
+    def _distance_between_points(lat1, lon1, lat2, lon2):
         '''
         Function to calculate the distance between two lat, lon points on the earths surface
 
