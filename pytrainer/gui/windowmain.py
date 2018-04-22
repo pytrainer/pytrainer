@@ -2018,7 +2018,6 @@ class Main(SimpleBuilderApp):
         dialog = Gtk.Dialog(title=title, parent=self.pytrainer_main.windowmain.window1, flags= Gtk.DialogFlags.DESTROY_WITH_PARENT,
                      buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
                       Gtk.STOCK_SAVE, Gtk.ResponseType.ACCEPT))
-        dialog.set_has_separator(True)
         dialog.set_modal(False)
         #Get Content area of dialog
         vbox = dialog.get_content_area()
