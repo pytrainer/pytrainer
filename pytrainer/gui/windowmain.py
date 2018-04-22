@@ -2117,10 +2117,10 @@ class Main(SimpleBuilderApp):
         except (ValueError) as e:
             logging.error("Invalid date %s", e)
             return
-        weight = data['weight']
-        bodyfat = data['bf']
-        restinghr = data['restingHR']
-        maxhr = data['maxHR']
+        weight = data['weight'] or None
+        bodyfat = data['bf'] or None
+        restinghr = data['restingHR'] or None
+        maxhr = data['maxHR'] or None
         #TODO - are any other fields required?
 
         #Check if an entry has been edited or is a new one
