@@ -1211,13 +1211,13 @@ class Main(SimpleBuilderApp):
                 logging.debug("Unable to determine id for record: %s" % str(i))
                 logging.debug(str(e))
                 continue
-            _title = str(i[3])
+            _title = i[3]
             _date = str(i[0])
             try:
                 _distance = float(i[1])
             except (ValueError, TypeError):
                 _distance = 0
-            _sport = str(i[4])
+            _sport = i[4]
             try:
                 _average = float(i[2])
             except (ValueError, TypeError):
