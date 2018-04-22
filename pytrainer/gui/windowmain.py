@@ -419,13 +419,18 @@ class Main(SimpleBuilderApp):
             self.record_time.set_text(recordTime)
             self.record_duration.set_text(activity.get_value_f('time', '%s'))
             self.record_calories.set_text(activity.get_value_f('calories', "%0.0f"))
-            self.record_title.set_text(activity.title)
+            if activity.title:
+                self.record_title.set_text(activity.title)
+            else:
+                self.record_title.set_text('')
             hrun,mrun,srun = second2time(activity.duration)
             hpause,mpause,spause = second2time(activity.time_pause)
-            self.record_runrest.set_text("%02d:%02d:%02d / %02d:%02d:%02d" %(hrun,mrun,srun,hpause,mpause,spause)) 
+            self.record_runrest.set_text("%02d:%02d:%02d / %02d:%02d:%02d" %(hrun,mrun,srun,hpause,mpause,spause))
             buffer = self.record_comments.get_buffer()
-            start,end = buffer.get_bounds()
-            buffer.set_text(activity.comments)
+            if activity.comments:
+                buffer.set_text(activity.comments)
+            else:
+                buffer.set_text('')
             if len(activity.equipment) > 0:
                 equipment_text = ", ".join(map(lambda(item): item.description, activity.equipment))
                 self.label_record_equipment.set_text(equipment_text)
