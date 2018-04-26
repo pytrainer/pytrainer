@@ -87,6 +87,8 @@ class Record:
 
     def pace_from_float(self, value, fromDB=False):
         '''Helper to generate mm:ss from float representation mm.ss (or mm,ss?)'''
+        if not value:
+            return "0:00"
         #Check that value supplied is a float
         try:
             _value = "%0.2f" % float(value)
