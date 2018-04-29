@@ -2015,7 +2015,8 @@ class Main(SimpleBuilderApp):
             #New entry...
             logging.debug('New athlete entry')
             title = _('Create Athlete Entry')
-            data = {'id':None, 'date': Date().getDate().strftime("%Y-%m-%d"), 'weight':"", 'bf':"", 'restingHR':"", 'maxHR':""}
+            data = {'id': None, 'date': Date().getDate().strftime("%Y-%m-%d"),
+                    'weight': None, 'bf': None, 'restingHR': None, 'maxHR': None}
         else:
             logging.debug('Edit existing athlete entry: %s', str(data))
             title = _('Edit Athlete Entry')
@@ -2050,7 +2051,8 @@ class Main(SimpleBuilderApp):
         label = gtk.Label(_("<b>Weight</b>"))
         label.set_use_markup(True)
         entry = gtk.Entry()
-        entry.set_text(data['weight'])
+        if data['weight']:
+            entry.set_text(str(round(data['weight'], 2)))
         self.entryList.append(entry)
         table.attach(label,0,1,1,2)
         table.attach(entry,1,2,1,2)
@@ -2058,7 +2060,8 @@ class Main(SimpleBuilderApp):
         label = gtk.Label(_("<b>Body Fat</b>"))
         label.set_use_markup(True)
         entry = gtk.Entry()
-        entry.set_text(data['bf'])
+        if data['bf']:
+            entry.set_text(str(round(data['bf'], 2)))
         self.entryList.append(entry)
         table.attach(label,0,1,2,3)
         table.attach(entry,1,2,2,3)
@@ -2066,7 +2069,8 @@ class Main(SimpleBuilderApp):
         label = gtk.Label(_("<b>Resting Heart Rate</b>"))
         label.set_use_markup(True)
         entry = gtk.Entry()
-        entry.set_text(data['restingHR'])
+        if data['restingHR']:
+            entry.set_text(str(data['restingHR']))
         self.entryList.append(entry)
         table.attach(label,0,1,3,4)
         table.attach(entry,1,2,3,4)
@@ -2074,7 +2078,8 @@ class Main(SimpleBuilderApp):
         label = gtk.Label(_("<b>Max Heart Rate</b>"))
         label.set_use_markup(True)
         entry = gtk.Entry()
-        entry.set_text(data['maxHR'])
+        if data['maxHR']:
+            entry.set_text(str(data['maxHR']))
         self.entryList.append(entry)
         table.attach(label,0,1,4,5)
         table.attach(entry,1,2,4,5)
