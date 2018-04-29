@@ -2188,16 +2188,16 @@ class Main(SimpleBuilderApp):
         totaldescent = 0
         for activity in activity_list:
             distance += activity.distance
-            calories += activity.calories
+            if activity.calories:
+                calories += activity.calories
             timeinseconds += activity.duration
-            beats = activity.beats
             totalascent += activity.upositive
             totaldescent += activity.unegative
-            if float(beats)>0:
-                tbeats += beats*(activity.duration/60/60)
+            if activity.beats:
+                tbeats += activity.beats*(activity.duration/60/60)
             if activity.maxspeed > maxspeed:
                 maxspeed = activity.maxspeed
-            if activity.maxbeats > maxbeats:
+            if activity.maxbeats and activity.maxbeats > maxbeats:
                 maxbeats = activity.maxbeats
 
         distance = self.uc.distance(distance)
