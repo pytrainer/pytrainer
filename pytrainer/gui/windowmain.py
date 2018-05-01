@@ -2196,8 +2196,10 @@ class Main(SimpleBuilderApp):
             if activity.calories:
                 calories += activity.calories
             timeinseconds += activity.duration
-            totalascent += activity.upositive
-            totaldescent += activity.unegative
+            if activity.upositive:
+                totalascent += activity.upositive
+            if activity.unegative:
+                totaldescent += activity.unegative
             if activity.beats:
                 tbeats += activity.beats*(activity.duration/60/60)
             if activity.maxspeed > maxspeed:
