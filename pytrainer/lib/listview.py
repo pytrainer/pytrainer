@@ -1,4 +1,5 @@
 import datetime
+from pytrainer.lib.localization import gtk_str
 
 UC_LISTDISTANCE = {False : [[_('All Distances'), [0.0,999999.9]],
                             ['<1 km', [0.0, 1.0]],
@@ -125,7 +126,7 @@ class ListSearch(object):
         liststore_lsa =  self.parent.lsa_sport.get_model() 
         if self.parent.lsa_sport.get_active() is not 0:
             self.parent.lsa_sport.set_active(0) #Set first item active if isnt
-        firstEntry = self.parent.lsa_sport.get_active_text()
+        firstEntry = gtk_str(self.parent.lsa_sport.get_active_text())
         liststore_lsa.clear() #Delete all items
         #Re-add "All Sports"
         liststore_lsa.append([firstEntry])
@@ -140,7 +141,7 @@ class ListSearch(object):
         liststore_lsa =  self.parent.lsa_past.get_model() 
         if self.parent.lsa_past.get_active() > 0:
             self.parent.lsa_past.set_active(0) #Set first item active isnt
-        firstEntry = self.parent.lsa_past.get_active_text()
+        firstEntry = gtk_str(self.parent.lsa_past.get_active_text())
         liststore_lsa.clear() #Delete all items
         for i in self.listPast:
             liststore_lsa.append([i[0]])
@@ -152,7 +153,7 @@ class ListSearch(object):
         liststore_lsa =  self.parent.lsa_duration.get_model() 
         if self.parent.lsa_duration.get_active() > 0:
             self.parent.lsa_duration.set_active(0) 
-        firstEntry = self.parent.lsa_duration.get_active_text()
+        firstEntry = gtk_str(self.parent.lsa_duration.get_active_text())
         liststore_lsa.clear() #Delete all items        
         for i in self.listDuration:
             liststore_lsa.append([i[0]])
@@ -164,7 +165,7 @@ class ListSearch(object):
         liststore_lsa =  self.parent.lsa_distance.get_model() 
         if self.parent.lsa_distance.get_active() > 0:
             self.parent.lsa_distance.set_active(0) 
-        firstEntry = self.parent.lsa_distance.get_active_text()
+        firstEntry = gtk_str(self.parent.lsa_distance.get_active_text())
         liststore_lsa.clear() #Delete all items        
         for i in self.listDistance:
             liststore_lsa.append([i[0]])

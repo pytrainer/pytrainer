@@ -47,6 +47,7 @@ from pytrainer.gui.windowcalendar import WindowCalendar
 from pytrainer.lib.listview import ListSearch
 from pytrainer.lib.uc import UC
 from pytrainer.core.activity import Activity
+from pytrainer.lib.localization import gtk_str
 from sqlalchemy import and_
 
 
@@ -418,13 +419,18 @@ class Main(SimpleBuilderApp):
             self.record_time.set_text(recordTime)
             self.record_duration.set_text(activity.get_value_f('time', '%s'))
             self.record_calories.set_text(activity.get_value_f('calories', "%0.0f"))
-            self.record_title.set_text(activity.title)
+            if activity.title:
+                self.record_title.set_text(activity.title)
+            else:
+                self.record_title.set_text('')
             hrun,mrun,srun = second2time(activity.duration)
             hpause,mpause,spause = second2time(activity.time_pause)
-            self.record_runrest.set_text("%02d:%02d:%02d / %02d:%02d:%02d" %(hrun,mrun,srun,hpause,mpause,spause)) 
+            self.record_runrest.set_text("%02d:%02d:%02d / %02d:%02d:%02d" %(hrun,mrun,srun,hpause,mpause,spause))
             buffer = self.record_comments.get_buffer()
-            start,end = buffer.get_bounds()
-            buffer.set_text(activity.comments)
+            if activity.comments:
+                buffer.set_text(activity.comments)
+            else:
+                buffer.set_text('')
             if len(activity.equipment) > 0:
                 equipment_text = ", ".join(map(lambda(item): item.description, activity.equipment))
                 self.label_record_equipment.set_text(equipment_text)
@@ -1205,13 +1211,13 @@ class Main(SimpleBuilderApp):
                 logging.debug("Unable to determine id for record: %s" % str(i))
                 logging.debug(str(e))
                 continue
-            _title = str(i[3])
+            _title = i[3]
             _date = str(i[0])
             try:
                 _distance = float(i[1])
             except (ValueError, TypeError):
                 _distance = 0
-            _sport = str(i[4])
+            _sport = i[4]
             try:
                 _average = float(i[2])
             except (ValueError, TypeError):
@@ -1333,7 +1339,7 @@ class Main(SimpleBuilderApp):
             _("Average"):"average",
             _("Calories"):"calories"
             }
-        self.listsearch.title = self.lsa_searchvalue.get_text()
+        self.listsearch.title = gtk_str(self.lsa_searchvalue.get_text())
         self.listsearch.sport = self.lsa_sport.get_active()
         self.listsearch.past = self.lsa_past.get_active()
         self.listsearch.duration = self.lsa_duration.get_active()
@@ -1523,12 +1529,12 @@ class Main(SimpleBuilderApp):
             #Setting to limits in boxes
             logging.debug("Setting graph limits...")
             #Determine contents of boxes...
-            xmin = self._float_or(data['xminlabel'].get_text(), activity.x_limits[0])
-            xmax = self._float_or(data['xmaxlabel'].get_text(), activity.x_limits[1])
-            y1min = self._float_or(data['y1minlabel'].get_text(), activity.y1_limits[0])
-            y1max = self._float_or(data['y1maxlabel'].get_text(), activity.y1_limits[1])
-            y2min = self._float_or(data['y2minlabel'].get_text(), activity.y2_limits[0])
-            y2max = self._float_or(data['y2maxlabel'].get_text(), activity.y2_limits[1])
+            xmin = self._float_or(gtk_str(data['xminlabel'].get_text()), activity.x_limits[0])
+            xmax = self._float_or(gtk_str(data['xmaxlabel'].get_text()), activity.x_limits[1])
+            y1min = self._float_or(gtk_str(data['y1minlabel'].get_text()), activity.y1_limits[0])
+            y1max = self._float_or(gtk_str(data['y1maxlabel'].get_text()), activity.y1_limits[1])
+            y2min = self._float_or(gtk_str(data['y2minlabel'].get_text()), activity.y2_limits[0])
+            y2max = self._float_or(gtk_str(data['y2maxlabel'].get_text()), activity.y2_limits[1])
             logging.debug("Setting graph limits x: (%s,%s), y1: (%s,%s), y2: (%s,%s)" % (str(xmin), str(xmax), str(y1min), str(y1max), str(y2min), str(y2max)) )
             activity.x_limits_u = (xmin, xmax)
             activity.y1_limits_u = (y1min, y1max)
@@ -1649,8 +1655,8 @@ class Main(SimpleBuilderApp):
 
     def on_sportlist_changed(self,widget):
         logging.debug("--")
-        if self.sportlist.get_active_text() != self.activeSport:
-            self.activeSport = self.sportlist.get_active_text()
+        if gtk_str(self.sportlist.get_active_text()) != self.activeSport:
+            self.activeSport = gtk_str(self.sportlist.get_active_text())
             self.parent.refreshListRecords()
             self.parent.refreshGraphView(self.selected_view)
         else:
@@ -1928,7 +1934,7 @@ class Main(SimpleBuilderApp):
     def getSportSelected(self):
         sport = self.sportlist.get_active()
         if (sport > 0):
-            return self.sportlist.get_active_text()
+            return gtk_str(self.sportlist.get_active_text())
         else:
             return None
 
@@ -2009,7 +2015,8 @@ class Main(SimpleBuilderApp):
             #New entry...
             logging.debug('New athlete entry')
             title = _('Create Athlete Entry')
-            data = {'id':None, 'date': Date().getDate().strftime("%Y-%m-%d"), 'weight':"", 'bf':"", 'restingHR':"", 'maxHR':""}
+            data = {'id': None, 'date': Date().getDate().strftime("%Y-%m-%d"),
+                    'weight': None, 'bf': None, 'restingHR': None, 'maxHR': None}
         else:
             logging.debug('Edit existing athlete entry: %s', str(data))
             title = _('Edit Athlete Entry')
@@ -2044,7 +2051,8 @@ class Main(SimpleBuilderApp):
         label = gtk.Label(_("<b>Weight</b>"))
         label.set_use_markup(True)
         entry = gtk.Entry()
-        entry.set_text(data['weight'])
+        if data['weight']:
+            entry.set_text(str(round(data['weight'], 2)))
         self.entryList.append(entry)
         table.attach(label,0,1,1,2)
         table.attach(entry,1,2,1,2)
@@ -2052,7 +2060,8 @@ class Main(SimpleBuilderApp):
         label = gtk.Label(_("<b>Body Fat</b>"))
         label.set_use_markup(True)
         entry = gtk.Entry()
-        entry.set_text(data['bf'])
+        if data['bf']:
+            entry.set_text(str(round(data['bf'], 2)))
         self.entryList.append(entry)
         table.attach(label,0,1,2,3)
         table.attach(entry,1,2,2,3)
@@ -2060,7 +2069,8 @@ class Main(SimpleBuilderApp):
         label = gtk.Label(_("<b>Resting Heart Rate</b>"))
         label.set_use_markup(True)
         entry = gtk.Entry()
-        entry.set_text(data['restingHR'])
+        if data['restingHR']:
+            entry.set_text(str(data['restingHR']))
         self.entryList.append(entry)
         table.attach(label,0,1,3,4)
         table.attach(entry,1,2,3,4)
@@ -2068,7 +2078,8 @@ class Main(SimpleBuilderApp):
         label = gtk.Label(_("<b>Max Heart Rate</b>"))
         label.set_use_markup(True)
         entry = gtk.Entry()
-        entry.set_text(data['maxHR'])
+        if data['maxHR']:
+            entry.set_text(str(data['maxHR']))
         self.entryList.append(entry)
         table.attach(label,0,1,4,5)
         table.attach(entry,1,2,4,5)
@@ -2079,11 +2090,11 @@ class Main(SimpleBuilderApp):
         #dialog.destroy()
         if response == gtk.RESPONSE_ACCEPT:
             #print "on_athleteTreeView_edit save called", data
-            data['date'] = self.entryList[0].get_text()
-            data['weight'] = self.entryList[1].get_text()
-            data['bf'] = self.entryList[2].get_text()
-            data['restingHR'] = self.entryList[3].get_text()
-            data['maxHR'] = self.entryList[4].get_text()
+            data['date'] = gtk_str(self.entryList[0].get_text())
+            data['weight'] = gtk_str(self.entryList[1].get_text())
+            data['bf'] = gtk_str(self.entryList[2].get_text())
+            data['restingHR'] = gtk_str(self.entryList[3].get_text())
+            data['maxHR'] = gtk_str(self.entryList[4].get_text())
             self.on_athleteSave(data)
             logging.debug('Athlete data saved: %s' % str(data))
         dialog.destroy()
@@ -2116,10 +2127,10 @@ class Main(SimpleBuilderApp):
         except (ValueError) as e:
             logging.error("Invalid date %s", e)
             return
-        weight = data['weight']
-        bodyfat = data['bf']
-        restinghr = data['restingHR']
-        maxhr = data['maxHR']
+        weight = data['weight'] or None
+        bodyfat = data['bf'] or None
+        restinghr = data['restingHR'] or None
+        maxhr = data['maxHR'] or None
         #TODO - are any other fields required?
 
         #Check if an entry has been edited or is a new one
@@ -2147,11 +2158,11 @@ class Main(SimpleBuilderApp):
     def on_savewaypoint_clicked(self,widget):
         selected,iter = self.waypointTreeView.get_selection().get_selected()
         id_waypoint = selected.get_value(iter,0)
-        lat = self.waypoint_latitude.get_text()
-        lon = self.waypoint_longitude.get_text()
-        name = self.waypoint_name.get_text()
-        desc = self.waypoint_description.get_text()
-        sym = self.waypoint_type.get_active_text()
+        lat = gtk_str(self.waypoint_latitude.get_text())
+        lon = gtk_str(self.waypoint_longitude.get_text())
+        name = gtk_str(self.waypoint_name.get_text())
+        desc = gtk_str(self.waypoint_description.get_text())
+        sym = gtk_str(self.waypoint_type.get_active_text())
         self.parent.updateWaypoint(id_waypoint,lat,lon,name,desc,sym)
 
     def on_removewaypoint_clicked(self,widget):
@@ -2182,16 +2193,18 @@ class Main(SimpleBuilderApp):
         totaldescent = 0
         for activity in activity_list:
             distance += activity.distance
-            calories += activity.calories
+            if activity.calories:
+                calories += activity.calories
             timeinseconds += activity.duration
-            beats = activity.beats
-            totalascent += activity.upositive
-            totaldescent += activity.unegative
-            if float(beats)>0:
-                tbeats += beats*(activity.duration/60/60)
+            if activity.upositive:
+                totalascent += activity.upositive
+            if activity.unegative:
+                totaldescent += activity.unegative
+            if activity.beats:
+                tbeats += activity.beats*(activity.duration/60/60)
             if activity.maxspeed > maxspeed:
                 maxspeed = activity.maxspeed
-            if activity.maxbeats > maxbeats:
+            if activity.maxbeats and activity.maxbeats > maxbeats:
                 maxbeats = activity.maxbeats
 
         distance = self.uc.distance(distance)

@@ -16,7 +16,7 @@ before_install:
   - createdb -U postgres -O pytrainer pytrainer
 python:
   - "2.7"
-script: "python setup.py test"
+script: "xvfb-run python setup.py test"
 virtualenv:
   system_site_packages: true
 notifications:

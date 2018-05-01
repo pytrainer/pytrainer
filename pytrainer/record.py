@@ -87,6 +87,8 @@ class Record:
 
     def pace_from_float(self, value, fromDB=False):
         '''Helper to generate mm:ss from float representation mm.ss (or mm,ss?)'''
+        if not value:
+            return "0:00"
         #Check that value supplied is a float
         try:
             _value = "%0.2f" % float(value)
@@ -112,14 +114,14 @@ class Record:
         sport = self._get_sport(list_options["rcd_sport"])
         if not sport:
             sport = Sport(name=list_options["rcd_sport"])
-        record.title = unicode(list_options["rcd_title"])
+        record.title = list_options["rcd_title"]
         record.beats = self.parseFloatRecord(list_options["rcd_beats"])
         record.pace = self.pace_to_float(list_options["rcd_pace"])
         record.maxbeats = self.parseFloatRecord(list_options["rcd_maxbeats"])
         record.distance = self.parseFloatRecord(list_options["rcd_distance"])
         record.average = self.parseFloatRecord(list_options["rcd_average"])
         record.calories = self.parseFloatRecord(list_options["rcd_calories"])
-        record.comments = unicode(list_options["rcd_comments"])
+        record.comments = list_options["rcd_comments"]
         record.date = datetime.datetime.strptime(list_options["date_time_utc"],
                                                  "%Y-%m-%dT%H:%M:%SZ").date()
         record.unegative = self.parseFloatRecord(list_options["rcd_unegative"])

@@ -2,9 +2,12 @@
 from unittest import TestCase
 from mock import Mock
 from pytrainer.core.equipment import Equipment, EquipmentService
-from pytrainer.gui.equipment import EquipmentStore
+from pytrainer.gui.equipment import EquipmentStore, EquipmentUi
+from pytrainer.lib.ddbb import DDBB
+from pytrainer.lib.localization import initialize_gettext
 
 #Copyright (C) Nathan Jones ncjones@users.sourceforge.net
+#Copyright (C) Arto Jantunen <viiru@iki.fi>
 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -159,4 +162,37 @@ class EquipmentStoreTest(TestCase):
         iter = equipment_store.iter_next(iter)
         self.assertEquals(2, equipment_store.get_value(iter, 0))
         
+class EquipmentUiTest(TestCase):
 
+    def setUp(self):
+        initialize_gettext('locale/')
+        self.ddbb = DDBB()
+        self.ddbb.connect()
+        self.ddbb.create_tables()
+        self.equipment_service = EquipmentService(self.ddbb)
+        self.equipment_ui = EquipmentUi('glade/', self.equipment_service)
+
+    def tearDown(self):
+        self.ddbb.disconnect()
+        self.ddbb.drop_tables()
+
+    def test_equipment_add(self):
+        self.equipment_ui._builder.get_object("entryEquipmentAddDescription").set_text('Test')
+        self.equipment_ui._builder.get_object("entryEquipmentAddLifeExpectancy").set_text('500')
+        self.equipment_ui._builder.get_object("entryEquipmentAddPriorUsage").set_text('100')
+        self.equipment_ui._builder.get_object("checkbuttonEquipmentAddActive").set_active(is_active=True)
+        self.equipment_ui._confirm_add_equipment_clicked(None)
+        equipment = self.equipment_service.get_equipment_item(1)
+        self.assertEqual(equipment.description, 'Test')
+        self.assertEqual(equipment.life_expectancy, 500)
+        self.assertEqual(equipment.prior_usage, 100)
+        self.assertTrue(equipment.active)
+
+    def test_equipment_add_unicode(self):
+        self.equipment_ui._builder.get_object("entryEquipmentAddDescription").set_text(u'Test äö')
+        self.equipment_ui._builder.get_object("entryEquipmentAddLifeExpectancy").set_text('500')
+        self.equipment_ui._builder.get_object("entryEquipmentAddPriorUsage").set_text('100')
+        self.equipment_ui._builder.get_object("checkbuttonEquipmentAddActive").set_active(is_active=True)
+        self.equipment_ui._confirm_add_equipment_clicked(None)
+        equipment = self.equipment_service.get_equipment_item(1)
+        self.assertEqual(equipment.description, u'Test äö')
