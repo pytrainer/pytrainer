@@ -1,5 +1,28 @@
 We have migrated to GitHub, for more details about changelog please see git log documentation (http://git-scm.com/docs/git-log). One simple approach: git log --oneline --stat --decorate <since>..<until>
 
+- pytrainer changes for 1.12.2:
+
+- Known issues:
+  Gtk outputs warnings about extra properties when loading the main window
+
+- Improvements:
+  b2401aaf5664 Decode GTK strings on Python 2
+  b6534c062978 Add function to decode locale specific strings on Python 2
+  d43f2eba16a9 Add Python 3 support to gettext initialization
+
+- Bugs fixed:
+  abd13b25d830 Handle missing altitude data in main window graphs
+  b4c5e315b930 Fix editing of athlete stats where some values are empty
+  afbe6ea3e81a Handle missing heartrate data in main window graphs
+  71dac3f72ab0 Record.pace_from_float: Handle null values
+  4029fdb80487 Stop calling str on Unicode strings returned from the DB
+  3e8551461f90 Handle empty activity title and comments when editing
+  308449c752e7 Unset athletestat values should be None
+
+- Internals:
+  b55da1b34d45 Add a couple of tests for EquipmentUi
+  c5906600ce9f Use xvfb-run when running tests
+
 - pytrainer changes for 1.12.1:
 
 - Known issues:
