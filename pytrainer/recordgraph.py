@@ -19,7 +19,7 @@
 import logging
 from gui.drawArea import DrawArea
 
-import gtk
+from gi.repository import Gtk
 
 class RecordGraph:
     def __init__(self, vbox = None, window = None, combovalue = None, combovalue2 = None, btnShowLaps = None, tableConfig = None, pytrainer_main=None):
@@ -80,10 +80,10 @@ class RecordGraph:
         min_yvalue = min(yvalues)
         xlabel,ylabel,title,color = self.get_value_params(value_selected)
         if y1color is not None:
-            _color = gtk.gdk.Color(y1color)
+            _color = Gdk.Color(y1color)
             color = y1color
         else:
-            _color = gtk.gdk.Color(color)
+            _color = Gdk.Color(color)
 
         xval.append(xvalues)
         yval.append(yvalues)
@@ -95,7 +95,7 @@ class RecordGraph:
         tit.append(title)
         col.append(color)
 
-        #_color = gtk.gdk.Color(color)
+        #_color = Gdk.Color(color)
         colorbuttonY1LineColor.set_color(_color)
 
         if value_selected2 > 0:
@@ -119,8 +119,8 @@ class RecordGraph:
 
         max_yvalue = max(max_yvalue, ymax)
         min_yvalue = min(min_yvalue, ymin)
-        adjY1Min = gtk.Adjustment(value=ymin, lower=min_yvalue,upper=max_yvalue, step_incr=1, page_incr=10)
-        adjY1Max = gtk.Adjustment(value=ymax, lower=min_yvalue,upper=max_yvalue, step_incr=1, page_incr=10)
+        adjY1Min = Gtk.Adjustment(value=ymin, lower=min_yvalue,upper=max_yvalue, step_incr=1, page_incr=10)
+        adjY1Max = Gtk.Adjustment(value=ymax, lower=min_yvalue,upper=max_yvalue, step_incr=1, page_incr=10)
         spinbuttonY1Min.set_adjustment(adjY1Min)
         spinbuttonY1Max.set_adjustment(adjY1Max)
         spinbuttonY1Min.set_value(ymin)

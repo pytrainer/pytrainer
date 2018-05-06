@@ -324,7 +324,6 @@
               <object class="GtkStatusbar" id="statusbarDevice">
                 <property name="visible">True</property>
                 <property name="spacing">2</property>
-                <property name="has_resize_grip">False</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -532,7 +531,6 @@
               <object class="GtkStatusbar" id="statusbarImportFile">
                 <property name="visible">True</property>
                 <property name="spacing">2</property>
-                <property name="has_resize_grip">False</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -604,7 +602,6 @@
                   <object class="GtkStatusbar" id="statusbarPlugins">
                     <property name="visible">True</property>
                     <property name="spacing">2</property>
-                    <property name="has_resize_grip">False</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -808,7 +805,6 @@
               <object class="GtkStatusbar" id="statusbarOptions">
                 <property name="visible">True</property>
                 <property name="spacing">2</property>
-                <property name="has_resize_grip">False</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -1555,7 +1551,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkComboBox" id="comboCSVForceSport">
+                                      <object class="GtkComboBoxText" id="comboCSVForceSport">
                                         <property name="visible">True</property>
                                         <property name="model">model17</property>
                                         <child>
@@ -1688,7 +1684,6 @@
               <object class="GtkStatusbar" id="statusbarCSVImport">
                 <property name="visible">True</property>
                 <property name="spacing">2</property>
-                <property name="has_resize_grip">False</property>
               </object>
               <packing>
                 <property name="expand">False</property>

@@ -20,7 +20,7 @@ from __future__ import division
 import os
 import logging
 import traceback
-import gtk, gobject
+from gi.repository import Gtk, GObject
 from SimpleGladeApp import SimpleBuilderApp
 from windowcalendar import WindowCalendar
 
@@ -110,14 +110,14 @@ class WindowRecord(SimpleBuilderApp):
             self.noActiveEquipmentMessageContainer.set_visible(True)
         for item in selected_equipment:
             equipment[item] = True
-        list_store = gtk.ListStore(int, str, bool)
+        list_store = Gtk.ListStore(int, str, bool)
         for item in equipment:
             list_store.append((item.id, item.description, equipment[item]))
         tree_view = self.treeviewRecordEquipment
-        cell_renderer = gtk.CellRendererToggle()
+        cell_renderer = Gtk.CellRendererToggle()
         cell_renderer.connect('toggled', self._equipment_selection_toggled)
-        tree_view.append_column(gtk.TreeViewColumn("Selected", cell_renderer, active=2))
-        tree_view.append_column(gtk.TreeViewColumn("Equipment Item", gtk.CellRendererText(), text=1))
+        tree_view.append_column(Gtk.TreeViewColumn("Selected", cell_renderer, active=2))
+        tree_view.append_column(Gtk.TreeViewColumn("Equipment Item", Gtk.CellRendererText(), text=1))
         tree_view.set_model(list_store)
     
     def _equipment_selection_toggled(self, widget, path):
@@ -192,24 +192,24 @@ class WindowRecord(SimpleBuilderApp):
         self.button43.hide() #Pace "Calculate" button
         #Make GPX file 'unsensitive'
         self.rcd_gpxfile.set_sensitive(0)       
-        while gtk.events_pending(): # This allows the GUI to update 
-            gtk.main_iteration()    # before completion of this entire action
+        while Gtk.events_pending(): # This allows the GUI to update
+            Gtk.main_iteration()    # before completion of this entire action
         #Select first row and display details
         self.treeviewEntries.set_cursor(0)  
         self.show_treeviewEntries_row(0)
         logging.debug("<<")
         
     def build_tree_view(self):
-        store = gtk.ListStore(  gobject.TYPE_STRING,
-                                gobject.TYPE_STRING,
-                                gobject.TYPE_STRING,
-                                gobject.TYPE_STRING, 
-                                gobject.TYPE_STRING, 
-                                gobject.TYPE_STRING )
+        store = Gtk.ListStore(  GObject.TYPE_STRING,
+                                GObject.TYPE_STRING,
+                                GObject.TYPE_STRING,
+                                GObject.TYPE_STRING,
+                                GObject.TYPE_STRING,
+                                GObject.TYPE_STRING )
         column_names=["id", _("Start Time"), _("Distance"),_("Duration"),_("Sport"), _("GPX File")]
         for column_index, column_name in enumerate(column_names):
             #Add columns
-            column = gtk.TreeViewColumn(column_name, gtk.CellRendererText(), text=column_index)
+            column = Gtk.TreeViewColumn(column_name, Gtk.CellRendererText(), text=column_index)
             column.set_sort_column_id(column_index)
             if column_name == "id":
                 column.set_visible(False)
@@ -530,8 +530,8 @@ class WindowRecord(SimpleBuilderApp):
         if "rcd_comments" not in self.activity_data[row]:
             self.activity_data[row]["rcd_comments"] = ""
         buffer.set_text(self.activity_data[row]["rcd_comments"])
-        while gtk.events_pending(): # This allows the GUI to update 
-            gtk.main_iteration()    # before completion of this entire action
+        while Gtk.events_pending(): # This allows the GUI to update
+            Gtk.main_iteration()    # before completion of this entire action
         if self.activity_data[row]["complete"] is False:
             #Haven't processed GPX file yet
             #Blank values not yet known
@@ -546,8 +546,8 @@ class WindowRecord(SimpleBuilderApp):
             self.rcd_maxpace.set_text("")
             self.rcd_pace.set_text("")
             self.setValue("rcd_maxbeats", "", "%s")
-            while gtk.events_pending(): # This allows the GUI to update 
-                gtk.main_iteration()    # before completion of this entire action
+            while Gtk.events_pending(): # This allows the GUI to update
+                Gtk.main_iteration()    # before completion of this entire action
             #Get some info from gpx file
             self.update_activity_data(row, gpx_file, sport)
         self.setValue("rcd_distance",self.activity_data[row]["rcd_distance"], "%s") 
@@ -637,8 +637,8 @@ class WindowRecord(SimpleBuilderApp):
             path, col, cellx, celly = pthinfo
             treeview.grab_focus()
             treeview.set_cursor(path, col, 0)
-            while gtk.events_pending(): # This allows the GUI to update 
-                gtk.main_iteration()    # before completion of this entire action
+            while Gtk.events_pending(): # This allows the GUI to update
+                Gtk.main_iteration()    # before completion of this entire action
             self.show_treeviewEntries_row(path[0])
 
     def on_calcavs_clicked(self,widget):

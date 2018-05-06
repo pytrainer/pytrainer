@@ -15,7 +15,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import os
-import gtk
+from gi.repository import Gtk
 import urllib2
 import zipfile
 from io import StringIO
@@ -37,7 +37,7 @@ global loopActive
 
 class DownloadLoop:
     """ 
-    Download GeoTIFF in partial chunks. Between chunks check gtk.min_iteration
+    Download GeoTIFF in partial chunks. Between chunks check Gtk.min_iteration
     and update progressbar. Threadless Implementation.
     """
     srtm_dir = os.path.expanduser('~/.pytrainer/SRTM_data')
@@ -75,8 +75,8 @@ class DownloadLoop:
         zobj = StringIO()  
         
         while loopActive:
-            while gtk.events_pending():
-                gtk.main_iteration(block = False)            
+            while Gtk.events_pending():
+                Gtk.main_iteration(block = False)
             chunk = urlfile.read(size_chunk)
             size_got+= size_chunk
             if chunk:
@@ -126,23 +126,23 @@ def download(tile_name):
     global loopActive
     loopActive = True
     result = False
-    window = gtk.Dialog()
+    window = Gtk.Dialog()
     window.set_title('Download GeoTIFF')
-    labelH = gtk.Label('<b>Downloading Tile %s</b>' % tile_name)
+    labelH = Gtk.Label(label='<b>Downloading Tile %s</b>' % tile_name)
     labelH.set_use_markup(True)
     labelH.set_alignment(0, 1)
     
-    label = gtk.Label('Searching for Server ...')
-    progressbar = gtk.ProgressBar()
+    label = Gtk.Label(label='Searching for Server ...')
+    progressbar = Gtk.ProgressBar()
 
     window.connect('destroy', main_quit)
-    button = gtk.Button(stock=gtk.STOCK_CANCEL)
+    button = Gtk.Button(stock=Gtk.STOCK_CANCEL)
     button.connect("clicked", main_quit)
 
     window.vbox.pack_start(labelH, expand=False, padding=3)
     window.vbox.pack_start(label, expand=False, padding=3)
     window.vbox.pack_start(progressbar, expand=False, padding=3)
-    window.action_area.pack_start(button, expand=False)
+    window.action_area.pack_start(button, False, True, 0)
     window.show_all()
 
     lp = DownloadLoop(progressbar, label, tile_name)

@@ -16,7 +16,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import gtk.gdk
+from gi.repository import Gdk
 from pytrainer.util.color import Color
 
 class ColorConverter(object):
@@ -26,7 +26,7 @@ class ColorConverter(object):
     def convert_to_gdk_color(self, color):
         """Convert a Pytrainer color to a GDK color."""
         color_format = "#{0:06x}".format(color.rgb_val)
-        return gtk.gdk.color_parse(color_format)
+        return Gdk.color_parse(color_format)
     
     def convert_to_color(self, gdk_col):
         """Convert a GDK color to a Pytrainer color."""

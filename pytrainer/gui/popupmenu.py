@@ -17,22 +17,22 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import gtk
+from gi.repository import Gtk
 
-class PopupMenu(gtk.Menu):
+class PopupMenu(Gtk.Menu):
     def __init__(self, data_path = None, parent = None):
-        super(gtk.Menu, self).__init__()
+        super(PopupMenu, self).__init__()
         self.windowmain = parent
-        edit_record = gtk.ImageMenuItem(gtk.STOCK_EDIT)
+        edit_record = Gtk.ImageMenuItem(Gtk.STOCK_EDIT)
         edit_record.set_label(_("Edit Record"))
         edit_record.connect("activate", self.on_editrecord_activate)
         self.attach(edit_record, 0, 1, 0, 1)
-        show_graph = gtk.ImageMenuItem(gtk.STOCK_FIND)
+        show_graph = Gtk.ImageMenuItem(Gtk.STOCK_FIND)
         show_graph.set_label(_("Show graph in classic view"))
         show_graph.connect("activate", self.on_showclassic_activate)
         self.attach(show_graph, 0, 1, 1, 2)
-        self.attach(gtk.SeparatorMenuItem(), 0, 1, 2, 3)
-        remove_record = gtk.ImageMenuItem(gtk.STOCK_DELETE)
+        self.attach(Gtk.SeparatorMenuItem(), 0, 1, 2, 3)
+        remove_record = Gtk.ImageMenuItem(Gtk.STOCK_DELETE)
         remove_record.connect("activate", self.on_remove_activate)
         self.attach(remove_record, 0, 1, 3, 4)
     
@@ -41,7 +41,7 @@ class PopupMenu(gtk.Menu):
         self.date = date
         self.iter = iter
         self.show_all()
-        self.popup(None, None, None, event_button, time)
+        self.popup_at_pointer(None)
 
     def on_editrecord_activate(self,widget):
         self.windowmain.parent.editRecord(self.id_record, view=self.windowmain.selected_view)

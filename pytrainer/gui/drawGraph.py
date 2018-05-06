@@ -17,12 +17,9 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import matplotlib
-#matplotlib.use('GTK')
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvasGTK
-#from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
+from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvasGTK
 import matplotlib.pyplot as plt
-#import pylab
 import logging
 from pytrainer.lib.uc import UC
 
@@ -39,10 +36,10 @@ class DrawGraph:
 
     def draw(self, datalist=None, box=None, figure=None, title=None, y2=False, xgrid=False, ygrid=False):
         '''
-            Draw a graph using supplied information into supplied gtk.box
+            Draw a graph using supplied information into supplied Gtk.box
 
             datalist = populated graphdata class (required)
-            box = gtk.box object (required)
+            box = Gtk.box object (required)
             figure = matplotlib figure (optional) if supplied will add graph to this figure
             title =
             y2 =
@@ -74,7 +71,7 @@ class DrawGraph:
 
 
         #Create canvas
-        canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
+        canvas = FigureCanvasGTK(figure) # a Gtk.DrawingArea
         canvas.show()
 
         #Display title etc
@@ -146,7 +143,7 @@ class DrawGraph:
         #axis.set_ylim(0, data.max_y_value)
 
         #Display plot
-        box.pack_start(canvas, True, True)
+        box.pack_start(canvas, True, True, 0)
 
         logging.debug("<<")
         return figure

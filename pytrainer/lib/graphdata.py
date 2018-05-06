@@ -17,7 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
-import gtk
+from gi.repository import Gdk
 
 class GraphData:
     '''
@@ -95,7 +95,7 @@ class GraphData:
             return None
         try:
             #Generate 13 digit color string from supplied color
-            col = gtk.gdk.color_parse(color).to_string()
+            col = Gdk.color_parse(color).to_string()
         except ValueError:
             logging.debug("Unable to parse color from '%s'" % color)
             return None
@@ -108,7 +108,7 @@ class GraphData:
     def set_color(self, y1color, y2color = None):
         ''' 
             Helper function to set the line color
-            need as some gtk.gdk color can be invalid for matplotlib
+            need as some Gtk.gdk color can be invalid for matplotlib
         '''
         _color = self.get_color(y1color)
         _color2 = self.get_color(y2color)

@@ -185,11 +185,10 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkComboBoxEntry" id="rcd_sport">
+                              <object class="GtkComboBoxText" id="rcd_sport">
                                 <property name="width_request">134</property>
                                 <property name="visible">True</property>
-				<property name="model">rcd_sport_list</property>
-				<property name="text-column">0</property>
+                                <property name="model">rcd_sport_list</property>
                                 <signal handler="on_rcd_sport_changed" name="changed"/>
                               </object>
                               <packing>

@@ -24,6 +24,9 @@ import logging
 import logging.handlers
 import traceback
 
+import gi
+gi.require_version('Gtk', '3.0')
+
 from pytrainer.lib.date import DateRange
 from upgrade.data import initialize_data
 from environment import Environment

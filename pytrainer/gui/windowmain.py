@@ -21,8 +21,10 @@
 import os
 import logging
 import matplotlib
-import gobject
-import gtk
+from gi.repository import GObject
+from gi.repository import Gtk
+from gi.repository import Gdk
+from gi.repository import GdkPixbuf
 
 import dateutil.parser
 
@@ -54,10 +56,6 @@ from sqlalchemy import and_
 class Main(SimpleBuilderApp):
     def __init__(self, sport_service, data_path = None, parent = None, version = None, gpxDir = None):
         self._sport_service = sport_service
-        def url_hook(dialog, url):
-            pytrainer.lib.webUtils.open_url_in_browser(url)
-        # Available in PyGTK 2.6 and above
-        gtk.about_dialog_set_url_hook(url_hook)
         self.version = version
         self.parent = parent
         self.pytrainer_main = parent
@@ -81,7 +79,7 @@ class Main(SimpleBuilderApp):
         self.y1_linewidth = 1
         # setup Search ListView
         self.listsearch = ListSearch(sport_service, self, self.pytrainer_main)
-        
+
         self.aboutwindow = None
         self.mapviewer = None
         self.mapviewer_fs = None
@@ -142,7 +140,7 @@ class Main(SimpleBuilderApp):
         self.create_treeview(self.statsTreeView,columns)
 
         #create the columns for the laps treeview
-        columns=[ 
+        columns=[
                     {'name':_("Lap")},
                     {'name':_("Trigger"), 'xalign':0, 'pixbuf':True},
                     {'name':_("Distance"), 'xalign':1.0, 'format_float':'%.2f', 'quantity':'distance'},
@@ -158,18 +156,18 @@ class Main(SimpleBuilderApp):
                     {'name':_("Comments"), 'xalign':0.0},
                 ]
         self.create_treeview(self.lapsTreeView,columns)
-        
+
         #create the columns for the projected times treeview
-        columns=[ 
+        columns=[
                     {'name':_("id"), 'visible':False},
                     {'name':_("Race"), 'xalign':1.0},
                     {'name':_("Distance"), 'xalign':1.0, 'format_float':'%.2f', 'quantity':'distance'},
                     {'name':_("Time"), 'xalign':1.0, 'format_duration':True},
                 ]
         self.create_treeview(self.analyticsTreeView,columns,sortable=False)
-        
+
         #create the columns for the rank treeview
-        columns=[ 
+        columns=[
                     {'name':_("id"), 'visible':False},
                     {'name':_("Rank"), 'visible':True},
                     {'name':_("Date"), 'xalign':1.0},
@@ -180,7 +178,7 @@ class Main(SimpleBuilderApp):
                     {'name':_("Color"), 'visible':False},
                 ]
         self.create_treeview(self.rankingTreeView,columns,sortable=False)
-        
+
         self.fileconf = self.pytrainer_main.profile.confdir+"/listviewmenu.xml"
         if not os.path.isfile(self.fileconf):
             self._createXmlListView(self.fileconf)
@@ -239,7 +237,7 @@ class Main(SimpleBuilderApp):
                 self.recordbuttons_hbox.remove(widget)
 
     def addImportPlugin(self,plugin):
-        button = gtk.MenuItem(plugin[0])
+        button = Gtk.MenuItem(plugin[0])
         button.set_name(plugin[1])
         button.connect("activate", self.parent.runPlugin, plugin[1])
         self.menuitem1_menu.insert(button,3)
@@ -247,7 +245,7 @@ class Main(SimpleBuilderApp):
 
     def addExtension(self,extension):
         #txtbutton,extensioncode,extensiontype = extension
-        button = gtk.Button(extension[0])
+        button = Gtk.Button(extension[0])
         button.set_name(extension[1])
         button.connect("button_press_event", self.runExtension, extension)
         self.recordbuttons_hbox.pack_start(button,False,False,0)
@@ -288,7 +286,7 @@ class Main(SimpleBuilderApp):
             except ImportError:
                 logging.error("Webkit not found, map functionality not available")
                 for container in self.map_vbox, self.map_vbox_old, self.waypointvbox:
-                    message = gtk.Label(_("Webkit not found, map functionality not available"))
+                    message = Gtk.Label(_("Webkit not found, map functionality not available"))
                     message.set_selectable(True)
                     container.foreach(lambda widget:container.remove(widget))
                     container.add(message)
@@ -308,7 +306,7 @@ class Main(SimpleBuilderApp):
         self.sportlist.set_active(0)
         logging.debug("<<")
 
-    def render_duration(self, column, cell, model, iter):
+    def render_duration(self, column, cell, model, iter, notif):
         orig = cell.get_property('text')
         if not ':' in orig:
             h,m,s = second2time(int(orig))
@@ -325,7 +323,7 @@ class Main(SimpleBuilderApp):
             if hours>23:
                 new = "%d %s %02d:%s" % (hours / 24, days, hours%24 ,new[-5:])
         cell.set_property('text', new)
-        
+
     def render_float(self, column, cell, model, iter, data):
         _format, _quantity, _idx = data
         _val = model.get_value(iter, _idx)
@@ -336,17 +334,17 @@ class Main(SimpleBuilderApp):
     def create_treeview(self,treeview,columns,sortable=True):
         for column_index, column_dict in enumerate(columns):
             if 'pixbuf' in column_dict:
-                renderer = gtk.CellRendererPixbuf()
+                renderer = Gtk.CellRendererPixbuf()
             else:
-                renderer = gtk.CellRendererText()
-            column = gtk.TreeViewColumn(column_dict['name'])
-            column.pack_start(renderer, expand=False)
+                renderer = Gtk.CellRendererText()
+            column = Gtk.TreeViewColumn(column_dict['name'])
+            column.pack_start(renderer, False)
             if 'pixbuf' in column_dict:
                 column.add_attribute(renderer, 'pixbuf', column_index)
             else:
                 column.add_attribute(renderer, 'text', column_index)
             column.set_resizable(True)
-            column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+            column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
             if 'xalign' in column_dict:
                 renderer.set_property('xalign', column_dict['xalign'])
             if 'visible' in column_dict:
@@ -435,29 +433,29 @@ class Main(SimpleBuilderApp):
                 equipment_text = ", ".join(map(lambda(item): item.description, activity.equipment))
                 self.label_record_equipment.set_text(equipment_text)
             else:
-                self.label_record_equipment.set_markup("<i>None</i>")    
+                self.label_record_equipment.set_markup("<i>None</i>")
             if len(activity.Laps)>1:
-                store = gtk.ListStore(
-                    gobject.TYPE_INT,
-                    gtk.gdk.Pixbuf,
-                    gobject.TYPE_FLOAT,
-                    gobject.TYPE_STRING,
-                    gobject.TYPE_FLOAT,
-                    gobject.TYPE_FLOAT,
-                    gobject.TYPE_STRING,
-                    gobject.TYPE_STRING,
-                    gobject.TYPE_INT,
-                    gobject.TYPE_INT,
-                    gobject.TYPE_INT,
-                    gobject.TYPE_STRING,
-                    gobject.TYPE_STRING,
+                store = Gtk.ListStore(
+                    GObject.TYPE_INT,
+                    GdkPixbuf.Pixbuf,
+                    GObject.TYPE_FLOAT,
+                    GObject.TYPE_STRING,
+                    GObject.TYPE_FLOAT,
+                    GObject.TYPE_FLOAT,
+                    GObject.TYPE_STRING,
+                    GObject.TYPE_STRING,
+                    GObject.TYPE_INT,
+                    GObject.TYPE_INT,
+                    GObject.TYPE_INT,
+                    GObject.TYPE_STRING,
+                    GObject.TYPE_STRING,
                     )
                 for lap in activity.Laps:
                     t = lap.duration
                     m = lap.distance
-                    
+
                     m = self.uc.speed(m)
-                    
+
                     s = m / float(t) * 3.6
                     max_speed = lap.max_speed * 3.6
                     if s > 0:
@@ -469,25 +467,25 @@ class Main(SimpleBuilderApp):
                     else:
                         pace = "0:00"
                         max_pace = "0:00"
-                        
+
                     color = {
                         'active' : '#000000',
                         'rest' : '#808080',
                         'resting' : '#808080',
                     }
-                    
-                    pic = gtk.gdk.pixbuf_new_from_file(self.data_path+"glade/trigger_%s.png" % lap.laptrigger)
-                        
+
+                    pic = GdkPixbuf.Pixbuf.new_from_file(self.data_path+"glade/trigger_%s.png" % lap.laptrigger)
+
                     iter = store.append()
-                    store.set(iter, 
+                    store.set(iter,
                         0, lap.lap_number + 1,
-                        1, pic, 
-                        2, m/1000, 
-                        3, str(int(float(t))), 
-                        4, s, 
-                        5, max_speed, 
-                        6, pace, 
-                        7, max_pace, 
+                        1, pic,
+                        2, m/1000,
+                        3, str(int(float(t))),
+                        4, s,
+                        5, max_speed,
+                        6, pace,
+                        7, max_pace,
                         8, lap.avg_hr if lap.avg_hr else 0,
                         9, lap.max_hr if lap.max_hr else 0,
                         10, lap.calories,
@@ -496,18 +494,18 @@ class Main(SimpleBuilderApp):
                         )
                 self.lapsTreeView.set_model(store)
                 self.lapsTreeView.set_rules_hint(True)
-                
+
                 # Use grey color for "rest" laps
                 for c in self.lapsTreeView.get_columns():
-                    for cr in c.get_cell_renderers():
-                        if type(cr)==gtk.CellRendererText:
-                            c.add_attribute(cr, 'foreground', 11)
+                    for cr in c.get_cells():
+                        if type(cr)==Gtk.CellRendererText:
+                            cr.set_property('foreground', 'gray')
 
                 def edited_cb(cell, path, new_text, (liststore, activity)):
                     liststore[path][12] = new_text
                     activity.Laps[int(path)].comments = new_text
                     self.pytrainer_main.ddbb.session.commit()
-                    
+
                 def show_tooltip(widget, x, y, keyboard_mode, tooltip, user_param1):
                      path = self.lapsTreeView.get_path_at_pos(x,y-20)
                      if not path: return False
@@ -522,14 +520,16 @@ class Main(SimpleBuilderApp):
                     self.lapsTreeView.disconnect(self.lapsTreeView.tooltip_handler_id)
                 self.lapsTreeView.tooltip_handler_id = self.lapsTreeView.connect('query-tooltip', show_tooltip, (store, activity))
                 i = 0
-                for cr in self.lapsTreeView.get_columns()[12].get_cell_renderers():
+                for cr in self.lapsTreeView.get_columns()[12].get_cells():
                     cr.set_property('editable', True)
                     if getattr(self, 'lapview_handler_id', None):
                         cr.disconnect(self.lapview_handler_id)
                     self.lapview_handler_id = cr.connect('edited', edited_cb, (store, activity))
-                    tooltip = gtk.Tooltip()
+                    tooltip = Gtk.Tooltip()
                     tooltip.set_text(activity.laps[i]['comments'])
-                    self.lapsTreeView.set_tooltip_cell(tooltip, i, self.lapsTreeView.get_columns()[12], cr)
+                    # FIXME Use TreePath to set tooltip
+                    #self.lapsTreeView.set_tooltip_cell(tooltip, i, self.lapsTreeView.get_columns()[12], cr)
+                    self.lapsTreeView.set_tooltip_cell(tooltip, None, self.lapsTreeView.get_columns()[12], cr)
                     i += 1
                 self.frame_laps.show()
             else:
@@ -538,7 +538,7 @@ class Main(SimpleBuilderApp):
         else:
             self.recordview.set_current_page(0)
             self.recordview.set_sensitive(0)
-   
+
         logging.debug("<<")
 
     def actualize_recordgraph(self,activity):
@@ -568,25 +568,25 @@ class Main(SimpleBuilderApp):
                 #Create a frame showing data available for graphing
                 #Remove existing frames
                 for child in self.graph_data_hbox.get_children():
-                    if isinstance(child, gtk.Frame):
+                    if isinstance(child, Gtk.Frame):
                         self.graph_data_hbox.remove(child)
                 #Build frames and vboxs to hold checkbuttons
-                xFrame = gtk.Frame(label=_("Show on X Axis"))
-                y1Frame = gtk.Frame(label=_("Show on Y1 Axis"))
-                y2Frame = gtk.Frame(label=_("Show on Y2 Axis"))
-                limitsFrame = gtk.Frame(label=_("Axis Limits"))
-                xvbox = gtk.VBox()
-                y1box = gtk.Table()
-                y2box = gtk.Table()
-                limitsbox = gtk.Table()
+                xFrame = Gtk.Frame(label=_("Show on X Axis"))
+                y1Frame = Gtk.Frame(label=_("Show on Y1 Axis"))
+                y2Frame = Gtk.Frame(label=_("Show on Y2 Axis"))
+                limitsFrame = Gtk.Frame(label=_("Axis Limits"))
+                xvbox = Gtk.VBox()
+                y1box = Gtk.Table()
+                y2box = Gtk.Table()
+                limitsbox = Gtk.Table()
                 #Populate X axis data
                 #Create x axis items
-                xdistancebutton = gtk.RadioButton(label=_("Distance"))
-                xtimebutton = gtk.RadioButton(group=xdistancebutton, label=_("Time"))
-                xlapsbutton = gtk.CheckButton(label=_("Laps"))
-                y1gridbutton = gtk.CheckButton(label=_("Left Axis Grid"))
-                y2gridbutton = gtk.CheckButton(label=_("Right Axis Grid"))
-                xgridbutton = gtk.CheckButton(label=_("X Axis Grid"))
+                xdistancebutton = Gtk.RadioButton(label=_("Distance"))
+                xtimebutton = Gtk.RadioButton(group=xdistancebutton, label=_("Time"))
+                xlapsbutton = Gtk.CheckButton(label=_("Laps"))
+                y1gridbutton = Gtk.CheckButton(label=_("Left Axis Grid"))
+                y2gridbutton = Gtk.CheckButton(label=_("Right Axis Grid"))
+                xgridbutton = Gtk.CheckButton(label=_("X Axis Grid"))
                 #Set state of buttons
                 if activity.x_axis == "distance":
                     xdistancebutton.set_active(True)
@@ -604,67 +604,67 @@ class Main(SimpleBuilderApp):
                 y2gridbutton.connect("toggled", self.on_gridchange, "y2", activity)
                 xgridbutton.connect("toggled", self.on_gridchange, "x", activity)
                 #Add buttons to frame
-                xvbox.pack_start(xdistancebutton, expand=False)
-                xvbox.pack_start(xtimebutton, expand=False)
-                xvbox.pack_start(xlapsbutton, expand=False)
-                xvbox.pack_start(y1gridbutton, expand=False)
-                xvbox.pack_start(y2gridbutton, expand=False)
-                xvbox.pack_start(xgridbutton, expand=False)
+                xvbox.pack_start(xdistancebutton, False, True, 0)
+                xvbox.pack_start(xtimebutton, False, True, 0)
+                xvbox.pack_start(xlapsbutton, False, True, 0)
+                xvbox.pack_start(y1gridbutton, False, True, 0)
+                xvbox.pack_start(y2gridbutton, False, True, 0)
+                xvbox.pack_start(xgridbutton, False, True, 0)
                 xFrame.add(xvbox)
 
                 #Populate axis limits frame
                 #TODO Need to change these to editable objects and redraw graphs if changed....
                 #Create labels etc
-                minlabel = gtk.Label("<small>Min</small>")
+                minlabel = Gtk.Label(label="<small>Min</small>")
                 minlabel.set_use_markup(True)
-                maxlabel = gtk.Label("<small>Max</small>")
+                maxlabel = Gtk.Label(label="<small>Max</small>")
                 maxlabel.set_use_markup(True)
-                xlimlabel = gtk.Label("X")
+                xlimlabel = Gtk.Label(label="X")
                 limits = {}
-                xminlabel = gtk.Entry(max=10)
-                xmaxlabel = gtk.Entry(max=10)
+                xminlabel = Gtk.Entry(max_length=10)
+                xmaxlabel = Gtk.Entry(max_length=10)
                 limits['xminlabel'] = xminlabel
                 limits['xmaxlabel'] = xmaxlabel
                 xminlabel.set_width_chars(5)
                 xminlabel.set_alignment(1.0)
                 xmaxlabel.set_width_chars(5)
                 xmaxlabel.set_alignment(1.0)
-                y1limlabel = gtk.Label("Y1")
-                y1minlabel = gtk.Entry(max=10)
-                y1maxlabel = gtk.Entry(max=10)
+                y1limlabel = Gtk.Label(label="Y1")
+                y1minlabel = Gtk.Entry(max_length=10)
+                y1maxlabel = Gtk.Entry(max_length=10)
                 limits['y1minlabel'] = y1minlabel
                 limits['y1maxlabel'] = y1maxlabel
                 y1minlabel.set_width_chars(5)
                 y1minlabel.set_alignment(1.0)
                 y1maxlabel.set_width_chars(5)
                 y1maxlabel.set_alignment(1.0)
-                y2limlabel = gtk.Label("Y2")
-                y2minlabel = gtk.Entry(max=10)
-                y2maxlabel = gtk.Entry(max=10)
+                y2limlabel = Gtk.Label(label="Y2")
+                y2minlabel = Gtk.Entry(max_length=10)
+                y2maxlabel = Gtk.Entry(max_length=10)
                 limits['y2minlabel'] = y2minlabel
                 limits['y2maxlabel'] = y2maxlabel
                 y2minlabel.set_width_chars(5)
                 y2minlabel.set_alignment(1.0)
                 y2maxlabel.set_width_chars(5)
                 y2maxlabel.set_alignment(1.0)
-                resetbutton = gtk.Button(_('Reset Limits'))
+                resetbutton = Gtk.Button(_('Reset Limits'))
                 resetbutton.connect("clicked", self.on_setlimits, activity, True, None)
-                setbutton = gtk.Button(_('Set Limits'))
+                setbutton = Gtk.Button(_('Set Limits'))
                 setbutton.connect("clicked", self.on_setlimits, activity, False, limits)
                 #Add labels etc to table
-                limitsbox.attach(minlabel, 1, 2, 0, 1, yoptions=gtk.SHRINK)
-                limitsbox.attach(maxlabel, 2, 3, 0, 1, yoptions=gtk.SHRINK)
-                limitsbox.attach(xlimlabel, 0, 1, 1, 2, yoptions=gtk.SHRINK)
-                limitsbox.attach(xminlabel, 1, 2, 1, 2, yoptions=gtk.SHRINK, xpadding=5)
-                limitsbox.attach(xmaxlabel, 2, 3, 1, 2, yoptions=gtk.SHRINK, xpadding=5)
-                limitsbox.attach(y1limlabel, 0, 1, 2, 3, yoptions=gtk.SHRINK)
-                limitsbox.attach(y1minlabel, 1, 2, 2, 3, yoptions=gtk.SHRINK, xpadding=5)
-                limitsbox.attach(y1maxlabel, 2, 3, 2, 3, yoptions=gtk.SHRINK, xpadding=5)
-                limitsbox.attach(y2limlabel, 0, 1, 3, 4, yoptions=gtk.SHRINK)
-                limitsbox.attach(y2minlabel, 1, 2, 3, 4, yoptions=gtk.SHRINK, xpadding=5)
-                limitsbox.attach(y2maxlabel, 2, 3, 3, 4, yoptions=gtk.SHRINK, xpadding=5)
-                limitsbox.attach(setbutton, 0, 3, 4, 5, yoptions=gtk.SHRINK)
-                limitsbox.attach(resetbutton, 0, 3, 5, 6, yoptions=gtk.SHRINK)
+                limitsbox.attach(minlabel, 1, 2, 0, 1, yoptions=Gtk.AttachOptions.SHRINK)
+                limitsbox.attach(maxlabel, 2, 3, 0, 1, yoptions=Gtk.AttachOptions.SHRINK)
+                limitsbox.attach(xlimlabel, 0, 1, 1, 2, yoptions=Gtk.AttachOptions.SHRINK)
+                limitsbox.attach(xminlabel, 1, 2, 1, 2, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
+                limitsbox.attach(xmaxlabel, 2, 3, 1, 2, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
+                limitsbox.attach(y1limlabel, 0, 1, 2, 3, yoptions=Gtk.AttachOptions.SHRINK)
+                limitsbox.attach(y1minlabel, 1, 2, 2, 3, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
+                limitsbox.attach(y1maxlabel, 2, 3, 2, 3, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
+                limitsbox.attach(y2limlabel, 0, 1, 3, 4, yoptions=Gtk.AttachOptions.SHRINK)
+                limitsbox.attach(y2minlabel, 1, 2, 3, 4, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
+                limitsbox.attach(y2maxlabel, 2, 3, 3, 4, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
+                limitsbox.attach(setbutton, 0, 3, 4, 5, yoptions=Gtk.AttachOptions.SHRINK)
+                limitsbox.attach(resetbutton, 0, 3, 5, 6, yoptions=Gtk.AttachOptions.SHRINK)
                 limitsFrame.add(limitsbox)
 
                 row = 0
@@ -681,41 +681,41 @@ class Main(SimpleBuilderApp):
                 for graphdata in keys:
                     #First Y axis...
                     #Create button
-                    y1button = gtk.CheckButton(label=data[graphdata].title)
+                    y1button = Gtk.CheckButton(label=data[graphdata].title)
                     #Make button active if this data is to be displayed...
                     y1button.set_active(data[graphdata].show_on_y1)
                     #Connect handler for toggle state changes
                     y1button.connect("toggled", self.on_y1change, y1box, graphdata, activity)
                     #Attach button to container
-                    y1box.attach(y1button, 0, 1, row, row+1, xoptions=gtk.EXPAND|gtk.FILL)
+                    y1box.attach(y1button, 0, 1, row, row+1, xoptions=Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL)
                     if data[graphdata].linecolor is not None:
                         #Create a color choser
-                        y1color = gtk.ColorButton()
+                        y1color = Gtk.ColorButton()
                         #Set color to current activity color
-                        _color = gtk.gdk.color_parse(data[graphdata].linecolor)
+                        _color = Gdk.color_parse(data[graphdata].linecolor)
                         y1color.set_color(_color)
                         #Connect handler for color state changes
                         y1color.connect("color-set", self.on_y1colorchange, y1box, graphdata, activity)
                         #Attach to container
                         y1box.attach(y1color, 1, 2, row, row+1)
                     else:
-                        blanklabel = gtk.Label("")
+                        blanklabel = Gtk.Label(label="")
                         y1box.attach(blanklabel, 1, 2, row, row+1)
 
                     #Second Y axis
-                    y2button = gtk.CheckButton(label=data[graphdata].title)
+                    y2button = Gtk.CheckButton(label=data[graphdata].title)
                     y2button.set_active(data[graphdata].show_on_y2)
                     y2button.connect("toggled", self.on_y2change, y2box, graphdata, activity)
-                    y2box.attach(y2button, 0, 1, row, row+1, xoptions=gtk.EXPAND|gtk.FILL)
+                    y2box.attach(y2button, 0, 1, row, row+1, xoptions=Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL)
                     if data[graphdata].y2linecolor is not None:
-                        y2color = gtk.ColorButton()
-                        _color = gtk.gdk.color_parse(data[graphdata].y2linecolor)
+                        y2color = Gtk.ColorButton()
+                        _color = Gdk.color_parse(data[graphdata].y2linecolor)
                         y2color.set_color(_color)
                         y2color.connect("color-set", self.on_y2colorchange, y2box, graphdata, activity)
                         #Attach to container
                         y2box.attach(y2color, 1, 2, row, row+1)
                     else:
-                        blanklabel = gtk.Label("")
+                        blanklabel = Gtk.Label(label="")
                         y2box.attach(blanklabel, 1, 2, row, row+1)
                     row += 1
 
@@ -750,8 +750,8 @@ class Main(SimpleBuilderApp):
                 if y2min is not None and y2max is not None:
                     y2minlabel.set_text(str(y2min))
                     y2maxlabel.set_text(str(y2max))
-                
-                
+
+
                 #Default to showing options
                 self.buttonGraphShowOptions.hide()
                 self.scrolledwindowGraphOptions.show()
@@ -769,7 +769,7 @@ class Main(SimpleBuilderApp):
             # ToDo: check why vertical container is shared
             for child in vboxChildren:
                 #Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
-                if isinstance(child, matplotlib.backends.backend_gtkagg.FigureCanvasGTK) or isinstance(child, matplotlib.backends.backend_gtkagg.NavigationToolbar2GTKAgg):
+                if isinstance(child, matplotlib.backends.backend_gtk3agg.FigureCanvasGTK3Agg) or isinstance(child, matplotlib.backends.backend_gtk3.NavigationToolbar2GTK3):
                     logging.debug('Removing child: '+str(child))
                     self.record_graph_vbox.remove(child)
             self.record_vbox.set_sensitive(0)
@@ -808,14 +808,14 @@ class Main(SimpleBuilderApp):
         #else:
         #   self.recordview.set_sensitive(0)
         logging.debug("<<")
-        
+
     def actualize_analytics(self,activity):
         logging.debug(">>")
         record_list = activity.tracks
-            
+
         def project(d,a):
             return int(a.duration * (d / a.distance)**1.06)
-            
+
         DISTANCES = {
             .8    : _("800 m"),
             1.5   : _("1500 m"),
@@ -826,12 +826,12 @@ class Main(SimpleBuilderApp):
             42.195  : _("Marathon"),
             100   : _("100K"),
         }
-        
-        projected_store = gtk.ListStore(
-            gobject.TYPE_STRING,       #id
-            gobject.TYPE_STRING,    #name
-            gobject.TYPE_STRING,    #distance
-            gobject.TYPE_STRING,       #time
+
+        projected_store = Gtk.ListStore(
+            GObject.TYPE_STRING,       #id
+            GObject.TYPE_STRING,    #name
+            GObject.TYPE_STRING,    #distance
+            GObject.TYPE_STRING,       #time
             )
 
         ds = DISTANCES.keys()
@@ -842,26 +842,26 @@ class Main(SimpleBuilderApp):
             projected_store.set (
                 iter,
                 0, str(d),
-                1, v,         
+                1, v,
                 2, str(d),
                 3, str(project(d, activity)),
                 )
         self.analyticsTreeView.set_model(projected_store)
-            
+
         self.analytics_activity = activity
         self.on_change_rank_percentage()
 
         logging.debug("<<")
 
     def on_change_rank_percentage(self, widget=None):
-    
+
         activity = self.analytics_activity
         if widget:
             percentage = widget.get_value() / 100
         else:
             percentage = .05
         records = self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.distance.between(activity.distance * (1-percentage), activity.distance * (1+percentage)), Activity.sport == activity.sport)).all()
-        
+
         count = 1
         for r in records:
             if r.average > activity.average:
@@ -876,15 +876,15 @@ class Main(SimpleBuilderApp):
         self.label_ranking_stddev.set_text("%.4f" % (self.uc.speed(numpy.std(speeds))))
         self.label_ranking_dev.set_text("%+.2fσ" % ((activity.average - numpy.average(speeds)) / numpy.std(speeds)))
 
-        rank_store = gtk.ListStore(
-            gobject.TYPE_INT,       #id
-            gobject.TYPE_INT,       #rank
-            gobject.TYPE_STRING,    #date
-            gobject.TYPE_STRING,    #distance
-            gobject.TYPE_STRING,       #time
-            gobject.TYPE_STRING,       #speed
-            gobject.TYPE_STRING,       #pace
-            gobject.TYPE_STRING,       #color
+        rank_store = Gtk.ListStore(
+            GObject.TYPE_INT,       #id
+            GObject.TYPE_INT,       #rank
+            GObject.TYPE_STRING,    #date
+            GObject.TYPE_FLOAT,     #distance
+            GObject.TYPE_INT,       #time
+            GObject.TYPE_FLOAT,     #speed
+            GObject.TYPE_FLOAT,     #pace
+            GObject.TYPE_STRING,    #color
             )
 
         length = len(records)
@@ -893,7 +893,7 @@ class Main(SimpleBuilderApp):
             rec_set.append(r)
         if length>1 and count!=length:
             rec_set.append(-1)
-            
+
         for i in rec_set:
             r = records[i]
             iter = rank_store.append()
@@ -902,19 +902,19 @@ class Main(SimpleBuilderApp):
                 iter,
                 0, i,
                 1, rank,
-                2, r.date,
+                2, str(r.date),
                 3, r.distance,
-                4, str(r.duration),
+                4, r.duration,
                 5, r.average,
                 6, r.pace,
                 7, '#3AA142' if rank==count else '#000000',
             )
-            
+
             for c in self.rankingTreeView.get_columns()[:-1]:
-                for cr in c.get_cell_renderers():
-                    if type(cr)==gtk.CellRendererText:
-                        c.add_attribute(cr, 'foreground', 7)
-            
+                for cr in c.get_cells():
+                    if type(cr)==Gtk.CellRendererText:
+                        cr.set_property('foreground', 'gray')
+
         self.rankingTreeView.set_model(rank_store)
 
     def actualize_dayview(self, date):
@@ -1106,27 +1106,24 @@ class Main(SimpleBuilderApp):
         self.labelHeight.set_text(athlete.height+" cm")
 
         #Create history treeview
-        history_store = gtk.ListStore(
-            gobject.TYPE_STRING,       #id
-            gobject.TYPE_STRING,    #date
-            gobject.TYPE_STRING,    #weight
-            gobject.TYPE_STRING,    #body fat %
-            gobject.TYPE_STRING,       #resting HR
-            gobject.TYPE_STRING        #max HR
+        history_store = Gtk.ListStore(
+            GObject.TYPE_INT,       #id
+            GObject.TYPE_STRING,    #date
+            GObject.TYPE_FLOAT,     #weight
+            GObject.TYPE_FLOAT,     #body fat %
+            GObject.TYPE_INT,       #resting HR
+            GObject.TYPE_INT        #max HR
             )
         for data in athlete.data:
-            weight = data['weight']
-            date = data['date']
-
             iter = history_store.append()
             history_store.set (
                 iter,
-                0, (data['id_athletestat']),
-                1, date,         
-                2, weight,
-                3, (data['bodyfat']),
-                4, (data['restinghr']),
-                5, (data['maxhr']),
+                0, data['id_athletestat'],
+                1, str(data['date']),
+                2, data['weight'],
+                3, data['bodyfat'],
+                4, data['restinghr'],
+                5, data['maxhr'],
                 )
         self.athleteTreeView.set_model(history_store)
         self.grapher.drawAthleteGraph(athlete=athlete, box=self.boxAthleteGraph)
@@ -1138,25 +1135,25 @@ class Main(SimpleBuilderApp):
         self.labelTotalDuration.set_text(str(stats.data['total_duration'] / 3600) + " hours")
         self.labelStartDate.set_text(stats.data['start_date'].strftime('%Y-%m-%d'))
         self.labelEndDate.set_text(stats.data['end_date'].strftime('%Y-%m-%d'))
-        
+
         data = self.parent.stats.data
-        
-        store = gtk.ListStore(
-            gobject.TYPE_INT,
-            gobject.TYPE_STRING,
-            gobject.TYPE_INT,
-            gobject.TYPE_INT,
-            gobject.TYPE_FLOAT,
-            gobject.TYPE_FLOAT,
-            gobject.TYPE_FLOAT,
-            gobject.TYPE_INT,
-            gobject.TYPE_INT,
-            gobject.TYPE_INT,
-            gobject.TYPE_FLOAT
+
+        store = Gtk.ListStore(
+            GObject.TYPE_INT,
+            GObject.TYPE_STRING,
+            GObject.TYPE_INT,
+            GObject.TYPE_INT,
+            GObject.TYPE_FLOAT,
+            GObject.TYPE_FLOAT,
+            GObject.TYPE_FLOAT,
+            GObject.TYPE_INT,
+            GObject.TYPE_INT,
+            GObject.TYPE_INT,
+            GObject.TYPE_FLOAT
             )
         for s in data['sports'].values():
             iter = store.append()
-            
+
             c = 0
             store.set (iter, c, c)
             c += 1
@@ -1175,29 +1172,29 @@ class Main(SimpleBuilderApp):
 
         self.statsTreeView.set_model(store)
         self.statsTreeView.set_rules_hint(True)
-        
-        store.set_sort_column_id(3, gtk.SORT_DESCENDING)
+
+        store.set_sort_column_id(3, Gtk.SortType.DESCENDING)
 
         self.drawareatotal.drawgraph(record_list)
 
-        logging.debug("<<")    
-    
+        logging.debug("<<")
+
     def actualize_listview(self,record_list):
         logging.debug(">>")
         #recod list tiene:
         #date,distance,average,title,sports.name,id_record,time,beats,caloriesi
         #Laas columnas son:
         #column_names=[_("id"),_("Title"),_("Date"),_("Distance"),_("Sport"),_("Time"),_("Beats"),_("Average"),("Calories")]
-        store = gtk.ListStore(
-            gobject.TYPE_INT,
-            gobject.TYPE_STRING,
-            gobject.TYPE_STRING,
-            gobject.TYPE_FLOAT,
-            gobject.TYPE_STRING,
-            gobject.TYPE_STRING,
-            gobject.TYPE_INT,
-            gobject.TYPE_FLOAT,
-            gobject.TYPE_INT,
+        store = Gtk.ListStore(
+            GObject.TYPE_INT,
+            GObject.TYPE_STRING,
+            GObject.TYPE_STRING,
+            GObject.TYPE_FLOAT,
+            GObject.TYPE_STRING,
+            GObject.TYPE_STRING,
+            GObject.TYPE_INT,
+            GObject.TYPE_FLOAT,
+            GObject.TYPE_INT,
             object)
         for i in record_list:
             try:
@@ -1259,9 +1256,9 @@ class Main(SimpleBuilderApp):
         #Laas columnas son:
         #column_names=[_("id"),_("Waypoint")]
 
-        store = gtk.ListStore(
-            gobject.TYPE_INT,
-            gobject.TYPE_STRING,
+        store = Gtk.ListStore(
+            GObject.TYPE_INT,
+            GObject.TYPE_STRING,
             object)
         iterOne = False
         iterDefault = False
@@ -1303,7 +1300,7 @@ class Main(SimpleBuilderApp):
         if tree_model is not None:
             #iter = tree_model.get_iter_root()
             for item in tree_model:
-                #if isinstance(item, gtk.TreeModelRow):
+                #if isinstance(item, Gtk.TreeModelRow):
                 if item[0] == type:
                     self.waypoint_type.set_active(x)
                     return
@@ -1345,7 +1342,7 @@ class Main(SimpleBuilderApp):
         self.listsearch.duration = self.lsa_duration.get_active()
         self.listsearch.distance = self.lsa_distance.get_active()
         self.parent.refreshListView(self.listsearch.condition)
-        
+
     def on_listareareset_clicked(self, widget):
         self.listsearch.reset_lsa()
         self.parent.refreshListView(self.listsearch.condition)
@@ -1355,7 +1352,7 @@ class Main(SimpleBuilderApp):
             if 'visible' in column_dict and not column_dict['visible']:
                 pass
             else:
-                item = gtk.CheckMenuItem(column_dict['name'])
+                item = Gtk.CheckMenuItem(column_dict['name'])
                 #self.lsa_searchoption.append_text(name)
                 item.connect("button_press_event", self.on_menulistview_activate, i)
                 self.menulistviewOptions.append(item)
@@ -1449,7 +1446,7 @@ class Main(SimpleBuilderApp):
         else:
             activity.show_laps = False
         self.actualize_recordgraph(activity)
-        
+
     def on_gridchange(self, widget, axis=None, activity=None):
         '''Handler for record graph grid selection changes'''
         if axis == 'y1':
@@ -1565,7 +1562,7 @@ class Main(SimpleBuilderApp):
         self.buttonGraphHideOptions.hide()
         self.scrolledwindowGraphOptions.hide()
         #for child in self.graph_data_hbox.get_children():
-        #    if isinstance(child, gtk.Frame):
+        #    if isinstance(child, Gtk.Frame):
         #        child.hide()
         self.buttonGraphShowOptions.show()
 
@@ -1574,7 +1571,7 @@ class Main(SimpleBuilderApp):
         logging.debug('on_buttonGraphShowOptions_clicked')
         self.buttonGraphShowOptions.hide()
         #for child in self.graph_data_hbox.get_children():
-        #    if isinstance(child, gtk.Frame):
+        #    if isinstance(child, Gtk.Frame):
         #        child.show()
         self.scrolledwindowGraphOptions.show()
         self.buttonGraphHideOptions.show()
@@ -1826,9 +1823,9 @@ class Main(SimpleBuilderApp):
                 self.parent.refreshGraphView("record")
         logging.debug("<<")
         return False
-        
+
     def on_allRecordTreeView_button_press(self, treeview, event):
-        ''' Handler for clicks on listview list 
+        ''' Handler for clicks on listview list
             event.button = mouse button pressed (i.e. 1 = left, 3 = right)
         '''
         logging.debug(">>")
@@ -1857,11 +1854,11 @@ class Main(SimpleBuilderApp):
     def actualize_recordTreeView(self, date):
         logging.debug(">>")
         iterOne = False
-        store = gtk.TreeStore(
-            gobject.TYPE_INT,           #record_id
-            gobject.TYPE_STRING,        #Time
-            gobject.TYPE_STRING,        #Sport
-            gobject.TYPE_STRING,        #Distance
+        store = Gtk.TreeStore(
+            GObject.TYPE_INT,           #record_id
+            GObject.TYPE_STRING,        #Time
+            GObject.TYPE_STRING,        #Sport
+            GObject.TYPE_STRING,        #Distance
             object)
         if self.activeSport:
             sport = self._sport_service.get_sport_by_name(self.activeSport)
@@ -1901,11 +1898,11 @@ class Main(SimpleBuilderApp):
                     2, duration,
                     3, distance
                     )
-                store.set_sort_column_id(1, gtk.SORT_ASCENDING)
+                store.set_sort_column_id(1, Gtk.SortType.ASCENDING)
         self.recordTreeView.set_model(store)
         if iterOne:
             self.recordTreeView.get_selection().select_iter(iterOne)
-        logging.debug("<<")        
+        logging.debug("<<")
 
     def parseFloat(self,string):
         try:
@@ -1921,7 +1918,7 @@ class Main(SimpleBuilderApp):
             self.calendar.mark_day(i)
         #Turn on displaying of week numbers
         display_options = self.calendar.get_display_options()
-        self.calendar.set_display_options(display_options|gtk.CALENDAR_SHOW_WEEK_NUMBERS)
+        self.calendar.set_display_options(display_options|Gtk.CalendarDisplayOptions.SHOW_WEEK_NUMBERS)
         logging.debug("<<")
 
     def on_about_activate(self,widget):
@@ -1977,26 +1974,24 @@ class Main(SimpleBuilderApp):
                 maxHR = selected.get_value(iter,5)
                 #print "show popup etc (clicked on idx %s, date %s)" % (idx, date)
                 #Show popup menu...
-                popup = gtk.Menu()
+                popup = Gtk.Menu()
                 #Edit Entry Item
-                menuitem = gtk.MenuItem(label=_("Edit Entry"))
+                menuitem = Gtk.MenuItem(label=_("Edit Entry"))
                 menuitem.connect("activate", self.on_athleteTreeView_edit, {'id':idx, 'date':date, 'weight':weight, 'bf':bf, 'restingHR':restingHR, 'maxHR':maxHR})
                 popup.attach(menuitem, 0, 1, 0, 1)
                 #New Entry Item
-                menuitem = gtk.MenuItem(label=_("New Entry"))
+                menuitem = Gtk.MenuItem(label=_("New Entry"))
                 menuitem.connect("activate", self.on_athleteTreeView_edit, None)
                 popup.attach(menuitem, 0, 1, 1, 2)
                 #Separator
-                menuitem = gtk.SeparatorMenuItem()
+                menuitem = Gtk.SeparatorMenuItem()
                 popup.attach(menuitem, 0, 1, 2, 3)
                 #Delete Entry Item
-                menuitem = gtk.MenuItem(label=_("Delete Entry"))
+                menuitem = Gtk.MenuItem(label=_("Delete Entry"))
                 menuitem.connect("activate", self.on_athleteTreeView_delete, idx)
                 popup.attach(menuitem, 0, 1, 3, 4)
                 popup.show_all()
-                popup.popup( None, None, None, event.button, time)
-                #self.popup.show(selected.get_value(iter,0), event.button, time)
-                #self.popup.popup( None, None, None, event_button, time)
+                popup.popup_at_pointer(None)
             else:
                 #Left mouse - so display this row
                 pass
@@ -2008,7 +2003,7 @@ class Main(SimpleBuilderApp):
                 restingHR = selected.get_value(iter,4)
                 maxHR = selected.get_value(iter,5)
                 self.update_athlete_item(idx, date, weight, bf, restingHR, maxHR)'''
-        
+
     def on_athleteTreeView_edit(self, widget, data):
         logging.debug('>>')
         if data is None:
@@ -2020,75 +2015,74 @@ class Main(SimpleBuilderApp):
         else:
             logging.debug('Edit existing athlete entry: %s', str(data))
             title = _('Edit Athlete Entry')
-        dialog = gtk.Dialog(title=title, parent=self.pytrainer_main.windowmain.window1, flags= gtk.DIALOG_DESTROY_WITH_PARENT,
-                     buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
-                      gtk.STOCK_SAVE, gtk.RESPONSE_ACCEPT))
-        dialog.set_has_separator(True)
+        dialog = Gtk.Dialog(title=title, parent=self.pytrainer_main.windowmain.window1, flags= Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                     buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
+                      Gtk.STOCK_SAVE, Gtk.ResponseType.ACCEPT))
         dialog.set_modal(False)
         #Get Content area of dialog
         vbox = dialog.get_content_area()
-        
+
         #Build data display
-        table = gtk.Table(1,2)
+        table = Gtk.Table(1,2)
         self.entryList = []
         #Add date
-        label = gtk.Label(_("<b>Date</b>"))
+        label = Gtk.Label(label=_("<b>Date</b>"))
         label.set_use_markup(True)
-        entry = gtk.Entry()
+        entry = Gtk.Entry()
         entry.set_text(data['date'])
         self.entryList.append(entry)
         #Date calander widget
-        cal = gtk.Image()
-        cal.set_from_stock(gtk.STOCK_INDEX, gtk.ICON_SIZE_BUTTON)
-        calbut = gtk.Button()
+        cal = Gtk.Image()
+        cal.set_from_stock(Gtk.STOCK_INDEX, Gtk.IconSize.BUTTON)
+        calbut = Gtk.Button()
         calbut.add(cal)
-        calbut.connect("clicked", self.on_athletecalendar_clicked) 
+        calbut.connect("clicked", self.on_athletecalendar_clicked)
         table.attach(label,0,1,0,1)
         table.attach(entry,1,2,0,1)
         #table.attach(calbut,2,3,0,1) #TODO
-        
+
         #Add weight
-        label = gtk.Label(_("<b>Weight</b>"))
+        label = Gtk.Label(label=_("<b>Weight</b>"))
         label.set_use_markup(True)
-        entry = gtk.Entry()
+        entry = Gtk.Entry()
         if data['weight']:
             entry.set_text(str(round(data['weight'], 2)))
         self.entryList.append(entry)
         table.attach(label,0,1,1,2)
         table.attach(entry,1,2,1,2)
         #Add Body fat
-        label = gtk.Label(_("<b>Body Fat</b>"))
+        label = Gtk.Label(label=_("<b>Body Fat</b>"))
         label.set_use_markup(True)
-        entry = gtk.Entry()
+        entry = Gtk.Entry()
         if data['bf']:
             entry.set_text(str(round(data['bf'], 2)))
         self.entryList.append(entry)
         table.attach(label,0,1,2,3)
         table.attach(entry,1,2,2,3)
         #Add Resting HR
-        label = gtk.Label(_("<b>Resting Heart Rate</b>"))
+        label = Gtk.Label(label=_("<b>Resting Heart Rate</b>"))
         label.set_use_markup(True)
-        entry = gtk.Entry()
+        entry = Gtk.Entry()
         if data['restingHR']:
             entry.set_text(str(data['restingHR']))
         self.entryList.append(entry)
         table.attach(label,0,1,3,4)
         table.attach(entry,1,2,3,4)
         #Add Max HR
-        label = gtk.Label(_("<b>Max Heart Rate</b>"))
+        label = Gtk.Label(label=_("<b>Max Heart Rate</b>"))
         label.set_use_markup(True)
-        entry = gtk.Entry()
+        entry = Gtk.Entry()
         if data['maxHR']:
             entry.set_text(str(data['maxHR']))
         self.entryList.append(entry)
         table.attach(label,0,1,4,5)
         table.attach(entry,1,2,4,5)
-        
+
         vbox.add(table)
         vbox.show_all()
         response = dialog.run()
         #dialog.destroy()
-        if response == gtk.RESPONSE_ACCEPT:
+        if response == Gtk.ResponseType.ACCEPT:
             #print "on_athleteTreeView_edit save called", data
             data['date'] = gtk_str(self.entryList[0].get_text())
             data['weight'] = gtk_str(self.entryList[1].get_text())
@@ -2100,16 +2094,16 @@ class Main(SimpleBuilderApp):
         dialog.destroy()
         logging.debug('<<')
 
-    
+
     def on_athleteTreeView_delete(self, widget, data):
         '''User has opted to delete entry'''
         logging.debug(">>")
         msg = _("Delete this database entry?")
-        md = gtk.MessageDialog(self.pytrainer_main.windowmain.window1, gtk.DIALOG_DESTROY_WITH_PARENT, gtk.MESSAGE_QUESTION, gtk.BUTTONS_OK_CANCEL, msg)
+        md = Gtk.MessageDialog(self.pytrainer_main.windowmain.window1, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.QUESTION, Gtk.ButtonsType.OK_CANCEL, msg)
         md.set_title(_("Are you sure?"))
         response = md.run()
         md.destroy()
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.ResponseType.OK:
             logging.debug("User confirmed deletion of athlete entry with id: %s" % data)
             self.pytrainer_main.athlete.delete_record(data)
             self.parent.refreshAthleteView()

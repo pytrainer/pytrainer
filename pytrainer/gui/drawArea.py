@@ -17,10 +17,10 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import matplotlib
-matplotlib.use('GTKAgg')
+matplotlib.use('GTK3Agg')
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_gtkagg import FigureCanvasGTKAgg as FigureCanvasGTK
-from matplotlib.backends.backend_gtkagg import NavigationToolbar2GTKAgg as NavigationToolbar
+from matplotlib.backends.backend_gtk3agg import FigureCanvasGTK3Agg as FigureCanvasGTK
+from matplotlib.backends.backend_gtk3 import NavigationToolbar2GTK3 as NavigationToolbar
 import matplotlib.pyplot as plt
 import pylab
 import logging
@@ -141,7 +141,7 @@ class DrawArea:
         logging.debug("Got canvas: %s" % (str(canvas)))
         canvas.show()
         logging.debug("Adding canvas to vbox")
-        self.vbox.pack_start(canvas, True, True)
+        self.vbox.pack_start(canvas, True, True, 0)
         #toolbar = NavigationToolbar(canvas, self.window)
         #self.vbox.pack_start(toolbar, False, False)
 
@@ -299,7 +299,7 @@ class DrawArea:
         axis.grid(True)
         canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
         canvas.show()
-        self.vbox.pack_start(canvas, True, True)
+        self.vbox.pack_start(canvas, True, True, 0)
         #toolbar = NavigationToolbar(canvas, self.window)
         #self.vbox.pack_start(toolbar, False, False)
 
@@ -376,9 +376,9 @@ class DrawArea:
         canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
         logging.debug("Canvas: %s" % str(canvas))
         canvas.show()
-        self.vbox.pack_start(canvas, True, True)
+        self.vbox.pack_start(canvas, True, True, 0)
         toolbar = NavigationToolbar(canvas, self.window)
-        self.vbox.pack_start(toolbar, False, False)
+        self.vbox.pack_start(toolbar, False, False, 0)
 
         for child in self.vbox.get_children():
             logging.debug('Child available: '+str(child))
@@ -475,7 +475,7 @@ class DrawArea:
         for child in self.vbox.get_children():
             logging.debug('Child available: '+str(child))
 
-        self.vbox.pack_start(canvas, True, True)
+        self.vbox.pack_start(canvas, True, True, 0)
         logging.debug('<<')
 
     def drawDefault(self):
@@ -488,7 +488,7 @@ class DrawArea:
         self.canvas.destroy()
         self.canvas = FigureCanvasGTK(self.figure) # a gtk.DrawingArea
         self.canvas.show()
-        self.vbox.pack_start(self.canvas, True, True)
+        self.vbox.pack_start(self.canvas, True, True, 0)
         logging.debug('<<')
 
     def fill_over(self, ax, x, y, val, color, over=True):
@@ -527,7 +527,7 @@ class DrawArea:
         # ToDo: check why vertical container is shared
         for child in vboxChildren:
             #Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
-            if isinstance(child, matplotlib.backends.backend_gtkagg.FigureCanvasGTK) or isinstance(child, matplotlib.backends.backend_gtkagg.NavigationToolbar2GTKAgg):
+            if isinstance(child, FigureCanvasGTK) or isinstance(child, NavigationToolbar):
                 logging.debug('Removing child: '+str(child))
                 self.vbox.remove(child)
         logging.debug('<<')

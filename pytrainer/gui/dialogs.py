@@ -17,9 +17,9 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import os
-import pygtk
-pygtk.require('2.0')
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 import logging
 
 class fileChooserDialog():
@@ -32,55 +32,55 @@ class fileChooserDialog():
 
 class guiFlush():
     def __init__(self):
-        dialog = gtk.Dialog(title=None, parent=None, flags=0, buttons=None)
+        dialog = Gtk.Dialog(title=None, parent=None, flags=0, buttons=None)
         dialog.show()
         dialog.destroy()
 
 def open_file_chooser_dialog(title="Choose a file", multiple=False):
-    dialog = gtk.FileChooserDialog(title, None, gtk.FILE_CHOOSER_ACTION_OPEN,(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_OPEN, gtk.RESPONSE_OK))
-    dialog.set_default_response(gtk.RESPONSE_OK)
+    dialog = Gtk.FileChooserDialog(title, None, Gtk.FileChooserAction.OPEN,(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+    dialog.set_default_response(Gtk.ResponseType.OK)
     dialog.set_select_multiple(multiple)
     response = dialog.run()
     result = None
-    if response == gtk.RESPONSE_OK:
+    if response == Gtk.ResponseType.OK:
         result = dialog.get_filenames()
     dialog.destroy()
     return result
 
 def save_file_chooser_dialog(title="Choose a file", pattern="*.csv"):
-    dialog = gtk.FileChooserDialog(title, None, gtk.FILE_CHOOSER_ACTION_SAVE,
-                                       (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                                            gtk.STOCK_SAVE, gtk.RESPONSE_OK))
-    dialog.set_default_response(gtk.RESPONSE_OK)
+    dialog = Gtk.FileChooserDialog(title, None, Gtk.FileChooserAction.SAVE,
+                                       (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+                                            Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+    dialog.set_default_response(Gtk.ResponseType.OK)
     dialog.set_current_name(pattern)
     response = dialog.run()
     result = None
-    if response == gtk.RESPONSE_OK:
+    if response == Gtk.ResponseType.OK:
         result = dialog.get_filename()
     dialog.destroy()
     return result
 
 def warning_dialog(text="", title="Warning", cancel=False):
     if cancel:
-        dialog = gtk.MessageDialog(type=gtk.MESSAGE_QUESTION,
-                                       buttons=gtk.BUTTONS_OK_CANCEL,
+        dialog = Gtk.MessageDialog(type=Gtk.MessageType.QUESTION,
+                                       buttons=Gtk.ButtonsType.OK_CANCEL,
                                        message_format=text,
-                                       flags=gtk.DIALOG_MODAL)
+                                       flags=Gtk.DialogFlags.MODAL)
     else:
-        dialog = gtk.MessageDialog(type=gtk.MESSAGE_WARNING,
-                                       buttons=gtk.BUTTONS_OK,
+        dialog = Gtk.MessageDialog(type=Gtk.MessageType.WARNING,
+                                       buttons=Gtk.ButtonsType.OK,
                                        message_format=text,
-                                       flags=gtk.DIALOG_MODAL)
+                                       flags=Gtk.DialogFlags.MODAL)
     dialog.set_title(title)
     result = dialog.run()
     dialog.destroy()
     return result
 
 def calendar_dialog(title="Calendar", date=None):
-    dialog = gtk.Dialog(title=title, flags=gtk.DIALOG_MODAL)
-    dialog.add_buttons(gtk.STOCK_OK, gtk.RESPONSE_OK,
-                       gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
-    calendar = gtk.Calendar()
+    dialog = Gtk.Dialog(title=title, flags=Gtk.DialogFlags.MODAL)
+    dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK,
+                       Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+    calendar = Gtk.Calendar()
     if date:
         try:
             year, month, day = date.split("-")
@@ -92,8 +92,8 @@ def calendar_dialog(title="Calendar", date=None):
     calendar.show()
     result = dialog.run()
     dialog.destroy()
-    if result == gtk.RESPONSE_OK:
+    if result == Gtk.ResponseType.OK:
         date = calendar.get_date()
         return "%0.4d-%0.2d-%0.2d" % (date[0], date[1] + 1, date[2])
-    elif result == gtk.RESPONSE_CANCEL:
+    elif result == Gtk.ResponseType.CANCEL:
         return None
