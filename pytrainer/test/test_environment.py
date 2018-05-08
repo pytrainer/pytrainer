@@ -33,6 +33,9 @@ class Test(unittest.TestCase):
         del(Environment.self)
         self.environment = Environment(TEST_DIR_NAME, DATA_DIR_NAME)
 
+    def tearDown(self):
+        del(Environment.self)
+
     def test_get_conf_dir(self):
         self.assertEquals(TEST_DIR_NAME, self.environment.conf_dir)
 
