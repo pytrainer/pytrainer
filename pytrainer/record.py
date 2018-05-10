@@ -359,15 +359,6 @@ class Record:
         except NoResultFound:
             return None
 
-    def getAllrecord(self):
-        """
-        Retrieve all record data (no lap nor equipment) stored in database. Initially intended for csv export
-        arguments:
-        returns: list of data sorted by date desc"""
-        logging.debug('--')
-        return self.pytrainer_main.ddbb.select("records,sports", "date_time_local,title,sports.name,distance,duration,average,maxspeed,pace,maxpace,beats,maxbeats,calories,upositive,unegative,comments",
-    "sports.id_sports = records.sport","order by date_time_local asc")
-
     def getRecordListByCondition(self, condition):
         logging.debug('>>')
         if condition is None:
