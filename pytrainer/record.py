@@ -341,13 +341,12 @@ class Record:
         Retrieve date (string format) of last record stored in DB. It may select per sport
         """
         logging.debug("--")
-        #select date from records order by date desc limit 1;
-        query_cond = None
         if sport_id is not None:
-            query_cond = "sport = %s" % sport_id
-        result = self.pytrainer_main.ddbb.select("records", "date", query_cond, "order by date desc limit 1")
-    # It returns a list of tuples, so we take first element of list (tuple) and then select first element
-        return result[0][0]
+            return str(self.pytrainer_main.ddbb.session.query(Activity).
+                       filter(Activity.sport_id == sport_id).order_by(Activity.date).limit(1).one().date)
+        else:
+            return str(self.pytrainer_main.ddbb.session.query(Activity).order_by(Activity.date).
+                       limit(1).one().date)
 
     def getAllrecord(self):
         """
