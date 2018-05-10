@@ -1,5 +1,8 @@
 import datetime
+from sqlalchemy import and_
 from pytrainer.lib.localization import gtk_str
+from pytrainer.lib.uc import UC
+from pytrainer.core.activity import Activity
 
 UC_LISTDISTANCE = {False : [[_('All Distances'), [0.0,999999.9]],
                             ['<1 km', [0.0, 1.0]],
@@ -18,10 +21,9 @@ UC_LISTDISTANCE = {False : [[_('All Distances'), [0.0,999999.9]],
                     }
 class ListSearch(object):
     """ Builds SQLite condition out of search parameters"""
-    def __init__(self, sport_service, parent = None, pytrainer_main = None):
+    def __init__(self, sport_service, parent=None):
         self.parent = parent    
-        self.pytrainer_main = pytrainer_main
-        self.uc = self.pytrainer_main.uc
+        self.uc = UC()
         """ Initialize all query parameters to valid default values""" 
         self.title = ''
         self.sport = 0
@@ -62,51 +64,35 @@ class ListSearch(object):
         self.setup_lsa_past()
         self.setup_lsa_duration()
         self.setup_lsa_distance()
-        
+
     def get_condition(self):
-        """ Assembles sqlite condition """
-        _search = ""
-        _add_and = False
-        if self.title != "":
-            _search = "title like '%" +self.title + "%'"
-            _add_and = True
-        if self.sport > 0:
-            _sport = self.listSport[self.sport-1].id
-            _here = "sport=%s" % _sport
-            if _add_and:
-                _search += " and " + _here
-            else:
-                _search = _here
-            _add_and = True
+        """ Assembles an sqlalchemy query object """
+        _andlist = []
+        if self.title:
+            _andlist.append(Activity.like('%' + self.title + '%'))
+        if self.sport:
+            _andlist.append(Activity.sport_id == self.sport)
         if self.listPast[self.past][1]:
-            _delta = datetime.timedelta(days=self.listPast[self.past][1] )
+            _delta = datetime.timedelta(days=self.listPast[self.past][1])
             _date = datetime.datetime.today() + _delta
-            _here = "date>'" + _date.isoformat() + "'"
-            if _add_and:
-                _search += " and " + _here
-            else:
-                _search = _here
-            _add_and = True
+            _andlist.append(Activity.date > _date)
         if self.listDuration[self.duration][1]:
             _dur_min = int(self.listDuration[self.duration][1][0])
             _dur_max = int(self.listDuration[self.duration][1][1])
-            _here = "(duration between %s and %s)" % (_dur_min, _dur_max)
-            if _add_and:
-                _search += " and " + _here
-            else:
-                _search = _here
-            _add_and = True                 
+            _andlist.append(Activity.duration.between(_dur_min, _dur_max))
         if self.listDistance[self.distance][1]:
             _dis_min = int(self.listDistance[self.distance][1][0])
             _dis_max = int(self.listDistance[self.distance][1][1])
-            _here = "(distance between %s and %s)" % (_dis_min, _dis_max)
-            if _add_and:
-                _search += " and " + _here
+            _andlist.append(Activity.distance.between(_dis_min, _dis_max))
+        ret = None
+        first = True
+        for expr in _andlist:
+            if first:
+                ret = expr
+                first = False
             else:
-                _search = _here
-            _add_and = True                                             
-        #print _search
-        return _search
+                ret = and_(ret, expr)
+        return ret
 
     """    
     def get_listDistance(self):
