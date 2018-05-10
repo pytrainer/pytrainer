@@ -503,7 +503,7 @@ class Main(SimpleBuilderApp):
 
                 def edited_cb(cell, path, new_text, (liststore, activity)):
                     liststore[path][12] = new_text
-                    activity.Laps[int(path)].comments = new_text
+                    activity.Laps[int(path)].comments = gtk_str(new_text)
                     self.pytrainer_main.ddbb.session.commit()
 
                 def show_tooltip(widget, x, y, keyboard_mode, tooltip, user_param1):
