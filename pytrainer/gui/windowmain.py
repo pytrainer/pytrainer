@@ -1205,7 +1205,7 @@ class Main(SimpleBuilderApp):
                 logging.debug(str(e))
                 continue
             _title = i.title
-            _date = i.date
+            _date = str(i.date)
             try:
                 _distance = float(i.distance)
             except (ValueError, TypeError):
