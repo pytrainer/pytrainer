@@ -16,7 +16,7 @@
 
 import unittest
 import mock
-from datetime import datetime
+from datetime import datetime, date
 from dateutil.tz import tzoffset
 from pytrainer.lib.ddbb import DDBB
 from pytrainer.core.sport import SportService
@@ -119,3 +119,10 @@ list_options['date_time_local'], also test that code path"""
     def test_getLastRecordDateString(self):
         self.record.insertRecord(self.summary)
         self.assertEqual(self.record.getLastRecordDateString(), self.summary['rcd_date'])
+
+    def test_record_midnight_date_bug(self):
+        self.summary['date_time_local'] = u'2016-07-24 0:00:00+03:00'
+        self.summary['date_time_utc'] = u'2016-07-23T21:00:00Z'
+        newid = self.record.insertRecord(self.summary)
+        activity = self.main.activitypool.get_activity(newid)
+        self.assertEqual(activity.date, date(2016, 7, 24))
