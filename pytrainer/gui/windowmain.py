@@ -1194,7 +1194,7 @@ class Main(SimpleBuilderApp):
             object)
         for i in record_list:
             try:
-                hour,min,sec = date.second2time(i.duration)
+                hour,min,sec = second2time(i.duration)
             except  (ValueError, TypeError):
                 hour,min,sec = (0,0,0)
             _time = "%2d:%02d:%02d" %(hour,min,sec)
@@ -1205,7 +1205,7 @@ class Main(SimpleBuilderApp):
                 logging.debug(str(e))
                 continue
             _title = i.title
-            _date = i.date
+            _date = str(i.date)
             try:
                 _distance = float(i.distance)
             except (ValueError, TypeError):
