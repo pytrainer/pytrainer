@@ -122,8 +122,8 @@ class Record:
         record.average = self.parseFloatRecord(list_options["rcd_average"])
         record.calories = self.parseFloatRecord(list_options["rcd_calories"])
         record.comments = list_options["rcd_comments"]
-        record.date = datetime.datetime.strptime(list_options["date_time_utc"],
-                                                 "%Y-%m-%dT%H:%M:%SZ").date()
+        record.date = datetime.datetime.strptime(list_options["rcd_date"],
+                                                 "%Y-%m-%d").date()
         record.unegative = self.parseFloatRecord(list_options["rcd_unegative"])
         record.upositive = self.parseFloatRecord(list_options["rcd_upositive"])
         record.maxspeed = self.parseFloatRecord(list_options["rcd_maxvel"])
