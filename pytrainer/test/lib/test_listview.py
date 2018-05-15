@@ -2,10 +2,12 @@ import os
 import datetime
 import mock
 
+from sqlalchemy.orm.session import make_transient
+
 from gi.repository import Gtk
 from unittest import TestCase
 from pytrainer.lib.ddbb import DDBB
-from pytrainer.lib.localization import initialize_gettext
+from pytrainer.lib.localization import initialize_gettext, gtk_str
 from pytrainer.core.sport import SportService
 from pytrainer.environment import Environment
 from pytrainer.profile import Profile
@@ -46,11 +48,21 @@ class ListviewTest(TestCase):
         self.main.profile = Profile()
         self.main.uc = UC()
         self.sport_service = SportService(self.main.ddbb)
+        non_linear_sport = self.sport_service.get_sport(1)
+        self.main.ddbb.session.delete(non_linear_sport)
+        self.main.ddbb.session.commit()
+        make_transient(non_linear_sport)
+        non_linear_sport.id = None
+        self.main.ddbb.session.add(non_linear_sport)
+        self.main.ddbb.session.commit()
         self.main.record = Record(self.sport_service, parent=self.main)
         self.parent = Main(self.sport_service, parent=self.main)
-        self.main.ddbb.session.add(Activity(sport=self.sport_service.get_sport(1),
+        self.main.ddbb.session.add(Activity(sport=non_linear_sport,
                                             date=datetime.datetime(2018, 5, 6, 10, 0, 0),
                                             duration=1000, distance=25))
+        self.main.ddbb.session.add(Activity(sport=non_linear_sport,
+                                            date=datetime.datetime(2018, 1, 6, 10, 0, 0),
+                                            duration=10000, distance=150))
         self.main.ddbb.session.add(Activity(sport=self.sport_service.get_sport(2),
                                             date=datetime.datetime(2018, 1, 6, 10, 0, 0),
                                             duration=10000, distance=100))
@@ -61,14 +73,17 @@ class ListviewTest(TestCase):
         self.main.ddbb.drop_tables()
 
     def test_listsearch_all(self):
-        self.assertEqual(len(list(self.main.record.getRecordListByCondition(None))), 2)
+        self.assertEqual(len(list(self.main.record.getRecordListByCondition(None))), 3)
 
     def test_listsearch_defaults(self):
-        self.assertEqual(len(list(self.main.record.getRecordListByCondition(self.parent.listsearch.condition))), 2)
+        self.assertEqual(len(list(self.main.record.getRecordListByCondition(self.parent.listsearch.condition))), 3)
 
     def test_listsearch_sport(self):
-        self.parent.lsa_sport.set_active(1)
-        self.assertEqual(len(list(self.main.record.getRecordListByCondition(self.parent.listsearch.condition))), 1)
+        self.parent.lsa_sport.set_active(3)
+        active = gtk_str(self.parent.lsa_sport.get_active_text())
+        by_sport = list(self.main.record.getRecordListByCondition(self.parent.listsearch.condition))
+        self.assertEqual(len(by_sport), 2)
+        self.assertEqual(by_sport[0].sport.name, active)
 
     def test_listsearch_distance(self):
         self.parent.lsa_distance.set_active(4)
