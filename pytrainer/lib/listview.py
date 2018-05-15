@@ -71,7 +71,7 @@ class ListSearch(object):
         if self.title:
             _andlist.append(Activity.title.like('%' + self.title + '%'))
         if self.sport:
-            _andlist.append(Activity.sport_id == self.sport)
+            _andlist.append(Activity.sport == self.listSport[self.sport-1])
         if self.listPast[self.past][1]:
             _delta = datetime.timedelta(days=self.listPast[self.past][1])
             _date = datetime.datetime.today() + _delta
