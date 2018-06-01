@@ -153,7 +153,7 @@ class WordPressClient:
 		catObj = WordPressCategory()
 		catObj.id 			= int(cat['categoryId'])
 		catObj.name 		= cat['categoryName'] 
-		if cat.has_key('isPrimary'):
+		if 'isPrimary' in cat:
 			catObj.isPrimary 	= cat['isPrimary']
 		return catObj
 		

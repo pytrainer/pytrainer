@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from SimpleGladeApp import SimpleBuilderApp
+from .SimpleGladeApp import SimpleBuilderApp
 from gi.repository import Gtk
 from gi.repository import GObject
 import os, glob, sys
@@ -475,7 +475,7 @@ class WindowImportdata(SimpleBuilderApp):
             logging.debug("Importing %d activities" % len(activities))
             result = self.pytrainer_main.record.newMultiRecord(activities)
             for activity in result:
-                if "db_id" in activity.keys() and type(activity["db_id"]) is types.IntType:
+                if "db_id" in activity.keys() and type(activity["db_id"]) is int:
                     #Activity imported correctly
                     duration = "%0.0f:%0.0f:%02.0f" % (float(activity["rcd_time"][0]), float(activity["rcd_time"][1]), float(activity["rcd_time"][2]))
                     self.updateActivity(activity["activity_id"], 

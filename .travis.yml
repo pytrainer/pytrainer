@@ -8,7 +8,7 @@ env:
   - TZ=Europe/Kaliningrad PYTRAINER_ALCHEMYURL="mysql://pytrainer@localhost/pytrainer"
   - TZ=Europe/Kaliningrad PYTRAINER_ALCHEMYURL="postgresql://pytrainer@localhost/pytrainer"
 before_install:
-  - sudo apt-get install --no-install-recommends python-gi gir1.2-gtk-3.0 python-lxml python-matplotlib python-tornado python-cairo
+  - sudo apt-get install --no-install-recommends python-gi gir1.2-gtk-3.0 python-lxml python-matplotlib python-tornado python-cairo python3-gi python3-cairo python3-gi-cairo
   - mysql -e "CREATE USER 'pytrainer'@'localhost';"
   - mysql -e "CREATE DATABASE pytrainer;"
   - mysql -e "GRANT ALL PRIVILEGES ON pytrainer . * TO 'pytrainer'@'localhost';"
@@ -16,6 +16,7 @@ before_install:
   - createdb -U postgres -O pytrainer pytrainer
 python:
   - "2.7"
+  - "3.4"
 script: "xvfb-run python setup.py test"
 virtualenv:
   system_site_packages: true

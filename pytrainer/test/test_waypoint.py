@@ -42,7 +42,7 @@ class WaypointTest(unittest.TestCase):
                                          name=data[5], comment=data[3],
                                          sym=data[6])
         data2 = self.waypoint.getwaypointInfo(dbid)
-        self.assertEquals(data, data2[0])
+        self.assertEqual(data, data2[0])
 
     def test_waypoint_update(self):
         data = (30.0, 20.0, None, u'Comment', None, u'Test', u'sym')
@@ -51,7 +51,7 @@ class WaypointTest(unittest.TestCase):
         self.waypoint.updateWaypoint(dbid, data[0], data[1], data[5], data[3],
                                      data[6])
         data2 = self.waypoint.getwaypointInfo(dbid)
-        self.assertEquals(data, data2[0])
+        self.assertEqual(data, data2[0])
 
     def test_waypoint_get_all(self):
         data = (30.0, 20.0, None, u'Comment', None, u'Test', u'sym')
@@ -60,7 +60,7 @@ class WaypointTest(unittest.TestCase):
                                          sym=data[6])
         dbid = self.waypoint.addWaypoint(lat=50, lon=60, name='Test2',
                                          comment='Comment 2', sym='sym2')
-        self.assertEquals(len(self.waypoint.getAllWaypoints()), 2)
+        self.assertEqual(len(self.waypoint.getAllWaypoints()), 2)
 
     def test_waypoint_remove(self):
         data = (30.0, 20.0, None, u'Comment', None, u'Test', u'sym')
@@ -70,4 +70,4 @@ class WaypointTest(unittest.TestCase):
         dbid = self.waypoint.addWaypoint(lat=50, lon=60, name='Test2',
                                          comment='Comment 2', sym='sym2')
         self.waypoint.removeWaypoint(dbid)
-        self.assertEquals(len(self.waypoint.getAllWaypoints()), 1)
+        self.assertEqual(len(self.waypoint.getAllWaypoints()), 1)

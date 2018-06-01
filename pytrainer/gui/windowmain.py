@@ -28,9 +28,9 @@ from gi.repository import GdkPixbuf
 
 import dateutil.parser
 
-from SimpleGladeApp import SimpleBuilderApp
-from popupmenu import PopupMenu
-from aboutdialog import About
+from .SimpleGladeApp import SimpleBuilderApp
+from .popupmenu import PopupMenu
+from .aboutdialog import About
 
 import pytrainer.record
 from pytrainer.lib.date import Date, second2time
@@ -430,7 +430,7 @@ class Main(SimpleBuilderApp):
             else:
                 buffer.set_text('')
             if len(activity.equipment) > 0:
-                equipment_text = ", ".join(map(lambda(item): item.description, activity.equipment))
+                equipment_text = ", ".join([item.description for item in activity.equipment])
                 self.label_record_equipment.set_text(equipment_text)
             else:
                 self.label_record_equipment.set_markup("<i>None</i>")
@@ -501,7 +501,8 @@ class Main(SimpleBuilderApp):
                         if type(cr)==Gtk.CellRendererText:
                             cr.set_property('foreground', 'gray')
 
-                def edited_cb(cell, path, new_text, (liststore, activity)):
+                def edited_cb(cell, path, new_text, data):
+                    liststore, activity = data
                     liststore[path][12] = new_text
                     activity.Laps[int(path)].comments = gtk_str(new_text)
                     self.pytrainer_main.ddbb.session.commit()
@@ -674,11 +675,8 @@ class Main(SimpleBuilderApp):
                     data = activity.time_data
                 else:
                     logging.error("x axis is unknown")
-                #Sort data
-                keys = data.keys()
-                keys.sort()
                 #Populate Y axis data
-                for graphdata in keys:
+                for graphdata in sorted(data.keys()):
                     #First Y axis...
                     #Create button
                     y1button = Gtk.CheckButton(label=data[graphdata].title)
@@ -834,9 +832,7 @@ class Main(SimpleBuilderApp):
             GObject.TYPE_STRING,       #time
             )
 
-        ds = DISTANCES.keys()
-        ds = sorted(ds)
-        for d in ds:
+        for d in sorted(DISTANCES.keys()):
             v = DISTANCES[d]
             iter = projected_store.append()
             projected_store.set (
@@ -889,7 +885,7 @@ class Main(SimpleBuilderApp):
 
         length = len(records)
         rec_set = [0,]
-        for r in xrange(max(count-3, 1) if count>1 else count, min(count+3, length-2) if count < length else count):
+        for r in range(max(count-3, 1) if count>1 else count, min(count+3, length-2) if count < length else count):
             rec_set.append(r)
         if length>1 and count!=length:
             rec_set.append(-1)

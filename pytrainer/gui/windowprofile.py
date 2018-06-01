@@ -17,8 +17,8 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 from __future__ import division
-from SimpleGladeApp import SimpleBuilderApp
-from windowcalendar import WindowCalendar
+from .SimpleGladeApp import SimpleBuilderApp
+from .windowcalendar import WindowCalendar
 from pytrainer.core.equipment import EquipmentService
 from pytrainer.gui.equipment import EquipmentUi
 from pytrainer.core.sport import Sport
@@ -88,7 +88,7 @@ class WindowProfile(SimpleBuilderApp):
         # Need to think if it does make sense to use pprint -> compatibility issues
         #print list_options
         for i in self.conf_options.keys():
-            if not list_options.has_key(i):
+            if i not in list_options:
                 logging.info('No list options for %s' %s)
                 continue
             if i == "default_viewer":

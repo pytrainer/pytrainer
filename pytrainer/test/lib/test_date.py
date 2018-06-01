@@ -100,11 +100,11 @@ class DateRangeTest(unittest.TestCase):
 
     def test_start_date_should_return_constructed_Value(self):
         date_range = DateRange(datetime.date(2011, 9, 28), datetime.date(2011, 9, 29))
-        self.assertEquals(datetime.date(2011, 9, 28), date_range.start_date)
+        self.assertEqual(datetime.date(2011, 9, 28), date_range.start_date)
 
     def test_end_date_should_return_constructed_Value(self):
         date_range = DateRange(datetime.date(2011, 9, 28), datetime.date(2011, 9, 29))
-        self.assertEquals(datetime.date(2011, 9, 29), date_range.end_date)
+        self.assertEqual(datetime.date(2011, 9, 29), date_range.end_date)
 
     def test_start_date_should_be_immutable(self):
         date_range = DateRange(datetime.date(2011, 9, 28), datetime.date(2011, 9, 29))
@@ -126,28 +126,28 @@ class DateRangeTest(unittest.TestCase):
 
     def test_date_range_for_year_should_start_jan_1(self):
         date_range = DateRange.for_year_containing(datetime.date(2011, 12, 11))
-        self.assertEquals(datetime.date(2011, 1, 1), date_range.start_date)
+        self.assertEqual(datetime.date(2011, 1, 1), date_range.start_date)
 
     def test_date_range_for_year_should_end_dec_31(self):
         date_range = DateRange.for_year_containing(datetime.date(2011, 12, 11))
-        self.assertEquals(datetime.date(2011, 12, 31), date_range.end_date)
+        self.assertEqual(datetime.date(2011, 12, 31), date_range.end_date)
 
     def test_date_range_for_month_should_start_first_day_of_month(self):
         date_range = DateRange.for_month_containing(datetime.date(2011, 12, 11))
-        self.assertEquals(datetime.date(2011, 12, 1), date_range.start_date)
+        self.assertEqual(datetime.date(2011, 12, 1), date_range.start_date)
 
     def test_date_range_for_month_dec_should_end_dec_31(self):
         date_range = DateRange.for_month_containing(datetime.date(2011, 12, 11))
-        self.assertEquals(datetime.date(2011, 12, 31), date_range.end_date)
+        self.assertEqual(datetime.date(2011, 12, 31), date_range.end_date)
 
     def test_date_range_for_month_feb_should_end_feb_28(self):
         date_range = DateRange.for_month_containing(datetime.date(2011, 2, 11))
-        self.assertEquals(datetime.date(2011, 2, 28), date_range.end_date)
+        self.assertEqual(datetime.date(2011, 2, 28), date_range.end_date)
 
     def test_date_range_for_week_should_start_sunday(self):
         date_range = DateRange.for_week_containing(datetime.date(2011, 12, 7))
-        self.assertEquals(datetime.date(2011, 12, 4), date_range.start_date)
+        self.assertEqual(datetime.date(2011, 12, 4), date_range.start_date)
 
     def test_date_range_for_week_should_end_saturday(self):
         date_range = DateRange.for_week_containing(datetime.date(2011, 12, 7))
-        self.assertEquals(datetime.date(2011, 12, 10), date_range.end_date)
+        self.assertEqual(datetime.date(2011, 12, 10), date_range.end_date)

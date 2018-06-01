@@ -42,4 +42,3 @@ class WeekGraph(TimeGraph):
 def getDays(date_ini):
 	#TODO look at using calendar.day_abbr for this
 	return [locale_str((date_ini+datetime.timedelta(x)).strftime("%a")) for x in range(0,7)]
-

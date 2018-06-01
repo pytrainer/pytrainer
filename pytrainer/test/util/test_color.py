@@ -76,12 +76,12 @@ class ColorTest(unittest.TestCase):
             
     def test_rgba_value_should_be_rgb_value_with_two_trailing_zero_hex_digits(self):
         color = Color(0x1177ff)
-        self.assertEquals(0x1177ff00, color.rgba_val)
+        self.assertEqual(0x1177ff00, color.rgba_val)
         
     def test_to_hex_string_should_create_six_digit_hex_value(self):
         color = Color(0xfab)
-        self.assertEquals("000fab", color.to_hex_string())
+        self.assertEqual("000fab", color.to_hex_string())
         
     def test_color_from_hex_string_should_correctly_decode_hex_value(self):
         color = color_from_hex_string("fab")
-        self.assertEquals(0xfab, color.rgb_val)
+        self.assertEqual(0xfab, color.rgb_val)

@@ -22,10 +22,10 @@ import shutil
 import logging
 import datetime
 
-from gui.windowrecord import WindowRecord
-from gui.dialogselecttrack import DialogSelectTrack
-from lib.date import Date, time2second
-from lib.gpx import Gpx
+from .gui.windowrecord import WindowRecord
+from .gui.dialogselecttrack import DialogSelectTrack
+from .lib.date import Date, time2second
+from .lib.gpx import Gpx
 from pytrainer.core.equipment import EquipmentService, Equipment
 from pytrainer.core.sport import Sport
 from pytrainer.core.activity import Activity, Lap
@@ -385,7 +385,7 @@ class Record:
             self._select_trkfromgpx(gpxfile,tracks)
         else:
             msg = _("pytrainer can't import data from your gpx file")
-            from gui.warning import Warning
+            from .gui.warning import Warning
             warning = Warning(self.data_path)
             warning.set_text(msg)
             warning.run()

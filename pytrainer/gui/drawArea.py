@@ -131,7 +131,7 @@ class DrawArea:
             axis.set_title(_title)
 
         logging.debug("Setting x ticks")
-        tickLocations = [x+0.5 for x in xrange(0, numCols)]
+        tickLocations = [x+0.5 for x in range(0, numCols)]
         axis.set_xticks(tickLocations)
         axis.set_xticklabels(xvalues[0])
         logging.debug("Setting x limits")
@@ -193,7 +193,7 @@ class DrawArea:
         else: #Error
             return
 
-        keys = yvalues[0].keys() # days of the week
+        keys = list(yvalues[0].keys()) # days of the week
         numRows = len(keys)
         numCols = len(xvalues[0])
         if numRows == 0:
@@ -206,7 +206,7 @@ class DrawArea:
 
         ybottoms = [0] * numCols
         yheights = [0] * numCols
-        inds = xrange(0, numCols)
+        inds = range(0, numCols)
         xvals = [x+barOffset for x in range(0, numCols)]
         cellText = []
         self.showGraph=False
@@ -253,7 +253,7 @@ class DrawArea:
         if len(xvalues) == 2:
             self.showGraph=False
             ax2 = axis.twinx()
-            keys = yvalues[1].keys()
+            keys = list(yvalues[1].keys())
             ybottoms = [0] * numCols
             yheights = [self.NEARLY_ZERO] * numCols
             for key in keys:

@@ -16,7 +16,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from gui.windowimportdata import WindowImportdata
+from .gui.windowimportdata import WindowImportdata
 
 class Importdata:
 	def __init__(self, sport_service, data_path = None, parent = None, config = None):

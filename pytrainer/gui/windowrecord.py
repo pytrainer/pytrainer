@@ -21,8 +21,8 @@ import os
 import logging
 import traceback
 from gi.repository import Gtk, GObject
-from SimpleGladeApp import SimpleBuilderApp
-from windowcalendar import WindowCalendar
+from .SimpleGladeApp import SimpleBuilderApp
+from .windowcalendar import WindowCalendar
 
 from pytrainer.lib.date import getLocalTZ, time2second
 import dateutil.parser
@@ -432,7 +432,7 @@ class WindowRecord(SimpleBuilderApp):
             Needed as once sports are deleted there are gaps in the list...
         """
         count = 0
-        for key, value in self.listSport.iteritems():
+        for key, value in self.listSport.items():
             if key == sportID: 
                 return count
             count +=1
@@ -444,7 +444,7 @@ class WindowRecord(SimpleBuilderApp):
             Needed as once sports are deleted there are gaps in the list...
         """
         count = 0
-        for key, value in self.listSport.iteritems():
+        for key, value in self.listSport.items():
             if value == sport: 
                 return count
             count +=1

@@ -50,7 +50,7 @@ class SimpleBuilderApp(dict):
                 self[data_name] = widget
                 return widget
             else:
-                raise AttributeError, data_name
+                raise AttributeError(data_name)
 
     def __setattr__(self, name, value):
         self[name] = value

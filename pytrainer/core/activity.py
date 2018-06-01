@@ -90,7 +90,7 @@ class ActivityService(object):
 
     def remove_activity_from_cache(self, id):
         sid = str(id)
-        if sid in self.pool.keys():
+        if sid in list(self.pool.keys()):
             logging.debug("Found activity in pool")
             self.pool_queue.remove(sid)
             del self.pool[sid]
@@ -100,7 +100,7 @@ class ActivityService(object):
             logging.warning("Deprecated call to get_activity with None id")
             return Activity()
         sid = str(id)
-        if sid in self.pool.keys():
+        if sid in list(self.pool.keys()):
             logging.debug("Found activity in pool")
             #Have accessed this activity, place at end of queue
             self.pool_queue.remove(sid)
@@ -473,7 +473,7 @@ tracks (%s)
         self.time_data['speed_lap'].set_color('#336633', '#336633')
         self.time_data['speed_lap'].graphType = "bar"
         for lap in self.laps:
-            time = float(lap['elapsed_time'].decode('utf-8')) # time in sql is a unicode string
+            time = float(lap['elapsed_time']) # time in sql is a unicode string
             dist = lap['distance']/1000 #distance in km
             try:
                 pace = time/(60*dist) #min/km
@@ -606,11 +606,11 @@ tracks (%s)
             self._time_data['hr_p'].addPoints(x=track['time_elapsed'], y=hr_p)
             self._time_data['cadence'].addPoints(x=track['time_elapsed'], y=track['cadence'])
         #Remove data with no values
-        for item in self._distance_data.keys():
+        for item in list(self._distance_data.keys()):
             if len(self._distance_data[item]) == 0:
                 logging.debug( "No values for %s. Removing...." % item )
                 del self._distance_data[item]
-        for item in self._time_data.keys():
+        for item in list(self._time_data.keys()):
             if len(self._time_data[item]) == 0:
                 logging.debug( "No values for %s. Removing...." % item )
                 del self._time_data[item]

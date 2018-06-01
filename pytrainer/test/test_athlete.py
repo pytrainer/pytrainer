@@ -45,7 +45,7 @@ class AthleteTest(unittest.TestCase):
                                           data['bodyfat'], data['restinghr'],
                                           data['maxhr'])
         data2 = self.athlete.get_athlete_stats()
-        self.assertEquals(data, data2[0])
+        self.assertEqual(data, data2[0])
 
     def test_athlete_update_and_get(self):
         data = {'date': date(2017, 4, 3), 'weight': 60.0, 'bodyfat': 20.0,
@@ -59,7 +59,7 @@ class AthleteTest(unittest.TestCase):
                                           data['bodyfat'], data['restinghr'],
                                           data['maxhr'])
         data2 = self.athlete.get_athlete_stats()
-        self.assertEquals(data, data2[0])
+        self.assertEqual(data, data2[0])
 
     def test_athlete_delete_record(self):
         data = {'date': date(2017, 4, 3), 'weight': 60.0, 'bodyfat': 20.0,

@@ -16,7 +16,7 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from timegraph import TimeGraph
+from .timegraph import TimeGraph
 
 class TotalGraph(TimeGraph):
 
@@ -38,7 +38,7 @@ class TotalGraph(TimeGraph):
     def getYears(self, yvalues):
         years = set()
         for s in yvalues.values():
-            years |= set([str(x) for x in xrange(int(min(s.keys())), int(max(s.keys()))+1)])
+            years |= set([str(x) for x in range(int(min(s.keys())), int(max(s.keys()))+1)])
         return sorted(list(years))
 
     def drawgraph(self,values):

@@ -23,9 +23,9 @@ from io import BytesIO
 from gettext import gettext as _
 
 from lxml import etree
-from environment import Environment
+from .environment import Environment
 from pytrainer.lib.singleton import Singleton
-from lib.uc import UC
+from .lib.uc import UC
 
 class Profile(Singleton):
     def __init__(self):
@@ -232,7 +232,7 @@ class Profile(Singleton):
         if tag != "pytraining":
             logging.critical("ERROR - pytraining is the only profile tag supported")
             return None
-        elif not self.configuration.has_key(variable):
+        elif variable not in self.configuration:
             return None
         return self.configuration[variable]
 
@@ -244,7 +244,7 @@ class Profile(Singleton):
         if self.xml_tree is None:
             #new config file....
             self.xml_tree = etree.parse(BytesIO(b'''<?xml version='1.0' encoding='UTF-8'?><pytraining />'''))
-        self.xml_tree.getroot().set(variable, value.decode('utf-8'))
+        self.xml_tree.getroot().set(variable, value)
         if not delay_write:
             self.saveProfile()
         logging.debug("<<")
@@ -252,7 +252,7 @@ class Profile(Singleton):
     def setProfile(self,list_options):
         logging.debug(">>")
         for option, value in list_options.items():
-            logging.debug("Adding "+option+"|"+value)
+            logging.debug("Adding %s|%s", option, value)
             self.setValue("pytraining",option,value,delay_write=True)
         self.uc.set_us(list_options['prf_us_system'])
         logging.debug("<<")

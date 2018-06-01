@@ -20,9 +20,9 @@ import os
 import sys
 import logging
 
-from lib.xmlUtils import XMLParser
+from .lib.xmlUtils import XMLParser
 
-from gui.windowplugins import WindowPlugins
+from .gui.windowplugins import WindowPlugins
 
 class Plugins:
 	def __init__(self, data_path = None, parent = None):

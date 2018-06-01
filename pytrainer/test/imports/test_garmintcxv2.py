@@ -47,7 +47,7 @@ class GarminTCXv2Test(unittest.TestCase):
             garmin_tcxv2 = garmintcxv2(self.parent, data_path)
             garmin_tcxv2.xmldoc = etree.parse(tcx_file)
             garmin_tcxv2.buildActivitiesSummary()
-            self.assertEquals(summary, garmin_tcxv2.activitiesSummary)
+            self.assertEqual(summary, garmin_tcxv2.activitiesSummary)
         except():
             self.fail()
 
@@ -62,7 +62,7 @@ class GarminTCXv2Test(unittest.TestCase):
         garmin_tcxv2 = garmintcxv2(self.parent, data_path)
         garmin_tcxv2.xmldoc = etree.parse(tcx_file)
         garmin_tcxv2.buildActivitiesSummary()
-        self.assertEquals(summary, garmin_tcxv2.activitiesSummary)
+        self.assertEqual(summary, garmin_tcxv2.activitiesSummary)
 
 if __name__ == '__main__':
     unittest.main()

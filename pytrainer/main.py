@@ -28,24 +28,24 @@ import gi
 gi.require_version('Gtk', '3.0')
 
 from pytrainer.lib.date import DateRange
-from upgrade.data import initialize_data
-from environment import Environment
-from record import Record
-from waypoint import WaypointService
-from extension import Extension
-from importdata import Importdata
-from plugins import Plugins
-from profile import Profile
+from .upgrade.data import initialize_data
+from .environment import Environment
+from .record import Record
+from .waypoint import WaypointService
+from .extension import Extension
+from .importdata import Importdata
+from .plugins import Plugins
+from .profile import Profile
 from pytrainer.core.sport import SportService
-from athlete import Athlete
-from stats import Stats
+from .athlete import Athlete
+from .stats import Stats
 
-from gui.windowmain import Main
-from gui.warning import Warning
-from lib.date import Date, getNameMonth
+from .gui.windowmain import Main
+from .gui.warning import Warning
+from .lib.date import Date, getNameMonth
 from pytrainer.core.activity import ActivityService
-from lib.ddbb import DDBB
-from lib.uc import UC
+from .lib.ddbb import DDBB
+from .lib.uc import UC
 
 class pyTrainer:
     def __init__(self,filename = None, data_path = None):
@@ -503,14 +503,14 @@ class pyTrainer:
 
     def exportCsv(self):
         logging.debug('>>')
-        from save import Save
+        from .save import Save
         save = Save(self.data_path, self.record)
         save.run()
         logging.debug('<<')
 
     def editProfile(self):
         logging.debug('>>')
-        from gui.windowprofile import WindowProfile
+        from .gui.windowprofile import WindowProfile
         self.profile.refreshConfiguration()
         if self.profilewindow is None:
             self.profilewindow = WindowProfile(self._sport_service, self.data_path, self.profile, pytrainer_main=self)
