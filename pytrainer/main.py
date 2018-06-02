@@ -155,7 +155,7 @@ class pyTrainer:
 
     def set_logging_level(self, level):
         '''Set level of information written to log'''
-        logging.debug("Setting logger to level: "+ str(level))
+        logging.debug("Setting logger to level: %s", level)
         logging.getLogger('').setLevel(level)
         logging.getLogger('sqlalchemy.engine').setLevel(level)
 
@@ -341,7 +341,7 @@ class pyTrainer:
         selected,iter = self.windowmain.recordTreeView.get_selection().get_selected()
         id_record = selected.get_value(iter,0)
         activity = self.activitypool.get_activity(id_record)
-        logging.debug('Trying to show map for record '+str(id_record))
+        logging.debug('Trying to show map for record %s', id_record)
         self.windowmain.actualize_map(activity, full_screen)
         logging.debug('<<')
 
