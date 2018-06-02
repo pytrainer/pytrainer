@@ -81,7 +81,7 @@ class Record:
             elif "," in value:
                 value = float(value.replace(',','.'))
             else:
-                logging.error("Wrong value provided: %s" %value)
+                logging.error("Wrong value provided: %s", value)
                 value = None
         return value
 
@@ -140,7 +140,7 @@ class Record:
         if list_options is None:
             logging.info('No data provided, abort adding entry')
             return None
-        logging.debug('list_options: '+str(list_options))
+        logging.debug('list_options: %s', list_options)
         record = self._formatRecordNew(list_options, Activity())
         self.pytrainer_main.ddbb.session.add(record)
         gpxOrig = list_options["rcd_gpxfile"]
@@ -163,7 +163,7 @@ class Record:
             #shutil.move(gpxOrig, gpxNew)
             #logging.debug('Moving '+gpxOrig+' to '+gpxNew)
             shutil.copy(gpxOrig, gpxNew)
-            logging.debug('Copying '+gpxOrig+' to '+gpxNew)
+            logging.debug('Copying %s to %s', gpxOrig, gpxNew)
         logging.debug('<<')
         return record.id
 
@@ -218,7 +218,8 @@ class Record:
                 lap_max_hr = int(lap['max_hr'])
             total_duration = total_duration + float(lap['elapsed_time'])
             ponderate_hr = ponderate_hr + float(lap['elapsed_time'])*int(lap['avg_hr'])
-            logging.debug("Lap number: %s | Duration: %s | Average hr: %s | Maximum hr: %s" % (lap['lap_number'], lap['elapsed_time'], lap['avg_hr'], lap['max_hr']))
+            logging.debug("Lap number: %s | Duration: %s | Average hr: %s | Maximum hr: %s",
+                          lap['lap_number'], lap['elapsed_time'], lap['avg_hr'], lap['max_hr'])
         lap_avg_hr = int(round(ponderate_hr/total_duration)) # ceil?, floor?, round?
         logging.debug('<<')
         return lap_avg_hr, lap_max_hr
@@ -271,18 +272,20 @@ class Record:
             summaryRecord['date_time_utc'] = entry[1]                                                                                                                               #
             summaryRecord['date_time_local'] = entry[1]                                                                                                                             #
             #TODO fix record summaryRecord local and utc time...
-        logging.debug('summary: '+str(summaryRecord))
+        logging.debug('summary: %s', summaryRecord)
         laps = self.lapsFromGPX(gpx)
         # Heartrate data can't be retrieved if no trackpoints present, calculating from lap info
         lap_avg_hr, lap_max_hr = self.hrFromLaps(laps)
-        logging.debug("HR data from laps. Average: %s | Maximum hr: %s" % (lap_avg_hr, lap_max_hr))
+        logging.debug("HR data from laps. Average: %s | Maximum hr: %s", lap_avg_hr, lap_max_hr)
         if int(summaryRecord['rcd_beats']) > 0:
-            logging.debug("Average heartbeat - Summary: %s | Laps: %s" % (summaryRecord['rcd_beats'], lap_avg_hr))
+            logging.debug("Average heartbeat - Summary: %s | Laps: %s", summaryRecord['rcd_beats'],
+                          lap_avg_hr)
         else:
             logging.debug("No average heartbeat found, setting value (%s) from laps", lap_avg_hr)
             summaryRecord['rcd_beats'] = lap_avg_hr
         if int(summaryRecord['rcd_maxbeats']) > 0:
-            logging.debug("Max heartbeat - Summary: %s | Laps: %s" % (summaryRecord['rcd_maxbeats'], lap_max_hr))
+            logging.debug("Max heartbeat - Summary: %s | Laps: %s", summaryRecord['rcd_maxbeats'],
+                          lap_max_hr)
         else:
             logging.debug("No max heartbeat found, setting value (%s) from laps", lap_max_hr)
             summaryRecord['rcd_maxbeats'] = lap_max_hr
@@ -291,7 +294,7 @@ class Record:
 
     def updateRecord(self, list_options, id_record, equipment=None): # ToDo: update only fields that can change if GPX file is present
         logging.debug('>>')
-        logging.debug('list_options: '+str(list_options))
+        logging.debug('list_options: %s', list_options)
         # No need to remove from the pool, sqlalchemy keeps things in sync
         record = self.pytrainer_main.activitypool.get_activity(id_record)
         gpxfile = self.pytrainer_main.profile.gpxdir+"/%d.gpx"%int(record.id)
@@ -367,14 +370,14 @@ class Record:
 
     def getRecordDayList(self, date, sport=None):
         logging.debug('>>')
-        logging.debug('Retrieving data for ' + str(date))
+        logging.debug('Retrieving data for %s', date)
         date_range = DateRange.for_month_containing(date)
         for activity in self.pytrainer_main.activitypool.get_activities_period(date_range, sport=sport):
             yield activity.date.day
 
     def actualize_fromgpx(self,gpxfile): #TODO remove? - should never have multiple tracks per GPX file
         logging.debug('>>')
-        logging.debug('loading file: '+gpxfile)
+        logging.debug('loading file: %s', gpxfile)
         gpx = Gpx(self.data_path,gpxfile)
         tracks = gpx.getTrackRoutes()
 
@@ -382,7 +385,7 @@ class Record:
             logging.debug('Just 1 track')
             self._actualize_fromgpx(gpx)
         elif len(tracks) > 1:
-            logging.debug('Found '+str(len(tracks))+' tracks')
+            logging.debug('Found %s tracks', len(tracks))
             self._select_trkfromgpx(gpxfile,tracks)
         else:
             msg = _("pytrainer can't import data from your gpx file")
@@ -424,7 +427,7 @@ class Record:
 
     def _select_trkfromgpx(self,gpxfile,tracks):  #TODO remove? - should never have multiple tracks per GPX file
         logging.debug('>>')
-        logging.debug('Track dialog '+ self.data_path +'|'+ gpxfile)
+        logging.debug('Track dialog %s|%s', self.data_path, gpxfile)
         selectrckdialog = DialogSelectTrack(self.data_path, tracks,self.__actualize_fromgpx, gpxfile)
         logging.debug('Launching window...')
         selectrckdialog.run()
@@ -437,16 +440,16 @@ class Record:
         logging.debug('>>')
         entry_id = None
         if not os.path.isfile(gpxFile):
-            logging.error("Invalid file: " +gpxFile)
+            logging.error("Invalid file: %s", gpxFile)
         else:
-            logging.info('Retrieving data from '+gpxFile)
+            logging.info('Retrieving data from %s', gpxFile)
             if not sport:
                 sport = "import"
             entry = [sport,""]
             entry_id = self.insertNewRecord(gpxFile, entry)
             if entry_id is None:
-                logging.error("Entry not created for file %s" % gpxFile)
+                logging.error("Entry not created for file %s", gpxFile)
             else:
-                logging.info("Entry %d has been added" % entry_id)
+                logging.info("Entry %d has been added", entry_id)
         logging.debug('<<')
         return entry_id
