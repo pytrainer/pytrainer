@@ -3016,6 +3016,26 @@
                                           </packing>
                                         </child>
                                         <child>
+                                          <object class="GtkButton" id="button50">
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">False</property>
+                                            <property name="relief">none</property>
+                                            <signal handler="on_hrplotbutton_clicked" name="clicked"/>
+                                            <child>
+                                              <object class="GtkImage" id="image31">
+                                                <property name="visible">True</property>
+                                                <property name="pixbuf">hr-graph.png</property>
+                                              </object>
+                                            </child>
+                                          </object>
+                                          <packing>
+                                            <property name="expand">False</property>
+                                            <property name="fill">False</property>
+                                            <property name="position">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
                                           <object class="GtkButton" id="button49">
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
@@ -3032,7 +3052,7 @@
                                           <packing>
                                             <property name="expand">False</property>
                                             <property name="fill">False</property>
-                                            <property name="position">1</property>
+                                            <property name="position">2</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -3041,18 +3061,18 @@
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">False</property>
                                             <property name="relief">none</property>
-                                            <signal handler="on_hrplotbutton_clicked" name="clicked"/>
+                                            <signal handler="on_hrhistobutton_clicked" name="clicked"/>
                                             <child>
                                               <object class="GtkImage" id="image33">
                                                 <property name="visible">True</property>
-                                                <property name="pixbuf">hr-graph.png</property>
+                                                <property name="pixbuf">hr-bars.png</property>
                                               </object>
                                             </child>
                                           </object>
                                           <packing>
                                             <property name="expand">False</property>
                                             <property name="fill">False</property>
-                                            <property name="position">2</property>
+                                            <property name="position">3</property>
                                           </packing>
                                         </child>
                                       </object>
@@ -3095,6 +3115,23 @@
                                           <object class="GtkLabel" id="label-9">
                                             <property name="visible">True</property>
                                             <property name="label">label-2147483647</property>
+                                          </object>
+                                          <packing>
+                                            <property name="position">1</property>
+                                            <property name="tab_fill">False</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkVBox" id="heartrate_vbox3">
+                                            <child>
+                                              <placeholder/>
+                                            </child>
+                                          </object>
+                                        </child>
+                                        <child type="tab">
+                                          <object class="GtkLabel" id="label-47">
+                                            <property name="visible">True</property>
+                                            <property name="label">label-2147483649</property>
                                           </object>
                                           <packing>
                                             <property name="position">1</property>
