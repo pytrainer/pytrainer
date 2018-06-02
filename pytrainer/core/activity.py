@@ -78,7 +78,7 @@ class ActivityService(object):
         self.max_size = size
         self.pool = {}
         self.pool_queue = []
-        logging.debug("Initialising ActivityPool to size: %d" % size)
+        logging.debug("Initialising ActivityPool to size: %d", size)
         logging.debug("<<")
 
     def clear_pool(self):
@@ -113,10 +113,10 @@ class ActivityService(object):
             self.pool_queue.append(sid)
         if len(self.pool_queue) > self.max_size:
             sid_to_remove = self.pool_queue.pop(0)
-            logging.debug("Removing activity: %s" % sid_to_remove)
+            logging.debug("Removing activity: %s", sid_to_remove)
             del self.pool[sid_to_remove]
-        logging.debug("ActivityPool queue length: %d" % len(self.pool_queue))
-        logging.debug("ActivityPool queue: %s" % str(self.pool_queue))
+        logging.debug("ActivityPool queue length: %d", len(self.pool_queue))
+        logging.debug("ActivityPool queue: %s", self.pool_queue)
         return self.pool[sid]
 
     def remove_activity_from_db(self, activity):
@@ -414,12 +414,14 @@ tracks (%s)
             #Parse GPX file
             #print "Activity initing GPX.. ",
             self._gpx = Gpx(filename=self.gpx_file) #TODO change GPX code to do less....
-            logging.info("GPX Distance: %s | distance (trkpts): %s | duration: %s | duration (trkpts): %s" % (self.gpx.total_dist, self.gpx.total_dist_trkpts, self.gpx.total_time, self.gpx.total_time_trkpts))
+            logging.info("GPX Distance: %s | distance (trkpts): %s | duration: %s | duration (trkpts): %s",
+                         self.gpx.total_dist, self.gpx.total_dist_trkpts, self.gpx.total_time,
+                         self.gpx.total_time_trkpts)
             time_diff = self.gpx.total_time_trkpts - self.gpx.total_time
             acceptable_lapse = 4 # number of seconds that duration calculated using lap and trkpts data can differ
             if time_diff > acceptable_lapse:
                 self.time_pause = time_diff
-                logging.debug("Identified non active time: %s s" % self.time_pause)
+                logging.debug("Identified non active time: %s s", self.time_pause)
             return self._gpx
         else:
             logging.debug("No GPX file found")
@@ -484,9 +486,9 @@ tracks (%s)
             except:
                 avg_speed = 0.0
             if self.pace_limit is not None and pace > self.pace_limit:
-                logging.debug("Pace (%s) exceeds limit (%s). Setting to 0" % (str(pace), str(self.pace_limit)))
+                logging.debug("Pace (%s) exceeds limit (%s). Setting to 0", pace, self.pace_limit)
                 pace = 0.0
-            logging.debug("Time: %f, Dist: %f, Pace: %f, Speed: %f" % (time, dist, pace, avg_speed))
+            logging.debug("Time: %f, Dist: %f, Pace: %f, Speed: %f", time, dist, pace, avg_speed)
             self._lap_time.addBars(x=time, y=10)
             self._lap_distance.addBars(x=self.uc.distance(dist), y=10)
             self.distance_data['pace_lap'].addBars(x=self.uc.distance(dist), y=pacekm2miles(pace))
@@ -571,7 +573,7 @@ tracks (%s)
             try:
                 pace = 60/track['velocity']
                 if self.pace_limit is not None and pace > self.pace_limit:
-                    logging.debug("Pace (%s) exceeds limit (%s). Setting to 0" % (str(pace), str(self.pace_limit)))
+                    logging.debug("Pace (%s) exceeds limit (%s). Setting to 0", pace, self.pace_limit)
                     pace = 0  #TODO this should be None when we move to newgraph...
             except Exception as e:
                 #print type(e), e
@@ -608,11 +610,11 @@ tracks (%s)
         #Remove data with no values
         for item in list(self._distance_data.keys()):
             if len(self._distance_data[item]) == 0:
-                logging.debug( "No values for %s. Removing...." % item )
+                logging.debug("No values for %s. Removing....", item)
                 del self._distance_data[item]
         for item in list(self._time_data.keys()):
             if len(self._time_data[item]) == 0:
-                logging.debug( "No values for %s. Removing...." % item )
+                logging.debug("No values for %s. Removing....", item)
                 del self._time_data[item]
         logging.debug("<<")
         #Add Heartrate zones graphs
