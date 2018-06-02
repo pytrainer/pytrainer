@@ -343,9 +343,10 @@ class Record:
         logging.debug("--")
         if sport_id is not None:
             return str(self.pytrainer_main.ddbb.session.query(Activity).
-                       filter(Activity.sport_id == sport_id).order_by(Activity.date).limit(1).one().date)
+                       filter(Activity.sport_id == sport_id).order_by(Activity.date.desc()).
+                       limit(1).one().date)
         else:
-            return str(self.pytrainer_main.ddbb.session.query(Activity).order_by(Activity.date).
+            return str(self.pytrainer_main.ddbb.session.query(Activity).order_by(Activity.date.desc()).
                        limit(1).one().date)
 
     def getAllrecord(self):
