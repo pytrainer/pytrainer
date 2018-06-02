@@ -81,10 +81,11 @@ class garminfit():
         logging.debug(">>")
         result = False
         try:
-            pipe = subprocess.Popen(["perl", self.main_data_path+"plugins/garmin-fit/bin/fit2tcx", filename], stdout=subprocess.PIPE)
-            result = pipe.stdout.read()
-        except:
-            logging.debug("Traceback: %s" % traceback.format_exc())
+            result = subprocess.check_output(["perl",
+                                              self.main_data_path+"plugins/garmin-fit/bin/fit2tcx",
+                                              filename])
+        except subprocess.CalledProcessError:
+            logging.exception("fit2tcx failed")
         logging.debug("<<")
         return result
 
