@@ -113,7 +113,7 @@ class Profile(Singleton):
     def refreshConfiguration(self):
         logging.debug(">>")
         self.configuration = self._parse_config_file(self.config_file)
-        logging.debug("Configuration retrieved: %s", str(self.configuration))
+        logging.debug("Configuration retrieved: %s", self.configuration)
         self.uc.set_us(self.prf_us_system)
         self._setZones()
         logging.debug("<<")

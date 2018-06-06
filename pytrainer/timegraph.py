@@ -70,7 +70,7 @@ class TimeGraph(object):
                     valueDict[sport] = {day: value}
                     valueCount[sport] = {day: 1}
             else:
-                logging.debug("No date string found, skipping entry: " + str(record))
+                logging.debug("No date string found, skipping entry: %s", record)
                 
         if value_selected in (2, 3):
             total = {}

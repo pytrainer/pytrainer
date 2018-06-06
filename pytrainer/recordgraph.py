@@ -52,11 +52,11 @@ class RecordGraph:
         tit = []
         col = []
         value_selected = self.combovalue.get_active()
-        logging.debug("Value selected 1: "+ str(value_selected))
+        logging.debug("Value selected 1: %s", value_selected)
         value_selected2 = self.combovalue2.get_active()
-        logging.debug("Value selected 2: "+ str(value_selected2))
+        logging.debug("Value selected 2: %s", value_selected2)
         showLaps = self.showLaps.get_active()
-        logging.debug("Show laps: "+ str(showLaps))
+        logging.debug("Show laps: %s", showLaps)
         #Determine left and right lap boundaries
         if laps is not None and showLaps:
             lapValues = []
@@ -110,7 +110,7 @@ class RecordGraph:
             ylab.append(ylabel)
             tit.append("")
             col.append(color)
-        logging.info("To show: tit: "+str(tit)+" | col: "+str(col)+" | xlab: "+str(xlab)+" | ylab: "+str(ylab))
+        logging.info("To show: tit: %s | col: %s | xlab: %s | ylab: %s", tit, col, xlab, ylab)
         #self.drawPlot(xvalues,yvalues,xlabel,ylabel,title,color,zones)
         plot_stats = self.drawarea.drawPlot(xval,yval,xlab,ylab,tit,col,None,lapValues, ylimits=y1limits, y1_linewidth=y1_linewidth)
         ymin = plot_stats['y1_min']

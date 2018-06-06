@@ -62,7 +62,7 @@ class Gpx:
         self.data_path = data_path
         self.filename = filename
         self.trkname = trkname
-        logging.debug(str(data_path)+"|"+str(filename)+"|"+str(trkname))
+        logging.debug("%s|%s|%s", data_path, filename, trkname)
         self.trkpoints = []
         self.vel_array = []
         self.total_dist = 0
@@ -517,9 +517,7 @@ class Gpx:
         dateTime = getDateTime(date_time.text)
         zuluDateTime = dateTime[0].strftime("%Y-%m-%dT%H:%M:%SZ")
         localDateTime = dateTime[1]
-        logging.debug(gpxFile+" | "+ date_time.text +" | " + zuluDateTime + " | " + str(localDateTime))
-        #print localDateTime
-        #return date_time.text
+        logging.debug("%s | %s | %s | %s", gpxFile, date_time.text, zuluDateTime, localDateTime)
         logging.debug("<<")
         return (zuluDateTime, localDateTime)
 

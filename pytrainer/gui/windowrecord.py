@@ -36,7 +36,7 @@ class WindowRecord(SimpleBuilderApp):
         self.parent = parent
         self.pytrainer_main = parent.pytrainer_main
         self.uc = UC()
-        logging.debug("Using US system: "+ str(self.uc.us))
+        logging.debug("Using US system: %s", self.uc.us)
         self.data_path = data_path
         self.mode = "newrecord"
         self.id_record = ""
@@ -250,7 +250,7 @@ class WindowRecord(SimpleBuilderApp):
                 selected_equipment_ids = self._get_selected_equipment_ids()
                 self.activity_data[index]["db_id"] = self.parent.insertRecord(activity, laps, equipment=selected_equipment_ids)
                 row += 1
-            logging.debug("Processed %d rows of activity data" % row)
+            logging.debug("Processed %d rows of activity data", row)
         else:
             logging.debug("Single activity")
             list_options = {}
@@ -293,7 +293,7 @@ class WindowRecord(SimpleBuilderApp):
             list_options["date_time_local"] = local_date
 
             if self.mode == "newrecord":
-                logging.debug('Track data: '+str(list_options))
+                logging.debug('Track data: %s', list_options)
                 if list_options["rcd_gpxfile"] != "":
                     logging.info('Adding new activity based on GPX file')
                     self.parent.insertRecord(list_options, None, selected_equipment_ids)
@@ -458,16 +458,18 @@ class WindowRecord(SimpleBuilderApp):
             try:
                 average = float(gtk_str(self.rcd_average.get_text()))
                 time_in_hour = distance/average
-                logging.debug("Distance: %0.3f km (mi) | Speed: %0.2f -> Time: %.f hours  " %(distance,average,time_in_hour)) 
+                logging.debug("Distance: %0.3f km (mi) | Speed: %0.2f -> Time: %.f hours",
+                              distance, average, time_in_hour)
                 pace = self.parent.pace_from_float(60/average)
-                logging.debug("Setting pace: %s" %pace)
+                logging.debug("Setting pace: %s", pace)
                 self.rcd_pace.set_text(pace)
             except:
                 pace_dec = self.parent.pace_to_float(gtk_str(self.rcd_pace.get_text()))
                 time_in_hour = pace_dec*distance/60.0
-                logging.debug("Distance: %0.3f km (mi) | Pace_dec: %0.2f -> Time: %.f hours" %(distance,pace_dec,time_in_hour))
+                logging.debug("Distance: %0.3f km (mi) | Pace_dec: %0.2f -> Time: %.f hours",
+                              distance, pace_dec, time_in_hour)
                 speed = distance/time_in_hour
-                logging.debug("Setting average speed: %0.2f" %speed)
+                logging.debug("Setting average speed: %0.2f", speed)
                 self.rcd_average.set_text("%0.2f" %speed)
             self.set_recordtime(time_in_hour)
         except:
@@ -648,22 +650,22 @@ class WindowRecord(SimpleBuilderApp):
         sec = self.rcd_second.get_value_as_int()
         time = sec + (min*60) + (hour*3600)
         if time<1:
-            logging.debug("Seems no time value (%s) has been entered, nothing to calculate." %time)
+            logging.debug("Seems no time value (%s) has been entered, nothing to calculate.", time)
             return False
         distance = float(gtk_str(self.rcd_distance.get_text()))
         if distance<1:
-            logging.debug("Seems no distance value (%s) has been entered, nothing to calculate." %distance)
+            logging.debug("Seems no distance value (%s) has been entered, nothing to calculate.", distance)
             return False
-        logging.debug("Time: %d seconds | Distance: %0.2f km (mi)" %(time,distance))
+        logging.debug("Time: %d seconds | Distance: %0.2f km (mi)", time, distance)
         # Average speed        
         average_speed = distance*3600.0/time
-        logging.debug("Average speed: %0.2f" %average_speed)
+        logging.debug("Average speed: %0.2f", average_speed)
         self.rcd_average.set_text("%0.2f" %average_speed)
         # Average pace 
         dec_pace = 60/average_speed
         #Transform pace to mm:ss
         pace = self.parent.pace_from_float(dec_pace)
-        logging.debug("Average pace: %s" %pace)
+        logging.debug("Average pace: %s", pace)
         self.rcd_pace.set_text(pace)
         logging.debug("<<")
 
@@ -703,16 +705,18 @@ class WindowRecord(SimpleBuilderApp):
             try:
                 average = float(gtk_str(self.rcd_average.get_text()))
                 distance = average*time_in_hour
-                logging.debug("Time: %d seconds | Speed: %0.2f -> Distance: %0.3f km (mi)" %(time,average,distance)) 
+                logging.debug("Time: %d seconds | Speed: %0.2f -> Distance: %0.3f km (mi)",
+                              time, average, distance)
                 pace = self.parent.pace_from_float(60/average)
-                logging.debug("Setting pace: %s" %pace)
+                logging.debug("Setting pace: %s", pace)
                 self.rcd_pace.set_text(pace)
             except:
                 pace_dec = self.parent.pace_to_float(gtk_str(self.rcd_pace.get_text()))
                 distance = time/(60.0*pace_dec)
-                logging.debug("Time: %d seconds | Pace_dec: %0.2f -> Distance: %0.3f km (mi)" %(time,pace_dec,distance))
+                logging.debug("Time: %d seconds | Pace_dec: %0.2f -> Distance: %0.3f km (mi)",
+                              time, pace_dec, distance)
                 speed = distance/time_in_hour
-                logging.debug("Setting average speed: %0.2f" %speed)
+                logging.debug("Setting average speed: %0.2f", speed)
                 self.rcd_average.set_text("%0.2f" %speed)
             self.set_distance(distance) 
         except:

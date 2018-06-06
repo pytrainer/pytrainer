@@ -55,32 +55,33 @@ class DrawArea:
 
     def drawBars(self,xvalues,yvalues,xlabel,ylabel,title,color):
         logging.debug('>>')
-        logging.debug("Type: bars | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
+        logging.debug("Type: bars | title: %s"" | col: %s | xlabel: %s | ylabel: %s",
+                      title, color, xlabel, ylabel)
         self.removeVboxChildren()
         #figure = Figure(figsize=(6,4), dpi=72)
         figure = plt.figure()
-        logging.debug("Figure: %s" % str(figure) )
+        logging.debug("Figure: %s", figure)
         numCols=len(xvalues[0])
         xmod = 0.4
         self.showGraph=False
         axis = figure.add_subplot(111)
-        logging.debug("Axis: %s" % str(axis) )
+        logging.debug("Axis: %s", axis)
 
         if len(xvalues) == 1: #One axis
             barWidth = 0.8
             barOffset = 0.1
-            logging.debug("One axis, barWidth %f, barOffset %f" % (barWidth, barOffset) )
+            logging.debug("One axis, barWidth %f, barOffset %f", barWidth, barOffset)
         elif len(xvalues) == 2: #Twin axes
             barWidth = 0.4
             barOffset = 0.1
-            logging.debug("Twin axes, barWidth %f, barOffset %f" % (barWidth, barOffset) )
+            logging.debug("Twin axes, barWidth %f, barOffset %f", barWidth, barOffset)
         else: #Error
             logging.debug("Error: invalid number of axes" )
             return
 
         axis.set_xlabel(xlabel[0])
         axis.set_ylabel(ylabel[0])
-        logging.debug("Labels set x: %s, y: %s" % (xlabel[0], ylabel[0]) )
+        logging.debug("Labels set x: %s, y: %s", xlabel[0], ylabel[0])
         xvals = [x+barOffset for x in range(0, numCols)]
         yvals = [0] * numCols
         for i in range(0, numCols):
@@ -99,14 +100,14 @@ class DrawArea:
 
         axis.grid(True)
         axis.set_title("%s" %(title[0]))
-        logging.debug("Setting title to: %s" % title[0])
+        logging.debug("Setting title to: %s", title[0])
         for tl in axis.get_yticklabels():
-            logging.debug("Setting ticklabel color %s" % color[0])
+            logging.debug("Setting ticklabel color %s", color[0])
             tl.set_color('%s' %color[0])
 
         if len(xvalues) == 2: #Display twin axis
             ax2 = axis.twinx()
-            logging.debug("Axis 2: Twin axis: %s " % str(ax2))
+            logging.debug("Axis 2: Twin axis: %s", ax2)
             xvals = [x+barOffset+barWidth for x in range(0, numCols)]
             for i in range(0, numCols):
                 yval = yvalues[1][i]
@@ -118,16 +119,16 @@ class DrawArea:
             if self.showGraph:
                 logging.debug("Axis 2: Drawing bars")
                 ax2.bar(xvals, yvals, barWidth, color=color[1], align='edge')
-                logging.debug("Axis 2: Label set y: %s" % (ylabel[1]) )
+                logging.debug("Axis 2: Label set y: %s", ylabel[1])
                 ax2.set_ylabel(ylabel[1])
             else:   #Only zero results
                 logging.debug("Axis 2: No results to draw")
                 pass
             for tl in ax2.get_yticklabels():
                 tl.set_color('%s' %color[1])
-                logging.debug("Axis 2: Setting ticklabel color %s" % color[1])
+                logging.debug("Axis 2: Setting ticklabel color %s", color[1])
             _title = "%s vs %s" %(title[0],title[1])
-            logging.debug("Axis 2: Setting title to: %s" % _title)
+            logging.debug("Axis 2: Setting title to: %s", _title)
             axis.set_title(_title)
 
         logging.debug("Setting x ticks")
@@ -138,7 +139,7 @@ class DrawArea:
         axis.set_xlim(0, numCols)
 
         canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
-        logging.debug("Got canvas: %s" % (str(canvas)))
+        logging.debug("Got canvas: %s", canvas)
         canvas.show()
         logging.debug("Adding canvas to vbox")
         self.vbox.pack_start(canvas, True, True, 0)
@@ -146,7 +147,7 @@ class DrawArea:
         #self.vbox.pack_start(toolbar, False, False)
 
         for child in self.vbox.get_children():
-            logging.debug('Child available: '+str(child))
+            logging.debug('Child available: %s', child)
 
         logging.debug('<<')
 
@@ -178,9 +179,9 @@ class DrawArea:
         '''
         #TODO tidy
         logging.debug('>>')
-        logging.debug("Title: %s", (title, ))
-        logging.debug("X values received: %s", str(xvalues))
-        logging.debug("Y values received: %s", str(yvalues))
+        logging.debug("Title: %s", title)
+        logging.debug("X values received: %s", xvalues)
+        logging.debug("Y values received: %s", yvalues)
         self.removeVboxChildren()
 
         #Check how many axes to draw
@@ -201,7 +202,7 @@ class DrawArea:
         width = .8
         #figure = plt.figure(figsize=(6,4), dpi=72)
         figure = plt.figure()
-        logging.debug("Figure: %s" % str(figure) )
+        logging.debug("Figure: %s", figure)
         axis = plt.subplot(111)
 
         ybottoms = [0] * numCols
@@ -217,7 +218,7 @@ class DrawArea:
         #Display first axis
         xticks = []
         for key in keys:
-            logging.debug("Day of the week: %s", str(key))
+            logging.debug("Day of the week: %s", key)
             for ind in inds:
                 ybottoms[ind] += yheights[ind]
                 yheights[ind] = 0 #Zero heights
@@ -246,8 +247,8 @@ class DrawArea:
 
         axis.set_xlim(0,numCols)
 
-        logging.debug("X values first axis: %s", str(xvals))
-        logging.debug("Y values first axis: %s", str(yheights))
+        logging.debug("X values first axis: %s", xvals)
+        logging.debug("Y values first axis: %s", yheights)
 
         #Display twin axis
         if len(xvalues) == 2:
@@ -304,26 +305,27 @@ class DrawArea:
         #self.vbox.pack_start(toolbar, False, False)
 
         for child in self.vbox.get_children():
-            logging.debug('Child available: '+str(child))
+            logging.debug('Child available: %s', child)
 
         logging.debug('<<')
 
     def drawPlot(self,xvalues,yvalues,xlabel,ylabel,title,color,zones=None,xzones=None, ylimits=None, y1_linewidth=None):
         logging.debug('>>')
-        logging.debug("Type: plot | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
-        logging.debug('xlabel: '+str(xlabel)+' | ylabel: '+str(ylabel)+' | title: '+str(title))
+        logging.debug("Type: plot | title: %s | col: %s | xlabel: %s | ylabel: %s",
+                      title, color, xlabel, ylabel)
+        logging.debug('xlabel: %s | ylabel: %s | title: %s', xlabel, ylabel, title)
         self.removeVboxChildren()
         figure = plt.Figure()
-        logging.debug("Figure: %s" % str(figure) )
+        logging.debug("Figure: %s", figure)
         #figure.clf()
         i = 0
         for value in xvalues:
             if i<1:
-                logging.debug("i: %d, value: (%s) %s %s" % (i, str(value), str(xvalues), str(yvalues)) )
+                logging.debug("i: %d, value: (%s) %s %s", i, value, xvalues, yvalues)
                 axis = figure.add_subplot(111)
-                logging.debug("Axis: %s" % str(axis) )
+                logging.debug("Axis: %s", axis)
                 line = axis.plot(xvalues[i],yvalues[i], color=color[i])
-                logging.debug("Axis plotted, Line: %s" % str(line) )
+                logging.debug("Axis plotted, Line: %s", line)
                 if y1_linewidth is not None:
                     line[0].set_linewidth(y1_linewidth)
                 linewidth = line[0].get_linewidth()
@@ -345,7 +347,7 @@ class DrawArea:
                 maxX = max(xvalues[i])
             if i>=1:
                 ax2 = axis.twinx()
-                logging.debug("Axis2: Axis: %s" % str(ax2) )
+                logging.debug("Axis2: Axis: %s", ax2)
                 ax2.plot(xvalues[i], yvalues[i], color=color[i])
                 logging.debug("Axis2: plotted" )
                 for tl in ax2.get_yticklabels():
@@ -366,7 +368,7 @@ class DrawArea:
 
         ylim_min, ylim_max = axis.get_ylim()
         if ylimits is not None:
-            logging.debug("Using ylimits: %s" % str(ylimits))
+            logging.debug("Using ylimits: %s", ylimits)
             if ylimits[0] is not None:
                 ylim_min = ylimits[0]
             if ylimits[1] is not None:
@@ -374,24 +376,25 @@ class DrawArea:
             axis.set_ylim(ylim_min, ylim_max)
 
         canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
-        logging.debug("Canvas: %s" % str(canvas))
+        logging.debug("Canvas: %s", canvas)
         canvas.show()
         self.vbox.pack_start(canvas, True, True, 0)
         toolbar = NavigationToolbar(canvas, self.window)
         self.vbox.pack_start(toolbar, False, False, 0)
 
         for child in self.vbox.get_children():
-            logging.debug('Child available: '+str(child))
+            logging.debug('Child available: %s', child)
 
         logging.debug('<<')
         return {'y1_min': ylim_min, 'y1_max': ylim_max, 'y1_linewidth': linewidth}
 
     def drawZones(self,shape,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
         logging.debug('>>')
-        logging.debug("Type: "+str(shape)+" | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
+        logging.debug("Type: pie | title: %s | col: %s | xlabel: %s | ylabel: %s",
+                      title, color, xlabel, ylabel)
         self.removeVboxChildren()
         figure = Figure()
-        logging.debug("Figure: %s" % str(figure) )
+        logging.debug("Figure: %s", figure)
         axis = figure.add_subplot(111)
 
         labels = [_("rest")]
@@ -429,7 +432,7 @@ class DrawArea:
         canvas.show()
 
         for child in self.vbox.get_children():
-            logging.debug('Child available: '+str(child))
+            logging.debug('Child available: %s', child)
 
         self.vbox.pack_start(canvas, True, True, 0)
         logging.debug('<<')
@@ -496,11 +499,11 @@ class DrawArea:
         logging.debug('>>')
         #Tidy up draw areas
         vboxChildren = self.vbox.get_children()
-        logging.debug('Vbox has %d children %s' % (len(vboxChildren), str(vboxChildren) ))
+        logging.debug('Vbox has %d children %s', len(vboxChildren), vboxChildren)
         # ToDo: check why vertical container is shared
         for child in vboxChildren:
             #Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
             if isinstance(child, FigureCanvasGTK) or isinstance(child, NavigationToolbar):
-                logging.debug('Removing child: '+str(child))
+                logging.debug('Removing child: %s', child)
                 self.vbox.remove(child)
         logging.debug('<<')

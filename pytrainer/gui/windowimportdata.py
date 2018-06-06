@@ -43,7 +43,7 @@ class WindowImportdata(SimpleBuilderApp):
             self.auto_launch = True
         else:
             self.auto_launch = False
-        logging.debug("Default tab: %s, Auto launch: %s" % (str(self.defaulttab), str(self.auto_launch)))
+        logging.debug("Default tab: %s, Auto launch: %s", self.defaulttab, self.auto_launch)
         self.init_all_tabs()
         self.notebookMainTabs.set_current_page(self.defaulttab)
         self.init_tab(self.defaulttab, first=True)          #TODO fix so dont need to re-call init_tab
@@ -162,7 +162,7 @@ class WindowImportdata(SimpleBuilderApp):
 
     def init_options_tab(self):
         logging.debug(">>")
-        logging.debug("Default tab %s" % str(self.defaulttab) )
+        logging.debug("Default tab %s", self.defaulttab)
         #Set correct radiobutton based on saved preference
         if self.defaulttab == 1:
             self.radiobuttonFile.set_active(1)
@@ -402,7 +402,7 @@ class WindowImportdata(SimpleBuilderApp):
                 self.autoLaunchFileSelection = "True"
         elif self.radiobuttonPlugins.get_active():
             self.defaulttab = "2"
-        logging.debug("Saving default tab: %s, auto launch: %s" % (str(self.defaulttab), str(self.autoLaunchFileSelection)))
+        logging.debug("Saving default tab: %s, auto launch: %s", self.defaulttab, self.autoLaunchFileSelection)
         self.configuration.setValue("pytraining","import_default_tab",self.defaulttab)
         self.configuration.setValue("pytraining","auto_launch_file_selection",self.autoLaunchFileSelection)
 
@@ -679,7 +679,7 @@ class WindowImportdata(SimpleBuilderApp):
                 logging.debug("Found file of type: %s" % filetype)
                 activitiesSummary = self.processClasses[class_index].getActivitiesSummary()
                 activity_count = len(activitiesSummary)
-                logging.debug("%s activities in file: %s" % (str(activity_count), filename) )
+                logging.debug("%s activities in file: %s", activity_count, filename)
                 #Add file to files treeview
                 iter = self.files_store.append()
                 self.files_store.set(

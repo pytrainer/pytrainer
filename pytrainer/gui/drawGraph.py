@@ -59,7 +59,7 @@ class DrawGraph:
             self.ax2 = None
         #Remove any existing plots
         for child in box.get_children():
-            logging.debug('Removing box child: '+str(child))
+            logging.debug('Removing box child: %s', child)
             box.remove(child)
 
         if datalist is None:

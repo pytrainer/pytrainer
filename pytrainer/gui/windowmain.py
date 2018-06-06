@@ -233,7 +233,7 @@ class Main(SimpleBuilderApp):
     def removeExtension(self, extension):
         for widget in self.recordbuttons_hbox:
             if widget.get_name() == extension[1]:
-                logging.debug("Removing extension: %s " % extension[0])
+                logging.debug("Removing extension: %s ", extension[0])
                 self.recordbuttons_hbox.remove(widget)
 
     def addImportPlugin(self,plugin):
@@ -763,12 +763,12 @@ class Main(SimpleBuilderApp):
             self.hboxGraphOptions.hide()
             #Remove graph
             vboxChildren = self.record_graph_vbox.get_children()
-            logging.debug('Vbox has %d children %s' % (len(vboxChildren), str(vboxChildren) ))
+            logging.debug('Vbox has %d children %s', len(vboxChildren), vboxChildren)
             # ToDo: check why vertical container is shared
             for child in vboxChildren:
                 #Remove all FigureCanvasGTK and NavigationToolbar2GTKAgg to stop double ups of graphs
                 if isinstance(child, matplotlib.backends.backend_gtk3agg.FigureCanvasGTK3Agg) or isinstance(child, matplotlib.backends.backend_gtk3.NavigationToolbar2GTK3):
-                    logging.debug('Removing child: '+str(child))
+                    logging.debug('Removing child: %s', child)
                     self.record_graph_vbox.remove(child)
             self.record_vbox.set_sensitive(0)
         logging.debug("<<")
@@ -1197,7 +1197,7 @@ class Main(SimpleBuilderApp):
             try:
                 _id = i.id
             except (ValueError, TypeError) as e:
-                logging.debug("Unable to determine id for record: %s" % str(i))
+                logging.debug("Unable to determine id for record: %s", i)
                 logging.debug(str(e))
                 continue
             _title = i.title
@@ -1218,7 +1218,7 @@ class Main(SimpleBuilderApp):
             try:
                 _beats = round(i.beats)
             except (ValueError, TypeError) as e:
-                logging.debug("Unable to parse beats for %s" % str(i.beats) )
+                logging.debug("Unable to parse beats for %s", i.beats)
                 logging.debug(str(e))
                 _beats = 0.0
 
@@ -1400,7 +1400,7 @@ class Main(SimpleBuilderApp):
 
     def zoom_graph(self, y1limits=None, y1color=None, y1_linewidth=1):
         logging.debug(">>")
-        logging.debug("Reseting graph Y axis with ylimits: %s" % str(y1limits) )
+        logging.debug("Reseting graph Y axis with ylimits: %s", y1limits)
         self.drawarearecord.drawgraph(self.record_list,self.laps, y1limits=y1limits, y1color=y1color, y1_linewidth=y1_linewidth)
         logging.debug("<<")
 
@@ -1451,7 +1451,7 @@ class Main(SimpleBuilderApp):
 
     def on_y1colorchange(self, widget, box, graphdata, activity):
         '''Hander for changes to y1 color selection'''
-        logging.debug("Setting %s to color %s" % (graphdata, widget.get_color() ) )
+        logging.debug("Setting %s to color %s", graphdata, widget.get_color())
         if activity.x_axis == "distance":
             activity.distance_data[graphdata].set_color(str(widget.get_color()))
         elif activity.x_axis == "time":
@@ -1461,7 +1461,7 @@ class Main(SimpleBuilderApp):
 
     def on_y2colorchange(self, widget, box, graphdata, activity):
         '''Hander for changes to y2 color selection'''
-        logging.debug("Setting %s to color %s" % (graphdata, widget.get_color() ) )
+        logging.debug("Setting %s to color %s", graphdata, widget.get_color())
         if activity.x_axis == "distance":
             activity.distance_data[graphdata].set_color(None, str(widget.get_color()))
         elif activity.x_axis == "time":
@@ -1471,36 +1471,36 @@ class Main(SimpleBuilderApp):
 
     def on_y1change(self, widget, box, graphdata, activity):
         '''Hander for changes to y1 selection'''
-        logging.debug("Y1 selection toggled: %s" % graphdata)
+        logging.debug("Y1 selection toggled: %s", graphdata)
         #Loop through all options at set data correctly
         for child in box.get_children():
             if activity.x_axis == "distance":
                 for item in activity.distance_data:
                     if activity.distance_data[item].title == child.get_label():
-                        logging.debug( "Setting %s to %s" % (item, str(child.get_active()) ) )
+                        logging.debug("Setting %s to %s", item, child.get_active())
                         activity.distance_data[item].show_on_y1 = child.get_active()
             elif activity.x_axis == "time":
                 for item in activity.time_data:
                     if activity.time_data[item].title == child.get_label():
-                        logging.debug( "Setting %s to %s" % (item, str(child.get_active()) ) )
+                        logging.debug("Setting %s to %s", item, child.get_active())
                         activity.time_data[item].show_on_y1 = child.get_active()
         #Replot the activity
         self.actualize_recordgraph(activity)
 
     def on_y2change(self, widget, box, graphdata, activity):
         '''Hander for changes to y2 selection'''
-        logging.debug("Y2 selection toggled: %s" % graphdata)
+        logging.debug("Y2 selection toggled: %s", graphdata)
         #Loop through all options at set data correctly
         for child in box.get_children():
             if activity.x_axis == "distance":
                 for item in activity.distance_data:
                     if activity.distance_data[item].title == child.get_label():
-                        logging.debug( "Setting %s to %s" % (item, str(child.get_active()) ) )
+                        logging.debug("Setting %s to %s", item, child.get_active())
                         activity.distance_data[item].show_on_y2 = child.get_active()
             elif activity.x_axis == "time":
                 for item in activity.time_data:
                     if activity.time_data[item].title == child.get_label():
-                        logging.debug( "Setting %s to %s" % (item, str(child.get_active()) ) )
+                        logging.debug("Setting %s to %s", item, child.get_active())
                         activity.time_data[item].show_on_y2 = child.get_active()
         #Replot the activity
         self.actualize_recordgraph(activity)
@@ -1524,7 +1524,8 @@ class Main(SimpleBuilderApp):
             y1max = self._float_or(gtk_str(data['y1maxlabel'].get_text()), activity.y1_limits[1])
             y2min = self._float_or(gtk_str(data['y2minlabel'].get_text()), activity.y2_limits[0])
             y2max = self._float_or(gtk_str(data['y2maxlabel'].get_text()), activity.y2_limits[1])
-            logging.debug("Setting graph limits x: (%s,%s), y1: (%s,%s), y2: (%s,%s)" % (str(xmin), str(xmax), str(y1min), str(y1max), str(y2min), str(y2max)) )
+            logging.debug("Setting graph limits x: (%s,%s), y1: (%s,%s), y2: (%s,%s)",
+                          xmin, xmax, y1min, y1max, y2min, y2max)
             activity.x_limits_u = (xmin, xmax)
             activity.y1_limits_u = (y1min, y1max)
             activity.y2_limits_u = (y2min, y2max)
@@ -1546,8 +1547,7 @@ class Main(SimpleBuilderApp):
             #Hide options
             self.hpaned1.set_position(0)
             self.buttonShowOptions.set_tooltip_text(_('Show graph display options') )
-        #logging.debug('Position: %d' % self.hpaned1.get_position() )
-        logging.debug('Position set: %s' % self.hpaned1.get_property('position-set') )
+        logging.debug('Position set: %s', self.hpaned1.get_property('position-set'))
 
     def on_buttonGraphHideOptions_clicked(self, widget):
         logging.debug('on_buttonGraphHideOptions_clicked')
@@ -1576,11 +1576,11 @@ class Main(SimpleBuilderApp):
         #Ignore the deselected toggle event
         if widget.get_active() == False:
             return
-        logging.debug( 'on_radiobuttonMap_toggled '+ widget.get_name()+ ' activated')
+        logging.debug('on_radiobuttonMap_toggled %s activated', widget.get_name())
         self.parent.refreshMapView()
 
     def on_comboMapLineType_changed(self, widget):
-        logging.debug( 'on_comboMapLineType_changed '+ widget.get_name()+ ' = ' + str(+ widget.get_active()))
+        logging.debug('on_comboMapLineType_changed %s = %s', widget.get_name(), widget.get_active())
         self.parent.refreshMapView()
 
     def on_hpaned1_move_handle(self, widget):
@@ -1719,7 +1719,7 @@ class Main(SimpleBuilderApp):
 
     def on_calendar_selected(self, widget):
         logging.debug(">>")
-        logging.debug("Block (%s) | Selected view: %s" % (self.block, self.selected_view))
+        logging.debug("Block (%s) | Selected view: %s", self.block, self.selected_view)
         if self.block:
             self.block = False
         else:
@@ -2005,7 +2005,7 @@ class Main(SimpleBuilderApp):
             data = {'id': None, 'date': Date().getDate().strftime("%Y-%m-%d"),
                     'weight': None, 'bf': None, 'restingHR': None, 'maxHR': None}
         else:
-            logging.debug('Edit existing athlete entry: %s', str(data))
+            logging.debug('Edit existing athlete entry: %s', data)
             title = _('Edit Athlete Entry')
         dialog = Gtk.Dialog(title=title, parent=self.pytrainer_main.windowmain.window1, flags= Gtk.DialogFlags.DESTROY_WITH_PARENT,
                      buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
@@ -2082,7 +2082,7 @@ class Main(SimpleBuilderApp):
             data['restingHR'] = gtk_str(self.entryList[3].get_text())
             data['maxHR'] = gtk_str(self.entryList[4].get_text())
             self.on_athleteSave(data)
-            logging.debug('Athlete data saved: %s' % str(data))
+            logging.debug('Athlete data saved: %s', data)
         dialog.destroy()
         logging.debug('<<')
 
@@ -2096,11 +2096,11 @@ class Main(SimpleBuilderApp):
         response = md.run()
         md.destroy()
         if response == Gtk.ResponseType.OK:
-            logging.debug("User confirmed deletion of athlete entry with id: %s" % data)
+            logging.debug("User confirmed deletion of athlete entry with id: %s", data)
             self.pytrainer_main.athlete.delete_record(data)
             self.parent.refreshAthleteView()
         else:
-            logging.debug("User canceled athlete record deletion for id %s" % data)
+            logging.debug("User canceled athlete record deletion for id %s", data)
         logging.debug("<<")
 
     def on_athleteSave(self, data):
@@ -2122,11 +2122,11 @@ class Main(SimpleBuilderApp):
         #Check if an entry has been edited or is a new one
         if id_athletestat is None or id_athletestat == "":
             #New entry
-            logging.debug('Creating new entry with values: date %s, weight %s, bodyfat %s, restinghr %s, maxhr %s' % (date, weight, bodyfat, restinghr, maxhr) )
+            logging.debug('Creating new entry with values: date %s, weight %s, bodyfat %s, restinghr %s, maxhr %s', date, weight, bodyfat, restinghr, maxhr)
             self.parent.athlete.insert_athlete_stats(date, weight, bodyfat, restinghr, maxhr)
         else:
             #Edited existing entry
-            logging.debug('Updating id_athletestat:%s with values: date %s, weight %s, bodyfat %s, restinghr %s, maxhr %s' % (id_athletestat, date, weight, bodyfat, restinghr, maxhr) )
+            logging.debug('Updating id_athletestat:%s with values: date %s, weight %s, bodyfat %s, restinghr %s, maxhr %s', id_athletestat, date, weight, bodyfat, restinghr, maxhr)
             self.parent.athlete.update_athlete_stats(id_athletestat, date, weight, bodyfat, restinghr, maxhr)
         self.parent.refreshAthleteView()
 
