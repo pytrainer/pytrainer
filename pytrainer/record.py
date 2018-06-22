@@ -364,9 +364,9 @@ class Record:
     def getRecordListByCondition(self, condition):
         logging.debug('>>')
         if condition is None:
-            return self.pytrainer_main.ddbb.session.query(Activity).order_by(Activity.date)
+            return self.pytrainer_main.ddbb.session.query(Activity).order_by(Activity.date.desc())
         else:
-            return self.pytrainer_main.ddbb.session.query(Activity).filter(condition).order_by(Activity.date)
+            return self.pytrainer_main.ddbb.session.query(Activity).filter(condition).order_by(Activity.date.desc())
 
     def getRecordDayList(self, date, sport=None):
         logging.debug('>>')
