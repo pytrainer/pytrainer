@@ -236,13 +236,6 @@ class Main(SimpleBuilderApp):
                 logging.debug("Removing extension: %s ", extension[0])
                 self.recordbuttons_hbox.remove(widget)
 
-    def addImportPlugin(self,plugin):
-        button = Gtk.MenuItem(plugin[0])
-        button.set_name(plugin[1])
-        button.connect("activate", self.parent.runPlugin, plugin[1])
-        self.menuitem1_menu.insert(button,3)
-        self.menuitem1_menu.show_all()
-
     def addExtension(self,extension):
         #txtbutton,extensioncode,extensiontype = extension
         button = Gtk.Button(extension[0])
