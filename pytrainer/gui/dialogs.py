@@ -20,11 +20,11 @@ import os
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-import logging
+import warnings
 
 class fileChooserDialog():
     def __init__(self, title = "Choose a file", multiple = False):
-        logging.warning("Deprecated fileChooserDialog class called")
+        warnings.warn("Deprecated fileChooserDialog class called", DeprecationWarning, stacklevel=2)
         self.inputfiles = open_file_chooser_dialog(title=title, multiple=multiple)
 
     def getFiles(self):

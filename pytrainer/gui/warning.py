@@ -18,11 +18,11 @@
 
 from pytrainer.gui.dialogs import warning_dialog
 from gi.repository import Gtk
-import logging
+import warnings
 
 class Warning(object):
     def __init__(self, data_path = None, okmethod = None, okparams = None, cancelmethod = None, cancelparams = None):
-        logging.warning("Deprecated Warning class called")
+        warnings.warn("Deprecated Warning class called", DeprecationWarning, stacklevel=2)
         self.okmethod = okmethod
         self.cancelmethod = cancelmethod
         self.okparams = okparams

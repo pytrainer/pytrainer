@@ -22,6 +22,7 @@
 import logging
 import os
 import dateutil
+import warnings
 from pytrainer.util.color import color_from_hex_string
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -147,7 +148,7 @@ if no url is provided"""
         self.engine.dispose()
 
     def select(self,table,cells,condition=None, mod=None):
-        logging.warning("Deprecated call to ddbb.select")
+        warnings.warn("Deprecated call to ddbb.select", DeprecationWarning, stacklevel=2)
         sql = "select %s from %s" %(cells,table)
         if condition is not None:
             sql = "%s where %s" % (sql, condition)

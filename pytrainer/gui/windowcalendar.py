@@ -16,12 +16,12 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import logging
+import warnings
 from pytrainer.gui.dialogs import calendar_dialog
 
 class WindowCalendar(object):
     def __init__(self, data_path = None, parent = None, date = None):
-        logging.warning("Deprecated WindowCalendar class called")
+        warnings.warn("Deprecated WindowCalendar class called", DeprecationWarning, stacklevel=2)
         self.parent = parent
         self.date = date
 
