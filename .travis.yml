@@ -17,20 +17,15 @@ addons:
       - python3-matplotlib
 services:
   - mysql
-  - postgresql
 env:
   - PYTHON_VERSION=2.7 PYTRAINER_ALCHEMYURL="sqlite://"
   - PYTHON_VERSION=3.5 PYTRAINER_ALCHEMYURL="sqlite://"
   - PYTHON_VERSION=2.7 PYTRAINER_ALCHEMYURL="mysql://pytrainer@localhost/pytrainer"
   - PYTHON_VERSION=3.5 PYTRAINER_ALCHEMYURL="mysql://pytrainer@localhost/pytrainer"
-  - PYTHON_VERSION=2.7 PYTRAINER_ALCHEMYURL="postgresql://pytrainer@localhost/pytrainer"
-  - PYTHON_VERSION=3.5 PYTRAINER_ALCHEMYURL="postgresql://pytrainer@localhost/pytrainer"
 before_install:
   - mysql -e "CREATE USER 'pytrainer'@'localhost';"
   - mysql -e "CREATE DATABASE pytrainer;"
   - mysql -e "GRANT ALL PRIVILEGES ON pytrainer . * TO 'pytrainer'@'localhost';"
-  - createuser -U postgres pytrainer
-  - createdb -U postgres -O pytrainer pytrainer
 script: "TZ=Europe/Kaliningrad xvfb-run python$PYTHON_VERSION -Wall setup.py test"
 notifications:
   irc:
