@@ -17,6 +17,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
+import warnings
 import os, os.path
 import dateutil.parser
 from dateutil.tz import tzlocal
@@ -97,7 +98,7 @@ class ActivityService(object):
 
     def get_activity(self, id):
         if id is None:
-            logging.warning("Deprecated call to get_activity with None id")
+            warnings.warn("Deprecated call to get_activity with None id", DeprecationWarning, stacklevel=2)
             return Activity()
         sid = str(id)
         if sid in list(self.pool.keys()):
@@ -338,7 +339,7 @@ class Activity(DeclarativeBase):
 
     @property
     def laps(self):
-        logging.warning("Deprecated property Activity.laps called")
+        warnings.warn("Deprecated property Activity.laps called", DeprecationWarning, stacklevel=2)
         ret = []
         for lap in self.Laps:
             d = dict(lap.__dict__)
@@ -430,12 +431,12 @@ tracks (%s)
 
     @property
     def time(self):
-        logging.warning("Deprecated property Activity.time called")
+        warnings.warn("Deprecated property Activity.time called", DeprecationWarning, stacklevel=2)
         return self.duration
 
     @property
     def sport_name(self):
-        logging.warning("Deprecated property Activity.sport_name called")
+        warnings.warn("Deprecated property Activity.sport_name called", DeprecationWarning, stacklevel=2)
         return self.sport.name
 
     def _generate_per_lap_graphs(self):

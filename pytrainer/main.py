@@ -144,6 +144,7 @@ class pyTrainer:
 
     def set_logging(self, level, log_type):
         '''Setup rotating log file with customized format'''
+        logging.captureWarnings(True)
         if("console" == log_type):
             handler = logging.StreamHandler(sys.stdout)
         else:

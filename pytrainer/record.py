@@ -21,6 +21,7 @@ import os
 import shutil
 import logging
 import datetime
+import warnings
 
 from .gui.windowrecord import WindowRecord
 from .gui.dialogselecttrack import DialogSelectTrack
@@ -331,12 +332,12 @@ class Record:
 
     def getSportMet(self,sport_name):
         """Deprecated: use sport.met"""
-        logging.debug('--')
+        warnings.warn('Deprecated call to getSportMet', DeprecationWarning, stacklevel=2)
         return self._get_sport(sport_name).met
 
     def getSportWeight(self,sport_name):
         """Deprecated: use sport.weight"""
-        logging.debug('--')
+        warnings.warn('Deprecated call to getSportWeight', DeprecationWarning, stacklevel=2)
         return self._get_sport(sport_name).weight
 
     def getLastRecordDateString(self, sport_id = None):
