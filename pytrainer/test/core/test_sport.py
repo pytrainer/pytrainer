@@ -53,8 +53,6 @@ class SportTest(unittest.TestCase):
         self.assertEqual(1, sport.id)
         
     def test_id_should_not_accept_non_integer_string(self):
-        if self.ddbb.engine.name == 'mysql':
-            self.skipTest('Not supported on Mysql 5.6')
         sport = Sport()
         try:
             sport.id = "test"
@@ -76,8 +74,6 @@ class SportTest(unittest.TestCase):
 
     @unittest.skipIf(sys.version_info > (3, 0), "All strings are unicode in Python 3")
     def test_name_should_not_accept_non_unicode_string(self):
-        if self.ddbb.engine.name == 'mysql':
-            self.skipTest('Not supported on Mysql 5.6')
         sport = Sport()
         sport.name = "Juggling" + chr(255)
         try:
@@ -120,8 +116,6 @@ class SportTest(unittest.TestCase):
         self.assertEqual(22.5, sport.met)
         
     def test_met_should_not_accept_non_float_string(self):
-        if self.ddbb.engine.name == 'mysql':
-            self.skipTest('Not supported on Mysql 5.6')
         sport = Sport()
         sport.met = "22.5kg"
         try:
@@ -167,8 +161,6 @@ class SportTest(unittest.TestCase):
         self.assertEqual(22.5, sport.weight)
         
     def test_weight_should_not_accept_non_float_string(self):
-        if self.ddbb.engine.name == 'mysql':
-            self.skipTest('Not supported on Mysql 5.6')
         sport = Sport()
         sport.weight = "22.5kg"
         try:
