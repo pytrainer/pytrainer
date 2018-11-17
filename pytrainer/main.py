@@ -197,8 +197,8 @@ class pyTrainer:
                 # Only showing garmintools_full and garmin-hr in 'File' dropdown
                 plugin_name = os.path.basename(plugin)
                 if (plugin_name == "garmintools_full" or plugin_name == "garmin-hr"):
-                    txtbutton = self.plugins.loadPlugin(plugin)
-                    self.windowmain.addImportPlugin(txtbutton)
+                    warnings.warn('Attempted to enable an unsupported plugin %s' % plugin_name,
+                                  UserWarning)
                 else:
                     logging.debug('From version 1.10 on, file import plugins are managed via File -> Import. Not displaying plugin ' + plugin_name)
         logging.debug('<<')
@@ -426,8 +426,8 @@ class pyTrainer:
                 #new active plugin -> need to load plugin
                 plugin_name = os.path.basename(plugin)
                 if (plugin_name == "garmintools_full" or plugin_name == "garmin-hr"):
-                    txtbutton = self.plugins.loadPlugin(plugin)
-                    self.windowmain.addImportPlugin(txtbutton)
+                    warnings.warn('Attempted to enable an unsupported plugin %s' % plugin_name,
+                                  UserWarning)
                 else:
                     logging.debug('From version 1.10 on file import plugins are managed via File -> Import. Not displaying plugin ' + plugin_name)
         logging.debug('<<')
