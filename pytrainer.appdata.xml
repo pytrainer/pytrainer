@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2018 Per Andersson <avtobiff@foo.nu> -->
+<component type="desktop">
+  <id>pytrainer.desktop</id>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-2.0+</project_license>
+  <name>pytrainer</name>
+  <summary>The Free Sport Training Center</summary>
+  <description>
+    <p>
+    Pytrainer is a desktop application for logging and graphing sporting
+    activities such as running or cycling sessions. Data can be
+    imported from GPS devices, files or input manually. Currently
+    pytrainer supports GPX, TCX, and FIT files.
+    </p>
+  </description>
+  <screenshots>
+    <screenshot type="default">
+      <image height="768" width="1366">
+          https://raw.githubusercontent.com/pytrainer/pytrainer/master/pytrainer-screenshot.png
+      </image>
+    </screenshot>
+  </screenshots>
+  <url type="homepage">https://github.com/pytrainer/pytrainer</url>
+  <update_contact>avtobiff@foo.nu</update_contact>
+  <developer_name>pytrainer developers</developer_name>
+  <url type="bugtracker">https://github.com/pytrainer/pytrainer/issues</url>
+  <url type="help">ircs://irc.freenode.net:6697/pytrainer</url>
+  <url type="translate">https://github.com/pytrainer/pytrainer/wiki/Localization-guide</url>
+</component>
