@@ -18,7 +18,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
-import os, sys, commands
+import os, sys, subprocess
 from lxml import etree
 
 class gant():
@@ -33,9 +33,12 @@ class gant():
 		return _("Gant")
 
 	def getVersion(self):
-		outstatus = commands.getstatusoutput('which gant')
-		if outstatus[0] == 0: #Found gant in path 
-			path = outstatus[1]
+		process = subprocess.Popen(['which', 'gant'],
+		                           stdout=subprocess.PIPE,
+		                           stderr=subprocess.PIPE)
+		stdout, stderr = process.communicate()
+		if process.returncode == 0: # Found gant in path
+			path = stdout[:-1] # remove trailing newline
 			return path
 		else:
 			return None
@@ -48,7 +51,4 @@ class gant():
 		return True
 
 	def isPresent(self):
-		if self.getVersion():
-			return True
-		else:
-			return False
+		return self.getVersion() is not None

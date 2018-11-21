@@ -24,10 +24,11 @@ import os
 import sys
 import logging
 import fnmatch
-import commands
+import subprocess
 from io import BytesIO
 import traceback
 import dateutil.parser
+import time
 
 from lxml import etree
 from pytrainer.lib.xmlUtils import XMLParser
@@ -74,6 +75,10 @@ class garmintools_full():
             value = info.getValue("pytrainer-plugin",confVar)
         return value
 
+    def error_dialog(self, msg):
+        #TODO Remove Zenity below
+        subprocess.call(["zenity", "--error", "--text='%s'" % msg])
+
     def run(self):
         logging.debug(">>")
         importFiles = []
@@ -81,8 +86,12 @@ class garmintools_full():
             numError = self.getDeviceInfo()
             if numError >= 0:
                 #TODO Remove Zenity below
-                outgps = commands.getstatusoutput("garmin_save_runs -v| zenity --progress --pulsate --text='Loading Data' --auto-close")
-                if outgps[0]==0:
+                outgps = subprocess.call(
+                        "garmin_save_runs -v "
+                        "| zenity --progress --pulsate "
+                        "         --text='Loading Data' --auto-close",
+                        shell=True)
+                if outgps == 0:
                     # now we should have a lot of gmn (binary) files under $GARMIN_SAVE_RUNS
                     foundFiles = self.searchFiles(self.tmpdir, "gmn")
                     logging.info("Retrieved "+str(len(foundFiles))+" entries from GPS device")
@@ -106,14 +115,16 @@ class garmintools_full():
                 else:
                     logging.error("Error when retrieving data from GPS device")
             else:
-                #TODO Remove Zenity below
                 if numError == -1:
-                    os.popen("zenity --error --text='No Garmin device found\nCheck your configuration'");
+                    self.error_dialog("No Garmin device found\n"
+                                      "Check your configuration")
                 elif numError == -2:
-                    os.popen("zenity --error --text='Can not find garmintools binaries\nCheck your configuration'")
+                    self.error_dialog("Can not find garmintools binaries\n"
+                                      "Check your configuration")
         else: #No garmin device found
-                #TODO Remove Zenity below
-            os.popen("zenity --error --text='Can not handle Garmin device (wrong module loaded)\nCheck your configuration'");
+            self.error_dialog("Can not handle Garmin device (wrong "
+                              "module loaded)\n"
+                              "Check your configuration")
         logging.info("Entries to import: "+str(len(importFiles)))
         logging.debug("<<")
         return importFiles
@@ -265,11 +276,13 @@ class garmintools_full():
         for filename in listFiles:
             outdump = filename.replace('.gmn', '.dump')
             logging.debug("outdump: "+str(outdump))
-            result = commands.getstatusoutput("garmin_dump %s > %s" %(filename,outdump))
-            if result[0] == 0:
+            result = subprocess.call(
+                    "garmin_dump %s > %s" % (filename, outdump))
+            if result == 0:
                 dumpFiles.append(outdump)
             else:
-                logging.error("Error when creating dump of "+str(filename)+": "+str(result))
+                logging.error("Error when creating dump of %s: %d" %
+                              (str(filename), result))
         logging.debug("<<")
         return dumpFiles
 
@@ -277,23 +290,31 @@ class garmintools_full():
         logging.debug(">>")
         foundFiles=[]
         logging.debug("rootPath: "+str(rootPath))
-        result = commands.getstatusoutput("find %s -name *.%s" %(rootPath,extension))
-        if result[0] == 0:
-            foundFiles = result[1].splitlines()
+        process = subprocess.Popen(
+                ["find", rootPath, "-name", "*.%s" % extension],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+        if process.returncode == 0:
+            foundFiles = stdout.splitlines()
             #logging.debug("Found files: "+str(foundFiles))
             logging.info ("Found files: "+str(len(foundFiles)))
         else:
-            logging.error("Not able to locate files from GPS: "+str(result))
+            logging.error("Not able to locate files from GPS: %s" % 
+                          str(process.returncode))
         logging.debug("<<")
         return foundFiles
 
     def getDeviceInfo(self):
         logging.debug(">>")
-        result = commands.getstatusoutput('garmin_get_info')
-        logging.debug("Returns "+str(result))
+        process = subprocess.Popen('garmin_get_info',
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+        logging.debug("Returns "+str(stdout))
         numError = 0
-        if result[0] == 0:
-            if result[1] != "garmin unit could not be opened!":
+        if process.returncode == 0:
+            if stdout != "garmin unit could not be opened!":
                 try:
                     xmlString = result[1].rstrip()
                     xmlString_2 = ' '.join(xmlString.split())
@@ -322,19 +343,27 @@ class garmintools_full():
 
     def checkLoadedModule(self):
         try:
-            outmod = commands.getstatusoutput('/sbin/lsmod | grep garmin_gps')
-            if outmod[0]==256:      #there is no garmin_gps module loaded
-                return True
-            else:
-                return False
+            outmod = subprocess.Popen('lsmod | grep garmin_gps',
+                                      stdout=subprocess.PIPE,
+                                      stderr=subprocess.PIPE,
+                                      shell=True)
+            stdout, stderr = outmod.communicate()
+            # stdout is empty if no garmin_gps module is loaded
+            return stdout != ''
         except:
             return False
 
     def createUserdirBackup(self):
         logging.debug('>>')
-        result = commands.getstatusoutput('tar -cvzf '+os.environ['HOME']+'/pytrainer_`date +%Y%m%d_%H%M`.tar.gz '+self.confdir)
-        if result[0] != 0:
-            raise Exception, "Copying current user directory does not work, error #"+str(result)
+        result = subprocess.call(
+                ['tar',
+                 '-cvzf',
+                 '%s/pytrainer_%s.tar.gz' % (os.environ['HOME'],
+                                             time.strftime('%Y%m%d_%H%M')),
+                 self.confdir])
+        if result != 0:
+            raise Exception, ("Copying current user directory does not work, "
+                              "error #"+str(result))
         else:
             logging.info('User directory backup successfully created')
         logging.debug('<<')

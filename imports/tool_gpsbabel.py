@@ -18,7 +18,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
-import os, sys, commands
+import os, sys, subprocess
 from lxml import etree
 
 class gpsbabel():
@@ -33,9 +33,12 @@ class gpsbabel():
 		return _("GPSBabel")
 
 	def getVersion(self):
-		result = commands.getstatusoutput('gpsbabel -V')
-		if result[0] == 0:
-			version = result[1].split()
+		process = subprocess.Popen(['gpsbabel', '-V'],
+		                           stdout=subprocess.PIPE,
+		                           stderr=subprocess.PIPE)
+		stdout, stderr = process.communicate()
+		if process.returncode == 0:
+			version = stdout.split()
 			try:
 				return version[2]
 			except:
@@ -48,17 +51,15 @@ class gpsbabel():
 
 	def deviceExists(self):
 		try:
-			#TODO Check if this is correct???
-			outmod = commands.getstatusoutput('/sbin/lsmod | grep garmin_gps')
-			if outmod[0]==256:	#there is no garmin_gps module loaded
-				return False
-			else:
-				return True
+			process = subprocess.Popen('lsmod | grep garmin_gps',
+			                           stdout=subprocess.PIPE,
+			                           stderr=subprocess.PIPE,
+			                           shell=True)
+			stdout, stderr = process.communicate()
+			# stdout is empty if no garmin_gps module loaded
+			return stdout != ''
 		except:
 			return False
 
 	def isPresent(self):
-		if self.getVersion():
-			return True
-		else:
-			return False
+		return self.getVersion() is not None
