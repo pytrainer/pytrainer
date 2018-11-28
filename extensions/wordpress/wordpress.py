@@ -159,7 +159,13 @@ class wordpress:
             #htmlpath = googlemaps.drawMap(self.gpxfile,self.googlekey,htmlpath)    #TODO fix to use main googlemaps and remove extensions copy
             htmlpath = self.googlemaps.drawMap(self.activity)
             #create the kml file
-            os.system("gpsbabel -t -i gpx -f %s -o kml,points=0,line_color=ff0000ff -F %s" %(self.gpxfile,kmlpath)) #TODO fix to remove gpsbabel
+            #TODO fix to remove gpsbabel
+            subprocess.call(["gpsbabel",
+                             "-t",
+                             "-i", "gpx",
+                             "-f", self.gpxfile,
+                             "-o", "kml,points=0,line_color=ff0000ff",
+                             "-F", kmlpath])
 
             #gfile = self.wp.newMediaObject(self.gpxfile)
             gfile = self.wp.newMediaObject(gpxpath)
