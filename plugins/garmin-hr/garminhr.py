@@ -24,7 +24,7 @@ from pytrainer.lib.xmlUtils import XMLParser
 from pytrainer.core.activity import Activity
 from sqlalchemy.orm import exc
 
-import commands
+import subprocess
 
 class garminhr():
 	""" Plugin to import from a Garmin device using gpsbabel
@@ -53,22 +53,39 @@ class garminhr():
 			value = info.getValue("pytrainer-plugin",confVar)
 		return value
 
+	def error_dialog(self, msg):
+		#TODO Remove Zenity below
+		subprocess.call(["zenity", "--error",
+		                 "--text='%s'" % msg])
+
 	def run(self):
 		logging.debug(">>")
 		importfiles = []
+		no_device_msg = ("Can not handle Garmin device\n"
+		                 "Check your configuration\n"
+		                 "Current USB port is set "
+		                 "to:\t %s" % self.input_dev)
+
 		if not self.checkGPSBabelVersion("1.3.5"):
-			#TODO Remove Zenity below
-			os.popen("zenity --error --text='Must be using version 1.3.5 of GPSBabel for this plugin'");
+			self.error_dialog("Must be using version 1.3.5 "
+			                  "of GPSBabel for this plugin")
 		elif self.garminDeviceExists():
 			try:
 				gpsbabelOutputFile = "%s/file.gtrnctr" % (self.tmpdir)
 				#TODO Remove Zenity below
-				outgps = commands.getstatusoutput("gpsbabel -t -i garmin -f %s -o gtrnctr -F %s | zenity --progress --pulsate --text='Loading Data' auto-close" % (self.input_dev, gpsbabelOutputFile) )
-				if outgps[0]==0:
-					if outgps[1] == "Found no Garmin USB devices.": # check localizations
-						logging.error ("GPSBabel found no Garmin USB devices")
-						os.popen("zenity --error --text='GPSBabel found no Garmin USB devices'");
-						pass
+				outgps = subprocess.Popen(
+				        "gpsbabel -t -i garmin -f %s -o gtrnctr -F %s "
+				        "| zenity --progress --pulsate --text='Loading Data' "
+				        "    auto-close" % (self.input_dev, gpsbabelOutputFile),
+				        stdout=subprocess.PIPE,
+				        stderr=subprocess.PIPE,
+				        shell=True)
+				stdout, stderr = outgps.communicate()
+				if outgps.returncode == 0:
+					if stdout == "Found no Garmin USB devices.": # check localizations
+						error_msg = "GPSBabel found no Garmin USB devices"
+						logging.error(error_msg)
+						self.error_dialog(error_msg)
 					else: #gpsbabel worked - now process file...
 						if self.valid_input_file(gpsbabelOutputFile):
 							for (sport, tracks) in self.getTracks(gpsbabelOutputFile):
@@ -87,19 +104,20 @@ class garminhr():
 						else:
 							logging.info("File %s failed validation" % (gpsbabelOutputFile))
 			except Exception:
-				#TODO Remove Zenity below
-				os.popen("zenity --error --text='Can not handle Garmin device\nCheck your configuration\nCurrent usb port is set to:\t %s'" %self.input_dev);
+				self.dialog_msg(no_device_msg)
 				print sys.exc_info()[0]
 		else: #No garmin device found
-			#TODO Remove Zenity below
-			os.popen("zenity --error --text='Can not handle Garmin device\nCheck your configuration\nCurrent usb port is set to:\t %s'" %self.input_dev);
+			self.error_dialog(no_device_msg)
 		logging.debug("<<")
 		return importfiles
 
 	def checkGPSBabelVersion(self, validVersion):
-		result = commands.getstatusoutput('gpsbabel -V')
-		if result[0] == 0:
-			version = result[1].split()
+		process = subprocess.Popen(['gpsbabel', '-V'],
+                                           stdout=subprocess.PIPE,
+                                           stderr=subprocess.PIPE)
+		stdout, stderr = process.communicate()
+		if process.returncode == 0:
+			version = stdout.split()
 			try:
 				if version[2] == validVersion:
 					return True
@@ -112,8 +130,13 @@ class garminhr():
 
 	def garminDeviceExists(self):
 		try:
-			outmod = commands.getstatusoutput('/sbin/lsmod | grep garmin_gps')
-			if outmod[0]==256:	#there is no garmin_gps module loaded
+			process = subprocess.Popen('lsmod | grep garmin_gps',
+			                           stdout=subprocess.PIPE,
+			                           stderr=subprocess.PIPE,
+			                           shell=True)
+			stdout, stderr = process.communicate()
+			# stdout is empty if no garmin_gps module is loaded
+			if stdout != '':
 				self.input_dev = "usb:"
 				return True
 			else:

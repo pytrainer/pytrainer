@@ -19,7 +19,7 @@
 
 
 import os
-import commands
+import subprocess
 import logging
 from lxml import etree
 from pytrainer.gui.dialogs import fileChooserDialog, guiFlush
@@ -44,7 +44,13 @@ class googleearth():
 				if not self.inDatabase(filename):
 					sport = self.getSport(filename) #TODO Fix sport determination
 					gpxfile = "%s/googleearth-%d.gpx" % (self.tmpdir, len(importfiles))
-					outgps = commands.getstatusoutput("gpsbabel -t -i kml -f %s -o gpx -F %s" % (filename, gpxfile) )
+					outgps = subprocess.call(
+					            ["gpsbabel",
+					             "-t",
+					             "-i", "kml",
+					             "-f", filename,
+					             "-o", "gpx",
+					             "-F", gpxfile])
 					#self.createGPXfile(gpxfile, filename) #TODO Fix processing so not dependant on the broken gpsbabel
 					importfiles.append((gpxfile, sport))
 				else:

@@ -18,7 +18,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import logging
-import os, sys, commands
+import os, sys, subprocess
 from lxml import etree
 
 class garmintools():
@@ -33,9 +33,12 @@ class garmintools():
 		return _("Garmintools")
 
 	def getVersion(self):
-		outstatus = commands.getstatusoutput('which garmin_save_runs')
-		if outstatus[0] == 0: #Found garmin_save_runs in path 
-			path = "Unknown"
+		process = subprocess.Popen(['which', 'garmin_save_runs'],
+		                           stdout=subprocess.PIPE,
+		                           stderr=subprocess.PIPE)
+		stdout, stderr = process.communicate()
+		if process.returncode == 0: # Found garmin_save_runs in path
+		        path = stdout[:-1] # remove trailing newline
 			return path
 		else:
 			return None
@@ -44,14 +47,16 @@ class garmintools():
 		return "http://code.google.com/p/garmintools/"
 
 	def deviceExists(self):
-		outstatus = commands.getstatusoutput('garmin_get_info')
-		if outstatus[0] is not 0 or outstatus[1].startswith("garmin unit could not be opened"):
+		process = subprocess.Popen('garmin_get_info',
+		                           stdout=subprocess.PIPE,
+		                           stderr=subprocess.PIPE)
+		stdout, stderr = process.communicate()
+		if (process.returncode is not 0
+		    or
+		    stdout.startswith("garmin unit could not be opened")):
 			return False
 		else:
 			return True
 
 	def isPresent(self):
-		if self.getVersion():
-			return True
-		else:
-			return False
+		return self.getVersion() is not None
