@@ -3,3 +3,5 @@
 build
 *~
 __pycache__
+.eggs/
+pytrainer.egg-info
