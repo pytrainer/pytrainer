@@ -1,5 +1,5 @@
 # Based on Django's approach -> http://code.djangoproject.com/svn/django/trunk/django/__init__.py
-VERSION = (1, 12, 2, 'final')
+VERSION = (2, 0, 0, 'rc1')
 
 def get_version(version=None):
     """Derives a PEP386-compliant version number from VERSION.
@@ -13,6 +13,6 @@ def get_version(version=None):
 
     sub = ''
     if version[3] != 'final':
-        sub = '-' + str(version[3])
+        sub = str(version[3])
 
     return main + sub
