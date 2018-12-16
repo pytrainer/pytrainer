@@ -43,8 +43,8 @@ class WindowProfile(SimpleBuilderApp):
     def new(self):
         logging.debug(">>")
         self.gender_options = {
-            0:_("Male"),
-            1:_("Female")
+            0: "Male",
+            1: "Female"
             }
 
         self.ddbb_type = {
@@ -54,9 +54,9 @@ class WindowProfile(SimpleBuilderApp):
             }
     
         #anhadimos las opciones al combobox gender
-        for i in self.gender_options:
-            self.prf_gender.insert_text(i,self.gender_options[i])
-        
+        for i, text in self.gender_options.items():
+            self.prf_gender.insert_text(i, _(text))
+
         #hacemos lo propio para el combobox ddbb 
         for i in self.ddbb_type:
             self.prf_ddbb.insert_text(i,self.ddbb_type[i])
@@ -114,9 +114,9 @@ class WindowProfile(SimpleBuilderApp):
                         logging.info("Setting %s to true" %i)
                         var.set_active(True)
                 elif i == "prf_gender":
-                    for j in self.gender_options:
-                        if self.gender_options[j] == list_options[i]:
-                            logging.info("Setting gender to %s" % self.gender_options[j])
+                    for j,label in self.gender_options.items():
+                        if label == list_options[i]:
+                            logging.info("Setting gender to %s" % label)
                             var.set_active(j)
                 elif i == "prf_ddbb":
                     for j in self.ddbb_type:
@@ -157,7 +157,9 @@ class WindowProfile(SimpleBuilderApp):
                         list_options[i] = "True"
                     else:
                         list_options[i] = "False"
-                elif i == "prf_gender" or i == "prf_ddbb":
+                elif i == "prf_gender":
+                    list_options[i] = self.gender_options[var.get_active()]
+                elif i == "prf_ddbb":
                     list_options[i] = gtk_str(var.get_active_text())
                 else:
                     list_options[i] = gtk_str(var.get_text())
