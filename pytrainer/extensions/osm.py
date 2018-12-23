@@ -6,7 +6,7 @@
 import os
 import re
 import logging
-import urllib           # for downloading cached versions of openlayers.js and openstreetmaps.js
+import urllib2          # for downloading cached versions of openlayers.js and openstreetmaps.js
 import time             # Used for checking if local cached file is current
     
 from pytrainer.lib.gpx import Gpx
@@ -37,7 +37,7 @@ class Osm:
         """    
         logging.debug(">>")
         logging.info("Downloading %s", url)
-        webFile = urllib.urlopen(url)
+        webFile = urllib2.urlopen(urllib2.Request(url, headers={'User-Agent': 'pytrainer'}))
         # always store downloaded files in tmpdir/cache
         localFile = open(self.tmpdir + '/cache/' + localfile, 'w')
         localFile.write(webFile.read())
