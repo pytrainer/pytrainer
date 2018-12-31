@@ -18,6 +18,7 @@
 
 import os
 import re
+import html
 import logging
 import colorsys
 import math
@@ -44,7 +45,7 @@ class Googlemaps:
             speed = (speed - (average - 2*stdev))/(4*stdev)
             speed = min(max(speed,0), 1)
             rgb_tuple = colorsys.hsv_to_rgb(0.66-(speed*0.66), 1, 0.8)
-            rgb_tuple = (rgb_tuple[0] * 255,rgb_tuple[1] * 255,rgb_tuple[2] * 255)
+            rgb_tuple = (int(rgb_tuple[0] * 255),int(rgb_tuple[1] * 255),int(rgb_tuple[2] * 255))
             i[2] = '#%02x%02x%02x' % rgb_tuple
 
     def colorLineAbs(self, polyline):
@@ -132,8 +133,8 @@ class Googlemaps:
             time = "%d%s %02d%s" % (timeHours, _("h"), timeMin, _("min"))
             startinfo = "<div class='info_content'>%s: %s</div>" % (activity.sport_name, activity.title)
             finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), time, _("Distance"), activity.distance, self.uc.unit_distance)
-            startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
-            finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
+            startinfo = html.escape(startinfo) #Encode for html
+            finishinfo = html.escape(finishinfo) #Encode for html
             self.createHtml_api3(polyline, minlat, minlon, maxlat, maxlon, startinfo, finishinfo, laps, linetype)
         else:
             self.createErrorHtml()
@@ -158,7 +159,7 @@ class Googlemaps:
             div.info_content { font-family: sans-serif; font-size: 10px; }
         </style>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
-        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+        <script type="text/javascript" src="https://maps.google.com/maps/api/js"></script>
         <script type="text/javascript">
           function initialize() {\n'''
         content += "            var startlatlng = %s ;\n" % (polyline[0][0])

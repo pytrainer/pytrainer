@@ -5,8 +5,9 @@
 
 import os
 import re
+import html
 import logging
-import urllib2          # for downloading cached versions of openlayers.js and openstreetmaps.js
+import requests         # for downloading cached versions of openlayers.js and openstreetmaps.js
 import time             # Used for checking if local cached file is current
     
 from pytrainer.lib.gpx import Gpx
@@ -17,10 +18,10 @@ from pytrainer.lib.uc import UC
 
 class Osm:
     # Default URLS
-    URLS = {'OpenLayers.js' : "http://openlayers.org/api/OpenLayers.js",
-            'OpenStreetMap.js' : "http://www.openstreetmap.org/openlayers/OpenStreetMap.js"}
+    URLS = {'OpenLayers.js' : "https://openlayers.org/api/OpenLayers.js",
+            'OpenStreetMap.js' : "https://www.openstreetmap.org/openlayers/OpenStreetMap.js"}
     # URLS that will not be cached
-    staticURLS = {'OpenLayers' : 'http://openlayers.org/api/'}                 #openlayers default location
+    staticURLS = {'OpenLayers' : 'https://openlayers.org/api/'}                 #openlayers default location
 
     def __init__(self, data_path = None, waypoint = None, pytrainer_main=None):
         logging.debug(">>")
@@ -37,11 +38,10 @@ class Osm:
         """    
         logging.debug(">>")
         logging.info("Downloading %s", url)
-        webFile = urllib2.urlopen(urllib2.Request(url, headers={'User-Agent': 'pytrainer'}))
+        webFile = requests.get(url, headers={'User-Agent': 'pytrainer'})
         # always store downloaded files in tmpdir/cache
         localFile = open(self.tmpdir + '/cache/' + localfile, 'w')
-        localFile.write(webFile.read())
-        webFile.close()
+        localFile.write(webFile.text)
         localFile.close()
         logging.debug("<<")
         
@@ -105,8 +105,8 @@ class Osm:
                 startinfo = "<div class='info_content'>%s: %s</div>" % (activity.sport_name, activity.title)
                 finishinfo = "<div class='info_content'>%s: %s<br>%s: %s%s</div>" % (_("Time"), \
                             time, _("Distance"), activity.distance, self.uc.unit_distance)
-                startinfo = startinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
-                finishinfo = finishinfo.encode('ascii', 'xmlcharrefreplace') #Encode for html
+                startinfo = html.escape(startinfo) #Encode for html
+                finishinfo = html.escape(finishinfo) #Encode for html
 
                 self.createHtml_osm(polyline, startinfo, finishinfo, laps, attrlist, linetype)
             else:

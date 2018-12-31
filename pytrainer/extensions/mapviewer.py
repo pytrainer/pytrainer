@@ -20,13 +20,13 @@ from pytrainer.lib.fileUtils import fileUtils
 
 import gi
 try:
-        gi.require_version('WebKit', '3.0')
+        gi.require_version('WebKit2', '4.0')
 except ValueError:
         pass
 
 from gi.repository import Gtk
 import logging
-from gi.repository import WebKit
+from gi.repository import WebKit2
 
 class MapViewer:
 	def __init__(self, data_path = None, pytrainer_main=None, box=None):
@@ -37,7 +37,7 @@ class MapViewer:
 			logging.debug("Display box (%s) is None" % ( str(box)))
 			return
 		self.box = box
-		self.wkview = WebKit.WebView()
+		self.wkview = WebKit2.WebView()
 		self.pack_box()
 		logging.debug("<<")
 
