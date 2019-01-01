@@ -23,6 +23,7 @@ from optparse import OptionParser
 import logging
 import logging.handlers
 import traceback
+import warnings
 
 import gi
 gi.require_version('Gtk', '3.0')
