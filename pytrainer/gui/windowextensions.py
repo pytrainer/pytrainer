@@ -19,7 +19,7 @@
 from .SimpleGladeApp import SimpleBuilderApp
 from gi.repository import Gtk
 from gi.repository import GObject
-import os
+import io
 from pytrainer.lib.localization import gtk_str
 
 class WindowExtensions(SimpleBuilderApp):
@@ -116,9 +116,8 @@ class WindowExtensions(SimpleBuilderApp):
     def on_help_clicked(self,widget):
         selected,iter = self.extensionsTree.get_selection().get_selected()
         name,description,status,helpfile,type = self.parent.getExtensionInfo(selected.get_value(iter,0))
-        file = os.open(helpfile,0)
-        text = os.read(file,2000)
-        os.close(file)
+        with io.open(helpfile, encoding='utf-8') as input_file:
+            text = input_file.read(2000)
         helpwindow = Gtk.Window()
         button = Gtk.Button(_("OK"))
         button.connect("clicked", self.on_accepthelp_clicked, helpwindow)
@@ -129,8 +128,8 @@ class WindowExtensions(SimpleBuilderApp):
         textview.set_buffer(buffer)
         scrolledwindow = Gtk.ScrolledWindow()
         scrolledwindow.add(textview)
-        vbox.pack_start(scrolledwindow, True)
-        vbox.pack_start(button, False)
+        vbox.pack_start(scrolledwindow, True, True, 0)
+        vbox.pack_start(button, False, False, 0)
         helpwindow.add(vbox)
         helpwindow.resize(550,300)
         helpwindow.show_all()
