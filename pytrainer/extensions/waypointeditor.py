@@ -22,14 +22,14 @@ from gi.repository import Gtk
 import logging
 import os
 import re
-from gi.repository import WebKit
+from gi.repository import WebKit2
 
 class WaypointEditor:
     def __init__(self, data_path = None, vbox = None, waypoint=None, parent=None):
         logging.debug(">>")
         self.data_path = data_path
         self.extension = Extension()
-        self.wkview = WebKit.WebView()
+        self.wkview = WebKit2.WebView()
         self.wkview.connect('notify::title', self.handle_title_changed)
         scrolled_window = Gtk.ScrolledWindow()
         scrolled_window.add(self.wkview)
@@ -105,7 +105,7 @@ class WaypointEditor:
 <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 <title>edit waypoints</title>
 
-<script id="googleapiimport" src="http://maps.google.com/maps/api/js?sensor=false"
+<script id="googleapiimport" src="https://maps.google.com/maps/api/js"
     type="text/javascript"></script>
 <script type="text/javascript">
 """
@@ -131,6 +131,7 @@ class WaypointEditor:
         content += """waypointList = Array (%s);\n""" %arrayjs
         content += """
 is_addmode = 0;
+var map;
 //<![CDATA[
 
 function addWaypoint(lon,lat) {
@@ -147,39 +148,49 @@ function createMarker(waypoint) {
         var id = waypoint[5];
         var sym = waypoint[4];
 
-        var point = new GLatLng(lat,lon);
+        var point = new google.maps.LatLng(lat,lon);
         var text = "<b>"+waypoint[2]+"</b><br/>"+waypoint[3];
 
-        var icon = new GIcon();
         if (sym=="Summit") {
-                icon.image = \""""+os.path.abspath(self.data_path)+"""/glade/summit.png\";
-                }
-        else {
-                icon.image = \""""+os.path.abspath(self.data_path)+"""/glade/waypoint.png\";
-                }
-        icon.iconSize = new GSize(32, 32);
-        icon.iconAnchor = new GPoint(16, 16);
-        icon.infoWindowAnchor = new GPoint(5, 1);
+                var icon_image = \""""+os.path.abspath(self.data_path)+"""/glade/summit.png\";
+        } else {
+                var icon_image = \""""+os.path.abspath(self.data_path)+"""/glade/waypoint.png\";
+        }
+        var icon = new google.maps.MarkerImage(icon_image,\n
+            new google.maps.Size(32, 32),
+            new google.maps.Point(0,0),
+            new google.maps.Point(16, 16)
+        );\n
 
-        var markerD = new GMarker(point, {icon:icon, draggable: true});
-        map.addOverlay(markerD);
+        var markerD = new google.maps.Marker({
+          position: point,
+          map: map,
+          icon: icon,
+          draggable: true,
+        });
 
-        markerD.enableDragging();
+        markerD.setDraggable(true);
 
-        GEvent.addListener(markerD, "mouseup", function(){
-                position = markerD.getPoint();
+        google.maps.event.addListener(markerD, "mouseup", function(){
+                position = markerD.getPosition();
                 updateWaypoint(position.lng(),position.lat(),id);
         });
         return markerD;
-        }
+}
 
 function load() {
-        if (GBrowserIsCompatible()) {
-                //Dibujamos el mapa
-                map = new GMap2(document.getElementById("map"));
-                map.addControl(new GLargeMapControl());
-                map.addControl(new GMapTypeControl());
-                map.addControl(new GScaleControl());
+        //Dibujamos el mapa
+        var myOptions = {
+            zoom: 8,
+            // center: centerlatlng,
+            mapTypeControl: true,
+            scaleControl: true,
+            largeMapControl: true,
+            overviewMapControl: true,
+            overviewMapControlOptions: {opened: true},
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+        };
+        map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 """
         if londef != 0:
             content +="""
@@ -192,40 +203,33 @@ function load() {
                    lat = 0;
                    """
         content +="""
-                map.setCenter(new GLatLng(lat, lon), 11);
+        map.setCenter(new google.maps.LatLng(lat, lon), 11);
 
-                //Dibujamos el minimapa
-                ovMap=new GOverviewMapControl();
-                map.addControl(ovMap);
-                mini=ovMap.getOverviewMap();
-
-                //Dibujamos los waypoints
-                for (i=0; i<waypointList.length; i++){
-                        createMarker(waypointList[i]);
-                        map.enableDragging();
-                        }
-
-                //Preparamos los eventos para anadir nuevos waypoints
-                GEvent.addListener(map, "click", function(marker, point) {
-                        if (is_addmode==1){
-                                map.enableDragging();
-                                //map.addOverlay(new GMarker(point));
-                                var lon = point.lng();
-                                var lat = point.lat();
-
-                                var waypoint_id = addWaypoint(lon,lat);
-                                var waypoint = Array (lon,lat,"","","",waypoint_id);
-                                createMarker(waypoint);
-                                is_addmode = 0;
-                                }
-                        });
-                }
+        //Dibujamos los waypoints
+        for (i=0; i<waypointList.length; i++){
+                createMarker(waypointList[i]);
+                map.setOptions({draggable: true});
         }
+
+        //Preparamos los eventos para anadir nuevos waypoints
+        google.maps.event.addListener(map, "click", function(event) {
+                if (is_addmode==1){
+                        map.setOptions({draggable: true});
+                        var lon = event.latLng.lng();
+                        var lat = event.latLng.lat();
+
+                        var waypoint_id = addWaypoint(lon,lat);
+                        var waypoint = Array (lon,lat,"","","",waypoint_id);
+                        createMarker(waypoint);
+                        is_addmode = 0;
+                }
+        });
+}
 
 function addmode(){
         is_addmode = 1;
-        map.disableDragging();
-        }
+        map.setOptions({draggable: false});
+}
 
 //]]>
 </script>
@@ -239,8 +243,8 @@ background: #ffffff;
 </style>
 
 </head>
-<body onload="load()" onunload="GUnload()" style="cursor:crosshair" border=0>
-        <div id="map" style="width: 100%; height: 460px; top: 0px; left: 0px"></div>
+<body onload="load()" style="cursor:crosshair" border=0>
+        <div id="map_canvas" style="width: 100%; height: 460px; top: 0px; left: 0px"></div>
         <div id="addButton" style="position: absolute; top: 32px;left: 86px;">
                 <input type="button" value="New Waypoint" onclick="javascript:addmode();">
         </div>

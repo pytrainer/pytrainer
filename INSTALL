@@ -15,7 +15,9 @@ dateutil >= 1.5 (python-dateutil)
 GTK+ >= 2.6.0
 PyGTK >= 2.6.0
 libglade >= 2.6.4 (libglade, pygtk2-libglade)
-pywebkitgtk >= 1.1.8 (see ticket #131)
+webkit2gtk-4.0 >= 2.0
+requests
+certify
 matplotlib >= 0.99.x (python-matplotlib)
 python-lxml >= 2.2
 libxml2 >= 2.7.8
