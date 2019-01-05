@@ -66,10 +66,7 @@ class garminhr():
 		                 "Current USB port is set "
 		                 "to:\t %s" % self.input_dev)
 
-		if not self.checkGPSBabelVersion("1.3.5"):
-			self.error_dialog("Must be using version 1.3.5 "
-			                  "of GPSBabel for this plugin")
-		elif self.garminDeviceExists():
+		if self.garminDeviceExists():
 			try:
 				gpsbabelOutputFile = "%s/file.gtrnctr" % (self.tmpdir)
 				#TODO Remove Zenity below
@@ -110,23 +107,6 @@ class garminhr():
 			self.error_dialog(no_device_msg)
 		logging.debug("<<")
 		return importfiles
-
-	def checkGPSBabelVersion(self, validVersion):
-		process = subprocess.Popen(['gpsbabel', '-V'],
-                                           stdout=subprocess.PIPE,
-                                           stderr=subprocess.PIPE)
-		stdout, stderr = process.communicate()
-		if process.returncode == 0:
-			version = stdout.split()
-			try:
-				if version[2] == validVersion:
-					return True
-				else:
-					logging.error("GPSBabel at version %s instead of expected version %s" % (version[2], validVersion))
-			except:
-				logging.error("Unexpected result from gpsbabel -V")
-				return False
-		return False
 
 	def garminDeviceExists(self):
 		try:
