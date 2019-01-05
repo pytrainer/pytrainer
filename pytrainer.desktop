@@ -1,8 +1,9 @@
 [Desktop Entry]
-Version=1.10.0
+Version=1.0
 Type=Application
 Name=pytrainer
 Comment=The Free Sport Training Center
 Exec=pytrainer
 Icon=pytrainer
 Categories=Office;
+Keywords=Sport;Jogging;Running;Cycling;Race;Workout;
