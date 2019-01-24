@@ -1122,8 +1122,12 @@ class Main(SimpleBuilderApp):
         logging.debug(">>")
         self.labelTotalDistance.set_text(str(stats.data['total_distance']) + " km")
         self.labelTotalDuration.set_text(str(stats.data['total_duration'] / 3600) + " hours")
-        self.labelStartDate.set_text(stats.data['start_date'].strftime('%Y-%m-%d'))
-        self.labelEndDate.set_text(stats.data['end_date'].strftime('%Y-%m-%d'))
+        # skip date format if no stats are saved yet
+        try:
+            self.labelStartDate.set_text(stats.data['start_date'].strftime('%Y-%m-%d'))
+            self.labelEndDate.set_text(stats.data['end_date'].strftime('%Y-%m-%d'))
+        except KeyError:
+            pass
 
         data = self.parent.stats.data
 
