@@ -77,6 +77,7 @@ class WindowExtensions(SimpleBuilderApp):
         self.prefwindow = Gtk.Window()
         self.prefwindow.set_border_width(20)
         self.prefwindow.set_title(_("%s settings" %name))
+        self.prefwindow.set_modal(True)
 
         table = Gtk.Table(1,2)
         i=0
