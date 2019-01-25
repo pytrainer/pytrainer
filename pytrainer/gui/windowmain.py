@@ -805,7 +805,11 @@ class Main(SimpleBuilderApp):
         record_list = activity.tracks
 
         def project(d,a):
-            return int(a.duration * (d / a.distance)**1.06)
+            # avoid divide by zero if distance is 0
+            try:
+                return int(a.duration * (d / a.distance)**1.06)
+            except ZeroDivisionError:
+                return 0
 
         DISTANCES = {
             .8    : _("800 m"),
