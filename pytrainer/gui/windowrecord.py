@@ -308,7 +308,24 @@ class WindowRecord(SimpleBuilderApp):
                     utc_date = date.astimezone(tzutc()).strftime("%Y-%m-%dT%H:%M:%SZ")
                     list_options["date_time_utc"] = utc_date
                     list_options["date_time_local"] = local_date
-                    self.parent.insertRecord(list_options, equipment=selected_equipment_ids)
+
+                    try:
+                        self.parent.insertRecord(
+                                list_options,
+                                equipment=selected_equipment_ids)
+                    except ValueError:
+                        msg = ("Unable to add an activity record without any "
+                               "sports, please add a sport in preferences' "
+                               "<i>Sports</i> tab.")
+                        logging.error(msg)
+                        md = Gtk.MessageDialog(
+                                flags=Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                buttons=Gtk.ButtonsType.CLOSE)
+                        md.set_title(_("Error Adding Activity Record"))
+                        md.set_markup(_(msg))
+                        md.run()
+                        md.destroy()
+
             elif self.mode == "editrecord":
                 self.parent.updateRecord(list_options, self.id_record, equipment=selected_equipment_ids)
         logging.debug("<<")
