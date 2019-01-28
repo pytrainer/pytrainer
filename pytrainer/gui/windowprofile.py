@@ -426,8 +426,25 @@ class WindowProfile(SimpleBuilderApp):
         import datetime
         today = "%s"%datetime.date.today()
         year1,month1,day1 = today.split("-")
-        year2,month2,day2 = gtk_str(self.prf_age.get_text()).split("-")
-        diff = datetime.datetime(int(year1), int(month1), int(day1),0,0,0) - datetime.datetime(int(year2), int(month2), int(day2),0,0,0)
+
+        # tell user that we can't calculate heart rate if age is not supplied
+        try:
+            year2,month2,day2 = gtk_str(self.prf_age.get_text()).split("-")
+            date1 = datetime.datetime(int(year1), int(month1), int(day1),0,0,0)
+            date2 = datetime.datetime(int(year2), int(month2), int(day2),0,0,0)
+        except ValueError:
+            msg = ("Unable to calculate max heart rate, please configure age "
+                   "in the <i>Athlete</i> tab.")
+            logging.error(msg)
+            md = Gtk.MessageDialog(flags=Gtk.DialogFlags.DESTROY_WITH_PARENT,
+                                   buttons=Gtk.ButtonsType.CLOSE)
+            md.set_title(_("Heart Rate Calculation Error"))
+            md.set_markup(_(msg))
+            md.run()
+            md.destroy()
+            return
+
+        diff = date1 - date2
         self.prf_maxhr.set_text("%d" %(220-int(diff.days/365)))
 
     def hidesportsteps(self):
