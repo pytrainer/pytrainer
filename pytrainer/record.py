@@ -159,10 +159,10 @@ class Record:
         self.pytrainer_main.ddbb.session.commit()
         if os.path.isfile(gpxOrig):
             gpxDest = self.pytrainer_main.profile.gpxdir
-            gpxNew = gpxDest+"/%d.gpx" % record.id
-            #Leave original file in place...
-            #shutil.move(gpxOrig, gpxNew)
-            #logging.debug('Moving '+gpxOrig+' to '+gpxNew)
+            gpxNew = "{}/{}-{}.gpx".format(
+                                       gpxDest,
+                                       record.date_time_local.replace(" ", "-"),
+                                       record.id)
             shutil.copy(gpxOrig, gpxNew)
             logging.debug('Copying %s to %s', gpxOrig, gpxNew)
         logging.debug('<<')
