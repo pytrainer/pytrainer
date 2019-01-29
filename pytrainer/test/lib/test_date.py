@@ -19,7 +19,7 @@ import datetime
 from mock import Mock
 from dateutil.tz import tzutc, tzlocal
 from pytrainer.lib.date import second2time, time2second, time2string, unixtime2date, getNameMonth, getDateTime
-from pytrainer.lib.date import DateRange
+from pytrainer.lib.date import Date, DateRange
 
 class DateFunctionTest(unittest.TestCase):
 
@@ -48,6 +48,24 @@ class DateFunctionTest(unittest.TestCase):
         utctime, localtime = getDateTime('Tue Nov 24 17:29:05 UTC 2015')
         self.assertEqual(datetime.datetime(2015, 11, 24, 17, 29, 5, tzinfo=tzutc()), utctime)
         self.assertEqual(datetime.datetime(2015, 11, 24, 19, 29, 5, tzinfo=tzlocal()), localtime)
+
+
+class DateTest(unittest.TestCase):
+
+    def test_getDate_should_return_valid_date_if_day_is_too_large(self):
+        mock_calendar = Mock()
+        attrs = {'get_date.return_value': (2019, 1, 31)} # 2019-02-31
+        mock_calendar.configure_mock(**attrs)
+        self.assertEqual(datetime.date(2019,2,28),
+                         Date(mock_calendar).getDate())
+
+    def test_getDate_should_raise_ValueError_if_day_is_before_first(self):
+        mock_calendar = Mock()
+        attrs = {'get_date.return_value': (2019, 1, 0)} # 2019-02-00
+        mock_calendar.configure_mock(**attrs)
+        with self.assertRaises(ValueError):
+            Date(mock_calendar).getDate()
+
 
 class DateRangeTest(unittest.TestCase):
 
