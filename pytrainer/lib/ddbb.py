@@ -178,15 +178,19 @@ if no url is provided"""
                 
     def create_backup(self):
         """Create a backup of the current database."""
-        import urlparse
+        try:
+            import urlparse
+            from urllib import url2pathname
+        except ImportError:
+            import urllib.parse as urlparse
+            from urllib.request import url2pathname
         scheme, netloc, path, params, query, fragment = urlparse.urlparse(self.url)
         if scheme == 'sqlite':
-            import urllib
             import datetime
             import gzip
             logging.info("Creating compressed copy of current DB")
             logging.debug('Database path: %s', self.url)
-            path = urllib.url2pathname(path)
+            path = url2pathname(path)
             backup_path = '%s_%s.gz' % (path, datetime.datetime.now().strftime('%Y%m%d_%H%M'))
             with open(path, 'rb') as orig_file:
                 with gzip.open(backup_path, 'wb') as backup_file:
