@@ -88,7 +88,15 @@ class Date:
         #hack for the gtk calendar widget
         if self.calendar is not None:
             year,month,day = self.calendar.get_date()
-            return datetime.date(year, month+1, day)
+            # Selected day might be larger than current month's number of days.
+            # Iterate backwards until we find valid date.
+            while day > 1:
+                try:
+                    return datetime.date(year, month + 1, day)
+                except ValueError:
+                    day -= 1
+            raise ValueError("Invalid date supplied: "
+                             "day is before 1st of month.")
         else:
             return datetime.date.today()
 
