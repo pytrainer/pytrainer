@@ -212,7 +212,7 @@ class WindowImportdata(SimpleBuilderApp):
             filename = filename.rstrip('.py')
             classname = filename.lstrip('tool_')
             #Import module
-            sys.path.insert(0, self.data_path+"import")
+            sys.path.insert(0, os.path.join(self.data_path, "imports"))
             module = __import__(filename)
             toolMain = getattr(module, classname)
             #Instantiate module
