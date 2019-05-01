@@ -90,7 +90,7 @@ class Date:
             year,month,day = self.calendar.get_date()
             # Selected day might be larger than current month's number of days.
             # Iterate backwards until we find valid date.
-            while day > 1:
+            while day >= 1:
                 try:
                     return datetime.date(year, month + 1, day)
                 except ValueError:
