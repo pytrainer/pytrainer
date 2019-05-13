@@ -92,6 +92,7 @@ class Date:
             # Iterate backwards until we find valid date.
             while day >= 1:
                 try:
+                    # months from gtk calendar are numbered from 0 to 11
                     return datetime.date(year, month + 1, day)
                 except ValueError:
                     day -= 1
