@@ -65,7 +65,23 @@ class DateTest(unittest.TestCase):
         mock_calendar.configure_mock(**attrs)
         with self.assertRaises(ValueError):
             Date(mock_calendar).getDate()
-
+            
+    def test_getDate_should_return_valid_date_if_date_is_valid(self):
+        mock_calendar = Mock()
+        start_date = datetime.date(2019, 1, 1)
+        # list of every day in 2019
+        date_list = [start_date + datetime.timedelta(days=x) for x in range(0, 365)]
+        end_date = datetime.date(2019, 12, 31)
+        # test every day in the list
+        for date in date_list:
+           with self.subTest(date=date):
+              mock_calendar = Mock()
+              # act as gtk calendar where months are numbered from 0 to 11
+              attrs = {'get_date.return_value': (date.year, date.month - 1, date.day)}
+              mock_calendar.configure_mock(**attrs)
+              self.assertEqual((datetime.date(date.year, date.month, date.day)),
+                                Date(mock_calendar).getDate())
+    
 
 class DateRangeTest(unittest.TestCase):
 
