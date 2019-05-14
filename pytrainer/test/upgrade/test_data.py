@@ -17,7 +17,10 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import unittest
-from mock import Mock
+try:
+    from unittest.mock import Mock
+except ImportError:
+    from mock import Mock
 from pytrainer.upgrade.data import InstalledData, DataState, DataInitializationException
 import pytrainer.upgrade.context
 
