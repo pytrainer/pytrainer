@@ -1,6 +1,9 @@
 # -*- coding: utf-8 -*-
 from unittest import TestCase
-from mock import Mock
+try:
+    from unittest.mock import Mock
+except ImportError:
+    from mock import Mock
 from pytrainer.core.equipment import Equipment, EquipmentService
 from pytrainer.gui.equipment import EquipmentStore, EquipmentUi
 from pytrainer.lib.ddbb import DDBB

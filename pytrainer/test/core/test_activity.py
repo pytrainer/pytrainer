@@ -16,7 +16,10 @@
 
 import unittest
 import datetime
-from mock import Mock
+try:
+    from unittest.mock import Mock
+except ImportError:
+    from mock import Mock
 from dateutil.tz import tzoffset
 from sqlalchemy.orm.exc import NoResultFound
 
