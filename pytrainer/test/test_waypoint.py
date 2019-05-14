@@ -16,7 +16,10 @@
 
 import unittest
 from datetime import date
-from mock import Mock
+try:
+    from unittest.mock import Mock
+except ImportError:
+    from mock import Mock
 
 from pytrainer.lib.ddbb import DDBB
 from pytrainer.waypoint import WaypointService
