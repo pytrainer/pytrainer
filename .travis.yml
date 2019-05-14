@@ -9,12 +9,14 @@ addons:
       - python-matplotlib
       - python-tornado
       - python-cairo
+      - python-mock
       - python3-setuptools
       - python3-gi
       - python3-lxml
       - python3-cairo
       - python3-gi-cairo
       - python3-matplotlib
+      - python3-mock
 services:
   - mysql
 env:
