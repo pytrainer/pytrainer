@@ -94,7 +94,7 @@ class Date:
                 try:
                     # months from gtk calendar are numbered from 0 to 11
                     return datetime.date(year, month + 1, day)
-                except ValueError:
+                except ValueError :
                     day -= 1
             raise ValueError("Invalid date supplied: "
                              "day is before 1st of month.")
