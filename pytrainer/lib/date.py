@@ -90,10 +90,11 @@ class Date:
             year,month,day = self.calendar.get_date()
             # Selected day might be larger than current month's number of days.
             # Iterate backwards until we find valid date.
-            while day > 1:
+            while day >= 1:
                 try:
+                    # months from gtk calendar are numbered from 0 to 11
                     return datetime.date(year, month + 1, day)
-                except ValueError:
+                except ValueError :
                     day -= 1
             raise ValueError("Invalid date supplied: "
                              "day is before 1st of month.")
