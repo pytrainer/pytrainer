@@ -123,7 +123,7 @@ class garminhrfile():
 				tracks = sportLevel.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}Track")
 				result.append((sport, tracks))
 			except:
-				print "No entries for sport %s" % sport
+				print("No entries for sport %s" % sport)
 		return result
 
 	def createGPXfile(self, gpxfile, track):

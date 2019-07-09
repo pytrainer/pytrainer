@@ -69,7 +69,7 @@ class StravaUpload:
                 result = self.get_web_data(LOGIN_URL, values, "Validating user...")
                 token = result['token']
             else:
-                raise ConfigError, "Username or password missing"
+                raise ConfigError("Username or password missing")
             try:
                 with open(self.strava_token, 'w') as f:
                     f.write(token)
@@ -87,7 +87,7 @@ class StravaUpload:
                     if upload[0] == str(id):
                        upload_id = upload[1]
                        break
-        except IOError, e:
+        except IOError as e:
             logging.debug("Failed to read uploads file: %s" % e)
         return upload_id
 
@@ -95,7 +95,7 @@ class StravaUpload:
         try:
             with open(self.strava_uploads, 'a') as f:
                 f.write('%s,%s\n' % (id, upload_id))
-        except IOError, e:
+        except IOError as e:
             # log failure but continue...
             logging.debug("Failed to write upload id: %s" % e)
 
@@ -150,11 +150,11 @@ class StravaUpload:
                     else:
                         # don't know status yet, assume it is processing
                         log = log + " Processing... check again soon!"
-        except (ValueError, KeyError), e:
+        except (ValueError, KeyError) as e:
             log = log + ("JSON error: %s." % e)
-        except ConfigError, e:
+        except ConfigError as e:
             log = log + ("config error: %s." % e)
-        except Exception, e:
+        except Exception as e:
             log = "Unknown exception: %s." % e
         logging.debug(log)
         md = Gtk.MessageDialog(self.pytrainer_main.windowmain.window1, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, Gtk.ButtonsType.OK, log)
