@@ -362,7 +362,7 @@ class garmintools_full():
                                              time.strftime('%Y%m%d_%H%M')),
                  self.confdir])
         if result != 0:
-            raise Exception, ("Copying current user directory does not work, "
+            raise Exception("Copying current user directory does not work, "
                               "error #"+str(result))
         else:
             logging.info('User directory backup successfully created')

@@ -52,7 +52,7 @@ class Main:
             self.connect = xmlrpclib.Server(self.xmlrpcserver)
             self.error = False
         except :
-            print "can't connect the server"
+            print("can't connect the server")
 
     def loadRecordInfo(self):
         record = self.webserviceserver.getRecordInfo(self.idrecord)
@@ -121,7 +121,7 @@ parser.add_option("-i", "--idrecord", dest="idrecord")
 try :
     x = Main(options)
     x.run()
-    print "le score du %s a ete envoye"  % x.date
-except xmlrpclib.Fault, f:
-    print "ERROR on the server\n   Code %i\n   Reason %s" % (f.faultCode,
-                                                 f.faultString)
+    print(("le score du %s a ete envoye"  % x.date))
+except xmlrpclib.Fault as f:
+    print(("ERROR on the server\n   Code %i\n   Reason %s" % (f.faultCode,
+                                                 f.faultString)))

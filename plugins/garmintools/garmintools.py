@@ -85,7 +85,7 @@ class garmintools():
 			logging.debug("Not validating %s" % (filename) )
 			return True
 		else:
-			print "Cannot validate garmintools dump files yet"
+			print("Cannot validate garmintools dump files yet")
 			logging.debug("Cannot validate garmintools dump files yet")
 			return True
 			'''xslfile = os.path.realpath(self.parent.parent.data_path)+ "/schemas/GarminTrainingCenterDatabase_v2.xsd"
@@ -122,7 +122,7 @@ class garmintools():
 		if pointElement is not None:
 			#Try to get time from point
 			time = pointElement.get("time")
-			print "#TODO first time is different from time used by gpsbabel and has locale embedded: " + time
+			print("#TODO first time is different from time used by gpsbabel and has locale embedded: " + time)
 			return time
 		return None
 

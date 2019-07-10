@@ -22,41 +22,41 @@ import os, sys, subprocess
 from lxml import etree
 
 class garmintools():
-	def __init__(self, parent = None, data_path = None):
-		self.parent = parent
-		self.pytrainer_main = parent.parent
-		self.tmpdir = self.pytrainer_main.profile.tmpdir
-		self.main_data_path = data_path
-		self.data_path = os.path.dirname(__file__)
+    def __init__(self, parent = None, data_path = None):
+        self.parent = parent
+        self.pytrainer_main = parent.parent
+        self.tmpdir = self.pytrainer_main.profile.tmpdir
+        self.main_data_path = data_path
+        self.data_path = os.path.dirname(__file__)
 
-	def getName(self):
-		return _("Garmintools")
+    def getName(self):
+        return _("Garmintools")
 
-	def getVersion(self):
-		process = subprocess.Popen(['which', 'garmin_save_runs'],
-		                           stdout=subprocess.PIPE,
-		                           stderr=subprocess.PIPE)
-		stdout, stderr = process.communicate()
-		if process.returncode == 0: # Found garmin_save_runs in path
-		        path = stdout[:-1] # remove trailing newline
-			return path
-		else:
-			return None
+    def getVersion(self):
+        process = subprocess.Popen(['which', 'garmin_save_runs'],
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+        if process.returncode == 0: # Found garmin_save_runs in path
+            path = stdout[:-1] # remove trailing newline
+            return path
+        else:
+            return None
 
-	def getSourceLocation(self):
-		return "http://code.google.com/p/garmintools/"
+    def getSourceLocation(self):
+        return "http://code.google.com/p/garmintools/"
 
-	def deviceExists(self):
-		process = subprocess.Popen('garmin_get_info',
-		                           stdout=subprocess.PIPE,
-		                           stderr=subprocess.PIPE)
-		stdout, stderr = process.communicate()
-		if (process.returncode is not 0
-		    or
-		    stdout.startswith("garmin unit could not be opened")):
-			return False
-		else:
-			return True
+    def deviceExists(self):
+        process = subprocess.Popen('garmin_get_info',
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+        if (process.returncode is not 0
+            or
+            stdout.startswith("garmin unit could not be opened")):
+            return False
+        else:
+            return True
 
-	def isPresent(self):
-		return self.getVersion() is not None
+    def isPresent(self):
+        return self.getVersion() is not None

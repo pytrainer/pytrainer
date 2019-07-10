@@ -102,7 +102,7 @@ class garminhr():
 							logging.info("File %s failed validation" % (gpsbabelOutputFile))
 			except Exception:
 				self.dialog_msg(no_device_msg)
-				print sys.exc_info()[0]
+				print(sys.exc_info()[0])
 		else: #No garmin device found
 			self.error_dialog(no_device_msg)
 		logging.debug("<<")
@@ -148,7 +148,7 @@ class garminhr():
 				tracks = sportLevel.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v1}Track")
 				result.append((sport, tracks))
 			except:
-				print "No entries for sport %s" % sport
+				print("No entries for sport %s" % sport)
 		return result
 
 	def shouldImport(self, track):

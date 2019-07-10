@@ -130,7 +130,7 @@ class garmintools():
 		if pointElement is not None:
 			#Try to get time from point
 			time = pointElement.get("time")
-			print "#TODO first time is different from time used by gpsbabel and has locale embedded: " + time
+			print("#TODO first time is different from time used by gpsbabel and has locale embedded: " + time)
 			return time
 		return None
 

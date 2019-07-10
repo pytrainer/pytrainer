@@ -102,7 +102,7 @@ class kml20():
 						#dist=math.acos(tempnum)*111.302*57.29577951
 						dist=math.acos((math.sin(last_lat)*math.sin(tmp_lat))+(math.cos(last_lat)*math.cos(tmp_lat)*math.cos(tmp_lon-last_lon)))*111.302*57.29577951
 					except Exception as e:
-						print e
+						print(e)
 						dist=0
 					total_dist += dist
 				last_lat = tmp_lat

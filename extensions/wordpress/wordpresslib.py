@@ -178,7 +178,7 @@ class WordPressClient:
 													self.password, numPosts)
 			for post in posts:
 				yield self._filterPost(post)	
-		except xmlrpclib.Fault, fault:
+		except xmlrpclib.Fault as fault:
 			raise WordPressException(fault)
 			
 	def getPost(self, postId):
@@ -186,7 +186,7 @@ class WordPressClient:
 		"""
 		try:
 			return self._filterPost(self._server.metaWeblog.getPost(str(postId), self.user, self.password))
-		except xmlrpclib.Fault, fault:
+		except xmlrpclib.Fault as fault:
 			raise WordPressException(fault)
 		
 	def getUserInfo(self):
@@ -201,7 +201,7 @@ class WordPressClient:
 			userObj.nickname = userinfo['nickname']
 			userObj.email = userinfo['email']
 			return userObj
-		except xmlrpclib.Fault, fault:
+		except xmlrpclib.Fault as fault:
 			raise WordPressException(fault)
 			
 	def getUsersBlogs(self):
@@ -216,7 +216,7 @@ class WordPressClient:
 				blogObj.isAdmin = blog['isAdmin']
 				blogObj.url = blog['url']
 				yield blogObj
-		except xmlrpclib.Fault, fault:
+		except xmlrpclib.Fault as fault:
 			raise WordPressException(fault)
 			
 	def newPost(self, post, publish):
@@ -258,7 +258,7 @@ class WordPressClient:
 													self.password)
 			for cat in categories:
 				yield self._filterCategory(cat)	
-		except xmlrpclib.Fault, fault:
+		except xmlrpclib.Fault as fault:
 			raise WordPressException(fault)
 
 	def setPostCategories(self, postId, categories):
@@ -310,7 +310,7 @@ class WordPressClient:
 		try:
 			return self._server.blogger.deletePost('', postId, self.user, 
 											 self.password)
-		except xmlrpclib.Fault, fault:
+		except xmlrpclib.Fault as fault:
 			raise WordPressException(fault)
 
 	def getCategoryList(self):
@@ -325,7 +325,7 @@ class WordPressClient:
 					self.categories.append(self._filterCategory(cat))	
 
 			return self.categories
-		except xmlrpclib.Fault, fault:
+		except xmlrpclib.Fault as fault:
 			raise WordPressException(fault)		
 
 	def getCategoryIdFromName(self, name):
@@ -340,7 +340,7 @@ class WordPressClient:
 		"""
 		try:
 			return self._server.mt.getTrackbackPings(postId)
-		except xmlrpclib.Fault, fault:
+		except xmlrpclib.Fault as fault:
 			raise WordPressException(fault)
 			
 	def publishPost(self, postId):
@@ -348,7 +348,7 @@ class WordPressClient:
 		"""
 		try:
 			return (self._server.mt.publishPost(postId, self.user, self.password) == 1)
-		except xmlrpclib.Fault, fault:
+		except xmlrpclib.Fault as fault:
 			raise WordPressException(fault)
 
 	def getPingbacks(self, postUrl):
@@ -356,7 +356,7 @@ class WordPressClient:
 		"""
 		try:
 			return self._server.pingback.extensions.getPingbacks(postUrl)
-		except xmlrpclib.Fault, fault:
+		except xmlrpclib.Fault as fault:
 			raise WordPressException(fault)
 			
 	def newMediaObject(self, mediaFileName):
@@ -376,6 +376,6 @@ class WordPressClient:
 									self.user, self.password, mediaStruct)
 			return result['url']
 			
-		except xmlrpclib.Fault, fault:
+		except xmlrpclib.Fault as fault:
 			raise WordPressException(fault)
 	
