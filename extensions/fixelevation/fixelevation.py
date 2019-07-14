@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-import os #, stat, sys
+import os
 import logging
 from gi.repository import Gtk
 from lxml import etree

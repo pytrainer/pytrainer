@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import logging
 from math import floor
 from osgeo import gdal, gdalnumeric
