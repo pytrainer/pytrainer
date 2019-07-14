@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
 # Jakinbidea & Grupo Ikusnet Developer
@@ -34,7 +34,7 @@ class About:
         about_dialog.set_destroy_with_parent(True)
         about_dialog.set_name("pytrainer")
         about_dialog.set_version(self.version)
-        about_dialog.set_copyright("Copyright \xc2\xa9 2005-09 Fiz Vázquez")
+        about_dialog.set_copyright("Copyright © 2005-09 Fiz Vázquez")
         about_dialog.set_website("https://github.com/pytrainer/pytrainer")
         about_dialog.set_website_label("https://github.com/pytrainer/pytrainer")
         about_dialog.set_comments("The free sport tracking center")

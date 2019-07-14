@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 #Copyright (C) Fiz Vazquez vud1@sindominio.net
 
