@@ -47,7 +47,7 @@
 __author__ = "Michele Ferretti <black.bird@tiscali.it>"
 __version__ = "$Revision: 1.0 $"
 __date__ = "$Date: 2005/05/02 $"
-__copyright__ = "Copyright (c) 2005 Michele Ferretti"
+__copyright__ = "Copyright © 2005 Michele Ferretti"
 __license__ = "LGPL"
 
 import exceptions
