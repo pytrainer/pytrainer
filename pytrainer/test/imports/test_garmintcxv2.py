@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-__author__ = "David García Granda - dgranda@gmail.com"
-__copyright__ = "Copyright (C) 2013 David García Granda"
+__author__ = "David García Granda – dgranda@gmail.com"
+__copyright__ = "Copyright © 2013 David García Granda"
 __license__ = "GPL v2 or later"
 
 import unittest

@@ -1,4 +1,4 @@
-# -*- coding: iso-8859-1 -*-
+# -*- coding: utf-8 -*-
 
 #Copyright (C) Nathan Jones ncjones@users.sourceforge.net
 #modified by dgranda on behalf of Debian bug #587997 (trac ticket #120)
