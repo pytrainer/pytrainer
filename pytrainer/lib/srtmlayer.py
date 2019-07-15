@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 import os, stat, sys
 import logging
 

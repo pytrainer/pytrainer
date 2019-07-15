@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 #Copyright (C) 
 
 #Based on plugin by Kevin Dwyer kevin@pheared.net
