@@ -117,6 +117,7 @@ list_options['date_time_local'], also test that code path"""
         self.assertEqual(daylist, [24])
 
     def test_getLastRecordDateString(self):
+        self.assertFalse(self.record.getLastRecordDateString())
         self.record.insertRecord(self.summary)
         self.assertEqual(self.record.getLastRecordDateString(), self.summary['rcd_date'])
 

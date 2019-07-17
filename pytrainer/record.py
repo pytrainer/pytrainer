@@ -23,6 +23,8 @@ import logging
 import datetime
 import warnings
 
+from sqlalchemy.orm.exc import NoResultFound
+
 from .gui.windowrecord import WindowRecord
 from .gui.dialogselecttrack import DialogSelectTrack
 from .lib.date import Date, time2second
@@ -345,13 +347,16 @@ class Record:
         Retrieve date (string format) of last record stored in DB. It may select per sport
         """
         logging.debug("--")
-        if sport_id is not None:
-            return str(self.pytrainer_main.ddbb.session.query(Activity).
-                       filter(Activity.sport_id == sport_id).order_by(Activity.date.desc()).
-                       limit(1).one().date)
-        else:
-            return str(self.pytrainer_main.ddbb.session.query(Activity).order_by(Activity.date.desc()).
-                       limit(1).one().date)
+        try:
+            if sport_id is not None:
+                return str(self.pytrainer_main.ddbb.session.query(Activity).
+                           filter(Activity.sport_id == sport_id).order_by(Activity.date.desc()).
+                           limit(1).one().date)
+            else:
+                return str(self.pytrainer_main.ddbb.session.query(Activity).order_by(
+                    Activity.date.desc()).limit(1).one().date)
+        except NoResultFound:
+            return None
 
     def getAllrecord(self):
         """
