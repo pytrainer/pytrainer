@@ -18,11 +18,15 @@
 
 import os
 import re
-import html
 import logging
 import colorsys
 import math
 import traceback
+
+try:
+    import html
+except ImportError:
+    import cgi as html
 
 import pytrainer.lib.points as Points
 from pytrainer.lib.fileUtils import fileUtils

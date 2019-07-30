@@ -5,11 +5,15 @@
 
 import os
 import re
-import html
 import logging
 import requests         # for downloading cached versions of openlayers.js and openstreetmaps.js
 import time             # Used for checking if local cached file is current
-    
+
+try:
+    import html
+except ImportError:
+    import cgi as html
+
 from pytrainer.lib.gpx import Gpx
 import pytrainer.lib.points as Points
 from pytrainer.lib.fileUtils import fileUtils
