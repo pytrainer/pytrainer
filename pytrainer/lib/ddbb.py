@@ -21,14 +21,16 @@
 
 import logging
 import os
-import dateutil
 import warnings
-from pytrainer.util.color import color_from_hex_string
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.types import TypeDecorator
 from sqlalchemy import Integer, Table, Column, ForeignKey
+
+from pytrainer.util.color import color_from_hex_string
+from pytrainer.lib.singleton import Singleton
 
 DeclarativeBase = declarative_base()
 
@@ -41,32 +43,49 @@ record_to_equipment = Table('record_equipment', DeclarativeBase.metadata,
                                    ForeignKey('records.id_record'),
                                    index=True, nullable=False))
 
-class DDBB:
+class DDBB(Singleton):
+    url = None
+    engine = None
+    sessionmaker = sessionmaker()
+    session = None
+
     def __init__(self, url=None):
         """Initialize database connection, defaulting to SQLite in-memory
 if no url is provided"""
-        if url:
-            self.url = url
-        else:
+        if not self.url and not url:
+            # Starting from scratch without specifying a url
             if 'PYTRAINER_ALCHEMYURL' in os.environ:
-                self.url = os.environ['PYTRAINER_ALCHEMYURL']
+                url = os.environ['PYTRAINER_ALCHEMYURL']
             else:
-                self.url = "sqlite://"
-        if self.url.startswith('mysql'):
-            self.url = '%s%s' % (self.url, '?charset=utf8')
-        self.engine = create_engine(self.url, logging_name='db')
+                url = "sqlite://"
+
+        # Mysql special case
+        if not self.url and url.startswith('mysql'):
+            self.url = '%s%s' % (url, '?charset=utf8')
+
+        if url and self.url and not self.url != url:
+            # The url has changed, destroy the engine
+            self.engine.dispose()
+            self.engine = None
+            self.session = None
+            self.url = url
+
+        if not self.url:
+            self.url = url
+
+        if not self.engine:
+            self.engine = create_engine(self.url, logging_name='db')
+            self.sessionmaker.configure(bind=self.engine)
         logging.info("DDBB created with url %s", self.url)
 
     def get_connection_url(self):
         return self.url
 
     def connect(self):
-        Session = sessionmaker(bind=self.engine)
-        self.session = Session()
+        self.session = self.sessionmaker()
 
     def disconnect(self):
         self.session.close()
-        self.engine.dispose()
 
     def select(self,table,cells,condition=None, mod=None):
         warnings.warn("Deprecated call to ddbb.select", DeprecationWarning, stacklevel=2)

@@ -27,6 +27,14 @@ from pytrainer.lib.ddbb import DDBB
 
 class DDBBTest(unittest.TestCase):
 
+    def setUp(self):
+        # DDBB is a singleton, make sure to destroy it between tests
+        self.ddbb = DDBB()
+        del(DDBB.self)
+
+    def tearDown(self):
+        del(DDBB.self)
+
     @mock.patch.dict('os.environ', {}, clear=True)
     def test_none_url(self):
         self.ddbb = DDBB()
@@ -49,3 +57,9 @@ class DDBBTest(unittest.TestCase):
     def test_env_mysql_url(self):
         self.ddbb = DDBB()
         self.assertEqual(self.ddbb.url, 'mysql://pytrainer@localhost/pytrainer?charset=utf8')
+
+    def test_singleton(self):
+        self.ddbb = DDBB(url='sqlite:///test_url')
+        self.assertEqual(self.ddbb.url, 'sqlite:///test_url')
+        self.ddbb = DDBB()
+        self.assertEqual(self.ddbb.url, 'sqlite:///test_url')
