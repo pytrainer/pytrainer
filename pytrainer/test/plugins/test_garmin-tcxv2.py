@@ -1,6 +1,9 @@
 import unittest
+try:
+    from unittest.mock import Mock
+except ImportError:
+    from mock import Mock
 import os
-import mock
 from lxml import etree
 
 from pytrainer.plugins import Plugins
@@ -13,10 +16,10 @@ class GarminTCXv2PluginTest(unittest.TestCase):
         self.ddbb = DDBB()
         self.ddbb.connect()
         self.ddbb.create_tables(add_default=True)
-        main = mock.Mock()
+        main = Mock()
         main.ddbb = self.ddbb
-        main.startup_options = mock.Mock()
-        main.profile = mock.Mock()
+        main.startup_options = Mock()
+        main.profile = Mock()
         main.profile.plugindir = 'plugins'
         plugins = Plugins(parent=main)
         self.plugin = plugins.importClass('plugins/garmin-tcxv2')

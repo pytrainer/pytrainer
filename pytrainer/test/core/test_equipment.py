@@ -18,7 +18,6 @@
 
 import unittest
 import sys
-import mock
 from pytrainer.core.equipment import Equipment, EquipmentService,\
     EquipmentServiceException
 from pytrainer.lib.ddbb import DDBB, DeclarativeBase

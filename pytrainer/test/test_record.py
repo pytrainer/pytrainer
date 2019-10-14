@@ -15,7 +15,10 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import unittest
-import mock
+try:
+    from unittest.mock import Mock
+except ImportError:
+    from mock import Mock
 from datetime import datetime, date
 from dateutil.tz import tzoffset
 from pytrainer.lib.ddbb import DDBB
@@ -29,7 +32,7 @@ class RecordTest(unittest.TestCase):
         self.ddbb = DDBB()
         self.ddbb.connect()
         self.ddbb.create_tables(add_default=True)
-        self.main = mock.Mock()
+        self.main = Mock()
         self.main.ddbb = self.ddbb
         self.main.activitypool = ActivityService(pytrainer_main=self.main)
         self.main.profile.gpxdir = '/nonexistent'

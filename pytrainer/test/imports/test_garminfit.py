@@ -5,8 +5,11 @@ __copyright__ = "Copyright © 2013 David García Granda"
 __license__ = "GPL v2 or later"
 
 import unittest
+try:
+    from unittest.mock import Mock
+except ImportError:
+    from mock import Mock
 import os
-import mock
 from lxml import etree
 from imports.file_garminfit import garminfit
 from pytrainer.lib.ddbb import DDBB
@@ -17,8 +20,8 @@ class GarminFitTest(unittest.TestCase):
         self.ddbb = DDBB()
         self.ddbb.connect()
         self.ddbb.create_tables(add_default=True)
-        self.parent = mock.Mock()
-        self.parent.parent = mock.Mock()
+        self.parent = Mock()
+        self.parent.parent = Mock()
         self.parent.parent.ddbb = self.ddbb
 
     def tearDown(self):

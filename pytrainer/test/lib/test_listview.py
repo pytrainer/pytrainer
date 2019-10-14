@@ -1,11 +1,14 @@
 import os
 import datetime
-import mock
 
 from sqlalchemy.orm.session import make_transient
 
 from gi.repository import Gtk
 from unittest import TestCase
+try:
+    from unittest.mock import Mock
+except ImportError:
+    from mock import Mock
 from pytrainer.lib.ddbb import DDBB
 from pytrainer.lib.localization import initialize_gettext, gtk_str
 from pytrainer.core.sport import SportService
@@ -41,7 +44,7 @@ class ListviewTest(TestCase):
         env = Environment()
         env.data_path = os.curdir
         env.create_directories()
-        self.main = mock.Mock()
+        self.main = Mock()
         self.main.ddbb = DDBB()
         self.main.ddbb.connect()
         self.main.ddbb.create_tables()
