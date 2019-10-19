@@ -83,6 +83,6 @@ setup( 	name = "pytrainer",
 			'matplotlib',
 			'lxml'],
 	test_suite='pytrainer.test',
-	tests_require=['mock', 'mysqlclient', 'psycopg2'],
+	tests_require=['mysqlclient', 'psycopg2'],
 	zip_safe=False
 )

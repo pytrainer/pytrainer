@@ -19,7 +19,6 @@
 import unittest
 import sys
 from pytrainer.core.sport import Sport, SportService, SportServiceException
-import mock
 import pytrainer.core
 from pytrainer.lib.ddbb import DDBB
 from sqlalchemy.exc import IntegrityError, StatementError, ProgrammingError, OperationalError, InterfaceError, DataError
