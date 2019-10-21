@@ -21,14 +21,16 @@
 
 import logging
 import os
-import dateutil
 import warnings
-from pytrainer.util.color import color_from_hex_string
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.types import TypeDecorator
 from sqlalchemy import Integer, Table, Column, ForeignKey
+
+from pytrainer.util.color import color_from_hex_string
+from pytrainer.lib.singleton import Singleton
 
 DeclarativeBase = declarative_base()
 
@@ -41,111 +43,49 @@ record_to_equipment = Table('record_equipment', DeclarativeBase.metadata,
                                    ForeignKey('records.id_record'),
                                    index=True, nullable=False))
 
-#Define the tables and their columns that should be in the database
-#Obviously, this is not a list but a dict -> TODO: ammend name to avoid confusion!!!
-tablesList = {  "records":{     "id_record":"integer primary key autoincrement",
-                                        "date":"date",
-                                        "sport":"integer",
-                                        "distance":"float",
-                                        "time":"varchar(200)",
-                                        "duration": "integer",
-                                        "beats":"float",
-                                        "average":"float",
-                                        "calories":"int",
-                                        "comments":"text",
-                                        "gpslog":"varchar(200)",
-                                        "title":"varchar(200)",
-                                        "upositive":"float",
-                                        "unegative":"float",
-                                        "maxspeed":"float",
-                                        "maxpace":"float",
-                                        "pace":"float",
-                                        "maxbeats":"float",
-                                        "date_time_local":"varchar(40)",
-                                        "date_time_utc":"varchar(40)",
-                                        },
-                        "sports":{      "id_sports":"integer primary key autoincrement",
-                                        "name":"varchar(100)",
-                                        "weight":"float",
-                                        "met":"float",
-                                        "max_pace":"integer",
-                                        "color":"char(6)",
-                                        },
-                        "waypoints":{   "id_waypoint":"integer primary key autoincrement",
-                                        "lat":"float",
-                                        "lon":"float",
-                                        "ele":"float",
-                                        "comment":"varchar(240)",
-                                        "time":"date",
-                                        "name":"varchar(200)",
-                                        "sym":"varchar(200)",
-                                        },
-                        "laps":{        "id_lap": "integer primary key autoincrement",
-                                        "record": "integer",
-                                        "lap_number": "integer",
-                                        "elapsed_time": "varchar(20)",
-                                        "distance": "float",
-                                        "start_lat": "float",
-                                        "start_lon": "float",
-                                        "end_lat": "float",
-                                        "end_lon": "float",
-                                        "calories": "int",
-                                        "intensity": "varchar(7)",
-                                        "laptrigger": "varchar(9)",
-                                        "max_speed": "float",
-                                        "avg_hr": "int",
-                                        "max_hr": "int",
-                                        "comments":"text",
-                                        },
-                        "athletestats": {
-                                        "id_athletestat": "integer primary key autoincrement",
-                                        "date": "date",
-                                        "weight": "float",
-                                        "bodyfat": "float",
-                                        "restinghr": "integer",
-                                        "maxhr": "integer",
-                                        },
-                        "equipment": {
-                                      "id": "integer primary key autoincrement" ,
-                                      "description": "varchar (200)",
-                                      "active": "boolean",
-                                      "life_expectancy": "int",
-                                      "prior_usage": "int",
-                                      "notes": "text",
-                                      },
-                        "record_equipment": {
-                                     "id": "integer primary key autoincrement",
-                                     "record_id": "int",
-                                     "equipment_id": "int",
-                                     }
-                        }
+class DDBB(Singleton):
+    url = None
+    engine = None
+    sessionmaker = sessionmaker()
+    session = None
 
-class DDBB:
     def __init__(self, url=None):
         """Initialize database connection, defaulting to SQLite in-memory
 if no url is provided"""
-        if url:
-            self.url = url
-        else:
+        if not self.url and not url:
+            # Starting from scratch without specifying a url
             if 'PYTRAINER_ALCHEMYURL' in os.environ:
-                self.url = os.environ['PYTRAINER_ALCHEMYURL']
+                url = os.environ['PYTRAINER_ALCHEMYURL']
             else:
-                self.url = "sqlite://"
-        if self.url.startswith('mysql'):
-            self.url = '%s%s' % (self.url, '?charset=utf8')
-        self.engine = create_engine(self.url, logging_name='db')
+                url = "sqlite://"
+
+        # Mysql special case
+        if not self.url and url.startswith('mysql'):
+            self.url = '%s%s' % (url, '?charset=utf8')
+
+        if url and self.url and not self.url != url:
+            # The url has changed, destroy the engine
+            self.engine.dispose()
+            self.engine = None
+            self.session = None
+            self.url = url
+
+        if not self.url:
+            self.url = url
+
+        if not self.engine:
+            self.engine = create_engine(self.url, logging_name='db')
+            self.sessionmaker.configure(bind=self.engine)
         logging.info("DDBB created with url %s", self.url)
 
     def get_connection_url(self):
         return self.url
 
     def connect(self):
-        Session = sessionmaker(bind=self.engine)
-        self.session = Session()
+        self.session = self.sessionmaker()
 
     def disconnect(self):
         self.session.close()
-        self.engine.dispose()
 
     def select(self,table,cells,condition=None, mod=None):
         warnings.warn("Deprecated call to ddbb.select", DeprecationWarning, stacklevel=2)
