@@ -51,8 +51,8 @@ class Stats:
             data['sports'][r.sport]['count'] += 1
             for f in fields:
                 field = getattr(r, f)
-                data['sports'][r.sport][f] = max(data['sports'][r.sport][f], field)
                 if field is not None:
+                    data['sports'][r.sport][f] = max(data['sports'][r.sport][f], field)
                     data['sports'][r.sport]['total_'+f] += field
                     data[f] = max(data[f], field)
                 else:

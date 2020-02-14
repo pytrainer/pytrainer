@@ -2195,7 +2195,7 @@ class Main(SimpleBuilderApp):
                 totaldescent += activity.unegative
             if activity.beats:
                 tbeats += activity.beats*(activity.duration/60/60)
-            if activity.maxspeed > maxspeed:
+            if activity.maxspeed and activity.maxspeed > maxspeed:
                 maxspeed = activity.maxspeed
             if activity.maxbeats and activity.maxbeats > maxbeats:
                 maxbeats = activity.maxbeats
