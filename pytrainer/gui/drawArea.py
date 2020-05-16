@@ -406,7 +406,9 @@ class DrawArea:
         zone_sum = [0]*6
         for value in yvalues[0]:
             # bisection, it's faster
-            if value <= zones[2][1]:
+            if not value:
+                zone_sum[0] += 1
+            elif value <= zones[2][1]:
                 if value <= zones[4][1]:
                     if value <= zones[4][0]:
                         zone_sum[0] += 1
