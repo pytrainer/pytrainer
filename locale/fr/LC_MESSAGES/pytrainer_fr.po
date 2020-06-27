@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pytrainer_fr 1.9.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-07-15 06:48+0200\n"
+"POT-Creation-Date: 2020-06-27 06:03+0300\n"
 "PO-Revision-Date: 2013-03-29 07:25+0100\n"
 "Last-Translator: Christian Perrier <bubulle@debian.org>\n"
 "Language-Team: French <debian-l10n-french@lists.debian.org>\n"
@@ -45,7 +45,7 @@ msgid "Active"
 msgstr "Actif"
 
 #: glade/equipment.ui:266 glade/equipment.ui:510
-#: pytrainer/gui/windowimportdata.py:329
+#: pytrainer/gui/windowimportdata.py:328
 msgid "Notes"
 msgstr "Notes"
 
@@ -244,19 +244,19 @@ msgstr "Lire le fichier"
 msgid "<b>File delimiter</b>"
 msgstr "<b>Délimiteur de champs</b>"
 
-#: glade/importdata.ui:1007 pytrainer/gui/windowmain.py:105
-#: pytrainer/gui/windowmain.py:120 pytrainer/gui/windowmain.py:173
-#: pytrainer/gui/windowmain.py:1324 pytrainer/gui/dialogselecttrack.py:38
+#: glade/importdata.ui:1007 pytrainer/gui/dialogselecttrack.py:38
+#: pytrainer/gui/windowmain.py:104 pytrainer/gui/windowmain.py:119
+#: pytrainer/gui/windowmain.py:172 pytrainer/gui/windowmain.py:1323
 msgid "Date"
 msgstr "Date"
 
 #: glade/importdata.ui:1041 pytrainer/daygraph.py:52 pytrainer/daygraph.py:54
-#: pytrainer/daygraph.py:56 pytrainer/monthgraph.py:26
-#: pytrainer/recordgraph.py:134 pytrainer/recordgraph.py:136
-#: pytrainer/recordgraph.py:138 pytrainer/recordgraph.py:140
-#: pytrainer/recordgraph.py:142 pytrainer/recordgraph.py:144
-#: pytrainer/recordgraph.py:146 pytrainer/totalgraph.py:24
-#: pytrainer/weekgraph.py:26 pytrainer/heartrategraph.py:33
+#: pytrainer/daygraph.py:56 pytrainer/heartrategraph.py:33
+#: pytrainer/monthgraph.py:26 pytrainer/recordgraph.py:134
+#: pytrainer/recordgraph.py:136 pytrainer/recordgraph.py:138
+#: pytrainer/recordgraph.py:140 pytrainer/recordgraph.py:142
+#: pytrainer/recordgraph.py:144 pytrainer/recordgraph.py:146
+#: pytrainer/totalgraph.py:24 pytrainer/weekgraph.py:26
 #: pytrainer/yeargraph.py:27
 msgid "Distance (km)"
 msgstr "Distance (km) "
@@ -273,8 +273,8 @@ msgstr "<b>Champs pytrainer</b>"
 msgid "<b>File Column</b>"
 msgstr "<b>Colonne du fichier</b>"
 
-#: glade/importdata.ui:1133 pytrainer/gui/windowmain.py:104
-#: pytrainer/gui/windowmain.py:1323
+#: glade/importdata.ui:1133 pytrainer/gui/windowmain.py:103
+#: pytrainer/gui/windowmain.py:1322
 msgid "Title"
 msgstr "Titre"
 
@@ -301,10 +301,10 @@ msgid "Average Speed (km/h)"
 msgstr "Vitesse moyenne (km/h)"
 
 #: glade/importdata.ui:1211 glade/pytrainer.ui:701
-#: pytrainer/gui/windowimportdata.py:329 pytrainer/gui/windowmain.py:99
-#: pytrainer/gui/windowmain.py:107 pytrainer/gui/windowmain.py:129
-#: pytrainer/gui/windowmain.py:1326 pytrainer/gui/windowrecord.py:210
-#: pytrainer/gui/windowprofile.py:66
+#: pytrainer/gui/windowimportdata.py:328 pytrainer/gui/windowprofile.py:66
+#: pytrainer/gui/windowrecord.py:210 pytrainer/gui/windowmain.py:98
+#: pytrainer/gui/windowmain.py:106 pytrainer/gui/windowmain.py:128
+#: pytrainer/gui/windowmain.py:1325
 msgid "Sport"
 msgstr "Sport"
 
@@ -325,7 +325,7 @@ msgid "Max Pace (min/km)"
 msgstr "Allure Max (min/km)"
 
 #: glade/importdata.ui:1276 glade/newrecord.ui:1092
-#: pytrainer/gui/windowmain.py:156
+#: pytrainer/gui/windowmain.py:155
 msgid "Comments"
 msgstr "Commentaires"
 
@@ -360,7 +360,7 @@ msgstr "Importer les données"
 msgid "<b>Import from CSV</b>"
 msgstr "<b>Importer à partir d'un fichier CSV</b>"
 
-#: glade/newrecord.ui:36 pytrainer/gui/windowmain.py:1976
+#: glade/newrecord.ui:36 pytrainer/gui/windowmain.py:1975
 msgid "New Entry"
 msgstr "Nouvelle entrée"
 
@@ -468,8 +468,8 @@ msgstr "Fréquence Cardiaque:"
 #: glade/newrecord.ui:913 glade/pytrainer.ui:114 glade/pytrainer.ui:139
 #: glade/pytrainer.ui:161 glade/pytrainer.ui:186 glade/pytrainer.ui:364
 #: glade/pytrainer.ui:389 glade/pytrainer.ui:411 glade/pytrainer.ui:436
-#: pytrainer/gui/windowmain.py:111 pytrainer/gui/windowmain.py:154
-#: pytrainer/gui/windowmain.py:1330 pytrainer/monthgraph.py:30
+#: pytrainer/gui/windowmain.py:110 pytrainer/gui/windowmain.py:153
+#: pytrainer/gui/windowmain.py:1329 pytrainer/monthgraph.py:30
 #: pytrainer/totalgraph.py:28 pytrainer/weekgraph.py:30
 #: pytrainer/yeargraph.py:31
 msgid "Calories"
@@ -519,7 +519,7 @@ msgstr "description-entry"
 msgid "nameEntry"
 msgstr "nameEntry"
 
-#: glade/profile.ui:9 extensions/openstreetmap/openstreetmap.py:205
+#: glade/profile.ui:9 extensions/openstreetmap/openstreetmap.py:203
 msgid "Error"
 msgstr "Erreur"
 
@@ -700,8 +700,8 @@ msgstr "Poids Additionnel"
 msgid "Maximum Pace"
 msgstr "Allure Maximale"
 
-#: glade/profile.ui:1317 pytrainer/gui/windowmain.py:178
-#: pytrainer/gui/windowprofile.py:66
+#: glade/profile.ui:1317 pytrainer/gui/windowprofile.py:66
+#: pytrainer/gui/windowmain.py:177
 msgid "Color"
 msgstr "Couleur"
 
@@ -749,7 +749,7 @@ msgstr ""
 msgid "Percentages based method"
 msgstr "Méthode basée sur des pourcentages"
 
-#: glade/profile.ui:1667 pytrainer/gui/windowmain.py:796
+#: glade/profile.ui:1667 pytrainer/gui/windowmain.py:795
 msgid "Karvonen method"
 msgstr "Méthode de Karvonen"
 
@@ -762,10 +762,10 @@ msgid "<b>Heart Rate Zones</b>"
 msgstr "<b>Zones Cardiaque:</b>"
 
 #: glade/profile.ui:1743 glade/pytrainer.ui:273 glade/pytrainer.ui:304
-#: pytrainer/daygraph.py:56 pytrainer/core/activity.py:546
-#: pytrainer/core/activity.py:548 pytrainer/core/activity.py:558
-#: pytrainer/core/activity.py:626 pytrainer/recordgraph.py:140
-#: pytrainer/heartrategraph.py:33
+#: pytrainer/core/activity.py:546 pytrainer/core/activity.py:548
+#: pytrainer/core/activity.py:558 pytrainer/core/activity.py:626
+#: pytrainer/daygraph.py:56 pytrainer/heartrategraph.py:33
+#: pytrainer/recordgraph.py:140
 msgid "Heart Rate"
 msgstr "Fréquence Cardiaque"
 
@@ -820,22 +820,22 @@ msgstr "Paramètres de démarrage"
 #: pytrainer/core/activity.py:520 pytrainer/core/activity.py:529
 #: pytrainer/core/activity.py:538 pytrainer/core/activity.py:547
 #: pytrainer/core/activity.py:557 pytrainer/core/activity.py:566
-#: pytrainer/core/activity.py:625 pytrainer/gui/windowimportdata.py:329
-#: pytrainer/gui/windowmain.py:106 pytrainer/gui/windowmain.py:146
-#: pytrainer/gui/windowmain.py:164 pytrainer/gui/windowmain.py:174
-#: pytrainer/gui/windowmain.py:578 pytrainer/gui/windowmain.py:1325
+#: pytrainer/core/activity.py:625 pytrainer/extensions/googlemaps.py:139
+#: pytrainer/extensions/osm.py:111 pytrainer/gui/windowimportdata.py:328
 #: pytrainer/gui/windowrecord.py:94 pytrainer/gui/windowrecord.py:210
-#: pytrainer/extensions/googlemaps.py:135 pytrainer/extensions/osm.py:107
+#: pytrainer/gui/windowmain.py:105 pytrainer/gui/windowmain.py:145
+#: pytrainer/gui/windowmain.py:163 pytrainer/gui/windowmain.py:173
+#: pytrainer/gui/windowmain.py:577 pytrainer/gui/windowmain.py:1324
 msgid "Distance"
 msgstr "Distance"
 
 #: glade/pytrainer.ui:105 glade/pytrainer.ui:130 glade/pytrainer.ui:152
 #: glade/pytrainer.ui:177 glade/pytrainer.ui:355 glade/pytrainer.ui:380
 #: glade/pytrainer.ui:402 glade/pytrainer.ui:427
-#: pytrainer/gui/windowmain.py:108 pytrainer/gui/windowmain.py:147
-#: pytrainer/gui/windowmain.py:165 pytrainer/gui/windowmain.py:175
-#: pytrainer/gui/windowmain.py:579 pytrainer/gui/windowmain.py:1327
-#: pytrainer/extensions/googlemaps.py:135 pytrainer/extensions/osm.py:106
+#: pytrainer/extensions/googlemaps.py:139 pytrainer/extensions/osm.py:110
+#: pytrainer/gui/windowmain.py:107 pytrainer/gui/windowmain.py:146
+#: pytrainer/gui/windowmain.py:164 pytrainer/gui/windowmain.py:174
+#: pytrainer/gui/windowmain.py:578 pytrainer/gui/windowmain.py:1326
 msgid "Time"
 msgstr "Temps"
 
@@ -887,7 +887,7 @@ msgstr "Les 6 derniers mois"
 msgid "Last 12 months"
 msgstr "Les 12 derniers mois"
 
-#: glade/pytrainer.ui:235 pytrainer/gui/windowmain.py:292
+#: glade/pytrainer.ui:235 pytrainer/gui/windowmain.py:291
 msgid "All Sports"
 msgstr "Tous les Sports"
 
@@ -914,14 +914,14 @@ msgstr "Profil de la sortie"
 
 #: glade/pytrainer.ui:267 glade/pytrainer.ui:298 glade/pytrainer.ui:320
 #: pytrainer/core/activity.py:470 pytrainer/core/activity.py:528
-#: pytrainer/core/activity.py:530 pytrainer/gui/windowmain.py:176
+#: pytrainer/core/activity.py:530 pytrainer/gui/windowmain.py:175
 #: pytrainer/recordgraph.py:136
 msgid "Speed"
 msgstr "Vitesse"
 
 #: glade/pytrainer.ui:270 glade/pytrainer.ui:301 pytrainer/core/activity.py:459
 #: pytrainer/core/activity.py:537 pytrainer/core/activity.py:539
-#: pytrainer/gui/windowmain.py:177 pytrainer/gui/windowrecord.py:98
+#: pytrainer/gui/windowrecord.py:98 pytrainer/gui/windowmain.py:176
 #: pytrainer/recordgraph.py:138
 msgid "Pace"
 msgstr "Allure"
@@ -1098,7 +1098,7 @@ msgstr "<b>Tours</b>"
 msgid " <b>Title:</b>"
 msgstr " <b>Titre:</b>"
 
-#: glade/pytrainer.ui:1548 pytrainer/gui/windowmain.py:1550
+#: glade/pytrainer.ui:1548 pytrainer/gui/windowmain.py:1549
 msgid "Show graph display options"
 msgstr "Montrer les réglages du graphe"
 
@@ -1302,8 +1302,8 @@ msgid "<b>Total Asc/Desc:</b>"
 msgstr "<b>Dénivelé Total Pos/Neg:</b>"
 
 #: glade/pytrainer.ui:3993 glade/pytrainer.ui:4630 glade/pytrainer.ui:5274
-#: glade/pytrainer.ui:5917 pytrainer/gui/windowmain.py:1882
-#: pytrainer/gui/windowmain.py:1884 pytrainer/lib/uc.py:54
+#: glade/pytrainer.ui:5917 pytrainer/gui/windowmain.py:1881
+#: pytrainer/gui/windowmain.py:1883 pytrainer/lib/uc.py:54
 msgid "m"
 msgstr "m"
 
@@ -1411,13 +1411,91 @@ msgstr "<b> Point de localisation:</b>"
 msgid "Select track record"
 msgstr "Sélectionnez un Circuit"
 
-#: imports/file_garmintools.py:46
-msgid "Garmin tools dump file"
-msgstr "Fichier de dump Garmin tools"
+#: extensions/fixelevation/fixelevation.py:128
+msgid "Elevation Correction Complete"
+msgstr "Correction d'élévation terminée"
+
+#: extensions/gpx2garmin/gpx2garmin.py:48
+msgid "gpx2garmin Extension"
+msgstr "Extension gpx2garmin"
+
+#: extensions/openstreetmap/openstreetmap.py:81
+msgid ""
+"Posting GPX trace to Openstreetmap\n"
+"\n"
+"Please wait this could take several minutes"
+msgstr ""
+"Envoi de la trace GPX vers Openstreetmap\n"
+"\n"
+"Merci d'attendre la fin du processus qui peut prendre quelques minutes"
+
+#: extensions/openstreetmap/openstreetmap.py:83
+msgid "Openstreetmap Extension Processing"
+msgstr "Traitement de l'extension Openstreetmap"
+
+#: extensions/openstreetmap/openstreetmap.py:101
+msgid "Openstreetmap Extension Upload Complete"
+msgstr "Chargement sur Openstreetmap effectué"
+
+#: extensions/openstreetmap/openstreetmap.py:106
+msgid "Error while uploading file to OSM: "
+msgstr "Erreur lors du chargement du fichier ver OSM"
+
+#: extensions/openstreetmap/openstreetmap.py:108
+msgid "Openstreetmap Extension Error"
+msgstr "Erreur d'extension Openstreetmap"
+
+#: extensions/openstreetmap/openstreetmap.py:116
+msgid "Please add any additional information for this upload"
+msgstr "Merci de Compléter les informations pour ce chargement"
+
+#: extensions/openstreetmap/openstreetmap.py:244
+msgid "Error while saving extension configuration"
+msgstr "Erreur lors de la sauvegarde de la configuration de l'extension"
+
+#: extensions/stravaupload/stravaupload.py:159
+msgid "Strava Upload"
+msgstr "Envoi vers Strava"
+
+#: extensions/wordpress/wordpress.py:48
+msgid "Posting to Wordpress blog"
+msgstr "Poster sur le blog Wordpress"
+
+#: extensions/wordpress/wordpress.py:50
+msgid "Wordpress Extension Processing"
+msgstr "Traitement de l'extension Wordpress"
+
+#: extensions/wordpress/wordpress.py:145
+msgid "Wordpress Extension Upload Complete"
+msgstr "Chargement sur Wordpress effectué"
 
 #: imports/file_garmintcxv1.py:47
 msgid "Garmin training center database file version 1"
 msgstr "Fichier de base de données Garmin training center version 1"
+
+#: imports/file_garmintcxv2.py:48
+msgid "Garmin training center database file version 2"
+msgstr "Fichier de base de données Garmin training center version 2"
+
+#: imports/file_garmintools.py:46
+msgid "Garmin tools dump file"
+msgstr "Fichier de dump Garmin tools"
+
+#: imports/file_gpxplus.py:43
+msgid "GPS eXchange file"
+msgstr "Fichier de type GPX"
+
+#: imports/file_gpxplusNokia.py:42
+msgid "Nokia Export - GPS eXchange file"
+msgstr "Export Nokia- GPS eXchange file"
+
+#: imports/file_kml20.py:45
+msgid "Geodistance kml version 2.0 file"
+msgstr "Fichier Geodistance kml version 2.0"
+
+#: imports/tool_gant.py:33
+msgid "Gant"
+msgstr "Gant"
 
 #: imports/tool_garmintools.py:33
 msgid "Garmintools"
@@ -1426,51 +1504,6 @@ msgstr "Garmintools"
 #: imports/tool_gpsbabel.py:33
 msgid "GPSBabel"
 msgstr "GPSBabel"
-
-#: imports/tool_gant.py:33
-msgid "Gant"
-msgstr "Gant"
-
-#: imports/file_kml20.py:45
-msgid "Geodistance kml version 2.0 file"
-msgstr "Fichier Geodistance kml version 2.0"
-
-#: imports/file_gpxplusNokia.py:42
-msgid "Nokia Export - GPS eXchange file"
-msgstr "Export Nokia- GPS eXchange file"
-
-#: imports/file_gpxplus.py:43
-msgid "GPS eXchange file"
-msgstr "Fichier de type GPX"
-
-#: imports/file_garmintcxv2.py:48
-msgid "Garmin training center database file version 2"
-msgstr "Fichier de base de données Garmin training center version 2"
-
-#: pytrainer/daygraph.py:52 pytrainer/recordgraph.py:134
-msgid "Height (m)"
-msgstr "Altitude (m)"
-
-#: pytrainer/daygraph.py:54
-msgid "Velocity (Km/h)"
-msgstr "Vitesse (km/h)"
-
-#: pytrainer/daygraph.py:54
-msgid "Velocity"
-msgstr "Vitesse"
-
-#: pytrainer/daygraph.py:56 pytrainer/recordgraph.py:140
-#: pytrainer/heartrategraph.py:33
-msgid "Beats (bpm)"
-msgstr "Pulsations (bpm)"
-
-#: pytrainer/waypoint.py:97
-msgid ""
-"The gpx file seems to be a several days records. Perhaps you will need to "
-"edit your gpx file"
-msgstr ""
-"Ce fichier GPX semble contenir plusieurs jours d'enregistrements. Vous "
-"devrez peut-être au préalable éditer celui-ci."
 
 #: pytrainer/core/activity.py:457
 msgid "Pace by Lap"
@@ -1513,478 +1546,26 @@ msgstr "tpm"
 msgid "Heart Rate zone"
 msgstr "Zone de Fréquence Cardiaque"
 
-#: pytrainer/gui/windowimportdata.py:97
-msgid "No file selected"
-msgstr "Pas de fichier sélectionné"
-
-#: pytrainer/gui/windowimportdata.py:142
-msgid "Configure"
-msgstr "Configurer"
-
-#: pytrainer/gui/windowimportdata.py:148
-msgid "Disabled"
-msgstr "Désactivé"
-
-#: pytrainer/gui/windowimportdata.py:150
-msgid "Enabled"
-msgstr "Activé"
-
-#: pytrainer/gui/windowimportdata.py:202
-msgid "Checking for tools"
-msgstr "Vérification des outils"
-
-#: pytrainer/gui/windowimportdata.py:229
-msgid "GPS device found"
-msgstr "Périphérique GPS trouvé"
-
-#: pytrainer/gui/windowimportdata.py:232
-msgid "GPS device <b>not</b> found"
-msgstr "Périphérique GPS <b>non</b> trouvé"
-
-#: pytrainer/gui/windowimportdata.py:239
-msgid "This tool was not found on the system"
-msgstr "Cet outil n'est pas installé sur votre système"
-
-#: pytrainer/gui/windowimportdata.py:241
-msgid " Homepage"
-msgstr "Page d'accueil"
-
-#: pytrainer/gui/windowimportdata.py:261
-msgid "Checking file type for: "
-msgstr "Vérification du type de fichier pour : "
-
-#: pytrainer/gui/windowimportdata.py:294
-msgid "File"
-msgstr "Fichier"
-
-#: pytrainer/gui/windowimportdata.py:294
-msgid "Type"
-msgstr "Type"
-
-#: pytrainer/gui/windowimportdata.py:294
-msgid "Activities"
-msgstr "Activités"
-
-#: pytrainer/gui/windowimportdata.py:329 pytrainer/gui/windowrecord.py:210
-msgid "Start Time"
-msgstr "Heure de début"
-
-#: pytrainer/gui/windowimportdata.py:329 pytrainer/gui/windowrecord.py:210
-msgid "Duration"
-msgstr "Durée"
-
-#: pytrainer/gui/windowimportdata.py:484
-msgid "Imported into database"
-msgstr "Importé dans la base"
-
-#: pytrainer/gui/windowimportdata.py:532 pytrainer/gui/windowplugins.py:78
-#: pytrainer/gui/windowextensions.py:79
-#, python-format
-msgid "%s settings"
-msgstr "%s réglages"
-
-#: pytrainer/gui/windowimportdata.py:548 pytrainer/gui/windowplugins.py:69
-#: pytrainer/gui/windowplugins.py:94 pytrainer/gui/windowextensions.py:68
-msgid "Disable"
-msgstr "Désactivé"
-
-#: pytrainer/gui/windowimportdata.py:549 pytrainer/gui/windowplugins.py:67
-#: pytrainer/gui/windowplugins.py:95 pytrainer/gui/windowextensions.py:70
-msgid "Enable"
-msgstr "Activé"
-
-#: pytrainer/gui/windowimportdata.py:556 pytrainer/gui/windowplugins.py:102
-msgid "Ok"
-msgstr "Ok"
-
-#: pytrainer/gui/windowimportdata.py:608
-msgid "Saving options"
-msgstr "Sauvegarde des options"
-
-#: pytrainer/gui/windowimportdata.py:610
-msgid "Options saved"
-msgstr "Options sauvegardées"
-
-#: pytrainer/gui/windowimportdata.py:636
-msgid "Importing one activity"
-msgstr "Importation d'une activité"
-
-#: pytrainer/gui/windowimportdata.py:638
-#, python-format
-msgid "Importing %d activities"
-msgstr "Importation de %d activités"
-
-#: pytrainer/gui/windowimportdata.py:646
-msgid "No activity has been imported"
-msgstr "Aucune activité importée"
-
-#: pytrainer/gui/windowimportdata.py:648
-msgid "Imported one activity"
-msgstr "Une activité importée"
-
-#: pytrainer/gui/windowimportdata.py:650
-#, python-format
-msgid "Imported %d activities"
-msgstr "%d activités importées"
-
-#: pytrainer/gui/windowimportdata.py:654
-msgid " Activity selected was already present in DB"
-msgstr " Activité déjà présente dans la base de données"
-
-#: pytrainer/gui/windowimportdata.py:656
-#, python-format
-msgid " %d selected activities were already present in DB"
-msgstr " %s activités étaient déjà présentes dans la base de données"
-
-#: pytrainer/gui/windowimportdata.py:664
-msgid "Choose a file (or files) to import activities from"
-msgstr "Choisir un fichier pour importer vos activités"
-
-#: pytrainer/gui/windowimportdata.py:679
-#, python-format
-msgid "Found file of type: %s"
-msgstr "Fichier trouvé de type: %s"
-
-#: pytrainer/gui/windowimportdata.py:704
-msgid "Found in database"
-msgstr "Présent dans la base"
-
-#: pytrainer/gui/windowimportdata.py:722
-#, python-format
-msgid "File %s is of unknown or unsupported file type"
-msgstr "Le fichier %s est inconnu ou d'un type non supporté"
-
-#: pytrainer/gui/windowimportdata.py:759
-msgid "Got file: "
-msgstr "Fichier reçu : "
-
-#: pytrainer/gui/windowimportdata.py:796
-#, python-format
-msgid "Column %d"
-msgstr "Colonne %d"
-
-#: pytrainer/gui/windowimportdata.py:853
-msgid "ERROR: Must define at least a date column"
-msgstr "Erreur : au moins une colonne de date doit être définie"
-
-#: pytrainer/gui/windowimportdata.py:987
-#, python-format
-msgid "Import completed. %d rows processed"
-msgstr "Importation terminée. %d lignes traitées"
-
-#: pytrainer/gui/windowmain.py:99 pytrainer/gui/windowmain.py:103
-#: pytrainer/gui/windowmain.py:116 pytrainer/gui/windowmain.py:119
-#: pytrainer/gui/windowmain.py:128 pytrainer/gui/windowmain.py:162
-#: pytrainer/gui/windowmain.py:171
-msgid "id"
-msgstr "id"
-
-#: pytrainer/gui/windowmain.py:99
-msgid "Start"
-msgstr "Début"
-
-#: pytrainer/gui/windowmain.py:109
-msgid "⌀ HR"
-msgstr "FC"
-
-#: pytrainer/gui/windowmain.py:110
-msgid "⌀ Speed"
-msgstr "Vitesse"
-
-#: pytrainer/gui/windowmain.py:116
-msgid "Waypoint"
-msgstr "Point de Localisation"
-
-#: pytrainer/gui/windowmain.py:121
-msgid "Weight"
-msgstr "Poids"
-
-#: pytrainer/gui/windowmain.py:122
-msgid "Body Fat %"
-msgstr "% de Masse Grasse"
-
-#: pytrainer/gui/windowmain.py:123
-msgid "Resting HR"
-msgstr "Fréquence de repos"
-
-#: pytrainer/gui/windowmain.py:124 pytrainer/gui/windowmain.py:136
-#: pytrainer/gui/windowmain.py:153
-msgid "Max HR"
-msgstr "FC Max"
-
-#: pytrainer/gui/windowmain.py:130
-msgid "Records"
-msgstr "Enregistrements"
-
-#: pytrainer/gui/windowmain.py:131
-msgid "Total duration"
-msgstr "Durée totale"
-
-#: pytrainer/gui/windowmain.py:132
-msgid "Total distance"
-msgstr "Distance totale"
-
-#: pytrainer/gui/windowmain.py:133 pytrainer/gui/windowmain.py:148
-msgid "Avg speed"
-msgstr "Vitesse moy"
-
-#: pytrainer/gui/windowmain.py:134 pytrainer/gui/windowmain.py:149
-msgid "Max speed"
-msgstr "Vitesse max"
-
-#: pytrainer/gui/windowmain.py:135 pytrainer/gui/windowmain.py:152
-msgid "Avg HR"
-msgstr "FC moy"
-
-#: pytrainer/gui/windowmain.py:137
-msgid "Max duration"
-msgstr "Durée max"
-
-#: pytrainer/gui/windowmain.py:138
-msgid "Max distance"
-msgstr "Distance max"
-
-#: pytrainer/gui/windowmain.py:144
-msgid "Lap"
-msgstr "Tour"
-
-#: pytrainer/gui/windowmain.py:145
-msgid "Trigger"
-msgstr "Échantillonage"
-
-#: pytrainer/gui/windowmain.py:150
-msgid "Avg pace"
-msgstr "Allure moy"
-
-#: pytrainer/gui/windowmain.py:151
-msgid "Max pace"
-msgstr "Allure max"
-
-#: pytrainer/gui/windowmain.py:155
-msgid "Intensity"
-msgstr "Intensité"
-
-#: pytrainer/gui/windowmain.py:163
-msgid "Race"
-msgstr "Course"
-
-#: pytrainer/gui/windowmain.py:172
-msgid "Rank"
-msgstr "Place"
-
-#: pytrainer/gui/windowmain.py:282
-msgid "Webkit not found, map functionality not available"
-msgstr ""
-
-#: pytrainer/gui/windowmain.py:315
-msgid "d"
-msgstr "d"
-
-#: pytrainer/gui/windowmain.py:568
-msgid "Show on X Axis"
-msgstr "Montrer sur l'axe X"
-
-#: pytrainer/gui/windowmain.py:569
-msgid "Show on Y1 Axis"
-msgstr "Montrer sur l'axe Y1"
-
-#: pytrainer/gui/windowmain.py:570
-msgid "Show on Y2 Axis"
-msgstr "Montrer sur l'axe Y2"
-
-#: pytrainer/gui/windowmain.py:571
-msgid "Axis Limits"
-msgstr "Limites des axes"
-
-#: pytrainer/gui/windowmain.py:580
-msgid "Laps"
-msgstr "Tours"
-
-#: pytrainer/gui/windowmain.py:581
-msgid "Left Axis Grid"
-msgstr "Grille d'axe Gauche"
-
-#: pytrainer/gui/windowmain.py:582
-msgid "Right Axis Grid"
-msgstr "Grille d'axe Droite"
-
-#: pytrainer/gui/windowmain.py:583
-msgid "X Axis Grid"
-msgstr "Grille d'axe X"
-
-#: pytrainer/gui/windowmain.py:644
-msgid "Reset Limits"
-msgstr "Réinitialiser les limites"
-
-#: pytrainer/gui/windowmain.py:646
-msgid "Set Limits"
-msgstr "Fixer les limites"
-
-#: pytrainer/gui/windowmain.py:798
-msgid "Percentages method"
-msgstr "Méthode basée sur des pourcentages"
-
-#: pytrainer/gui/windowmain.py:815
-msgid "800 m"
-msgstr "800 m"
-
-#: pytrainer/gui/windowmain.py:816
-msgid "1500 m"
-msgstr "1500 m"
-
-#: pytrainer/gui/windowmain.py:817
-msgid "5K"
-msgstr "5K"
-
-#: pytrainer/gui/windowmain.py:818
-msgid "7K"
-msgstr "7K"
-
-#: pytrainer/gui/windowmain.py:819
-msgid "10K"
-msgstr "10K"
-
-#: pytrainer/gui/windowmain.py:820
-msgid "Half marathon"
-msgstr "Semi Marathon"
-
-#: pytrainer/gui/windowmain.py:821
-msgid "Marathon"
-msgstr "Marathon"
-
-#: pytrainer/gui/windowmain.py:822
-msgid "100K"
-msgstr "100K"
-
-#: pytrainer/gui/windowmain.py:1328 pytrainer/recordgraph.py:144
-msgid "Beats"
-msgstr "Pulsations"
-
-#: pytrainer/gui/windowmain.py:1329 pytrainer/gui/windowrecord.py:96
-msgid "Average"
-msgstr "Moyenne"
-
-#: pytrainer/gui/windowmain.py:1546
-msgid "Hide graph display options"
-msgstr "Cacher les réglages du graphe "
-
-#: pytrainer/gui/windowmain.py:1875
-msgid "lap"
-msgstr "tour "
-
-#: pytrainer/gui/windowmain.py:1882 pytrainer/gui/drawArea.py:166
-#: pytrainer/extensions/googlemaps.py:133 pytrainer/extensions/osm.py:104
+#: pytrainer/extensions/googlemaps.py:137 pytrainer/extensions/osm.py:108
+#: pytrainer/gui/windowmain.py:1881 pytrainer/gui/drawArea.py:166
 msgid "h"
 msgstr "h"
 
-#: pytrainer/gui/windowmain.py:1882 pytrainer/gui/windowmain.py:1884
-msgid "s"
-msgstr "s"
-
-#: pytrainer/gui/windowmain.py:1972 pytrainer/record.py:67
-msgid "Edit Entry"
-msgstr "Entrée Rapide"
-
-#: pytrainer/gui/windowmain.py:1983
-msgid "Delete Entry"
-msgstr "Détruire l'entrée"
-
-#: pytrainer/gui/windowmain.py:2005
-msgid "Create Athlete Entry"
-msgstr "Créer une entrée Athlète"
-
-#: pytrainer/gui/windowmain.py:2010
-msgid "Edit Athlete Entry"
-msgstr "Éditer les données de l'athlète"
-
-#: pytrainer/gui/windowmain.py:2022
-msgid "<b>Date</b>"
-msgstr "<b>Date</b>"
-
-#: pytrainer/gui/windowmain.py:2038
-msgid "<b>Weight</b>"
-msgstr "<b>Poids</b>"
-
-#: pytrainer/gui/windowmain.py:2047
-msgid "<b>Body Fat</b>"
-msgstr "<b>Masse grasse</b>"
-
-#: pytrainer/gui/windowmain.py:2056
-msgid "<b>Resting Heart Rate</b>"
-msgstr "<b>Fréquence cardiaque de repos</b>"
-
-#: pytrainer/gui/windowmain.py:2065
-msgid "<b>Max Heart Rate</b>"
-msgstr "<b>Fréquence cardiaque max</b>"
-
-#: pytrainer/gui/windowmain.py:2094 pytrainer/main.py:477
-msgid "Delete this database entry?"
-msgstr "Supprimer cette entrée de la Base de Données?"
-
-#: pytrainer/gui/windowmain.py:2096
-msgid "Are you sure?"
-msgstr "Êtes vous sûr?"
-
-#: pytrainer/gui/drawArea.py:167 pytrainer/extensions/googlemaps.py:133
-#: pytrainer/extensions/osm.py:104
+#: pytrainer/extensions/googlemaps.py:137 pytrainer/extensions/osm.py:108
+#: pytrainer/gui/drawArea.py:167
 msgid "min"
 msgstr "min"
 
-#: pytrainer/gui/drawArea.py:400
-msgid "rest"
-msgstr "repos"
-
-#: pytrainer/gui/drawArea.py:448
-msgid "Time in zone [%]"
-msgstr ""
-
-#: pytrainer/gui/aboutdialog.py:43
+#: pytrainer/gui/aboutdialog.py:41
 msgid "translator-credits"
 msgstr ""
 "Dj <dj@djremixtheblog.be>\n"
 "Pierre Gaigé <pgaige@free.fr>\n"
 "Christian Perrier <bubulle@debian.org>"
 
-#: pytrainer/gui/windowrecord.py:95 pytrainer/gui/windowrecord.py:97
-msgid "Max"
-msgstr "Max"
-
-#: pytrainer/gui/windowrecord.py:99
-msgid "Ascent"
-msgstr "Dénivelé Positif"
-
-#: pytrainer/gui/windowrecord.py:100
-msgid "Descent"
-msgstr "Dénivelé Négatif"
-
-#: pytrainer/gui/windowrecord.py:210
-msgid "GPX File"
-msgstr "Fichier GPX"
-
-#: pytrainer/gui/windowrecord.py:322
-msgid "Error Adding Activity Record"
-msgstr ""
-
 #: pytrainer/gui/dialogselecttrack.py:38
 msgid "Track Name"
 msgstr "Nom du Circuit"
-
-#: pytrainer/gui/windowextensions.py:111 pytrainer/gui/windowextensions.py:123
-msgid "OK"
-msgstr "OK"
-
-#: pytrainer/gui/windowprofile.py:66
-msgid "MET"
-msgstr "MET"
-
-#: pytrainer/gui/windowprofile.py:324
-msgid "Sport Creation Error"
-msgstr "Erreur lors de création du sport"
-
-#: pytrainer/gui/windowprofile.py:440
-#, fuzzy
-msgid "Heart Rate Calculation Error"
-msgstr "Erreur lors de création du sport"
 
 #: pytrainer/gui/drawGraph.py:169
 msgid "Athlete Data"
@@ -2002,99 +1583,465 @@ msgstr "Éditer un enregistrement"
 msgid "Show graph in classic view"
 msgstr "Montrer le graphe dans la vue classique"
 
-#: pytrainer/profile.py:156
-msgid "Moderate activity"
-msgstr "Activité modérée"
+#: pytrainer/gui/windowextensions.py:68 pytrainer/gui/windowimportdata.py:547
+#: pytrainer/gui/windowplugins.py:69 pytrainer/gui/windowplugins.py:94
+msgid "Disable"
+msgstr "Désactivé"
 
-#: pytrainer/profile.py:157
-msgid "Weight Control"
-msgstr "Perte de poids"
+#: pytrainer/gui/windowextensions.py:70 pytrainer/gui/windowimportdata.py:548
+#: pytrainer/gui/windowplugins.py:67 pytrainer/gui/windowplugins.py:95
+msgid "Enable"
+msgstr "Activé"
 
-#: pytrainer/profile.py:158
-msgid "Aerobic"
-msgstr "Aérobie"
+#: pytrainer/gui/windowextensions.py:79 pytrainer/gui/windowimportdata.py:531
+#: pytrainer/gui/windowplugins.py:78
+#, python-format
+msgid "%s settings"
+msgstr "%s réglages"
 
-#: pytrainer/profile.py:159
-msgid "Anaerobic"
-msgstr "Anaérobie"
+#: pytrainer/gui/windowextensions.py:111 pytrainer/gui/windowextensions.py:123
+msgid "OK"
+msgstr "OK"
 
-#: pytrainer/profile.py:160
-msgid "VO2 MAX"
-msgstr "VO2 Max"
+#: pytrainer/gui/windowimportdata.py:96
+msgid "No file selected"
+msgstr "Pas de fichier sélectionné"
 
-#: pytrainer/monthgraph.py:26 pytrainer/monthgraph.py:27
-#: pytrainer/monthgraph.py:28 pytrainer/monthgraph.py:29
-#: pytrainer/monthgraph.py:30
-msgid "day"
-msgstr "jour"
+#: pytrainer/gui/windowimportdata.py:141
+msgid "Configure"
+msgstr "Configurer"
 
-#: pytrainer/monthgraph.py:26 pytrainer/weekgraph.py:26
-msgid "Daily Distance"
-msgstr "Distance Journalière"
+#: pytrainer/gui/windowimportdata.py:147
+msgid "Disabled"
+msgstr "Désactivé"
 
-#: pytrainer/monthgraph.py:27 pytrainer/totalgraph.py:25
-#: pytrainer/weekgraph.py:27 pytrainer/yeargraph.py:28
-msgid "Time (hours)"
-msgstr "Durée (Heures)"
+#: pytrainer/gui/windowimportdata.py:149
+msgid "Enabled"
+msgstr "Activé"
 
-#: pytrainer/monthgraph.py:27 pytrainer/weekgraph.py:27
-msgid "Daily Time"
-msgstr "Durée Journalière"
+#: pytrainer/gui/windowimportdata.py:201
+msgid "Checking for tools"
+msgstr "Vérification des outils"
 
-#: pytrainer/monthgraph.py:28 pytrainer/totalgraph.py:26
-#: pytrainer/weekgraph.py:28 pytrainer/yeargraph.py:29
-msgid "Average Heart Rate (bpm)"
-msgstr "FC moyenne (bpm)"
+#: pytrainer/gui/windowimportdata.py:228
+msgid "GPS device found"
+msgstr "Périphérique GPS trouvé"
 
-#: pytrainer/monthgraph.py:28 pytrainer/weekgraph.py:28
-msgid "Daily Average Heart Rate"
-msgstr "FC moyenne Journalière"
+#: pytrainer/gui/windowimportdata.py:231
+msgid "GPS device <b>not</b> found"
+msgstr "Périphérique GPS <b>non</b> trouvé"
 
-#: pytrainer/monthgraph.py:29 pytrainer/weekgraph.py:29
-msgid "Daily Average Speed"
-msgstr "Vitesse moyenne Journalière"
+#: pytrainer/gui/windowimportdata.py:238
+msgid "This tool was not found on the system"
+msgstr "Cet outil n'est pas installé sur votre système"
 
-#: pytrainer/monthgraph.py:30 pytrainer/weekgraph.py:30
-msgid "Daily Calories"
-msgstr "Calories Journalière"
+#: pytrainer/gui/windowimportdata.py:240
+msgid " Homepage"
+msgstr "Page d'accueil"
 
-#: pytrainer/recordgraph.py:136
-msgid "Speed (Km/h)"
-msgstr "Vitesse (km/h)"
+#: pytrainer/gui/windowimportdata.py:260
+msgid "Checking file type for: "
+msgstr "Vérification du type de fichier pour : "
 
-#: pytrainer/recordgraph.py:142
-msgid "Cadence (rpm)"
-msgstr "Rythme (tpm) "
+#: pytrainer/gui/windowimportdata.py:293
+msgid "File"
+msgstr "Fichier"
 
-#: pytrainer/recordgraph.py:144
-msgid "Beats (%)"
-msgstr "Pulsations (%)"
+#: pytrainer/gui/windowimportdata.py:293
+msgid "Type"
+msgstr "Type"
 
-#: pytrainer/totalgraph.py:24 pytrainer/totalgraph.py:25
-#: pytrainer/totalgraph.py:26 pytrainer/totalgraph.py:27
-#: pytrainer/totalgraph.py:28
-msgid "year"
-msgstr "année"
+#: pytrainer/gui/windowimportdata.py:293
+msgid "Activities"
+msgstr "Activités"
 
-#: pytrainer/totalgraph.py:24
-msgid "Annual Distance"
-msgstr "Distance annuelle"
+#: pytrainer/gui/windowimportdata.py:328 pytrainer/gui/windowrecord.py:210
+msgid "Start Time"
+msgstr "Heure de début"
 
-#: pytrainer/totalgraph.py:25
-msgid "Annual Time"
-msgstr "Durée annuelle"
+#: pytrainer/gui/windowimportdata.py:328 pytrainer/gui/windowrecord.py:210
+msgid "Duration"
+msgstr "Durée"
 
-#: pytrainer/totalgraph.py:26
-msgid "Annual Average Heart Rate"
-msgstr "FC moyenne annuelle"
+#: pytrainer/gui/windowimportdata.py:483
+msgid "Imported into database"
+msgstr "Importé dans la base"
 
-#: pytrainer/totalgraph.py:27
-msgid "Annual Average Speed"
-msgstr "Vitesse moyenne annuelle"
+#: pytrainer/gui/windowimportdata.py:555 pytrainer/gui/windowplugins.py:102
+msgid "Ok"
+msgstr "Ok"
 
-#: pytrainer/totalgraph.py:28
-msgid "Annual Calories"
-msgstr "Calories annuelles"
+#: pytrainer/gui/windowimportdata.py:607
+msgid "Saving options"
+msgstr "Sauvegarde des options"
+
+#: pytrainer/gui/windowimportdata.py:609
+msgid "Options saved"
+msgstr "Options sauvegardées"
+
+#: pytrainer/gui/windowimportdata.py:635
+msgid "Importing one activity"
+msgstr "Importation d'une activité"
+
+#: pytrainer/gui/windowimportdata.py:637
+#, python-format
+msgid "Importing %d activities"
+msgstr "Importation de %d activités"
+
+#: pytrainer/gui/windowimportdata.py:645
+msgid "No activity has been imported"
+msgstr "Aucune activité importée"
+
+#: pytrainer/gui/windowimportdata.py:647
+msgid "Imported one activity"
+msgstr "Une activité importée"
+
+#: pytrainer/gui/windowimportdata.py:649
+#, python-format
+msgid "Imported %d activities"
+msgstr "%d activités importées"
+
+#: pytrainer/gui/windowimportdata.py:653
+msgid " Activity selected was already present in DB"
+msgstr " Activité déjà présente dans la base de données"
+
+#: pytrainer/gui/windowimportdata.py:655
+#, python-format
+msgid " %d selected activities were already present in DB"
+msgstr " %s activités étaient déjà présentes dans la base de données"
+
+#: pytrainer/gui/windowimportdata.py:663
+msgid "Choose a file (or files) to import activities from"
+msgstr "Choisir un fichier pour importer vos activités"
+
+#: pytrainer/gui/windowimportdata.py:678
+#, python-format
+msgid "Found file of type: %s"
+msgstr "Fichier trouvé de type: %s"
+
+#: pytrainer/gui/windowimportdata.py:703
+msgid "Found in database"
+msgstr "Présent dans la base"
+
+#: pytrainer/gui/windowimportdata.py:721
+#, python-format
+msgid "File %s is of unknown or unsupported file type"
+msgstr "Le fichier %s est inconnu ou d'un type non supporté"
+
+#: pytrainer/gui/windowimportdata.py:758
+msgid "Got file: "
+msgstr "Fichier reçu : "
+
+#: pytrainer/gui/windowimportdata.py:795
+#, python-format
+msgid "Column %d"
+msgstr "Colonne %d"
+
+#: pytrainer/gui/windowimportdata.py:852
+msgid "ERROR: Must define at least a date column"
+msgstr "Erreur : au moins une colonne de date doit être définie"
+
+#: pytrainer/gui/windowimportdata.py:986
+#, python-format
+msgid "Import completed. %d rows processed"
+msgstr "Importation terminée. %d lignes traitées"
+
+#: pytrainer/gui/windowprofile.py:66
+msgid "MET"
+msgstr "MET"
+
+#: pytrainer/gui/windowprofile.py:324
+msgid "Sport Creation Error"
+msgstr "Erreur lors de création du sport"
+
+#: pytrainer/gui/windowprofile.py:440
+#, fuzzy
+msgid "Heart Rate Calculation Error"
+msgstr "Erreur lors de création du sport"
+
+#: pytrainer/gui/windowrecord.py:95 pytrainer/gui/windowrecord.py:97
+msgid "Max"
+msgstr "Max"
+
+#: pytrainer/gui/windowrecord.py:96 pytrainer/gui/windowmain.py:1328
+msgid "Average"
+msgstr "Moyenne"
+
+#: pytrainer/gui/windowrecord.py:99
+msgid "Ascent"
+msgstr "Dénivelé Positif"
+
+#: pytrainer/gui/windowrecord.py:100
+msgid "Descent"
+msgstr "Dénivelé Négatif"
+
+#: pytrainer/gui/windowrecord.py:210
+msgid "GPX File"
+msgstr "Fichier GPX"
+
+#: pytrainer/gui/windowrecord.py:322
+msgid "Error Adding Activity Record"
+msgstr ""
+
+#: pytrainer/gui/windowmain.py:98 pytrainer/gui/windowmain.py:102
+#: pytrainer/gui/windowmain.py:115 pytrainer/gui/windowmain.py:118
+#: pytrainer/gui/windowmain.py:127 pytrainer/gui/windowmain.py:161
+#: pytrainer/gui/windowmain.py:170
+msgid "id"
+msgstr "id"
+
+#: pytrainer/gui/windowmain.py:98
+msgid "Start"
+msgstr "Début"
+
+#: pytrainer/gui/windowmain.py:108
+msgid "⌀ HR"
+msgstr "FC"
+
+#: pytrainer/gui/windowmain.py:109
+msgid "⌀ Speed"
+msgstr "Vitesse"
+
+#: pytrainer/gui/windowmain.py:115
+msgid "Waypoint"
+msgstr "Point de Localisation"
+
+#: pytrainer/gui/windowmain.py:120
+msgid "Weight"
+msgstr "Poids"
+
+#: pytrainer/gui/windowmain.py:121
+msgid "Body Fat %"
+msgstr "% de Masse Grasse"
+
+#: pytrainer/gui/windowmain.py:122
+msgid "Resting HR"
+msgstr "Fréquence de repos"
+
+#: pytrainer/gui/windowmain.py:123 pytrainer/gui/windowmain.py:135
+#: pytrainer/gui/windowmain.py:152
+msgid "Max HR"
+msgstr "FC Max"
+
+#: pytrainer/gui/windowmain.py:129
+msgid "Records"
+msgstr "Enregistrements"
+
+#: pytrainer/gui/windowmain.py:130
+msgid "Total duration"
+msgstr "Durée totale"
+
+#: pytrainer/gui/windowmain.py:131
+msgid "Total distance"
+msgstr "Distance totale"
+
+#: pytrainer/gui/windowmain.py:132 pytrainer/gui/windowmain.py:147
+msgid "Avg speed"
+msgstr "Vitesse moy"
+
+#: pytrainer/gui/windowmain.py:133 pytrainer/gui/windowmain.py:148
+msgid "Max speed"
+msgstr "Vitesse max"
+
+#: pytrainer/gui/windowmain.py:134 pytrainer/gui/windowmain.py:151
+msgid "Avg HR"
+msgstr "FC moy"
+
+#: pytrainer/gui/windowmain.py:136
+msgid "Max duration"
+msgstr "Durée max"
+
+#: pytrainer/gui/windowmain.py:137
+msgid "Max distance"
+msgstr "Distance max"
+
+#: pytrainer/gui/windowmain.py:143
+msgid "Lap"
+msgstr "Tour"
+
+#: pytrainer/gui/windowmain.py:144
+msgid "Trigger"
+msgstr "Échantillonage"
+
+#: pytrainer/gui/windowmain.py:149
+msgid "Avg pace"
+msgstr "Allure moy"
+
+#: pytrainer/gui/windowmain.py:150
+msgid "Max pace"
+msgstr "Allure max"
+
+#: pytrainer/gui/windowmain.py:154
+msgid "Intensity"
+msgstr "Intensité"
+
+#: pytrainer/gui/windowmain.py:162
+msgid "Race"
+msgstr "Course"
+
+#: pytrainer/gui/windowmain.py:171
+msgid "Rank"
+msgstr "Place"
+
+#: pytrainer/gui/windowmain.py:281
+msgid "Webkit not found, map functionality not available"
+msgstr ""
+
+#: pytrainer/gui/windowmain.py:314
+msgid "d"
+msgstr "d"
+
+#: pytrainer/gui/windowmain.py:567
+msgid "Show on X Axis"
+msgstr "Montrer sur l'axe X"
+
+#: pytrainer/gui/windowmain.py:568
+msgid "Show on Y1 Axis"
+msgstr "Montrer sur l'axe Y1"
+
+#: pytrainer/gui/windowmain.py:569
+msgid "Show on Y2 Axis"
+msgstr "Montrer sur l'axe Y2"
+
+#: pytrainer/gui/windowmain.py:570
+msgid "Axis Limits"
+msgstr "Limites des axes"
+
+#: pytrainer/gui/windowmain.py:579
+msgid "Laps"
+msgstr "Tours"
+
+#: pytrainer/gui/windowmain.py:580
+msgid "Left Axis Grid"
+msgstr "Grille d'axe Gauche"
+
+#: pytrainer/gui/windowmain.py:581
+msgid "Right Axis Grid"
+msgstr "Grille d'axe Droite"
+
+#: pytrainer/gui/windowmain.py:582
+msgid "X Axis Grid"
+msgstr "Grille d'axe X"
+
+#: pytrainer/gui/windowmain.py:643
+msgid "Reset Limits"
+msgstr "Réinitialiser les limites"
+
+#: pytrainer/gui/windowmain.py:645
+msgid "Set Limits"
+msgstr "Fixer les limites"
+
+#: pytrainer/gui/windowmain.py:797
+msgid "Percentages method"
+msgstr "Méthode basée sur des pourcentages"
+
+#: pytrainer/gui/windowmain.py:814
+msgid "800 m"
+msgstr "800 m"
+
+#: pytrainer/gui/windowmain.py:815
+msgid "1500 m"
+msgstr "1500 m"
+
+#: pytrainer/gui/windowmain.py:816
+msgid "5K"
+msgstr "5K"
+
+#: pytrainer/gui/windowmain.py:817
+msgid "7K"
+msgstr "7K"
+
+#: pytrainer/gui/windowmain.py:818
+msgid "10K"
+msgstr "10K"
+
+#: pytrainer/gui/windowmain.py:819
+msgid "Half marathon"
+msgstr "Semi Marathon"
+
+#: pytrainer/gui/windowmain.py:820
+msgid "Marathon"
+msgstr "Marathon"
+
+#: pytrainer/gui/windowmain.py:821
+msgid "100K"
+msgstr "100K"
+
+#: pytrainer/gui/windowmain.py:1327 pytrainer/recordgraph.py:144
+msgid "Beats"
+msgstr "Pulsations"
+
+#: pytrainer/gui/windowmain.py:1545
+msgid "Hide graph display options"
+msgstr "Cacher les réglages du graphe "
+
+#: pytrainer/gui/windowmain.py:1874
+msgid "lap"
+msgstr "tour "
+
+#: pytrainer/gui/windowmain.py:1881 pytrainer/gui/windowmain.py:1883
+msgid "s"
+msgstr "s"
+
+#: pytrainer/gui/windowmain.py:1971 pytrainer/record.py:69
+msgid "Edit Entry"
+msgstr "Entrée Rapide"
+
+#: pytrainer/gui/windowmain.py:1982
+msgid "Delete Entry"
+msgstr "Détruire l'entrée"
+
+#: pytrainer/gui/windowmain.py:2004
+msgid "Create Athlete Entry"
+msgstr "Créer une entrée Athlète"
+
+#: pytrainer/gui/windowmain.py:2009
+msgid "Edit Athlete Entry"
+msgstr "Éditer les données de l'athlète"
+
+#: pytrainer/gui/windowmain.py:2021
+msgid "<b>Date</b>"
+msgstr "<b>Date</b>"
+
+#: pytrainer/gui/windowmain.py:2037
+msgid "<b>Weight</b>"
+msgstr "<b>Poids</b>"
+
+#: pytrainer/gui/windowmain.py:2046
+msgid "<b>Body Fat</b>"
+msgstr "<b>Masse grasse</b>"
+
+#: pytrainer/gui/windowmain.py:2055
+msgid "<b>Resting Heart Rate</b>"
+msgstr "<b>Fréquence cardiaque de repos</b>"
+
+#: pytrainer/gui/windowmain.py:2064
+msgid "<b>Max Heart Rate</b>"
+msgstr "<b>Fréquence cardiaque max</b>"
+
+#: pytrainer/gui/windowmain.py:2093 pytrainer/main.py:477
+msgid "Delete this database entry?"
+msgstr "Supprimer cette entrée de la Base de Données?"
+
+#: pytrainer/gui/windowmain.py:2095
+msgid "Are you sure?"
+msgstr "Êtes vous sûr?"
+
+#: pytrainer/gui/drawArea.py:400
+msgid "rest"
+msgstr "repos"
+
+#: pytrainer/gui/drawArea.py:450
+msgid "Time in zone [%]"
+msgstr ""
+
+#: pytrainer/lib/gpx.py:128
+msgid "No Name"
+msgstr "Sans Nom"
+
+#: pytrainer/lib/gpx.py:136
+msgid "No Data"
+msgstr "Pas de Valeurs"
 
 #: pytrainer/lib/listview.py:35
 msgid "All Time"
@@ -2152,25 +2099,136 @@ msgstr "kg"
 msgid "lb"
 msgstr "lb"
 
-#: pytrainer/lib/gpx.py:128
-msgid "No Name"
-msgstr "Sans Nom"
+#: pytrainer/daygraph.py:52 pytrainer/recordgraph.py:134
+msgid "Height (m)"
+msgstr "Altitude (m)"
 
-#: pytrainer/lib/gpx.py:136
-msgid "No Data"
-msgstr "Pas de Valeurs"
+#: pytrainer/daygraph.py:54
+msgid "Velocity (Km/h)"
+msgstr "Vitesse (km/h)"
 
-#: pytrainer/record.py:57
-msgid "Modify details before importing"
-msgstr "Modifier les détails avant l'importation"
+#: pytrainer/daygraph.py:54
+msgid "Velocity"
+msgstr "Vitesse"
 
-#: pytrainer/record.py:392
-msgid "pytrainer can't import data from your gpx file"
-msgstr "pytrainer ne peut pas importer de données depuis le fichier GPX"
+#: pytrainer/daygraph.py:56 pytrainer/heartrategraph.py:33
+#: pytrainer/recordgraph.py:140
+msgid "Beats (bpm)"
+msgstr "Pulsations (bpm)"
 
 #: pytrainer/main.py:493
 msgid "Delete this waypoint?"
 msgstr "Détruire ce Point de Localisation"
+
+#: pytrainer/monthgraph.py:26 pytrainer/monthgraph.py:27
+#: pytrainer/monthgraph.py:28 pytrainer/monthgraph.py:29
+#: pytrainer/monthgraph.py:30
+msgid "day"
+msgstr "jour"
+
+#: pytrainer/monthgraph.py:26 pytrainer/weekgraph.py:26
+msgid "Daily Distance"
+msgstr "Distance Journalière"
+
+#: pytrainer/monthgraph.py:27 pytrainer/totalgraph.py:25
+#: pytrainer/weekgraph.py:27 pytrainer/yeargraph.py:28
+msgid "Time (hours)"
+msgstr "Durée (Heures)"
+
+#: pytrainer/monthgraph.py:27 pytrainer/weekgraph.py:27
+msgid "Daily Time"
+msgstr "Durée Journalière"
+
+#: pytrainer/monthgraph.py:28 pytrainer/totalgraph.py:26
+#: pytrainer/weekgraph.py:28 pytrainer/yeargraph.py:29
+msgid "Average Heart Rate (bpm)"
+msgstr "FC moyenne (bpm)"
+
+#: pytrainer/monthgraph.py:28 pytrainer/weekgraph.py:28
+msgid "Daily Average Heart Rate"
+msgstr "FC moyenne Journalière"
+
+#: pytrainer/monthgraph.py:29 pytrainer/weekgraph.py:29
+msgid "Daily Average Speed"
+msgstr "Vitesse moyenne Journalière"
+
+#: pytrainer/monthgraph.py:30 pytrainer/weekgraph.py:30
+msgid "Daily Calories"
+msgstr "Calories Journalière"
+
+#: pytrainer/profile.py:156
+msgid "Moderate activity"
+msgstr "Activité modérée"
+
+#: pytrainer/profile.py:157
+msgid "Weight Control"
+msgstr "Perte de poids"
+
+#: pytrainer/profile.py:158
+msgid "Aerobic"
+msgstr "Aérobie"
+
+#: pytrainer/profile.py:159
+msgid "Anaerobic"
+msgstr "Anaérobie"
+
+#: pytrainer/profile.py:160
+msgid "VO2 MAX"
+msgstr "VO2 Max"
+
+#: pytrainer/record.py:59
+msgid "Modify details before importing"
+msgstr "Modifier les détails avant l'importation"
+
+#: pytrainer/record.py:397
+msgid "pytrainer can't import data from your gpx file"
+msgstr "pytrainer ne peut pas importer de données depuis le fichier GPX"
+
+#: pytrainer/recordgraph.py:136
+msgid "Speed (Km/h)"
+msgstr "Vitesse (km/h)"
+
+#: pytrainer/recordgraph.py:142
+msgid "Cadence (rpm)"
+msgstr "Rythme (tpm) "
+
+#: pytrainer/recordgraph.py:144
+msgid "Beats (%)"
+msgstr "Pulsations (%)"
+
+#: pytrainer/totalgraph.py:24 pytrainer/totalgraph.py:25
+#: pytrainer/totalgraph.py:26 pytrainer/totalgraph.py:27
+#: pytrainer/totalgraph.py:28
+msgid "year"
+msgstr "année"
+
+#: pytrainer/totalgraph.py:24
+msgid "Annual Distance"
+msgstr "Distance annuelle"
+
+#: pytrainer/totalgraph.py:25
+msgid "Annual Time"
+msgstr "Durée annuelle"
+
+#: pytrainer/totalgraph.py:26
+msgid "Annual Average Heart Rate"
+msgstr "FC moyenne annuelle"
+
+#: pytrainer/totalgraph.py:27
+msgid "Annual Average Speed"
+msgstr "Vitesse moyenne annuelle"
+
+#: pytrainer/totalgraph.py:28
+msgid "Annual Calories"
+msgstr "Calories annuelles"
+
+#: pytrainer/waypoint.py:97
+msgid ""
+"The gpx file seems to be a several days records. Perhaps you will need to "
+"edit your gpx file"
+msgstr ""
+"Ce fichier GPX semble contenir plusieurs jours d'enregistrements. Vous "
+"devrez peut-être au préalable éditer celui-ci."
 
 #: pytrainer/yeargraph.py:27 pytrainer/yeargraph.py:28
 #: pytrainer/yeargraph.py:29 pytrainer/yeargraph.py:30
@@ -2197,64 +2255,6 @@ msgstr "Vitesse moyenne Mensuelle"
 #: pytrainer/yeargraph.py:31
 msgid "Monthly Calories"
 msgstr "Calories Mensuelle"
-
-#: extensions/openstreetmap/openstreetmap.py:83
-msgid ""
-"Posting GPX trace to Openstreetmap\n"
-"\n"
-"Please wait this could take several minutes"
-msgstr ""
-"Envoi de la trace GPX vers Openstreetmap\n"
-"\n"
-"Merci d'attendre la fin du processus qui peut prendre quelques minutes"
-
-#: extensions/openstreetmap/openstreetmap.py:85
-msgid "Openstreetmap Extension Processing"
-msgstr "Traitement de l'extension Openstreetmap"
-
-#: extensions/openstreetmap/openstreetmap.py:103
-msgid "Openstreetmap Extension Upload Complete"
-msgstr "Chargement sur Openstreetmap effectué"
-
-#: extensions/openstreetmap/openstreetmap.py:108
-msgid "Error while uploading file to OSM: "
-msgstr "Erreur lors du chargement du fichier ver OSM"
-
-#: extensions/openstreetmap/openstreetmap.py:110
-msgid "Openstreetmap Extension Error"
-msgstr "Erreur d'extension Openstreetmap"
-
-#: extensions/openstreetmap/openstreetmap.py:118
-msgid "Please add any additional information for this upload"
-msgstr "Merci de Compléter les informations pour ce chargement"
-
-#: extensions/openstreetmap/openstreetmap.py:246
-msgid "Error while saving extension configuration"
-msgstr "Erreur lors de la sauvegarde de la configuration de l'extension"
-
-#: extensions/stravaupload/stravaupload.py:161
-msgid "Strava Upload"
-msgstr "Envoi vers Strava"
-
-#: extensions/fixelevation/fixelevation.py:129
-msgid "Elevation Correction Complete"
-msgstr "Correction d'élévation terminée"
-
-#: extensions/gpx2garmin/gpx2garmin.py:50
-msgid "gpx2garmin Extension"
-msgstr "Extension gpx2garmin"
-
-#: extensions/wordpress/wordpress.py:48
-msgid "Posting to Wordpress blog"
-msgstr "Poster sur le blog Wordpress"
-
-#: extensions/wordpress/wordpress.py:50
-msgid "Wordpress Extension Processing"
-msgstr "Traitement de l'extension Wordpress"
-
-#: extensions/wordpress/wordpress.py:145
-msgid "Wordpress Extension Upload Complete"
-msgstr "Chargement sur Wordpress effectué"
 
 #~ msgid "Male"
 #~ msgstr "Homme"
