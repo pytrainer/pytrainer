@@ -369,14 +369,22 @@ sub cb_record {
 
   defined $lat and defined $lon and $tp{Position} = +{'LatitudeDegrees' => $lat, 'LongitudeDegrees' => $lon};
 
-  $tp{AltitudeMeters} = $obj->value_processed($v->[$desc->{i_altitude}], $desc->{a_altitude})
-    if defined $desc->{i_altitude} && $v->[$desc->{i_altitude}] != $desc->{I_altitude};
+  if (defined $desc->{i_enhanced_altitude} && $v->[$desc->{i_enhanced_altitude}] != $desc->{I_enhanced_altitude}) {
+    $tp{AltitudeMeters} = $obj->value_processed($v->[$desc->{i_enhanced_altitude}], $desc->{a_enhanced_altitude})
+  }
+  elsif (defined $desc->{i_altitude} && $v->[$desc->{i_altitude}] != $desc->{I_altitude}) {
+    $tp{AltitudeMeters} = $obj->value_processed($v->[$desc->{i_altitude}], $desc->{a_altitude})
+  }
 
   $tp{DistanceMeters} = $obj->value_processed($v->[$desc->{i_distance}], $desc->{a_distance})
     if defined $desc->{i_distance} && $v->[$desc->{i_distance}] != $desc->{I_distance};
 
-  $speed = $obj->value_processed($v->[$desc->{i_speed}], $desc->{a_speed})
-    if defined $desc->{i_speed} && $v->[$desc->{i_speed}] != $desc->{I_speed};
+  if (defined $desc->{i_enhanced_speed} && $v->[$desc->{i_enhanced_speed}] != $desc->{I_enhanced_speed}) {
+    $speed = $obj->value_processed($v->[$desc->{i_enhanced_speed}], $desc->{a_enhanced_speed})
+  }
+  elsif (defined $desc->{i_speed} && $v->[$desc->{i_speed}] != $desc->{I_speed}) {
+    $speed = $obj->value_processed($v->[$desc->{i_speed}], $desc->{a_speed})
+  }
 
   $tp{HeartRateBpm} = +{'Value' => $v->[$desc->{i_heart_rate}]} if defined $desc->{i_heart_rate} && $v->[$desc->{i_heart_rate}] != $desc->{I_heart_rate};
   $tp{Cadence} = $v->[$desc->{i_cadence}] if defined $desc->{i_cadence} && $v->[$desc->{i_cadence}] != $desc->{I_cadence};
@@ -457,8 +465,12 @@ sub cb_lap {
     $lap{DistanceMeters} = $obj->value_processed($v->[$desc->{i_total_distance}], $desc->{a_total_distance})
       if defined $desc->{i_total_distance} && $v->[$desc->{i_total_distance}] != $desc->{I_total_distance};
 
-    $lap{MaximumSpeed} = $obj->value_processed($v->[$desc->{i_max_speed}], $desc->{a_max_speed})
-      if defined $desc->{i_max_speed} && $v->[$desc->{i_max_speed}] != $desc->{I_max_speed};
+    if (defined $desc->{i_enhanced_max_speed} && $v->[$desc->{i_enhanced_max_speed}] != $desc->{I_enhanced_max_speed}) {
+      $lap{MaximumSpeed} = $obj->value_processed($v->[$desc->{i_enhanced_max_speed}], $desc->{a_enhanced_max_speed})
+    }
+    elsif (defined $desc->{i_max_speed} && $v->[$desc->{i_max_speed}] != $desc->{I_max_speed}) {
+      $lap{MaximumSpeed} = $obj->value_processed($v->[$desc->{i_max_speed}], $desc->{a_max_speed})
+    }
 
     $lap{Calories} = $v->[$desc->{i_total_calories}]
       if defined $desc->{i_total_calories} && $v->[$desc->{i_total_calories}] != $desc->{I_total_calories};
@@ -484,8 +496,12 @@ sub cb_lap {
     $x{FatCalories} = +{'Value' => $v->[$desc->{i_total_fat_calories}]}
       if defined $desc->{i_total_fat_calories} && $v->[$desc->{i_total_fat_calories}] != $desc->{I_total_calories};
 
-    $lx{AvgSpeed} = $obj->value_processed($v->[$desc->{i_avg_speed}], $desc->{a_avg_speed})
-      if defined $desc->{i_avg_speed} && $v->[$desc->{i_avg_speed}] != $desc->{I_avg_speed};
+    if (defined $desc->{i_enhanced_avg_speed} && $v->[$desc->{i_enhanced_avg_speed}] != $desc->{I_enhanced_avg_speed}) {
+      $lx{AvgSpeed} = $obj->value_processed($v->[$desc->{i_enhanced_avg_speed}], $desc->{a_enhanced_avg_speed})
+    }
+    elsif (defined $desc->{i_avg_speed} && $v->[$desc->{i_avg_speed}] != $desc->{I_avg_speed}) {
+      $lx{AvgSpeed} = $obj->value_processed($v->[$desc->{i_avg_speed}], $desc->{a_avg_speed})
+    }
 
     $lx{MaxBikeCadence} = $v->[$desc->{i_max_cadence}] if defined $desc->{i_max_cadence} && $v->[$desc->{i_max_cadence}] != $desc->{I_max_cadence};
     $lx{AvgWatts} = $v->[$desc->{i_avg_power}] * $pw_fix + $pw_fix_b if defined $desc->{i_avg_power} && $v->[$desc->{i_avg_power}] != $desc->{I_avg_power};
