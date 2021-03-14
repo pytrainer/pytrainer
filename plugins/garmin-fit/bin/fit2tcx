@@ -51,7 +51,7 @@ $tpmask = '' if !defined $tpmask;
 $tpexclude = '' if !defined $tpexclude;
 $show_version = 0 if !defined $show_version;
 
-my $version = "0.09";
+my $version = "0.11";
 
 if ($show_version) {
   print $version, "\n";
@@ -278,14 +278,14 @@ sub tpmask_rect {
   $lat >= $lat_sw && $lat <= $lat_ne && &cmp_lon($lon, $lon_sw) >= 0 && &cmp_lon($lon, $lon_ne) <= 0;
 }
 
-foreach $mask (split /:/, $tpmask) {
+foreach $mask (split /:|\s+/, $tpmask) {
   my @v = split /,/, $mask;
 
   if (@v % 2) {
     die "$mask: not a sequence of latitude and longitude pairs";
   }
   elsif (@v < 4) {
-    die "$mask: vertices < 2";
+    die "$mask: \# of vertices < 2";
   }
   elsif (@v > 4) {
     die "$mask: sorry but arbitrary polygons are not implemented yet";
@@ -380,7 +380,7 @@ sub cb_record {
 
   $tp{HeartRateBpm} = +{'Value' => $v->[$desc->{i_heart_rate}]} if defined $desc->{i_heart_rate} && $v->[$desc->{i_heart_rate}] != $desc->{I_heart_rate};
   $tp{Cadence} = $v->[$desc->{i_cadence}] if defined $desc->{i_cadence} && $v->[$desc->{i_cadence}] != $desc->{I_cadence};
-  $watts = $v->[$desc->{i_power}] * $pw_fix + $pw_fix_b if $v->[$desc->{i_power}] != $desc->{I_power};
+  $watts = $v->[$desc->{i_power}] * $pw_fix + $pw_fix_b if defined $desc->{i_power} && $v->[$desc->{i_power}] != $desc->{I_power};
 
   if (defined $speed || defined $watts) {
     my %tpx;
@@ -694,16 +694,17 @@ if (@$av && @tpmask) {
 	my ($r, $s);
 
 	for ($r = $s = 0 ; $r < @$tpv ; ++$r) {
-	  my $mask;
+	  my ($mask, $masked);
 
 	  foreach $mask (@tpmask) {
 	    if ($mask->[0]->(@{$tpv->[$r]->{Position}}{qw(LatitudeDegrees LongitudeDegrees)}, @$mask[1 .. $#$mask])) {
 	      $memo{ntps} -= 1;
-	    }
-	    else {
-	      $tpv->[$s++] = $tpv->[$r];
+	      $masked = 1;
+	      last;
 	    }
 	  }
+
+	  $masked or $tpv->[$s++] = $tpv->[$r];
 	}
 
 	splice @$tpv, $s;
@@ -826,3 +827,282 @@ if (@$av) {
 1;
 __END__
 
+=head1 NAME
+
+Fit2tcx - converts a FIT file to a TCX file
+
+=head1 SYNOPSIS
+
+  fit2tcx -show_version=1
+  fit2tcx [<options>] [<FIT activity file> [<TCX file>]]
+
+=head1 DESCRIPTION
+
+B<Fit2tcx> reads the contents of I<<FIT activity file>>,
+converts them to correspoding TCX formats,
+and write converted contents to I<<TCX file>>.
+
+=for html The latest version is obtained via
+
+=for html <blockquote>
+
+=for html <!--#include virtual="/cgi-perl/showfile?/cycling/pub/fit2tcx-[0-9]*.tar.gz"-->.
+
+=for html </blockquote>
+
+It uses a Perl class
+
+=for html <blockquote><a href="GarminFIT.shtml">
+
+C<Garmin::FIT>
+
+=for html </a></blockquote>
+
+of version 0.10 or later.
+
+=head2 Options
+
+=over 4
+
+=item C<-show_version=1>
+
+shows the version string of this program,
+and exits.
+
+=item C<-verbose=1>
+
+shows FIT file header and trailing CRC information on C<stdout>.
+
+=item C<-tplimit=>I<<number>>
+
+tries to limit the number of trackpoints to I<<number>>.
+
+=item C<-must=>I<<list>>
+
+specifies a comma separated list of TCX elements which must be included in trackpoints.
+
+B<Fit2tcx> convert each C<record> message to a trackpoint in TCX format,
+examines whether or not any of the elements in the list are defined,
+and drop the trackpoint if not.
+
+Some map services seem to require a TCX file created with C<-must=Time,Position> option.
+
+=item C<-tpexclude=>I<<list>>
+
+specifies a comma separated list of TCX elements which should be excluded from C<Trackpoint> elements in I<<TCX file>>.
+
+For instance,
+with C<-tpexclude=AltitudeMeters> option,
+B<fit2tcx> makes a TCX file including no altitude data in C<Trackpoint>s.
+
+=item C<-include_creator=0>
+
+specifies that a C<Creator> section should be excluded.
+
+=item C<-lap=>I<<list>>
+
+specifies a comma separated list of lap indices (0, 1, ...) which should be included in I<<TCX file>>.
+
+Each element of I<<list>> must be of the form I<<index>> or I<<start>>C<->I<<end>>.
+
+I<<index>> is treated as an abbreviation of I<<index>>C<->I<<index>>.
+
+I<<start>>C<->I<<end>> implies that only laps with indices C<E<gt>=> I<<start>> and C<E<lt>=> I<<end>>,
+should be included in I<<TCX file>>.
+
+I<<start>> or I<<end>> may be one of an empty string, asterisc (C<*>), or the word C<ALL>,
+which are treated as C<0> when used as I<<start>>, or C<65534> when used as I<<end>>.
+
+For instance,
+any of C<-lap=->, C<-lap=*>, or C<-lap=all> is treated as C<-lap=0-65534>.
+
+=item C<-tpmask=>I<<list>>
+
+specifies a colon or space separated list of I<<region>>s,
+in which trackpoinsts must be excluded from I<<TCX file>>.
+
+A I<<region>> must be a comma separated quadruple of the form I<<lat_sw>>C<,>I<<long_sw>>C<,>I<<lat_ne>>C<,>I<<long_ne>>.
+I<<lat_*>> must be degrees of latitudes,
+and I<<long_*>> must be degrees of longitudes.
+Suffices I<_sw> and I<_ne> stand for "south west" and "north east", respectively.
+
+Trackpoints in the "rectangle" (including borders) enclosed with paralles and meridians determined by the above latitudes and longitudes,
+are not written to I<<TCX file>>.
+
+=back
+
+=head2 Per user configuration file C<.fit2tcx.pl>
+
+B<Fit2tcx> evaluates the contents of the file C<.fit2tcx.pl> in your home directory if it exists,
+before starting conversion.
+So,
+in the file,
+you can set appropriate values to scalar variables of the same names of the above options with leading hyphens removed,
+and will get the same effects as giving the command line options.
+
+=head1 AUTHOR
+
+Kiyokazu SUTO E<lt>suto@ks-and-ks.ne.jpE<gt>
+
+=head1 DISCLAIMER etc.
+
+This program is distributed with
+ABSOLUTELY NO WARRANTY.
+
+Anyone can use, modify, and re-distibute this program
+without any restriction.
+
+=head1 CHANGES
+
+=head2 0.10 --E<gt> 0.11
+
+=over 4
+
+=item C<$tpmask>
+
+accepts spaces as separators of I<<region>>s.
+
+=item I<top level>
+
+Fixed process hanging up with C<$tpmask> including tow or more I<<region>>s.
+
+=back
+
+=head2 0.09 --E<gt> 0.10
+
+=over 4
+
+=item C<&cb_record>
+
+There was no check whether or not C<power> field exists in a C<record> message.
+
+Thanks to report from S<Benjamin Wolak>.
+
+=back
+
+=head2 0.08 --E<gt> 0.09
+
+=over 4
+
+=item C<%activity_def>
+
+order of sub-elemtens of C<Lap> was not conforming to C<http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd>.
+
+Thanks again to report from S<David Garc>E<iacute>S<a Granda>.
+
+=back
+
+=head2 0.07 --E<gt> 0.08
+
+=over 4
+
+=item C<%activity_def>
+
+Format of C<HeartRateBpm> in C<Trackpoint> was not conforming to C<http://www.garmin.com/xmlschemas/TrainingCenterDatabasev2.xsd>.
+
+Mandatory attribute C<Sport> of C<Activity> was missing.
+
+New elements C<AverageHeartRateBpm> and C<MaximumHeartRateBpm> in C<Lap>.
+
+C<TriggerMethod> in C<Lap> was mis-spelled as C<TrigerMethod>.
+
+All thanks to report from S<David Garc>E<iacute>S<a Granda>.
+
+=item C<$ENV{HOME}/.fit2tcx.pl>
+
+loaded in a C<BEGIN> block,
+based on report from S<David Garc>E<iacute>S<a Granda>.
+
+=item C<Garmin::FIT>
+
+loaded after C<$ENV{HOME}/.fit2tcx.pl>,
+based on report from S<David Garc>E<iacute>S<a Granda>.
+
+=back
+
+=head2 0.06 --E<gt> 0.07
+
+=over 4
+
+=item C<&cmp_lon>
+
+new subroutine to compare degrees of longitudes in right manner (hopefully).
+
+=item C<&tpmask_rec>
+
+use C<&cmp_lon>.
+
+=item C<@tpmask>
+
+ditto.
+
+=back
+
+=head2 0.05 --E<gt> 0.06
+
+=over 4
+
+=item I<top level>
+
+improved accuracy when limitting the number of C<Trackpoint>s.
+
+=back
+
+=head2 0.04 --E<gt> 0.05
+
+=over 4
+
+=item C<$start>
+
+C<xsi:schemaLocation> is made up in a consistent manner.
+
+=back
+
+=head2 0.03 --E<gt> 0.04
+
+=over 4
+
+=item C<$tpexclude>
+
+new option.
+
+=item C<$lap>
+
+accepts an empty string, character C<*>, and word C<all>.
+
+=back
+
+=head2 0.02 --E<gt> 0.03
+
+=over 4
+
+=item C<%activity_def>
+
+C<Track> elements should be considered arrays.
+
+=item C<&cb_lap_or_session>
+
+absorbed into C<&cb_lap>.
+
+=back
+
+=head2 0.01 --E<gt> 0.02
+
+=over 4
+
+=item C<%activity_def>
+
+new member C<name>.
+
+=item C<&output>
+
+uses new member C<name> of hashes defining TCX elements.
+
+=item I<top level>
+
+C<Cadence>s in C<Trackpoint>s and C<Watts>'s in C<TPX>s were not re-calculated
+when the option C<tplimit> was specified.
+
+=back
+
+=cut
