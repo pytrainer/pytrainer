@@ -1,4 +1,4 @@
-dist: xenial
+dist: bionic
 language: generic
 addons:
   apt:
@@ -21,11 +21,11 @@ services:
   - postgresql
 env:
   - PYTHON_VERSION=2.7 PYTRAINER_ALCHEMYURL="sqlite://"
-  - PYTHON_VERSION=3.5 PYTRAINER_ALCHEMYURL="sqlite://"
+  - PYTHON_VERSION=3.6 PYTRAINER_ALCHEMYURL="sqlite://"
   - PYTHON_VERSION=2.7 PYTRAINER_ALCHEMYURL="mysql://pytrainer@localhost/pytrainer"
-  - PYTHON_VERSION=3.5 PYTRAINER_ALCHEMYURL="mysql://pytrainer@localhost/pytrainer"
+  - PYTHON_VERSION=3.6 PYTRAINER_ALCHEMYURL="mysql://pytrainer@localhost/pytrainer"
   - PYTHON_VERSION=2.7 PYTRAINER_ALCHEMYURL="postgresql://pytrainer@localhost/pytrainer"
-  - PYTHON_VERSION=3.5 PYTRAINER_ALCHEMYURL="postgresql://pytrainer@localhost/pytrainer"
+  - PYTHON_VERSION=3.6 PYTRAINER_ALCHEMYURL="postgresql://pytrainer@localhost/pytrainer"
 before_install:
   - mysql -e "CREATE USER 'pytrainer'@'localhost';"
   - mysql -e "CREATE DATABASE pytrainer;"
