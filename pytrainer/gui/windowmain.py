@@ -335,8 +335,8 @@ class Main(SimpleBuilderApp):
                 column.add_attribute(renderer, 'pixbuf', column_index)
             else:
                 column.add_attribute(renderer, 'text', column_index)
-            column.set_resizable(True)
             column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+            column.set_resizable(True)
             if 'xalign' in column_dict:
                 renderer.set_property('xalign', column_dict['xalign'])
             if 'visible' in column_dict:
