@@ -1123,8 +1123,8 @@ class Main(SimpleBuilderApp):
 
     def actualize_statsview(self, stats, record_list):
         logging.debug(">>")
-        self.labelTotalDistance.set_text(str(stats.data['total_distance']) + " km")
-        self.labelTotalDuration.set_text(str(stats.data['total_duration'] / 3600) + " hours")
+        self.labelTotalDistance.set_text(str(round(stats.data['total_distance'])) + " km")
+        self.labelTotalDuration.set_text(str(round(stats.data['total_duration'] / 3600)) + " hours")
         # skip date format if no stats are saved yet
         try:
             self.labelStartDate.set_text(stats.data['start_date'].strftime('%Y-%m-%d'))
