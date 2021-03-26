@@ -183,7 +183,6 @@
     <property name="default_height">400</property>
     <property name="destroy_with_parent">True</property>
     <property name="icon">logo_mini.png</property>
-    <signal handler="on_win_importdata_destroy_event" name="destroy_event"/>
     <signal handler="on_win_importdata_delete_event" name="delete_event"/>
     <child>
       <object class="GtkNotebook" id="notebookMainTabs">
