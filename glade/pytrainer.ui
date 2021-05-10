@@ -1206,6 +1206,7 @@
                                                 </child>
                                                 <child>
                                                   <object class="GtkScrolledWindow" id="scrolledwindow6">
+                                                    <property name="height_request">90</property>
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
                                                     <property name="hscrollbar_policy">automatic</property>
@@ -1213,8 +1214,6 @@
                                                     <property name="shadow_type">in</property>
                                                     <child>
                                                       <object class="GtkTextView" id="record_comments">
-                                                        <property name="width_request">440</property>
-                                                        <property name="height_request">25</property>
                                                         <property name="visible">True</property>
                                                         <property name="can_focus">True</property>
                                                         <property name="editable">False</property>
@@ -1638,7 +1637,7 @@
                                             <property name="can_focus">True</property>
                                             <property name="hscrollbar_policy">automatic</property>
                                             <property name="vscrollbar_policy">automatic</property>
-					    <property name="min-content-height">200</property>
+                                            <property name="min-content-height">200</property>
                                             <child>
                                               <object class="GtkViewport" id="viewportGraphOptions">
                                                 <property name="visible">1</property>
@@ -6704,8 +6703,8 @@
                                 <child type="submenu">
                                   <object class="GtkMenu" id="menulistviewOptions"/>
                                 </child>
-			      </object>
-			    </child>
+                              </object>
+                            </child>
                           </object>
                           <packing>
                             <property name="expand">False</property>

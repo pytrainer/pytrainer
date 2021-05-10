@@ -118,7 +118,7 @@ class Main(SimpleBuilderApp):
         columns=[   {'name':_("id"), 'visible':False},
                     {'name':_("Date")},
                     {'name':_("Weight"), 'xalign':1.0, 'quantity':'weight', 'format_float':'%.1f'},
-                    {'name':_("Body Fat %"), 'xalign':1.0},
+                    {'name':_("Body Fat %"), 'xalign':1.0, 'quantity':'bodyfat', 'format_float':'%.1f'},
                     {'name':_("Resting HR"), 'xalign':1.0},
                     {'name':_("Max HR"), 'xalign':1.0}
                 ]
@@ -335,8 +335,8 @@ class Main(SimpleBuilderApp):
                 column.add_attribute(renderer, 'pixbuf', column_index)
             else:
                 column.add_attribute(renderer, 'text', column_index)
-            column.set_resizable(True)
             column.set_sizing(Gtk.TreeViewColumnSizing.AUTOSIZE)
+            column.set_resizable(True)
             if 'xalign' in column_dict:
                 renderer.set_property('xalign', column_dict['xalign'])
             if 'visible' in column_dict:
@@ -1123,8 +1123,8 @@ class Main(SimpleBuilderApp):
 
     def actualize_statsview(self, stats, record_list):
         logging.debug(">>")
-        self.labelTotalDistance.set_text(str(stats.data['total_distance']) + " km")
-        self.labelTotalDuration.set_text(str(stats.data['total_duration'] / 3600) + " hours")
+        self.labelTotalDistance.set_text(str(round(stats.data['total_distance'])) + " km")
+        self.labelTotalDuration.set_text(str(round(stats.data['total_duration'] / 3600)) + " hours")
         # skip date format if no stats are saved yet
         try:
             self.labelStartDate.set_text(stats.data['start_date'].strftime('%Y-%m-%d'))
@@ -1809,7 +1809,7 @@ class Main(SimpleBuilderApp):
                     date = self.parent.date.getDate()
                 except:
                     date = None
-                self.popup.show(selected.get_value(iter,0), event.button, time, date)
+                self.popup.show(selected.get_value(iter,0), event.button, time, str(date))
             elif event.button == 1:
                 self.notebook.set_current_page(0)
                 self.parent.refreshGraphView("record")
