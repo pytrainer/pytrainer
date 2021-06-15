@@ -1197,8 +1197,7 @@ class Main(SimpleBuilderApp):
             try:
                 _id = i.id
             except (ValueError, TypeError) as e:
-                logging.debug("Unable to determine id for record: %s", i)
-                logging.debug(str(e))
+                logging.debug("Unable to determine id for record: %s. Exception: %s", i, e)
                 continue
             _title = i.title
             _date = str(i.date)
@@ -1218,8 +1217,7 @@ class Main(SimpleBuilderApp):
             try:
                 _beats = round(i.beats)
             except (ValueError, TypeError) as e:
-                logging.debug("Unable to parse beats for %s", i.beats)
-                logging.debug(str(e))
+                logging.debug("Unable to parse beats for record: %s. Exception: %s", i.id, e)
                 _beats = 0.0
 
             iter = store.append()
