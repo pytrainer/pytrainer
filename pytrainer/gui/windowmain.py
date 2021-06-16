@@ -106,6 +106,7 @@ class Main(SimpleBuilderApp):
                     {'name':_("Sport")},
                     {'name':_("Time"), 'xalign':1.0, 'format_duration':True},
                     {'name':_(u"\u2300 HR"), 'xalign':1.0},
+                    {'name':_("Max HR"), 'xalign':1.0},
                     {'name':_(u"\u2300 Speed"), 'xalign':1.0, 'format_float':'%.1f', 'quantity': 'speed'},
                     {'name':_("Calories"), 'xalign':1.0}
                 ]
@@ -221,6 +222,7 @@ class Main(SimpleBuilderApp):
         savedOptions.append(("id_record","False"))
         savedOptions.append(("time","False"))
         savedOptions.append(("beats","False"))
+        savedOptions.append(("maxbeats","False"))
         savedOptions.append(("calories","False"))
         menufile.createXMLFile("listviewmenu",savedOptions)
 
@@ -1185,6 +1187,7 @@ class Main(SimpleBuilderApp):
             GObject.TYPE_STRING,
             GObject.TYPE_STRING,
             GObject.TYPE_INT,
+            GObject.TYPE_INT,
             GObject.TYPE_FLOAT,
             GObject.TYPE_INT,
             object)
@@ -1197,8 +1200,7 @@ class Main(SimpleBuilderApp):
             try:
                 _id = i.id
             except (ValueError, TypeError) as e:
-                logging.debug("Unable to determine id for record: %s", i)
-                logging.debug(str(e))
+                logging.debug("Unable to determine id for record: %s. Exception: %s", i, e)
                 continue
             _title = i.title
             _date = str(i.date)
@@ -1218,9 +1220,13 @@ class Main(SimpleBuilderApp):
             try:
                 _beats = round(i.beats)
             except (ValueError, TypeError) as e:
-                logging.debug("Unable to parse beats for %s", i.beats)
-                logging.debug(str(e))
+                logging.debug("Unable to parse beats for record: %s. Exception: %s", i.id, e)
                 _beats = 0.0
+            try:
+                _maxbeats = round(i.maxbeats)
+            except (ValueError, TypeError) as e:
+                logging.debug("Unable to parse maxbeats for record: %s. Exception: %s", i.id, e)
+                _maxbeats = 0.0
 
             iter = store.append()
             store.set (
@@ -1232,8 +1238,9 @@ class Main(SimpleBuilderApp):
                 4, _sport,
                 5, _time,
                 6, _beats,
-                7, _average,
-                8, _calories
+                7, _maxbeats,
+                8, _average,
+                9, _calories
                 )
         #self.allRecordTreeView.set_headers_clickable(True)
         self.allRecordTreeView.set_model(store)
@@ -1325,6 +1332,7 @@ class Main(SimpleBuilderApp):
             _("Sport"):"sport",
             _("Time"):"time",
             _("Beats"):"beats",
+            _("Maxbeats"):"maxbeats",
             _("Average"):"average",
             _("Calories"):"calories"
             }
@@ -1358,8 +1366,9 @@ class Main(SimpleBuilderApp):
             3:"sport",
             4:"time",
             5:"beats",
-            6:"average",
-            7:"calories" }
+            6:"maxbeats",
+            7:"average",
+            8:"calories" }
 
         items = self.menulistviewOptions.get_children()
         if items[widget_position-1].get_active():
@@ -1380,8 +1389,9 @@ class Main(SimpleBuilderApp):
             "sport":4,
             "time":5,
             "beats":6,
-            "average":7,
-            "calories":8 }
+            "maxbeats":7,
+            "average":8,
+            "calories":9 }
         columns = self.allRecordTreeView.get_columns()
         menuItems = self.menulistviewOptions.get_children()
         for column in listMenus:
