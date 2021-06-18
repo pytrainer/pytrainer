@@ -25,7 +25,7 @@ def pace2float(pace_str):
         try:
             _p_min = int(_prts[0])
             _p_sec = int(_prts[1])
-            return float( _p_min + (_p_sec/60.0))                   
+            return float( _p_min + (_p_sec/60.0))
         except:
             return 0.0
 
@@ -39,7 +39,7 @@ def float2pace(pace_flt):
     if _p_frc == 60:
         _p_int += 1
         _p_frc = 0
-    _pace_str = "%d:%02d" % (_p_int, _p_frc)  
+    _pace_str = "%d:%02d" % (_p_int, _p_frc)
     return _pace_str
 
 def pace_from_db(pace_db_float):
@@ -50,7 +50,7 @@ def pace_from_db(pace_db_float):
     return pace2float(_pace_str)
 
 class UC(Singleton):
-    """ 
+    """
     When instantiated first time us is assigned to False.
       us = False; user system is metric
       us = True ; user system is imperial
@@ -68,29 +68,29 @@ class UC(Singleton):
     def __init__(self):
         if not hasattr(self, 'us'):
             self.us = False
-            
+
     def __str__(self):
         if self.us:
             return 'imperial'
         else:
             return 'metric'
-        
+
     def set_us(self, us):
         if type(us) == bool:
             self.us = us
-        
+
     def get_unit(self, quantity):
         if self.us:
             return self.uc_units[quantity][1]
         else:
             return self.uc_units[quantity][0]
-            
-    unit_distance = property(lambda self: self.get_unit('distance') )      
-    unit_speed = property( lambda self: self.get_unit('speed') ) 
-    unit_pace = property( lambda self: self.get_unit('pace') )     
-    unit_height = property( lambda self: self.get_unit('height') )  
-    unit_weight = property( lambda self: self.get_unit('weight') )        
-    
+
+    unit_distance = property(lambda self: self.get_unit('distance') )
+    unit_speed = property( lambda self: self.get_unit('speed') )
+    unit_pace = property( lambda self: self.get_unit('pace') )
+    unit_height = property( lambda self: self.get_unit('height') )
+    unit_weight = property( lambda self: self.get_unit('weight') )
+
     def sys2usr(self, quantity, value):
         """ Gives value of physical quantity (metric) in users system"""
         try:
@@ -100,14 +100,14 @@ class UC(Singleton):
         if self.us:
             return _val * self.uc_factors[quantity]
         else:
-            return _val 
-   
+            return _val
+
     def usr2sys(self, quantity, value):
         """ Takes value (users system) and convert to metric (sys)"""
         try:
             _val = float(value)
         except (ValueError, TypeError):
-            return None        
+            return None
         if self.us:
             return _val / self.uc_factors[quantity]
         else:
@@ -116,11 +116,11 @@ class UC(Singleton):
     def usr2sys_str(self, quantity, val_str):
         """ Similar to usr2sys but I/O is string representing a float.
             Necessary until we have proper input validation in windowrecord.
-            Escpecially pace fix here should be eliminated asap. 
+            Escpecially pace fix here should be eliminated asap.
         """
         if not self.us:
             return val_str
-            
+
         if quantity == 'pace':
             _pace_dec = pace2float(val_str)
             _pace_uc = self.usr2sys('pace', _pace_dec)
@@ -131,9 +131,8 @@ class UC(Singleton):
             except (ValueError, TypeError):
                 return ""
             return str( self.usr2sys(quantity, _val))
-    
 
-    """ Aliases for sys2usr """         
+    """ Aliases for sys2usr """
     def distance(self, value):
         return self.sys2usr('distance', value)
     def speed(self, value):
@@ -143,4 +142,4 @@ class UC(Singleton):
     def height(self, value):
         return self.sys2usr('height', value)
     def weight(self, value):
-        return self.sys2usr('weight', value)              
+        return self.sys2usr('weight', value)
