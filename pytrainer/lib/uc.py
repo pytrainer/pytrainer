@@ -42,6 +42,13 @@ def float2pace(pace_flt):
     _pace_str = "%d:%02d" % (_p_int, _p_frc)  
     return _pace_str
 
+def pace_from_db(pace_db_float):
+    """Helper function to generate real float from the mm.ss float representation in the database"""
+    if not pace_db_float:
+        return None
+    _pace_str = '{:.2f}'.format(pace_db_float).replace('.', ':')
+    return pace2float(_pace_str)
+
 class UC(Singleton):
     """ 
     When instantiated first time us is assigned to False.

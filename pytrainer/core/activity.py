@@ -678,9 +678,9 @@ tracks (%s)
         elif param == 'maxspeed':
             return self.uc.speed(self.maxspeed)
         elif param == 'maxpace':
-            return uc.float2pace(self.uc.pace(self.maxpace))
+            return uc.float2pace(self.uc.pace(uc.pace_from_db(self.maxpace)))
         elif param == 'pace':
-            return uc.float2pace(self.uc.pace(self.pace))
+            return uc.float2pace(self.uc.pace(uc.pace_from_db(self.pace)))
         elif param == 'calories':
             return self.calories
         elif param == 'time':
