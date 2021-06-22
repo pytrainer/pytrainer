@@ -46,7 +46,7 @@ from pytrainer.heartrategraph import HeartRateGraph
 from pytrainer.gui.drawGraph import DrawGraph
 from pytrainer.gui.windowcalendar import WindowCalendar
 from pytrainer.lib.listview import ListSearch
-from pytrainer.lib.uc import UC
+from pytrainer.lib import uc
 from pytrainer.core.activity import Activity
 from pytrainer.lib.localization import gtk_str
 from sqlalchemy import and_
@@ -59,7 +59,7 @@ class Main(SimpleBuilderApp):
         self.parent = parent
         self.pytrainer_main = parent
         self.data_path = data_path
-        self.uc = UC()
+        self.uc = uc.UC()
         SimpleBuilderApp.__init__(self, "pytrainer.ui")
 
         self.popup = PopupMenu(data_path,self)
@@ -108,6 +108,7 @@ class Main(SimpleBuilderApp):
                     {'name':_(u"\u2300 HR"), 'xalign':1.0},
                     {'name':_("Max HR"), 'xalign':1.0},
                     {'name':_(u"\u2300 Speed"), 'xalign':1.0, 'format_float':'%.1f', 'quantity': 'speed'},
+                    {'name':_(u"\u2300 Pace"), 'xalign':1.0, 'format_pace':True},
                     {'name':_("Calories"), 'xalign':1.0}
                 ]
         self.create_treeview(self.allRecordTreeView,columns)
@@ -223,6 +224,7 @@ class Main(SimpleBuilderApp):
         savedOptions.append(("time","False"))
         savedOptions.append(("beats","False"))
         savedOptions.append(("maxbeats","False"))
+        savedOptions.append(("pace","False"))
         savedOptions.append(("calories","False"))
         menufile.createXMLFile("listviewmenu",savedOptions)
 
@@ -325,6 +327,11 @@ class Main(SimpleBuilderApp):
         _val_str = _format % float(_val)
         cell.set_property('text', _val_str)
 
+    def render_pace(self, column, cell, model, iter, idx):
+        _val = model.get_value(iter, idx)
+        _pace_str = uc.float2pace(self.uc.pace(uc.pace_from_db(_val)))
+        cell.set_property('text', _pace_str)
+
     def create_treeview(self,treeview,columns,sortable=True):
         for column_index, column_dict in enumerate(columns):
             if 'pixbuf' in column_dict:
@@ -347,6 +354,8 @@ class Main(SimpleBuilderApp):
                 column.set_cell_data_func(renderer, self.render_float, [column_dict['format_float'], column_dict['quantity'], column_index])
             if 'format_duration' in column_dict and column_dict['format_duration']:
                 column.set_cell_data_func(renderer, self.render_duration)
+            if 'format_pace' in column_dict:
+                column.set_cell_data_func(renderer, self.render_pace, column_index)
             if sortable:
                 column.set_sort_column_id(column_index)
             treeview.append_column(column)
@@ -1189,6 +1198,7 @@ class Main(SimpleBuilderApp):
             GObject.TYPE_INT,
             GObject.TYPE_INT,
             GObject.TYPE_FLOAT,
+            GObject.TYPE_FLOAT,
             GObject.TYPE_INT,
             object)
         for i in record_list:
@@ -1213,6 +1223,10 @@ class Main(SimpleBuilderApp):
                 _average = i.average
             except (ValueError, TypeError):
                 _average = 0
+            try:
+                _pace = i.pace
+            except (ValueError, TypeError):
+                _pace = None
             try:
                 _calories = i.calories
             except (ValueError, TypeError):
@@ -1240,7 +1254,8 @@ class Main(SimpleBuilderApp):
                 6, _beats,
                 7, _maxbeats,
                 8, _average,
-                9, _calories
+                9, _pace,
+                10, _calories
                 )
         #self.allRecordTreeView.set_headers_clickable(True)
         self.allRecordTreeView.set_model(store)
@@ -1334,6 +1349,7 @@ class Main(SimpleBuilderApp):
             _("Beats"):"beats",
             _("Maxbeats"):"maxbeats",
             _("Average"):"average",
+            _("Pace"):"pace",
             _("Calories"):"calories"
             }
         self.listsearch.title = gtk_str(self.lsa_searchvalue.get_text())
@@ -1368,7 +1384,8 @@ class Main(SimpleBuilderApp):
             5:"beats",
             6:"maxbeats",
             7:"average",
-            8:"calories" }
+            8:"pace",
+            9:"calories" }
 
         items = self.menulistviewOptions.get_children()
         if items[widget_position-1].get_active():
@@ -1391,7 +1408,8 @@ class Main(SimpleBuilderApp):
             "beats":6,
             "maxbeats":7,
             "average":8,
-            "calories":9 }
+            "pace":9,
+            "calories":10 }
         columns = self.allRecordTreeView.get_columns()
         menuItems = self.menulistviewOptions.get_children()
         for column in listMenus:
