@@ -1,0 +1,55 @@
+name: Test
+
+on: [push]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - database: sqlite
+            database_url: "sqlite://"
+          - database: mysql
+            database_url: "mysql://pytrainer:pytrainer@127.0.0.1/pytrainer"
+          - database: postgresql
+            database_url: "postgresql://pytrainer:pytrainer@localhost/pytrainer"
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+            MYSQL_ALLOW_EMPTY_PASSWORD: yes
+            MYSQL_DATABASE: pytrainer
+            MYSQL_USER: pytrainer
+            MYSQL_PASSWORD: pytrainer
+        ports:
+            - 3306:3306
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_USER: pytrainer
+          POSTGRES_PASSWORD: pytrainer
+        ports:
+            - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v1
+        with:
+          fetch-depth: 1
+      - name: install deps
+        run: sudo apt-get install python3-setuptools python3-gi gir1.2-gtk-3.0 python3-lxml python3-cairo python3-gi-cairo python3-matplotlib
+      - name: run tests
+        env:
+          PYTRAINER_ALCHEMYURL: ${{ matrix.database_url }}
+          TZ: Europe/Kaliningrad
+          LC_TIME: en_US.UTF-8
+        run: xvfb-run python3 -Wall setup.py test
