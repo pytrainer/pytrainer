@@ -63,7 +63,7 @@ class UC(Singleton):
 
     """ Conversion factors from metric to imperial, units as in uc_units """
     uc_factors = {'distance' : 0.621371192, 'speed': 0.621371192, 'pace':1.609344,
-                  'height': 3.2808399, 'weight': 2.204624}
+                  'height': 3.2808399, 'weight': 2.204624, 'none': 1}
 
     def __init__(self):
         if not hasattr(self, 'us'):
