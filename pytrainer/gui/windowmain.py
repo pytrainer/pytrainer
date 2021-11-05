@@ -120,7 +120,7 @@ class Main(SimpleBuilderApp):
         columns=[   {'name':_("id"), 'visible':False},
                     {'name':_("Date")},
                     {'name':_("Weight"), 'xalign':1.0, 'quantity':'weight', 'format_float':'%.1f'},
-                    {'name':_("Body Fat %"), 'xalign':1.0, 'quantity':'bodyfat', 'format_float':'%.1f'},
+                    {'name':_("Body Fat %"), 'xalign':1.0, 'quantity':'none', 'format_float':'%.1f'},
                     {'name':_("Resting HR"), 'xalign':1.0},
                     {'name':_("Max HR"), 'xalign':1.0}
                 ]
@@ -131,8 +131,8 @@ class Main(SimpleBuilderApp):
                     {'name':_("Records"), 'xalign':1.0},
                     {'name':_("Total duration"), 'xalign':1.0, 'format_duration':True},
                     {'name':_("Total distance"), 'xalign':1.0, 'format_float':'%.1f', 'quantity':'distance'},
-                    {'name':_("Avg speed"), 'format_float':'%.2f', 'quantity':'maxspeed', 'xalign':1.0},
-                    {'name':_("Max speed"), 'format_float':'%.2f', 'quantity':'maxspeed', 'xalign':1.0},
+                    {'name':_("Avg speed"), 'format_float':'%.2f', 'quantity':'speed', 'xalign':1.0},
+                    {'name':_("Max speed"), 'format_float':'%.2f', 'quantity':'speed', 'xalign':1.0},
                     {'name':_("Avg HR"), 'xalign':1.0},
                     {'name':_("Max HR"), 'xalign':1.0},
                     {'name':_("Max duration"), 'xalign':1.0, 'format_duration':True},
