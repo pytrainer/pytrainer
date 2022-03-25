@@ -5,15 +5,17 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
+    container: ubuntu:20.04
     strategy:
       matrix:
         include:
           - database: sqlite
             database_url: "sqlite://"
           - database: mysql
-            database_url: "mysql://pytrainer:pytrainer@127.0.0.1/pytrainer"
+            database_url: "mysql://pytrainer:pytrainer@mysql/pytrainer"
           - database: postgresql
-            database_url: "postgresql://pytrainer:pytrainer@localhost/pytrainer"
+            database_url: "postgresql://pytrainer:pytrainer@postgres/pytrainer"
     services:
       mysql:
         image: mysql:5.7
@@ -46,7 +48,9 @@ jobs:
         with:
           fetch-depth: 1
       - name: install deps
-        run: sudo apt-get install python3-setuptools python3-gi gir1.2-gtk-3.0 python3-lxml python3-cairo python3-gi-cairo python3-matplotlib
+        run: |
+          apt-get update
+          DEBIAN_FRONTEND=noninteractive apt-get install -y xvfb python3-pip python3-setuptools python3-gi gir1.2-gtk-3.0 python3-lxml python3-cairo python3-gi-cairo python3-matplotlib python3-psycopg2 python3-mysqldb locales-all
       - name: run tests
         env:
           PYTRAINER_ALCHEMYURL: ${{ matrix.database_url }}
