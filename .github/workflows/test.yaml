@@ -18,12 +18,12 @@ jobs:
       mysql:
         image: mysql:5.7
         env:
-            MYSQL_ALLOW_EMPTY_PASSWORD: yes
-            MYSQL_DATABASE: pytrainer
-            MYSQL_USER: pytrainer
-            MYSQL_PASSWORD: pytrainer
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: pytrainer
+          MYSQL_USER: pytrainer
+          MYSQL_PASSWORD: pytrainer
         ports:
-            - 3306:3306
+          - 3306:3306
         options: >-
           --health-cmd "mysqladmin ping"
           --health-interval 10s
@@ -35,7 +35,7 @@ jobs:
           POSTGRES_USER: pytrainer
           POSTGRES_PASSWORD: pytrainer
         ports:
-            - 5432:5432
+          - 5432:5432
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
