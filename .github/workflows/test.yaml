@@ -5,7 +5,7 @@ on: [push, pull_request]
 jobs:
   test:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 15
     container: ubuntu:20.04
     strategy:
       matrix:
@@ -48,10 +48,12 @@ jobs:
         with:
           fetch-depth: 1
       - name: install deps
+        timeout-minutes: 5
         run: |
           apt-get update
           DEBIAN_FRONTEND=noninteractive apt-get install -y xvfb python3-pip python3-setuptools python3-gi gir1.2-gtk-3.0 python3-lxml python3-cairo python3-gi-cairo python3-matplotlib python3-psycopg2 python3-mysqldb locales-all
       - name: run tests
+        timeout-minutes: 5
         env:
           PYTRAINER_ALCHEMYURL: ${{ matrix.database_url }}
           TZ: Europe/Kaliningrad
