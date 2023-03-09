@@ -25,6 +25,6 @@
   <update_contact>avtobiff@foo.nu</update_contact>
   <developer_name>pytrainer developers</developer_name>
   <url type="bugtracker">https://github.com/pytrainer/pytrainer/issues</url>
-  <url type="help">ircs://irc.freenode.net:6697/pytrainer</url>
+  <url type="help">ircs://irc.oftc.net:6697/pytrainer</url>
   <url type="translate">https://github.com/pytrainer/pytrainer/wiki/Localization-guide</url>
 </component>
