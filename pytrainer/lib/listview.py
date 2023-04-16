@@ -110,7 +110,7 @@ class ListSearch(object):
     
     def setup_lsa_sport(self):
         liststore_lsa =  self.parent.lsa_sport.get_model() 
-        if self.parent.lsa_sport.get_active() is not 0:
+        if self.parent.lsa_sport.get_active() != 0:
             self.parent.lsa_sport.set_active(0) #Set first item active if isnt
         firstEntry = gtk_str(self.parent.lsa_sport.get_active_text())
         liststore_lsa.clear() #Delete all items
