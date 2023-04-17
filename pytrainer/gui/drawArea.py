@@ -274,7 +274,7 @@ class DrawArea:
                         height = self.NEARLY_ZERO
                     yheights[index] = height
                     textToAdd = self.fmtTableText(height, valuesAreTime[1])
-                    if textToAdd is not ' ':
+                    if textToAdd != ' ':
                         row = keys.index(key)
                         col = index
                         cellText[row][col] += " | %s" % (self.fmtTableText(height, valuesAreTime[1]))

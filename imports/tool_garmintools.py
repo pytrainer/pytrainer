@@ -51,7 +51,7 @@ class garmintools():
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         stdout, stderr = process.communicate()
-        if (process.returncode is not 0
+        if (process.returncode != 0
             or
             stdout.startswith("garmin unit could not be opened")):
             return False
