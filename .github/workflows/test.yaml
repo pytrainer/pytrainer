@@ -57,5 +57,5 @@ jobs:
         env:
           PYTRAINER_ALCHEMYURL: ${{ matrix.database_url }}
           TZ: Europe/Kaliningrad
-          LC_TIME: en_US.UTF-8
+          LC_TIME: C
         run: xvfb-run python3 -Wall setup.py test
