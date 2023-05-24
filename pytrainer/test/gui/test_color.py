@@ -16,23 +16,30 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from pytrainer.gui.color import ColorConverter
-from pytrainer.util.color import Color
-from gi.repository import Gdk
 import unittest
 
+try:
+    from gi.repository import Gdk
+    GDK_AVAILABLE = True
+except ImportError:
+    GDK_AVAILABLE = False
+
+
+@unittest.skipUnless(GDK_AVAILABLE, 'GDK library not available')
 class ColorConverterTest(unittest.TestCase):
-    
+
     def setUp(self):
+        from pytrainer.gui.color import ColorConverter
         self._converter = ColorConverter()
-    
+
     def test_convert_to_gdk_color_should_create_gdk_color_with_equivalent_rgb_values(self):
+        from pytrainer.util.color import Color
         color = Color(0xaaff33)
         gdk_color = self._converter.convert_to_gdk_color(color)
         self.assertEqual(0x3333, gdk_color.blue)
         self.assertEqual(0xffff, gdk_color.green)
         self.assertEqual(0xaaaa, gdk_color.red)
-        
+
     def test_convert_to_color_should_create_color_with_equivalent_rgb_values(self):
         gdk_col = Gdk.color_parse("#aaff33")
         color = self._converter.convert_to_color(gdk_col)
