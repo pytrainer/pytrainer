@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
-from unittest import TestCase
+import unittest
 try:
     from unittest.mock import Mock
 except ImportError:
     from mock import Mock
+
+try:
+    from gi.repository import Gtk
+    GTK_AVAILABLE = True
+except ImportError:
+    GTK_AVAILABLE = False
+
 from pytrainer.core.equipment import Equipment, EquipmentService
-from pytrainer.gui.equipment import EquipmentUi
 from pytrainer.lib.ddbb import DDBB
 from pytrainer.lib.localization import initialize_gettext
 
@@ -26,7 +32,9 @@ from pytrainer.lib.localization import initialize_gettext
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-class EquipmentStoreTest(TestCase):
+
+@unittest.skipUnless(GTK_AVAILABLE, 'GTK library not available')
+class EquipmentStoreTest(unittest.TestCase):
 
     def get_equipment_store(self):
         from pytrainer.gui.equipment import EquipmentStore
@@ -165,10 +173,13 @@ class EquipmentStoreTest(TestCase):
         iter = equipment_store.get_iter_first()
         iter = equipment_store.iter_next(iter)
         self.assertEqual(2, equipment_store.get_value(iter, 0))
-        
-class EquipmentUiTest(TestCase):
+
+
+@unittest.skipUnless(GTK_AVAILABLE, 'GTK library not available')
+class EquipmentUiTest(unittest.TestCase):
 
     def setUp(self):
+        from pytrainer.gui.equipment import EquipmentUi
         initialize_gettext('locale/')
         self.ddbb = DDBB()
         self.ddbb.connect()
