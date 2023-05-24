@@ -3,7 +3,6 @@ import datetime
 
 from sqlalchemy.orm.session import make_transient
 
-from gi.repository import Gtk
 from unittest import TestCase
 try:
     from unittest.mock import Mock
