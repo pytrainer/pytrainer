@@ -24,7 +24,6 @@ from dateutil.tz import tzlocal
 
 from pytrainer.lib.date import second2time
 from pytrainer.lib.gpx import Gpx
-from pytrainer.lib.graphdata import GraphData
 from pytrainer.environment import Environment
 from pytrainer.lib import uc
 from pytrainer.profile import Profile
@@ -440,6 +439,7 @@ tracks (%s)
         return self.sport.name
 
     def _generate_per_lap_graphs(self):
+        from pytrainer.lib.graphdata import GraphData
         '''Build lap based graphs...'''
         logging.debug(">>")
         if self.laps is None:
@@ -499,6 +499,7 @@ tracks (%s)
         logging.debug("<<")
 
     def _init_graph_data(self):
+        from pytrainer.lib.graphdata import GraphData
         logging.debug(">>")
         if self.tracklist is None:
             logging.debug("No tracklist in activity")

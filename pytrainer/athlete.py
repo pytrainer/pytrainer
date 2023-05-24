@@ -22,7 +22,6 @@ import dateutil
 
 from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger
 from sqlalchemy import Column, Float, Date, Integer
-from pytrainer.lib.graphdata import GraphData
 from pytrainer.lib.uc import UC
 
 class Athletestat(DeclarativeBase):
@@ -65,6 +64,7 @@ class Athlete:
         return ret
 
     def get_athlete_data(self):
+        from pytrainer.lib.graphdata import GraphData
         logging.debug('>>')
         graphdata = {}
         graphdata['weight'] = GraphData(title="Weight", xlabel="Date", ylabel="Weight (%s)" % (self.uc.unit_weight))
