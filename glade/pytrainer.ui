@@ -3190,9 +3190,6 @@
                                                     <property name="label" translatable="yes">&lt;b&gt;Projected times&lt;/b&gt;</property>
                                                     <property name="use_markup">True</property>
                                                   </object>
-                                                  <packing>
-                                                    <property name="padding">10</property>
-                                                  </packing>
                                                 </child>
                                               </object>
                                               <packing>
@@ -3448,11 +3445,6 @@
                                           </packing>
                                         </child>
                                       </object>
-                                      <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">False</property>
-                                        <property name="position">0</property>
-                                      </packing>
                                     </child>
                                     <child type="label">
                                       <object class="GtkLabel" id="label14anal">
