@@ -81,10 +81,10 @@ class garminfit():
         result = False
         try:
             result = subprocess.check_output(["perl",
-                                              self.main_data_path+"plugins/garmin-fit/bin/fit2tcx",
+                                              self.main_data_path+"plugins/garmin-fit/bin/fit2tcx.pl",
                                               filename])
         except subprocess.CalledProcessError:
-            logging.exception("fit2tcx failed")
+            logging.exception("fit2tcx.pl failed")
         logging.debug("<<")
         return result
 
