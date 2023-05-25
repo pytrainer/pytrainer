@@ -1,11 +1,17 @@
 # -*- coding: utf-8 -*-
-from unittest import TestCase
+import unittest
 try:
     from unittest.mock import Mock
 except ImportError:
     from mock import Mock
+
+try:
+    from gi.repository import Gtk
+    GTK_AVAILABLE = True
+except ImportError:
+    GTK_AVAILABLE = False
+
 from pytrainer.core.equipment import Equipment, EquipmentService
-from pytrainer.gui.equipment import EquipmentStore, EquipmentUi
 from pytrainer.lib.ddbb import DDBB
 from pytrainer.lib.localization import initialize_gettext
 
@@ -26,20 +32,23 @@ from pytrainer.lib.localization import initialize_gettext
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-class EquipmentStoreTest(TestCase):
-    
+
+@unittest.skipUnless(GTK_AVAILABLE, 'GTK library not available')
+class EquipmentStoreTest(unittest.TestCase):
+
+    def get_equipment_store(self):
+        from pytrainer.gui.equipment import EquipmentStore
+        return EquipmentStore(self.mock_equipment_service)
+
     def setUp(self):
         self.mock_equipment_service = Mock(spec=EquipmentService)
         self.mock_equipment_service.get_equipment_usage.return_value = 0
-    
-    def tearDown(self):
-        pass
-        
+
     def test_get_item_id(self):
         equipment = Equipment()
         equipment.id = 1
         self.mock_equipment_service.get_all_equipment.return_value = [equipment]
-        equipment_store = EquipmentStore(self.mock_equipment_service)
+        equipment_store = self.get_equipment_store()
         iter = equipment_store.get_iter_first()
         self.assertEqual(1, equipment_store.get_value(iter, 0))
         
@@ -48,7 +57,7 @@ class EquipmentStoreTest(TestCase):
         equipment.id = 1
         equipment.description = u"item description"
         self.mock_equipment_service.get_all_equipment.return_value = [equipment]
-        equipment_store = EquipmentStore(self.mock_equipment_service)
+        equipment_store = self.get_equipment_store()
         iter = equipment_store.get_iter_first()
         self.assertEqual("item description", equipment_store.get_value(iter, 1))
         
@@ -58,7 +67,7 @@ class EquipmentStoreTest(TestCase):
         equipment.life_expectancy = 200
         self.mock_equipment_service.get_all_equipment.return_value = [equipment]
         self.mock_equipment_service.get_equipment_usage.return_value = 100
-        equipment_store = EquipmentStore(self.mock_equipment_service)
+        equipment_store = self.get_equipment_store()
         iter = equipment_store.get_iter_first()
         self.assertEqual(50, equipment_store.get_value(iter, 2))
         
@@ -69,7 +78,7 @@ class EquipmentStoreTest(TestCase):
         equipment.prior_usage = 50
         self.mock_equipment_service.get_all_equipment.return_value = [equipment]
         self.mock_equipment_service.get_equipment_usage.return_value = 100
-        equipment_store = EquipmentStore(self.mock_equipment_service)
+        equipment_store = self.get_equipment_store()
         iter = equipment_store.get_iter_first()
         self.assertEqual(75, equipment_store.get_value(iter, 2))
         
@@ -79,7 +88,7 @@ class EquipmentStoreTest(TestCase):
         equipment.life_expectancy = 200
         self.mock_equipment_service.get_all_equipment.return_value = [equipment]
         self.mock_equipment_service.get_equipment_usage.return_value = 0
-        equipment_store = EquipmentStore(self.mock_equipment_service)
+        equipment_store = self.get_equipment_store()
         iter = equipment_store.get_iter_first()
         self.assertEqual(0, equipment_store.get_value(iter, 2))
         
@@ -89,7 +98,7 @@ class EquipmentStoreTest(TestCase):
         equipment.life_expectancy = 200
         self.mock_equipment_service.get_all_equipment.return_value = [equipment]
         self.mock_equipment_service.get_equipment_usage.return_value = 300
-        equipment_store = EquipmentStore(self.mock_equipment_service)
+        equipment_store = self.get_equipment_store()
         iter = equipment_store.get_iter_first()
         self.assertEqual(100, equipment_store.get_value(iter, 2), "Progress bar cannot exceed 100%.")
         
@@ -100,7 +109,7 @@ class EquipmentStoreTest(TestCase):
         equipment.life_expectancy = 200
         self.mock_equipment_service.get_all_equipment.return_value = [equipment]
         self.mock_equipment_service.get_equipment_usage.return_value = 100
-        equipment_store = EquipmentStore(self.mock_equipment_service)
+        equipment_store = self.get_equipment_store()
         iter = equipment_store.get_iter_first()
         self.assertEqual("100 / 200", equipment_store.get_value(iter, 3))
         
@@ -110,7 +119,7 @@ class EquipmentStoreTest(TestCase):
         equipment.life_expectancy = 200
         self.mock_equipment_service.get_all_equipment.return_value = [equipment]
         self.mock_equipment_service.get_equipment_usage.return_value = 100.6
-        equipment_store = EquipmentStore(self.mock_equipment_service)
+        equipment_store = self.get_equipment_store()
         iter = equipment_store.get_iter_first()
         self.assertEqual("101 / 200", equipment_store.get_value(iter, 3))
         
@@ -121,7 +130,7 @@ class EquipmentStoreTest(TestCase):
         equipment.prior_usage = 50
         self.mock_equipment_service.get_all_equipment.return_value = [equipment]
         self.mock_equipment_service.get_equipment_usage.return_value = 100
-        equipment_store = EquipmentStore(self.mock_equipment_service)
+        equipment_store = self.get_equipment_store()
         iter = equipment_store.get_iter_first()
         self.assertEqual("150 / 200", equipment_store.get_value(iter, 3))
         
@@ -131,7 +140,7 @@ class EquipmentStoreTest(TestCase):
         equipment.life_expectancy = 200
         self.mock_equipment_service.get_all_equipment.return_value = [equipment]
         self.mock_equipment_service.get_equipment_usage.return_value = 0
-        equipment_store = EquipmentStore(self.mock_equipment_service)
+        equipment_store = self.get_equipment_store()
         iter = equipment_store.get_iter_first()
         self.assertEqual("0 / 200", equipment_store.get_value(iter, 3))
         
@@ -141,7 +150,7 @@ class EquipmentStoreTest(TestCase):
         equipment.life_expectancy = 200
         self.mock_equipment_service.get_all_equipment.return_value = [equipment]
         self.mock_equipment_service.get_equipment_usage.return_value = 300
-        equipment_store = EquipmentStore(self.mock_equipment_service)
+        equipment_store = self.get_equipment_store()
         iter = equipment_store.get_iter_first()
         self.assertEqual("300 / 200", equipment_store.get_value(iter, 3))
         
@@ -150,7 +159,7 @@ class EquipmentStoreTest(TestCase):
         equipment.id = 1
         equipment.active = False
         self.mock_equipment_service.get_all_equipment.return_value = [equipment]
-        equipment_store = EquipmentStore(self.mock_equipment_service)
+        equipment_store = self.get_equipment_store()
         iter = equipment_store.get_iter_first()
         self.assertFalse(equipment_store.get_value(iter, 4))
     
@@ -160,14 +169,17 @@ class EquipmentStoreTest(TestCase):
         equipment2 = Equipment()
         equipment2.id = 2
         self.mock_equipment_service.get_all_equipment.return_value = [equipment1, equipment2]
-        equipment_store = EquipmentStore(self.mock_equipment_service)
+        equipment_store = self.get_equipment_store()
         iter = equipment_store.get_iter_first()
         iter = equipment_store.iter_next(iter)
         self.assertEqual(2, equipment_store.get_value(iter, 0))
-        
-class EquipmentUiTest(TestCase):
+
+
+@unittest.skipUnless(GTK_AVAILABLE, 'GTK library not available')
+class EquipmentUiTest(unittest.TestCase):
 
     def setUp(self):
+        from pytrainer.gui.equipment import EquipmentUi
         initialize_gettext('locale/')
         self.ddbb = DDBB()
         self.ddbb.connect()

@@ -23,7 +23,14 @@ try:
 except ImportError:
     import mock
 
+try:
+    import MySQLdb
+    MYSQL_AVAILABLE = True
+except ImportError:
+    MYSQL_AVAILABLE = False
+
 from pytrainer.lib.ddbb import DDBB
+
 
 class DDBBTest(unittest.TestCase):
 
@@ -44,6 +51,7 @@ class DDBBTest(unittest.TestCase):
         self.ddbb = DDBB(url='sqlite:///test_url')
         self.assertEqual(self.ddbb.url, 'sqlite:///test_url')
 
+    @unittest.skipUnless(MYSQL_AVAILABLE, 'MySQLdb library not available')
     def test_mysql_url(self):
         self.ddbb = DDBB(url='mysql://pytrainer@localhost/pytrainer')
         self.assertEqual(self.ddbb.url, 'mysql://pytrainer@localhost/pytrainer?charset=utf8')
@@ -54,6 +62,7 @@ class DDBBTest(unittest.TestCase):
         self.assertEqual(self.ddbb.url, 'sqlite:///envtest')
 
     @mock.patch.dict('os.environ', {'PYTRAINER_ALCHEMYURL': 'mysql://pytrainer@localhost/pytrainer'})
+    @unittest.skipUnless(MYSQL_AVAILABLE, 'MySQLdb library not available')
     def test_env_mysql_url(self):
         self.ddbb = DDBB()
         self.assertEqual(self.ddbb.url, 'mysql://pytrainer@localhost/pytrainer?charset=utf8')

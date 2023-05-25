@@ -3,8 +3,7 @@ import datetime
 
 from sqlalchemy.orm.session import make_transient
 
-from gi.repository import Gtk
-from unittest import TestCase
+import unittest
 try:
     from unittest.mock import Mock
 except ImportError:
@@ -18,8 +17,11 @@ from pytrainer.record import Record
 from pytrainer.core.activity import Activity
 initialize_gettext('locale/')
 
-from pytrainer.gui.windowmain import Main
-from pytrainer.lib.listview import ListSearch
+try:
+    from pytrainer.gui.windowmain import Main
+    GUI_AVAILABLE = True
+except ImportError:
+    GUI_AVAILABLE = False
 from pytrainer.lib.uc import UC
 
 #Copyright (C) Arto Jantunen <viiru@iki.fi>
@@ -38,7 +40,9 @@ from pytrainer.lib.uc import UC
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-class ListviewTest(TestCase):
+
+@unittest.skipUnless(GUI_AVAILABLE, 'Gui libraries not available')
+class ListviewTest(unittest.TestCase):
 
     def setUp(self):
         env = Environment()
