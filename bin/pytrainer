@@ -40,7 +40,6 @@ def _max(one, two):
             return one
         else:
             return two
-    
 
     one_v_nos = one_v.split('.')
     two_v_nos = two_v.split('.')
@@ -59,34 +58,41 @@ def _max(one, two):
     return two
 
 
-bin_path = os.path.realpath(os.path.dirname(__file__)) # directory that the pytrainer script executes from e.g. /usr/bin or /usr/local/bin
-base_path = os.path.dirname(bin_path)
-#Get the version of the running python interpreter
-ver = platform.python_version_tuple()
+def _get_installation_paths(orig_path):
+    base_path = os.path.dirname(bin_path)
+    # Get the version of the running python interpreter
+    ver = platform.python_version_tuple()
 
-if (os.path.exists(base_path + "/INSTALL") 
-    and os.path.exists(base_path + "/setup.py") 
-    and os.path.exists(base_path + "/pytrainer/main.py")
-    and os.path.exists(base_path + "/locale")):
-    print("running pytrainer from source path")
-    data_path = base_path + "/"
-    site_path = base_path
-    gettext_path = base_path + "/locale"
-else:
-    print("running pytrainer from egg installation")
-    parts = os.path.split(base_path)
-    if parts[1] == 'EGG-INFO':
-        base_path = parts[0]
-    data_path = base_path + "/share/pytrainer/"
-    site_path =  "%s/lib/python%s.%s/site-packages" % (base_path, ver[0], ver[1])
-    gettext_path = base_path + "/share/locale"
+    if (os.path.exists(base_path + "/INSTALL")
+        and os.path.exists(base_path + "/setup.py")
+        and os.path.exists(base_path + "/pytrainer/main.py")
+        and os.path.exists(base_path + "/locale")):
+        print("running pytrainer from source path")
+        data_path = base_path + "/"
+        site_path = base_path
+        gettext_path = base_path + "/locale"
+    else:
+        print("running pytrainer from egg installation")
+        parts = os.path.split(base_path)
+        if parts[1] == 'EGG-INFO':
+            base_path = parts[0]
+        data_path = base_path + "/share/pytrainer/"
+        site_path = "%s/lib/python%s.%s/site-packages" % (base_path, ver[0], ver[1])
+        gettext_path = base_path + "/share/locale"
+    return data_path, gettext_path, site_path
 
-print("data_path: " + data_path)
-print("gettext_path: " + gettext_path)
-print("site_path: " + site_path)
 
-#ensure pytrainer directory is included in import path
+# directory that the pytrainer script executes from e.g. /usr/bin or /usr/local/bin
+bin_path = os.path.realpath(os.path.dirname(__file__))
+data_path, gettext_path, site_path = _get_installation_paths(bin_path)
+
+print("data_path:", data_path)
+print("gettext_path:", gettext_path)
+print("site_path:", site_path)
+
+# ensure pytrainer directory is included in import path
 sys.path.insert(0, site_path)
+
 
 def main():
     import pytrainer.lib.localization
@@ -94,6 +100,6 @@ def main():
     from pytrainer.main import pyTrainer
     pytrainer = pyTrainer(None, data_path)
 
-if __name__ == "__main__":
-        main()
 
+if __name__ == "__main__":
+    main()
