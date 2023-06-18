@@ -49,19 +49,20 @@ from .lib.ddbb import DDBB
 from .lib.uc import UC
 
 class pyTrainer:
-    def __init__(self,filename = None, data_path = None):
+
+    def __init__(self):
         # Based on Django's approach -> http://code.djangoproject.com/svn/django/trunk/django/__init__.py
         self.version = __import__('pytrainer').get_version()
         #Process command line options
         self.startup_options = self.get_options()
         #Setup logging
-        self.environment = Environment(self.startup_options.conf_dir, data_path)
+        self.environment = Environment(self.startup_options.conf_dir)
         self.environment.create_directories()
         self.environment.clear_temp_dir()
         self.set_logging(self.startup_options.log_level, self.startup_options.log_type)
         logging.debug('>>')
         logging.info("pytrainer version %s" % (self.version))
-        self.data_path = data_path
+        self.data_path = self.environment.data_path
 
         # Checking profile
         logging.debug('Checking configuration and profile...')
@@ -81,9 +82,9 @@ class pyTrainer:
         logging.debug('Loading sport service...')
         self._sport_service = SportService(self.ddbb)
         logging.debug('Loading record service...')
-        self.record = Record(self._sport_service, data_path, self)
+        self.record = Record(self._sport_service, self.environment.data_path, self)
         logging.debug('Loading athlete service...')
-        self.athlete = Athlete(data_path, self)
+        self.athlete = Athlete(self.environment.data_path, self)
         logging.debug('Loading stats service...')
         self.stats = Stats(self)
         logging.debug('Initializing activity pool...')
@@ -93,18 +94,18 @@ class pyTrainer:
         #Loading main window
         self.windowmain = None
         logging.debug('Loading main window...')
-        self.windowmain = Main(self._sport_service, data_path,self,self.version, gpxDir=self.profile.gpxdir)
+        self.windowmain = Main(self._sport_service, self.environment.data_path, self, self.version, gpxDir=self.profile.gpxdir)
 
         # Select initial date depending on user's preference
         self.selectInitialDate()
         
         logging.debug('Loading waypoint service...')
-        self.waypoint = WaypointService(data_path, self)
+        self.waypoint = WaypointService(self.environment.data_path, self)
         logging.debug('Loading extension service...')
-        self.extension = Extension(data_path, self)
+        self.extension = Extension(self.environment.data_path, self)
         logging.debug('Loading plugins service...')
-        self.plugins = Plugins(data_path, self)
-        self.importdata = Importdata(self._sport_service, data_path, self, self.profile)
+        self.plugins = Plugins(self.environment.data_path, self)
+        self.importdata = Importdata(self._sport_service, self.environment.data_path, self, self.profile)
         logging.debug('Loading plugins...')
         self.loadPlugins()
         logging.debug('Loading extensions...')

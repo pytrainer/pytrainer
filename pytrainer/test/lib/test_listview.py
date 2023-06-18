@@ -46,7 +46,6 @@ class ListviewTest(unittest.TestCase):
 
     def setUp(self):
         env = Environment()
-        env.data_path = os.curdir
         env.create_directories()
         self.main = Mock()
         self.main.ddbb = DDBB()
