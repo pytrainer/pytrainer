@@ -16,7 +16,31 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from .gui.windowimportdata import WindowImportdata
+import glob
+import logging
+import os
+import sys
+
+from pytrainer.environment import Environment
+
+
+def import_plugin_class(environment, parent, import_file):
+    directory, filename = os.path.split(import_file)
+    filename = filename.rstrip('.py')
+    logging.debug("Trying: %s", filename)
+    classname = filename.lstrip('file_')
+    # Import module
+    module = __import__(filename)
+    import_class = getattr(module, classname)
+    # Instantiate module
+    return import_class(parent, environment.data_path)
+
+
+def iterate_import_tools(parent):
+    environment = Environment()
+    sys.path.insert(0, os.path.join(environment.data_path, "imports"))
+    for import_file in sorted(glob.iglob(os.path.join(environment.data_path, "imports/file_*.py"))):
+        yield import_plugin_class(environment, parent, import_file)
 
 
 class Importdata:
@@ -28,5 +52,6 @@ class Importdata:
         self.configuration = config
 
     def runImportdata(self):
+        from .gui.windowimportdata import WindowImportdata
         windowImportdata = WindowImportdata(self._sport_service, self.data_path, self, self.configuration, self.pytrainer_main)
         windowImportdata.run()
