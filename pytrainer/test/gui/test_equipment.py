@@ -185,7 +185,7 @@ class EquipmentUiTest(unittest.TestCase):
         self.ddbb.connect()
         self.ddbb.create_tables()
         self.equipment_service = EquipmentService(self.ddbb)
-        self.equipment_ui = EquipmentUi('glade/', self.equipment_service)
+        self.equipment_ui = EquipmentUi(self.equipment_service)
 
     def tearDown(self):
         self.ddbb.disconnect()

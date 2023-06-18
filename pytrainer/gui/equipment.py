@@ -16,9 +16,13 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+import os
+
 from gi.repository import Gtk
 from pytrainer.core.equipment import Equipment
 from pytrainer.lib.localization import gtk_str
+from pytrainer.environment import Environment
+
 
 class EquipmentStore(Gtk.ListStore):
     
@@ -76,13 +80,15 @@ class EquipmentStore(Gtk.ListStore):
         self._equipment_service.remove_equipment(item)
         self.remove(self.get_iter(item_path))
 
+
 class EquipmentUi(Gtk.HBox):
-    
-    def __init__(self, glade_conf_dir, equipment_service):
+
+    def __init__(self, equipment_service):
         super(EquipmentUi, self).__init__()
+        environment = Environment()
         self._equipment_store = EquipmentStore(equipment_service)
         self._builder = Gtk.Builder()
-        self._builder.add_from_file(glade_conf_dir + "/equipment.ui")
+        self._builder.add_from_file(os.path.join(environment.glade_dir, "equipment.ui"))
         self._init_tree_view()
         self._init_signals()
         self.add(self._get_notebook())
