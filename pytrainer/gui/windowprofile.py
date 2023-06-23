@@ -75,12 +75,12 @@ class WindowProfile(SimpleBuilderApp):
             column.set_resizable(True)
             self.sportTreeView.append_column(column)
 
-        #initialise equipment tab:
+        # initialise equipment tab:
         equipment_service = EquipmentService(self.pytrainer_main.ddbb)
-        equipment_ui = EquipmentUi(self.data_path + "/glade", equipment_service)
-        self.equipment_container.add(equipment_ui) 
-        logging.debug("<<")           
-        
+        equipment_ui = EquipmentUi(equipment_service)
+        self.equipment_container.add(equipment_ui)
+        logging.debug("<<")
+
     def present(self):
         self.newprofile.present()
         

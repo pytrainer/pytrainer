@@ -10,10 +10,14 @@ try:
 except ImportError:
     from mock import Mock
 import os
+import sys
 from lxml import etree
-from imports.file_garmintcxv2 import garmintcxv2
+
 from pytrainer.lib.ddbb import DDBB
+from pytrainer.environment import Environment
 from pytrainer.core.activity import Activity
+from pytrainer.importdata import import_plugin_class
+
 
 class GarminTCXv2Test(unittest.TestCase):
 
@@ -21,9 +25,11 @@ class GarminTCXv2Test(unittest.TestCase):
         self.ddbb = DDBB()
         self.ddbb.connect()
         self.ddbb.create_tables(add_default=True)
+        self.environment = Environment()
         self.parent = Mock()
         self.parent.parent = Mock()
         self.parent.parent.ddbb = self.ddbb
+        sys.path.insert(0, os.path.join(self.environment.data_path, "imports"))
 
     def tearDown(self):
         self.ddbb.disconnect()
@@ -32,9 +38,8 @@ class GarminTCXv2Test(unittest.TestCase):
     def test_valid_file(self):
         try:
             current_path = os.path.dirname(os.path.abspath(__file__))
-            data_path = os.path.dirname(os.path.dirname(os.path.dirname(current_path))) + "/"
             tcx_file = current_path + "/sample.tcx"
-            garmin_tcxv2 = garmintcxv2(None, data_path)
+            garmin_tcxv2 = import_plugin_class(self.environment, self.parent, "file_garmintcxv2.py")
             xmldoc = etree.parse(tcx_file)
             valid_xml = garmin_tcxv2.validate(xmldoc, "schemas/GarminTrainingCenterDatabase_v2.xsd")
             self.assertTrue(valid_xml)
@@ -45,9 +50,8 @@ class GarminTCXv2Test(unittest.TestCase):
         summary = [(0, False, '2012-10-14T12:02:42', '10.12', '00:39:51', 'Running')]
         try:
             current_path = os.path.dirname(os.path.abspath(__file__))
-            data_path = os.path.dirname(os.path.dirname(os.path.dirname(current_path))) + "/"
             tcx_file = current_path + "/sample.tcx"
-            garmin_tcxv2 = garmintcxv2(self.parent, data_path)
+            garmin_tcxv2 = import_plugin_class(self.environment, self.parent, "file_garmintcxv2.py")
             garmin_tcxv2.xmldoc = etree.parse(tcx_file)
             garmin_tcxv2.buildActivitiesSummary()
             self.assertEqual(summary, garmin_tcxv2.activitiesSummary)
@@ -60,9 +64,8 @@ class GarminTCXv2Test(unittest.TestCase):
         self.ddbb.session.add(activity)
         self.ddbb.session.commit()
         current_path = os.path.dirname(os.path.abspath(__file__))
-        data_path = os.path.dirname(os.path.dirname(os.path.dirname(current_path))) + "/"
         tcx_file = current_path + "/sample.tcx"
-        garmin_tcxv2 = garmintcxv2(self.parent, data_path)
+        garmin_tcxv2 = import_plugin_class(self.environment, self.parent, "file_garmintcxv2.py")
         garmin_tcxv2.xmldoc = etree.parse(tcx_file)
         garmin_tcxv2.buildActivitiesSummary()
         self.assertEqual(summary, garmin_tcxv2.activitiesSummary)
