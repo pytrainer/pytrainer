@@ -21,7 +21,6 @@
 
 import logging
 import os
-import warnings
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -86,15 +85,6 @@ if no url is provided"""
 
     def disconnect(self):
         self.session.close()
-
-    def select(self,table,cells,condition=None, mod=None):
-        warnings.warn("Deprecated call to ddbb.select", DeprecationWarning, stacklevel=2)
-        sql = "select %s from %s" %(cells,table)
-        if condition is not None:
-            sql = "%s where %s" % (sql, condition)
-        if mod is not None:
-            sql = "%s %s" % (sql, mod)
-        return list(self.session.execute(sql))
 
     def create_tables(self, add_default=True):
         """Initialise the database schema from an empty database."""
