@@ -365,8 +365,18 @@ class EquipmentServiceTest(unittest.TestCase):
                                                 "notes": u"Test notes.",
                                            "description": u"test item",
                                            "prior_usage": 0, "active": True})
-        self.mock_ddbb.session.execute("insert into records (distance,sport) values (250,1)")
-        self.mock_ddbb.session.execute("insert into record_equipment (record_id,equipment_id) values (1,1)")
+        record_table = DeclarativeBase.metadata.tables['records']
+        record_to_equipment = DeclarativeBase.metadata.tables['record_equipment']
+        self.mock_ddbb.session.execute(record_table.insert(),
+                                       {
+                                           "sport": 1,
+                                           "distance": 250,
+                                       })
+        self.mock_ddbb.session.execute(record_to_equipment.insert(),
+                                       {
+                                           "record_id": 1,
+                                           "equipment_id": 1,
+                                       })
         equipment = self.equipment_service.get_equipment_item(1)
         usage = self.equipment_service.get_equipment_usage(equipment)
         self.assertEqual(250, usage)
