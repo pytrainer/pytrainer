@@ -108,7 +108,9 @@ class ActivityService(object):
         else:
             logging.debug("Activity NOT found in pool")
             self.pool[sid] = self.pytrainer_main.ddbb.session.query(Activity).options(
-                joinedload('sport'), joinedload('equipment'), joinedload('Laps')
+                joinedload(Activity.sport),
+                joinedload(Activity.equipment),
+                joinedload(Activity.Laps)
             ).filter(Activity.id == id).one()
             self.pool_queue.append(sid)
         if len(self.pool_queue) > self.max_size:
@@ -137,9 +139,9 @@ class ActivityService(object):
     def get_activities_for_day(self, date, sport=None):
         """Iterates the activities for a specific date, optionally restricted by Sport)"""
         if not sport:
-            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date == date).options(joinedload('Laps'))
+            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date == date).options(joinedload(Activity.Laps))
         else:
-            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.date == date, Activity.sport == sport)).options(joinedload('Laps'))
+            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.date == date, Activity.sport == sport)).options(joinedload(Activity.Laps))
         for activity in activities:
             sid = str(activity.id)
             if sid in self.pool:
