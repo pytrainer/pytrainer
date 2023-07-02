@@ -34,9 +34,6 @@ setup( 	name = "pytrainer",
 			'pytrainer.lib',
 			'pytrainer.upgrade'
 			],
-	package_data={
-		'pytrainer.upgrade': ['migrate.cfg', 'versions/*.sql', 'versions/*.py']
-	},
 	data_files=[
 		('share/pytrainer/glade/',glob("glade/*.ui")),
 		('share/pytrainer/glade/',glob("glade/*.png")),
@@ -77,8 +74,7 @@ setup( 	name = "pytrainer",
 		('share/applications/',['pytrainer.desktop'])
 		],
 	scripts=['bin/pytrainer'],
-	install_requires=['sqlalchemy-migrate',
-			'SQLAlchemy<2.0',
+	install_requires=['SQLAlchemy<2.0',
 			'python-dateutil',
 			'matplotlib',
 			'lxml'],

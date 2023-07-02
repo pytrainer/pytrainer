@@ -26,7 +26,6 @@ libxslt >= 1.1.26
 libxslt-python >= 1.1.26
 sqlite >= 3.2.0 (sqlite is preferred to mysql as database, MySQL-python has been reported to be installed if so)
 sqlalchemy >= 0.6.4
-sqlalchemy-migrate >= 0.5.4
 zenity >= 2.30
 
 - Only needed if correspondent plugin or extension is enabled:
