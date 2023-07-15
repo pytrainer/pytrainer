@@ -74,7 +74,7 @@ setup( 	name = "pytrainer",
 		('share/applications/',['pytrainer.desktop'])
 		],
 	scripts=['bin/pytrainer'],
-	install_requires=['SQLAlchemy<2.0',
+	install_requires=['SQLAlchemy',
 			'python-dateutil',
 			'matplotlib',
 			'lxml'],

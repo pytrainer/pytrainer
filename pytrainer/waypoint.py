@@ -18,8 +18,9 @@
 
 import logging
 from pytrainer.lib.date import unixtime2date
-from sqlalchemy import Column, Unicode, Float, Integer, Date
+from sqlalchemy import Column, Unicode, Float, Integer, Date, select
 from pytrainer.lib.ddbb import DeclarativeBase
+
 
 class Waypoint(DeclarativeBase):
     __tablename__ = 'waypoints'
@@ -69,19 +70,30 @@ class WaypointService(object):
         logging.debug("<<")
         return waypoint.id
 
-    def getwaypointInfo(self,id_waypoint):
-        logging.debug(">>")
-        retorno = self.pytrainer_main.ddbb.select("waypoints",
-                                "lat,lon,ele,comment,time,name,sym",
-                                "id_waypoint=%s" %id_waypoint)
-        logging.debug("<<")
-        return retorno
+    def getwaypointInfo(self, id_waypoint):
+        return self.pytrainer_main.ddbb.session.execute(
+            select(
+                Waypoint.lat,
+                Waypoint.lon,
+                Waypoint.ele,
+                Waypoint.comment,
+                Waypoint.time,
+                Waypoint.name,
+                Waypoint.sym,
+            ).where(Waypoint.id == id_waypoint)).all()
 
     def getAllWaypoints(self):
-        logging.debug(">>")
-        retorno = self.pytrainer_main.ddbb.select("waypoints","id_waypoint,lat,lon,ele,comment,time,name,sym","1=1 order by name")
-        logging.debug("<<")
-        return retorno
+        return self.pytrainer_main.ddbb.session.execute(
+            select(
+                Waypoint.id,
+                Waypoint.lat,
+                Waypoint.lon,
+                Waypoint.ele,
+                Waypoint.comment,
+                Waypoint.time,
+                Waypoint.name,
+                Waypoint.sym,
+            ).order_by(Waypoint.name)).all()
 
     def actualize_fromgpx(self,gpxfile):
         logging.debug(">>")

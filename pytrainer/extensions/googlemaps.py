@@ -151,11 +151,6 @@ class Googlemaps:
             documentation at http://code.google.com/apis/maps/documentation/v3
         '''
         logging.debug(">>")
-        if self.waypoint is not None:
-            waypoints = self.waypoint.getAllWaypoints()
-            #TODO waypoints not supported in this function yet
-            #TODO sort polyline encoding (not supported in v3?)
-            #TODO check http://code.google.com/apis/maps/documentation/v3/overlays.html#Polylines for MVArray??
         content = '''
         <html>
         <head>

@@ -507,7 +507,7 @@ class pyTrainer:
     def exportCsv(self):
         logging.debug('>>')
         from .save import Save
-        save = Save(self.data_path, self.record)
+        save = Save(self.ddbb)
         save.run()
         logging.debug('<<')
 
