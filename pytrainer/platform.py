@@ -61,7 +61,7 @@ class _Linux(_Platform):
         if all(map(_checkpath, ("INSTALL", "setup.py", "pytrainer/main.py", "locale"))):
             return base_path + "/"
         else:
-            return os.path.join(sys.prefix, "/share/pytrainer/")
+            return os.path.join(sys.prefix, "share/pytrainer/")
 
     def __init__(self):
         self._home_dir = os.environ['HOME']
