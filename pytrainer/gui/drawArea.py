@@ -379,7 +379,7 @@ class DrawArea:
         logging.debug("Canvas: %s", canvas)
         canvas.show()
         self.vbox.pack_start(canvas, True, True, 0)
-        toolbar = NavigationToolbar(canvas, self.window)
+        toolbar = NavigationToolbar(canvas)
         self.vbox.pack_start(toolbar, False, False, 0)
 
         for child in self.vbox.get_children():
