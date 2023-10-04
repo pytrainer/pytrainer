@@ -143,8 +143,6 @@ class DrawArea:
         canvas.show()
         logging.debug("Adding canvas to vbox")
         self.vbox.pack_start(canvas, True, True, 0)
-        #toolbar = NavigationToolbar(canvas, self.window)
-        #self.vbox.pack_start(toolbar, False, False)
 
         for child in self.vbox.get_children():
             logging.debug('Child available: %s', child)
@@ -301,8 +299,6 @@ class DrawArea:
         canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
         canvas.show()
         self.vbox.pack_start(canvas, True, True, 0)
-        #toolbar = NavigationToolbar(canvas, self.window)
-        #self.vbox.pack_start(toolbar, False, False)
 
         for child in self.vbox.get_children():
             logging.debug('Child available: %s', child)
