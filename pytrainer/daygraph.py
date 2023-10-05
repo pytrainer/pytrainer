@@ -31,21 +31,21 @@ class DayGraph(TimeGraph):
 		if value_selected == 0:
 			xvalues, yvalues = self.get_values(values,value_selected)
 			xlabel,ylabel,title,color = self.get_value_params(value_selected)
-			self.drawarea.stadistics("plot",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color])
+			self.drawarea.statistics("plot",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color])
 		if value_selected == 1:
 			xvalues, yvalues = self.get_values(values,value_selected)
 			xlabel,ylabel,title,color = self.get_value_params(value_selected)
-			self.drawarea.stadistics("plot",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color])
+			self.drawarea.statistics("plot",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color])
 		if value_selected == 2:
 			xvalues, yvalues = self.get_values(values,value_selected)
 			xlabel,ylabel,title,color = self.get_value_params(value_selected)
-			self.drawarea.stadistics("plot",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color])
+			self.drawarea.statistics("plot",[xvalues],[yvalues],[xlabel],[ylabel],[title],[color])
 		if value_selected == 3:
 			xvalues, yvalues = self.get_values(values,0)
 			xvalues1, yvalues1 = self.get_values(values,1)
 			xlabel,ylabel,title,color = self.get_value_params(0)
 			xlabel1,ylabel1,title1,color1 = self.get_value_params(1)
-			self.drawarea.stadistics("plot",[xvalues,xvalues1],[yvalues,yvalues1],[" ",xlabel1],[ylabel,ylabel1],[title," "],[color,color1])
+			self.drawarea.statistics("plot",[xvalues,xvalues1],[yvalues,yvalues1],[" ",xlabel1],[ylabel,ylabel1],[title," "],[color,color1])
 
 	def get_value_params(self,value):
 		if value == 0:

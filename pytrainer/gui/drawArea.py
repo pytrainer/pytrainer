@@ -37,7 +37,7 @@ class DrawArea:
         self.NEARLY_ZERO = 0.0000000000000000000001
         logging.debug('<<')
 
-    def stadistics(self,type,xvalues,yvalues,xlabel,ylabel,title,color=None,zones=None):
+    def statistics(self,type,xvalues,yvalues,xlabel,ylabel,title,color=None,zones=None):
         logging.debug('>>')
         if len(xvalues[0]) < 1:
             #self.drawDefault()
