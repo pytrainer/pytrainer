@@ -288,8 +288,8 @@ class DrawArea:
 
     def drawZones(self,shape,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
         logging.debug('>>')
-        logging.debug("Type: pie | title: %s | col: %s | xlabel: %s | ylabel: %s",
-                      title, color, xlabel, ylabel)
+        logging.debug("Type: %s | title: %s | col: %s | xlabel: %s | ylabel: %s",
+                      shape, title, color, xlabel, ylabel)
         self.removeVboxChildren()
         figure = Figure()
         logging.debug("Figure: %s", figure)
