@@ -37,7 +37,7 @@ class DrawArea:
         self.NEARLY_ZERO = 0.0000000000000000000001
         logging.debug('<<')
 
-    def stadistics(self,type,xvalues,yvalues,xlabel,ylabel,title,color=None,zones=None):
+    def statistics(self,type,xvalues,yvalues,xlabel,ylabel,title,color=None,zones=None):
         logging.debug('>>')
         if len(xvalues[0]) < 1:
             #self.drawDefault()
@@ -45,110 +45,10 @@ class DrawArea:
         #logging.debug('xvalues: '+str(xvalues))
         #logging.debug('yvalues: '+str(yvalues))
         #logging.debug("Type: "+type+" | title: "+str(title)+" | col: "+str(color)+" | xlabel: "+str(xlabel)+" | ylabel: "+str(ylabel))
-        if type == "bars":
-            self.drawBars(xvalues,yvalues,xlabel,ylabel,title,color)
-        elif type == "plot":
+        if type == "plot":
             self.drawPlot(xvalues,yvalues,xlabel,ylabel,title,color,zones)
         elif type == "pie" or type == "histogram":
             self.drawZones(type,xvalues,yvalues,xlabel,ylabel,title,color,zones)
-        logging.debug('<<')
-
-    def drawBars(self,xvalues,yvalues,xlabel,ylabel,title,color):
-        logging.debug('>>')
-        logging.debug("Type: bars | title: %s"" | col: %s | xlabel: %s | ylabel: %s",
-                      title, color, xlabel, ylabel)
-        self.removeVboxChildren()
-        #figure = Figure(figsize=(6,4), dpi=72)
-        figure = plt.figure()
-        logging.debug("Figure: %s", figure)
-        numCols=len(xvalues[0])
-        xmod = 0.4
-        self.showGraph=False
-        axis = figure.add_subplot(111)
-        logging.debug("Axis: %s", axis)
-
-        if len(xvalues) == 1: #One axis
-            barWidth = 0.8
-            barOffset = 0.1
-            logging.debug("One axis, barWidth %f, barOffset %f", barWidth, barOffset)
-        elif len(xvalues) == 2: #Twin axes
-            barWidth = 0.4
-            barOffset = 0.1
-            logging.debug("Twin axes, barWidth %f, barOffset %f", barWidth, barOffset)
-        else: #Error
-            logging.debug("Error: invalid number of axes" )
-            return
-
-        axis.set_xlabel(xlabel[0])
-        axis.set_ylabel(ylabel[0])
-        logging.debug("Labels set x: %s, y: %s", xlabel[0], ylabel[0])
-        xvals = [x+barOffset for x in range(0, numCols)]
-        yvals = [0] * numCols
-        for i in range(0, numCols):
-            yval = yvalues[0][i]
-            if float(yval) > 0.0:
-                self.showGraph=True
-            else:
-                yval = self.NEARLY_ZERO
-            yvals[i] = yval
-        if self.showGraph:
-            logging.debug("Drawing bars")
-            axis.bar(xvals, yvals, barWidth, color=color[0], align='edge')
-        else:   #Only zero results
-            logging.debug("No results to draw")
-            pass
-
-        axis.grid(True)
-        axis.set_title("%s" %(title[0]))
-        logging.debug("Setting title to: %s", title[0])
-        for tl in axis.get_yticklabels():
-            logging.debug("Setting ticklabel color %s", color[0])
-            tl.set_color('%s' %color[0])
-
-        if len(xvalues) == 2: #Display twin axis
-            ax2 = axis.twinx()
-            logging.debug("Axis 2: Twin axis: %s", ax2)
-            xvals = [x+barOffset+barWidth for x in range(0, numCols)]
-            for i in range(0, numCols):
-                yval = yvalues[1][i]
-                if float(yval) > 0.0:
-                    self.showGraph=True
-                else:
-                    yval = self.NEARLY_ZERO
-                yvals[i] = yval
-            if self.showGraph:
-                logging.debug("Axis 2: Drawing bars")
-                ax2.bar(xvals, yvals, barWidth, color=color[1], align='edge')
-                logging.debug("Axis 2: Label set y: %s", ylabel[1])
-                ax2.set_ylabel(ylabel[1])
-            else:   #Only zero results
-                logging.debug("Axis 2: No results to draw")
-                pass
-            for tl in ax2.get_yticklabels():
-                tl.set_color('%s' %color[1])
-                logging.debug("Axis 2: Setting ticklabel color %s", color[1])
-            _title = "%s vs %s" %(title[0],title[1])
-            logging.debug("Axis 2: Setting title to: %s", _title)
-            axis.set_title(_title)
-
-        logging.debug("Setting x ticks")
-        tickLocations = [x+0.5 for x in range(0, numCols)]
-        axis.set_xticks(tickLocations)
-        axis.set_xticklabels(xvalues[0])
-        logging.debug("Setting x limits")
-        axis.set_xlim(0, numCols)
-
-        canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
-        logging.debug("Got canvas: %s", canvas)
-        canvas.show()
-        logging.debug("Adding canvas to vbox")
-        self.vbox.pack_start(canvas, True, True, 0)
-        #toolbar = NavigationToolbar(canvas, self.window)
-        #self.vbox.pack_start(toolbar, False, False)
-
-        for child in self.vbox.get_children():
-            logging.debug('Child available: %s', child)
-
         logging.debug('<<')
 
     def getColor(self, x):
@@ -301,8 +201,6 @@ class DrawArea:
         canvas = FigureCanvasGTK(figure) # a gtk.DrawingArea
         canvas.show()
         self.vbox.pack_start(canvas, True, True, 0)
-        #toolbar = NavigationToolbar(canvas, self.window)
-        #self.vbox.pack_start(toolbar, False, False)
 
         for child in self.vbox.get_children():
             logging.debug('Child available: %s', child)
@@ -379,7 +277,7 @@ class DrawArea:
         logging.debug("Canvas: %s", canvas)
         canvas.show()
         self.vbox.pack_start(canvas, True, True, 0)
-        toolbar = NavigationToolbar(canvas, self.window)
+        toolbar = NavigationToolbar(canvas)
         self.vbox.pack_start(toolbar, False, False, 0)
 
         for child in self.vbox.get_children():
@@ -390,8 +288,8 @@ class DrawArea:
 
     def drawZones(self,shape,xvalues,yvalues,xlabel,ylabel,title,color,zones=None):
         logging.debug('>>')
-        logging.debug("Type: pie | title: %s | col: %s | xlabel: %s | ylabel: %s",
-                      title, color, xlabel, ylabel)
+        logging.debug("Type: %s | title: %s | col: %s | xlabel: %s | ylabel: %s",
+                      shape, title, color, xlabel, ylabel)
         self.removeVboxChildren()
         figure = Figure()
         logging.debug("Figure: %s", figure)
