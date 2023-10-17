@@ -779,10 +779,12 @@ class Main(SimpleBuilderApp):
     def actualize_heartrategraph(self,activity):
         logging.debug(">>")
         if activity.tracks is not None and len(activity.tracks)>0:
-            self.heartrate_vbox_.set_sensitive(1)
             self.drawareaheartrate.drawgraph(activity.tracks)
+            self.heartrate_buttonbar.show()
+            self.heartrate_graph.show()
         else:
-            self.heartrate_vbox_.set_sensitive(0)
+            self.heartrate_buttonbar.hide()
+            self.heartrate_graph.hide()
         logging.debug("<<")
 
     def actualize_hrview(self,activity):
@@ -807,6 +809,11 @@ class Main(SimpleBuilderApp):
             calories = activity.calories
         else:
             calories = ''
+
+        if beats or maxbeats or calories:
+            self.heartrate_vbox_.set_sensitive(1)
+        else:
+            self.heartrate_vbox_.set_sensitive(0)
 
         self.record_beats.set_text("%4s" %beats)
         self.record_maxbeats.set_text("%4s" %maxbeats)
