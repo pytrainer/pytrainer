@@ -1042,7 +1042,6 @@ class Main(SimpleBuilderApp):
         self.weeka_maxpace.set_text(maxpace)
         self.weeka_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
         self.weeka_calories.set_text("%0.0f" %calories)
-        self.weekview.set_sensitive(1)
         self.drawareaweek.drawgraph(activity_list, date_range.start_date)
         logging.debug("<<")
 
