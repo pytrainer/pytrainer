@@ -2,7 +2,7 @@ package Geo::FIT;
 use strict;
 use warnings;
 
-our $VERSION = '1.10';
+our $VERSION = '1.11';
 
 =encoding utf-8
 
@@ -382,19 +382,28 @@ my %named_type = (
         'magnetometer_data' => 208,
         'barometer_data' => 209,
         'one_d_sensor_calibration' => 210,
+        'monitoring_hr_data' => 211,
         'time_in_zone' => 216,
         'set' => 225,
         'stress_level' => 227,
+        'max_met_data' => 229,
         'dive_settings' => 258,
         'dive_gas' => 259,
         'dive_alarm' => 262,
         'exercise_title' => 264,
         'dive_summary' => 268,
+        'spo2_data' => 269,
+        'sleep_level' => 275,
         'jump' => 285,
+        'beat_intervals' => 290,
+        'respiration_rate' => 297,
         'split' => 312,
         'climb_pro' => 317,
         'tank_update' => 319,
         'tank_summary' => 323,
+        'sleep_assessment' => 346,
+        'hrv_status_summary' => 370,
+        'hrv_value' => 371,
         'device_aux_battery_info' => 375,
         'dive_apnea_alarm' => 393,
         'mfg_range_min' => 0xFF00,
@@ -953,6 +962,16 @@ my %named_type = (
         'tabata' => 75, # HIIT
         'pickleball' => 84, # Racket
         'padel' => 85, # Racket
+        'fly_canopy' => 110,        # Flying
+        'fly_paraglide' => 111,     # Flying
+        'fly_paramotor' => 112,     # Flying
+        'fly_pressurized' => 113,   # Flying
+        'fly_navigate' => 114,      # Flying
+        'fly_timer' => 115,         # Flying
+        'fly_altimeter' => 116,     # Flying
+        'fly_wx' => 117,            # Flying
+        'fly_vfr' => 118,           # Flying
+        'fly_ifr' => 119,           # Flying
         'all' => 254,
     },
 
@@ -1085,6 +1104,7 @@ my %named_type = (
         'elev_high_alert' => 45,
         'elev_low_alert' => 46,
         'comm_timeout' => 47,
+        'auto_activity_detect' => 54, # marker
         'dive_alert' => 56, # marker
         'dive_gas_switched' => 57, # marker
         'tank_pressure_reserve' => 71, # marker
@@ -1423,6 +1443,9 @@ my %named_type = (
         'keiser_fitness' => 143,
         'zwift_byte' => 144,
         'porsche_ep' => 145,
+        'blackbird' => 146,
+        'meilan_byte' => 147,
+        'ezon' => 148,
         'development' => 255,
         'healthandlife' => 257,
         'lezyne' => 258,
@@ -1490,6 +1513,8 @@ my %named_type = (
         'lsec' => 320, # Lishun Electric & Communication
         'lululemon_studio' => 321,
         'shanyue' => 322,
+        'spinning_mda' => 323,
+        'hilldating' => 324,
         'actigraphcorp' => 5759,
     },
 
@@ -1746,6 +1771,7 @@ my %named_type = (
         'fenix5s_plus_apac' => 3134,
         'fenix5x_plus_apac' => 3135,
         'edge_520_plus_apac' => 3142,
+        'descent_t1' => 3143,
         'fr235l_asia' => 3144,
         'fr245_asia' => 3145,
         'vivo_active3m_apac' => 3163,
@@ -1833,6 +1859,7 @@ my %named_type = (
         'edge_1040' => 3843,
         'marq_golfer_asia' => 3850,
         'venu2_plus' => 3851,
+        'gnss' => 3865,
         'fr55' => 3869,
         'instinct_2' => 3888,
         'fenix7s' => 3905,
@@ -1862,6 +1889,8 @@ my %named_type = (
         'venu2_plus_asia' => 4017,
         'fr955' => 4024,
         'fr55_asia' => 4033,
+        'edge_540' => 4061,
+        'edge_840' => 4062,
         'vivosmart_5' => 4063,
         'instinct_2_asia' => 4071,
         'marq_gen2' => 4105, # Adventurer, Athlete, Captain, Golfer
@@ -1874,6 +1903,9 @@ my %named_type = (
         'tactix7' => 4135,
         'instinct_crossover' => 4155,
         'edge_explore2' => 4169,
+        'approach_s70' => 4233,
+        'fr265_large' => 4257,
+        'fr265_small' => 4258,
         'tacx_neo_smart' => 4265, # Neo Smart, Tacx
         'tacx_neo2_smart' => 4266, # Neo 2 Smart, Tacx
         'tacx_neo2_t_smart' => 4267, # Neo 2T Smart, Tacx
@@ -1887,7 +1919,14 @@ my %named_type = (
         'tacx_flux2_smart' => 4275, # Flux 2 Smart, Tacx
         'tacx_magnum' => 4276, # Magnum, Tacx
         'edge_1040_asia' => 4305,
+        'epix_gen2_pro_42' => 4312,
+        'epix_gen2_pro_47' => 4313,
+        'epix_gen2_pro_51' => 4314,
+        'fr965' => 4315,
         'enduro2' => 4341,
+        'fenix7_pro_solar' => 4375,
+        'instinct_2x' => 4394,
+        'descent_t2' => 4442,
         'sdm4' => 10007, # SDM4 footpod
         'edge_remote' => 10014,
         'tacx_training_app_win' => 20533,
@@ -2899,6 +2938,12 @@ my %named_type = (
         'rest' => 0,
         'active' => 1,
     },
+
+    'max_met_category' => +{
+        '_base_type' => FIT_ENUM,
+        'generic' => 0,
+        'cycling' => 1,
+        },
 
     'exercise_category' => +{
         '_base_type' => FIT_UINT16,
@@ -4385,6 +4430,23 @@ my %named_type = (
         'always_on' => 1,
     },
 
+    'sleep_level' => +{
+        '_base_type' => FIT_ENUM,
+        'unmeasurable' => 0,
+        'awake' => 1,
+        'light' => 2,
+        'deep' => 3,
+        'rem' => 4,
+        },
+
+    'spo2_measurement_type' => +{
+        '_base_type' => FIT_ENUM,
+        'off_wrist' => 0,
+        'spot_check' => 1,
+        'continuous_check' => 2,
+        'periodic' => 3,
+        },
+
     'ccr_setpoint_switch_mode' => +{
         '_base_type' => FIT_ENUM,
         'manual' => 0, # User switches setpoints manually
@@ -4455,6 +4517,28 @@ my %named_type = (
         'threat_none' => 1,
         'threat_approaching' => 2,
         'threat_approaching_fast' => 3,
+    },
+
+    'max_met_speed_source' => +{
+        '_base_type' => FIT_ENUM,
+        'onboard_gps' => 0,
+        'connected_gps' => 1,
+        'cadence' => 2,
+    },
+
+    'max_met_heart_rate_source' => +{
+        '_base_type' => FIT_ENUM,
+        'whr' => 0,             # Wrist Heart Rate Monitor
+        'hrm' => 1,             # Chest Strap Heart Rate Monitor
+    },
+
+    'hrv_status' => +{
+        '_base_type' => FIT_ENUM,
+        'none' => 0,
+        'poor' => 1,
+        'low' => 2,
+        'unbalanced' => 3,
+        'balanced' => 4,
     },
 
     'no_fly_time_mode' => +{
@@ -5037,6 +5121,8 @@ my %msgtype_by_name = (
         35 => +{'name' => 'training_stress_score', 'scale' => 10, 'unit' => 'tss'},
         36 => +{'name' => 'intensity_factor', 'scale' => 1000, 'unit' => 'if'},
         37 => +{'name' => 'left_right_balance', 'type_name' => 'left_right_balance_100'},
+        38 => +{'name' => 'end_position_lat',  'unit' => 'semicircles'},
+        39 => +{'name' => 'end_position_long', 'unit' => 'semicircles'},
         41 => +{'name' => 'avg_stroke_count', 'scale' => 10, 'unit' => 'strokes/lap'},
         42 => +{'name' => 'avg_stroke_distance', 'scale' => 100, 'unit' => 'm'},
         43 => +{'name' => 'swim_stroke', 'type_name' => 'swim_stroke'},
@@ -5098,7 +5184,7 @@ my %msgtype_by_name = (
         107 => +{'name' => 'unknown107'}, # unknown UINT16
         108 => +{'name' => 'unknown108'}, # unknown UINT16
         109 => +{'name' => 'unknown109'}, # unknown UINT8
-        110 => +{'name' => 'unknown110'}, # unknown STRING
+        110 => +{'name' => 'sport_profile_name'},   # Sport name from associated sport mesg
         111 => +{'name' => 'sport_index'},
         112 => +{'name' => 'time_standing', 'scale' => 1000, 'unit' => 's'},
         113 => +{'name' => 'stand_count'},
@@ -5147,6 +5233,10 @@ my %msgtype_by_name = (
         183 => +{'name' => 'jump_count'},
         186 => +{'name' => 'avg_grit', 'unit' => 'kGrit'},
         187 => +{'name' => 'avg_flow', 'unit' => 'Flow'},
+        194 => +{'name' => 'avg_spo2',   'unit' => 'percent'},  # Average SPO2 for the monitoring session
+        195 => +{'name' => 'avg_stress', 'unit' => 'percent'},  # Average stress for the monitoring session
+        197 => +{'name' => 'sdrr_hrv',   'unit' => 'mS'},       # Standard deviation of R-R interval (SDRR) - Heart rate variability measure most useful for wellness users.
+        198 => +{'name' => 'rmssd_hrv',  'unit' => 'mS'},       # Root mean square successive difference (RMSSD) - Heart rate variability measure most useful for athletes
         199 => +{'name' => 'total_fractional_ascent', 'unit' => 'm'},
         200 => +{'name' => 'total_fractional_descent', 'unit' => 'm'},
         208 => +{'name' => 'avg_core_temperature', 'unit' => 'deg.C'},
@@ -5407,6 +5497,7 @@ my %msgtype_by_name = (
         83 => +{'name' => 'vertical_ratio', 'scale' => 100, 'unit' => '%'},
         84 => +{'name' => 'stance_time_balance', 'scale' => 100, 'unit' => '%'},
         85 => +{'name' => 'step_length', 'scale' => 10, 'unit' => 'mm'},
+        87 => +{'name' => 'cycle_length16', 'scale' => 100, 'unit' => 'm'},             # Supports larger cycle sizes needed for paddlesports. Max cycle size: 655.35
         91 => +{'name' => 'absolute_pressure', 'unit' => 'Pa'},
         92 => +{'name' => 'depth', 'scale' => 1000, 'unit' => 'm'},
         93 => +{'name' => 'next_stop_depth', 'scale' => 1000, 'unit' => 'm'},
@@ -5419,6 +5510,7 @@ my %msgtype_by_name = (
         108 => +{ 'name' => 'enhanced_respiration_rate', 'unit' => 'breaths/min', 'scale' => 100 },
         114 => +{'name' => 'grit'},
         115 => +{'name' => 'flow'},
+        116 => +{'name' => 'current_stress', 'scale' => 100},                           # Current Stress value
         117 => +{'name' => 'ebike_travel_range', 'unit' => 'km'},
         118 => +{'name' => 'ebike_battery_level', 'unit' => '%'},
         119 => +{'name' => 'ebike_assist_mode'},
@@ -5466,6 +5558,7 @@ my %msgtype_by_name = (
                 'rider_position_change' => +{'name' => 'rider_position', 'type_name' => 'rider_position_type'},
                 'comm_timeout' => +{'name' => 'comm_timeout', 'type_name' => 'comm_timeout_type'},
                 'dive_alert' => +{ 'name' => 'dive_alert', 'type_name' => 'dive_alert' },
+                'auto_activity_detect' => +{'name' => 'auto_activity_detect_duration', 'unit' => 'min'},
                 'radar_threat_alert' => +{'name' => 'radar_threat_alert'},
             },
         },
@@ -5478,6 +5571,15 @@ my %msgtype_by_name = (
         11 => +{'name' => 'rear_gear_num'},
         12 => +{'name' => 'rear_gear'},
         13 => +{'name' => 'device_index', 'type_name' => 'device_index'},
+        14 => +{'name' => 'activity_type', 'type_name' => 'activity_type'}, # Activity Type associated with an auto_activity_detect event
+        15 => +{
+            'name' => 'start_timestamp',                                    # Timestamp of when the event started
+
+            'switch' => +{
+                '_by' => 'event',
+                'auto_activity_detect' => +{'name' => 'auto_activity_detect_start_timestamp', 'type_name' => 'date_time', 'unit' => 's'},
+            },
+        },
         21 => +{'name' => 'radar_threat_level_max', 'type_name' => 'radar_threat_level_type'},
         22 => +{'name' => 'radar_threat_count'},
         23 => +{'name' => 'radar_threat_avg_approach_speed', unit => 'm/s'},
@@ -6006,6 +6108,7 @@ my %msgtype_by_name = (
     },
 
     'workout' => +{                     # begins === Workout file messages === section
+        254 => +{'name' => 'message_index', 'type_name' => 'message_index'},
         4 => +{'name' => 'sport', 'type_name' => 'sport'},
         5 => +{'name' => 'capabilities', 'type_name' => 'workout_capabilities'},
         6 => +{'name' => 'num_valid_steps'},
@@ -6182,6 +6285,7 @@ my %msgtype_by_name = (
         10 => +{'name' => 'metabolic_age', 'unit' => 'years'},
         11 => +{'name' => 'visceral_fat_rating'},
         12 => +{'name' => 'user_profile_index', 'type_name' => 'message_index'},
+        13 => +{'name' => 'bmi', 'scale' => 10, 'unit' => 'kg/m^2'},
     },
 
     'blood_pressure' => +{              # begins === Blood pressure file messages === section
@@ -6251,6 +6355,19 @@ my %msgtype_by_name = (
         34 => +{'name' => 'vigorous_activity_minutes', 'unit' => 'min'},
     },
 
+    'monitoring_hr_data' => +{
+        253 => +{'name' => 'timestamp', 'type_name' => 'date_time'},         # Must align to logging interval, for example, time must be 00:00:00 for daily log.
+        0 => +{'name' => 'resting_heart_rate', 'unit' => 'bpm'},             # 7-day rolling average
+        1 => +{'name' => 'current_day_resting_heart_rate', 'unit' => 'bpm'}, # RHR for today only. (Feeds into 7-day average)
+    },
+
+    'spo2_data' => +{
+        253 => +{'name' => 'timestamp', 'type_name' => 'date_time'},
+        0 => +{'name' => 'reading_spo2', 'unit' => 'percent'},
+        1 => +{'name' => 'reading_confidence'},
+        2 => +{'name' => 'mode', 'type_name' => 'spo2_measurement_type'}, # Mode when data was captured
+    },
+
     'hr' => +{
         253 => +{'name' => 'timestamp', 'type_name' => 'date_time'},
         0 => +{'name' => 'fractional_timestamp', 'scale' => 32768, 'unit' => 's'},
@@ -6265,11 +6382,27 @@ my %msgtype_by_name = (
         1 => +{'name' => 'stress_level_time', 'type_name' => 'date_time', 'unit' => 's'},
     },
 
+    'max_met_data' => +{
+        0  => +{'name' => 'update_time',      'type_name' => 'date_time'},                 # Time maxMET and vo2 were calculated
+        2  => +{'name' => 'vo2_max', 'unit' => 'mL/kg/min'},
+        5  => +{'name' => 'sport',            'type_name' => 'sport'},
+        6  => +{'name' => 'sub_sport',        'type_name' => 'sub_sport'},
+        8  => +{'name' => 'max_met_category', 'type_name' => 'max_met_category'},
+        9  => +{'name' => 'calibrated_data',  'type_name' => 'bool'},                      # Indicates if calibrated data was used in the calculation
+        12 => +{'name' => 'hr_source',        'type_name' => 'max_met_heart_rate_source'}, # Indicates if the estimate was obtained using a chest strap or wrist heart rate
+        13 => +{'name' => 'speed_source',     'type_name' => 'max_met_speed_source'},      # Indidcates if the estimate was obtained using onboard GPS or connected GPS
+    },
+
     'memo_glob' => +{                   # begins === Other messages === section
         250 => +{'name' => 'part_index'},
         0 => +{'name' => 'memo'},
         1 => +{'name' => 'message_number'},
         2 => +{'name' => 'message_index', 'type_name' => 'message_index'},
+    },
+
+    'sleep_level' => +{
+        253 => +{'name' => 'timestamp', 'type_name' => 'date_time'},
+        0 => +{'name' => 'sleep_level', 'type_name' => 'sleep_level'},
     },
 
     'ant_channel_id' => +{
@@ -6359,6 +6492,33 @@ my %msgtype_by_name = (
         0 => +{'name' => 'time', 'scale' => 1000, 'unit' => 's'},
     },
 
+    'beat_intervals' => +{
+        253 => +{ 'name' => 'timestamp', 'type_name' => 'date_time' },
+        0 => +{'name' => 'timestamp_ms', 'unit' => 'ms'},     # Milliseconds past date_time
+        1 => +{'name' => 'time',         'unit' => 'ms'},     # Array of millisecond times between beats
+    },
+
+    'hrv_status_summary' => +{
+        253 => +{ 'name' => 'timestamp', 'type_name' => 'date_time' },
+        0 => +{'name' => 'weekly_average',          'scale' => 128, 'unit' => 'ms'},      # 5 minute RMSSD
+        1 => +{'name' => 'last_night_average',      'scale' => 128, 'unit' => 'ms'},      # 7 day RMSSD average over sleep
+        2 => +{'name' => 'last_night_5_min_high',   'scale' => 128, 'unit' => 'ms'},      # Last night RMSSD average over sleep
+        3 => +{'name' => 'baseline_low_upper',      'scale' => 128, 'unit' => 'ms'},      # 5 minute high RMSSD value over sleep
+        4 => +{'name' => 'baseline_balanced_lower', 'scale' => 128, 'unit' => 'ms'},      # 3 week baseline, upper boundary of low HRV status
+        5 => +{'name' => 'baseline_balanced_upper', 'scale' => 128, 'unit' => 'ms'},      # 3 week baseline, lower boundary of balanced HRV status
+        6 => +{'name' => 'hrv_status', 'type_name' => 'hrv_status'},
+    },
+
+    'hrv_value' => +{
+        253 => +{ 'name' => 'timestamp', 'type_name' => 'date_time' },
+        0 => +{'name' => 'value', 'scale' => 128, 'unit' => 'ms'},      # 5 minute RMSSD
+    },
+
+    'respiration_rate' => +{
+        253 => +{ 'name' => 'timestamp', 'type_name' => 'date_time' },
+        0 => +{ 'name' => 'respiration_rate', 'unit' => 'breaths/min', 'scale' => 100 },    # Breaths * 100 /min, -300 indicates invalid, -200 indicates large motion, -100 indicates off wrist
+    },
+
     'tank_update' => +{
         253 => +{ 'name' => 'timestamp', 'type_name' => 'date_time' },
         0 => +{ 'name' => 'sensor',   'type_name' => 'ant_channel_id'   },
@@ -6371,6 +6531,23 @@ my %msgtype_by_name = (
         1 => +{ 'name' => 'start_pressure', 'unit' => 'bar', 'scale' => 100 },
         2 => +{ 'name' => 'end_pressure',   'unit' => 'bar', 'scale' => 100 },
         3 => +{ 'name' => 'volume_used',    'unit' => 'l', 'scale' => 100   },
+    },
+
+    'sleep_assessment' => +{
+        0  => +{ 'name' => 'combined_awake_score' },        # Average of awake_time_score and awakenings_count_score. If valid: 0 (worst) to 100 (best). If unknown: FIT_UINT8_INVALID.
+        1  => +{ 'name' => 'awake_time_score' },            # Score that evaluates the total time spent awake between sleep. If valid: 0 (worst) to 100 (best). If unknown: FIT_UINT8_INVALID.
+        2  => +{ 'name' => 'awakenings_count_score' },      # Score that evaluates the number of awakenings that interrupt sleep. If valid: 0 (worst) to 100 (best). If unknown: FIT_UINT8_INVALID.
+        3  => +{ 'name' => 'deep_sleep_score' },            # Score that evaluates the amount of deep sleep. If valid: 0 (worst) to 100 (best). If unknown: FIT_UINT8_INVALID.
+        4  => +{ 'name' => 'sleep_duration_score' },        # Score that evaluates the quality of sleep based on sleep stages, heart-rate variability and possible awakenings during the night. If valid: 0 (worst) to 100 (best). If unknown: FIT_UINT8_INVALID.
+        5  => +{ 'name' => 'light_sleep_score', },          # Score that evaluates the amount of light sleep. If valid: 0 (worst) to 100 (best). If unknown: FIT_UINT8_INVALID.
+        6  => +{ 'name' => 'overall_sleep_score' },         # Total score that summarizes the overall quality of sleep, combining sleep duration and quality. If valid: 0 (worst) to 100 (best). If unknown: FIT_UINT8_INVALID.
+        7  => +{ 'name' => 'sleep_quality_score' },         # Score that evaluates the quality of sleep based on sleep stages, heart-rate variability and possible awakenings during the night. If valid: 0 (worst) to 100 (best). If unknown: FIT_UINT8_INVALID.
+        8  => +{ 'name' => 'sleep_recovery_score' },        # Score that evaluates stress and recovery during sleep. If valid: 0 (worst) to 100 (best). If unknown: FIT_UINT8_INVALID.
+        9  => +{ 'name' => 'rem_sleep_score' },             # Score that evaluates the amount of REM sleep. If valid: 0 (worst) to 100 (best). If unknown: FIT_UINT8_INVALID.
+        10 => +{ 'name' => 'sleep_restlessness_score' },    # Score that evaluates the amount of restlessness during sleep. If valid: 0 (worst) to 100 (best). If unknown: FIT_UINT8_INVALID.
+        11 => +{ 'name' => 'awakenings_count' },            # The number of awakenings during sleep.
+        14 => +{ 'name' => 'interruptions_score' },         # Score that evaluates the sleep interruptions. If valid: 0 (worst) to 100 (best). If unknown: FIT_UINT8_INVALID.
+        15 => +{ 'name' => 'average_stress_during_sleep' }, # Excludes stress during awake periods in the sleep window
     },
 
     'pad' => +{
@@ -6725,7 +6902,7 @@ returns a string representing the .FIT profile version on which this class based
 
 =cut
 
-my $profile_current  = '21.107';
+my $profile_current  = '21.115';
 my $protocol_current = '2.3';       # is there such a thing as current protocol for the class?
                                     # don't think so, pod was removed for protocol_* above
 
@@ -8936,7 +9113,7 @@ Please visit the project page at: L<https://github.com/patjoly/geo-fit>.
 
 =head1 VERSION
 
-1.10
+1.11
 
 =head1 LICENSE AND COPYRIGHT
 
