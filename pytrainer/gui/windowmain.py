@@ -778,7 +778,15 @@ class Main(SimpleBuilderApp):
 
     def actualize_heartrategraph(self,activity):
         logging.debug(">>")
-        if activity.tracks is not None and len(activity.tracks)>0:
+        trackpoints_with_hr = False
+        if activity.tracks:
+            distance, hr = self.drawareaheartrate.get_values(activity.tracks)
+            for beats in hr:
+                if beats:
+                    trackpoints_with_hr = True
+                    break
+
+        if trackpoints_with_hr:
             self.drawareaheartrate.drawgraph(activity.tracks)
             self.heartrate_buttonbar.show()
             self.heartrate_graph.show()
