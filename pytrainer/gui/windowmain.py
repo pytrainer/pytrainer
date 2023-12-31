@@ -778,36 +778,58 @@ class Main(SimpleBuilderApp):
 
     def actualize_heartrategraph(self,activity):
         logging.debug(">>")
-        if activity.tracks is not None and len(activity.tracks)>0:
-            self.heartrate_vbox_.set_sensitive(1)
+        trackpoints_with_hr = False
+        if activity.tracks:
+            distance, hr = self.drawareaheartrate.get_values(activity.tracks)
+            for beats in hr:
+                if beats:
+                    trackpoints_with_hr = True
+                    break
+
+        if trackpoints_with_hr:
             self.drawareaheartrate.drawgraph(activity.tracks)
+            self.heartrate_buttonbar.show()
+            self.heartrate_graph.show()
         else:
-            self.heartrate_vbox_.set_sensitive(0)
+            self.heartrate_buttonbar.hide()
+            self.heartrate_graph.hide()
         logging.debug("<<")
 
     def actualize_hrview(self,activity):
         logging.debug(">>")
         zones = self.pytrainer_main.profile.getZones()
-        record_list = activity.tracks
         is_karvonen_method = self.pytrainer_main.profile.getValue("pytraining","prf_hrzones_karvonen")
-        if record_list is not None and len(record_list)>0:
-            record_list=record_list[0]
-            self.record_zone1.set_text("%s-%s" %(zones[4][0],zones[4][1]))
-            self.record_zone2.set_text("%s-%s" %(zones[3][0],zones[3][1]))
-            self.record_zone3.set_text("%s-%s" %(zones[2][0],zones[2][1]))
-            self.record_zone4.set_text("%s-%s" %(zones[1][0],zones[1][1]))
-            self.record_zone5.set_text("%s-%s" %(zones[0][0],zones[0][1]))
-            beats = activity.beats
-            maxbeats = activity.maxbeats
-            self.record_beats.set_text("%0.0f" %beats)
-            self.record_maxbeats.set_text("%0.0f" %maxbeats)
-            self.record_calories2.set_text("%0.0f" %activity.calories)
-            if is_karvonen_method=="True":
-                self.record_zonesmethod.set_text(_("Karvonen method"))
-            else:
-                self.record_zonesmethod.set_text(_("Percentages method"))
-        #else:
-        #   self.recordview.set_sensitive(0)
+        self.record_zone1.set_text("%s-%s" %(zones[4][0],zones[4][1]))
+        self.record_zone2.set_text("%s-%s" %(zones[3][0],zones[3][1]))
+        self.record_zone3.set_text("%s-%s" %(zones[2][0],zones[2][1]))
+        self.record_zone4.set_text("%s-%s" %(zones[1][0],zones[1][1]))
+        self.record_zone5.set_text("%s-%s" %(zones[0][0],zones[0][1]))
+
+        if activity.beats:
+            beats = f'{activity.beats:.0f}'
+        else:
+            beats = ''
+        if activity.maxbeats:
+            maxbeats = f'{activity.maxbeats:.0f}'
+        else:
+            maxbeats = ''
+        if activity.calories:
+            calories = activity.calories
+        else:
+            calories = ''
+
+        if beats or maxbeats or calories:
+            self.heartrate_vbox_.set_sensitive(1)
+        else:
+            self.heartrate_vbox_.set_sensitive(0)
+
+        self.record_beats.set_text("%4s" %beats)
+        self.record_maxbeats.set_text("%4s" %maxbeats)
+        self.record_calories2.set_text("%4s" %calories)
+        if is_karvonen_method=="True":
+            self.record_zonesmethod.set_text(_("Karvonen method"))
+        else:
+            self.record_zonesmethod.set_text(_("Percentages method"))
         logging.debug("<<")
 
     def actualize_analytics(self,activity):
@@ -1028,7 +1050,6 @@ class Main(SimpleBuilderApp):
         self.weeka_maxpace.set_text(maxpace)
         self.weeka_ascdesc.set_text("%d/%d" %(int(totalascent),int(totaldescent)))
         self.weeka_calories.set_text("%0.0f" %calories)
-        self.weekview.set_sensitive(1)
         self.drawareaweek.drawgraph(activity_list, date_range.start_date)
         logging.debug("<<")
 

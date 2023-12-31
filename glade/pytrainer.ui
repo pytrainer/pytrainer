@@ -2590,7 +2590,7 @@
                                                   <object class="GtkLabel" id="label_calories">
                                                     <property name="visible">True</property>
                                                     <property name="xalign">0</property>
-                                                    <property name="label" translatable="yes">&lt;b&gt;Calories: &lt;/b&gt;</property>
+                                                    <property name="label" translatable="yes">&lt;b&gt;Calories:&lt;/b&gt;</property>
                                                     <property name="use_markup">True</property>
                                                   </object>
                                                   <packing>
@@ -2618,7 +2618,7 @@
                                                   <object class="GtkLabel" id="label_hr_zones_method">
                                                     <property name="visible">True</property>
                                                     <property name="xalign">0</property>
-                                                    <property name="label" translatable="yes">&lt;b&gt;HR Zones Method:&lt;/b&gt;</property>
+                                                    <property name="label" translatable="yes">&lt;b&gt;HR Zones Method:&lt;/b&gt; </property>
                                                     <property name="use_markup">True</property>
                                                   </object>
                                                   <packing>
@@ -2648,7 +2648,7 @@
                                                     <property name="visible">True</property>
                                                     <property name="xalign">0</property>
                                                     <property name="xpad">5</property>
-                                                    <property name="label" translatable="yes"> bpm</property>
+                                                    <property name="label" translatable="yes">bpm</property>
                                                   </object>
                                                   <packing>
                                                     <property name="left_attach">2</property>
@@ -2664,7 +2664,7 @@
                                                     <property name="visible">True</property>
                                                     <property name="xalign">0</property>
                                                     <property name="xpad">5</property>
-                                                    <property name="label" translatable="yes"> Cal</property>
+                                                    <property name="label" translatable="yes">Cal</property>
                                                   </object>
                                                   <packing>
                                                     <property name="left_attach">2</property>
@@ -2847,7 +2847,7 @@
                                                     <property name="visible">True</property>
                                                     <property name="xalign">0</property>
                                                     <property name="xpad">5</property>
-                                                    <property name="label" translatable="yes"> bpm</property>
+                                                    <property name="label" translatable="yes">bpm</property>
                                                   </object>
                                                   <packing>
                                                     <property name="left_attach">2</property>
@@ -3004,7 +3004,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkHBox" id="hbox54">
+                                      <object class="GtkHBox" id="heartrate_buttonbar">
                                         <property name="visible">True</property>
                                         <child>
                                           <object class="GtkLabel" id="label-7">
@@ -3082,7 +3082,7 @@
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkNotebook" id="notebook8">
+                                      <object class="GtkNotebook" id="heartrate_graph">
                                         <property name="visible">True</property>
                                         <property name="show_tabs">False</property>
                                         <property name="show_border">False</property>
