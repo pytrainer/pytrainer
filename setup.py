@@ -54,5 +54,4 @@ setup(
 		],
 	scripts=['bin/pytrainer'],
 	test_suite='pytrainer.test',
-	tests_require=['mysqlclient', 'psycopg2'],
 )

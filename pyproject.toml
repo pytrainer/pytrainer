@@ -25,6 +25,10 @@ dependencies = [
 homepage = "https://github.com/pytrainer"
 repository = "https://github.com/pytrainer"
 
+[project.optional-dependencies]
+mysql = ["mysqlclient"]
+postgresql = ["psycopg2"]
+
 [build-system]
 requires = ["setuptools"]
 
