@@ -1,0 +1,38 @@
+[project]
+name = "pytrainer"
+description = "The free sport tracking center"
+readme = "README.md"
+authors = [
+    {name = "Fiz Vazquez"},
+    {name = "John Blance"},
+    {name = "David Garcia Granda"},
+    {name = "Arnd Zapletal"},
+    {name = "Nathan Jones"},
+    {name = "Arto Jantunen"},
+]
+license={text = "GNU General Public License (GPL)"}
+dynamic = ["version"]
+requires-python = ">=3.8"
+dependencies = [
+    "SQLAlchemy",
+    "lxml",
+    "matplotlib >= 3.6.0",
+    "python-dateutil",
+    "requests",
+]
+
+[project.urls]
+homepage = "https://github.com/pytrainer"
+repository = "https://github.com/pytrainer"
+
+[build-system]
+requires = ["setuptools"]
+
+[tool.setuptools]
+zip-safe = false
+
+[tool.setuptools.dynamic]
+version = {attr = "pytrainer.PKG_VERSION"}
+
+[tool.setuptools.packages.find]
+include = ["pytrainer*"]
