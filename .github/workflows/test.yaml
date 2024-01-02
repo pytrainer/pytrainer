@@ -51,7 +51,7 @@ jobs:
         timeout-minutes: 5
         run: |
           apt-get update
-          DEBIAN_FRONTEND=noninteractive apt-get install -y xvfb python3-pip python3-setuptools python3-gi gir1.2-gtk-3.0 python3-lxml python3-cairo python3-gi-cairo python3-matplotlib python3-psycopg2 python3-mysqldb locales-all
+          DEBIAN_FRONTEND=noninteractive apt-get install -y xvfb python3-pip python3-setuptools python3-gi gir1.2-gtk-3.0 python3-lxml python3-cairo python3-gi-cairo python3-matplotlib python3-psycopg2 python3-mysqldb locales-all git
       - name: install pip dependencies
         run: pip install -e .[mysql,postgresql]
       - name: run tests

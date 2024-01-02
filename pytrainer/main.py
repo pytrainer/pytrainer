@@ -32,6 +32,7 @@ from pytrainer.lib.date import DateRange
 from .upgrade.data import initialize_data
 from .environment import Environment
 from .record import Record
+from .version import version
 from .waypoint import WaypointService
 from .extension import Extension
 from .importdata import Importdata
@@ -51,8 +52,7 @@ from .lib.uc import UC
 class pyTrainer:
 
     def __init__(self):
-        # Based on Django's approach -> http://code.djangoproject.com/svn/django/trunk/django/__init__.py
-        self.version = __import__('pytrainer').get_version()
+        self.version = version
         #Process command line options
         self.startup_options = self.get_options()
         #Setup logging
@@ -61,7 +61,7 @@ class pyTrainer:
         self.environment.clear_temp_dir()
         self.set_logging(self.startup_options.log_level, self.startup_options.log_type)
         logging.debug('>>')
-        logging.info("pytrainer version %s" % (self.version))
+        logging.info("pytrainer version %s", self.version)
         self.data_path = self.environment.data_path
 
         # Checking profile
