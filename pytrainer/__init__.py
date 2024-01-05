@@ -1,6 +1,7 @@
 # Based on Django's approach -> http://code.djangoproject.com/svn/django/trunk/django/__init__.py
 VERSION = (2, 2, 1, 'final')
 
+
 def get_version(version=None):
     """Derives a PEP386-compliant version number from VERSION.
        Simplified from http://code.djangoproject.com/svn/django/trunk/django/__init__.py
@@ -16,3 +17,6 @@ def get_version(version=None):
         sub = str(version[3])
 
     return main + sub
+
+
+PKG_VERSION = get_version()

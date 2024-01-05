@@ -1,5 +1,9 @@
 pytrainer - Free your sports
 ==================================================
+Pytrainer is a tool to log all your sport excursion coming from GPS devices
+(with a focus on ForeRunner 205, 305 and 405) or GPX
+(http://www.topografix.com) files. Pytrainer supports GPS track files and
+displays it in graphs, maps...
 
 Source Repository Structure
 ---------------------------
@@ -35,4 +39,3 @@ Further Resources
 * Development guide: [https://github.com/pytrainer/pytrainer/wiki/Development-guide](https://github.com/pytrainer/pytrainer/wiki/Development-guide)
 * Localization guide: [https://github.com/pytrainer/pytrainer/wiki/Localization-guide](https://github.com/pytrainer/pytrainer/wiki/Localization-guide)
 * Report an Issue: [https://github.com/pytrainer/pytrainer/issues](https://github.com/pytrainer/pytrainer/issues)
-
