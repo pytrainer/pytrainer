@@ -15,11 +15,35 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import locale
 import gettext
+import locale
+import os.path
 import sys
 
-def initialize_gettext(gettext_path):
+
+def initialize_gettext():
+    base_path = os.path.realpath(os.path.join(
+        os.path.dirname(os.path.dirname(__file__)),
+        '..',
+        '..',
+    ))
+    if (
+            os.path.exists(base_path + "/setup.py")
+            and os.path.exists(base_path + "/locale")):
+        gettext_path = os.path.join(base_path, "locale")
+    else:
+        gettext_path = os.path.realpath(os.path.join(
+            os.path.dirname(__file__),
+            "..",
+            "..",
+            "..",
+            "..",
+            "..",
+            "share",
+            "locale",
+        ))
+    print("gettext_path:", gettext_path)
+
     locale.bindtextdomain("pytrainer", gettext_path)
     locale.textdomain("pytrainer")
     if sys.version_info[0] == 2:

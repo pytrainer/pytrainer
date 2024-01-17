@@ -15,7 +15,7 @@ from pytrainer.environment import Environment
 from pytrainer.profile import Profile
 from pytrainer.record import Record
 from pytrainer.core.activity import Activity
-initialize_gettext('locale/')
+initialize_gettext()
 
 try:
     from pytrainer.gui.windowmain import Main

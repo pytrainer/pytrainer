@@ -180,7 +180,7 @@ class EquipmentUiTest(unittest.TestCase):
 
     def setUp(self):
         from pytrainer.gui.equipment import EquipmentUi
-        initialize_gettext('locale/')
+        initialize_gettext()
         self.ddbb = DDBB()
         self.ddbb.connect()
         self.ddbb.create_tables()
