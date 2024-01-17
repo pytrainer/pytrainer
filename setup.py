@@ -52,6 +52,5 @@ setup(
 		('share/pixmaps/',['pytrainer.png']),
 		('share/applications/',['pytrainer.desktop'])
 		],
-	scripts=['bin/pytrainer'],
 	test_suite='pytrainer.test',
 )

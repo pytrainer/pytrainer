@@ -21,6 +21,9 @@ dependencies = [
     "requests",
 ]
 
+[project.gui-scripts]
+pytrainer = "pytrainer:main"
+
 [project.urls]
 homepage = "https://github.com/pytrainer"
 repository = "https://github.com/pytrainer"
