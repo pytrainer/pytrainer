@@ -20,3 +20,10 @@ def get_version(version=None):
 
 
 PKG_VERSION = get_version()
+
+
+def main():
+    import pytrainer.lib.localization
+    pytrainer.lib.localization.initialize_gettext()
+    from pytrainer.main import pyTrainer
+    pytrainer = pyTrainer()
