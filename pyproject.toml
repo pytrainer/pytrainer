@@ -33,13 +33,14 @@ mysql = ["mysqlclient"]
 postgresql = ["psycopg2"]
 
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools>=45", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+version_file = "pytrainer/version.py"
 
 [tool.setuptools]
 zip-safe = false
-
-[tool.setuptools.dynamic]
-version = {attr = "pytrainer.PKG_VERSION"}
 
 [tool.setuptools.packages.find]
 include = ["pytrainer*"]
