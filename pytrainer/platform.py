@@ -53,7 +53,7 @@ class _Platform(object):
 class _Linux(_Platform):
 
     def _get_data_path(self):
-        base_path = os.path.realpath(os.path.join(os.path.dirname(__file__), '..'))
+        base_path = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
 
         def _checkpath(fname):
             return os.path.exists(os.path.join(base_path, fname))

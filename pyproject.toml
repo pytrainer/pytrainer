@@ -38,6 +38,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools_scm]
 version_file = "pytrainer/version.py"
+parentdir_prefix_version = "pytrainer-"
 
 [tool.setuptools]
 zip-safe = false

@@ -23,9 +23,9 @@ import sys
 
 def initialize_gettext():
     base_path = os.path.realpath(os.path.join(
-        os.path.dirname(os.path.dirname(__file__)),
-        '..',
-        '..',
+        os.path.dirname(__file__),
+        "..",
+        "..",
     ))
     if (
             os.path.exists(base_path + "/setup.py")
