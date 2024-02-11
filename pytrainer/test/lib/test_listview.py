@@ -9,7 +9,7 @@ try:
 except ImportError:
     from mock import Mock
 from pytrainer.lib.ddbb import DDBB
-from pytrainer.lib.localization import initialize_gettext, gtk_str
+from pytrainer.lib.localization import initialize_gettext
 from pytrainer.core.sport import SportService
 from pytrainer.environment import Environment
 from pytrainer.profile import Profile
@@ -86,7 +86,7 @@ class ListviewTest(unittest.TestCase):
 
     def test_listsearch_sport(self):
         self.parent.lsa_sport.set_active(3)
-        active = gtk_str(self.parent.lsa_sport.get_active_text())
+        active = self.parent.lsa_sport.get_active_text()
         by_sport = list(self.main.record.getRecordListByCondition(self.parent.listsearch.condition))
         self.assertEqual(len(by_sport), 2)
         self.assertEqual(by_sport[0].sport.name, active)
