@@ -8,7 +8,7 @@
   <summary>The Free Sport Training Center</summary>
   <description>
     <p>
-    Pytrainer is a desktop application for logging and graphing sporting
+    pytrainer is a desktop application for logging and graphing sporting
     activities such as running or cycling sessions. Data can be
     imported from GPS devices, files or input manually. Currently
     pytrainer supports GPX, TCX, and FIT files.
