@@ -16,11 +16,18 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+import enum
 import logging
 import warnings
-import os, os.path
+import os
+import os.path
+
 import dateutil.parser
 from dateutil.tz import tzlocal
+from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String, Unicode, and_
+from sqlalchemy.orm import relationship, backref, reconstructor, deferred, joinedload
+from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy_utils.types.choice import ChoiceType
 
 from pytrainer.lib.date import second2time
 from pytrainer.lib.gpx import Gpx
@@ -28,9 +35,15 @@ from pytrainer.environment import Environment
 from pytrainer.lib import uc
 from pytrainer.profile import Profile
 from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger, record_to_equipment
-from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String, Unicode, and_
-from sqlalchemy.orm import relationship, backref, reconstructor, deferred, joinedload
-from sqlalchemy.exc import InvalidRequestError
+
+
+class Laptrigger(enum.Enum):
+    MANUAL = 'manual'
+    DISTANCE = 'distance'
+    LOCATION = 'location'
+    TIME = 'time'
+    HEARTRATE = 'hr'
+
 
 class Lap(DeclarativeBase):
     __tablename__ = 'laps'
@@ -44,7 +57,7 @@ class Lap(DeclarativeBase):
     id_lap = Column(Integer, primary_key=True)
     intensity = Column(String(length=7))
     lap_number = Column(ForcedInteger)
-    laptrigger = Column(String(length=9))
+    laptrigger = Column(ChoiceType(Laptrigger, impl=String(length=9)))
     max_hr = Column(ForcedInteger)
     max_speed = Column(Float)
     record = Column(Integer, ForeignKey('records.id_record'), index=True, nullable=False)
