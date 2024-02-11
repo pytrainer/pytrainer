@@ -477,7 +477,8 @@ class Main(SimpleBuilderApp):
                         'resting' : '#808080',
                     }
 
-                    pic = GdkPixbuf.Pixbuf.new_from_file(self.data_path+"glade/trigger_%s.png" % lap.laptrigger)
+                    pic = GdkPixbuf.Pixbuf.new_from_file(
+                        os.path.join(self.data_path, f"glade/trigger_{lap.laptrigger.value}.png"))
 
                     iter = store.append()
                     store.set(iter,

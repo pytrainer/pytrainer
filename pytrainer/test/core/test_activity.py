@@ -26,7 +26,7 @@ from sqlalchemy.orm.exc import NoResultFound
 from pytrainer.lib.ddbb import DDBB, DeclarativeBase
 from pytrainer.profile import Profile
 from pytrainer.lib.uc import UC
-from pytrainer.core.activity import ActivityService
+from pytrainer.core.activity import ActivityService, Laptrigger
 from pytrainer.lib.date import DateRange
 
 class ActivityTest(unittest.TestCase):
@@ -104,7 +104,26 @@ class ActivityTest(unittest.TestCase):
 
     def test_activity_lap(self):
         self.maxDiff = None
-        self.assertEqual(self.activity.laps[0], {'distance': 46181.9, 'end_lon': None, 'lap_number': 0, 'start_lon': None, 'id_lap': 1, 'calories': 1462, 'comments': None, 'laptrigger': u'manual', 'elapsed_time': u'7426.0', 'record': 1, 'intensity': u'active', 'avg_hr': 136, 'max_hr': 173, 'end_lat': None, 'start_lat': None, 'max_speed': None})
+        self.assertEqual(
+            self.activity.laps[0],
+            {
+                'distance': 46181.9,
+                'end_lon': None,
+                'lap_number': 0,
+                'start_lon': None,
+                'id_lap': 1,
+                'calories': 1462,
+                'comments': None,
+                'laptrigger': Laptrigger.MANUAL,
+                'elapsed_time': '7426.0',
+                'record': 1,
+                'intensity': 'active',
+                'avg_hr': 136,
+                'max_hr': 173,
+                'end_lat': None,
+                'start_lat': None,
+                'max_speed': None},
+        )
         lap = self.activity.Laps[0]
         self.assertEqual(lap.distance, 46181.9)
         self.assertEqual(lap.duration, 7426.0)
@@ -114,7 +133,7 @@ class ActivityTest(unittest.TestCase):
         self.assertEqual(lap.activity, self.activity)
         self.assertEqual(lap.lap_number, 0)
         self.assertEqual(lap.intensity, u'active')
-        self.assertEqual(lap.laptrigger, u'manual')
+        self.assertEqual(lap.laptrigger, Laptrigger.MANUAL)
 
     def test_activity_get_value_f(self):
         self.assertEqual(self.activity.get_value_f('distance', "%0.2f"), '46.18')

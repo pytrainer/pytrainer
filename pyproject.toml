@@ -19,6 +19,7 @@ dependencies = [
     "matplotlib >= 3.6.0",
     "python-dateutil",
     "requests",
+    "sqlalchemy-utils",
 ]
 
 [project.gui-scripts]
