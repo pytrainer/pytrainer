@@ -7,7 +7,6 @@ pytrainer supports GPX, TCX, and FIT files.
 
 Source Repository Structure
 ---------------------------
-* **bin** pytrainer executable *python script* files
 * **extensions** addons to extend pytrainer basic functionality
 * **glade** user interface design
 * **imports** files to parse different source formats
