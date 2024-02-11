@@ -18,7 +18,7 @@
 
 import datetime
 from pytrainer.timegraph import TimeGraph
-from pytrainer.lib.localization import locale_str
+
 
 class WeekGraph(TimeGraph):
 
@@ -41,4 +41,4 @@ class WeekGraph(TimeGraph):
 
 def getDays(date_ini):
 	#TODO look at using calendar.day_abbr for this
-	return [locale_str((date_ini+datetime.timedelta(x)).strftime("%a")) for x in range(0,7)]
+	return [(date_ini+datetime.timedelta(x)).strftime("%a") for x in range(0,7)]

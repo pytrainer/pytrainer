@@ -51,13 +51,6 @@ def initialize_gettext():
     else:
         gettext.install("pytrainer", gettext_path)
 
-def locale_str(string):
-    if sys.version_info[0] == 2:
-        lcname, encoding=locale.getlocale()
-        return string.decode(encoding)
-    else:
-        return string
-
 def gtk_str(string):
     """On Python 2 GTK returns all strings as UTF-8 encoded str. See
 https://python-gtk-3-tutorial.readthedocs.io/en/latest/unicode.html for
