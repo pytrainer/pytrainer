@@ -4,10 +4,7 @@ import datetime
 from sqlalchemy.orm.session import make_transient
 
 import unittest
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
+from unittest.mock import Mock
 from pytrainer.lib.ddbb import DDBB
 from pytrainer.lib.localization import initialize_gettext
 from pytrainer.core.sport import SportService

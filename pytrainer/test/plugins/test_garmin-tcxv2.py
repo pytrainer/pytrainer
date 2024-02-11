@@ -1,9 +1,5 @@
 import unittest
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
-import os
+from unittest.mock import Mock
 from lxml import etree
 
 from pytrainer.plugins import Plugins

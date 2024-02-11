@@ -5,10 +5,7 @@ __copyright__ = "Copyright © 2013 David García Granda"
 __license__ = "GPL v2 or later"
 
 import unittest
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
+from unittest.mock import Mock
 import os
 import sys
 from lxml import etree
