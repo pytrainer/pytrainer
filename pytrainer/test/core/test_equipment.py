@@ -32,30 +32,30 @@ class EquipmentTest(DDBBTestCase):
     def test_id_defaults_to_none(self):
         equipment = Equipment()
         self.assertEqual(None, equipment.id)
-            
+
     def test_id_set_to_integer(self):
         equipment = Equipment()
         equipment.id = 2
         self.assertEqual(2, equipment.id)
-            
+
     def test_id_set_to_numeric_string(self):
         equipment = Equipment()
         equipment.id = "3"
-        self.ddbb.session.add(equipment)
-        self.ddbb.session.commit()
+        self.session.add(equipment)
+        self.session.commit()
         self.assertEqual(3, equipment.id)
 
     def test_id_set_to_non_numeric_string(self):
         equipment = Equipment()
         equipment.id = "test"
         try:
-            self.ddbb.session.add(equipment)
-            self.ddbb.session.flush()
+            self.session.add(equipment)
+            self.session.flush()
         except (IntegrityError, OperationalError, DataError):
             pass
         else:
             self.fail("Should not be able to set equipment id to non numeric value.")
-            
+
     def test_description_defaults_to_empty_string(self):
         equipment = Equipment()
         self.assertEqual(u"", equipment.description)
@@ -64,29 +64,29 @@ class EquipmentTest(DDBBTestCase):
         equipment = Equipment()
         equipment.description = u"Zapatos de €100"
         self.assertEqual(u"Zapatos de €100", equipment.description)
-        
+
     def test_description_set_to_non_string(self):
         equipment = Equipment()
         equipment.description = 42
-        self.ddbb.session.add(equipment)
-        self.ddbb.session.commit()
+        self.session.add(equipment)
+        self.session.commit()
         self.assertEqual(u"42", equipment.description)
-            
+
     def test_active_defaults_to_true(self):
         equipment = Equipment()
         self.assertTrue(equipment.active)
-            
+
     def test_active_set_to_boolean(self):
         equipment = Equipment()
         equipment.active = False
         self.assertFalse(equipment.active)
-            
+
     def test_active_set_to_non_boolean(self):
         equipment = Equipment()
         equipment.active = "test"
-        self.ddbb.session.add(equipment)
+        self.session.add(equipment)
         try:
-            self.ddbb.session.commit()
+            self.session.commit()
             self.assertTrue(equipment.active)
         except StatementError:
             pass
@@ -94,57 +94,57 @@ class EquipmentTest(DDBBTestCase):
     def test_life_expectancy_defaults_to_zero(self):
         equipment = Equipment()
         self.assertEqual(0, equipment.life_expectancy)
-            
+
     def test_life_expectancy_set_to_integer(self):
         equipment = Equipment()
         equipment.life_expectancy = 2
         self.assertEqual(2, equipment.life_expectancy)
-            
+
     def test_life_expectancy_set_to_numeric_string(self):
         equipment = Equipment()
         equipment.life_expectancy = "3"
-        self.ddbb.session.add(equipment)
-        self.ddbb.session.commit()
+        self.session.add(equipment)
+        self.session.commit()
         self.assertEqual(3, equipment.life_expectancy)
 
     def test_life_expectancy_set_to_non_numeric_string(self):
         equipment = Equipment()
         equipment.life_expectancy = "test"
         try:
-            self.ddbb.session.add(equipment)
-            self.ddbb.session.flush()
+            self.session.add(equipment)
+            self.session.flush()
         except StatementError:
             pass
         else:
             self.fail("Should not be able to set life expectancy to non numeric value.")
-    
+
     def test_prior_usage_defaults_to_zero(self):
         equipment = Equipment()
         self.assertEqual(0, equipment.prior_usage)
-            
+
     def test_prior_usage_set_to_integer(self):
         equipment = Equipment()
         equipment.prior_usage = 2
         self.assertEqual(2, equipment.prior_usage)
-            
+
     def test_prior_usage_set_to_numeric_string(self):
         equipment = Equipment()
         equipment.prior_usage = "3"
-        self.ddbb.session.add(equipment)
-        self.ddbb.session.commit()
+        self.session.add(equipment)
+        self.session.commit()
         self.assertEqual(3, equipment.prior_usage)
 
     def test_prior_usage_set_to_non_numeric_string(self):
         equipment = Equipment()
         equipment.prior_usage = "test"
         try:
-            self.ddbb.session.add(equipment)
-            self.ddbb.session.flush()
+            self.session.add(equipment)
+            self.session.flush()
         except StatementError:
             pass
         else:
             self.fail("Should not be able to set life expectancy to non numeric value.")
-            
+
     def test_notes_defaults_to_empty_string(self):
         equipment = Equipment()
         self.assertEqual(u"", equipment.notes)
@@ -153,26 +153,26 @@ class EquipmentTest(DDBBTestCase):
         equipment = Equipment()
         equipment.notes = u"Zapatos de €100."
         self.assertEqual(u"Zapatos de €100.", equipment.notes)
-        
+
     def test_notes_set_to_non_string(self):
         equipment = Equipment()
         equipment.notes = 42
-        self.ddbb.session.add(equipment)
-        self.ddbb.session.commit()
+        self.session.add(equipment)
+        self.session.commit()
         self.assertEqual(u"42", equipment.notes)
-            
+
     def test_equals_new_instances(self):
         equipment1 = Equipment()
         equipment2 = Equipment()
         self.assertNotEqual(equipment1, equipment2, "")
-            
+
     def test_equals_instances_with_same_id(self):
         equipment1 = Equipment()
         equipment1.id = 1
         equipment2 = Equipment()
         equipment2.id = 1
         self.assertEqual(equipment1, equipment2, "Equipment instances with same id should be equal.")
-            
+
     def test_equals_instances_with_different_ids(self):
         equipment1 = Equipment()
         equipment1.id = 1
@@ -363,14 +363,3 @@ class EquipmentServiceTest(DDBBTestCase):
         equipment.prior_usage = 250
         usage = self.equipment_service.get_equipment_usage(equipment)
         self.assertEqual(250, usage)
-
-    def test_get_equipment_prior_usage(self):
-        equipment = Equipment()
-        equipment.id = 1
-        equipment.prior_usage = 250
-        usage = self.equipment_service.get_equipment_usage(equipment)
-        self.assertEqual(250, usage)
-
-if __name__ == "__main__":
-    #import sys;sys.argv = ['', 'Test.testName']
-    unittest.main()
