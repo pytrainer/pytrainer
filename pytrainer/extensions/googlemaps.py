@@ -16,18 +16,16 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import os
-import re
-import logging
 import colorsys
+import html
+import logging
 import math
-import traceback
-
-import cgi as html
+import os
 
 import pytrainer.lib.points as Points
 from pytrainer.lib.fileUtils import fileUtils
 from pytrainer.lib.uc import UC
+
 
 class Googlemaps:
     def __init__(self, data_path = None, waypoint = None, pytrainer_main=None):

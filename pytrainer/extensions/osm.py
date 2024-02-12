@@ -3,19 +3,17 @@
 # TODO: Add Google satellite images layers ?
 # TODO: Create map class/interface that osm/googlemaps will inherit from ?
 
-import os
-import re
+import html
 import logging
-import requests         # for downloading cached versions of openlayers.js and openstreetmaps.js
-import time             # Used for checking if local cached file is current
+import os
+import time  # Used for checking if local cached file is current
 
-import cgi as html
+import requests  # for downloading cached versions of openlayers.js and openstreetmaps.js
 
-from pytrainer.lib.gpx import Gpx
 import pytrainer.lib.points as Points
 from pytrainer.lib.fileUtils import fileUtils
-from pytrainer.record import Record
 from pytrainer.lib.uc import UC
+
 
 class Osm:
     # Default URLS
