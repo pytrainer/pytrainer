@@ -20,7 +20,7 @@ from pytrainer.util.color import Color, color_from_hex_string
 from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger
 from sqlalchemy import Column, Integer, Float, Unicode, CheckConstraint
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.exc import InvalidRequestError, IntegrityError
+from sqlalchemy.exc import InvalidRequestError, IntegrityError, StatementError
 import sqlalchemy.types as types
 import logging
 
@@ -95,13 +95,14 @@ class SportService(object):
 
     def store_sport(self, sport):
         """Store a new or update an existing sport.
-        
+
        The stored object is returned."""
         try:
             self._ddbb.session.add(sport)
             self._ddbb.session.commit()
-        except IntegrityError:
-            raise SportServiceException("")
+        except (IntegrityError, StatementError) as err:
+            self._ddbb.session.rollback()
+            raise SportServiceException(str(err)) from err
         return sport
 
     def remove_sport(self, sport):
