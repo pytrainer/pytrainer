@@ -44,7 +44,7 @@ class AthleteTest(unittest.TestCase):
         self.athlete.insert_athlete_stats(str(data['date']), data['weight'],
                                           data['bodyfat'], data['restinghr'],
                                           data['maxhr'])
-        data2 = self.athlete.get_athlete_stats()
+        data2 = tuple(self.athlete.get_athlete_stats())
         self.assertEqual(data, data2[0])
 
     def test_athlete_update_and_get(self):
@@ -58,7 +58,7 @@ class AthleteTest(unittest.TestCase):
         self.athlete.update_athlete_stats(1, str(data['date']), data['weight'],
                                           data['bodyfat'], data['restinghr'],
                                           data['maxhr'])
-        data2 = self.athlete.get_athlete_stats()
+        data2 = tuple(self.athlete.get_athlete_stats())
         self.assertEqual(data, data2[0])
 
     def test_athlete_delete_record(self):
@@ -68,4 +68,4 @@ class AthleteTest(unittest.TestCase):
                                           data['bodyfat'], data['restinghr'],
                                           data['maxhr'])
         self.athlete.delete_record(1)
-        self.assertFalse(self.athlete.get_athlete_stats())
+        self.assertFalse(tuple(self.athlete.get_athlete_stats()))

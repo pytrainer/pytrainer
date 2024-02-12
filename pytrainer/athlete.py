@@ -45,7 +45,7 @@ class Athlete:
     def refresh(self):
         logging.debug('>>')
         self.init_from_conf()
-        self.data = self.get_athlete_stats()
+        self.data = tuple(self.get_athlete_stats())
         self.graphdata = self.get_athlete_data()
         logging.debug('<<')
 
@@ -58,13 +58,11 @@ class Athlete:
 
     def get_athlete_stats(self):
         logging.debug('>>')
-        ret = []
         with self._ddbb.sessionmaker.begin() as session:
             for stat in session.query(Athletestat).order_by('date'):
                 d = dict(stat.__dict__)
                 d.pop('_sa_instance_state', None)
-                ret.append(d)
-        return ret
+                yield d
 
     def get_athlete_data(self):
         from pytrainer.lib.graphdata import GraphData
