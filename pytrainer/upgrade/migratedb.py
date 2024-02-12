@@ -44,14 +44,14 @@ class MigratableDb:
             pypath.
         db_url -- the connection URL string for the DB.
         """
-        self.ddbb = ddbb
+        self._ddbb = ddbb
 
     def is_empty(self):
         """Check if the DB schema is empty.
 
         An empty schema indicates a new uninitialised database."""
         metadata = MetaData()
-        metadata.bind = self.ddbb.engine
+        metadata.bind = self._ddbb.engine
         metadata.reflect()
         tables = metadata.tables
         return not tables
@@ -70,7 +70,8 @@ class MigratableDb:
         """Get the current version of the versioned DB.
 
         Raises OperationError if the DB is not initialized."""
-        latest = self.ddbb.session.query(func.max(MigrateVersion.version)).one()
+        with self._ddbb.sessionmaker.begin() as session:
+            latest = session.query(func.max(MigrateVersion.version)).one()
         return latest[0]
 
     def get_upgrade_version(self):
@@ -81,14 +82,14 @@ class MigratableDb:
         """Initialize the database with migrate metadata.
 
         Raises DatabaseAlreadyControlledError if the DB is already initialized."""
-        self.ddbb.session.add(
-            MigrateVersion(
-                repository_id='pytrainer',
-                repository_path='/usr/lib/python3/site-packages/pytrainer/upgrade',
-                version=15,
+        with self._ddbb.sessionmaker.begin() as session:
+            session.add(
+                MigrateVersion(
+                    repository_id='pytrainer',
+                    repository_path='/usr/lib/python3/site-packages/pytrainer/upgrade',
+                    version=15,
                 )
             )
-        self.ddbb.session.commit()
 
     def upgrade(self):
         """Run all available upgrade scripts for the repository."""
