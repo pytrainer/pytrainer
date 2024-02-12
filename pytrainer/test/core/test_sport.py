@@ -35,17 +35,17 @@ class SportTest(DDBBTestCase):
     def test_id_should_accept_integer_string(self):
         sport = Sport()
         sport.id = "1"
-        self.ddbb.session.add(sport)
-        self.ddbb.session.commit()
-        sport = self.ddbb.session.query(Sport).filter(Sport.id == 1).one()
+        self.session.add(sport)
+        self.session.commit()
+        sport = self.session.query(Sport).filter(Sport.id == 1).one()
         self.assertEqual(1, sport.id)
 
     def test_id_should_not_accept_non_integer_string(self):
         sport = Sport()
         with self.assertRaises((IntegrityError, DataError, OperationalError)):
             sport.id = "test"
-            self.ddbb.session.add(sport)
-            self.ddbb.session.flush()
+            self.session.add(sport)
+            self.session.flush()
 
     def test_name_should_default_to_empty_string(self):
         sport = Sport()
@@ -60,8 +60,8 @@ class SportTest(DDBBTestCase):
         sport = Sport()
         sport.name = None
         with self.assertRaises((IntegrityError, OperationalError)):
-            self.ddbb.session.add(sport)
-            self.ddbb.session.commit()
+            self.session.add(sport)
+            self.session.commit()
 
     def test_met_should_default_to_None(self):
         sport = Sport()
@@ -70,25 +70,25 @@ class SportTest(DDBBTestCase):
     def test_met_should_accept_float(self):
         sport = Sport()
         sport.met = 22.5
-        self.ddbb.session.add(sport)
-        self.ddbb.session.flush()
+        self.session.add(sport)
+        self.session.flush()
         self.assertEqual(22.5, sport.met)
 
     def test_met_should_accept_float_string(self):
         sport = Sport()
         sport.name = "test1"
         sport.met = "22.5"
-        self.ddbb.session.add(sport)
-        self.ddbb.session.commit()
-        sport = self.ddbb.session.query(Sport).filter(Sport.id == 1).one()
+        self.session.add(sport)
+        self.session.commit()
+        sport = self.session.query(Sport).filter(Sport.id == 1).one()
         self.assertEqual(22.5, sport.met)
 
     def test_met_should_not_accept_non_float_string(self):
         sport = Sport()
         sport.met = "22.5kg"
         with self.assertRaises((ValueError, StatementError)):
-            self.ddbb.session.add(sport)
-            self.ddbb.session.flush()
+            self.session.add(sport)
+            self.session.flush()
 
     def test_met_should_not_accept_negative_value(self):
         if self.ddbb.engine.name == 'mysql':
@@ -96,8 +96,8 @@ class SportTest(DDBBTestCase):
         sport = Sport()
         sport.met = -1
         with self.assertRaises((IntegrityError, InterfaceError)):
-            self.ddbb.session.add(sport)
-            self.ddbb.session.flush()
+            self.session.add(sport)
+            self.session.flush()
 
     def test_met_should_accept_none(self):
         sport = Sport()
@@ -116,16 +116,16 @@ class SportTest(DDBBTestCase):
     def test_weight_should_accept_float_string(self):
         sport = Sport()
         sport.weight = "22.5"
-        self.ddbb.session.add(sport)
-        self.ddbb.session.commit()
+        self.session.add(sport)
+        self.session.commit()
         self.assertEqual(22.5, sport.weight)
 
     def test_weight_should_not_accept_non_float_string(self):
         sport = Sport()
         sport.weight = "22.5kg"
         with self.assertRaises(StatementError):
-            self.ddbb.session.add(sport)
-            self.ddbb.session.flush()
+            self.session.add(sport)
+            self.session.flush()
 
     def test_weight_should_not_accept_negative_value(self):
         if self.ddbb.engine.name == 'mysql':
@@ -133,15 +133,15 @@ class SportTest(DDBBTestCase):
         sport = Sport()
         sport.weight = -1
         with self.assertRaises((IntegrityError, InterfaceError)):
-            self.ddbb.session.add(sport)
-            self.ddbb.session.flush()
+            self.session.add(sport)
+            self.session.flush()
 
     def test_weight_should_not_accept_none(self):
         sport = Sport()
         sport.weight = None
         with self.assertRaises((IntegrityError, OperationalError)):
-            self.ddbb.session.add(sport)
-            self.ddbb.session.flush()
+            self.session.add(sport)
+            self.session.flush()
 
     def test_max_pace_should_default_to_none(self):
         sport = Sport()
@@ -150,30 +150,30 @@ class SportTest(DDBBTestCase):
     def test_max_pace_should_accept_integer(self):
         sport = Sport()
         sport.max_pace = 220
-        self.ddbb.session.add(sport)
-        self.ddbb.session.flush()
+        self.session.add(sport)
+        self.session.flush()
         self.assertEqual(220, sport.max_pace)
 
     def test_max_pace_should_accept_integer_string(self):
         sport = Sport()
         sport.max_pace = "220"
-        self.ddbb.session.add(sport)
-        self.ddbb.session.commit()
+        self.session.add(sport)
+        self.session.commit()
         self.assertEqual(220, sport.max_pace)
 
     def test_max_pace_should_not_accept_non_integer_string(self):
         sport = Sport()
         sport.max_pace = "225s"
         with self.assertRaises((ValueError, StatementError)):
-            self.ddbb.session.add(sport)
-            self.ddbb.session.flush()
+            self.session.add(sport)
+            self.session.flush()
 
     def test_max_pace_should_take_floor_of_float(self):
         sport = Sport()
         sport.max_pace = 220.6
-        self.ddbb.session.add(sport)
-        self.ddbb.session.commit()
-        sport = self.ddbb.session.query(Sport).filter(Sport.id == 1).one()
+        self.session.add(sport)
+        self.session.commit()
+        sport = self.session.query(Sport).filter(Sport.id == 1).one()
         self.assertEqual(220, sport.max_pace)
 
     def test_max_pace_should_not_accept_negative_value(self):
@@ -182,8 +182,8 @@ class SportTest(DDBBTestCase):
         sport = Sport()
         sport.max_pace = -1
         with self.assertRaises((IntegrityError, InterfaceError)):
-            self.ddbb.session.add(sport)
-            self.ddbb.session.flush()
+            self.session.add(sport)
+            self.session.flush()
 
     def test_max_pace_should_accept_none(self):
         sport = Sport()
@@ -198,8 +198,8 @@ class SportTest(DDBBTestCase):
         sport = Sport()
         sport.color = None
         with self.assertRaises(StatementError):
-            self.ddbb.session.add(sport)
-            self.ddbb.session.commit()
+            self.session.add(sport)
+            self.session.commit()
 
 
 class SportServiceTest(DDBBTestCase):
