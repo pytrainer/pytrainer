@@ -21,7 +21,7 @@ from .SimpleGladeApp import SimpleBuilderApp
 from .windowcalendar import WindowCalendar
 from pytrainer.core.equipment import EquipmentService
 from pytrainer.gui.equipment import EquipmentUi
-from pytrainer.core.sport import Sport
+from pytrainer.core.sport import Sport, SportServiceException
 from gi.repository import Gtk, GdkPixbuf
 from gi.repository import GObject
 import logging
@@ -316,15 +316,16 @@ class WindowProfile(SimpleBuilderApp):
         sport.weight = self._float_or_zero(self.newweightentry.get_text())
         sport.max_pace = self._trim_to_null(self.newmaxpace.get_text())
         sport.color = self.stored_color
-        if sport.name.lower() in [s.name.lower() for s in self._sport_service.get_all_sports()]:
-            msg = "Sport '%s' already exists" % sport.name
+        try:
+            self._sport_service.store_sport(sport)
+        except SportServiceException as err:
+            msg = str(err)
             logging.error(msg)
             md = Gtk.MessageDialog(None, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.ERROR, Gtk.ButtonsType.CLOSE, _(msg))
             md.set_title(_("Sport Creation Error"))
             md.run()
             md.destroy()
             return
-        self._sport_service.store_sport(sport)
         self.pytrainer_main.refreshMainSportList()
         self.on_switch_page(None,None,2)
         self.hidesportsteps()
