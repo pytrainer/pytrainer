@@ -16,10 +16,7 @@
 
 import unittest
 import datetime
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
+from unittest.mock import Mock
 from dateutil.tz import tzutc, tzlocal
 from pytrainer.lib.date import second2time, time2second, time2string, unixtime2date, getNameMonth, getDateTime
 from pytrainer.lib.date import Date, DateRange

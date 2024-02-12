@@ -20,7 +20,6 @@ import os
 
 from gi.repository import Gtk
 from pytrainer.core.equipment import Equipment
-from pytrainer.lib.localization import gtk_str
 from pytrainer.environment import Environment
 
 
@@ -161,13 +160,16 @@ class EquipmentUi(Gtk.HBox):
     
     def _confirm_add_equipment_clicked(self, widget):
         #FIXME input validation for numeric fields
-        description = gtk_str(self._builder.get_object("entryEquipmentAddDescription").get_text())
-        life_expectancy = gtk_str(self._builder.get_object("entryEquipmentAddLifeExpectancy").get_text())
-        prior_usage = gtk_str(self._builder.get_object("entryEquipmentAddPriorUsage").get_text())
+        description = self._builder.get_object("entryEquipmentAddDescription").get_text()
+        life_expectancy = self._builder.get_object("entryEquipmentAddLifeExpectancy").get_text()
+        prior_usage = self._builder.get_object("entryEquipmentAddPriorUsage").get_text()
         active = self._builder.get_object("checkbuttonEquipmentAddActive").get_active()
         notes_buffer = self._builder.get_object("textviewEquipmentAddNotes").get_buffer()
-        notes = gtk_str(notes_buffer.get_text(notes_buffer.get_start_iter(),
-                                              notes_buffer.get_end_iter(), True))
+        notes = notes_buffer.get_text(
+            notes_buffer.get_start_iter(),
+            notes_buffer.get_end_iter(),
+            True,
+        )
         new_equipment = Equipment()
         new_equipment.description = description
         new_equipment.active = bool(active)
@@ -197,14 +199,17 @@ class EquipmentUi(Gtk.HBox):
         
     def _confirm_edit_equipment_clicked(self, widget):
         item = self._get_selected_equipment_item()
-        description_text = gtk_str(self._builder.get_object("entryEquipmentEditDescription").get_text())
+        description_text = self._builder.get_object("entryEquipmentEditDescription").get_text()
         item.description = description_text
-        item.life_expectancy = gtk_str(self._builder.get_object("entryEquipmentEditLifeExpectancy").get_text())
-        item.prior_usage = gtk_str(self._builder.get_object("entryEquipmentEditPriorUsage").get_text())
+        item.life_expectancy = self._builder.get_object("entryEquipmentEditLifeExpectancy").get_text()
+        item.prior_usage = self._builder.get_object("entryEquipmentEditPriorUsage").get_text()
         item.active = self._builder.get_object("checkbuttonEquipmentEditActive").get_active()
         notes_buffer = self._builder.get_object("textviewEquipmentEditNotes").get_buffer()
-        notes_text = gtk_str(notes_buffer.get_text(notes_buffer.get_start_iter(),
-                                                   notes_buffer.get_end_iter(), True))
+        notes_text = notes_buffer.get_text(
+            notes_buffer.get_start_iter(),
+            notes_buffer.get_end_iter(),
+            True,
+        )
         item.notes = notes_text
         self._equipment_store.edit_equipment(self._get_selected_equipment_path(), item)
         self.show_page_equipment_list()

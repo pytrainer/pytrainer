@@ -15,10 +15,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import unittest
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
+from unittest.mock import Mock
 from datetime import datetime, date
 from dateutil.tz import tzoffset
 from pytrainer.lib.ddbb import DDBB

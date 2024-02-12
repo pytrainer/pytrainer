@@ -65,18 +65,6 @@ class EquipmentTest(unittest.TestCase):
         equipment = Equipment()
         self.assertEqual(u"", equipment.description)
 
-    @unittest.skipIf(sys.version_info > (3, 0), "All strings are unicode in Python 3")
-    def test_description_set_to_non_unicode_string(self):
-        equipment = Equipment()
-        equipment.description = "100$ Shoes" + chr(255)
-        try:
-            self.ddbb.session.add(equipment)
-            self.ddbb.session.flush()
-        except (ProgrammingError, DataError, OperationalError):
-            pass
-        else:
-            self.fail("Should not be able to set description to non unicode string value.")
-            
     def test_description_set_to_unicode_string(self):
         equipment = Equipment()
         equipment.description = u"Zapatos de €100"
@@ -166,18 +154,6 @@ class EquipmentTest(unittest.TestCase):
         equipment = Equipment()
         self.assertEqual(u"", equipment.notes)
 
-    @unittest.skipIf(sys.version_info > (3, 0), "All strings are unicode in Python 3")
-    def test_notes_set_to_string(self):
-        equipment = Equipment()
-        equipment.notes = "100$ Shoes" + chr(255)
-        try:
-            self.ddbb.session.add(equipment)
-            self.ddbb.session.flush()
-        except (ProgrammingError, DataError, OperationalError):
-            pass
-        else:
-            self.fail("Should not be able to set notes to non-unicode string value.")
-            
     def test_notes_set_to_unicode_string(self):
         equipment = Equipment()
         equipment.notes = u"Zapatos de €100."

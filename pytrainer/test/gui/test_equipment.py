@@ -1,9 +1,6 @@
 # -*- coding: utf-8 -*-
 import unittest
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
+from unittest.mock import Mock
 
 try:
     from gi.repository import Gtk

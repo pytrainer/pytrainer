@@ -18,7 +18,6 @@
 import gettext
 import locale
 import os.path
-import sys
 
 
 def initialize_gettext():
@@ -46,26 +45,4 @@ def initialize_gettext():
 
     locale.bindtextdomain("pytrainer", gettext_path)
     locale.textdomain("pytrainer")
-    if sys.version_info[0] == 2:
-        gettext.install("pytrainer", gettext_path, unicode=1)
-    else:
-        gettext.install("pytrainer", gettext_path)
-
-def locale_str(string):
-    if sys.version_info[0] == 2:
-        lcname, encoding=locale.getlocale()
-        return string.decode(encoding)
-    else:
-        return string
-
-def gtk_str(string):
-    """On Python 2 GTK returns all strings as UTF-8 encoded str. See
-https://python-gtk-3-tutorial.readthedocs.io/en/latest/unicode.html for
-more details."""
-    if sys.version_info[0] == 2:
-        if string is None:
-            return None
-        else:
-            return string.decode('utf-8')
-    else:
-        return string
+    gettext.install("pytrainer", gettext_path)

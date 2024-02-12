@@ -29,7 +29,6 @@ from pytrainer.lib.date import getLocalTZ, time2second
 import dateutil.parser
 from dateutil.tz import tzutc
 from pytrainer.lib.uc import UC
-from pytrainer.lib.localization import gtk_str
 
 class WindowRecord(SimpleBuilderApp):
     def __init__(self, equipment_service, data_path = None, listSport = None, parent = None, date = None, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None, windowTitle=None, equipment=[]):
@@ -179,7 +178,7 @@ class WindowRecord(SimpleBuilderApp):
                 details["rcd_sport"] = activity[4]
             else:
                 # No sport was provided, preliminary set the current selection from window
-                details["rcd_sport"] = gtk_str(self.rcd_sport.get_active_text())
+                details["rcd_sport"] = self.rcd_sport.get_active_text()
             details["rcd_gpxfile"] = activity[5]
             details["file_id"] = activity[6]
             self.activity_data.append(details)
@@ -228,16 +227,16 @@ class WindowRecord(SimpleBuilderApp):
             if self.active_row is not None:
                 buffer = self.rcd_comments.get_buffer()
                 start,end = buffer.get_bounds()
-                comments = gtk_str(buffer.get_text(start,end, True))
+                comments = buffer.get_text(start,end, True)
                 self.activity_data[self.active_row]["rcd_comments"] = comments
                 #Advanced tab items
-                self.activity_data[self.active_row]["rcd_maxpace"] = gtk_str(self.rcd_maxpace.get_text())
-                self.activity_data[self.active_row]["rcd_pace"] = gtk_str(self.rcd_pace.get_text())
-                self.activity_data[self.active_row]["rcd_upositive"] = gtk_str(self.rcd_upositive.get_text())
-                self.activity_data[self.active_row]["rcd_unegative"] = gtk_str(self.rcd_unegative.get_text())
-                self.activity_data[self.active_row]["rcd_maxbeats"] = gtk_str(self.rcd_maxbeats.get_text())
-                self.activity_data[self.active_row]["rcd_beats"] = gtk_str(self.rcd_beats.get_text())
-                self.activity_data[self.active_row]["rcd_calories"] = gtk_str(self.rcd_calories.get_text())
+                self.activity_data[self.active_row]["rcd_maxpace"] = self.rcd_maxpace.get_text()
+                self.activity_data[self.active_row]["rcd_pace"] = self.rcd_pace.get_text()
+                self.activity_data[self.active_row]["rcd_upositive"] = self.rcd_upositive.get_text()
+                self.activity_data[self.active_row]["rcd_unegative"] = self.rcd_unegative.get_text()
+                self.activity_data[self.active_row]["rcd_maxbeats"] = self.rcd_maxbeats.get_text()
+                self.activity_data[self.active_row]["rcd_beats"] = self.rcd_beats.get_text()
+                self.activity_data[self.active_row]["rcd_calories"] = self.rcd_calories.get_text()
             row = 0 
             for activity in self.activity_data:
                 index = self.activity_data.index(activity)
@@ -256,36 +255,36 @@ class WindowRecord(SimpleBuilderApp):
             logging.debug("Single activity")
             list_options = {}
             trackSummary = {}
-            list_options["rcd_date"] = gtk_str(self.rcd_date.get_text())
-            list_options["rcd_sport"] = gtk_str(self.rcd_sport.get_active_text())
+            list_options["rcd_date"] = self.rcd_date.get_text()
+            list_options["rcd_sport"] = self.rcd_sport.get_active_text()
             list_options["rcd_distance"] = self.uc.usr2sys_str('distance',
-                                                               gtk_str(self.rcd_distance.get_text()))
-            list_options["rcd_beats"] = gtk_str(self.rcd_beats.get_text())
+                                                               self.rcd_distance.get_text())
+            list_options["rcd_beats"] = self.rcd_beats.get_text()
             list_options["rcd_average"] = self.uc.usr2sys_str('speed',
-                                                              gtk_str(self.rcd_average.get_text()))
-            list_options["rcd_calories"] = gtk_str(self.rcd_calories.get_text())
-            list_options["rcd_title"] = gtk_str(self.rcd_title.get_text())
-            list_options["rcd_gpxfile"] = gtk_str(self.rcd_gpxfile.get_text())
+                                                              self.rcd_average.get_text())
+            list_options["rcd_calories"] = self.rcd_calories.get_text()
+            list_options["rcd_title"] = self.rcd_title.get_text()
+            list_options["rcd_gpxfile"] = self.rcd_gpxfile.get_text()
             list_options["rcd_upositive"] = self.uc.usr2sys_str('height',
-                                                                gtk_str(self.rcd_upositive.get_text()))
+                                                                self.rcd_upositive.get_text())
             list_options["rcd_unegative"] = self.uc.usr2sys_str('height',
-                                                                gtk_str(self.rcd_unegative.get_text()))
-            list_options["rcd_maxbeats"] = gtk_str(self.rcd_maxbeats.get_text())
+                                                                self.rcd_unegative.get_text())
+            list_options["rcd_maxbeats"] = self.rcd_maxbeats.get_text()
             # 2011.11.05 - dgranda
             # Pace is shown to user in mm:ss format
             # But pace in database is stored in a mixed way: 4.30 for 4:30 (4.5 in 'decimal'). This needs to be changed!!
-            list_options["rcd_pace"] = self.uc.usr2sys_str('pace', gtk_str(self.rcd_pace.get_text()).replace(":","."))
-            list_options["rcd_maxpace"] = self.uc.usr2sys_str('pace', gtk_str(self.rcd_maxpace.get_text()).replace(":","."))
-            list_options["rcd_maxvel"] = self.uc.usr2sys_str('speed', gtk_str(self.rcd_maxvel.get_text()))
+            list_options["rcd_pace"] = self.uc.usr2sys_str('pace', self.rcd_pace.get_text().replace(":","."))
+            list_options["rcd_maxpace"] = self.uc.usr2sys_str('pace', self.rcd_maxpace.get_text().replace(":","."))
+            list_options["rcd_maxvel"] = self.uc.usr2sys_str('speed', self.rcd_maxvel.get_text())
             list_options["rcd_time"] = [self.rcd_hour.get_value_as_int(),self.rcd_min.get_value_as_int(),self.rcd_second.get_value_as_int()]
             buffer = self.rcd_comments.get_buffer()
             start,end = buffer.get_bounds()
-            comment = gtk_str(buffer.get_text(start,end, True))
+            comment = buffer.get_text(start,end, True)
             list_options["rcd_comments"] = comment
             selected_equipment_ids = self._get_selected_equipment_ids()
             # Added to change start time, only activities without GPX+ source file - dgranda 2011/06/10
-            record_time = gtk_str(self.rcd_starttime.get_text())
-            record_date = gtk_str(self.rcd_date.get_text())
+            record_time = self.rcd_starttime.get_text()
+            record_date = self.rcd_date.get_text()
             localtz = getLocalTZ()
             date = dateutil.parser.parse(record_date+" "+record_time+" "+localtz)
             local_date = str(date)
@@ -301,8 +300,8 @@ class WindowRecord(SimpleBuilderApp):
                 else:
                     logging.info('Adding new activity based on provided data')
                     #Manual entry, calculate time info
-                    record_time = gtk_str(self.rcd_starttime.get_text())
-                    record_date = gtk_str(self.rcd_date.get_text())
+                    record_time = self.rcd_starttime.get_text()
+                    record_date = self.rcd_date.get_text()
                     localtz = getLocalTZ()
                     date = dateutil.parser.parse(record_date+" "+record_time+" "+localtz)
                     local_date = str(date)
@@ -335,7 +334,7 @@ class WindowRecord(SimpleBuilderApp):
         self.quit()
 
     def on_calendar_clicked(self,widget):
-        calendardialog = WindowCalendar(self.data_path,self, date=gtk_str(self.rcd_date.get_text()))
+        calendardialog = WindowCalendar(self.data_path,self, date=self.rcd_date.get_text())
         calendardialog.run()
 
     def setDate(self,date):
@@ -465,10 +464,10 @@ class WindowRecord(SimpleBuilderApp):
     def on_calctime_clicked(self,widget):
         logging.debug(">>")
         try:
-            distance = float(gtk_str(self.rcd_distance.get_text())) # distance is mandatory!
+            distance = float(self.rcd_distance.get_text()) # distance is mandatory!
             # we need either pace or speed
             try:
-                average = float(gtk_str(self.rcd_average.get_text()))
+                average = float(self.rcd_average.get_text())
                 time_in_hour = distance/average
                 logging.debug("Distance: %0.3f km (mi) | Speed: %0.2f -> Time: %.f hours",
                               distance, average, time_in_hour)
@@ -476,7 +475,7 @@ class WindowRecord(SimpleBuilderApp):
                 logging.debug("Setting pace: %s", pace)
                 self.rcd_pace.set_text(pace)
             except:
-                pace_dec = self.parent.pace_to_float(gtk_str(self.rcd_pace.get_text()))
+                pace_dec = self.parent.pace_to_float(self.rcd_pace.get_text())
                 time_in_hour = pace_dec*distance/60.0
                 logging.debug("Distance: %0.3f km (mi) | Pace_dec: %0.2f -> Time: %.f hours",
                               distance, pace_dec, time_in_hour)
@@ -584,11 +583,11 @@ class WindowRecord(SimpleBuilderApp):
         
     def on_rcd_title_changed(self, widget):
         if self.mode == "multiple_activities" and self.active_row is not None:
-            self.activity_data[self.active_row]["rcd_title"] = gtk_str(self.rcd_title.get_text())
+            self.activity_data[self.active_row]["rcd_title"] = self.rcd_title.get_text()
             
     def on_rcd_sport_changed(self, widget):
         if self.mode == "multiple_activities" and self.active_row is not None:
-            sport = gtk_str(self.rcd_sport.get_active_text())
+            sport = self.rcd_sport.get_active_text()
             #Update sport in data store
             self.activity_data[self.active_row]["rcd_sport"] = sport
             #Update sport in treeview
@@ -596,7 +595,7 @@ class WindowRecord(SimpleBuilderApp):
             
     def on_rcd_distance_changed(self, widget):
         if self.mode == "multiple_activities" and self.active_row is not None:
-            distance = gtk_str(self.rcd_distance.get_text())
+            distance = self.rcd_distance.get_text()
             #Update distance in data store
             self.activity_data[self.active_row]["rcd_distance"] = distance
             #Update distance in treeview
@@ -616,12 +615,12 @@ class WindowRecord(SimpleBuilderApp):
     def on_rcd_date_changed(self, widget):
         if self.mode == "multiple_activities" and self.active_row is not None:
             #Update date in data store
-            self.activity_data[self.active_row]["rcd_date"] = gtk_str(self.rcd_date.get_text())
+            self.activity_data[self.active_row]["rcd_date"] = self.rcd_date.get_text()
             
     def on_rcd_starttime_changed(self, widget):
         if self.mode == "multiple_activities" and self.active_row is not None:
             #Update start time in data store
-            self.activity_data[self.active_row]["rcd_starttime"] = gtk_str(self.rcd_starttime.get_text())
+            self.activity_data[self.active_row]["rcd_starttime"] = self.rcd_starttime.get_text()
             
     def on_treeviewEntries_row_activated(self, treeview, event):
         '''
@@ -632,16 +631,16 @@ class WindowRecord(SimpleBuilderApp):
             #Check for edited data in comments
             buffer = self.rcd_comments.get_buffer()
             start,end = buffer.get_bounds()
-            comments = gtk_str(buffer.get_text(start,end, True))
+            comments = buffer.get_text(start,end, True)
             self.activity_data[self.active_row]["rcd_comments"] = comments
             #Advanced tab items
-            self.activity_data[self.active_row]["rcd_maxpace"] = gtk_str(self.rcd_maxpace.get_text())
-            self.activity_data[self.active_row]["rcd_pace"] = gtk_str(self.rcd_pace.get_text())
-            self.activity_data[self.active_row]["rcd_upositive"] = gtk_str(self.rcd_upositive.get_text())
-            self.activity_data[self.active_row]["rcd_unegative"] = gtk_str(self.rcd_unegative.get_text())
-            self.activity_data[self.active_row]["rcd_maxbeats"] = gtk_str(self.rcd_maxbeats.get_text())
-            self.activity_data[self.active_row]["rcd_beats"] = gtk_str(self.rcd_beats.get_text())
-            self.activity_data[self.active_row]["rcd_calories"] = gtk_str(self.rcd_calories.get_text())
+            self.activity_data[self.active_row]["rcd_maxpace"] = self.rcd_maxpace.get_text()
+            self.activity_data[self.active_row]["rcd_pace"] = self.rcd_pace.get_text()
+            self.activity_data[self.active_row]["rcd_upositive"] = self.rcd_upositive.get_text()
+            self.activity_data[self.active_row]["rcd_unegative"] = self.rcd_unegative.get_text()
+            self.activity_data[self.active_row]["rcd_maxbeats"] = self.rcd_maxbeats.get_text()
+            self.activity_data[self.active_row]["rcd_beats"] = self.rcd_beats.get_text()
+            self.activity_data[self.active_row]["rcd_calories"] = self.rcd_calories.get_text()
         #Get row that was selected
         x = int(event.x)
         y = int(event.y)
@@ -664,7 +663,7 @@ class WindowRecord(SimpleBuilderApp):
         if time<1:
             logging.debug("Seems no time value (%s) has been entered, nothing to calculate.", time)
             return False
-        distance = float(gtk_str(self.rcd_distance.get_text()))
+        distance = float(self.rcd_distance.get_text())
         if distance<1:
             logging.debug("Seems no distance value (%s) has been entered, nothing to calculate.", distance)
             return False
@@ -682,7 +681,7 @@ class WindowRecord(SimpleBuilderApp):
         logging.debug("<<")
 
     def on_calccalories_clicked(self,widget):
-        sport = gtk_str(self.rcd_sport.get_active_text())
+        sport = self.rcd_sport.get_active_text()
         hour = self.rcd_hour.get_value_as_int()
         min = self.rcd_min.get_value_as_int()
         sec = self.rcd_second.get_value_as_int()
@@ -715,7 +714,7 @@ class WindowRecord(SimpleBuilderApp):
             time_in_hour = time/3600.0
             # we need either pace or speed
             try:
-                average = float(gtk_str(self.rcd_average.get_text()))
+                average = float(self.rcd_average.get_text())
                 distance = average*time_in_hour
                 logging.debug("Time: %d seconds | Speed: %0.2f -> Distance: %0.3f km (mi)",
                               time, average, distance)
@@ -723,7 +722,7 @@ class WindowRecord(SimpleBuilderApp):
                 logging.debug("Setting pace: %s", pace)
                 self.rcd_pace.set_text(pace)
             except:
-                pace_dec = self.parent.pace_to_float(gtk_str(self.rcd_pace.get_text()))
+                pace_dec = self.parent.pace_to_float(self.rcd_pace.get_text())
                 distance = time/(60.0*pace_dec)
                 logging.debug("Time: %d seconds | Pace_dec: %0.2f -> Distance: %0.3f km (mi)",
                               time, pace_dec, distance)
@@ -767,7 +766,7 @@ class WindowRecord(SimpleBuilderApp):
         logging.debug("<<")
 
     def on_calculatevalues_clicked(self,widget):
-        gpxfile = gtk_str(self.rcd_gpxfile.get_text())
+        gpxfile = self.rcd_gpxfile.get_text()
         if os.path.isfile(gpxfile):
             self.frameGeneral.set_sensitive(0)
             self.frameVelocity.set_sensitive(0) 

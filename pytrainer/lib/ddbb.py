@@ -105,15 +105,11 @@ if no url is provided"""
     def drop_tables(self):
         """Drop the database schema"""
         DeclarativeBase.metadata.drop_all(self.engine)
-                
+
     def create_backup(self):
         """Create a backup of the current database."""
-        try:
-            import urlparse
-            from urllib import url2pathname
-        except ImportError:
-            import urllib.parse as urlparse
-            from urllib.request import url2pathname
+        import urllib.parse as urlparse
+        from urllib.request import url2pathname
         scheme, netloc, path, params, query, fragment = urlparse.urlparse(self.url)
         if scheme == 'sqlite':
             import datetime

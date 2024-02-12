@@ -71,18 +71,6 @@ class SportTest(unittest.TestCase):
         sport.name = u"Unicycling"
         self.assertEqual(u"Unicycling", sport.name)
 
-    @unittest.skipIf(sys.version_info > (3, 0), "All strings are unicode in Python 3")
-    def test_name_should_not_accept_non_unicode_string(self):
-        sport = Sport()
-        sport.name = "Juggling" + chr(255)
-        try:
-            self.ddbb.session.add(sport)
-            self.ddbb.session.flush()
-        except (ProgrammingError, DataError, OperationalError):
-            pass
-        else:
-            self.fail()
-            
     def test_name_should_not_accept_none(self):
         sport = Sport()
         sport.name = None

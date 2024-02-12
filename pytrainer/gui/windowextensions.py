@@ -20,7 +20,6 @@ from .SimpleGladeApp import SimpleBuilderApp
 from gi.repository import Gtk
 from gi.repository import GObject
 import io
-from pytrainer.lib.localization import gtk_str
 
 class WindowExtensions(SimpleBuilderApp):
     def __init__(self, data_path = None, parent=None):
@@ -146,7 +145,7 @@ class WindowExtensions(SimpleBuilderApp):
         i = 0
         for key in prefs.keys():
             try:
-                savedOptions.append((key, gtk_str(self.entryList[i].get_text())))
+                savedOptions.append((key, self.entryList[i].get_text()))
             except:
                 combobox = self.entryList[i]
                 index = combobox.get_active()
