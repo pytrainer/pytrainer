@@ -889,7 +889,7 @@ class WindowImportdata(SimpleBuilderApp):
                     pass
             if self.checkbCSVForceSport.get_active():
                 sport = self.pytrainer_main.record.getSport(
-                    self.comboCSVForceSport.get_active_text()), add=True
+                    self.comboCSVForceSport.get_active_text(), add=True)
                 data.sport = sport
             elif sportCol:
                 #retrieving sport id (adding sport if it doesn't exist yet)
