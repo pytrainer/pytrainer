@@ -14,10 +14,6 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-from datetime import date
-from unittest.mock import Mock
-
-from pytrainer.lib.ddbb import DDBB
 from pytrainer.waypoint import WaypointService
 from pytrainer.test import DDBBTestCase
 
@@ -27,9 +23,7 @@ class WaypointTest(DDBBTestCase):
 
     def setUp(self):
         super().setUp()
-        main = Mock()
-        main.ddbb = self.ddbb
-        self.waypoint = WaypointService(parent=main)
+        self.waypoint = WaypointService()
 
     def tearDown(self):
         self.waypoint = None
