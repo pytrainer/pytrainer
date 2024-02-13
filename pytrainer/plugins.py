@@ -22,7 +22,6 @@ import logging
 
 from .lib.xmlUtils import XMLParser
 
-from .gui.windowplugins import WindowPlugins
 
 class Plugins:
     def __init__(self, data_path = None, parent = None):
@@ -68,6 +67,7 @@ class Plugins:
 
     def managePlugins(self):
         pluginsList = self.getPluginsList()
+        from .gui.windowplugins import WindowPlugins
         windowplugins = WindowPlugins(self.data_path, self)
         windowplugins.setList(pluginsList)
         windowplugins.run()

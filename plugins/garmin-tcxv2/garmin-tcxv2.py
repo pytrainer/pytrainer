@@ -21,7 +21,6 @@ import logging
 import os
 from lxml import etree
 from pytrainer.lib.xmlUtils import XMLParser
-from pytrainer.gui.dialogs import fileChooserDialog, guiFlush
 from pytrainer.core.activity import Activity
 from sqlalchemy.orm import exc
 
@@ -48,6 +47,7 @@ class garminTCXv2():
     def run(self):
         logging.debug(">>")
         # able to select multiple files....
+        from pytrainer.gui.dialogs import fileChooserDialog, guiFlush
         selectedFiles = fileChooserDialog(title="Choose a TCX file (or files) to import", multiple=True).getFiles()
         guiFlush()
         importfiles = []
