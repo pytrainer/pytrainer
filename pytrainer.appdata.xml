@@ -5,10 +5,10 @@
   <metadata_license>CC0-1.0</metadata_license>
   <project_license>GPL-2.0+</project_license>
   <name>pytrainer</name>
-  <summary>The Free Sport Training Center</summary>
+  <summary>The free sport tracking center</summary>
   <description>
     <p>
-    Pytrainer is a desktop application for logging and graphing sporting
+    pytrainer is a desktop application for logging and graphing sporting
     activities such as running or cycling sessions. Data can be
     imported from GPS devices, files or input manually. Currently
     pytrainer supports GPX, TCX, and FIT files.

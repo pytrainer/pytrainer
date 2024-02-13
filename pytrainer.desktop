@@ -2,7 +2,7 @@
 Version=1.0
 Type=Application
 Name=pytrainer
-Comment=The Free Sport Training Center
+Comment=The free sport tracking center
 Exec=pytrainer
 Icon=pytrainer
 Categories=Office;
