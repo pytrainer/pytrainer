@@ -224,13 +224,7 @@ class WindowProfile(SimpleBuilderApp):
             self.checkbuttonValidate.set_active(True)
         else:
             self.checkbuttonValidate.set_active(False)
-            
-        #Show if new graph activated
-        if self.pytrainer_main.startup_options.newgraph:
-            self.checkbuttonNewGraph.set_active(True)
-        else:
-            self.checkbuttonNewGraph.set_active(False)
-        
+
     def on_comboboxLogLevel_changed(self, widget):
         active = self.comboboxLogLevel.get_active()
         if active == 1:
@@ -254,15 +248,7 @@ class WindowProfile(SimpleBuilderApp):
         else:
             logging.debug("Validate deactivated")
             self.pytrainer_main.startup_options.validate = False
-            
-    def on_checkbuttonNewGraph_toggled(self, widget):
-        if self.checkbuttonNewGraph.get_active():
-            logging.debug("NewGraph activated")
-            self.pytrainer_main.startup_options.newgraph = True
-        else:
-            logging.debug("NewGraph deactivated")
-            self.pytrainer_main.startup_options.newgraph = False       
-    
+
     def on_accept_clicked(self,widget):
         self.saveOptions()
         self.close_window()
