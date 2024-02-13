@@ -51,8 +51,8 @@ class GarminTCXv2Test(DDBBTestCase):
     def test_summary_in_database(self):
         summary = [(0, True, '2012-10-14T12:02:42', '10.12', '00:39:51', 'Running')]
         activity = Activity(date_time_utc='2012-10-14T10:02:42Z', sport_id='1')
-        self.ddbb.session.add(activity)
-        self.ddbb.session.commit()
+        self.session.add(activity)
+        self.session.commit()
         current_path = os.path.dirname(os.path.abspath(__file__))
         tcx_file = current_path + "/sample.tcx"
         garmin_tcxv2 = import_plugin_class(self.environment, self.parent, "file_garmintcxv2.py")
