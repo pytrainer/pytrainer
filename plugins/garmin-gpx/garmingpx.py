@@ -1,4 +1,4 @@
-#Copyright (C) 
+#Copyright (C)
 
 #Based on plugin by Kevin Dwyer kevin@pheared.net
 
@@ -27,88 +27,88 @@ from pytrainer.core.activity import Activity
 from sqlalchemy.orm import exc
 
 class garmingpx():
-	""" Plugin to import from a GPX file or files
-		Expects only one activity in each file 
-		Checks to see if any entries are in the database with the same start time
-	"""
-	def __init__(self, parent = None, validate=False):
-		self.parent = parent
-		self.pytrainer_main = parent.pytrainer_main
-		self.tmpdir = self.pytrainer_main.profile.tmpdir
-		self.validate = validate
-		self.data_path = os.path.dirname(__file__)
-		self.sport = self.getConfValue("Force_sport_to")
+    """ Plugin to import from a GPX file or files
+            Expects only one activity in each file
+            Checks to see if any entries are in the database with the same start time
+    """
+    def __init__(self, parent = None, validate=False):
+        self.parent = parent
+        self.pytrainer_main = parent.pytrainer_main
+        self.tmpdir = self.pytrainer_main.profile.tmpdir
+        self.validate = validate
+        self.data_path = os.path.dirname(__file__)
+        self.sport = self.getConfValue("Force_sport_to")
 
-	def getConfValue(self, confVar):
-		info = XMLParser(self.data_path+"/conf.xml")
-		code = info.getValue("pytrainer-plugin","plugincode")
-		plugindir = self.pytrainer_main.profile.plugindir
-		if not os.path.isfile(plugindir+"/"+code+"/conf.xml"):
-			value = None
-		else:
-			info = XMLParser(plugindir+"/"+code+"/conf.xml")
-			value = info.getValue("pytrainer-plugin",confVar)
-		return value
+    def getConfValue(self, confVar):
+        info = XMLParser(self.data_path+"/conf.xml")
+        code = info.getValue("pytrainer-plugin","plugincode")
+        plugindir = self.pytrainer_main.profile.plugindir
+        if not os.path.isfile(plugindir+"/"+code+"/conf.xml"):
+            value = None
+        else:
+            info = XMLParser(plugindir+"/"+code+"/conf.xml")
+            value = info.getValue("pytrainer-plugin",confVar)
+        return value
 
-	def run(self):
-		logging.debug(">>")
-		selectedFiles = fileChooserDialog(title="Choose a GPX file (or files) to import", multiple=True).getFiles()
-		guiFlush()
-		importfiles = []
-		if not selectedFiles:
-			return importfiles
-		for filename in selectedFiles:
-			if self.valid_input_file(filename):
-				if not self.inDatabase(filename):
-					sport = self.getSport(filename)
-					gpxfile = "%s/garmin-gpx-%d.gpx" % (self.tmpdir, len(importfiles))	
-					shutil.copy(filename, gpxfile)
-					importfiles.append((gpxfile, sport))
-				else:
-					logging.debug("%s already in database. Skipping import." % (filename) )
-			else:
-				logging.info("File %s failed validation" % (filename))
-		logging.debug("<<")
-		return importfiles
+    def run(self):
+        logging.debug(">>")
+        selectedFiles = fileChooserDialog(title="Choose a GPX file (or files) to import", multiple=True).getFiles()
+        guiFlush()
+        importfiles = []
+        if not selectedFiles:
+            return importfiles
+        for filename in selectedFiles:
+            if self.valid_input_file(filename):
+                if not self.inDatabase(filename):
+                    sport = self.getSport(filename)
+                    gpxfile = "%s/garmin-gpx-%d.gpx" % (self.tmpdir, len(importfiles))
+                    shutil.copy(filename, gpxfile)
+                    importfiles.append((gpxfile, sport))
+                else:
+                    logging.debug("%s already in database. Skipping import." % (filename) )
+            else:
+                logging.info("File %s failed validation" % (filename))
+        logging.debug("<<")
+        return importfiles
 
-	def valid_input_file(self, filename):
-		""" Function to validate input file if requested"""
-		if not self.validate:  #not asked to validate
-			logging.debug("Not validating %s" % (filename) )
-			return True
-		else:
-			#To validate GPX as used for pytrainer must test against both Topograpfix and Cluetrust
-			topografixXSLfile = os.path.realpath(self.pytrainer_main.data_path)+ "/schemas/Topografix_gpx11.xsd"
-			cluetrustXSLfile = os.path.realpath(self.pytrainer_main.data_path)+ "/schemas/Cluetrust_gpxdata10.xsd"
-			from lib.xmlValidation import xmlValidator
-			validator = xmlValidator()
-			return validator.validateXSL(filename, topografixXSLfile) and validator.validateXSL(filename, cluetrustXSLfile)
+    def valid_input_file(self, filename):
+        """ Function to validate input file if requested"""
+        if not self.validate:  #not asked to validate
+            logging.debug("Not validating %s" % (filename) )
+            return True
+        else:
+            #To validate GPX as used for pytrainer must test against both Topograpfix and Cluetrust
+            topografixXSLfile = os.path.realpath(self.pytrainer_main.data_path)+ "/schemas/Topografix_gpx11.xsd"
+            cluetrustXSLfile = os.path.realpath(self.pytrainer_main.data_path)+ "/schemas/Cluetrust_gpxdata10.xsd"
+            from lib.xmlValidation import xmlValidator
+            validator = xmlValidator()
+            return validator.validateXSL(filename, topografixXSLfile) and validator.validateXSL(filename, cluetrustXSLfile)
 
-	def inDatabase(self, filename):
-		""" Function to determine if a given file has already been imported into the database
-		    only compares date and start time (sport may have been changed in DB after import)
-			only valid for GPX files with a single activity 
-		"""
-		time = self.detailsFromGPX(filename)
-		try:
-			self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date_time_utc == time).one()
-			return True
-		except exc.NoResultFound:
-			return False
+    def inDatabase(self, filename):
+        """ Function to determine if a given file has already been imported into the database
+            only compares date and start time (sport may have been changed in DB after import)
+                only valid for GPX files with a single activity
+        """
+        time = self.detailsFromGPX(filename)
+        try:
+            self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date_time_utc == time).one()
+            return True
+        except exc.NoResultFound:
+            return False
 
-	def getSport(self, filename):
-		#return sport from overide if present or default to "import"
-		if self.sport:
-			return self.sport
-		sport = "import"
-		return sport
+    def getSport(self, filename):
+        #return sport from overide if present or default to "import"
+        if self.sport:
+            return self.sport
+        sport = "import"
+        return sport
 
-	def detailsFromGPX(self, filename):
-		""" Function to return the first time element from a GPX 1.1 file """
-		tree = xml.etree.cElementTree.ElementTree(file=filename)
-		root = tree.getroot()
-		timeElement = root.find(".//{http://www.topografix.com/GPX/1/1}time")
-		if timeElement is None:
-			return None
-		else:
-			return timeElement.text
+    def detailsFromGPX(self, filename):
+        """ Function to return the first time element from a GPX 1.1 file """
+        tree = xml.etree.cElementTree.ElementTree(file=filename)
+        root = tree.getroot()
+        timeElement = root.find(".//{http://www.topografix.com/GPX/1/1}time")
+        if timeElement is None:
+            return None
+        else:
+            return timeElement.text

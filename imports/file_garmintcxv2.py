@@ -65,7 +65,7 @@ class garmintcxv2():
             hours = int(duration)//3600
             minutes = (int(duration)/60)%60
             seconds = int(duration)%60
-            duration_hhmmss = "%02d:%02d:%02d" % (hours, minutes, seconds)       
+            duration_hhmmss = "%02d:%02d:%02d" % (hours, minutes, seconds)
             logging.debug("Activity distance (m): %f | duration (hh:mm:ss - s): %s - %f" % (distance, duration_hhmmss, duration))
         else:
             points = activity.findall(".//{http://www.garmin.com/xmlschemas/TrainingCenterDatabase/v2}Trackpoint")
@@ -106,10 +106,10 @@ class garmintcxv2():
             distance, duration  = self.getDetails(activity, startTime)
             distance = distance / 1000.0
             self.activitiesSummary.append((self.activities.index(activity),
-                                                                 inDatabase, 
-                                                                 startTime[1].strftime("%Y-%m-%dT%H:%M:%S"), 
-                                                                 "%0.2f" % distance , 
-                                                                 str(duration), 
+                                                                 inDatabase,
+                                                                 startTime[1].strftime("%Y-%m-%dT%H:%M:%S"),
+                                                                 "%0.2f" % distance ,
+                                                                 str(duration),
                                                                  sport,
                                                                  ))
         logging.debug("<<")
@@ -178,7 +178,7 @@ class garmintcxv2():
             activity = self.activities[int(activityID)]
             sport = self.getSport(activity)
             self.createGPXfile(gpxFile, activity)
-        return sport, gpxFile  
+        return sport, gpxFile
 
     def createGPXfile(self, gpxfile, activity):
         """ Function to transform a Garmin Training Center v2 Track to a valid GPX+ file"""
@@ -187,4 +187,3 @@ class garmintcxv2():
         xml_doc = activity
         result_tree = transform(xml_doc)
         result_tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')
-
