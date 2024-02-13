@@ -19,7 +19,7 @@
 import logging
 from pytrainer.lib.date import unixtime2date
 from sqlalchemy import Column, Unicode, Float, Integer, Date, select
-from pytrainer.lib.ddbb import DeclarativeBase
+from pytrainer.lib.ddbb import DeclarativeBase, DDBB
 
 
 class Waypoint(DeclarativeBase):
@@ -33,67 +33,72 @@ class Waypoint(DeclarativeBase):
     sym = Column(Unicode(length=200))
     time = Column(Date)
 
-class WaypointService(object):
-    def __init__(self, data_path = None, parent = None):
+
+class WaypointService:
+
+    def __init__(self, data_path = None):
         logging.debug(">>")
-        self.parent = parent
-        self.pytrainer_main = parent
+        self.ddbb = DDBB()
         self.data_path = data_path
         logging.debug("<<")
 
     def removeWaypoint(self,id_waypoint):
         logging.debug(">>")
-        logging.debug("Deleting id_waypoint=%s" %id_waypoint)
-        waypoint = self.pytrainer_main.ddbb.session.query(Waypoint).filter(Waypoint.id == id_waypoint).one()
-        self.pytrainer_main.ddbb.session.delete(waypoint)
-        self.pytrainer_main.ddbb.session.commit()
+        logging.debug("Deleting id_waypoint=%s", id_waypoint)
+        with self.ddbb.sessionmaker.begin() as session:
+            waypoint = session.query(Waypoint).filter(Waypoint.id == id_waypoint).one()
+            session.delete(waypoint)
         logging.debug("<<")
 
     def updateWaypoint(self,id_waypoint,lat,lon,name,desc,sym):
         logging.debug(">>")
-        logging.debug("Updating waypoint id: %d with lat %s,lon %s,comment %s,name %s,sym %s" %(id_waypoint,lat,lon,desc,name,sym) )
-        waypoint = self.pytrainer_main.ddbb.session.query(Waypoint).filter(Waypoint.id == id_waypoint).one()
-        waypoint.lat = lat
-        waypoint.lon = lon
-        waypoint.name = name
-        waypoint.comment = desc
-        waypoint.sym = sym
-        self.pytrainer_main.ddbb.session.commit()
+        logging.debug("Updating waypoint id: %d with lat %s,lon %s,comment %s,name %s,sym %s", id_waypoint, lat, lon, desc, name, sym)
+        with self.ddbb.sessionmaker.begin() as session:
+            waypoint = session.query(Waypoint).filter(Waypoint.id == id_waypoint).one()
+            waypoint.lat = lat
+            waypoint.lon = lon
+            waypoint.name = name
+            waypoint.comment = desc
+            waypoint.sym = sym
         logging.debug("<<")
 
     def addWaypoint(self,lon=None,lat=None,name=None,comment=None,sym=None):
         logging.debug(">>")
-        waypoint = Waypoint(lon=lon, lat=lat, name=name, comment=comment, sym=sym)
-        logging.debug("Adding waypoint with details lat %s,lon %s,comment %s,name %s,sym %s" % (lat,lon,comment,name,sym)  )
-        self.pytrainer_main.ddbb.session.add(waypoint)
-        self.pytrainer_main.ddbb.session.commit()
+        with self.ddbb.sessionmaker.begin() as session:
+            waypoint = Waypoint(lon=lon, lat=lat, name=name, comment=comment, sym=sym)
+            logging.debug("Adding waypoint with details lat %s,lon %s,comment %s,name %s,sym %s", lat, lon, comment, name, sym)
+            session.add(waypoint)
+            session.flush()
+            waypoint_id = waypoint.id
         logging.debug("<<")
-        return waypoint.id
+        return waypoint_id
 
     def getwaypointInfo(self, id_waypoint):
-        return self.pytrainer_main.ddbb.session.execute(
-            select(
-                Waypoint.lat,
-                Waypoint.lon,
-                Waypoint.ele,
-                Waypoint.comment,
-                Waypoint.time,
-                Waypoint.name,
-                Waypoint.sym,
-            ).where(Waypoint.id == id_waypoint)).all()
+        with self.ddbb.sessionmaker.begin() as session:
+            return session.execute(
+                select(
+                    Waypoint.lat,
+                    Waypoint.lon,
+                    Waypoint.ele,
+                    Waypoint.comment,
+                    Waypoint.time,
+                    Waypoint.name,
+                    Waypoint.sym,
+                ).where(Waypoint.id == id_waypoint)).all()
 
     def getAllWaypoints(self):
-        return self.pytrainer_main.ddbb.session.execute(
-            select(
-                Waypoint.id,
-                Waypoint.lat,
-                Waypoint.lon,
-                Waypoint.ele,
-                Waypoint.comment,
-                Waypoint.time,
-                Waypoint.name,
-                Waypoint.sym,
-            ).order_by(Waypoint.name)).all()
+        with self.ddbb.sessionmaker.begin() as session:
+            return session.execute(
+                select(
+                    Waypoint.id,
+                    Waypoint.lat,
+                    Waypoint.lon,
+                    Waypoint.ele,
+                    Waypoint.comment,
+                    Waypoint.time,
+                    Waypoint.name,
+                    Waypoint.sym,
+                ).order_by(Waypoint.name)).all()
 
     def actualize_fromgpx(self,gpxfile):
         logging.debug(">>")

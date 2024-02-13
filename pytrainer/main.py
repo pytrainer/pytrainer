@@ -94,7 +94,7 @@ class pyTrainer:
         self.selectInitialDate()
         
         logging.debug('Loading waypoint service...')
-        self.waypoint = WaypointService(self.environment.data_path, self)
+        self.waypoint = WaypointService(self.environment.data_path)
         logging.debug('Loading extension service...')
         self.extension = Extension(self.environment.data_path, self)
         logging.debug('Loading plugins service...')
