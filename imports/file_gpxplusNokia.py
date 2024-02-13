@@ -99,7 +99,7 @@ class gpxplusNokia():
         root = tree.getroot()
         element = root.find(".//{http://www.topografix.com/GPX/1/1}metadata/{http://www.topografix.com/GPX/1/1}desc")
         if element is not None:
-                return element.text
+            return element.text
         return None
 
     def startTimeFromFile(self, tree):
@@ -107,7 +107,7 @@ class gpxplusNokia():
         root = tree.getroot()
         timeElement = root.find(".//{http://www.topografix.com/GPX/1/1}time")
         if timeElement is not None:
-                return timeElement.text
+            return timeElement.text
         return None
 
     def getGPXFile(self, ID, file_id):
@@ -126,4 +126,3 @@ class gpxplusNokia():
 
     def createGPXfile(self, gpxfile, tree):
         tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')
-
