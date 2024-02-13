@@ -26,7 +26,7 @@ from io import BytesIO
 from lxml import etree
 from pytrainer.lib.date import getDateTime
 from pytrainer.core.activity import Activity
-from sqlalchemy.orm import exc
+from sqlalchemy import exists
 
 class garmintools():
     def __init__(self, parent = None, data_path = None):
@@ -89,11 +89,8 @@ class garmintools():
         if time is None:
             return False
         time = time[0].strftime("%Y-%m-%dT%H:%M:%SZ")
-        try:
-            self.parent.parent.ddbb.session.query(Activity).filter(Activity.date_time_utc == time).one()
-            return True
-        except exc.NoResultFound:
-            return False
+        with self.parent.parent.ddbb.sessionmaker.begin() as session:
+            return session.scalar(exists().where(Activity.date_time_utc == time).select())
 
     def getDetails(self, tree, startTime):
         root = tree.getroot()
