@@ -136,7 +136,7 @@ class pyTrainer:
         parser.add_option("-w", "--warn", action="store_const", const=logging.WARNING, dest="log_level", help="enable logging at warning level")
         parser.add_option("--error", action="store_const", const=logging.ERROR,
                           dest="log_level", help="enable logging at error level")
-        parser.add_option("--valid", action="store_true", dest="validate", help="enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation")
+        parser.add_option("--valid", action="store_true", dest="validate", help="enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation.")
         parser.add_option("--oldgraph", action="store_false", dest="newgraph", help="Turn off new graphing approach")
         parser.add_option("--newgraph", action="store_true", dest="newgraph", help="Deprecated Option: Turn on new graphing approach")
         parser.add_option("--confdir", dest="conf_dir", help="Specify the directory where application configuration will be stored.")
