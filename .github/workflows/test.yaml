@@ -60,7 +60,7 @@ jobs:
           PYTRAINER_ALCHEMYURL: ${{ matrix.database_url }}
           TZ: Europe/Kaliningrad
           LC_TIME: C
-        run: xvfb-run python3 -Wall setup.py test
+        run: xvfb-run python3 -Wall -m unittest
 
   test_tox:
     runs-on: ubuntu-latest

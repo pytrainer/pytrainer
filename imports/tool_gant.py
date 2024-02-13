@@ -22,33 +22,33 @@ import os, sys, subprocess
 from lxml import etree
 
 class gant():
-	def __init__(self, parent = None, data_path = None):
-		self.parent = parent
-		self.pytrainer_main = parent.parent
-		self.tmpdir = self.pytrainer_main.profile.tmpdir
-		self.main_data_path = data_path
-		self.data_path = os.path.dirname(__file__)
+    def __init__(self, parent = None, data_path = None):
+        self.parent = parent
+        self.pytrainer_main = parent.parent
+        self.tmpdir = self.pytrainer_main.profile.tmpdir
+        self.main_data_path = data_path
+        self.data_path = os.path.dirname(__file__)
 
-	def getName(self):
-		return _("Gant")
+    def getName(self):
+        return _("Gant")
 
-	def getVersion(self):
-		process = subprocess.Popen(['which', 'gant'],
-		                           stdout=subprocess.PIPE,
-		                           stderr=subprocess.PIPE)
-		stdout, stderr = process.communicate()
-		if process.returncode == 0: # Found gant in path
-			path = stdout[:-1] # remove trailing newline
-			return path
-		else:
-			return None
-		return None
+    def getVersion(self):
+        process = subprocess.Popen(['which', 'gant'],
+                                   stdout=subprocess.PIPE,
+                                   stderr=subprocess.PIPE)
+        stdout, stderr = process.communicate()
+        if process.returncode == 0: # Found gant in path
+            path = stdout[:-1] # remove trailing newline
+            return path
+        else:
+            return None
+        return None
 
-	def getSourceLocation(self):
-		return "http://cgit.get-open.com/cgit.cgi/gant/"
+    def getSourceLocation(self):
+        return "http://cgit.get-open.com/cgit.cgi/gant/"
 
-	def deviceExists(self):
-		return True
+    def deviceExists(self):
+        return True
 
-	def isPresent(self):
-		return self.getVersion() is not None
+    def isPresent(self):
+        return self.getVersion() is not None

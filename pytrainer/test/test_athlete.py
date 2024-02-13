@@ -14,29 +14,26 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import unittest
 from datetime import date
 from unittest.mock import Mock
 
-from pytrainer.lib.ddbb import DDBB
 from pytrainer.profile import Profile
 from pytrainer.athlete import Athlete
+from pytrainer.test import DDBBTestCase
 
-class AthleteTest(unittest.TestCase):
+
+class AthleteTest(DDBBTestCase):
 
     def setUp(self):
-        self.ddbb = DDBB()
+        super().setUp()
         main = Mock()
         main.ddbb = self.ddbb
         main.profile = Profile()
-        main.ddbb.connect()
-        main.ddbb.create_tables(add_default=False)
         self.athlete = Athlete(parent=main)
 
     def tearDown(self):
         self.athlete = None
-        self.ddbb.disconnect()
-        self.ddbb.drop_tables()
+        super().tearDown()
 
     def test_athlete_insert_and_get(self):
         data = {'date': date(2017, 4, 3), 'weight': 60.0, 'bodyfat': 20.0,
@@ -44,7 +41,7 @@ class AthleteTest(unittest.TestCase):
         self.athlete.insert_athlete_stats(str(data['date']), data['weight'],
                                           data['bodyfat'], data['restinghr'],
                                           data['maxhr'])
-        data2 = self.athlete.get_athlete_stats()
+        data2 = tuple(self.athlete.get_athlete_stats())
         self.assertEqual(data, data2[0])
 
     def test_athlete_update_and_get(self):
@@ -58,7 +55,7 @@ class AthleteTest(unittest.TestCase):
         self.athlete.update_athlete_stats(1, str(data['date']), data['weight'],
                                           data['bodyfat'], data['restinghr'],
                                           data['maxhr'])
-        data2 = self.athlete.get_athlete_stats()
+        data2 = tuple(self.athlete.get_athlete_stats())
         self.assertEqual(data, data2[0])
 
     def test_athlete_delete_record(self):
@@ -68,4 +65,4 @@ class AthleteTest(unittest.TestCase):
                                           data['bodyfat'], data['restinghr'],
                                           data['maxhr'])
         self.athlete.delete_record(1)
-        self.assertFalse(self.athlete.get_athlete_stats())
+        self.assertFalse(tuple(self.athlete.get_athlete_stats()))
