@@ -25,8 +25,8 @@ class GarminTCXv2PluginTest(DDBBTestCase):
 
     def test_inDatabase(self):
         activity = Activity(date_time_utc='2012-10-14T10:02:42.000Z', sport_id='1')
-        self.ddbb.session.add(activity)
-        self.ddbb.session.commit()
+        self.session.add(activity)
+        self.session.commit()
         self.assertTrue(self.plugin.inDatabase(self.activity))
 
     def test_detailsFromTCX(self):
