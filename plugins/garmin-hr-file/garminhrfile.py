@@ -25,7 +25,7 @@ from lxml import etree
 from pytrainer.lib.xmlUtils import XMLParser
 from pytrainer.gui.dialogs import fileChooserDialog, guiFlush
 from pytrainer.core.activity import Activity
-from sqlalchemy.orm import exc
+from sqlalchemy import exists
 
 class garminhrfile():
     """ Plugin to import from a Garmin Training Center (version 1) file (as outputed from gpsbabel)
@@ -103,11 +103,8 @@ class garminhrfile():
             return False
         else:
             time = timeElement.text
-            try:
-                self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date_time_utc == time).one()
-                return False
-            except exc.NoResultFound:
-                return True
+            with self.pytrainer_main.ddbb.sessionmaker.begin() as session:
+                return not session.scalar(exists().where(Activity.date_time_utc == time).select())
 
     def getTracks(self, filename):
         """ Function to return all the tracks in a Garmin Training Center v1 file

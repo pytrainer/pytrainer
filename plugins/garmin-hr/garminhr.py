@@ -21,7 +21,7 @@ import logging
 from lxml import etree
 from pytrainer.lib.xmlUtils import XMLParser
 from pytrainer.core.activity import Activity
-from sqlalchemy.orm import exc
+from sqlalchemy import exists
 
 import subprocess
 
@@ -161,11 +161,8 @@ class garminhr():
             return False
         else:
             time = timeElement.text
-            try:
-                self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date_time_utc == time).one()
-                return False
-            except exc.NoResultFound:
-                return True
+            with self.pytrainer_main.ddbb.sessionmaker.begin() as session:
+                return not session.scalar(exists().where(Activity.date_time_utc == time).select())
 
     def createGPXfile(self, gpxfile, track):
         """ Function to transform a Garmin Training Center v1 Track to a valid GPX+ file
