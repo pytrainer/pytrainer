@@ -22,7 +22,7 @@ import os
 from lxml import etree
 from pytrainer.lib.xmlUtils import XMLParser
 from pytrainer.core.activity import Activity
-from sqlalchemy.orm import exc
+from sqlalchemy import exists
 
 class garminTCXv2():
     def __init__(self, parent = None, validate=False):
@@ -92,11 +92,8 @@ class garminTCXv2():
     def inDatabase(self, activity):
         #comparing date and start time (sport may have been changed in DB after import)
         time = self.detailsFromTCX(activity)
-        try:
-            self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date_time_utc == time).one()
-            return True
-        except exc.NoResultFound:
-            return False
+        with self.pytrainer_main.ddbb.sessionmaker.begin() as session:
+            return session.scalar(exists().where(Activity.date_time_utc == time).select())
 
     def getSport(self, activity):
         #return sport from file or overide if present

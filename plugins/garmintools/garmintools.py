@@ -28,7 +28,7 @@ from lxml import etree
 from pytrainer.lib.xmlUtils import XMLParser
 from pytrainer.gui.dialogs import fileChooserDialog, guiFlush
 from pytrainer.core.activity import Activity
-from sqlalchemy.orm import exc
+from sqlalchemy import exists
 
 class garmintools():
     def __init__(self, parent = None, validate=False):
@@ -96,11 +96,8 @@ class garmintools():
     def inDatabase(self, tree):
         #comparing date and start time (sport may have been changed in DB after import)
         time = self.detailsFromFile(tree)
-        try:
-            self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date_time_utc == time).one()
-            return True
-        except exc.NoResultFound:
-            return False
+        with self.pytrainer_main.ddbb.sessionmaker.begin() as session:
+            return session.scalar(exists().where(Activity.date_time_utc == time).select())
 
     def getSport(self, tree):
         #return sport from file or overide if present
