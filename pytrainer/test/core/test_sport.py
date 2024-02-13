@@ -16,21 +16,12 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import unittest
 from pytrainer.core.sport import Sport, SportService, SportServiceException
-from pytrainer.lib.ddbb import DDBB
+from pytrainer.test import DDBBTestCase
 from sqlalchemy.exc import IntegrityError, StatementError, OperationalError, InterfaceError, DataError
 
-class SportTest(unittest.TestCase):
-
-    def setUp(self):
-        self.ddbb = DDBB()
-        self.ddbb.connect()
-        self.ddbb.create_tables(add_default=False)
-
-    def tearDown(self):
-        self.ddbb.disconnect()
-        self.ddbb.drop_tables()
+class SportTest(DDBBTestCase):
+    CREATE_DEFAULT_DATA = False
 
     def test_id_should_default_to_none(self):
         sport = Sport()
@@ -211,17 +202,12 @@ class SportTest(unittest.TestCase):
             self.ddbb.session.commit()
 
 
-class SportServiceTest(unittest.TestCase):
+class SportServiceTest(DDBBTestCase):
+    CREATE_DEFAULT_DATA = False
 
     def setUp(self):
-        self.mock_ddbb = DDBB()
-        self.mock_ddbb.connect()
-        self.mock_ddbb.create_tables(add_default=False)
-        self.sport_service = SportService(self.mock_ddbb)
-
-    def tearDown(self):
-        self.mock_ddbb.disconnect()
-        self.mock_ddbb.drop_tables()
+        super().setUp()
+        self.sport_service = SportService(self.ddbb)
 
     def test_store_sport_should_insert_row_when_sport_has_no_id(self):
         sport = Sport()

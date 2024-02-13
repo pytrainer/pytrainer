@@ -4,33 +4,26 @@ __author__ = "David García Granda – dgranda@gmail.com"
 __copyright__ = "Copyright © 2013 David García Granda"
 __license__ = "GPL v2 or later"
 
-import unittest
 from unittest.mock import Mock
 import os
 import sys
 from lxml import etree
 
-from pytrainer.lib.ddbb import DDBB
 from pytrainer.environment import Environment
 from pytrainer.core.activity import Activity
 from pytrainer.importdata import import_plugin_class
+from pytrainer.test import DDBBTestCase
 
 
-class GarminTCXv2Test(unittest.TestCase):
+class GarminTCXv2Test(DDBBTestCase):
 
     def setUp(self):
-        self.ddbb = DDBB()
-        self.ddbb.connect()
-        self.ddbb.create_tables(add_default=True)
+        super().setUp()
         self.environment = Environment()
         self.parent = Mock()
         self.parent.parent = Mock()
         self.parent.parent.ddbb = self.ddbb
         sys.path.insert(0, os.path.join(self.environment.data_path, "imports"))
-
-    def tearDown(self):
-        self.ddbb.disconnect()
-        self.ddbb.drop_tables()
 
     def test_valid_file(self):
         try:
@@ -66,6 +59,3 @@ class GarminTCXv2Test(unittest.TestCase):
         garmin_tcxv2.xmldoc = etree.parse(tcx_file)
         garmin_tcxv2.buildActivitiesSummary()
         self.assertEqual(summary, garmin_tcxv2.activitiesSummary)
-
-if __name__ == '__main__':
-    unittest.main()
