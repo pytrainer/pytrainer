@@ -1,17 +1,15 @@
-import unittest
 from unittest.mock import Mock
 from lxml import etree
 
 from pytrainer.plugins import Plugins
-from pytrainer.lib.ddbb import DDBB
 from pytrainer.core.activity import Activity
+from pytrainer.test import DDBBTestCase
 
-class GarminTCXv2PluginTest(unittest.TestCase):
+
+class GarminTCXv2PluginTest(DDBBTestCase):
 
     def setUp(self):
-        self.ddbb = DDBB()
-        self.ddbb.connect()
-        self.ddbb.create_tables(add_default=True)
+        super().setUp()
         main = Mock()
         main.ddbb = self.ddbb
         main.startup_options = Mock()
@@ -21,10 +19,6 @@ class GarminTCXv2PluginTest(unittest.TestCase):
         self.plugin = plugins.importClass('plugins/garmin-tcxv2')
         tree = etree.parse('pytrainer/test/imports/sample.tcx')
         self.activity = self.plugin.getActivities(tree)[0]
-
-    def tearDown(self):
-        self.ddbb.disconnect()
-        self.ddbb.drop_tables()
 
     def test_not_inDatabase(self):
         self.assertFalse(self.plugin.inDatabase(self.activity))

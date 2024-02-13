@@ -14,7 +14,6 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import unittest
 from unittest.mock import Mock
 from datetime import datetime, date
 from dateutil.tz import tzoffset
@@ -22,13 +21,13 @@ from pytrainer.lib.ddbb import DDBB
 from pytrainer.core.sport import SportService
 from pytrainer.record import Record
 from pytrainer.core.activity import ActivityService, Laptrigger
+from pytrainer.test import DDBBTestCase
 
-class RecordTest(unittest.TestCase):
+
+class RecordTest(DDBBTestCase):
 
     def setUp(self):
-        self.ddbb = DDBB()
-        self.ddbb.connect()
-        self.ddbb.create_tables(add_default=True)
+        super().setUp()
         self.main = Mock()
         self.main.ddbb = self.ddbb
         self.main.activitypool = ActivityService(pytrainer_main=self.main)
@@ -65,10 +64,6 @@ class RecordTest(unittest.TestCase):
                       'avg_hr': 136,
                       'max_hr': 173,
                       'laptrigger': u'manual'}]
-
-    def tearDown(self):
-        self.ddbb.disconnect()
-        self.ddbb.drop_tables()
 
     def test_insert_record(self):
         newid = self.record.insertRecord(self.summary, laps=self.laps)
