@@ -1,4 +1,4 @@
-.TH pytrainer 7 2013-03-06 "version 1.10.0"
+.TH PYTRAINER 1
 .SH NAME
 pytrainer - sport activity logging tool
 
@@ -17,16 +17,15 @@ enable logging at debug level
 enable logging at info level
 .IP "-w, --warn"
 enable logging at warning level
+.IP "--error"
+enable logging at error level
 .IP --valid
-enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation
-.IP --check
-triggers database (only sqlite based) and configuration file sanity checks, adding fields if necessary. Backup of database is done before any change. Details at info or debug logging level
-.br
-.IP --oldgraph 
+enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation.
+.IP --oldgraph
 Turn off new graphing approach
 .IP --newgraph
 Deprecated option: turn on new graphing approach
-.IP --confdir=CONF_DIR  
+.IP --confdir=CONF_DIR
 Specify the directory where application configuration will be stored.
 .IP --logtype=TYPE
 Specify where logging should be output to. TYPE is one of 'file' (default), or 'console'.
