@@ -86,6 +86,9 @@ def get_options():
 
 def main():
     options, args = get_options()
+    from pytrainer.environment import Environment
+    environment = Environment(options.conf_dir)
+    environment.create_directories()
     import pytrainer.lib.localization
 
     pytrainer.lib.localization.initialize_gettext()
