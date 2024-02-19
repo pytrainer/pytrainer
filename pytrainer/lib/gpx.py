@@ -57,7 +57,6 @@ pyt_eleTag = pytrainerNS.substitute(tag="ele")
 class Gpx:
     def __init__(self, data_path = None, filename = None, trkname = None):
         logging.debug(">>")
-        #print("GPX init-ing")
         global mainNS, timeTag, trackTag, trackPointTag, trackPointTagLast, trackSegTag, elevationTag, nameTag
         self.data_path = data_path
         self.filename = filename

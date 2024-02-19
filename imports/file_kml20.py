@@ -163,6 +163,5 @@ class kml20():
 				#trkpt_time = etree.SubElement(trkpt, "time")
 				#trkpt_time.text = "2010-03-02T04:52:35Z" #TODO
 		
-		#print(etree.tostring(tree, pretty_print=True))
 
 		tree.write(gpxfile, method="xml", pretty_print=True, xml_declaration=True)

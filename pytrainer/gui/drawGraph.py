@@ -162,7 +162,6 @@ class DrawGraph:
             return
         figure = None
         #Debug info - to remove
-        #print("drawPlot....")
         for item in athlete.graphdata:
             #print "drawing", item
             #print athlete.graphdata[item]

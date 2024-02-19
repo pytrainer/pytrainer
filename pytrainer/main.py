@@ -189,7 +189,6 @@ class pyTrainer:
 
     def runExtension(self,extension,id):
         logging.debug('>>')
-        #print("Extension id: %s" % str(id))
         activity = self.activitypool.get_activity(id)
         txtbutton,pathExtension,type = extension
         self.extensionClass = self.extension.importClass(pathExtension)
