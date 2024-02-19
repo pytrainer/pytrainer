@@ -17,6 +17,7 @@
 
 import gettext
 import locale
+import logging
 import os.path
 
 
@@ -41,7 +42,7 @@ def initialize_gettext():
             "share",
             "locale",
         ))
-    print("gettext_path:", gettext_path)
+    logging.debug("gettext_path: %s", gettext_path)
 
     locale.bindtextdomain("pytrainer", gettext_path)
     locale.textdomain("pytrainer")
