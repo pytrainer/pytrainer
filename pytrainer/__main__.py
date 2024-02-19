@@ -1,4 +1,6 @@
 import logging
+import logging.handlers
+import sys
 from optparse import OptionParser
 
 
@@ -84,11 +86,37 @@ def get_options():
     return parser.parse_args()
 
 
+def set_logging_level(level):
+    """Set level of information written to log"""
+    logging.debug("Setting logger to level: %s", level)
+    logging.getLogger("").setLevel(level)
+    logging.getLogger("sqlalchemy.engine").setLevel(level)
+
+
+def set_logging(level, log_type, environment):
+    """Setup rotating log file with customized format"""
+    logging.captureWarnings(True)
+    if "console" == log_type:
+        handler = logging.StreamHandler(sys.stdout)
+    else:
+        handler = logging.handlers.RotatingFileHandler(
+            environment.log_file, maxBytes=100000, backupCount=5
+        )
+    formatter = logging.Formatter(
+        "%(asctime)s|%(levelname)s|%(module)s|%(funcName)s|%(message)s"
+    )
+    handler.setFormatter(formatter)
+    logging.getLogger("").addHandler(handler)
+    set_logging_level(level)
+
+
 def main():
     options, args = get_options()
     from pytrainer.environment import Environment
+
     environment = Environment(options.conf_dir)
     environment.create_directories()
+    set_logging(options.log_level, options.log_type, environment)
     import pytrainer.lib.localization
 
     pytrainer.lib.localization.initialize_gettext()

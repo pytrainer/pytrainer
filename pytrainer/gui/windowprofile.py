@@ -19,6 +19,7 @@
 from __future__ import division
 from .SimpleGladeApp import SimpleBuilderApp
 from .windowcalendar import WindowCalendar
+from pytrainer.__main__ import set_logging_level
 from pytrainer.core.equipment import EquipmentService
 from pytrainer.gui.equipment import EquipmentUi
 from pytrainer.core.sport import Sport, SportServiceException
@@ -244,8 +245,8 @@ class WindowProfile(SimpleBuilderApp):
         else:
             logging.debug("Setting log level to ERROR")
             self.pytrainer_main.startup_options.log_level = logging.ERROR
-        self.pytrainer_main.set_logging_level(self.pytrainer_main.startup_options.log_level)    
-        
+        set_logging_level(self.pytrainer_main.startup_options.log_level)    
+
     def on_checkbuttonValidate_toggled(self, widget):
         if self.checkbuttonValidate.get_active():
             logging.debug( "Validate activated")

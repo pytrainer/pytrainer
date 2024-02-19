@@ -20,7 +20,6 @@
 import sys
 import os
 import logging
-import logging.handlers
 import traceback
 import warnings
 
@@ -53,10 +52,8 @@ class pyTrainer:
     def __init__(self, options):
         self.version = version
         self.startup_options = options
-        #Setup logging
         self.environment = Environment()
         self.environment.clear_temp_dir()
-        self.set_logging(self.startup_options.log_level, self.startup_options.log_type)
         logging.debug('>>')
         logging.info("pytrainer version %s", self.version)
         self.data_path = self.environment.data_path
@@ -115,24 +112,6 @@ class pyTrainer:
         logging.debug('Launching main window...')
         self.windowmain.run()
         logging.debug('<<')
-
-    def set_logging(self, level, log_type):
-        '''Setup rotating log file with customized format'''
-        logging.captureWarnings(True)
-        if("console" == log_type):
-            handler = logging.StreamHandler(sys.stdout)
-        else:
-            handler = logging.handlers.RotatingFileHandler(self.environment.log_file, maxBytes=100000, backupCount=5)
-        formatter = logging.Formatter('%(asctime)s|%(levelname)s|%(module)s|%(funcName)s|%(message)s')
-        handler.setFormatter(formatter)
-        logging.getLogger('').addHandler(handler)
-        self.set_logging_level(self.startup_options.log_level)
-
-    def set_logging_level(self, level):
-        '''Set level of information written to log'''
-        logging.debug("Setting logger to level: %s", level)
-        logging.getLogger('').setLevel(level)
-        logging.getLogger('sqlalchemy.engine').setLevel(level)
 
     def quit(self):
         logging.debug('--')
