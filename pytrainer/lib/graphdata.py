@@ -50,7 +50,6 @@ class GraphData:
         if x is None or y is None:
             #logging.debug("Must supply both x and y data points, got x:'%s' y:'%s'" % (str(x), str(y)))
             return
-        #print('Adding point: %s %s' % (str(x), str(y)))
         if len(self.x_values) == 0:
             #First bar, so start a 0
             self.x_values.append(0)
@@ -71,7 +70,6 @@ class GraphData:
         if not x or not y:
             #logging.debug("Must supply both x and y data points, got x:'%s' y:'%s'" % (str(x), str(y)))
             return
-        #print('Adding point: %s %s' % (str(x), str(y)))
         self.x_values.append(x)
         self.y_values.append(y)
         if label is not None:

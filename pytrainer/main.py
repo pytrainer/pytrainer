@@ -19,9 +19,7 @@
 
 import sys
 import os
-from optparse import OptionParser
 import logging
-import logging.handlers
 import traceback
 import warnings
 
@@ -51,15 +49,11 @@ from .lib.uc import UC
 
 class pyTrainer:
 
-    def __init__(self):
+    def __init__(self, options):
         self.version = version
-        #Process command line options
-        self.startup_options = self.get_options()
-        #Setup logging
-        self.environment = Environment(self.startup_options.conf_dir)
-        self.environment.create_directories()
+        self.startup_options = options
+        self.environment = Environment()
         self.environment.clear_temp_dir()
-        self.set_logging(self.startup_options.log_level, self.startup_options.log_type)
         logging.debug('>>')
         logging.info("pytrainer version %s", self.version)
         self.data_path = self.environment.data_path
@@ -118,49 +112,6 @@ class pyTrainer:
         logging.debug('Launching main window...')
         self.windowmain.run()
         logging.debug('<<')
-
-    def get_options(self):
-        '''
-        Define usage and accepted options for command line startup
-
-        returns: options - dict with option: value pairs
-        '''
-        usage = '''usage: %prog [options]
-
-        For more help on valid options try:
-           %prog -h '''
-        parser = OptionParser(usage=usage)
-        parser.set_defaults(log_level=logging.WARNING, validate=False, equip=False, newgraph=True, conf_dir=None, log_type="file")
-        parser.add_option("-d", "--debug", action="store_const", const=logging.DEBUG, dest="log_level", help="enable logging at debug level")
-        parser.add_option("-i", "--info", action="store_const", const=logging.INFO, dest="log_level", help="enable logging at info level")
-        parser.add_option("-w", "--warn", action="store_const", const=logging.WARNING, dest="log_level", help="enable logging at warning level")
-        parser.add_option("--error", action="store_const", const=logging.ERROR,
-                          dest="log_level", help="enable logging at error level")
-        parser.add_option("--valid", action="store_true", dest="validate", help="enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation.")
-        parser.add_option("--oldgraph", action="store_false", dest="newgraph", help="Turn off new graphing approach")
-        parser.add_option("--newgraph", action="store_true", dest="newgraph", help="Deprecated Option: Turn on new graphing approach")
-        parser.add_option("--confdir", dest="conf_dir", help="Specify the directory where application configuration will be stored.")
-        parser.add_option("--logtype", dest="log_type", metavar="TYPE",  type="choice" , choices=["file", "console"], help="Specify where logging should be output to. TYPE is one of 'file' (default), or 'console'.")
-        (options, args) = parser.parse_args()
-        return options
-
-    def set_logging(self, level, log_type):
-        '''Setup rotating log file with customized format'''
-        logging.captureWarnings(True)
-        if("console" == log_type):
-            handler = logging.StreamHandler(sys.stdout)
-        else:
-            handler = logging.handlers.RotatingFileHandler(self.environment.log_file, maxBytes=100000, backupCount=5)
-        formatter = logging.Formatter('%(asctime)s|%(levelname)s|%(module)s|%(funcName)s|%(message)s')
-        handler.setFormatter(formatter)
-        logging.getLogger('').addHandler(handler)
-        self.set_logging_level(self.startup_options.log_level)
-
-    def set_logging_level(self, level):
-        '''Set level of information written to log'''
-        logging.debug("Setting logger to level: %s", level)
-        logging.getLogger('').setLevel(level)
-        logging.getLogger('sqlalchemy.engine').setLevel(level)
 
     def quit(self):
         logging.debug('--')
@@ -238,7 +189,6 @@ class pyTrainer:
 
     def runExtension(self,extension,id):
         logging.debug('>>')
-        #print("Extension id: %s" % str(id))
         activity = self.activitypool.get_activity(id)
         txtbutton,pathExtension,type = extension
         self.extensionClass = self.extension.importClass(pathExtension)

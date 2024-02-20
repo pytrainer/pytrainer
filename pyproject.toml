@@ -23,7 +23,7 @@ dependencies = [
 ]
 
 [project.gui-scripts]
-pytrainer = "pytrainer:main"
+pytrainer = "pytrainer.__main__:main"
 
 [project.urls]
 homepage = "https://github.com/pytrainer"
