@@ -16,22 +16,34 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
+import enum
 import logging
 import warnings
-import os, os.path
+import os
+import os.path
+
 import dateutil.parser
 from dateutil.tz import tzlocal
+from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String, Unicode, and_
+from sqlalchemy.orm import relationship, backref, reconstructor, deferred, joinedload
+from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy_utils.types.choice import ChoiceType
 
 from pytrainer.lib.date import second2time
 from pytrainer.lib.gpx import Gpx
-from pytrainer.lib.graphdata import GraphData
 from pytrainer.environment import Environment
 from pytrainer.lib import uc
 from pytrainer.profile import Profile
 from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger, record_to_equipment
-from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String, Unicode, and_
-from sqlalchemy.orm import relationship, backref, reconstructor, deferred, joinedload
-from sqlalchemy.exc import InvalidRequestError
+
+
+class Laptrigger(enum.Enum):
+    MANUAL = 'manual'
+    DISTANCE = 'distance'
+    LOCATION = 'location'
+    TIME = 'time'
+    HEARTRATE = 'hr'
+
 
 class Lap(DeclarativeBase):
     __tablename__ = 'laps'
@@ -45,7 +57,7 @@ class Lap(DeclarativeBase):
     id_lap = Column(Integer, primary_key=True)
     intensity = Column(String(length=7))
     lap_number = Column(ForcedInteger)
-    laptrigger = Column(String(length=9))
+    laptrigger = Column(ChoiceType(Laptrigger, impl=String(length=9)))
     max_hr = Column(ForcedInteger)
     max_speed = Column(Float)
     record = Column(Integer, ForeignKey('records.id_record'), index=True, nullable=False)
@@ -109,7 +121,9 @@ class ActivityService(object):
         else:
             logging.debug("Activity NOT found in pool")
             self.pool[sid] = self.pytrainer_main.ddbb.session.query(Activity).options(
-                joinedload('sport'), joinedload('equipment'), joinedload('Laps')
+                joinedload(Activity.sport),
+                joinedload(Activity.equipment),
+                joinedload(Activity.Laps)
             ).filter(Activity.id == id).one()
             self.pool_queue.append(sid)
         if len(self.pool_queue) > self.max_size:
@@ -138,9 +152,9 @@ class ActivityService(object):
     def get_activities_for_day(self, date, sport=None):
         """Iterates the activities for a specific date, optionally restricted by Sport)"""
         if not sport:
-            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date == date).options(joinedload('Laps'))
+            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date == date).options(joinedload(Activity.Laps))
         else:
-            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.date == date, Activity.sport == sport)).options(joinedload('Laps'))
+            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.date == date, Activity.sport == sport)).options(joinedload(Activity.Laps))
         for activity in activities:
             sid = str(activity.id)
             if sid in self.pool:
@@ -440,6 +454,7 @@ tracks (%s)
         return self.sport.name
 
     def _generate_per_lap_graphs(self):
+        from pytrainer.lib.graphdata import GraphData
         '''Build lap based graphs...'''
         logging.debug(">>")
         if self.laps is None:
@@ -499,6 +514,7 @@ tracks (%s)
         logging.debug("<<")
 
     def _init_graph_data(self):
+        from pytrainer.lib.graphdata import GraphData
         logging.debug(">>")
         if self.tracklist is None:
             logging.debug("No tracklist in activity")
@@ -678,9 +694,9 @@ tracks (%s)
         elif param == 'maxspeed':
             return self.uc.speed(self.maxspeed)
         elif param == 'maxpace':
-            return uc.float2pace(self.uc.pace(self.maxpace))
+            return uc.float2pace(self.uc.pace(uc.pace_from_db(self.maxpace)))
         elif param == 'pace':
-            return uc.float2pace(self.uc.pace(self.pace))
+            return uc.float2pace(self.uc.pace(uc.pace_from_db(self.pace)))
         elif param == 'calories':
             return self.calories
         elif param == 'time':

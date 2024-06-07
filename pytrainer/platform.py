@@ -49,12 +49,24 @@ class _Platform(object):
 """
         return self._first_day_of_week
 
+
 class _Linux(_Platform):
-    
+
+    def _get_data_path(self):
+        base_path = os.path.realpath(os.path.join(os.path.dirname(__file__), ".."))
+
+        def _checkpath(fname):
+            return os.path.exists(os.path.join(base_path, fname))
+
+        if all(map(_checkpath, ("INSTALL", "setup.py", "pytrainer/main.py", "locale"))):
+            return base_path + "/"
+        else:
+            return os.path.join(sys.prefix, "share/pytrainer/")
+
     def __init__(self):
         self._home_dir = os.environ['HOME']
         self._conf_dir_name = ".pytrainer"
-        self._data_path = "/usr/share/pytrainer/"
+        self._data_path = self._get_data_path()
         try:
             results = subprocess.check_output(("locale", "first_weekday", "week-1stday"),
                                               universal_newlines=True).splitlines()

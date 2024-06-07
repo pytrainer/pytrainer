@@ -16,10 +16,7 @@
 
 import unittest
 from datetime import date
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
+from unittest.mock import Mock
 
 from pytrainer.lib.uc import *
 
@@ -30,6 +27,9 @@ class UCUtilTest(unittest.TestCase):
 
     def test_uc_float2pace(self):
         self.assertEqual('4:06', float2pace(4.1))
+
+    def test_uc_pace_from_db(self):
+        self.assertEqual(4.1, pace_from_db(4.06))
 
 class UCTest(unittest.TestCase):
 

@@ -22,7 +22,6 @@ import dateutil
 
 from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger
 from sqlalchemy import Column, Float, Date, Integer
-from pytrainer.lib.graphdata import GraphData
 from pytrainer.lib.uc import UC
 
 class Athletestat(DeclarativeBase):
@@ -65,12 +64,13 @@ class Athlete:
         return ret
 
     def get_athlete_data(self):
+        from pytrainer.lib.graphdata import GraphData
         logging.debug('>>')
         graphdata = {}
         graphdata['weight'] = GraphData(title="Weight", xlabel="Date", ylabel="Weight (%s)" % (self.uc.unit_weight))
         graphdata['weight'].set_color('#3300FF', '#3300FF')
         #graphdata['weight'].graphType = 'date'
-        graphdata['bodyfat'] = GraphData(title="Body Fat", xlabel="Date", ylabel="Body Fat (%s)" % (self.uc.unit_weight))
+        graphdata['bodyfat'] = GraphData(title="Body Fat", xlabel="Date", ylabel="Body Fat (%)")
         graphdata['bodyfat'].set_color('#FF6600', '#FF6600')
         #graphdata['bf'].graphType = 'date'
         graphdata['restinghr'] = GraphData(title="Resting Heartrate", xlabel="Date", ylabel="Resting Heartrate (bpm)")

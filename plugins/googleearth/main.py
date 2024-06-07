@@ -77,9 +77,6 @@ class googleearth():
 		    only compares date and start time (sport may have been changed in DB after import)
 		"""
 		#time = self.detailsFromKML(filename)
-		#if self.parent.parent.ddbb.select("records","*","date_time_utc=\"%s\"" % (time)):
-		#	return True
-		#else:
 		return False
 
 	def getSport(self, filename):

@@ -25,8 +25,6 @@ import warnings
 
 from sqlalchemy.orm.exc import NoResultFound
 
-from .gui.windowrecord import WindowRecord
-from .gui.dialogselecttrack import DialogSelectTrack
 from .lib.date import Date, time2second
 from .lib.gpx import Gpx
 from pytrainer.core.equipment import EquipmentService, Equipment
@@ -47,6 +45,7 @@ class Record:
         logging.debug('<<')
 
     def newRecord(self, date, title=None, distance=None, time=None, upositive=None, unegative=None, bpm=None, calories=None, comment=None):
+        from .gui.windowrecord import WindowRecord
         logging.debug('>>')
         sports = self._sport_service.get_all_sports()
         self.recordwindow = WindowRecord(self._equipment_service, self.data_path, sports, self, self.format_date(date), title, distance, time, upositive, unegative, bpm, calories, comment)
@@ -54,6 +53,7 @@ class Record:
         logging.debug('<<')
 
     def newMultiRecord(self, activities):
+        from .gui.windowrecord import WindowRecord
         logging.debug('>>')
         sports = self._sport_service.get_all_sports()
         self.recordwindow = WindowRecord(self._equipment_service, self.data_path, sports, parent=self, windowTitle=_("Modify details before importing"))
@@ -62,7 +62,8 @@ class Record:
         return self.recordwindow.getActivityData()
         logging.debug('<<')
 
-    def editRecord(self,id_record):
+    def editRecord(self, id_record):
+        from .gui.windowrecord import WindowRecord
         logging.debug('>>')
         activity = self.pytrainer_main.activitypool.get_activity(id_record)
         sports = self._sport_service.get_all_sports()
@@ -358,15 +359,6 @@ class Record:
         except NoResultFound:
             return None
 
-    def getAllrecord(self):
-        """
-        Retrieve all record data (no lap nor equipment) stored in database. Initially intended for csv export
-        arguments:
-        returns: list of data sorted by date desc"""
-        logging.debug('--')
-        return self.pytrainer_main.ddbb.select("records,sports", "date_time_local,title,sports.name,distance,duration,average,maxspeed,pace,maxpace,beats,maxbeats,calories,upositive,unegative,comments",
-    "sports.id_sports = records.sport","order by date_time_local asc")
-
     def getRecordListByCondition(self, condition):
         logging.debug('>>')
         if condition is None:
@@ -432,6 +424,7 @@ class Record:
         logging.debug('<<')
 
     def _select_trkfromgpx(self,gpxfile,tracks):  #TODO remove? - should never have multiple tracks per GPX file
+        from .gui.dialogselecttrack import DialogSelectTrack
         logging.debug('>>')
         logging.debug('Track dialog %s|%s', self.data_path, gpxfile)
         selectrckdialog = DialogSelectTrack(self.data_path, tracks,self.__actualize_fromgpx, gpxfile)

@@ -1,9 +1,12 @@
 pytrainer - Free your sports
 ==================================================
+pytrainer is a desktop application for logging and graphing sporting
+activities such as running or cycling sessions. Data can be
+imported from GPS devices, files or input manually. Currently
+pytrainer supports GPX, TCX, and FIT files.
 
 Source Repository Structure
 ---------------------------
-* **bin** pytrainer executable *python script* files
 * **extensions** addons to extend pytrainer basic functionality
 * **glade** user interface design
 * **imports** files to parse different source formats
@@ -35,4 +38,3 @@ Further Resources
 * Development guide: [https://github.com/pytrainer/pytrainer/wiki/Development-guide](https://github.com/pytrainer/pytrainer/wiki/Development-guide)
 * Localization guide: [https://github.com/pytrainer/pytrainer/wiki/Localization-guide](https://github.com/pytrainer/pytrainer/wiki/Localization-guide)
 * Report an Issue: [https://github.com/pytrainer/pytrainer/issues](https://github.com/pytrainer/pytrainer/issues)
-

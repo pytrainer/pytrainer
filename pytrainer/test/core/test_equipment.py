@@ -18,7 +18,6 @@
 
 import unittest
 import sys
-import mock
 from pytrainer.core.equipment import Equipment, EquipmentService,\
     EquipmentServiceException
 from pytrainer.lib.ddbb import DDBB, DeclarativeBase
@@ -66,18 +65,6 @@ class EquipmentTest(unittest.TestCase):
         equipment = Equipment()
         self.assertEqual(u"", equipment.description)
 
-    @unittest.skipIf(sys.version_info > (3, 0), "All strings are unicode in Python 3")
-    def test_description_set_to_non_unicode_string(self):
-        equipment = Equipment()
-        equipment.description = "100$ Shoes" + chr(255)
-        try:
-            self.ddbb.session.add(equipment)
-            self.ddbb.session.flush()
-        except (ProgrammingError, DataError, OperationalError):
-            pass
-        else:
-            self.fail("Should not be able to set description to non unicode string value.")
-            
     def test_description_set_to_unicode_string(self):
         equipment = Equipment()
         equipment.description = u"Zapatos de €100"
@@ -167,18 +154,6 @@ class EquipmentTest(unittest.TestCase):
         equipment = Equipment()
         self.assertEqual(u"", equipment.notes)
 
-    @unittest.skipIf(sys.version_info > (3, 0), "All strings are unicode in Python 3")
-    def test_notes_set_to_string(self):
-        equipment = Equipment()
-        equipment.notes = "100$ Shoes" + chr(255)
-        try:
-            self.ddbb.session.add(equipment)
-            self.ddbb.session.flush()
-        except (ProgrammingError, DataError, OperationalError):
-            pass
-        else:
-            self.fail("Should not be able to set notes to non-unicode string value.")
-            
     def test_notes_set_to_unicode_string(self):
         equipment = Equipment()
         equipment.notes = u"Zapatos de €100."
@@ -366,8 +341,18 @@ class EquipmentServiceTest(unittest.TestCase):
                                                 "notes": u"Test notes.",
                                            "description": u"test item",
                                            "prior_usage": 0, "active": True})
-        self.mock_ddbb.session.execute("insert into records (distance,sport) values (250,1)")
-        self.mock_ddbb.session.execute("insert into record_equipment (record_id,equipment_id) values (1,1)")
+        record_table = DeclarativeBase.metadata.tables['records']
+        record_to_equipment = DeclarativeBase.metadata.tables['record_equipment']
+        self.mock_ddbb.session.execute(record_table.insert(),
+                                       {
+                                           "sport": 1,
+                                           "distance": 250,
+                                       })
+        self.mock_ddbb.session.execute(record_to_equipment.insert(),
+                                       {
+                                           "record_id": 1,
+                                           "equipment_id": 1,
+                                       })
         equipment = self.equipment_service.get_equipment_item(1)
         usage = self.equipment_service.get_equipment_usage(equipment)
         self.assertEqual(250, usage)

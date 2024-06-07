@@ -16,17 +16,14 @@
 
 import unittest
 import datetime
-try:
-    from unittest.mock import Mock
-except ImportError:
-    from mock import Mock
+from unittest.mock import Mock
 from dateutil.tz import tzoffset
 from sqlalchemy.orm.exc import NoResultFound
 
 from pytrainer.lib.ddbb import DDBB, DeclarativeBase
 from pytrainer.profile import Profile
 from pytrainer.lib.uc import UC
-from pytrainer.core.activity import ActivityService
+from pytrainer.core.activity import ActivityService, Laptrigger
 from pytrainer.lib.date import DateRange
 
 class ActivityTest(unittest.TestCase):
@@ -42,33 +39,35 @@ class ActivityTest(unittest.TestCase):
         self.uc.set_us(False)
         self.service = ActivityService(pytrainer_main=main)
         records_table = DeclarativeBase.metadata.tables['records']
-        self.ddbb.session.execute(records_table.insert({'distance': 46.18,
-                                                            'maxspeed': 44.6695617695,
-                                                            'maxpace': 1.2,
-                                                            'title': u'test activity',
-                                                            'unegative': 564.08076273,
-                                                            'upositive': 553.05993673,
-                                                            'average': 22.3882142185,
-                                                            'date_time_local': u'2016-07-24 12:58:23+0300',
-                                                            'calories': 1462,
-                                                            'beats': 115.0,
-                                                            'comments': u'test comment',
-                                                            'pace': 2.4,
-                                                            'date_time_utc': u'2016-07-24T09:58:23Z',
-                                                            'date': datetime.date(2016, 7, 24),
-                                                            'duration': 7426,
-                                                            'sport': 1,
-                                                            'maxbeats': 120.0}))
+        self.ddbb.session.execute(records_table.insert(), {
+            'distance': 46.18,
+            'maxspeed': 44.6695617695,
+            'maxpace': 1.2,
+            'title': 'test activity',
+            'unegative': 564.08076273,
+            'upositive': 553.05993673,
+            'average': 22.3882142185,
+            'date_time_local': '2016-07-24 12:58:23+0300',
+            'calories': 1462,
+            'beats': 115.0,
+            'comments': 'test comment',
+            'pace': 2.4,
+            'date_time_utc': '2016-07-24T09:58:23Z',
+            'date': datetime.date(2016, 7, 24),
+            'duration': 7426,
+            'sport': 1,
+            'maxbeats': 120.0})
         laps_table = DeclarativeBase.metadata.tables['laps']
-        self.ddbb.session.execute(laps_table.insert({'distance': 46181.9,
-                                                     'lap_number': 0,
-                                                     'calories': 1462,
-                                                         'elapsed_time': u'7426.0',
-                                                         'record': 1,
-                                                         'intensity': u'active',
-                                                         'avg_hr': 136,
-                                                         'max_hr': 173,
-                                                         'laptrigger': u'manual'}))
+        self.ddbb.session.execute(laps_table.insert(), {
+            'distance': 46181.9,
+            'lap_number': 0,
+            'calories': 1462,
+            'elapsed_time': '7426.0',
+            'record': 1,
+            'intensity': 'active',
+            'avg_hr': 136,
+            'max_hr': 173,
+            'laptrigger': 'manual'})
         self.activity = self.service.get_activity(1)
 
     def tearDown(self):
@@ -95,14 +94,33 @@ class ActivityTest(unittest.TestCase):
         self.assertEqual(self.activity.time, self.activity.duration)
 
     def test_activity_starttime(self):
-        self.assertEqual(self.activity.starttime, '12:58:23 PM')
+        self.assertEqual(self.activity.starttime, '12:58:23')
 
     def test_activity_time_tuple(self):
         self.assertEqual(self.activity.time_tuple, (2, 3, 46))
 
     def test_activity_lap(self):
         self.maxDiff = None
-        self.assertEqual(self.activity.laps[0], {'distance': 46181.9, 'end_lon': None, 'lap_number': 0, 'start_lon': None, 'id_lap': 1, 'calories': 1462, 'comments': None, 'laptrigger': u'manual', 'elapsed_time': u'7426.0', 'record': 1, 'intensity': u'active', 'avg_hr': 136, 'max_hr': 173, 'end_lat': None, 'start_lat': None, 'max_speed': None})
+        self.assertEqual(
+            self.activity.laps[0],
+            {
+                'distance': 46181.9,
+                'end_lon': None,
+                'lap_number': 0,
+                'start_lon': None,
+                'id_lap': 1,
+                'calories': 1462,
+                'comments': None,
+                'laptrigger': Laptrigger.MANUAL,
+                'elapsed_time': '7426.0',
+                'record': 1,
+                'intensity': 'active',
+                'avg_hr': 136,
+                'max_hr': 173,
+                'end_lat': None,
+                'start_lat': None,
+                'max_speed': None},
+        )
         lap = self.activity.Laps[0]
         self.assertEqual(lap.distance, 46181.9)
         self.assertEqual(lap.duration, 7426.0)
@@ -112,7 +130,7 @@ class ActivityTest(unittest.TestCase):
         self.assertEqual(lap.activity, self.activity)
         self.assertEqual(lap.lap_number, 0)
         self.assertEqual(lap.intensity, u'active')
-        self.assertEqual(lap.laptrigger, u'manual')
+        self.assertEqual(lap.laptrigger, Laptrigger.MANUAL)
 
     def test_activity_get_value_f(self):
         self.assertEqual(self.activity.get_value_f('distance', "%0.2f"), '46.18')
@@ -120,8 +138,8 @@ class ActivityTest(unittest.TestCase):
         self.assertEqual(self.activity.get_value_f('maxspeed', "%0.2f"), '44.67')
         self.assertEqual(self.activity.get_value_f('time', '%s'), '2:03:46')
         self.assertEqual(self.activity.get_value_f('calories', "%0.0f"), '1462')
-        self.assertEqual(self.activity.get_value_f('pace', "%s"), '2:24')
-        self.assertEqual(self.activity.get_value_f('maxpace', "%s"), '1:12')
+        self.assertEqual(self.activity.get_value_f('pace', "%s"), '2:40')
+        self.assertEqual(self.activity.get_value_f('maxpace', "%s"), '1:20')
         self.assertEqual(self.activity.get_value_f('upositive', "%0.2f"), '553.06')
         self.assertEqual(self.activity.get_value_f('unegative', "%0.2f"), '564.08')
 
@@ -132,8 +150,8 @@ class ActivityTest(unittest.TestCase):
         self.assertEqual(self.activity.get_value_f('maxspeed', "%0.2f"), '27.76')
         self.assertEqual(self.activity.get_value_f('time', '%s'), '2:03:46')
         self.assertEqual(self.activity.get_value_f('calories', "%0.0f"), '1462')
-        self.assertEqual(self.activity.get_value_f('pace', "%s"), '3:52')
-        self.assertEqual(self.activity.get_value_f('maxpace', "%s"), '1:56')
+        self.assertEqual(self.activity.get_value_f('pace', "%s"), '4:17')
+        self.assertEqual(self.activity.get_value_f('maxpace', "%s"), '2:09')
         self.assertEqual(self.activity.get_value_f('upositive', "%0.2f"), '1814.50')
         self.assertEqual(self.activity.get_value_f('unegative', "%0.2f"), '1850.66')
 

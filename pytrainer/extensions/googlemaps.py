@@ -16,21 +16,16 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import os
-import re
-import logging
 import colorsys
+import html
+import logging
 import math
-import traceback
-
-try:
-    import html
-except ImportError:
-    import cgi as html
+import os
 
 import pytrainer.lib.points as Points
 from pytrainer.lib.fileUtils import fileUtils
 from pytrainer.lib.uc import UC
+
 
 class Googlemaps:
     def __init__(self, data_path = None, waypoint = None, pytrainer_main=None):
@@ -151,11 +146,6 @@ class Googlemaps:
             documentation at http://code.google.com/apis/maps/documentation/v3
         '''
         logging.debug(">>")
-        if self.waypoint is not None:
-            waypoints = self.waypoint.getAllWaypoints()
-            #TODO waypoints not supported in this function yet
-            #TODO sort polyline encoding (not supported in v3?)
-            #TODO check http://code.google.com/apis/maps/documentation/v3/overlays.html#Polylines for MVArray??
         content = '''
         <html>
         <head>

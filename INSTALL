@@ -5,29 +5,15 @@ These are generic installation instructions to use with *.tar.gz files
 
 1.- Dependency Overview
 
-Here you are dependencies for pytrainer. Of course you must have a working environment with proper shell configuration and typical GNU tools to uncompress (gunzip) and untar (tar) files.
+Here are the dependencies for pytrainer. Of course you must have a working environment
+with proper shell configuration and typical GNU tools to uncompress (gunzip) and untar
+(tar) files.
 
 1.1.- Packages
 
-python >= 2.5 (python >= 3.0 not checked on 2011/11!)
-distutils >= 2.5 (python-devel, to run installation from tarball)
-dateutil >= 1.5 (python-dateutil)
-GTK+ >= 2.6.0
-PyGTK >= 2.6.0
-libglade >= 2.6.4 (libglade, pygtk2-libglade)
-webkit2gtk-4.0 >= 2.0
-requests
-certify
-matplotlib >= 0.99.x (python-matplotlib)
-python-lxml >= 2.2
-libxml2 >= 2.7.8
-libxml2-python >= 2.7.8
-libxslt >= 1.1.26
-libxslt-python >= 1.1.26
-sqlite >= 3.2.0 (sqlite is preferred to mysql as database, MySQL-python has been reported to be installed if so)
-sqlalchemy >= 0.6.4
-sqlalchemy-migrate >= 0.5.4
-zenity >= 2.30
+Required Python packages and their versions can be seen in pyproject.toml. Additionally
+the Python bindings for gobject-introspection and Cairo are required, as are the gir
+bindings for GTK. For map functionality the gir bindings for WebKit2 are also required.
 
 - Only needed if correspondent plugin or extension is enabled:
 gpsbabel == 1.3.5 ("GoogleEarth" and "Garmin via GPSBabel 1.3.5" aka "garmin_hr")
@@ -40,7 +26,8 @@ perl (garmin-fit plugin, tested with perl v5.16.2 on Fedora 18, see ticket #5)
 
 2.- Installation process
 
-Copy tarball file to a location where you have write and execution rights (e.g. /tmp or your $HOME directory). Make sure executables are under your $PATH.
+Copy tarball file to a location where you have write and execution rights (e.g. /tmp or
+your $HOME directory). Make sure executables are under your $PATH.
 
 $ tar -xzf pytrainer-X.Y.Z.tar.gz
 $ cd pytrainer-X.Y.Z
@@ -51,4 +38,6 @@ For more information about the process, please check http://docs.python.org/dist
 
 3.- USB access
 
-pytrainer can use gpsbabel (http://www.gpsbabel.org) to retrieve information from Garmin devices. There are some problems regarding driver to access usb ports, please take a look at http://www.gpsbabel.org/os/Linux_Hotplug.html
+pytrainer can use gpsbabel (http://www.gpsbabel.org) to retrieve information from Garmin
+devices. There are some problems regarding driver to access usb ports, please take a look
+at http://www.gpsbabel.org/os/Linux_Hotplug.html

@@ -15,13 +15,13 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import unittest
-import mock
+from unittest.mock import Mock
 from datetime import datetime, date
 from dateutil.tz import tzoffset
 from pytrainer.lib.ddbb import DDBB
 from pytrainer.core.sport import SportService
 from pytrainer.record import Record
-from pytrainer.core.activity import ActivityService
+from pytrainer.core.activity import ActivityService, Laptrigger
 
 class RecordTest(unittest.TestCase):
 
@@ -29,7 +29,7 @@ class RecordTest(unittest.TestCase):
         self.ddbb = DDBB()
         self.ddbb.connect()
         self.ddbb.create_tables(add_default=True)
-        self.main = mock.Mock()
+        self.main = Mock()
         self.main.ddbb = self.ddbb
         self.main.activitypool = ActivityService(pytrainer_main=self.main)
         self.main.profile.gpxdir = '/nonexistent'
@@ -82,7 +82,27 @@ class RecordTest(unittest.TestCase):
         self.assertEqual(activity.date_time_utc, u'2016-07-24T09:58:23Z')
         self.assertEqual(activity.sport, self.record._sport_service.get_sport_by_name(u"Run"))
         self.assertEqual(activity.title, u'test 1')
-        self.assertEqual(activity.laps[0], {'distance': 46181.9, 'end_lon': None, 'lap_number': 0, 'start_lon': None, 'id_lap': 1, 'calories': 1462, 'comments': None, 'laptrigger': u'manual', 'elapsed_time': u'7426.0', 'record': 1, 'intensity': u'active', 'avg_hr': 136, 'max_hr': 173, 'end_lat': None, 'start_lat': None, 'max_speed': None})
+        self.assertEqual(
+            activity.laps[0],
+            {
+                'distance': 46181.9,
+                'end_lon': None,
+                'lap_number': 0,
+                'start_lon': None,
+                'id_lap': 1,
+                'calories': 1462,
+                'comments': None,
+                'laptrigger': Laptrigger.MANUAL,
+                'elapsed_time': u'7426.0',
+                'record': 1,
+                'intensity': u'active',
+                'avg_hr': 136,
+                'max_hr': 173,
+                'end_lat': None,
+                'start_lat': None,
+                'max_speed': None,
+            },
+        )
 
     def test_insert_record_datetime(self):
         """Importing multiple activities uses a datetime object for
@@ -99,7 +119,27 @@ list_options['date_time_local'], also test that code path"""
         self.assertEqual(activity.date_time_utc, u'2016-07-24T09:58:23Z')
         self.assertEqual(activity.sport, self.record._sport_service.get_sport_by_name(u"Run"))
         self.assertEqual(activity.title, u'test 1')
-        self.assertEqual(activity.laps[0], {'distance': 46181.9, 'end_lon': None, 'lap_number': 0, 'start_lon': None, 'id_lap': 1, 'calories': 1462, 'comments': None, 'laptrigger': u'manual', 'elapsed_time': u'7426.0', 'record': 1, 'intensity': u'active', 'avg_hr': 136, 'max_hr': 173, 'end_lat': None, 'start_lat': None, 'max_speed': None})
+        self.assertEqual(
+            activity.laps[0],
+            {
+                'distance': 46181.9,
+                'end_lon': None,
+                'lap_number': 0,
+                'start_lon': None,
+                'id_lap': 1,
+                'calories': 1462,
+                'comments': None,
+                'laptrigger': Laptrigger.MANUAL,
+                'elapsed_time': u'7426.0',
+                'record': 1,
+                'intensity': u'active',
+                'avg_hr': 136,
+                'max_hr': 173,
+                'end_lat': None,
+                'start_lat': None,
+                'max_speed': None,
+            },
+        )
 
     def test_update_record(self):
         newid = self.record.insertRecord(self.summary)

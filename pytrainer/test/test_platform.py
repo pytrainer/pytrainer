@@ -27,3 +27,6 @@ class PlatformTest(unittest.TestCase):
     def test_first_day_of_week_should_be_less_than_seven(self):
         first_day = get_platform().get_first_day_of_week()
         self.assertTrue(first_day < 7)
+
+    def test_data_path(self):
+        self.assertTrue(get_platform().get_default_data_path().endswith('/'))

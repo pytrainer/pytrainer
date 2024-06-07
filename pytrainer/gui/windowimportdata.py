@@ -3,9 +3,8 @@
 from .SimpleGladeApp import SimpleBuilderApp
 from gi.repository import Gtk
 from gi.repository import GObject
-import os, glob, sys
+import os
 import logging
-import types
 import csv
 import locale
 
@@ -13,7 +12,7 @@ from pytrainer.plugins import Plugins
 from pytrainer.gui.dialogs import fileChooserDialog
 from pytrainer.lib.date import getDateTime
 from pytrainer.core.activity import Activity
-from pytrainer.lib.localization import gtk_str
+from pytrainer.importdata import iterate_import_tools
 
 
 class WindowImportdata(SimpleBuilderApp):
@@ -202,21 +201,9 @@ class WindowImportdata(SimpleBuilderApp):
         #Remove all components in vbox - in case of re-detection
         for child in self.vboxImportTools.get_children():
             self.vboxImportTools.remove(child)
-        #Get import tool_* files
-        fileList = glob.glob(self.data_path+"imports/tool_*.py")
-        logging.debug("Tools filelist: %s" % fileList)
-        for toolFile in fileList:
-            index = fileList.index(toolFile)
-            directory, filename = os.path.split(toolFile)
-            filename = filename.rstrip('.py')
-            classname = filename.lstrip('tool_')
-            #Import module
-            sys.path.insert(0, os.path.join(self.data_path, "imports"))
-            module = __import__(filename)
-            toolMain = getattr(module, classname)
-            #Instantiate module
-            toolClass = toolMain(self.parent, self.data_path)
-            #Get info from class
+        # Get import tool_* files
+        for toolClass in iterate_import_tools(self.parent):
+            # Get info from class
             toolName = toolClass.getName()
             toolTable = Gtk.Table()
             toolFrame = Gtk.Frame(label=toolName)
@@ -258,21 +245,8 @@ class WindowImportdata(SimpleBuilderApp):
         '''
         logging.debug('>>')
         self.updateStatusbar(self.statusbarImportFile, _("Checking file type for: ") + import_filename)
-        #Get imports files_* files
-        fileList = glob.glob(self.data_path+"imports/file_*.py")
-        fileList.sort()
-        logging.debug("File filelist: %s" % fileList)
-        for processingFile in fileList:
-            directory, filename = os.path.split(processingFile)
-            filename = filename.rstrip('.py')
-            logging.debug("Trying: %s" % filename)
-            classname = filename.lstrip('file_')
-            #Import module
-            sys.path.insert(0, self.data_path + "imports")
-            module = __import__(filename)
-            processMain = getattr(module, classname)
-            #Instantiate module
-            processClass = processMain(self.parent, self.data_path)
+        # Get imports files_* files
+        for processClass in iterate_import_tools(self.parent):
             isValid = processClass.testFile(import_filename)
             if isValid:
                 logging.debug('<<')
@@ -568,7 +542,7 @@ class WindowImportdata(SimpleBuilderApp):
         i = 0
         for pref in prefs:
             try:
-                savedOptions.append((pref[0], gtk_str(self.entryList[i].get_text())))
+                savedOptions.append((pref[0], self.entryList[i].get_text()))
             except:
                 combobox = self.entryList[i]
                 index = combobox.get_active()
@@ -772,7 +746,7 @@ class WindowImportdata(SimpleBuilderApp):
         elif self.rbCSVComma.get_active():
             self.delimiter = ","
         elif self.rbCSVOther.get_active():
-            self.delimiter = gtk_str(self.entryCSVOther.get_text())
+            self.delimiter = self.entryCSVOther.get_text()
         else:
             self.delimiter = " "
 
@@ -915,7 +889,7 @@ class WindowImportdata(SimpleBuilderApp):
                     pass
             if self.checkbCSVForceSport.get_active():
                 sport = self.pytrainer_main.record.getSport(
-                    gtk_str(self.comboCSVForceSport.get_active_text()), add=True)
+                    self.comboCSVForceSport.get_active_text(), add=True)
                 data.sport = sport
             elif sportCol:
                 #retrieving sport id (adding sport if it doesn't exist yet)
@@ -924,7 +898,7 @@ class WindowImportdata(SimpleBuilderApp):
             else:
                 self.comboCSVForceSport.set_active(0)
                 sport = self.pytrainer_main.record.getSport(
-                    gtk_str(self.comboCSVForceSport.get_active_text()), add=True)
+                    self.comboCSVForceSport.get_active_text(), add=True)
                 data.sport = sport
 
             if avgspeedCol:

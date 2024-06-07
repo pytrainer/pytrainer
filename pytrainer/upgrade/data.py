@@ -26,7 +26,7 @@ from pytrainer.upgrade.migratedb import MigratableDb
 def initialize_data(ddbb, conf_dir):
     """Initializes the installation's data."""
     db_url = ddbb.get_connection_url()
-    migratable_db = MigratableDb(os.path.dirname(__file__), db_url)
+    migratable_db = MigratableDb(ddbb)
     InstalledData(migratable_db, ddbb, LegacyVersionProvider(conf_dir), UpgradeContext(conf_dir, db_url)).update_to_current()
         
 class InstalledData(object):

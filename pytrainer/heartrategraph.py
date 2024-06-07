@@ -32,7 +32,7 @@ class HeartRateGraph:
 		xvalues, yvalues = self.get_values(values)
 		xlabel,ylabel,title,color = _("Distance (km)"),_("Beats (bpm)"),_("Heart Rate"),"#740074"
 		for drawarea,shape in zip(self.drawareas,("plot","pie","histogram")):
-			drawarea.stadistics(shape,[xvalues],[yvalues],[xlabel],[ylabel],[title],[color],zones)
+			drawarea.statistics(shape,[xvalues],[yvalues],[xlabel],[ylabel],[title],[color],zones)
 		logging.debug('<<')
 
 	def get_values(self,values):

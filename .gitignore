@@ -5,3 +5,5 @@ build
 __pycache__
 .eggs/
 pytrainer.egg-info
+.tox/
+pytrainer/version.py

@@ -1,22 +1,24 @@
 import os
 import datetime
-import mock
 
 from sqlalchemy.orm.session import make_transient
 
-from gi.repository import Gtk
-from unittest import TestCase
+import unittest
+from unittest.mock import Mock
 from pytrainer.lib.ddbb import DDBB
-from pytrainer.lib.localization import initialize_gettext, gtk_str
+from pytrainer.lib.localization import initialize_gettext
 from pytrainer.core.sport import SportService
 from pytrainer.environment import Environment
 from pytrainer.profile import Profile
 from pytrainer.record import Record
 from pytrainer.core.activity import Activity
-initialize_gettext('locale/')
+initialize_gettext()
 
-from pytrainer.gui.windowmain import Main
-from pytrainer.lib.listview import ListSearch
+try:
+    from pytrainer.gui.windowmain import Main
+    GUI_AVAILABLE = True
+except ImportError:
+    GUI_AVAILABLE = False
 from pytrainer.lib.uc import UC
 
 #Copyright (C) Arto Jantunen <viiru@iki.fi>
@@ -35,13 +37,14 @@ from pytrainer.lib.uc import UC
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-class ListviewTest(TestCase):
+
+@unittest.skipUnless(GUI_AVAILABLE, 'Gui libraries not available')
+class ListviewTest(unittest.TestCase):
 
     def setUp(self):
         env = Environment()
-        env.data_path = os.curdir
         env.create_directories()
-        self.main = mock.Mock()
+        self.main = Mock()
         self.main.ddbb = DDBB()
         self.main.ddbb.connect()
         self.main.ddbb.create_tables()
@@ -80,7 +83,7 @@ class ListviewTest(TestCase):
 
     def test_listsearch_sport(self):
         self.parent.lsa_sport.set_active(3)
-        active = gtk_str(self.parent.lsa_sport.get_active_text())
+        active = self.parent.lsa_sport.get_active_text()
         by_sport = list(self.main.record.getRecordListByCondition(self.parent.listsearch.condition))
         self.assertEqual(len(by_sport), 2)
         self.assertEqual(by_sport[0].sport.name, active)

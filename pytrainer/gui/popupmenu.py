@@ -33,6 +33,7 @@ class PopupMenu(Gtk.Menu):
         self.attach(show_graph, 0, 1, 1, 2)
         self.attach(Gtk.SeparatorMenuItem(), 0, 1, 2, 3)
         remove_record = Gtk.ImageMenuItem(Gtk.STOCK_DELETE)
+        remove_record.set_label(_("Delete"))
         remove_record.connect("activate", self.on_remove_activate)
         self.attach(remove_record, 0, 1, 3, 4)
     

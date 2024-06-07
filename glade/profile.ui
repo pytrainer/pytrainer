@@ -326,7 +326,7 @@
                               <object class="GtkComboBoxText" id="prf_ddbb">
                                 <property name="visible">True</property>
                                 <signal handler="on_prf_ddbb_changed" name="changed"/>
-				<property name="model">ddbb-model</property>
+                                <property name="model">ddbb-model</property>
                               </object>
                               <packing>
                                 <property name="left_attach">1</property>
@@ -466,7 +466,7 @@
                         <child>
                           <object class="GtkComboBoxText" id="prf_gender">
                             <property name="visible">True</property>
-			    <property name="model">gender-model</property>
+                            <property name="model">gender-model</property>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
@@ -918,7 +918,7 @@
                                         <property name="receives_default">False</property>
                                       </object>
                                       <packing>
-		                              </packing>
+                                      </packing>
                                     </child>
                                     <child>
                                       <object class="GtkButton" id="button-color-new">
@@ -1333,7 +1333,7 @@ Continue?</property>
                                         <property name="receives_default">False</property>
                                       </object>
                                       <packing>
-		                              </packing>
+                                      </packing>
                                     </child>
                                     <child>
                                       <object class="GtkButton" id="button-color-edit">
