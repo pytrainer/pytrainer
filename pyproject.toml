@@ -17,6 +17,8 @@ dependencies = [
     "SQLAlchemy",
     "lxml",
     "matplotlib >= 3.6.0",
+    "pycairo",
+    "pygobject",
     "python-dateutil",
     "requests",
     "sqlalchemy-utils",
