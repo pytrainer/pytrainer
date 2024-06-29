@@ -32,6 +32,7 @@ repository = "https://github.com/pytrainer"
 [project.optional-dependencies]
 mysql = ["mysqlclient"]
 postgresql = ["psycopg2"]
+gui = ["pycairo", "pygobject"]
 
 [build-system]
 requires = ["setuptools>=45", "setuptools_scm>=8"]
