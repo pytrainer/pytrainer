@@ -5,18 +5,6 @@ activities such as running or cycling sessions. Data can be
 imported from GPS devices, files or input manually. Currently
 pytrainer supports GPX, TCX, and FIT files.
 
-Source Repository Structure
----------------------------
-* **extensions** addons to extend pytrainer basic functionality
-* **glade** user interface design
-* **imports** files to parse different source formats
-* **locale** localization files
-* **man** source manpage
-* **plugins** files to retrieve data from different sources
-* **pytrainer** core files
-* **schemas** schemas to support correct xml parsing
-* **utils** localization shell script
-
 Installation from source tarball (using pip)
 -----------------
 Copy tarball file to a location where you have write and execution rights (e.g. `/tmp` or your `$HOME` directory). Make sure executables are under your `$PATH`.
