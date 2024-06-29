@@ -1,37 +1,27 @@
 pytrainer - Free your sports
 ==================================================
 pytrainer is a desktop application for logging and graphing sporting
-activities such as running or cycling sessions. Data can be
-imported from GPS devices, files or input manually. Currently
-pytrainer supports GPX, TCX, and FIT files.
+activities such as running or cycling sessions. Data can be imported from GPS
+devices, files or input manually. Currently pytrainer supports GPX, TCX, and
+FIT files.
 
-Installation from source tarball (using pip)
+Installation
+============
+Most popular Linux distributions (Debian, Ubuntu, Fedora and so on) already
+contain a pytrainer package, use that if available. If a package is not
+available for your system you can install from source, see below.
+
+Installation from source tarball
 -----------------
-Copy tarball file to a location where you have write and execution rights (e.g. `/tmp` or your `$HOME` directory). Make sure executables are under your `$PATH`.
+Copy tarball file to a location where you have write and execution rights (e.g. your `$HOME` directory).
 
 `$ tar -xzf pytrainer-X.Y.Z.tar.gz`
 
 `$ cd pytrainer-X.Y.Z`
 
-`$ pip install pycairo pygobject`
-
-`$ pip install .`
+`$ pip install ."[gui]"`
 
 `$ pytrainer -i`
-
-Installation from source tarball (deprecated method)
------------------
-Copy tarball file to a location where you have write and execution rights (e.g. `/tmp` or your `$HOME` directory). Make sure executables are under your `$PATH`.
-
-`$ tar -xzf pytrainer-X.Y.Z.tar.gz`
-
-`$ cd pytrainer-X.Y.Z`
-
-`$ sudo python setup.py install`
-
-`$ pytrainer -i`
-
-For more information about the process, please check [Distutils documentation] (http://docs.python.org/3.11/distutils/setupscript.html)
 
 Further Resources
 -----------------
