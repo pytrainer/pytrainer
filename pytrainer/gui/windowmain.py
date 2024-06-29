@@ -1389,7 +1389,7 @@ class Main(SimpleBuilderApp):
             if 'visible' in column_dict and not column_dict['visible']:
                 pass
             else:
-                item = Gtk.CheckMenuItem(column_dict['name'])
+                item = Gtk.CheckMenuItem(label=column_dict['name'])
                 #self.lsa_searchoption.append_text(name)
                 item.connect("button_press_event", self.on_menulistview_activate, i)
                 self.menulistviewOptions.append(item)
