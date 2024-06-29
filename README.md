@@ -23,6 +23,23 @@ Copy tarball file to a location where you have write and execution rights (e.g. 
 
 `$ pytrainer -i`
 
+Installation into a venv (for development)
+------------------------------------------
+This installation method is very similar to the basic source install above.
+For development it makes more sense to start from a git clone instead of a
+tarball, and also makes more sense to install into a virtual Python
+environment.
+
+`git clone https://github.com/pytrainer/pytrainer.git`
+
+`cd pytrainer`
+
+`python3 -m venv .venv`
+
+`.venv/bin/pip install -e ".[gui]"`
+
+`.venv/bin/pytrainer -i`
+
 Further Resources
 -----------------
 * FAQ [https://github.com/pytrainer/pytrainer/wiki/FAQ](https://github.com/pytrainer/pytrainer/wiki/FAQ)
