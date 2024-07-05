@@ -16,7 +16,7 @@ Copy tarball file to a location where you have write and execution rights (e.g. 
 tar -xzf pytrainer-X.Y.Z.tar.gz
 cd pytrainer-X.Y.Z
 pip install ."[gui]"
-pytrainer -i
+pytrainer
 ```
 
 ### Installation into a venv (for development)
@@ -30,7 +30,7 @@ git clone https://github.com/pytrainer/pytrainer.git
 cd pytrainer
 python3 -m venv .venv
 .venv/bin/pip install -e ".[gui]"
-.venv/bin/pytrainer -i
+.venv/bin/pytrainer
 ```
 
 ### Additional packages
