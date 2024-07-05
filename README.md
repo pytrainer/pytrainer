@@ -1,49 +1,56 @@
 pytrainer - Free your sports
 ==================================================
 pytrainer is a desktop application for logging and graphing sporting
-activities such as running or cycling sessions. Data can be
-imported from GPS devices, files or input manually. Currently
-pytrainer supports GPX, TCX, and FIT files.
+activities such as running or cycling sessions. Data can be imported from GPS
+devices, files or input manually. Currently pytrainer supports GPX, TCX, and
+FIT files.
 
-Source Repository Structure
----------------------------
-* **extensions** addons to extend pytrainer basic functionality
-* **glade** user interface design
-* **imports** files to parse different source formats
-* **locale** localization files
-* **man** source manpage
-* **plugins** files to retrieve data from different sources
-* **pytrainer** core files
-* **schemas** schemas to support correct xml parsing
-* **utils** localization shell script
+Installation
+============
+Most popular Linux distributions (Debian, Ubuntu, Fedora and so on) already
+contain a pytrainer package, use that if available. If a package is not
+available for your system you can install from source, see below.
 
-Installation from source tarball (using pip)
+Installation from source tarball
 -----------------
-Copy tarball file to a location where you have write and execution rights (e.g. `/tmp` or your `$HOME` directory). Make sure executables are under your `$PATH`.
+Copy tarball file to a location where you have write and execution rights (e.g. your `$HOME` directory).
 
 `$ tar -xzf pytrainer-X.Y.Z.tar.gz`
 
 `$ cd pytrainer-X.Y.Z`
 
-`$ pip install pycairo pygobject`
-
-`$ pip install .`
+`$ pip install ."[gui]"`
 
 `$ pytrainer -i`
 
-Installation from source tarball (deprecated method)
------------------
-Copy tarball file to a location where you have write and execution rights (e.g. `/tmp` or your `$HOME` directory). Make sure executables are under your `$PATH`.
+Installation into a venv (for development)
+------------------------------------------
+This installation method is very similar to the basic source install above.
+For development it makes more sense to start from a git clone instead of a
+tarball, and also makes more sense to install into a virtual Python
+environment.
 
-`$ tar -xzf pytrainer-X.Y.Z.tar.gz`
+`git clone https://github.com/pytrainer/pytrainer.git`
 
-`$ cd pytrainer-X.Y.Z`
+`cd pytrainer`
 
-`$ sudo python setup.py install`
+`python3 -m venv .venv`
 
-`$ pytrainer -i`
+`.venv/bin/pip install -e ".[gui]"`
 
-For more information about the process, please check [Distutils documentation] (http://docs.python.org/3.11/distutils/setupscript.html)
+`.venv/bin/pytrainer -i`
+
+Additional packages
+-------------------
+For map functionality the GIR bindings for WebKit2 need to be installed.
+
+* gpsbabel == 1.3.5 ("GoogleEarth" and "Garmin via GPSBabel 1.3.5" aka "garmin_hr")
+* garmintools >= 0.10 ("Import from Garmin GPS device (via garmintools)" aka "garmintools_full" plugin)
+* wordpresslib (already distributed within pytrainer tarball, wordpress extension)
+* httplib2 >= 0.6.0 (wordpress extension)
+* SOAPpy >= 0.11.6 (dotclear extension)
+* GDAL (Elevation correction, via "gdal-python" or "python-gdal")
+* perl (garmin-fit plugin)
 
 Further Resources
 -----------------

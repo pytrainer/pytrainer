@@ -58,7 +58,7 @@ class _Linux(_Platform):
         def _checkpath(fname):
             return os.path.exists(os.path.join(base_path, fname))
 
-        if all(map(_checkpath, ("INSTALL", "setup.py", "pytrainer/main.py", "locale"))):
+        if all(map(_checkpath, ("pyproject.toml", "pytrainer/main.py", "locale"))):
             return base_path + "/"
         else:
             return os.path.join(sys.prefix, "share/pytrainer/")
