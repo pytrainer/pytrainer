@@ -13,10 +13,10 @@ available for your system you can install from source, see below.
 Copy tarball file to a location where you have write and execution rights (e.g. your `$HOME` directory).
 
 ```shell
-$ tar -xzf pytrainer-X.Y.Z.tar.gz
-$ cd pytrainer-X.Y.Z
-$ pip install ."[gui]"
-$ pytrainer -i
+tar -xzf pytrainer-X.Y.Z.tar.gz
+cd pytrainer-X.Y.Z
+pip install ."[gui]"
+pytrainer -i
 ```
 
 ### Installation into a venv (for development)
