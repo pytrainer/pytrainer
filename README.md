@@ -15,13 +15,12 @@ Installation from source tarball
 -----------------
 Copy tarball file to a location where you have write and execution rights (e.g. your `$HOME` directory).
 
-`$ tar -xzf pytrainer-X.Y.Z.tar.gz`
-
-`$ cd pytrainer-X.Y.Z`
-
-`$ pip install ."[gui]"`
-
-`$ pytrainer -i`
+```shell
+$ tar -xzf pytrainer-X.Y.Z.tar.gz
+$ cd pytrainer-X.Y.Z
+$ pip install ."[gui]"
+$ pytrainer -i
+```
 
 Installation into a venv (for development)
 ------------------------------------------
@@ -30,15 +29,13 @@ For development it makes more sense to start from a git clone instead of a
 tarball, and also makes more sense to install into a virtual Python
 environment.
 
-`git clone https://github.com/pytrainer/pytrainer.git`
-
-`cd pytrainer`
-
-`python3 -m venv .venv`
-
-`.venv/bin/pip install -e ".[gui]"`
-
-`.venv/bin/pytrainer -i`
+```shell
+git clone https://github.com/pytrainer/pytrainer.git
+cd pytrainer
+python3 -m venv .venv
+.venv/bin/pip install -e ".[gui]"
+.venv/bin/pytrainer -i
+```
 
 Additional packages
 -------------------
