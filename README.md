@@ -36,13 +36,17 @@ python3 -m venv .venv
 ### Additional packages
 For map functionality the GIR bindings for WebKit2 need to be installed.
 
-* gpsbabel == 1.3.5 ("GoogleEarth" and "Garmin via GPSBabel 1.3.5" aka "garmin_hr")
-* garmintools >= 0.10 ("Import from Garmin GPS device (via garmintools)" aka "garmintools_full" plugin)
-* wordpresslib (already distributed within pytrainer tarball, wordpress extension)
-* httplib2 >= 0.6.0 (wordpress extension)
-* SOAPpy >= 0.11.6 (dotclear extension)
-* GDAL (Elevation correction, via "gdal-python" or "python-gdal")
-* perl (garmin-fit plugin)
+Certain plugins and extensions also need additional software:
+
+| Package       | Plugin or extension                                                               |
+|---------------|-----------------------------------------------------------------------------------|
+| GPSBabel      | Garmin via GPSBabel and Google Earth plugins (aka garmin-hr)                      |
+| garmintools   | Import from Garmin GPS device (Garmin via garmintools plugin aka garmintools_full)|
+| Perl          | Garmin FIT plugin                                                                 |
+| wordpresslib  | Wordpress extension, already distributed within pytrainer tarball                 |
+| httplib2      | Wordpress extension                                                               |
+| SOAPpy        | Dotclear extension                                                                |
+| GDAL          | Elevation correction extension, via gdal-python or python-gdal                    |
 
 ## Further Resources
 * FAQ [https://github.com/pytrainer/pytrainer/wiki/FAQ](https://github.com/pytrainer/pytrainer/wiki/FAQ)
