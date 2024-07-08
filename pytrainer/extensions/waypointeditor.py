@@ -106,6 +106,10 @@ class WaypointEditor:
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
+<!-- Include Leaflet.Fullscreen plugin -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.css" />
+<script src="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.js"></script>
+
 <script type="text/javascript">
 //<![CDATA[
 """
@@ -186,6 +190,9 @@ function load() {
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         maxZoom: 19
     }).addTo(map);
+
+    L.control.fullscreen().addTo(map);
+
     for (var i = 0; i < waypointList.length; i++) {
         createMarker(waypointList[i]);
     }
