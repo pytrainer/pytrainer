@@ -35,52 +35,52 @@ class Stats:
             'total_duration' : 0,
             'total_distance' : 0,
         }
-        
+
         fields = ['maxspeed', 'beats', 'maxbeats', 'duration', 'distance']
         data['fields'] = fields
-        
+
         for f in fields:
             data[f] = 0
 
-        for r in self.pytrainer_main.ddbb.session.query(Activity):
-            if r.sport not in data['sports']:
-                data['sports'][r.sport] = {'name': r.sport.name, 'count': 0}
+        with self.pytrainer_main.ddbb.sessionmaker.begin() as session:
+            for r in session.query(Activity):
+                if r.sport not in data['sports']:
+                    data['sports'][r.sport] = {'name': r.sport.name, 'count': 0}
+                    for f in fields:
+                        data['sports'][r.sport][f] = 0
+                        data['sports'][r.sport]['total_'+f] = 0
+                data['sports'][r.sport]['count'] += 1
                 for f in fields:
-                    data['sports'][r.sport][f] = 0
-                    data['sports'][r.sport]['total_'+f] = 0
-            data['sports'][r.sport]['count'] += 1
-            for f in fields:
-                field = getattr(r, f)
-                if field is not None:
-                    data['sports'][r.sport][f] = max(data['sports'][r.sport][f], field)
-                    data['sports'][r.sport]['total_'+f] += field
-                    data[f] = max(data[f], field)
-                else:
-                    logging.info('Skipping null values')
-                    
-            if 'avg_hr' not in data['sports'][r.sport]:
-                data['sports'][r.sport]['avg_hr'] = [0, 0]
-            if r.beats:
-                data['sports'][r.sport]['avg_hr'][0] += 1
-                data['sports'][r.sport]['avg_hr'][1] += r.beats
-                
-            data['total_duration'] += r.duration
-            data['total_distance'] += r.distance
-            
-            if not r.maxspeed and r.duration:
-                data['sports'][r.sport]['maxspeed'] = max(data['sports'][r.sport]['maxspeed'], r.distance / r.duration * 3600)
-            
-            if not 'start_date' in data: data['start_date'] = r.date
-            data['start_date'] = min(data['start_date'], r.date)
-            if not 'end_date' in data: data['end_date'] = r.date
-            data['end_date'] = max(data['end_date'], r.date)
-            
+                    field = getattr(r, f)
+                    if field is not None:
+                        data['sports'][r.sport][f] = max(data['sports'][r.sport][f], field)
+                        data['sports'][r.sport]['total_'+f] += field
+                        data[f] = max(data[f], field)
+                    else:
+                        logging.info('Skipping null values')
+
+                if 'avg_hr' not in data['sports'][r.sport]:
+                    data['sports'][r.sport]['avg_hr'] = [0, 0]
+                if r.beats:
+                    data['sports'][r.sport]['avg_hr'][0] += 1
+                    data['sports'][r.sport]['avg_hr'][1] += r.beats
+
+                data['total_duration'] += r.duration
+                data['total_distance'] += r.distance
+
+                if not r.maxspeed and r.duration:
+                    data['sports'][r.sport]['maxspeed'] = max(data['sports'][r.sport]['maxspeed'], r.distance / r.duration * 3600)
+
+                if not 'start_date' in data: data['start_date'] = r.date
+                data['start_date'] = min(data['start_date'], r.date)
+                if not 'end_date' in data: data['end_date'] = r.date
+                data['end_date'] = max(data['end_date'], r.date)
+
         for s in data['sports']:
             if data['sports'][s]['avg_hr'][0]:
                 data['sports'][s]['avg_hr'] = int(data['sports'][s]['avg_hr'][1] / data['sports'][s]['avg_hr'][0])
             else:
                 data['sports'][s]['avg_hr'] = None
-            
+
         logging.debug('<<')
         return data
-

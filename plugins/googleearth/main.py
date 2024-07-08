@@ -24,82 +24,81 @@ from lxml import etree
 from pytrainer.gui.dialogs import fileChooserDialog, guiFlush
 
 class googleearth():
-	def __init__(self, parent = None, validate=False):
-		self.parent = parent
-		self.pytrainer_main = parent.pytrainer_main
-		self.validate = validate
-		self.data_path = os.path.dirname(__file__)
-		self.tmpdir = self.pytrainer_main.profile.tmpdir
+    def __init__(self, parent = None, validate=False):
+        self.parent = parent
+        self.pytrainer_main = parent.pytrainer_main
+        self.validate = validate
+        self.data_path = os.path.dirname(__file__)
+        self.tmpdir = self.pytrainer_main.profile.tmpdir
 
-	def run(self):
-		logging.debug(">>")
-		selectedFiles = fileChooserDialog(title="Choose a Google Earth file (.kml) to import", multiple=True).getFiles()
-		guiFlush()
-		importfiles = []
-		if not selectedFiles:
-			return importfiles
-		for filename in selectedFiles:
-			if self.valid_input_file(filename):
-				if not self.inDatabase(filename):
-					sport = self.getSport(filename) #TODO Fix sport determination
-					gpxfile = "%s/googleearth-%d.gpx" % (self.tmpdir, len(importfiles))
-					outgps = subprocess.call(
-					            ["gpsbabel",
-					             "-t",
-					             "-i", "kml",
-					             "-f", filename,
-					             "-o", "gpx",
-					             "-F", gpxfile])
-					#self.createGPXfile(gpxfile, filename) #TODO Fix processing so not dependant on the broken gpsbabel
-					importfiles.append((gpxfile, sport))
-				else:
-					logging.debug("%s already in database. Skipping import." % (filename) )
-			else:
-				logging.info("File %s failed validation" % (filename))
-		logging.debug("<<")
-		return importfiles
+    def run(self):
+        logging.debug(">>")
+        selectedFiles = fileChooserDialog(title="Choose a Google Earth file (.kml) to import", multiple=True).getFiles()
+        guiFlush()
+        importfiles = []
+        if not selectedFiles:
+            return importfiles
+        for filename in selectedFiles:
+            if self.valid_input_file(filename):
+                if not self.inDatabase(filename):
+                    sport = self.getSport(filename) #TODO Fix sport determination
+                    gpxfile = "%s/googleearth-%d.gpx" % (self.tmpdir, len(importfiles))
+                    outgps = subprocess.call(
+                                ["gpsbabel",
+                                 "-t",
+                                 "-i", "kml",
+                                 "-f", filename,
+                                 "-o", "gpx",
+                                 "-F", gpxfile])
+                    #self.createGPXfile(gpxfile, filename) #TODO Fix processing so not dependant on the broken gpsbabel
+                    importfiles.append((gpxfile, sport))
+                else:
+                    logging.debug("%s already in database. Skipping import." % (filename) )
+            else:
+                logging.info("File %s failed validation" % (filename))
+        logging.debug("<<")
+        return importfiles
 
-	def valid_input_file(self, filename):
-		""" Function to validate input file if requested"""
-		if not self.validate:  #not asked to validate
-			logging.debug("Not validating %s" % (filename) )
-			return True
-		else:
-			return True
-			#TODO need to check schema and validation for example kml files
-			#xslfile = os.path.realpath(self.parent.parent.data_path)+ "/schemas/ogckml22.xsd"
-			#from pytrainer.lib.xmlValidation import xmlValidator
-			#validator = xmlValidator()
-			#return validator.validateXSL(filename, xslfile)
+    def valid_input_file(self, filename):
+        """ Function to validate input file if requested"""
+        if not self.validate:  #not asked to validate
+            logging.debug("Not validating %s" % (filename) )
+            return True
+        else:
+            return True
+            #TODO need to check schema and validation for example kml files
+            #xslfile = os.path.realpath(self.parent.parent.data_path)+ "/schemas/ogckml22.xsd"
+            #from pytrainer.lib.xmlValidation import xmlValidator
+            #validator = xmlValidator()
+            #return validator.validateXSL(filename, xslfile)
 
-	def inDatabase(self, filename):
-		""" Function to determine if a given file has already been imported into the database
-		    only compares date and start time (sport may have been changed in DB after import)
-		"""
-		#time = self.detailsFromKML(filename)
-		return False
+    def inDatabase(self, filename):
+        """ Function to determine if a given file has already been imported into the database
+            only compares date and start time (sport may have been changed in DB after import)
+        """
+        #time = self.detailsFromKML(filename)
+        return False
 
-	def getSport(self, filename):
-		#TODO Fix sport determination
-		return "Run"
+    def getSport(self, filename):
+        #TODO Fix sport determination
+        return "Run"
 
-	def detailsFromKML(self, filename):
-		""" Function to return the first time element from a KML file """
-		#TODO
-		#tree = xml.etree.cElementTree.ElementTree(file=filename)
-		#root = tree.getroot()
-		#timeElement = root.find(".//{http://www.topografix.com/GPX/1/1}time")
-		#if timeElement is None:
-		#	return None
-		#else:
-		#	return timeElement.text
+    def detailsFromKML(self, filename):
+        """ Function to return the first time element from a KML file """
+        #TODO
+        #tree = xml.etree.cElementTree.ElementTree(file=filename)
+        #root = tree.getroot()
+        #timeElement = root.find(".//{http://www.topografix.com/GPX/1/1}time")
+        #if timeElement is None:
+        #       return None
+        #else:
+        #       return timeElement.text
 
-	def createGPXfile(self, gpxfile, filename):
-		''' Function to transform a GPSBabel kml file to a valid GPX+ file
-		'''
-		#TODO!!
-		xslt_doc = etree.parse(self.data_path+"/translate.xsl")
-		transform = etree.XSLT(xslt_doc)
-		result_tree = transform(filename)
-		result_tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')
-
+    def createGPXfile(self, gpxfile, filename):
+        ''' Function to transform a GPSBabel kml file to a valid GPX+ file
+        '''
+        #TODO!!
+        xslt_doc = etree.parse(self.data_path+"/translate.xsl")
+        transform = etree.XSLT(xslt_doc)
+        result_tree = transform(filename)
+        result_tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')

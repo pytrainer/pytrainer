@@ -12,6 +12,7 @@ from pytrainer.environment import Environment
 from pytrainer.profile import Profile
 from pytrainer.record import Record
 from pytrainer.core.activity import Activity
+from pytrainer.test import DDBBTestCase
 initialize_gettext()
 
 try:
@@ -39,15 +40,14 @@ from pytrainer.lib.uc import UC
 
 
 @unittest.skipUnless(GUI_AVAILABLE, 'Gui libraries not available')
-class ListviewTest(unittest.TestCase):
+class ListviewTest(DDBBTestCase):
 
     def setUp(self):
+        super().setUp()
         env = Environment()
         env.create_directories()
         self.main = Mock()
-        self.main.ddbb = DDBB()
-        self.main.ddbb.connect()
-        self.main.ddbb.create_tables()
+        self.main.ddbb = self.ddbb
         self.main.profile = Profile()
         self.main.uc = UC()
         self.sport_service = SportService(self.main.ddbb)
@@ -70,10 +70,6 @@ class ListviewTest(unittest.TestCase):
                                             date=datetime.datetime(2018, 1, 6, 10, 0, 0),
                                             duration=10000, distance=100))
         self.main.ddbb.session.commit()
-
-    def tearDown(self):
-        self.main.ddbb.disconnect()
-        self.main.ddbb.drop_tables()
 
     def test_listsearch_all(self):
         self.assertEqual(len(list(self.main.record.getRecordListByCondition(None))), 3)

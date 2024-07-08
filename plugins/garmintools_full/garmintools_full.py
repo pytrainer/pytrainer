@@ -299,7 +299,7 @@ class garmintools_full():
             #logging.debug("Found files: "+str(foundFiles))
             logging.info ("Found files: "+str(len(foundFiles)))
         else:
-            logging.error("Not able to locate files from GPS: %s" % 
+            logging.error("Not able to locate files from GPS: %s" %
                           str(process.returncode))
         logging.debug("<<")
         return foundFiles
