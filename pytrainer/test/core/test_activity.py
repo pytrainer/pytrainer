@@ -69,6 +69,8 @@ class ActivityTest(unittest.TestCase):
             'max_hr': 173,
             'laptrigger': 'manual'})
 
+        self.ddbb.session.commit()
+
     def tearDown(self):
         self.service.clear_pool()
         self.ddbb.disconnect()
