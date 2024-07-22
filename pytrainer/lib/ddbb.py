@@ -22,11 +22,9 @@
 import logging
 import os
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy import create_engine, select, Table, Column, ForeignKey, Integer
+from sqlalchemy.orm import sessionmaker, Session, declarative_base
 from sqlalchemy.types import TypeDecorator
-from sqlalchemy import Integer, Table, Column, ForeignKey
 
 from pytrainer.util.color import color_from_hex_string
 from pytrainer.lib.singleton import Singleton
@@ -95,12 +93,16 @@ if no url is provided"""
         from pytrainer.core.activity import Lap
         from pytrainer.athlete import Athletestat
         DeclarativeBase.metadata.create_all(self.engine)
+
         if add_default:
-            for item in [Sport(name=u"Mountain Bike", weight=0.0, color=color_from_hex_string("0000ff")),
-                         Sport(name=u"Bike", weight=0.0, color=color_from_hex_string("00ff00")),
-                         Sport(name=u"Run", weight=0.0, color=color_from_hex_string("ffff00"))]:
-                self.session.add(item)
-            self.session.commit()
+            with Session(self.engine) as session:
+                for item in [
+                    Sport(name=u"Mountain Bike", weight=0.0, color=color_from_hex_string("0000ff")),
+                    Sport(name=u"Bike", weight=0.0, color=color_from_hex_string("00ff00")),
+                    Sport(name=u"Run", weight=0.0, color=color_from_hex_string("ffff00"))
+                    ]:
+                    session.add(item)
+                session.commit()
 
     def drop_tables(self):
         """Drop the database schema"""
@@ -126,6 +128,9 @@ if no url is provided"""
 class ForcedInteger(TypeDecorator):
     """Type to force values to int since sqlite doesn't do this"""
     impl = Integer
+    cache_ok = False
+    # could set cache_ok to True eventually but this para is not well-documented in sqlalchemy:
+    #    . False is safest, drawback is potential efficiency loss
 
     def process_bind_param(self, value, dialect):
         if value is None:
