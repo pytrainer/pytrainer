@@ -18,7 +18,7 @@
 
 from pytrainer.util.color import Color, color_from_hex_string
 from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger
-from sqlalchemy import Column, Integer, Float, Unicode, CheckConstraint
+from sqlalchemy import Column, Integer, Float, Unicode, CheckConstraint, select
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import InvalidRequestError, IntegrityError, StatementError
 import sqlalchemy.types as types
@@ -26,6 +26,7 @@ import logging
 
 class ColorType(types.TypeDecorator):
     """Sqlalchemy type to convert between CHAR and the Color object"""
+
     impl = types.CHAR
 
     def process_bind_param(self, value, dialect):
@@ -36,6 +37,7 @@ class ColorType(types.TypeDecorator):
 
 class Sport(DeclarativeBase):
     """A type of exercise. For example: "running" or "cycling"."""
+
     __tablename__ = 'sports'
     color = Column(ColorType(length=6), nullable=False)
     id = Column('id_sports', Integer, primary_key=True, nullable=False)
@@ -53,30 +55,32 @@ class Sport(DeclarativeBase):
         super(Sport, self).__init__(**kwargs)
 
 class SportServiceException(Exception):
-    
+
     def __init__(self, value):
         self.value = value
-    
+
     def __str__(self):
         return repr(self.value)
 
-class SportService(object):
-    
+class SportService:
     """Provides access to stored sports."""
-    
+
     def __init__(self, ddbb):
         self._ddbb = ddbb
-        
+
     def get_sport(self, sport_id):
         """Get the sport with the specified id.
 
         If no sport with the given id exists then None is returned."""
         if sport_id is None:
             raise ValueError("Sport id cannot be None")
-        try:
-            return self._ddbb.session.query(Sport).filter(Sport.id == sport_id).one()
-        except NoResultFound:
-            return None
+        stmt = select(Sport).where(Sport.id == sport_id)
+        with self._ddbb.session as session:
+            result = session.execute(stmt)
+            try:
+                return result.scalar_one()
+            except NoResultFound:
+                return None
 
     def get_sport_by_name(self, name):
         """Get the sport with the specified name.
@@ -84,36 +88,45 @@ class SportService(object):
         If no sport with the given name exists then None is returned."""
         if name is None:
             raise ValueError("Sport name cannot be None")
-        try:
-            return self._ddbb.session.query(Sport).filter(Sport.name == name).one()
-        except NoResultFound:
-            return None
+        stmt = select(Sport).where(Sport.name == name)
+        with self._ddbb.session as session:
+            result = session.execute(stmt)
+            try:
+                return result.scalar_one()
+            except NoResultFound:
+                return None
 
     def get_all_sports(self):
         """Get all stored sports."""
-        return self._ddbb.session.query(Sport).all()
+        stmt = select(Sport)
+        with self._ddbb.session as session:
+            result = session.execute(stmt)
+            return result.scalars().all()
 
     def store_sport(self, sport):
         """Store a new or update an existing sport.
 
-       The stored object is returned."""
+        The stored object is returned."""
         try:
-            self._ddbb.session.add(sport)
-            self._ddbb.session.commit()
+            with self._ddbb.session as session:
+                session.add(sport)
+                session.commit()
+                session.refresh(sport)
         except (IntegrityError, StatementError) as err:
-            self._ddbb.session.rollback()
+            session.rollback()
             raise SportServiceException(str(err)) from err
         return sport
 
     def remove_sport(self, sport):
         """Delete a stored sport.
-        
+
         All records associated with the sport will also be deleted."""
         if not sport.id:
             raise SportServiceException("Cannot remove sport which has not been stored: '{0}'.".format(sport.name))
         try:
-            self._ddbb.session.delete(sport)
-            self._ddbb.session.commit()
+            with self._ddbb.session as session:
+                session.delete(sport)
+                session.commit()
         except InvalidRequestError:
-             raise SportServiceException("Sport id %s not found" % sport.id)
+            raise SportServiceException("Sport id %s not found" % sport.id)
         logging.debug("Deleted sport: %s", sport.name)
