@@ -24,9 +24,9 @@ import os.path
 
 import dateutil.parser
 from dateutil.tz import tzlocal
-from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String, Unicode, and_
+from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String, Unicode, and_, select
 from sqlalchemy.orm import relationship, backref, reconstructor, deferred, joinedload
-from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.exc import InvalidRequestError, NoResultFound
 from sqlalchemy_utils.types.choice import ChoiceType
 
 from pytrainer.lib.date import second2time
@@ -36,14 +36,12 @@ from pytrainer.lib import uc
 from pytrainer.profile import Profile
 from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger, record_to_equipment
 
-
 class Laptrigger(enum.Enum):
     MANUAL = 'manual'
     DISTANCE = 'distance'
     LOCATION = 'location'
     TIME = 'time'
     HEARTRATE = 'hr'
-
 
 class Lap(DeclarativeBase):
     __tablename__ = 'laps'
@@ -76,7 +74,7 @@ class ActivityServiceException(Exception):
     def __str__(self):
         return repr(self.value)
 
-class ActivityService(object):
+class ActivityService:
     '''
     Class maintains a pool of activities
             size is set at initialisation
@@ -103,7 +101,7 @@ class ActivityService(object):
 
     def remove_activity_from_cache(self, id):
         sid = str(id)
-        if sid in list(self.pool.keys()):
+        if sid in self.pool:
             logging.debug("Found activity in pool")
             self.pool_queue.remove(sid)
             del self.pool[sid]
@@ -113,19 +111,22 @@ class ActivityService(object):
             warnings.warn("Deprecated call to get_activity with None id", DeprecationWarning, stacklevel=2)
             return Activity()
         sid = str(id)
-        if sid in list(self.pool.keys()):
+        if sid in self.pool:
             logging.debug("Found activity in pool")
             #Have accessed this activity, place at end of queue
             self.pool_queue.remove(sid)
             self.pool_queue.append(sid)
         else:
             logging.debug("Activity NOT found in pool")
-            self.pool[sid] = self.pytrainer_main.ddbb.session.query(Activity).options(
-                joinedload(Activity.sport),
-                joinedload(Activity.equipment),
-                joinedload(Activity.Laps)
-            ).filter(Activity.id == id).one()
-            self.pool_queue.append(sid)
+            stmt = select(Activity).options(
+                            joinedload(Activity.sport),
+                            joinedload(Activity.equipment),
+                            joinedload(Activity.Laps)
+                        ).where(Activity.id == id)
+            with self.pytrainer_main.ddbb.session as session:
+                result = session.execute(stmt)
+                self.pool[sid] = result.unique().scalars().one()
+                self.pool_queue.append(sid)
         if len(self.pool_queue) > self.max_size:
             sid_to_remove = self.pool_queue.pop(0)
             logging.debug("Removing activity: %s", sid_to_remove)
@@ -140,41 +141,58 @@ class ActivityService(object):
         if not activity.id:
             raise ActivityServiceException("Cannot remove activity which has not been stored: '{0}'.".format(activity.name))
         try:
-            self.remove_activity_from_cache(activity.id)
-            self.pytrainer_main.ddbb.session.delete(activity)
-            self.pytrainer_main.ddbb.session.commit()
-            if activity.gpx_file and os.path.isfile(activity.gpx_file):
-                os.remove(activity.gpx_file)
-        except InvalidRequestError:
-             raise ActivityServiceException("Activity id %s not found" % activity.id)
-        logging.debug("Deleted activity: %s", activity.title)
+            with self.pytrainer_main.ddbb.session as session:
+                self.remove_activity_from_cache(activity.id)
+                self.pytrainer_main.ddbb.session.delete(activity)
+                self.pytrainer_main.ddbb.session.commit()
+                if activity.gpx_file and os.path.isfile(activity.gpx_file):
+                    os.remove(activity.gpx_file)
+            logging.debug("Deleted activity: %s", activity.title)
+        except InvalidRequestError as e:
+            logging.error("Activity id %s not found: %s", activity.id, e)
+            raise ActivityServiceException("Activity id %s not found" % activity.id)
+        except Exception as e:
+            logging.error("An error occurred while deleting activity: %s", e)
+            raise ActivityServiceException("An error occurred while deleting activity: %s" % e)
 
     def get_activities_for_day(self, date, sport=None):
         """Iterates the activities for a specific date, optionally restricted by Sport)"""
+
         if not sport:
-            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date == date).options(joinedload(Activity.Laps))
+            stmt = select(Activity).options(joinedload(Activity.Laps)).where(Activity.date == date)
         else:
-            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.date == date, Activity.sport == sport)).options(joinedload(Activity.Laps))
-        for activity in activities:
-            sid = str(activity.id)
-            if sid in self.pool:
-                yield self.pool[sid]
-            else:
-                self.pool[sid] = activity
-                self.pool_queue.append(sid)
-                yield activity
+            stmt = select(Activity).options(joinedload(Activity.Laps)).where(and_(Activity.date == date, Activity.sport == sport))
+        with self.pytrainer_main.ddbb.session as session:
+            result = session.execute(stmt)
+            activities = result.unique().scalars().all()
+            for activity in activities:
+                sid = str(activity.id)
+                if sid in self.pool:
+                    yield self.pool[sid]
+                else:
+                    self.pool[sid] = activity
+                    self.pool_queue.append(sid)
+                    yield activity
 
     def get_activities_period(self, date_range, sport=None):
         """Iterate over activities for a specific time period, optionally restricted by Sport.
 Does not add them to the cache."""
+
         if not sport:
-            return self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date.between(date_range.start_date, date_range.end_date))
+            stmt = select(Activity).where(Activity.date.between(date_range.start_date, date_range.end_date))
         else:
-            return self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.date.between(date_range.start_date, date_range.end_date), Activity.sport == sport))
+            stmt = select(Activity).where(and_(Activity.date.between(date_range.start_date, date_range.end_date), Activity.sport == sport))
+        with self.pytrainer_main.ddbb.session as session:
+            result = session.execute(stmt)
+            return result.scalars().all()
 
     def get_all_activities(self):
         """Iterates over all activities ordered by date"""
-        return self.pytrainer_main.ddbb.session.query(Activity).order_by('date')
+
+        stmt = select(Activity).order_by('date')
+        with self.pytrainer_main.ddbb.session as session:
+            result = session.execute(stmt)
+            return result.scalars().all()
 
 class Activity(DeclarativeBase):
     '''
