@@ -23,7 +23,8 @@ import logging
 import datetime
 import warnings
 
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy import select
+from sqlalchemy.exc import NoResultFound
 
 from .lib.date import Date, time2second
 from .lib.gpx import Gpx
@@ -158,7 +159,11 @@ class Record:
                 new_lap = Lap(**lap)
                 record.Laps.append(new_lap)
         if equipment:
-            record.equipment = self.pytrainer_main.ddbb.session.query(Equipment).filter(Equipment.id.in_(equipment)).all()
+            stmt = select(Equipment).filter(Equipment.id.in_(equipment))
+            with self.pytrainer_main.ddbb.session as session:
+                result = session.execute(stmt)
+                record.equipment = result.scalars().all()
+
         self.pytrainer_main.ddbb.session.commit()
         if os.path.isfile(gpxOrig):
             gpxDest = self.pytrainer_main.profile.gpxdir
@@ -312,7 +317,11 @@ class Record:
         logging.debug('Updating bbdd')
         self._formatRecordNew(list_options, record)
         if equipment:
-            record.equipment = self.pytrainer_main.ddbb.session.query(Equipment).filter(Equipment.id.in_(equipment)).all()
+            stmt = select(Equipment).filter(Equipment.id.in_(equipment))
+            with self.pytrainer_main.ddbb.session as session:
+                result = session.execute(stmt)
+                record.equipment = result.scalars().all()
+
         self.pytrainer_main.ddbb.session.commit()
         self.pytrainer_main.refreshListView()
         logging.debug('<<')
@@ -350,21 +359,26 @@ class Record:
         logging.debug("--")
         try:
             if sport_id is not None:
-                return str(self.pytrainer_main.ddbb.session.query(Activity).
-                           filter(Activity.sport_id == sport_id).order_by(Activity.date.desc()).
-                           limit(1).one().date)
+                stmt = select(Activity.date).filter(Activity.sport_id == sport_id).order_by(Activity.date.desc()).limit(1)
             else:
-                return str(self.pytrainer_main.ddbb.session.query(Activity).order_by(
-                    Activity.date.desc()).limit(1).one().date)
+                stmt = select(Activity.date).order_by(Activity.date.desc()).limit(1)
+            with self.pytrainer_main.ddbb.session as session:
+                result = session.execute(stmt)
+                last_date = result.scalars().one_or_none()
+            return str(last_date) if last_date else None
         except NoResultFound:
             return None
 
     def getRecordListByCondition(self, condition):
         logging.debug('>>')
         if condition is None:
-            return self.pytrainer_main.ddbb.session.query(Activity).order_by(Activity.date.desc())
+            stmt = select(Activity).order_by(Activity.date.desc())
         else:
-            return self.pytrainer_main.ddbb.session.query(Activity).filter(condition).order_by(Activity.date.desc())
+            stmt = select(Activity).filter(condition).order_by(Activity.date.desc())
+
+        with self.pytrainer_main.ddbb.session as session:
+            result = session.execute(stmt)
+            return result.scalars().all()
 
     def getRecordDayList(self, date, sport=None):
         logging.debug('>>')
