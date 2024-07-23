@@ -63,9 +63,13 @@ class ListviewTest(unittest.TestCase):
         self.main.ddbb.session.add(Activity(sport=non_linear_sport,
                                             date=datetime.datetime(2018, 5, 6, 10, 0, 0),
                                             duration=1000, distance=25))
+        self.main.ddbb.session.commit()
+
         self.main.ddbb.session.add(Activity(sport=non_linear_sport,
                                             date=datetime.datetime(2018, 1, 6, 10, 0, 0),
                                             duration=10000, distance=150))
+        self.main.ddbb.session.commit()
+
         self.main.ddbb.session.add(Activity(sport=self.sport_service.get_sport(2),
                                             date=datetime.datetime(2018, 1, 6, 10, 0, 0),
                                             duration=10000, distance=100))
