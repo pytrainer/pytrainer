@@ -84,6 +84,8 @@ class ActivityTest(unittest.TestCase):
         activity1 = self.service.get_activity(1)
         activity2 = self.service.get_activity(1)
 
+        self.assertEqual(activity1, activity2)
+
         self.assertEqual(activity1.distance, 46.18)
         self.assertEqual(activity1.duration, 7426)
         self.assertEqual(activity1.sport.name, 'Mountain Bike')
@@ -129,6 +131,9 @@ class ActivityTest(unittest.TestCase):
 
     def test_activity_lap(self):
         activity = self.service.get_activity(1)
+        self.ddbb.session.add(activity)     # merge back into the session to avoid Detached error
+        self.ddbb.session.refresh(activity)
+
         self.maxDiff = None
         # we test our own deprecated accessor, we also test each attribute below
         warnings.filterwarnings('ignore', category=DeprecationWarning)
@@ -160,6 +165,7 @@ class ActivityTest(unittest.TestCase):
         self.assertEqual(lap.calories, 1462)
         self.assertEqual(lap.avg_hr, 136)
         self.assertEqual(lap.max_hr, 173)
+        self.assertEqual(lap.activity, activity)
         self.assertEqual(lap.lap_number, 0)
         self.assertEqual(lap.intensity, u'active')
         self.assertEqual(lap.laptrigger, Laptrigger.MANUAL)
@@ -217,7 +223,9 @@ class ActivityTest(unittest.TestCase):
         activity = self.service.get_activity(1)
         activities_for_day = self.service.get_activities_for_day(datetime.date(2016, 7, 24))
 
+
         activity1 = list(activities_for_day)[0]
+        self.assertEqual(activity, activity1)
 
         self.assertEqual(activity1.distance, 46.18)
         self.assertEqual(activity1.duration, 7426)
@@ -228,6 +236,7 @@ class ActivityTest(unittest.TestCase):
         activities_period = self.service.get_activities_period(DateRange.for_week_containing(datetime.date(2016, 7, 24)))
 
         activity1 = list(activities_period)[0]
+        self.assertEqual(activity, activity1)
 
         self.assertEqual(activity1.distance, 46.18)
         self.assertEqual(activity1.duration, 7426)
@@ -237,7 +246,9 @@ class ActivityTest(unittest.TestCase):
         activity = self.service.get_activity(1)
         all_activities = self.service.get_all_activities()
 
+
         activity1 = list(all_activities)[0]
+        self.assertEqual(activity, activity1)
 
         self.assertEqual(activity1.distance, 46.18)
         self.assertEqual(activity1.duration, 7426)

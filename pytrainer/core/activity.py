@@ -62,6 +62,33 @@ class Lap(DeclarativeBase):
     start_lat = Column(Float)
     start_lon = Column(Float)
 
+    def __eq__(self, other):
+        if not isinstance(other, Lap):
+            return NotImplemented
+        return (self.avg_hr == other.avg_hr and
+                self.calories == other.calories and
+                self.comments == other.comments and
+                self.distance == other.distance and
+                self.elapsed_time == other.elapsed_time and
+                self.end_lat == other.end_lat and
+                self.end_lon == other.end_lon and
+                self.id_lap == other.id_lap and
+                self.intensity == other.intensity and
+                self.lap_number == other.lap_number and
+                self.laptrigger == other.laptrigger and
+                self.max_hr == other.max_hr and
+                self.max_speed == other.max_speed and
+                self.record == other.record and
+                self.start_lat == other.start_lat and
+                self.start_lon == other.start_lon)
+
+    def __repr__(self):
+        return (f"Lap(avg_hr={self.avg_hr}, calories={self.calories}, comments={self.comments!r}, "
+                f"distance={self.distance}, elapsed_time={self.elapsed_time!r}, end_lat={self.end_lat}, "
+                f"end_lon={self.end_lon}, id_lap={self.id_lap}, intensity={self.intensity!r}, "
+                f"lap_number={self.lap_number}, laptrigger={self.laptrigger}, max_hr={self.max_hr}, "
+                f"max_speed={self.max_speed}, record={self.record}, start_lat={self.start_lat}, start_lon={self.start_lon})")
+
     @property
     def duration(self):
         return float(self.elapsed_time)
@@ -277,6 +304,39 @@ class Activity(DeclarativeBase):
     def __init__(self, **kwargs):
         self._initialize()
         super(Activity, self).__init__(**kwargs)
+
+    def __eq__(self, other):
+        if not isinstance(other, Activity):
+            return False
+        return (
+            self.average == other.average and
+            self.beats == other.beats and
+            self.calories == other.calories and
+            self.comments == other.comments and
+            self.date == other.date and
+            self.date_time_local == other.date_time_local and
+            self.date_time_utc == other.date_time_utc and
+            self.distance == other.distance and
+            self.duration == other.duration and
+            self.id == other.id and
+            self.maxbeats == other.maxbeats and
+            self.maxpace == other.maxpace and
+            self.maxspeed == other.maxspeed and
+            self.pace == other.pace and
+            self.sport_id == other.sport_id and
+            self.title == other.title and
+            self.unegative == other.unegative and
+            self.upositive == other.upositive
+        )
+
+    def __repr__(self):
+        return (
+            f"<Activity(id={self.id}, title={self.title}, date={self.date}, duration={self.duration}, "
+            f"distance={self.distance}, average={self.average}, upositive={self.upositive}, "
+            f"unegative={self.unegative}, maxspeed={self.maxspeed}, maxpace={self.maxpace}, "
+            f"pace={self.pace}, beats={self.beats}, maxbeats={self.maxbeats}, calories={self.calories}, "
+            f"date_time_local={self.date_time_local}, date_time_utc={self.date_time_utc}, sport_id={self.sport_id})>"
+        )
 
     @reconstructor
     def _initialize(self):
