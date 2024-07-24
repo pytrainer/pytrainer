@@ -1,6 +1,8 @@
 import os
 import datetime
 
+from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.session import make_transient
 
 import unittest
@@ -88,7 +90,13 @@ class ListviewTest(unittest.TestCase):
     def test_listsearch_sport(self):
         self.parent.lsa_sport.set_active(3)
         active = self.parent.lsa_sport.get_active_text()
-        by_sport = list(self.main.record.getRecordListByCondition(self.parent.listsearch.condition))
+
+        # eagerly load the sport relationship
+        stmt = select(Activity).options(joinedload(Activity.sport)).where(self.parent.listsearch.condition)
+        with self.main.ddbb.session as session:
+            result = session.execute(stmt)
+            by_sport = result.scalars().all()
+
         self.assertEqual(len(by_sport), 2)
         self.assertEqual(by_sport[0].sport.name, active)
 
