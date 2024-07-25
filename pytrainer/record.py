@@ -25,6 +25,7 @@ import warnings
 
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
+from sqlalchemy.orm import joinedload
 
 from .lib.date import Date, time2second
 from .lib.gpx import Gpx
@@ -371,14 +372,22 @@ class Record:
 
     def getRecordListByCondition(self, condition):
         logging.debug('>>')
+
+        # specify relationships to be eagerly loaded and prevent DetachedInstanceError when accessing attributes
+        options = [
+            joinedload(Activity.equipment),
+            joinedload(Activity.Laps),
+            joinedload(Activity.sport),     # add other relationships as required
+            ]
+
         if condition is None:
-            stmt = select(Activity).order_by(Activity.date.desc())
+            stmt = select(Activity).options(*options).order_by(Activity.date.desc())
         else:
-            stmt = select(Activity).filter(condition).order_by(Activity.date.desc())
+            stmt = select(Activity).filter(condition).options(*options).order_by(Activity.date.desc())
 
         with self.pytrainer_main.ddbb.session as session:
             result = session.execute(stmt)
-            return result.scalars().all()
+            return result.unique().scalars().all()
 
     def getRecordDayList(self, date, sport=None):
         logging.debug('>>')
