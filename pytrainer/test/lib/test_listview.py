@@ -90,15 +90,12 @@ class ListviewTest(unittest.TestCase):
     def test_listsearch_sport(self):
         self.parent.lsa_sport.set_active(3)
         active = self.parent.lsa_sport.get_active_text()
+        cond = self.parent.listsearch.condition
 
-        # eagerly load the sport relationship
-        stmt = select(Activity).options(joinedload(Activity.sport)).where(self.parent.listsearch.condition)
-        with self.main.ddbb.session as session:
-            result = session.execute(stmt)
-            by_sport = result.scalars().all()
-
-        self.assertEqual(len(by_sport), 2)
-        self.assertEqual(by_sport[0].sport.name, active)
+        records = self.main.record.getRecordListByCondition( cond )
+        self.assertEqual( len(records), 2)
+        for record in records:
+            self.assertEqual(record.sport.name, active)
 
     def test_listsearch_distance(self):
         self.parent.lsa_distance.set_active(4)
