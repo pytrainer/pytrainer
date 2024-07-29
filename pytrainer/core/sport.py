@@ -54,6 +54,17 @@ class Sport(DeclarativeBase):
         self.color = Color(0x0000ff)
         super(Sport, self).__init__(**kwargs)
 
+    def __eq__(self, other):
+        if not isinstance(other, Sport):
+            return NotImplemented
+        return (self.id == other.id and self.max_pace == other.max_pace and
+                self.met == other.met and self.name == other.name and
+                self.weight == other.weight)   # skipped color (an object)
+
+    def __str__(self):
+        return (f"Sport(id={self.id}, name={self.name}, color={self.color}, "
+                f"max_pace={self.max_pace}, met={self.met}, weight={self.weight})")
+
 class SportServiceException(Exception):
 
     def __init__(self, value):
