@@ -145,11 +145,7 @@ class ActivityService:
             self.pool_queue.append(sid)
         else:
             logging.debug("Activity NOT found in pool")
-            stmt = select(Activity).options(
-                            joinedload(Activity.sport),
-                            joinedload(Activity.equipment),
-                            joinedload(Activity.Laps)
-                        ).where(Activity.id == id)
+            stmt = select(Activity).where(Activity.id == id)
             with self.pytrainer_main.ddbb.session as session:
                 result = session.execute(stmt)
                 self.pool[sid] = result.unique().scalars().one()
@@ -170,8 +166,8 @@ class ActivityService:
         try:
             with self.pytrainer_main.ddbb.session as session:
                 self.remove_activity_from_cache(activity.id)
-                self.pytrainer_main.ddbb.session.delete(activity)
-                self.pytrainer_main.ddbb.session.commit()
+                session.delete(activity)
+                session.commit()
                 if activity.gpx_file and os.path.isfile(activity.gpx_file):
                     os.remove(activity.gpx_file)
             logging.debug("Deleted activity: %s", activity.title)
@@ -211,7 +207,7 @@ Does not add them to the cache."""
             stmt = select(Activity).where(and_(Activity.date.between(date_range.start_date, date_range.end_date), Activity.sport == sport))
         with self.pytrainer_main.ddbb.session as session:
             result = session.execute(stmt)
-            return result.scalars().all()
+            return result.unique().scalars().all()
 
     def get_all_activities(self):
         """Iterates over all activities ordered by date"""
@@ -219,7 +215,7 @@ Does not add them to the cache."""
         stmt = select(Activity).order_by('date')
         with self.pytrainer_main.ddbb.session as session:
             result = session.execute(stmt)
-            return result.scalars().all()
+            return result.unique().scalars().all()
 
 class Activity(DeclarativeBase):
     '''
@@ -294,12 +290,12 @@ class Activity(DeclarativeBase):
 
     #relation definitions
     sport = relationship("Sport", backref=backref("activities", order_by=date,
-                                                  cascade='all, delete-orphan'))
+                                                  cascade='all, delete-orphan'), lazy='joined')
     equipment = relationship("Equipment", secondary=record_to_equipment,
-                             backref=backref("activities", order_by=date))
+                             backref=backref("activities", order_by=date), lazy='joined')
     Laps = relationship('Lap', backref=backref('activity'),
                         order_by='Lap.lap_number',
-                        cascade='all, delete-orphan')
+                        cascade='all, delete-orphan', lazy='joined')
 
     def __init__(self, **kwargs):
         self._initialize()
