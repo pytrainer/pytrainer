@@ -142,40 +142,40 @@ class Record:
 
     def insertRecord(self, list_options, laps=None, equipment=None):
         logging.debug('>>')
-        #Create entry for activity in records table
         if list_options is None:
             logging.info('No data provided, abort adding entry')
             return None
         logging.debug('list_options: %s', list_options)
+
         record = self._formatRecordNew(list_options, Activity())
+
         gpxOrig = list_options["rcd_gpxfile"]
-        # Load laps from gpx if not provided by the caller
-        if laps is None and os.path.isfile(gpxOrig):
+        if laps is None and os.path.isfile(gpxOrig):    # load laps from gpx if not provided by the caller
             gpx = Gpx(self.data_path, gpxOrig)
             laps = self.lapsFromGPX(gpx)
-        #Create entry(s) for activity in laps table
-        if laps is not None:
+        if laps is not None:                            # create entry(s) for activity in laps table
             for lap in laps:
                 new_lap = Lap(**lap)
                 record.Laps.append(new_lap)
-        if equipment:
-            stmt = select(Equipment).filter(Equipment.id.in_(equipment))
-            with self.pytrainer_main.ddbb.session as session:
+
+        with self.pytrainer_main.ddbb.session as session:
+            if equipment:
+                stmt = select(Equipment).filter(Equipment.id.in_(equipment))
                 result = session.execute(stmt)
                 record.equipment = result.scalars().all()
+            session.add(record)
+            session.commit()
 
-        self.pytrainer_main.ddbb.session.add(record)
-        self.pytrainer_main.ddbb.session.commit()
-        if os.path.isfile(gpxOrig):
-            gpxDest = self.pytrainer_main.profile.gpxdir
-            gpxNew = gpxDest+"/%d.gpx" % record.id
-            #Leave original file in place...
-            #shutil.move(gpxOrig, gpxNew)
-            #logging.debug('Moving '+gpxOrig+' to '+gpxNew)
-            shutil.copy(gpxOrig, gpxNew)
-            logging.debug('Copying %s to %s', gpxOrig, gpxNew)
-        logging.debug('<<')
-        return record.id
+            if os.path.isfile(gpxOrig):
+                gpxDest = self.pytrainer_main.profile.gpxdir
+                gpxNew = gpxDest+"/%d.gpx" % record.id
+                #Leave original file in place...
+                #shutil.move(gpxOrig, gpxNew)
+                #logging.debug('Moving '+gpxOrig+' to '+gpxNew)
+                shutil.copy(gpxOrig, gpxNew)
+                logging.debug('Copying %s to %s', gpxOrig, gpxNew)
+            logging.debug('<<')
+            return record.id
 
     def insertNewRecord(self, gpxOrig, entry): #TODO consolidate with insertRecord
         """29.03.2008 - dgranda
