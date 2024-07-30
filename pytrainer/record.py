@@ -148,7 +148,6 @@ class Record:
             return None
         logging.debug('list_options: %s', list_options)
         record = self._formatRecordNew(list_options, Activity())
-        self.pytrainer_main.ddbb.session.add(record)
         gpxOrig = list_options["rcd_gpxfile"]
         # Load laps from gpx if not provided by the caller
         if laps is None and os.path.isfile(gpxOrig):
@@ -165,6 +164,7 @@ class Record:
                 result = session.execute(stmt)
                 record.equipment = result.scalars().all()
 
+        self.pytrainer_main.ddbb.session.add(record)
         self.pytrainer_main.ddbb.session.commit()
         if os.path.isfile(gpxOrig):
             gpxDest = self.pytrainer_main.profile.gpxdir
@@ -305,8 +305,9 @@ class Record:
     def updateRecord(self, list_options, id_record, equipment=None): # ToDo: update only fields that can change if GPX file is present
         logging.debug('>>')
         logging.debug('list_options: %s', list_options)
-        # No need to remove from the pool, sqlalchemy keeps things in sync
+
         record = self.pytrainer_main.activitypool.get_activity(id_record)
+
         gpxfile = self.pytrainer_main.profile.gpxdir+"/%d.gpx"%int(record.id)
         gpxOrig = list_options["rcd_gpxfile"]
         if os.path.isfile(gpxOrig):
@@ -315,15 +316,20 @@ class Record:
         else:
             if (list_options["rcd_gpxfile"]==""):
                 logging.debug('Activity not based in GPX file') # ein?
-        logging.debug('Updating bbdd')
+
+        logging.debug('Updating ddbb')
         self._formatRecordNew(list_options, record)
-        if equipment:
-            stmt = select(Equipment).filter(Equipment.id.in_(equipment))
-            with self.pytrainer_main.ddbb.session as session:
+
+        with self.pytrainer_main.ddbb.session as session:
+            if equipment:
+                stmt = select(Equipment).filter(Equipment.id.in_(equipment))
                 result = session.execute(stmt)
                 record.equipment = result.scalars().all()
 
-        self.pytrainer_main.ddbb.session.commit()
+            session.merge(record)
+            session.commit()
+
+        self.pytrainer_main.activitypool.remove_activity_from_cache(id_record)
         self.pytrainer_main.refreshListView()
         logging.debug('<<')
 
