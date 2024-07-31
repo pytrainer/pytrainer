@@ -166,14 +166,18 @@ class ActivityService:
         try:
             with self.pytrainer_main.ddbb.session as session:
                 self.remove_activity_from_cache(activity.id)
-                session.delete(activity)
-                session.commit()
+                activity = session.get(Activity, activity.id)
+                if activity:
+                    session.delete(activity)
+                    session.commit()
                 if activity.gpx_file and os.path.isfile(activity.gpx_file):
                     os.remove(activity.gpx_file)
             logging.debug("Deleted activity: %s", activity.title)
+
         except InvalidRequestError as e:
             logging.error("Activity id %s not found: %s", activity.id, e)
             raise ActivityServiceException("Activity id %s not found" % activity.id)
+
         except Exception as e:
             logging.error("An error occurred while deleting activity: %s", e)
             raise ActivityServiceException("An error occurred while deleting activity: %s" % e)
@@ -289,13 +293,24 @@ class Activity(DeclarativeBase):
     upositive = Column(Float)
 
     #relation definitions
-    sport = relationship("Sport", backref=backref("activities", order_by=date,
-                                                  cascade='all, delete-orphan'), lazy='joined')
-    equipment = relationship("Equipment", secondary=record_to_equipment,
-                             backref=backref("activities", order_by=date), lazy='joined')
-    Laps = relationship('Lap', backref=backref('activity'),
-                        order_by='Lap.lap_number',
-                        cascade='all, delete-orphan', lazy='joined')
+    sport     = relationship( "Sport",
+                              backref=backref(
+                                  "activities", order_by=date, cascade='all, delete-orphan'
+                                  ),
+                              lazy='joined' )
+
+    equipment = relationship( "Equipment",
+                              secondary=record_to_equipment,
+                              backref=backref(
+                                  "activities", order_by=date, cascade='all, delete'
+                                  ),
+                              lazy='joined' )
+
+    Laps      = relationship( 'Lap',
+                              backref=backref('activity'),
+                              order_by='Lap.lap_number',
+                              cascade='all, delete-orphan',
+                              lazy='joined' )
 
     def __init__(self, **kwargs):
         self._initialize()
