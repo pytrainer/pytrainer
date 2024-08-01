@@ -61,9 +61,12 @@ class Sport(DeclarativeBase):
                 self.met == other.met and self.name == other.name and
                 self.weight == other.weight)   # skipped color (an object)
 
-    def __str__(self):
+    def __repr__(self):
         return (f"Sport(id={self.id}, name={self.name}, color={self.color}, "
                 f"max_pace={self.max_pace}, met={self.met}, weight={self.weight})")
+
+    def __hash__(self):
+        return id( self )
 
 class SportServiceException(Exception):
 
