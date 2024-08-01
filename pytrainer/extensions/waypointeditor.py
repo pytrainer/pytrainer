@@ -22,9 +22,17 @@ from gi.repository import Gtk
 import logging
 import os
 import re
+import requests
+import time
 from gi.repository import WebKit2
 
 class WaypointEditor:
+    URLs = { 'leaflet.css'            : 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+             'leaflet.js'             : 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+             'Control.FullScreen.css' : 'https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.css',
+             'Control.FullScreen.js'  : 'https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.js'
+           }
+
     def __init__(self, data_path = None, vbox = None, waypoint=None, parent=None):
         logging.debug(">>")
         self.data_path = data_path
@@ -38,6 +46,46 @@ class WaypointEditor:
         self.htmlfile = ""
         self.waypoint=waypoint
         self.pytrainer_main=parent
+        self.tmpdir = (self.pytrainer_main.profile.tmpdir)
+        logging.debug("<<")
+
+    def download(self,url,localfile):
+        """Copy the contents of a file from a given URL to pytrainer's tmpdir
+        """
+        logging.debug(">>")
+        logging.info("Downloading %s", url)
+        webFile = requests.get(url, headers={'User-Agent': 'pytrainer'})
+        localFile = open(self.tmpdir + '/cache/' + localfile, 'w')
+        localFile.write(webFile.text)
+        localFile.close()
+        logging.debug("<<")
+
+    def cacheURLs(self):
+        ''' Store copies of needed files locally,
+            download new versions every ~14 days or if files do not exist
+        '''
+        logging.debug(">>")
+        try:
+            cachedir = self.tmpdir + '/cache';
+            if not os.path.isdir(cachedir):
+                logging.debug("Creating %s folder", cachedir)
+                os.mkdir(cachedir)
+
+            for localfile in self.URLs:
+                if not os.path.isfile(cachedir + '/' + localfile):
+                    self.download(self.URLs[localfile],localfile)
+                else:
+                    creationTime = os.path.getctime(cachedir + '/' + localfile)
+                    if creationTime > time.time():                          # download again if in the future
+                        self.download(self.URLs[localfile],localfile)
+                    elif creationTime + 14*24*60*60 < time.time():          # 14 days
+                        self.download(self.URLs[localfile],localfile)
+                # No exception was thrown, assuming local cache file exists and current
+                self.URLs[localfile]='file://' + cachedir + '/' + localfile;
+                logging.info("Using %s file " % (self.URLs[localfile]))
+        except Exception as e:
+            logging.error("(%s) Error while downloading %s to local cache, using default hosted file instead." \
+                           % (str(e), self.URLs[localfile]))
         logging.debug("<<")
 
     def handle_title_changed(self, *args):
@@ -93,26 +141,28 @@ class WaypointEditor:
         tmpdir = self.pytrainer_main.profile.tmpdir
         filename = tmpdir+"/waypointeditor.html"
 
+        self.cacheURLs();
+
         points = self.waypoint.getAllWaypoints()
         londef = 0
         latdef = 0
-        content = """<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+        content = '''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 <title>edit waypoints</title>
 
 <!-- Include Leaflet.js library -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<link rel="stylesheet" href="''' + self.URLs['leaflet.css'] + '''" />
+<script src="''' + self.URLs['leaflet.js'] + '''"></script>
 
 <!-- Include Leaflet.Fullscreen plugin -->
-<link rel="stylesheet" href="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.css" />
-<script src="https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.js"></script>
+<link rel="stylesheet" href="''' + self.URLs['Control.FullScreen.css'] + '''" />
+<script src="''' + self.URLs['Control.FullScreen.js'] + '''"></script>
 
 <script type="text/javascript">
 //<![CDATA[
-"""
+'''
         i = 0
         arrayjs = ""
         if default_waypoint is None and points:
