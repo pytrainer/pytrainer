@@ -293,6 +293,7 @@ class EquipmentServiceTest(unittest.TestCase):
         equipment.description = u"test description"
         stored_equipment = self.equipment_service.store_equipment(equipment)
         self.assertEqual(1, stored_equipment.id)
+        self.assertEqual(equipment.description, stored_equipment.description)
         
     def test_store_equipment_duplicate_description(self):
         self.mock_ddbb.session.execute(self.equipment_table.insert(),
@@ -314,11 +315,14 @@ class EquipmentServiceTest(unittest.TestCase):
                                                 "notes": u"Test notes.",
                                            "description": u"old description",
                                            "prior_usage": 200, "active": True})
+        self.mock_ddbb.session.commit()
+
         equipment = self.equipment_service.get_equipment_item(1)
         equipment.description = u"new description"
         self.equipment_service.store_equipment(equipment)
-        equipment = self.equipment_service.get_equipment_item(1)
-        self.assertEqual("new description", equipment.description)
+
+        stored_equipment = self.equipment_service.get_equipment_item(1)
+        self.assertEqual(equipment.description, stored_equipment.description)
         
     def test_update_equipment_duplicate_description(self):
         self.mock_ddbb.session.execute(self.equipment_table.insert(),
@@ -341,6 +345,8 @@ class EquipmentServiceTest(unittest.TestCase):
                                                 "notes": u"Test notes.",
                                            "description": u"test item",
                                            "prior_usage": 0, "active": True})
+        self.mock_ddbb.session.commit()
+
         record_table = DeclarativeBase.metadata.tables['records']
         record_to_equipment = DeclarativeBase.metadata.tables['record_equipment']
         self.mock_ddbb.session.execute(record_table.insert(),
@@ -353,6 +359,8 @@ class EquipmentServiceTest(unittest.TestCase):
                                            "record_id": 1,
                                            "equipment_id": 1,
                                        })
+        self.mock_ddbb.session.commit()
+
         equipment = self.equipment_service.get_equipment_item(1)
         usage = self.equipment_service.get_equipment_usage(equipment)
         self.assertEqual(250, usage)

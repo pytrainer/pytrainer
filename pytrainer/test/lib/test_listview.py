@@ -1,6 +1,8 @@
 import os
 import datetime
 
+from sqlalchemy import select
+from sqlalchemy.orm import joinedload
 from sqlalchemy.orm.session import make_transient
 
 import unittest
@@ -63,9 +65,13 @@ class ListviewTest(unittest.TestCase):
         self.main.ddbb.session.add(Activity(sport=non_linear_sport,
                                             date=datetime.datetime(2018, 5, 6, 10, 0, 0),
                                             duration=1000, distance=25))
+        self.main.ddbb.session.commit()
+
         self.main.ddbb.session.add(Activity(sport=non_linear_sport,
                                             date=datetime.datetime(2018, 1, 6, 10, 0, 0),
                                             duration=10000, distance=150))
+        self.main.ddbb.session.commit()
+
         self.main.ddbb.session.add(Activity(sport=self.sport_service.get_sport(2),
                                             date=datetime.datetime(2018, 1, 6, 10, 0, 0),
                                             duration=10000, distance=100))
@@ -84,9 +90,12 @@ class ListviewTest(unittest.TestCase):
     def test_listsearch_sport(self):
         self.parent.lsa_sport.set_active(3)
         active = self.parent.lsa_sport.get_active_text()
-        by_sport = list(self.main.record.getRecordListByCondition(self.parent.listsearch.condition))
-        self.assertEqual(len(by_sport), 2)
-        self.assertEqual(by_sport[0].sport.name, active)
+        cond = self.parent.listsearch.condition
+
+        records = self.main.record.getRecordListByCondition( cond )
+        self.assertEqual( len(records), 2)
+        for record in records:
+            self.assertEqual(record.sport.name, active)
 
     def test_listsearch_distance(self):
         self.parent.lsa_distance.set_active(4)

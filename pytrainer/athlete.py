@@ -21,8 +21,9 @@ import logging
 import dateutil
 
 from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger
-from sqlalchemy import Column, Float, Date, Integer
 from pytrainer.lib.uc import UC
+from sqlalchemy import Column, Float, Date, Integer, select, delete, update
+from sqlalchemy.orm import Session
 
 class Athletestat(DeclarativeBase):
     __tablename__ = 'athletestats'
@@ -57,10 +58,12 @@ class Athlete:
     def get_athlete_stats(self):
         logging.debug('>>')
         ret = []
-        for stat in self.pytrainer_main.ddbb.session.query(Athletestat).order_by('date'):
-            d = dict(stat.__dict__)
-            d.pop('_sa_instance_state', None)
-            ret.append(d)
+        stmt = select(Athletestat).order_by(Athletestat.date)
+        with Session(self.pytrainer_main.ddbb.engine) as session:
+            for stat in session.execute(stmt).scalars().all():
+                d = dict(stat.__dict__)
+                d.pop('_sa_instance_state', None)
+                ret.append(d)
         return ret
 
     def get_athlete_data(self):
@@ -113,13 +116,15 @@ class Athlete:
         except ValueError:
             return
         #Update DB
-        data = self.pytrainer_main.ddbb.session.query(Athletestat).filter(Athletestat.id_athletestat == id_athletestat).one()
-        data.date = date
-        data.weight = weight
-        data.bodyfat = bodyfat
-        data.restinghr = restinghr
-        data.maxhr = maxhr
-        self.pytrainer_main.ddbb.session.commit()
+        with Session(self.pytrainer_main.ddbb.engine) as session:
+            stmt = select(Athletestat).filter_by(id_athletestat=id_athletestat)
+            data = session.execute(stmt).scalar_one()
+            data.date = date
+            data.weight = weight
+            data.bodyfat = bodyfat
+            data.restinghr = restinghr
+            data.maxhr = maxhr
+            session.commit()
         logging.debug('<<')
 
     def insert_athlete_stats(self, date, weight, bodyfat, restinghr, maxhr):
@@ -137,12 +142,15 @@ class Athlete:
             return
         #Update DB
         data = Athletestat(date=date, weight=weight, bodyfat=bodyfat, restinghr=restinghr, maxhr=maxhr)
-        self.pytrainer_main.ddbb.session.add(data)
-        self.pytrainer_main.ddbb.session.commit()
+        with Session(self.pytrainer_main.ddbb.engine) as session:
+            session.add(data)
+            session.commit()
         logging.debug('<<')
 
     def delete_record(self, data):
         logging.debug('>>')
-        self.pytrainer_main.ddbb.session.query(Athletestat).filter(Athletestat.id_athletestat == int(data)).delete()
-        self.pytrainer_main.ddbb.session.commit()
+        with Session(self.pytrainer_main.ddbb.engine) as session:
+            stmt = delete(Athletestat).where(Athletestat.id_athletestat == int(data))
+            session.execute(stmt)
+            session.commit()
         logging.debug('<<')

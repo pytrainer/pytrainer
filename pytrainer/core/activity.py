@@ -24,9 +24,9 @@ import os.path
 
 import dateutil.parser
 from dateutil.tz import tzlocal
-from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String, Unicode, and_
+from sqlalchemy import Column, Integer, Float, UnicodeText, Date, ForeignKey, String, Unicode, and_, select
 from sqlalchemy.orm import relationship, backref, reconstructor, deferred, joinedload
-from sqlalchemy.exc import InvalidRequestError
+from sqlalchemy.exc import InvalidRequestError, NoResultFound
 from sqlalchemy_utils.types.choice import ChoiceType
 
 from pytrainer.lib.date import second2time
@@ -36,14 +36,12 @@ from pytrainer.lib import uc
 from pytrainer.profile import Profile
 from pytrainer.lib.ddbb import DeclarativeBase, ForcedInteger, record_to_equipment
 
-
 class Laptrigger(enum.Enum):
     MANUAL = 'manual'
     DISTANCE = 'distance'
     LOCATION = 'location'
     TIME = 'time'
     HEARTRATE = 'hr'
-
 
 class Lap(DeclarativeBase):
     __tablename__ = 'laps'
@@ -64,6 +62,33 @@ class Lap(DeclarativeBase):
     start_lat = Column(Float)
     start_lon = Column(Float)
 
+    def __eq__(self, other):
+        if not isinstance(other, Lap):
+            return NotImplemented
+        return (self.avg_hr == other.avg_hr and
+                self.calories == other.calories and
+                self.comments == other.comments and
+                self.distance == other.distance and
+                self.elapsed_time == other.elapsed_time and
+                self.end_lat == other.end_lat and
+                self.end_lon == other.end_lon and
+                self.id_lap == other.id_lap and
+                self.intensity == other.intensity and
+                self.lap_number == other.lap_number and
+                self.laptrigger == other.laptrigger and
+                self.max_hr == other.max_hr and
+                self.max_speed == other.max_speed and
+                self.record == other.record and
+                self.start_lat == other.start_lat and
+                self.start_lon == other.start_lon)
+
+    def __repr__(self):
+        return (f"Lap(avg_hr={self.avg_hr}, calories={self.calories}, comments={self.comments!r}, "
+                f"distance={self.distance}, elapsed_time={self.elapsed_time!r}, end_lat={self.end_lat}, "
+                f"end_lon={self.end_lon}, id_lap={self.id_lap}, intensity={self.intensity!r}, "
+                f"lap_number={self.lap_number}, laptrigger={self.laptrigger}, max_hr={self.max_hr}, "
+                f"max_speed={self.max_speed}, record={self.record}, start_lat={self.start_lat}, start_lon={self.start_lon})")
+
     @property
     def duration(self):
         return float(self.elapsed_time)
@@ -76,7 +101,7 @@ class ActivityServiceException(Exception):
     def __str__(self):
         return repr(self.value)
 
-class ActivityService(object):
+class ActivityService:
     '''
     Class maintains a pool of activities
             size is set at initialisation
@@ -103,7 +128,7 @@ class ActivityService(object):
 
     def remove_activity_from_cache(self, id):
         sid = str(id)
-        if sid in list(self.pool.keys()):
+        if sid in self.pool:
             logging.debug("Found activity in pool")
             self.pool_queue.remove(sid)
             del self.pool[sid]
@@ -113,19 +138,18 @@ class ActivityService(object):
             warnings.warn("Deprecated call to get_activity with None id", DeprecationWarning, stacklevel=2)
             return Activity()
         sid = str(id)
-        if sid in list(self.pool.keys()):
+        if sid in self.pool:
             logging.debug("Found activity in pool")
             #Have accessed this activity, place at end of queue
             self.pool_queue.remove(sid)
             self.pool_queue.append(sid)
         else:
             logging.debug("Activity NOT found in pool")
-            self.pool[sid] = self.pytrainer_main.ddbb.session.query(Activity).options(
-                joinedload(Activity.sport),
-                joinedload(Activity.equipment),
-                joinedload(Activity.Laps)
-            ).filter(Activity.id == id).one()
-            self.pool_queue.append(sid)
+            stmt = select(Activity).where(Activity.id == id)
+            with self.pytrainer_main.ddbb.session as session:
+                result = session.execute(stmt)
+                self.pool[sid] = result.unique().scalars().one()
+                self.pool_queue.append(sid)
         if len(self.pool_queue) > self.max_size:
             sid_to_remove = self.pool_queue.pop(0)
             logging.debug("Removing activity: %s", sid_to_remove)
@@ -140,41 +164,62 @@ class ActivityService(object):
         if not activity.id:
             raise ActivityServiceException("Cannot remove activity which has not been stored: '{0}'.".format(activity.name))
         try:
-            self.remove_activity_from_cache(activity.id)
-            self.pytrainer_main.ddbb.session.delete(activity)
-            self.pytrainer_main.ddbb.session.commit()
-            if activity.gpx_file and os.path.isfile(activity.gpx_file):
-                os.remove(activity.gpx_file)
-        except InvalidRequestError:
-             raise ActivityServiceException("Activity id %s not found" % activity.id)
-        logging.debug("Deleted activity: %s", activity.title)
+            with self.pytrainer_main.ddbb.session as session:
+                self.remove_activity_from_cache(activity.id)
+                activity = session.get(Activity, activity.id)
+                if activity:
+                    session.delete(activity)
+                    session.commit()
+                if activity.gpx_file and os.path.isfile(activity.gpx_file):
+                    os.remove(activity.gpx_file)
+            logging.debug("Deleted activity: %s", activity.title)
+
+        except InvalidRequestError as e:
+            logging.error("Activity id %s not found: %s", activity.id, e)
+            raise ActivityServiceException("Activity id %s not found" % activity.id)
+
+        except Exception as e:
+            logging.error("An error occurred while deleting activity: %s", e)
+            raise ActivityServiceException("An error occurred while deleting activity: %s" % e)
 
     def get_activities_for_day(self, date, sport=None):
         """Iterates the activities for a specific date, optionally restricted by Sport)"""
+
         if not sport:
-            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date == date).options(joinedload(Activity.Laps))
+            stmt = select(Activity).options(joinedload(Activity.Laps)).where(Activity.date == date)
         else:
-            activities = self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.date == date, Activity.sport == sport)).options(joinedload(Activity.Laps))
-        for activity in activities:
-            sid = str(activity.id)
-            if sid in self.pool:
-                yield self.pool[sid]
-            else:
-                self.pool[sid] = activity
-                self.pool_queue.append(sid)
-                yield activity
+            stmt = select(Activity).options(joinedload(Activity.Laps)).where(and_(Activity.date == date, Activity.sport == sport))
+        with self.pytrainer_main.ddbb.session as session:
+            result = session.execute(stmt)
+            activities = result.unique().scalars().all()
+            for activity in activities:
+                sid = str(activity.id)
+                if sid in self.pool:
+                    yield self.pool[sid]
+                else:
+                    self.pool[sid] = activity
+                    self.pool_queue.append(sid)
+                    yield activity
 
     def get_activities_period(self, date_range, sport=None):
         """Iterate over activities for a specific time period, optionally restricted by Sport.
 Does not add them to the cache."""
+
         if not sport:
-            return self.pytrainer_main.ddbb.session.query(Activity).filter(Activity.date.between(date_range.start_date, date_range.end_date))
+            stmt = select(Activity).where(Activity.date.between(date_range.start_date, date_range.end_date))
         else:
-            return self.pytrainer_main.ddbb.session.query(Activity).filter(and_(Activity.date.between(date_range.start_date, date_range.end_date), Activity.sport == sport))
+            stmt = select(Activity).where(and_(Activity.date.between(date_range.start_date, date_range.end_date), Activity.sport == sport))
+        with self.pytrainer_main.ddbb.session as session:
+            result = session.execute(stmt)
+            return result.unique().scalars().all()
 
     def get_all_activities(self):
         """Iterates over all activities ordered by date"""
-        return self.pytrainer_main.ddbb.session.query(Activity).order_by('date')
+
+        stmt = select(Activity).order_by('date')
+        with self.pytrainer_main.ddbb.session as session:
+            result = session.execute(stmt)
+            return result.unique().scalars().all()
 
 class Activity(DeclarativeBase):
     '''
@@ -248,17 +293,61 @@ class Activity(DeclarativeBase):
     upositive = Column(Float)
 
     #relation definitions
-    sport = relationship("Sport", backref=backref("activities", order_by=date,
-                                                  cascade='all, delete-orphan'))
-    equipment = relationship("Equipment", secondary=record_to_equipment,
-                             backref=backref("activities", order_by=date))
-    Laps = relationship('Lap', backref=backref('activity'),
-                        order_by='Lap.lap_number',
-                        cascade='all, delete-orphan')
+    sport     = relationship( "Sport",
+                              backref=backref(
+                                  "activities", order_by=date, cascade='all, delete-orphan'
+                                  ),
+                              lazy='joined' )
+
+    equipment = relationship( "Equipment",
+                              secondary=record_to_equipment,
+                              backref=backref(
+                                  "activities", order_by=date, cascade='all, delete'
+                                  ),
+                              lazy='joined' )
+
+    Laps      = relationship( 'Lap',
+                              backref=backref('activity'),
+                              order_by='Lap.lap_number',
+                              cascade='all, delete-orphan',
+                              lazy='joined' )
 
     def __init__(self, **kwargs):
         self._initialize()
         super(Activity, self).__init__(**kwargs)
+
+    def __eq__(self, other):
+        if not isinstance(other, Activity):
+            return False
+        return (
+            self.average == other.average and
+            self.beats == other.beats and
+            self.calories == other.calories and
+            self.comments == other.comments and
+            self.date == other.date and
+            self.date_time_local == other.date_time_local and
+            self.date_time_utc == other.date_time_utc and
+            self.distance == other.distance and
+            self.duration == other.duration and
+            self.id == other.id and
+            self.maxbeats == other.maxbeats and
+            self.maxpace == other.maxpace and
+            self.maxspeed == other.maxspeed and
+            self.pace == other.pace and
+            self.sport_id == other.sport_id and
+            self.title == other.title and
+            self.unegative == other.unegative and
+            self.upositive == other.upositive
+        )
+
+    def __repr__(self):
+        return (
+            f"<Activity(id={self.id}, title={self.title}, date={self.date}, duration={self.duration}, "
+            f"distance={self.distance}, average={self.average}, upositive={self.upositive}, "
+            f"unegative={self.unegative}, maxspeed={self.maxspeed}, maxpace={self.maxpace}, "
+            f"pace={self.pace}, beats={self.beats}, maxbeats={self.maxbeats}, calories={self.calories}, "
+            f"date_time_local={self.date_time_local}, date_time_utc={self.date_time_utc}, sport_id={self.sport_id})>"
+        )
 
     @reconstructor
     def _initialize(self):
