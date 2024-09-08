@@ -23,7 +23,9 @@ import logging
 import datetime
 import warnings
 
-from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy import select
+from sqlalchemy.exc import NoResultFound
+from sqlalchemy.orm import joinedload
 
 from .lib.date import Date, time2second
 from .lib.gpx import Gpx
@@ -140,36 +142,40 @@ class Record:
 
     def insertRecord(self, list_options, laps=None, equipment=None):
         logging.debug('>>')
-        #Create entry for activity in records table
         if list_options is None:
             logging.info('No data provided, abort adding entry')
             return None
         logging.debug('list_options: %s', list_options)
+
         record = self._formatRecordNew(list_options, Activity())
-        self.pytrainer_main.ddbb.session.add(record)
+
         gpxOrig = list_options["rcd_gpxfile"]
-        # Load laps from gpx if not provided by the caller
-        if laps is None and os.path.isfile(gpxOrig):
+        if laps is None and os.path.isfile(gpxOrig):    # load laps from gpx if not provided by the caller
             gpx = Gpx(self.data_path, gpxOrig)
             laps = self.lapsFromGPX(gpx)
-        #Create entry(s) for activity in laps table
-        if laps is not None:
+        if laps is not None:                            # create entry(s) for activity in laps table
             for lap in laps:
                 new_lap = Lap(**lap)
                 record.Laps.append(new_lap)
-        if equipment:
-            record.equipment = self.pytrainer_main.ddbb.session.query(Equipment).filter(Equipment.id.in_(equipment)).all()
-        self.pytrainer_main.ddbb.session.commit()
-        if os.path.isfile(gpxOrig):
-            gpxDest = self.pytrainer_main.profile.gpxdir
-            gpxNew = gpxDest+"/%d.gpx" % record.id
-            #Leave original file in place...
-            #shutil.move(gpxOrig, gpxNew)
-            #logging.debug('Moving '+gpxOrig+' to '+gpxNew)
-            shutil.copy(gpxOrig, gpxNew)
-            logging.debug('Copying %s to %s', gpxOrig, gpxNew)
-        logging.debug('<<')
-        return record.id
+
+        with self.pytrainer_main.ddbb.session as session:
+            if equipment:
+                stmt = select(Equipment).filter(Equipment.id.in_(equipment))
+                result = session.execute(stmt)
+                record.equipment = result.scalars().all()
+            session.add(record)
+            session.commit()
+
+            if os.path.isfile(gpxOrig):
+                gpxDest = self.pytrainer_main.profile.gpxdir
+                gpxNew = gpxDest+"/%d.gpx" % record.id
+                #Leave original file in place...
+                #shutil.move(gpxOrig, gpxNew)
+                #logging.debug('Moving '+gpxOrig+' to '+gpxNew)
+                shutil.copy(gpxOrig, gpxNew)
+                logging.debug('Copying %s to %s', gpxOrig, gpxNew)
+            logging.debug('<<')
+            return record.id
 
     def insertNewRecord(self, gpxOrig, entry): #TODO consolidate with insertRecord
         """29.03.2008 - dgranda
@@ -299,8 +305,9 @@ class Record:
     def updateRecord(self, list_options, id_record, equipment=None): # ToDo: update only fields that can change if GPX file is present
         logging.debug('>>')
         logging.debug('list_options: %s', list_options)
-        # No need to remove from the pool, sqlalchemy keeps things in sync
+
         record = self.pytrainer_main.activitypool.get_activity(id_record)
+
         gpxfile = self.pytrainer_main.profile.gpxdir+"/%d.gpx"%int(record.id)
         gpxOrig = list_options["rcd_gpxfile"]
         if os.path.isfile(gpxOrig):
@@ -309,11 +316,20 @@ class Record:
         else:
             if (list_options["rcd_gpxfile"]==""):
                 logging.debug('Activity not based in GPX file') # ein?
-        logging.debug('Updating bbdd')
+
+        logging.debug('Updating ddbb')
         self._formatRecordNew(list_options, record)
-        if equipment:
-            record.equipment = self.pytrainer_main.ddbb.session.query(Equipment).filter(Equipment.id.in_(equipment)).all()
-        self.pytrainer_main.ddbb.session.commit()
+
+        with self.pytrainer_main.ddbb.session as session:
+            if equipment:
+                stmt = select(Equipment).filter(Equipment.id.in_(equipment))
+                result = session.execute(stmt)
+                record.equipment = result.scalars().all()
+
+            session.merge(record)
+            session.commit()
+
+        self.pytrainer_main.activitypool.remove_activity_from_cache(id_record)
         self.pytrainer_main.refreshListView()
         logging.debug('<<')
 
@@ -350,21 +366,34 @@ class Record:
         logging.debug("--")
         try:
             if sport_id is not None:
-                return str(self.pytrainer_main.ddbb.session.query(Activity).
-                           filter(Activity.sport_id == sport_id).order_by(Activity.date.desc()).
-                           limit(1).one().date)
+                stmt = select(Activity.date).filter(Activity.sport_id == sport_id).order_by(Activity.date.desc()).limit(1)
             else:
-                return str(self.pytrainer_main.ddbb.session.query(Activity).order_by(
-                    Activity.date.desc()).limit(1).one().date)
+                stmt = select(Activity.date).order_by(Activity.date.desc()).limit(1)
+            with self.pytrainer_main.ddbb.session as session:
+                result = session.execute(stmt)
+                last_date = result.scalars().one_or_none()
+            return str(last_date) if last_date else None
         except NoResultFound:
             return None
 
     def getRecordListByCondition(self, condition):
         logging.debug('>>')
+
+        # specify relationships to be eagerly loaded and prevent DetachedInstanceError when accessing attributes
+        options = [
+            joinedload(Activity.equipment),
+            joinedload(Activity.Laps),
+            joinedload(Activity.sport),     # add other relationships as required
+            ]
+
         if condition is None:
-            return self.pytrainer_main.ddbb.session.query(Activity).order_by(Activity.date.desc())
+            stmt = select(Activity).options(*options).order_by(Activity.date.desc())
         else:
-            return self.pytrainer_main.ddbb.session.query(Activity).filter(condition).order_by(Activity.date.desc())
+            stmt = select(Activity).filter(condition).options(*options).order_by(Activity.date.desc())
+
+        with self.pytrainer_main.ddbb.session as session:
+            result = session.execute(stmt)
+            return result.unique().scalars().all()
 
     def getRecordDayList(self, date, sport=None):
         logging.debug('>>')

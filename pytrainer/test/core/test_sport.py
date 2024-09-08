@@ -20,6 +20,7 @@ import unittest
 from pytrainer.core.sport import Sport, SportService, SportServiceException
 from pytrainer.lib.ddbb import DDBB
 from sqlalchemy.exc import IntegrityError, StatementError, OperationalError, InterfaceError, DataError
+from sqlalchemy import select
 
 class SportTest(unittest.TestCase):
 
@@ -46,7 +47,10 @@ class SportTest(unittest.TestCase):
         sport.id = "1"
         self.ddbb.session.add(sport)
         self.ddbb.session.commit()
-        sport = self.ddbb.session.query(Sport).filter(Sport.id == 1).one()
+        with self.ddbb.session as session:
+            stmt = select(Sport).where(Sport.id == 1)
+            result = session.execute(stmt)
+            sport = result.scalars().one()
         self.assertEqual(1, sport.id)
 
     def test_id_should_not_accept_non_integer_string(self):
@@ -89,7 +93,10 @@ class SportTest(unittest.TestCase):
         sport.met = "22.5"
         self.ddbb.session.add(sport)
         self.ddbb.session.commit()
-        sport = self.ddbb.session.query(Sport).filter(Sport.id == 1).one()
+        with self.ddbb.session as session:
+            stmt = select(Sport).where(Sport.id == 1)
+            result = session.execute(stmt)
+            sport = result.scalars().one()
         self.assertEqual(22.5, sport.met)
 
     def test_met_should_not_accept_non_float_string(self):
@@ -182,7 +189,10 @@ class SportTest(unittest.TestCase):
         sport.max_pace = 220.6
         self.ddbb.session.add(sport)
         self.ddbb.session.commit()
-        sport = self.ddbb.session.query(Sport).filter(Sport.id == 1).one()
+        with self.ddbb.session as session:
+            stmt = select(Sport).where(Sport.id == 1)
+            result = session.execute(stmt)
+            sport = result.scalars().one()
         self.assertEqual(220, sport.max_pace)
 
     def test_max_pace_should_not_accept_negative_value(self):

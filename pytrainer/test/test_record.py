@@ -15,6 +15,7 @@
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
 import unittest
+import warnings
 from unittest.mock import Mock
 from datetime import datetime, date
 from dateutil.tz import tzoffset
@@ -80,10 +81,15 @@ class RecordTest(unittest.TestCase):
         self.assertEqual(activity.date_time, datetime(2016, 7, 24, 12, 58, 23,
                                                        tzinfo=tzoffset(None, 10800)))
         self.assertEqual(activity.date_time_utc, u'2016-07-24T09:58:23Z')
-        self.assertEqual(activity.sport, self.record._sport_service.get_sport_by_name(u"Run"))
+        self.assertEqual(activity.sport.id,   self.record._sport_service.get_sport_by_name(u"Run").id)
+        self.assertEqual(activity.sport.name, self.record._sport_service.get_sport_by_name(u"Run").name)
         self.assertEqual(activity.title, u'test 1')
+
+        warnings.filterwarnings('ignore', category=DeprecationWarning)
+        lap_dict = activity.laps[0]
+        warnings.resetwarnings
         self.assertEqual(
-            activity.laps[0],
+            lap_dict,
             {
                 'distance': 46181.9,
                 'end_lon': None,
@@ -117,10 +123,15 @@ list_options['date_time_local'], also test that code path"""
         self.assertEqual(activity.date_time, datetime(2016, 7, 24, 12, 58, 23,
                                                        tzinfo=tzoffset(None, 10800)))
         self.assertEqual(activity.date_time_utc, u'2016-07-24T09:58:23Z')
-        self.assertEqual(activity.sport, self.record._sport_service.get_sport_by_name(u"Run"))
+        self.assertEqual(activity.sport.id,   self.record._sport_service.get_sport_by_name(u"Run").id)
+        self.assertEqual(activity.sport.name, self.record._sport_service.get_sport_by_name(u"Run").name)
         self.assertEqual(activity.title, u'test 1')
+
+        warnings.filterwarnings('ignore', category=DeprecationWarning)
+        lap_dict = activity.laps[0]
+        warnings.resetwarnings
         self.assertEqual(
-            activity.laps[0],
+            lap_dict,
             {
                 'distance': 46181.9,
                 'end_lon': None,
@@ -149,7 +160,9 @@ list_options['date_time_local'], also test that code path"""
         self.record.updateRecord(update_dict, newid)
         activity = self.main.activitypool.get_activity(newid)
         self.assertEqual(activity.title, u'test 2')
-        self.assertEqual(activity.sport, self.record._sport_service.get_sport_by_name(u"Bike"))
+        self.assertEqual(activity.sport,      self.record._sport_service.get_sport_by_name(u"Bike"))
+        self.assertEqual(activity.sport.id,   self.record._sport_service.get_sport_by_name(u"Bike").id)
+        self.assertEqual(activity.sport.name, self.record._sport_service.get_sport_by_name(u"Bike").name)
 
     def test_get_day_list(self):
         self.record.insertRecord(self.summary)
