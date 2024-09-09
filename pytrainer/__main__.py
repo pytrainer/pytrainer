@@ -17,7 +17,6 @@ def get_options():
         log_level=logging.WARNING,
         validate=False,
         equip=False,
-        newgraph=True,
         conf_dir=None,
         log_type="file",
     )
@@ -57,18 +56,6 @@ def get_options():
         action="store_true",
         dest="validate",
         help="enable validation of files imported by plugins (details at info or debug logging level) - note plugin must support validation.",
-    )
-    parser.add_option(
-        "--oldgraph",
-        action="store_false",
-        dest="newgraph",
-        help="Turn off new graphing approach",
-    )
-    parser.add_option(
-        "--newgraph",
-        action="store_true",
-        dest="newgraph",
-        help="Deprecated Option: Turn on new graphing approach",
     )
     parser.add_option(
         "--confdir",

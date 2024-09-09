@@ -550,175 +550,161 @@ class Main(SimpleBuilderApp):
         self.record_list = activity.tracks
         self.laps = activity.laps
         if activity.gpx_file is not None:
-            if not self.pytrainer_main.startup_options.newgraph:
-                logging.debug("Using the original graphing")
-                logging.debug("Activity has GPX data")
-                #Show drop down boxes
-                self.hbox30.show()
-                #Hide new graph details
-                self.graph_data_hbox.hide()
-                self.hboxGraphOptions.hide()
-                #Enable graph
-                self.record_vbox.set_sensitive(1)
-                self.drawarearecord.drawgraph(self.record_list,self.laps)
+            #Hide current drop down boxes
+            self.hbox30.hide()
+            self.graph_data_hbox.hide()
+            #Enable graph
+            self.record_vbox.set_sensitive(1)
+            #Create a frame showing data available for graphing
+            #Remove existing frames
+            for child in self.graph_data_hbox.get_children():
+                if isinstance(child, Gtk.Frame):
+                    self.graph_data_hbox.remove(child)
+            #Build frames and vboxs to hold checkbuttons
+            xFrame = Gtk.Frame(label=_("Show on X Axis"))
+            y1Frame = Gtk.Frame(label=_("Show on Y1 Axis"))
+            y2Frame = Gtk.Frame(label=_("Show on Y2 Axis"))
+            limitsFrame = Gtk.Frame(label=_("Axis Limits"))
+            xvbox = Gtk.VBox()
+            y1box = Gtk.Table()
+            y2box = Gtk.Table()
+            limitsbox = Gtk.Table()
+            #Populate X axis data
+            #Create x axis items
+            xdistancebutton = Gtk.RadioButton(label=_("Distance"))
+            xtimebutton = Gtk.RadioButton(group=xdistancebutton, label=_("Time"))
+            xlapsbutton = Gtk.CheckButton(label=_("Laps"))
+            y1gridbutton = Gtk.CheckButton(label=_("Left Axis Grid"))
+            y2gridbutton = Gtk.CheckButton(label=_("Right Axis Grid"))
+            xgridbutton = Gtk.CheckButton(label=_("X Axis Grid"))
+            #Set state of buttons
+            if activity.x_axis == "distance":
+                xdistancebutton.set_active(True)
+            elif activity.x_axis == "time":
+                xtimebutton.set_active(True)
+            xlapsbutton.set_active(activity.show_laps)
+            y1gridbutton.set_active(activity.y1_grid)
+            y2gridbutton.set_active(activity.y2_grid)
+            xgridbutton.set_active(activity.x_grid)
+            #Connect handlers to buttons
+            xdistancebutton.connect("toggled", self.on_xaxischange, "distance", activity)
+            xtimebutton.connect("toggled", self.on_xaxischange, "time", activity)
+            xlapsbutton.connect("toggled", self.on_xlapschange, activity)
+            y1gridbutton.connect("toggled", self.on_gridchange, "y1", activity)
+            y2gridbutton.connect("toggled", self.on_gridchange, "y2", activity)
+            xgridbutton.connect("toggled", self.on_gridchange, "x", activity)
+            #Add buttons to frame
+            xvbox.pack_start(xdistancebutton, False, True, 0)
+            xvbox.pack_start(xtimebutton, False, True, 0)
+            xvbox.pack_start(xlapsbutton, False, True, 0)
+            xvbox.pack_start(y1gridbutton, False, True, 0)
+            xvbox.pack_start(y2gridbutton, False, True, 0)
+            xvbox.pack_start(xgridbutton, False, True, 0)
+            xFrame.add(xvbox)
+
+            #Populate axis limits frame
+            #TODO Need to change these to editable objects and redraw graphs if changed....
+            #Create labels etc
+            minlabel = Gtk.Label(label="<small>Min</small>")
+            minlabel.set_use_markup(True)
+            maxlabel = Gtk.Label(label="<small>Max</small>")
+            maxlabel.set_use_markup(True)
+            xlimlabel = Gtk.Label(label="X")
+            limits = {}
+            xminlabel = Gtk.Entry(max_length=10)
+            xmaxlabel = Gtk.Entry(max_length=10)
+            limits['xminlabel'] = xminlabel
+            limits['xmaxlabel'] = xmaxlabel
+            xminlabel.set_width_chars(5)
+            xminlabel.set_alignment(1.0)
+            xmaxlabel.set_width_chars(5)
+            xmaxlabel.set_alignment(1.0)
+            y1limlabel = Gtk.Label(label="Y1")
+            y1minlabel = Gtk.Entry(max_length=10)
+            y1maxlabel = Gtk.Entry(max_length=10)
+            limits['y1minlabel'] = y1minlabel
+            limits['y1maxlabel'] = y1maxlabel
+            y1minlabel.set_width_chars(5)
+            y1minlabel.set_alignment(1.0)
+            y1maxlabel.set_width_chars(5)
+            y1maxlabel.set_alignment(1.0)
+            y2limlabel = Gtk.Label(label="Y2")
+            y2minlabel = Gtk.Entry(max_length=10)
+            y2maxlabel = Gtk.Entry(max_length=10)
+            limits['y2minlabel'] = y2minlabel
+            limits['y2maxlabel'] = y2maxlabel
+            y2minlabel.set_width_chars(5)
+            y2minlabel.set_alignment(1.0)
+            y2maxlabel.set_width_chars(5)
+            y2maxlabel.set_alignment(1.0)
+            resetbutton = Gtk.Button(_('Reset Limits'))
+            resetbutton.connect("clicked", self.on_setlimits, activity, True, None)
+            setbutton = Gtk.Button(_('Set Limits'))
+            setbutton.connect("clicked", self.on_setlimits, activity, False, limits)
+            #Add labels etc to table
+            limitsbox.attach(minlabel, 1, 2, 0, 1, yoptions=Gtk.AttachOptions.SHRINK)
+            limitsbox.attach(maxlabel, 2, 3, 0, 1, yoptions=Gtk.AttachOptions.SHRINK)
+            limitsbox.attach(xlimlabel, 0, 1, 1, 2, yoptions=Gtk.AttachOptions.SHRINK)
+            limitsbox.attach(xminlabel, 1, 2, 1, 2, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
+            limitsbox.attach(xmaxlabel, 2, 3, 1, 2, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
+            limitsbox.attach(y1limlabel, 0, 1, 2, 3, yoptions=Gtk.AttachOptions.SHRINK)
+            limitsbox.attach(y1minlabel, 1, 2, 2, 3, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
+            limitsbox.attach(y1maxlabel, 2, 3, 2, 3, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
+            limitsbox.attach(y2limlabel, 0, 1, 3, 4, yoptions=Gtk.AttachOptions.SHRINK)
+            limitsbox.attach(y2minlabel, 1, 2, 3, 4, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
+            limitsbox.attach(y2maxlabel, 2, 3, 3, 4, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
+            limitsbox.attach(setbutton, 0, 3, 4, 5, yoptions=Gtk.AttachOptions.SHRINK)
+            limitsbox.attach(resetbutton, 0, 3, 5, 6, yoptions=Gtk.AttachOptions.SHRINK)
+            limitsFrame.add(limitsbox)
+
+            row = 0
+            if activity.x_axis == "distance":
+                data = activity.distance_data
+            elif activity.x_axis == "time":
+                data = activity.time_data
             else:
-                #Still just test code....
-                logging.debug("Using the new TEST graphing approach")
-                #Hide current drop down boxes
-                self.hbox30.hide()
-                self.graph_data_hbox.hide()
-                #Enable graph
-                self.record_vbox.set_sensitive(1)
-                #Create a frame showing data available for graphing
-                #Remove existing frames
-                for child in self.graph_data_hbox.get_children():
-                    if isinstance(child, Gtk.Frame):
-                        self.graph_data_hbox.remove(child)
-                #Build frames and vboxs to hold checkbuttons
-                xFrame = Gtk.Frame(label=_("Show on X Axis"))
-                y1Frame = Gtk.Frame(label=_("Show on Y1 Axis"))
-                y2Frame = Gtk.Frame(label=_("Show on Y2 Axis"))
-                limitsFrame = Gtk.Frame(label=_("Axis Limits"))
-                xvbox = Gtk.VBox()
-                y1box = Gtk.Table()
-                y2box = Gtk.Table()
-                limitsbox = Gtk.Table()
-                #Populate X axis data
-                #Create x axis items
-                xdistancebutton = Gtk.RadioButton(label=_("Distance"))
-                xtimebutton = Gtk.RadioButton(group=xdistancebutton, label=_("Time"))
-                xlapsbutton = Gtk.CheckButton(label=_("Laps"))
-                y1gridbutton = Gtk.CheckButton(label=_("Left Axis Grid"))
-                y2gridbutton = Gtk.CheckButton(label=_("Right Axis Grid"))
-                xgridbutton = Gtk.CheckButton(label=_("X Axis Grid"))
-                #Set state of buttons
-                if activity.x_axis == "distance":
-                    xdistancebutton.set_active(True)
-                elif activity.x_axis == "time":
-                    xtimebutton.set_active(True)
-                xlapsbutton.set_active(activity.show_laps)
-                y1gridbutton.set_active(activity.y1_grid)
-                y2gridbutton.set_active(activity.y2_grid)
-                xgridbutton.set_active(activity.x_grid)
-                #Connect handlers to buttons
-                xdistancebutton.connect("toggled", self.on_xaxischange, "distance", activity)
-                xtimebutton.connect("toggled", self.on_xaxischange, "time", activity)
-                xlapsbutton.connect("toggled", self.on_xlapschange, activity)
-                y1gridbutton.connect("toggled", self.on_gridchange, "y1", activity)
-                y2gridbutton.connect("toggled", self.on_gridchange, "y2", activity)
-                xgridbutton.connect("toggled", self.on_gridchange, "x", activity)
-                #Add buttons to frame
-                xvbox.pack_start(xdistancebutton, False, True, 0)
-                xvbox.pack_start(xtimebutton, False, True, 0)
-                xvbox.pack_start(xlapsbutton, False, True, 0)
-                xvbox.pack_start(y1gridbutton, False, True, 0)
-                xvbox.pack_start(y2gridbutton, False, True, 0)
-                xvbox.pack_start(xgridbutton, False, True, 0)
-                xFrame.add(xvbox)
-
-                #Populate axis limits frame
-                #TODO Need to change these to editable objects and redraw graphs if changed....
-                #Create labels etc
-                minlabel = Gtk.Label(label="<small>Min</small>")
-                minlabel.set_use_markup(True)
-                maxlabel = Gtk.Label(label="<small>Max</small>")
-                maxlabel.set_use_markup(True)
-                xlimlabel = Gtk.Label(label="X")
-                limits = {}
-                xminlabel = Gtk.Entry(max_length=10)
-                xmaxlabel = Gtk.Entry(max_length=10)
-                limits['xminlabel'] = xminlabel
-                limits['xmaxlabel'] = xmaxlabel
-                xminlabel.set_width_chars(5)
-                xminlabel.set_alignment(1.0)
-                xmaxlabel.set_width_chars(5)
-                xmaxlabel.set_alignment(1.0)
-                y1limlabel = Gtk.Label(label="Y1")
-                y1minlabel = Gtk.Entry(max_length=10)
-                y1maxlabel = Gtk.Entry(max_length=10)
-                limits['y1minlabel'] = y1minlabel
-                limits['y1maxlabel'] = y1maxlabel
-                y1minlabel.set_width_chars(5)
-                y1minlabel.set_alignment(1.0)
-                y1maxlabel.set_width_chars(5)
-                y1maxlabel.set_alignment(1.0)
-                y2limlabel = Gtk.Label(label="Y2")
-                y2minlabel = Gtk.Entry(max_length=10)
-                y2maxlabel = Gtk.Entry(max_length=10)
-                limits['y2minlabel'] = y2minlabel
-                limits['y2maxlabel'] = y2maxlabel
-                y2minlabel.set_width_chars(5)
-                y2minlabel.set_alignment(1.0)
-                y2maxlabel.set_width_chars(5)
-                y2maxlabel.set_alignment(1.0)
-                resetbutton = Gtk.Button(_('Reset Limits'))
-                resetbutton.connect("clicked", self.on_setlimits, activity, True, None)
-                setbutton = Gtk.Button(_('Set Limits'))
-                setbutton.connect("clicked", self.on_setlimits, activity, False, limits)
-                #Add labels etc to table
-                limitsbox.attach(minlabel, 1, 2, 0, 1, yoptions=Gtk.AttachOptions.SHRINK)
-                limitsbox.attach(maxlabel, 2, 3, 0, 1, yoptions=Gtk.AttachOptions.SHRINK)
-                limitsbox.attach(xlimlabel, 0, 1, 1, 2, yoptions=Gtk.AttachOptions.SHRINK)
-                limitsbox.attach(xminlabel, 1, 2, 1, 2, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
-                limitsbox.attach(xmaxlabel, 2, 3, 1, 2, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
-                limitsbox.attach(y1limlabel, 0, 1, 2, 3, yoptions=Gtk.AttachOptions.SHRINK)
-                limitsbox.attach(y1minlabel, 1, 2, 2, 3, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
-                limitsbox.attach(y1maxlabel, 2, 3, 2, 3, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
-                limitsbox.attach(y2limlabel, 0, 1, 3, 4, yoptions=Gtk.AttachOptions.SHRINK)
-                limitsbox.attach(y2minlabel, 1, 2, 3, 4, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
-                limitsbox.attach(y2maxlabel, 2, 3, 3, 4, yoptions=Gtk.AttachOptions.SHRINK, xpadding=5)
-                limitsbox.attach(setbutton, 0, 3, 4, 5, yoptions=Gtk.AttachOptions.SHRINK)
-                limitsbox.attach(resetbutton, 0, 3, 5, 6, yoptions=Gtk.AttachOptions.SHRINK)
-                limitsFrame.add(limitsbox)
-
-                row = 0
-                if activity.x_axis == "distance":
-                    data = activity.distance_data
-                elif activity.x_axis == "time":
-                    data = activity.time_data
+                logging.error("x axis is unknown")
+            #Populate Y axis data
+            for graphdata in sorted(data.keys()):
+                #First Y axis...
+                #Create button
+                y1button = Gtk.CheckButton(label=data[graphdata].title)
+                #Make button active if this data is to be displayed...
+                y1button.set_active(data[graphdata].show_on_y1)
+                #Connect handler for toggle state changes
+                y1button.connect("toggled", self.on_y1change, y1box, graphdata, activity)
+                #Attach button to container
+                y1box.attach(y1button, 0, 1, row, row+1, xoptions=Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL)
+                if data[graphdata].linecolor is not None:
+                    #Create a color choser
+                    y1color = Gtk.ColorButton()
+                    #Set color to current activity color
+                    _color = Gdk.color_parse(data[graphdata].linecolor)
+                    y1color.set_color(_color)
+                    #Connect handler for color state changes
+                    y1color.connect("color-set", self.on_y1colorchange, y1box, graphdata, activity)
+                    #Attach to container
+                    y1box.attach(y1color, 1, 2, row, row+1)
                 else:
-                    logging.error("x axis is unknown")
-                #Populate Y axis data
-                for graphdata in sorted(data.keys()):
-                    #First Y axis...
-                    #Create button
-                    y1button = Gtk.CheckButton(label=data[graphdata].title)
-                    #Make button active if this data is to be displayed...
-                    y1button.set_active(data[graphdata].show_on_y1)
-                    #Connect handler for toggle state changes
-                    y1button.connect("toggled", self.on_y1change, y1box, graphdata, activity)
-                    #Attach button to container
-                    y1box.attach(y1button, 0, 1, row, row+1, xoptions=Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL)
-                    if data[graphdata].linecolor is not None:
-                        #Create a color choser
-                        y1color = Gtk.ColorButton()
-                        #Set color to current activity color
-                        _color = Gdk.color_parse(data[graphdata].linecolor)
-                        y1color.set_color(_color)
-                        #Connect handler for color state changes
-                        y1color.connect("color-set", self.on_y1colorchange, y1box, graphdata, activity)
-                        #Attach to container
-                        y1box.attach(y1color, 1, 2, row, row+1)
-                    else:
-                        blanklabel = Gtk.Label(label="")
-                        y1box.attach(blanklabel, 1, 2, row, row+1)
+                    blanklabel = Gtk.Label(label="")
+                    y1box.attach(blanklabel, 1, 2, row, row+1)
 
-                    #Second Y axis
-                    y2button = Gtk.CheckButton(label=data[graphdata].title)
-                    y2button.set_active(data[graphdata].show_on_y2)
-                    y2button.connect("toggled", self.on_y2change, y2box, graphdata, activity)
-                    y2box.attach(y2button, 0, 1, row, row+1, xoptions=Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL)
-                    if data[graphdata].y2linecolor is not None:
-                        y2color = Gtk.ColorButton()
-                        _color = Gdk.color_parse(data[graphdata].y2linecolor)
-                        y2color.set_color(_color)
-                        y2color.connect("color-set", self.on_y2colorchange, y2box, graphdata, activity)
-                        #Attach to container
-                        y2box.attach(y2color, 1, 2, row, row+1)
-                    else:
-                        blanklabel = Gtk.Label(label="")
-                        y2box.attach(blanklabel, 1, 2, row, row+1)
-                    row += 1
+                #Second Y axis
+                y2button = Gtk.CheckButton(label=data[graphdata].title)
+                y2button.set_active(data[graphdata].show_on_y2)
+                y2button.connect("toggled", self.on_y2change, y2box, graphdata, activity)
+                y2box.attach(y2button, 0, 1, row, row+1, xoptions=Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL)
+                if data[graphdata].y2linecolor is not None:
+                    y2color = Gtk.ColorButton()
+                    _color = Gdk.color_parse(data[graphdata].y2linecolor)
+                    y2color.set_color(_color)
+                    y2color.connect("color-set", self.on_y2colorchange, y2box, graphdata, activity)
+                    #Attach to container
+                    y2box.attach(y2color, 1, 2, row, row+1)
+                else:
+                    blanklabel = Gtk.Label(label="")
+                    y2box.attach(blanklabel, 1, 2, row, row+1)
+                row += 1
 
                 y1Frame.add(y1box)
                 y2Frame.add(y2box)
