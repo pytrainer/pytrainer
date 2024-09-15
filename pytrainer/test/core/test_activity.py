@@ -14,27 +14,26 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import unittest
 import datetime
 from unittest.mock import Mock
 from dateutil.tz import tzoffset
 from sqlalchemy.orm.exc import NoResultFound
 
-from pytrainer.lib.ddbb import DDBB, DeclarativeBase
+from pytrainer.lib.ddbb import DeclarativeBase
 from pytrainer.profile import Profile
 from pytrainer.lib.uc import UC
 from pytrainer.core.activity import ActivityService, Laptrigger
 from pytrainer.lib.date import DateRange
+from pytrainer.test import DDBBTestCase
 
-class ActivityTest(unittest.TestCase):
+
+class ActivityTest(DDBBTestCase):
 
     def setUp(self):
-        self.ddbb = DDBB()
+        super().setUp()
         main = Mock()
         main.ddbb = self.ddbb
         main.profile = Profile()
-        main.ddbb.connect()
-        main.ddbb.create_tables(add_default=True) # We need a sport
         self.uc = UC()
         self.uc.set_us(False)
         self.service = ActivityService(pytrainer_main=main)
@@ -72,9 +71,8 @@ class ActivityTest(unittest.TestCase):
 
     def tearDown(self):
         self.service.clear_pool()
-        self.ddbb.disconnect()
-        self.ddbb.drop_tables()
         self.uc.set_us(False)
+        super().tearDown()
 
     def test_activity_date_time(self):
         self.assertEqual(self.activity.date_time, datetime.datetime(2016, 7, 24,

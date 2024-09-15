@@ -66,11 +66,11 @@ class pyTrainer:
         self.uc = UC()
         self.profilewindow = None
         self.ddbb = DDBB(self.profile.sqlalchemy_url)
-        logging.debug('connecting to DDBB')
-        self.ddbb.connect()
-
         logging.info('Checking if some upgrade action is needed...')
         initialize_data(self.ddbb, self.environment.conf_dir)
+
+        logging.debug('connecting to DDBB')
+        self.ddbb.connect()
 
         # Loading shared services
         logging.debug('Loading sport service...')
@@ -94,7 +94,7 @@ class pyTrainer:
         self.selectInitialDate()
         
         logging.debug('Loading waypoint service...')
-        self.waypoint = WaypointService(self.environment.data_path, self)
+        self.waypoint = WaypointService(self.environment.data_path)
         logging.debug('Loading extension service...')
         self.extension = Extension(self.environment.data_path, self)
         logging.debug('Loading plugins service...')
