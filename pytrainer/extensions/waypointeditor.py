@@ -22,9 +22,17 @@ from gi.repository import Gtk
 import logging
 import os
 import re
+import requests
+import time
 from gi.repository import WebKit2
 
 class WaypointEditor:
+    URLs = { 'leaflet.css'            : 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css',
+             'leaflet.js'             : 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js',
+             'Control.FullScreen.css' : 'https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.css',
+             'Control.FullScreen.js'  : 'https://unpkg.com/leaflet.fullscreen@1.6.0/Control.FullScreen.js'
+           }
+
     def __init__(self, data_path = None, vbox = None, waypoint=None, parent=None):
         logging.debug(">>")
         self.data_path = data_path
@@ -38,6 +46,46 @@ class WaypointEditor:
         self.htmlfile = ""
         self.waypoint=waypoint
         self.pytrainer_main=parent
+        self.tmpdir = (self.pytrainer_main.profile.tmpdir)
+        logging.debug("<<")
+
+    def download(self,url,localfile):
+        """Copy the contents of a file from a given URL to pytrainer's tmpdir
+        """
+        logging.debug(">>")
+        logging.info("Downloading %s", url)
+        webFile = requests.get(url, headers={'User-Agent': 'pytrainer'})
+        localFile = open(self.tmpdir + '/cache/' + localfile, 'w')
+        localFile.write(webFile.text)
+        localFile.close()
+        logging.debug("<<")
+
+    def cacheURLs(self):
+        ''' Store copies of needed files locally,
+            download new versions every ~14 days or if files do not exist
+        '''
+        logging.debug(">>")
+        try:
+            cachedir = self.tmpdir + '/cache';
+            if not os.path.isdir(cachedir):
+                logging.debug("Creating %s folder", cachedir)
+                os.mkdir(cachedir)
+
+            for localfile in self.URLs:
+                if not os.path.isfile(cachedir + '/' + localfile):
+                    self.download(self.URLs[localfile],localfile)
+                else:
+                    creationTime = os.path.getctime(cachedir + '/' + localfile)
+                    if creationTime > time.time():                          # download again if in the future
+                        self.download(self.URLs[localfile],localfile)
+                    elif creationTime + 14*24*60*60 < time.time():          # 14 days
+                        self.download(self.URLs[localfile],localfile)
+                # No exception was thrown, assuming local cache file exists and current
+                self.URLs[localfile]='file://' + cachedir + '/' + localfile;
+                logging.info("Using %s file " % (self.URLs[localfile]))
+        except Exception as e:
+            logging.error("(%s) Error while downloading %s to local cache, using default hosted file instead." \
+                           % (str(e), self.URLs[localfile]))
         logging.debug("<<")
 
     def handle_title_changed(self, *args):
@@ -93,22 +141,28 @@ class WaypointEditor:
         tmpdir = self.pytrainer_main.profile.tmpdir
         filename = tmpdir+"/waypointeditor.html"
 
+        self.cacheURLs();
+
         points = self.waypoint.getAllWaypoints()
         londef = 0
         latdef = 0
-        content = """
-
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml"  xmlns:v="urn:schemas-microsoft-com:vml">
+        content = '''<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml">
 <head>
 <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 <title>edit waypoints</title>
 
-<script id="googleapiimport" src="https://maps.google.com/maps/api/js"
-    type="text/javascript"></script>
+<!-- Include Leaflet.js library -->
+<link rel="stylesheet" href="''' + self.URLs['leaflet.css'] + '''" />
+<script src="''' + self.URLs['leaflet.js'] + '''"></script>
+
+<!-- Include Leaflet.Fullscreen plugin -->
+<link rel="stylesheet" href="''' + self.URLs['Control.FullScreen.css'] + '''" />
+<script src="''' + self.URLs['Control.FullScreen.js'] + '''"></script>
+
 <script type="text/javascript">
-"""
+//<![CDATA[
+'''
         i = 0
         arrayjs = ""
         if default_waypoint is None and points:
@@ -117,12 +171,12 @@ class WaypointEditor:
             if point[0] == default_waypoint:
                 londef = point[2]
                 latdef = point[1]
-            content += "lon = '%f';\n"%point[2]
-            content += "lat = '%f';\n"%point[1]
-            content += "name = '%s';\n"%point[6]
-            content += "description = '%s';\n"%point[4]
-            content += "sym = '%s';\n"%point[7]
-            content += "id = '%d';\n"%point[0]
+            content += 'lon = "%f";\n'%point[2]
+            content += 'lat = "%f";\n'%point[1]
+            content += 'name = "%s";\n'%point[6]
+            content += 'description = "%s";\n'%point[4]
+            content += 'sym = "%s";\n'%point[7]
+            content += 'id = "%d";\n'%point[0]
             content += """waypoint%d = Array (lon,lat,name,description,sym,id);\n"""%i
             if i>0:
                 arrayjs+=","
@@ -132,124 +186,107 @@ class WaypointEditor:
         content += """
 is_addmode = 0;
 var map;
-//<![CDATA[
 
 function addWaypoint(lon,lat) {
-        document.title = "call:addWaypoint(" + lon + "," + lat + ")";
-        }
+    document.title = "call:addWaypoint(" + lon + "," + lat + ")";
+}
 
 function updateWaypoint(lon,lat,id) {
-        document.title = "call:updateWaypoint(" + lon + "," + lat + "," + id + ")";
-        }
+    document.title = "call:updateWaypoint(" + lon + "," + lat + "," + id + ")";
+}
 
 function createMarker(waypoint) {
-        var lon = waypoint[0];
-        var lat = waypoint[1];
-        var id = waypoint[5];
-        var sym = waypoint[4];
+    var lon = waypoint[0];
+    var lat = waypoint[1];
+    var id = waypoint[5];
+    var sym = waypoint[4];
 
-        var point = new google.maps.LatLng(lat,lon);
-        var text = "<b>"+waypoint[2]+"</b><br/>"+waypoint[3];
+    var point = [lat, lon];
+    var text = "<b>" + waypoint[2] + "</b><br/>" + waypoint[3];
 
-        if (sym=="Summit") {
-                var icon_image = \""""+os.path.abspath(self.data_path)+"""/glade/summit.png\";
-        } else {
-                var icon_image = \""""+os.path.abspath(self.data_path)+"""/glade/waypoint.png\";
-        }
-        var icon = new google.maps.MarkerImage(icon_image,\n
-            new google.maps.Size(32, 32),
-            new google.maps.Point(0,0),
-            new google.maps.Point(16, 16)
-        );\n
+    var iconUrl = sym == "Summit" ? "/usr/local/python/3.12.0/share/pytrainer/glade/summit.png" : "/usr/local/python/3.12.0/share/pytrainer/glade/waypoint.png";
+    var icon = L.icon({
+        iconUrl: iconUrl,
+        iconSize: [32, 32],
+        iconAnchor: [16, 16]
+    });
 
-        var markerD = new google.maps.Marker({
-          position: point,
-          map: map,
-          icon: icon,
-          draggable: true,
-        });
+    var marker = L.marker(point, {icon: icon, draggable: true}).addTo(map);
+    marker.bindPopup(text);
 
-        markerD.setDraggable(true);
+    marker.on('dragend', function(event) {
+        var position = event.target.getLatLng();
+        updateWaypoint(position.lng, position.lat, id);
+    });
 
-        google.maps.event.addListener(markerD, "mouseup", function(){
-                position = markerD.getPosition();
-                updateWaypoint(position.lng(),position.lat(),id);
-        });
-        return markerD;
+    return marker;
 }
 
 function load() {
-        //Dibujamos el mapa
-        var myOptions = {
-            zoom: 8,
-            // center: centerlatlng,
-            mapTypeControl: true,
-            scaleControl: true,
-            largeMapControl: true,
-            overviewMapControl: true,
-            overviewMapControlOptions: {opened: true},
-            mapTypeId: google.maps.MapTypeId.ROADMAP,
-        };
-        map = new google.maps.Map(document.getElementById("map_canvas"), myOptions);
 """
         if londef != 0:
             content +="""
-                    lon = %s;
-                    lat = %s;
-                    """ %(londef,latdef)
+    lon = %s;
+    lat = %s;
+""" %(londef,latdef)
         else:
             content += """
-                   lon = 0;
-                   lat = 0;
-                   """
+    lon = 0;
+    lat = 0;
+"""
         content +="""
-        map.setCenter(new google.maps.LatLng(lat, lon), 11);
+    map = L.map('map_canvas').setView([lat, lon], 11);
 
-        //Dibujamos los waypoints
-        for (i=0; i<waypointList.length; i++){
-                createMarker(waypointList[i]);
-                map.setOptions({draggable: true});
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19
+    }).addTo(map);
+
+    L.control.fullscreen().addTo(map);
+
+    for (var i = 0; i < waypointList.length; i++) {
+        createMarker(waypointList[i]);
+    }
+
+    map.on('click', function(event) {
+        if (is_addmode == 1) {
+            var lon = event.latlng.lng;
+            var lat = event.latlng.lat;
+
+            var waypoint_id = addWaypoint(lon, lat);
+            var waypoint = [lon, lat, "", "", "", waypoint_id];
+            createMarker(waypoint);
+            is_addmode = 0;
         }
-
-        //Preparamos los eventos para anadir nuevos waypoints
-        google.maps.event.addListener(map, "click", function(event) {
-                if (is_addmode==1){
-                        map.setOptions({draggable: true});
-                        var lon = event.latLng.lng();
-                        var lat = event.latLng.lat();
-
-                        var waypoint_id = addWaypoint(lon,lat);
-                        var waypoint = Array (lon,lat,"","","",waypoint_id);
-                        createMarker(waypoint);
-                        is_addmode = 0;
-                }
-        });
+    });
 }
 
 function addmode(){
-        is_addmode = 1;
-        map.setOptions({draggable: false});
+    is_addmode = 1;
 }
-
 //]]>
 </script>
 <style>
 .form {
-position: absolute;
-top: 200px;
-left: 300px;
-background: #ffffff;
+    position: absolute;
+    top: 200px;
+    left: 300px;
+    background: #ffffff;
+}
+
+#addButton {
+    position: absolute;
+    top: 32px;
+    left: 86px;
+    z-index: 1000; /* Ensure the button is above the map */
 }
 </style>
 
 </head>
-<body onload="load()" style="cursor:crosshair" border=0>
-        <div id="map_canvas" style="width: 100%; height: 460px; top: 0px; left: 0px"></div>
-        <div id="addButton" style="position: absolute; top: 32px;left: 86px;">
-                <input type="button" value="New Waypoint" onclick="javascript:addmode();">
-        </div>
-
-
+<body onload="load()" style="cursor:crosshair">
+    <div id="map_canvas" style="width: 100%; height: 460px; top: 0px; left: 0px;"></div>
+    <div id="addButton">
+        <input type="button" value="New Waypoint" onclick="javascript:addmode();" />
+    </div>
 </body>
 </html>
 """
