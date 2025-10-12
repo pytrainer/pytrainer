@@ -74,12 +74,12 @@ class fixelevation:
             if not ele_fixed:
                 # Try Google maps elevation API
                 import cjson, urllib2, math
-                steps = len(trackpoints) / 300
+                steps = int(len(trackpoints) / 300)
 
                 path = ''
                 lat_prev, long_prev = 0, 0
                 t = 0
-                for t in xrange(0,len(trackpoints),steps):
+                for t in range(0, len(trackpoints), steps):
                     lat = float(trackpoints[t].attrib['lat'])
                     lon = float(trackpoints[t].attrib['lon'])
                     encoded_lat, lat_prev = encode_coord(lat, lat_prev)
@@ -94,9 +94,9 @@ class fixelevation:
                     if google_ele['status'] == "OK":
                         t_idx = 0
                         ele_points = len(google_ele['results'])
-                        for ele_new in xrange(0,ele_points):
+                        for ele_new in range(0, ele_points):
                             addExt(trackpoints[t_idx], google_ele['results'][ele_new]['elevation'])
-                            for intermediate in xrange(ele_new+1, ele_new+steps):
+                            for intermediate in range(ele_new + 1, ele_new + steps):
                                 if intermediate<len(trackpoints):
                                     if ele_new==ele_points-1:
                                         calculated = google_ele['results'][ele_new]['elevation']
