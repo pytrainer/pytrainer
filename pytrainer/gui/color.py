@@ -23,15 +23,17 @@ class ColorConverter(object):
     
     """Converts between Pytrainer and GDK color instances.""" 
     
-    def convert_to_gdk_color(self, color):
-        """Convert a Pytrainer color to a GDK color."""
+    def convert_to_gdk_rgba(self, color: Color) -> Gdk.RGBA:
+        """Convert a Pytrainer color to a GDK.RGBA."""
         color_format = "#{0:06x}".format(color.rgb_val)
-        return Gdk.color_parse(color_format)
+        _rgba = Gdk.RGBA()
+        _rgba.parse(color_format)
+        return _rgba
     
-    def convert_to_color(self, gdk_col):
-        """Convert a GDK color to a Pytrainer color."""
-        red = gdk_col.red >> 8
-        green = gdk_col.green >> 8
-        blue = gdk_col.blue >> 8
+    def convert_to_color(self, gdk_col: Gdk.RGBA) -> Color:
+        """Convert a GDK.RGBA to a Pytrainer color."""
+        red = round(gdk_col.red * 255)
+        green = round(gdk_col.green * 255)
+        blue = round(gdk_col.blue * 255)
         rgb_val = (red << 16) + (green << 8) + blue
         return Color(rgb_val)

@@ -693,8 +693,9 @@ class Main(SimpleBuilderApp):
                         #Create a color choser
                         y1color = Gtk.ColorButton()
                         #Set color to current activity color
-                        _color = Gdk.color_parse(data[graphdata].linecolor)
-                        y1color.set_color(_color)
+                        _rgba = Gdk.RGBA()
+                        _rgba.parse(data[graphdata].linecolor)
+                        y1color.set_rgba(_rgba)
                         #Connect handler for color state changes
                         y1color.connect("color-set", self.on_y1colorchange, y1box, graphdata, activity)
                         #Attach to container
@@ -710,8 +711,9 @@ class Main(SimpleBuilderApp):
                     y2box.attach(y2button, 0, 1, row, row+1, xoptions=Gtk.AttachOptions.EXPAND|Gtk.AttachOptions.FILL)
                     if data[graphdata].y2linecolor is not None:
                         y2color = Gtk.ColorButton()
-                        _color = Gdk.color_parse(data[graphdata].y2linecolor)
-                        y2color.set_color(_color)
+                        _rgba = Gdk.RGBA()
+                        _rgba.parse(data[graphdata].y2linecolor)
+                        y2color.set_rgba(_rgba)
                         y2color.connect("color-set", self.on_y2colorchange, y2box, graphdata, activity)
                         #Attach to container
                         y2box.attach(y2color, 1, 2, row, row+1)
@@ -1500,21 +1502,21 @@ class Main(SimpleBuilderApp):
 
     def on_y1colorchange(self, widget, box, graphdata, activity):
         '''Hander for changes to y1 color selection'''
-        logging.debug("Setting %s to color %s", graphdata, widget.get_color())
+        logging.debug("Setting %s to color %s", graphdata, widget.get_rgba())
         if activity.x_axis == "distance":
-            activity.distance_data[graphdata].set_color(widget.get_color().to_string())
+            activity.distance_data[graphdata].set_color(widget.get_rgba().to_string())
         elif activity.x_axis == "time":
-            activity.time_data[graphdata].set_color(widget.get_color().to_string())
+            activity.time_data[graphdata].set_color(widget.get_rgba().to_string())
         #Replot the activity
         self.actualize_recordgraph(activity)
 
     def on_y2colorchange(self, widget, box, graphdata, activity):
         '''Hander for changes to y2 color selection'''
-        logging.debug("Setting %s to color %s", graphdata, widget.get_color())
+        logging.debug("Setting %s to color %s", graphdata, widget.get_rgba())
         if activity.x_axis == "distance":
-            activity.distance_data[graphdata].set_color(None, widget.get_color().to_string())
+            activity.distance_data[graphdata].set_color(None, widget.get_rgba().to_string())
         elif activity.x_axis == "time":
-            activity.time_data[graphdata].set_color(None, widget.get_color().to_string())
+            activity.time_data[graphdata].set_color(None, widget.get_rgba().to_string())
         #Replot the activity
         self.actualize_recordgraph(activity)
 
@@ -1656,8 +1658,8 @@ class Main(SimpleBuilderApp):
         self.zoom_graph()
 
     def on_colorbuttonY1LineColor_color_set(self, widget):
-        y1color = widget.get_color()
-        cs = y1color.to_string()
+        y1rgba = widget.get_rgba()
+        cs = y1rgba.to_string()
         self.y1_color = cs[0:3] + cs[5:7] + cs[9:11]
         self.drawarearecord.drawgraph(self.record_list,self.laps, y1limits=self.y1_limits, y1color=self.y1_color, y1_linewidth=self.y1_linewidth)
 

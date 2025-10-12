@@ -18,6 +18,7 @@
 
 import logging
 from gi.repository import Gdk
+from typing import Optional
 
 class GraphData:
     '''
@@ -85,31 +86,34 @@ class GraphData:
         if self.min_y_value is None or y < self.min_y_value:
             self.min_y_value = y
 
-    def get_color(self, color):
+    def _get_color(self, color: Optional[str]) -> Optional[str]:
         '''
         
         '''
         if color is None:
             return None
         try:
-            #Generate 13 digit color string from supplied color
-            col = Gdk.color_parse(color).to_string()
+            _rgba = Gdk.RGBA()
+            _rgba.parse(color)
         except ValueError:
             logging.debug("Unable to parse color from '%s'" % color)
             return None
                 
         #Create matplotlib color string
-        _color = "#%s%s%s" % (col[1:3], col[5:7], col[9:11])
+        red = round(_rgba.red * 255)
+        green = round(_rgba.green * 255)
+        blue = round(_rgba.blue * 255)
+        _color = f"#{red:02x}{green:02x}{blue:02x}"
         #logging.debug("%s color saved as: %s" % (color, _color))
         return _color
         
-    def set_color(self, y1color, y2color = None):
+    def set_color(self, y1color: Optional[str], y2color: Optional[str] = None) -> None:
         ''' 
             Helper function to set the line color
             need as some Gtk.gdk color can be invalid for matplotlib
         '''
-        _color = self.get_color(y1color)
-        _color2 = self.get_color(y2color)
+        _color = self._get_color(y1color)
+        _color2 = self._get_color(y2color)
         #if _color is not None:
         self.linecolor = _color
         #if _color2 is not None:
