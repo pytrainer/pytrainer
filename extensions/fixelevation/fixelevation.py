@@ -1,5 +1,6 @@
 import os
 import logging
+import requests
 from gi.repository import Gtk
 from lxml import etree
 from pytrainer.lib.srtmlayer import SrtmLayer
@@ -73,7 +74,6 @@ class fixelevation:
                 
             if not ele_fixed:
                 # Try Google maps elevation API
-                import cjson, urllib2, math
                 steps = int(len(trackpoints) / 300)
 
                 path = ''
@@ -90,7 +90,9 @@ class fixelevation:
                 url += path
  
                 try:
-                    google_ele = cjson.decode(urllib2.urlopen(url).read())
+                    response = requests.get(url)
+                    response.raise_for_status()
+                    google_ele = response.json()
                     if google_ele['status'] == "OK":
                         t_idx = 0
                         ele_points = len(google_ele['results'])
@@ -108,7 +110,8 @@ class fixelevation:
                                     addExt(trackpoints[t_idx], calculated)
                             t_idx += 1
                         ele_fixed = True
-                except urllib2.HTTPError:
+                except (requests.exceptions.HTTPError, requests.exceptions.JSONDecodeError) as e:
+                    logging.error("Failed to obtain elevation data: %s", e)
                     pass
 
             if ele_fixed:
