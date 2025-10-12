@@ -9,8 +9,8 @@ except ImportError:
     GTK_AVAILABLE = False
 
 from pytrainer.core.equipment import Equipment, EquipmentService
-from pytrainer.lib.ddbb import DDBB
 from pytrainer.lib.localization import initialize_gettext
+from pytrainer.test import DDBBTestCase
 
 #Copyright (C) Nathan Jones ncjones@users.sourceforge.net
 #Copyright (C) Arto Jantunen <viiru@iki.fi>
@@ -173,20 +173,14 @@ class EquipmentStoreTest(unittest.TestCase):
 
 
 @unittest.skipUnless(GTK_AVAILABLE, 'GTK library not available')
-class EquipmentUiTest(unittest.TestCase):
+class EquipmentUiTest(DDBBTestCase):
 
     def setUp(self):
+        super().setUp()
         from pytrainer.gui.equipment import EquipmentUi
         initialize_gettext()
-        self.ddbb = DDBB()
-        self.ddbb.connect()
-        self.ddbb.create_tables()
         self.equipment_service = EquipmentService(self.ddbb)
         self.equipment_ui = EquipmentUi(self.equipment_service)
-
-    def tearDown(self):
-        self.ddbb.disconnect()
-        self.ddbb.drop_tables()
 
     def test_equipment_add(self):
         self.equipment_ui._builder.get_object("entryEquipmentAddDescription").set_text('Test')

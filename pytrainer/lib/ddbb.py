@@ -96,11 +96,13 @@ if no url is provided"""
         from pytrainer.athlete import Athletestat
         DeclarativeBase.metadata.create_all(self.engine)
         if add_default:
-            for item in [Sport(name=u"Mountain Bike", weight=0.0, color=color_from_hex_string("0000ff")),
-                         Sport(name=u"Bike", weight=0.0, color=color_from_hex_string("00ff00")),
-                         Sport(name=u"Run", weight=0.0, color=color_from_hex_string("ffff00"))]:
-                self.session.add(item)
-            self.session.commit()
+            with self.sessionmaker.begin() as session:
+                for item in (
+                        Sport(name="Mountain Bike", weight=0.0, color=color_from_hex_string("0000ff")),
+                        Sport(name="Bike", weight=0.0, color=color_from_hex_string("00ff00")),
+                        Sport(name="Run", weight=0.0, color=color_from_hex_string("ffff00")),
+                ):
+                    session.add(item)
 
     def drop_tables(self):
         """Drop the database schema"""

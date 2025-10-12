@@ -14,27 +14,20 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import unittest
-from datetime import date
-from unittest.mock import Mock
-
-from pytrainer.lib.ddbb import DDBB
 from pytrainer.waypoint import WaypointService
+from pytrainer.test import DDBBTestCase
 
-class WaypointTest(unittest.TestCase):
+
+class WaypointTest(DDBBTestCase):
+    CREATE_DEFAULT_DATA = False
 
     def setUp(self):
-        self.ddbb = DDBB()
-        main = Mock()
-        main.ddbb = self.ddbb
-        main.ddbb.connect()
-        main.ddbb.create_tables(add_default=False)
-        self.waypoint = WaypointService(parent=main)
+        super().setUp()
+        self.waypoint = WaypointService()
 
     def tearDown(self):
         self.waypoint = None
-        self.ddbb.disconnect()
-        self.ddbb.drop_tables()
+        super().tearDown()
 
     def test_waypoint_add_and_get(self):
         data = (30.0, 20.0, None, u'Comment', None, u'Test', u'sym')

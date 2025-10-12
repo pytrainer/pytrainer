@@ -26,133 +26,129 @@ from io import BytesIO
 from lxml import etree
 from pytrainer.lib.date import getDateTime
 from pytrainer.core.activity import Activity
-from sqlalchemy.orm import exc
+from sqlalchemy import exists
 
 class garmintools():
-	def __init__(self, parent = None, data_path = None):
-		self.parent = parent
-		self.pytrainer_main = parent.parent
-		self.tmpdir = self.pytrainer_main.profile.tmpdir
-		self.main_data_path = data_path
-		self.data_path = os.path.dirname(__file__)
-		self.xmldoc = None
-		self.activitiesSummary = []
+    def __init__(self, parent = None, data_path = None):
+        self.parent = parent
+        self.pytrainer_main = parent.parent
+        self.tmpdir = self.pytrainer_main.profile.tmpdir
+        self.main_data_path = data_path
+        self.data_path = os.path.dirname(__file__)
+        self.xmldoc = None
+        self.activitiesSummary = []
 
-	def getXmldoc(self):
-		''' Function to return parsed xmlfile '''
-		return self.xmldoc
+    def getXmldoc(self):
+        ''' Function to return parsed xmlfile '''
+        return self.xmldoc
 
-	def getFileType(self):
-		return _("Garmin tools dump file")
+    def getFileType(self):
+        return _("Garmin tools dump file")
 
-	def getActivitiesSummary(self):
-		return self.activitiesSummary
+    def getActivitiesSummary(self):
+        return self.activitiesSummary
 
-	def testFile(self, filename):
-		logging.debug('>>')
-		logging.debug("Testing " + filename)
-		#Check if file is a garmintools dump
-		try:
-			with open(filename, 'r') as f:
-				xmlString = f.read()
-			#add a root element to make correct xml
-			fileString = BytesIO(b"<root>" + xmlString + b"</root>")
-			#parse string as xml
-			xmldoc = etree.parse(fileString)
-			#Parse XML schema
-			xmlschema_doc = etree.parse(self.main_data_path+"schemas/garmintools.xsd")
-			xmlschema = etree.XMLSchema(xmlschema_doc)
-			if (xmlschema.validate(xmldoc)):
-				#Valid garmintools file
-				self.xmldoc = xmldoc
-				startTime = getDateTime(self.startTimeFromFile(xmldoc))
-				indatabase = self.inDatabase(xmldoc, startTime)
-				sport = self.getSport(xmldoc)
-				distance, duration  = self.getDetails(xmldoc, startTime)
-				distance = distance / 1000.0
-				self.activitiesSummary.append( (0,
-												indatabase,
-												startTime[1].strftime("%Y-%m-%dT%H:%M:%S"),
-												"%0.2f" % distance ,
-												str(duration),
-												sport,
-												) )
-				return True
-		except:
-			#Not garmintools dump file
-			return False
-		return False
+    def testFile(self, filename):
+        logging.debug('>>')
+        logging.debug("Testing " + filename)
+        #Check if file is a garmintools dump
+        try:
+            with open(filename, 'r') as f:
+                xmlString = f.read()
+            #add a root element to make correct xml
+            fileString = BytesIO(b"<root>" + xmlString + b"</root>")
+            #parse string as xml
+            xmldoc = etree.parse(fileString)
+            #Parse XML schema
+            xmlschema_doc = etree.parse(self.main_data_path+"schemas/garmintools.xsd")
+            xmlschema = etree.XMLSchema(xmlschema_doc)
+            if (xmlschema.validate(xmldoc)):
+                #Valid garmintools file
+                self.xmldoc = xmldoc
+                startTime = getDateTime(self.startTimeFromFile(xmldoc))
+                indatabase = self.inDatabase(xmldoc, startTime)
+                sport = self.getSport(xmldoc)
+                distance, duration  = self.getDetails(xmldoc, startTime)
+                distance = distance / 1000.0
+                self.activitiesSummary.append( (0,
+                                                                                indatabase,
+                                                                                startTime[1].strftime("%Y-%m-%dT%H:%M:%S"),
+                                                                                "%0.2f" % distance ,
+                                                                                str(duration),
+                                                                                sport,
+                                                                                ) )
+                return True
+        except:
+            #Not garmintools dump file
+            return False
+        return False
 
-	def inDatabase(self, tree, startTime):
-		#comparing date and start time (sport may have been changed in DB after import)
-		time = startTime
-		if time is None:
-			return False
-		time = time[0].strftime("%Y-%m-%dT%H:%M:%SZ")
-		try:
-			self.parent.parent.ddbb.session.query(Activity).filter(Activity.date_time_utc == time).one()
-			return True
-		except exc.NoResultFound:
-			return False
+    def inDatabase(self, tree, startTime):
+        #comparing date and start time (sport may have been changed in DB after import)
+        time = startTime
+        if time is None:
+            return False
+        time = time[0].strftime("%Y-%m-%dT%H:%M:%SZ")
+        with self.parent.parent.ddbb.sessionmaker.begin() as session:
+            return session.scalar(exists().where(Activity.date_time_utc == time).select())
 
-	def getDetails(self, tree, startTime):
-		root = tree.getroot()
-		points = root.findall(".//point")
-		while True:
-			lastPoint = points[-1]
-			try:
-				distance = lastPoint.get("distance")
-				if distance is None:
-					points = points[:-1]
-					continue
-				time = lastPoint.get("time")
-				break
-			except:
-				points = points[:-1]
-				continue
-		return float(distance), getDateTime(time)[0]-startTime[0]
+    def getDetails(self, tree, startTime):
+        root = tree.getroot()
+        points = root.findall(".//point")
+        while True:
+            lastPoint = points[-1]
+            try:
+                distance = lastPoint.get("distance")
+                if distance is None:
+                    points = points[:-1]
+                    continue
+                time = lastPoint.get("time")
+                break
+            except:
+                points = points[:-1]
+                continue
+        return float(distance), getDateTime(time)[0]-startTime[0]
 
-	def getSport(self, tree):
-		#return sport from file
-		root = tree.getroot()
-		sportElement = root.find(".//run")
-		try:
-			sport = sportElement.get("sport")
-			sport = sport.capitalize()
-		except:
-			sport = "import"
-		return sport
+    def getSport(self, tree):
+        #return sport from file
+        root = tree.getroot()
+        sportElement = root.find(".//run")
+        try:
+            sport = sportElement.get("sport")
+            sport = sport.capitalize()
+        except:
+            sport = "import"
+        return sport
 
-	def startTimeFromFile(self, tree):
-		root = tree.getroot()
-		#Find first point
-		pointElement = root.find(".//point")
-		if pointElement is not None:
-			#Try to get time from point
-			time = pointElement.get("time")
-			print("#TODO first time is different from time used by gpsbabel and has locale embedded: " + time)
-			return time
-		return None
+    def startTimeFromFile(self, tree):
+        root = tree.getroot()
+        #Find first point
+        pointElement = root.find(".//point")
+        if pointElement is not None:
+            #Try to get time from point
+            time = pointElement.get("time")
+            print("#TODO first time is different from time used by gpsbabel and has locale embedded: " + time)
+            return time
+        return None
 
-	def getGPXFile(self, ID, file_id):
-		"""
-			Generate GPX file based on activity ID
+    def getGPXFile(self, ID, file_id):
+        """
+                Generate GPX file based on activity ID
 
-			Returns (sport, GPX filename)
-		"""
-		sport = None
-		gpxFile = None
-		if ID == "0": #Only one activity in file
-			gpxFile = "%s/garmintools-%s-%s.gpx" % (self.tmpdir, file_id, ID)
-			sport = self.getSport(self.xmldoc)
-			self.createGPXfile(gpxFile, self.xmldoc)
-		return sport, gpxFile
+                Returns (sport, GPX filename)
+        """
+        sport = None
+        gpxFile = None
+        if ID == "0": #Only one activity in file
+            gpxFile = "%s/garmintools-%s-%s.gpx" % (self.tmpdir, file_id, ID)
+            sport = self.getSport(self.xmldoc)
+            self.createGPXfile(gpxFile, self.xmldoc)
+        return sport, gpxFile
 
-	def createGPXfile(self, gpxfile, tree):
-		""" Function to transform a Garmintools dump file to a valid GPX+ file
-		"""
-		xslt_doc = etree.parse(self.data_path+"/translate_garmintools.xsl")
-		transform = etree.XSLT(xslt_doc)
-		result_tree = transform(tree)
-		result_tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')
-
+    def createGPXfile(self, gpxfile, tree):
+        """ Function to transform a Garmintools dump file to a valid GPX+ file
+        """
+        xslt_doc = etree.parse(self.data_path+"/translate_garmintools.xsl")
+        transform = etree.XSLT(xslt_doc)
+        result_tree = transform(tree)
+        result_tree.write(gpxfile, xml_declaration=True, encoding='UTF-8')
