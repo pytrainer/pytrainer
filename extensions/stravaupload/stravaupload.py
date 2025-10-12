@@ -18,7 +18,11 @@ class ProgressDialog():
         self.progress = None
         self.text = text
     def __enter__(self):
-        self.progress = Popen(["zenity", "--text", "Strava Upload", "--percentage=0", "--auto-close=True", "--pulsate=True", "--progress", "--no-cancel"], stdin=PIPE)
+        self.progress = Popen(
+            ["zenity", "--text", "Strava Upload", "--percentage=0", "--auto-close=True", "--pulsate=True", "--progress", "--no-cancel"],
+            stdin=PIPE,
+            encoding="utf-8",
+        )
         self.progress.stdin.write('# %s\n' % self.text)
         return self
 
