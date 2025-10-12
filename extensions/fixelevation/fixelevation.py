@@ -110,6 +110,8 @@ class fixelevation:
                                     addExt(trackpoints[t_idx], calculated)
                             t_idx += 1
                         ele_fixed = True
+                    else:
+                        logging.error("Failed to obtain elevation data: %s", google_ele["error_message"] or str(google_ele))
                 except (requests.exceptions.HTTPError, requests.exceptions.JSONDecodeError) as e:
                     logging.error("Failed to obtain elevation data: %s", e)
                     pass
