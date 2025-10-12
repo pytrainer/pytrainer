@@ -139,9 +139,9 @@ def download(tile_name):
     button = Gtk.Button(stock=Gtk.STOCK_CANCEL)
     button.connect("clicked", main_quit)
 
-    window.vbox.pack_start(labelH, expand=False, padding=3)
-    window.vbox.pack_start(label, expand=False, padding=3)
-    window.vbox.pack_start(progressbar, expand=False, padding=3)
+    window.vbox.pack_start(labelH, expand=False, fill=True, padding=3)
+    window.vbox.pack_start(label, expand=False, fill=True, padding=3)
+    window.vbox.pack_start(progressbar, expand=False, fill=True, padding=3)
     window.action_area.pack_start(button, False, True, 0)
     window.show_all()
 
