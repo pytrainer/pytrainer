@@ -1,13 +1,11 @@
 import os, stat
-import sys
 import logging
 from gi.repository import Gtk
 
 import string
 from lxml import etree
 
-import httplib, httplib2
-import urllib2
+import httplib2
 import mimetools, mimetypes
 from json import dumps, loads       #   for deserializing JSON data form javascript
 
