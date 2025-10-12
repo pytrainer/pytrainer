@@ -1502,9 +1502,9 @@ class Main(SimpleBuilderApp):
         '''Hander for changes to y1 color selection'''
         logging.debug("Setting %s to color %s", graphdata, widget.get_color())
         if activity.x_axis == "distance":
-            activity.distance_data[graphdata].set_color(str(widget.get_color()))
+            activity.distance_data[graphdata].set_color(widget.get_color().to_string())
         elif activity.x_axis == "time":
-            activity.time_data[graphdata].set_color(str(widget.get_color()))
+            activity.time_data[graphdata].set_color(widget.get_color().to_string())
         #Replot the activity
         self.actualize_recordgraph(activity)
 
@@ -1512,9 +1512,9 @@ class Main(SimpleBuilderApp):
         '''Hander for changes to y2 color selection'''
         logging.debug("Setting %s to color %s", graphdata, widget.get_color())
         if activity.x_axis == "distance":
-            activity.distance_data[graphdata].set_color(None, str(widget.get_color()))
+            activity.distance_data[graphdata].set_color(None, widget.get_color().to_string())
         elif activity.x_axis == "time":
-            activity.time_data[graphdata].set_color(None, str(widget.get_color()))
+            activity.time_data[graphdata].set_color(None, widget.get_color().to_string())
         #Replot the activity
         self.actualize_recordgraph(activity)
 
