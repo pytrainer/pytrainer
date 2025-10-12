@@ -1,9 +1,7 @@
-import os, stat, sys
+import os
 import logging
 
-import random, re, urllib2, zipfile
 from math import floor, ceil
-from osgeo import gdal, gdalnumeric
 
 from pytrainer.lib.srtmtiff import SrtmTiff
 from . import srtmdownload
