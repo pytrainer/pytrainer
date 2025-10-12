@@ -16,9 +16,10 @@
 
 import os
 from gi.repository import Gtk
-import urllib2
+import requests
 import zipfile
 from io import StringIO
+from typing import Optional
 import logging
 
 """
@@ -100,16 +101,17 @@ class DownloadLoop:
         logging.debug("<<")
         return False
             
-    def get_urlfile(self):
+    def get_urlfile(self) -> Optional[str]:
         """  Go through SRTM Servers """
         logging.debug('--')
         for server in srtm_server_list:
             url = '%s%s%s' % (server['url'], self.tile_name, server['ext']) 
             logging.debug("Attempting to get URL: %s" % url)
             try:
-                urlfile = urllib2.urlopen( url )
+                urlfile = requests.get(url)
+                urlfile.raise_for_status()
                 self.label.set_text(str(url))
-                return urlfile
+                return urlfile.text
             except:
                 logging.debug('%s FAILED' % url)
                 pass
