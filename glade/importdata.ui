@@ -296,11 +296,11 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="buttonDeviceClose">
-                    <property name="label">gtk-close</property>
+                    <property name="label" translatable="yes">_Close</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
+                    <property name="use-underline">1</property>
                     <signal handler="on_buttonDeviceClose_clicked" name="clicked"/>
                   </object>
                   <packing>
@@ -383,12 +383,12 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="buttonRemoveSelectedFiles">
-                                <property name="label">gtk-remove</property>
+                                <property name="label" translatable="yes">_Remove</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip-text" translatable="yes">Remove selected files and the associated activities</property>
-                                <property name="use_stock">True</property>
+                                <property name="use-underline">1</property>
                                 <property name="yalign">0.4699999988079071</property>
                                 <signal handler="on_buttonRemoveSelectedFiles_clicked" name="clicked"/>
                               </object>
@@ -401,12 +401,12 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="buttonSelectFiles">
-                                <property name="label">gtk-add</property>
+                                <property name="label" translatable="yes">_Add</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
                                 <property name="tooltip-text" translatable="yes">Add files to import activities from</property>
-                                <property name="use_stock">True</property>
+                                <property name="use-underline">1</property>
                                 <property name="focus_on_click">False</property>
                                 <signal handler="on_buttonSelectFiles_clicked" name="clicked"/>
                               </object>
@@ -503,12 +503,12 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="buttonFileClose">
-                    <property name="label">gtk-close</property>
+                    <property name="label" translatable="yes">_Close</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="tooltip-text" translatable="yes">Close Import dialog</property>
-                    <property name="use_stock">True</property>
+                    <property name="use-underline">1</property>
                     <signal handler="on_buttonFileClose_clicked" name="clicked"/>
                   </object>
                   <packing>
@@ -575,11 +575,11 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="buttonPluginsClose">
-                        <property name="label">gtk-close</property>
+                        <property name="label" translatable="yes">_Close</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="use_stock">True</property>
+                        <property name="use-underline">1</property>
                         <signal handler="on_buttonPluginsClose_clicked" name="clicked"/>
                       </object>
                       <packing>
@@ -777,11 +777,11 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="buttonOptionsClose">
-                    <property name="label">gtk-close</property>
+                    <property name="label" translatable="yes">_Close</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
+                    <property name="use-underline">1</property>
                     <signal handler="on_buttonOptionsClose_clicked" name="clicked"/>
                   </object>
                   <packing>

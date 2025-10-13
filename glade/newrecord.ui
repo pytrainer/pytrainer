@@ -137,11 +137,11 @@
                             </child>
                             <child>
                               <object class="GtkButton" id="button25">
-                                <property name="label">gtk-open</property>
+                                <property name="label" translatable="yes">_Open</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_stock">True</property>
+                                <property name="use-underline">1</property>
                                 <signal handler="on_selectfile_clicked" name="clicked"/>
                               </object>
                               <packing>
@@ -1221,11 +1221,11 @@
             </child>
             <child>
               <object class="GtkButton" id="button2">
-                <property name="label">gtk-cancel</property>
+                <property name="label" translatable="yes">_Cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">1</property>
                 <signal handler="on_cancel_clicked" name="clicked"/>
               </object>
               <packing>
@@ -1237,11 +1237,11 @@
             </child>
             <child>
               <object class="GtkButton" id="button1">
-                <property name="label">gtk-ok</property>
+                <property name="label" translatable="yes">_OK</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">1</property>
                 <signal handler="on_accept_clicked" name="clicked"/>
               </object>
               <packing>

@@ -167,11 +167,11 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="button30">
-                    <property name="label">gtk-help</property>
+                    <property name="label" translatable="yes">_Help</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="use_stock">True</property>
+                    <property name="use-underline">1</property>
                     <signal handler="on_help_clicked" name="clicked"/>
                   </object>
                   <packing>
@@ -182,11 +182,11 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="button29">
-                    <property name="label">gtk-preferences</property>
+                    <property name="label" translatable="yes">_Preferences</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="use_stock">True</property>
+                    <property name="use-underline">1</property>
                     <signal handler="on_preferences_clicked" name="clicked"/>
                   </object>
                   <packing>
@@ -197,11 +197,11 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="button28">
-                    <property name="label">gtk-ok</property>
+                    <property name="label" translatable="yes">_OK</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
-                    <property name="use_stock">True</property>
+                    <property name="use-underline">1</property>
                     <signal handler="on_accept_clicked" name="clicked"/>
                   </object>
                   <packing>

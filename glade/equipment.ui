@@ -40,11 +40,11 @@
                     <property name="visible">1</property>
                     <child>
                       <object class="GtkButton" id="buttonEquipmentAdd">
-                        <property name="label">gtk-add</property>
+                        <property name="label" translatable="yes">_Add</property>
                         <property name="visible">1</property>
                         <property name="can-focus">1</property>
                         <property name="receives-default">1</property>
-                        <property name="use-stock">1</property>
+                        <property name="use-underline">1</property>
                         <signal name="clicked" handler="add_equipment_clicked"/>
                       </object>
                       <packing>
@@ -55,12 +55,12 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="buttonEquipmentEdit">
-                        <property name="label">gtk-edit</property>
+                        <property name="label" translatable="yes">_Edit</property>
                         <property name="sensitive">0</property>
                         <property name="visible">1</property>
                         <property name="can-focus">1</property>
                         <property name="receives-default">1</property>
-                        <property name="use-stock">1</property>
+                        <property name="use-underline">1</property>
                         <signal name="clicked" handler="edit_equipment_clicked"/>
                       </object>
                       <packing>
@@ -72,12 +72,12 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="buttonEquipmentDelete">
-                        <property name="label">gtk-delete</property>
+                        <property name="label" translatable="yes">_Delete</property>
                         <property name="sensitive">0</property>
                         <property name="visible">1</property>
                         <property name="can-focus">1</property>
                         <property name="receives-default">1</property>
-                        <property name="use-stock">1</property>
+                        <property name="use-underline">1</property>
                         <signal name="clicked" handler="delete_equipment_clicked"/>
                       </object>
                       <packing>
@@ -303,11 +303,11 @@
                     <property name="visible">1</property>
                     <child>
                       <object class="GtkButton" id="buttonEquipmentAddCancel">
-                        <property name="label">gtk-cancel</property>
+                        <property name="label" translatable="yes">_Cancel</property>
                         <property name="visible">1</property>
                         <property name="can-focus">1</property>
                         <property name="receives-default">1</property>
-                        <property name="use-stock">1</property>
+                        <property name="use-underline">1</property>
                         <signal name="clicked" handler="cancel_add_equipment_clicked"/>
                       </object>
                       <packing>
@@ -319,11 +319,11 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="buttonEquipmentAddConfirm">
-                        <property name="label">gtk-add</property>
+                        <property name="label" translatable="yes">_Add</property>
                         <property name="visible">1</property>
                         <property name="can-focus">1</property>
                         <property name="receives-default">1</property>
-                        <property name="use-stock">1</property>
+                        <property name="use-underline">1</property>
                         <signal name="clicked" handler="confirm_add_equipment_clicked"/>
                       </object>
                       <packing>
@@ -547,11 +547,11 @@
                     <property name="visible">1</property>
                     <child>
                       <object class="GtkButton" id="buttonEquipmentEditCancel">
-                        <property name="label">gtk-cancel</property>
+                        <property name="label" translatable="yes">_Cancel</property>
                         <property name="visible">1</property>
                         <property name="can-focus">1</property>
                         <property name="receives-default">1</property>
-                        <property name="use-stock">1</property>
+                        <property name="use-underline">1</property>
                         <signal name="clicked" handler="cancel_edit_equipment_clicked"/>
                       </object>
                       <packing>
@@ -563,11 +563,11 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="buttonEquipmentEditConfirm">
-                        <property name="label">gtk-save</property>
+                        <property name="label" translatable="yes">_Save</property>
                         <property name="visible">1</property>
                         <property name="can-focus">1</property>
                         <property name="receives-default">1</property>
-                        <property name="use-stock">1</property>
+                        <property name="use-underline">1</property>
                         <signal name="clicked" handler="confirm_edit_equipment_clicked"/>
                       </object>
                       <packing>
@@ -626,11 +626,11 @@
                     <property name="layout-style">end</property>
                     <child>
                       <object class="GtkButton" id="buttonEquipmentDeleteCancel">
-                        <property name="label">gtk-cancel</property>
+                        <property name="label" translatable="yes">_Cancel</property>
                         <property name="visible">1</property>
                         <property name="can-focus">1</property>
                         <property name="receives-default">1</property>
-                        <property name="use-stock">1</property>
+                        <property name="use-underline">1</property>
                         <signal name="clicked" handler="cancel_delete_equipment_clicked"/>
                       </object>
                       <packing>
@@ -639,11 +639,11 @@
                     </child>
                     <child>
                       <object class="GtkButton" id="buttonEquipmentDeleteConfirm">
-                        <property name="label">gtk-ok</property>
+                        <property name="label" translatable="yes">_OK</property>
                         <property name="visible">1</property>
                         <property name="can-focus">1</property>
                         <property name="receives-default">1</property>
-                        <property name="use-stock">1</property>
+                        <property name="use-underline">1</property>
                         <signal name="clicked" handler="confirm_delete_equipment_clicked"/>
                       </object>
                       <packing>

@@ -1454,11 +1454,11 @@
                                                 </child>
                                                 <child>
                                                   <object class="GtkButton" id="button36">
-                                                    <property name="label">gtk-edit</property>
+                                                    <property name="label" translatable="yes">_Edit</property>
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
                                                     <property name="receives_default">False</property>
-                                                    <property name="use_stock">True</property>
+                                                    <property name="use-underline">1</property>
                                                     <signal handler="on_edit_clicked" name="clicked"/>
                                                   </object>
                                                   <packing>
@@ -1469,11 +1469,11 @@
                                                 </child>
                                                 <child>
                                                   <object class="GtkButton" id="button35">
-                                                    <property name="label">gtk-delete</property>
+                                                    <property name="label" translatable="yes">_Delete</property>
                                                     <property name="visible">True</property>
                                                     <property name="can_focus">True</property>
                                                     <property name="receives_default">False</property>
-                                                    <property name="use_stock">True</property>
+                                                    <property name="use-underline">1</property>
                                                     <signal handler="on_remove_clicked" name="clicked"/>
                                                   </object>
                                                   <packing>
@@ -6673,11 +6673,11 @@
                         </child>
                         <child>
                           <object class="GtkButton" id="lsa_reset">
-                            <property name="label">gtk-clear</property>
+                            <property name="label" translatable="yes">_Clear</property>
                             <property name="visible">True</property>
                             <property name="can_focus">True</property>
                             <property name="receives_default">True</property>
-                            <property name="use_stock">True</property>
+                            <property name="use-underline">1</property>
                             <signal handler="on_listareareset_clicked" name="clicked"/>
                           </object>
                           <packing>
@@ -6769,11 +6769,11 @@
                                     </child>
                                     <child>
                                       <object class="GtkButton" id="button39">
-                                        <property name="label">gtk-delete</property>
+                                        <property name="label" translatable="yes">_Delete</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
-                                        <property name="use_stock">True</property>
+                                        <property name="use-underline">1</property>
                                         <signal handler="on_removewaypoint_clicked" name="clicked"/>
                                       </object>
                                       <packing>
@@ -6784,11 +6784,11 @@
                                     </child>
                                     <child>
                                       <object class="GtkButton" id="button38">
-                                        <property name="label">gtk-save</property>
+                                        <property name="label" translatable="yes">_Save</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
-                                        <property name="use_stock">True</property>
+                                        <property name="use-underline">1</property>
                                         <signal handler="on_savewaypoint_clicked" name="clicked"/>
                                       </object>
                                       <packing>
