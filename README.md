@@ -44,7 +44,6 @@ Certain plugins and extensions also need additional software:
 | garmintools   | Import from Garmin GPS device (Garmin via garmintools plugin aka garmintools_full)|
 | Perl          | Garmin FIT plugin                                                                 |
 | wordpresslib  | Wordpress extension, already distributed within pytrainer tarball                 |
-| httplib2      | Wordpress extension                                                               |
 | SOAPpy        | Dotclear extension                                                                |
 | GDAL          | Elevation correction extension, via gdal-python or python-gdal                    |
 

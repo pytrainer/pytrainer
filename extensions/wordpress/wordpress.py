@@ -22,7 +22,7 @@ import shutil
 import logging
 
 from gi.repository import Gtk
-import httplib2
+import requests
 
 import wordpresslib     #TODO remove need for this library
 from pytrainer.extensions.googlemaps import Googlemaps
@@ -130,14 +130,13 @@ class wordpress:
 ''' % (self.user, self.password, self.wordpresscategory,  self.description, self.title)
 
         #POST request to Wordpress blog
-        h = httplib2.Http()
-        res, content = h.request(self.wordpressurl, 'POST', body=xmlstuff)
+        res = requests.post(self.wordpressurl, body=xmlstuff)
         logging.debug("after request posting")
-        logging.debug("Got response status: %s, reason: %s, content: %s" % (res.status, res.reason, content))
-        if res.reason == 'OK':
+        logging.debug("Got response status: %s, reason: %s, content: %s" % (res.status_code, res.reason, res.text))
+        if res.ok:
             res_msg = "Successfully posted to Wordpress."
         else:
-            res_msg = "Some error occured\nGot a status %s, reason %s\nContent was: %s" % (res.status, res.reason, content)
+            res_msg = "Some error occured\nGot a status %s, reason %s\nContent was: %s" % (res.status_code, res.reason, res.text)
         #Close 'Please wait' dialog
         md.destroy()
         #Show the user the result
