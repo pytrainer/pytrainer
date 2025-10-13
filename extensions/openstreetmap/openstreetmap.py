@@ -26,7 +26,7 @@ class openstreetmap:
     def run(self, id, activity=None):  #TODO Convert to use activity...
         logging.debug(">>")
         try:
-            uri = "http://api.openstreetmap.org/api/0.6/gpx/create" #URI for uploading traces to OSM
+            uri = "https://api.openstreetmap.org/api/0.6/gpx" #URI for uploading traces to OSM
             if 'username' not in self.options or self.options['username'] == "" or 'password' not in self.options or self.options['password'] == "":
                 logging.error("Must have username and password configured")
                 raise Exception("Must have username and password configured")
