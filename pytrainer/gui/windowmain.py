@@ -2057,8 +2057,8 @@ class Main(SimpleBuilderApp):
             logging.debug('Edit existing athlete entry: %s', data)
             title = _('Edit Athlete Entry')
         dialog = Gtk.Dialog(title=title, parent=self.pytrainer_main.windowmain.window1, flags= Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                     buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
-                      Gtk.STOCK_SAVE, Gtk.ResponseType.ACCEPT))
+                     buttons=(_("_Cancel"), Gtk.ResponseType.REJECT,
+                      _("_Save"), Gtk.ResponseType.ACCEPT))
         dialog.set_modal(False)
         #Get Content area of dialog
         vbox = dialog.get_content_area()

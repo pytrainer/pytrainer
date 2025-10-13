@@ -136,7 +136,7 @@ def download(tile_name):
     progressbar = Gtk.ProgressBar()
 
     window.connect('destroy', main_quit)
-    button = Gtk.Button(stock=Gtk.STOCK_CANCEL)
+    button = Gtk.Button.new_with_mnemonic(_("_Cancel"))
     button.connect("clicked", main_quit)
 
     window.vbox.pack_start(labelH, expand=False, padding=3)
