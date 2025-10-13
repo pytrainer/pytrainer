@@ -50,7 +50,6 @@ __date__ = "$Date: 2005/05/02 $"
 __copyright__ = "Copyright © 2005 Michele Ferretti"
 __license__ = "LGPL"
 
-import exceptions
 import re
 import os
 import xmlrpclib
@@ -58,7 +57,7 @@ import datetime
 import time
 import logging
 
-class WordPressException(exceptions.Exception):
+class WordPressException(Exception):
 	"""Custom exception for WordPress client operations
 	"""
 	def __init__(self, obj):
