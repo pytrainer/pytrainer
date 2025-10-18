@@ -51,8 +51,7 @@ class MigratableDb:
 
         An empty schema indicates a new uninitialised database."""
         metadata = MetaData()
-        metadata.bind = self.ddbb.engine
-        metadata.reflect()
+        metadata.reflect(bind=self.ddbb.engine)
         tables = metadata.tables
         return not tables
 
