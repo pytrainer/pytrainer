@@ -26,6 +26,8 @@ import warnings
 import gi
 gi.require_version('Gtk', '3.0')
 
+from gi.repository import Gtk
+
 from pytrainer.lib.date import DateRange
 from .upgrade.data import initialize_data
 from .environment import Environment
@@ -84,6 +86,9 @@ class pyTrainer:
         logging.debug('Initializing activity pool...')
         pool_size = self.profile.getIntValue("pytraining","activitypool_size", default=1)
         self.activitypool = ActivityService(self, size=pool_size)
+
+        theme = Gtk.IconTheme.get_default()
+        theme.append_search_path(self.environment.icons_dir)
 
         #Loading main window
         self.windowmain = None
