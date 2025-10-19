@@ -16,6 +16,7 @@
 
 import unittest
 import datetime
+import warnings
 from unittest.mock import Mock
 from dateutil.tz import tzoffset
 from sqlalchemy.orm.exc import NoResultFound
@@ -57,6 +58,7 @@ class ActivityTest(unittest.TestCase):
             'duration': 7426,
             'sport': 1,
             'maxbeats': 120.0})
+
         laps_table = DeclarativeBase.metadata.tables['laps']
         self.ddbb.session.execute(laps_table.insert(), {
             'distance': 46181.9,
@@ -68,7 +70,8 @@ class ActivityTest(unittest.TestCase):
             'avg_hr': 136,
             'max_hr': 173,
             'laptrigger': 'manual'})
-        self.activity = self.service.get_activity(1)
+
+        self.ddbb.session.commit()
 
     def tearDown(self):
         self.service.clear_pool()
@@ -76,33 +79,68 @@ class ActivityTest(unittest.TestCase):
         self.ddbb.drop_tables()
         self.uc.set_us(False)
 
+    def test_activities_get_activity(self):
+        # successive calls for same activity id should provide same result
+        activity1 = self.service.get_activity(1)
+        activity2 = self.service.get_activity(1)
+
+        self.assertEqual(activity1, activity2)
+
+        self.assertEqual(activity1.distance, 46.18)
+        self.assertEqual(activity1.duration, 7426)
+        self.assertEqual(activity1.sport.name, 'Mountain Bike')
+
+        self.assertEqual(activity2.distance, 46.18)
+        self.assertEqual(activity2.duration, 7426)
+        self.assertEqual(activity2.sport.name, 'Mountain Bike')
+
+
     def test_activity_date_time(self):
-        self.assertEqual(self.activity.date_time, datetime.datetime(2016, 7, 24,
-                                                                        12, 58, 23,
-                                                    tzinfo=tzoffset(None, 10800)))
+        activity = self.service.get_activity(1)
+        self.assertEqual( activity.date_time,
+                          datetime.datetime(2016, 7, 24, 12, 58, 23, tzinfo=tzoffset(None, 10800)
+                          )
+                        )
 
     def test_activity_distance(self):
-        self.assertEqual(self.activity.distance, 46.18)
+        activity = self.service.get_activity(1)
+        self.assertEqual(activity.distance, 46.18)
 
     def test_activity_sport_name(self):
-        self.assertEqual(self.activity.sport_name, 'Mountain Bike')
+        activity = self.service.get_activity(1)
+        self.assertEqual(activity.sport.name, 'Mountain Bike')
 
     def test_activity_duration(self):
-        self.assertEqual(self.activity.duration, 7426)
+        activity = self.service.get_activity(1)
+        self.assertEqual(activity.duration, 7426)
 
     def test_activity_time(self):
-        self.assertEqual(self.activity.time, self.activity.duration)
+        activity = self.service.get_activity(1)
+        warnings.filterwarnings('ignore', category=DeprecationWarning)
+        activity_time = activity.time
+        warnings.resetwarnings
+        self.assertEqual(activity_time, activity.duration)
 
     def test_activity_starttime(self):
-        self.assertEqual(self.activity.starttime, '12:58:23')
+        activity = self.service.get_activity(1)
+        self.assertEqual(activity.starttime, '12:58:23')
 
     def test_activity_time_tuple(self):
-        self.assertEqual(self.activity.time_tuple, (2, 3, 46))
+        activity = self.service.get_activity(1)
+        self.assertEqual(activity.time_tuple, (2, 3, 46))
 
     def test_activity_lap(self):
+        activity = self.service.get_activity(1)
+        self.ddbb.session.add(activity)     # merge back into the session to avoid Detached error
+        self.ddbb.session.refresh(activity)
+
         self.maxDiff = None
+        # we test our own deprecated accessor, we also test each attribute below
+        warnings.filterwarnings('ignore', category=DeprecationWarning)
+        lap_dict = activity.laps[0]
+        warnings.resetwarnings
         self.assertEqual(
-            self.activity.laps[0],
+            lap_dict,
             {
                 'distance': 46181.9,
                 'end_lon': None,
@@ -121,46 +159,58 @@ class ActivityTest(unittest.TestCase):
                 'start_lat': None,
                 'max_speed': None},
         )
-        lap = self.activity.Laps[0]
+        lap = activity.Laps[0]
         self.assertEqual(lap.distance, 46181.9)
         self.assertEqual(lap.duration, 7426.0)
         self.assertEqual(lap.calories, 1462)
         self.assertEqual(lap.avg_hr, 136)
         self.assertEqual(lap.max_hr, 173)
-        self.assertEqual(lap.activity, self.activity)
+        self.assertEqual(lap.activity, activity)
         self.assertEqual(lap.lap_number, 0)
         self.assertEqual(lap.intensity, u'active')
         self.assertEqual(lap.laptrigger, Laptrigger.MANUAL)
+        self.assertEqual(lap.record, 1)
+        self.assertEqual(lap.comments,  None)
+        self.assertEqual(lap.max_speed, None)
+        self.assertEqual(lap.start_lat, None)
+        self.assertEqual(lap.start_lon, None)
+        self.assertEqual(lap.end_lat,   None)
+        self.assertEqual(lap.end_lon,   None)
 
     def test_activity_get_value_f(self):
-        self.assertEqual(self.activity.get_value_f('distance', "%0.2f"), '46.18')
-        self.assertEqual(self.activity.get_value_f('average', "%0.2f"), '22.39')
-        self.assertEqual(self.activity.get_value_f('maxspeed', "%0.2f"), '44.67')
-        self.assertEqual(self.activity.get_value_f('time', '%s'), '2:03:46')
-        self.assertEqual(self.activity.get_value_f('calories', "%0.0f"), '1462')
-        self.assertEqual(self.activity.get_value_f('pace', "%s"), '2:40')
-        self.assertEqual(self.activity.get_value_f('maxpace', "%s"), '1:20')
-        self.assertEqual(self.activity.get_value_f('upositive', "%0.2f"), '553.06')
-        self.assertEqual(self.activity.get_value_f('unegative', "%0.2f"), '564.08')
+        activity = self.service.get_activity(1)
+        self.assertEqual(activity.get_value_f('distance', "%0.2f"), '46.18')
+        self.assertEqual(activity.get_value_f('average', "%0.2f"), '22.39')
+        self.assertEqual(activity.get_value_f('maxspeed', "%0.2f"), '44.67')
+        self.assertEqual(activity.get_value_f('time', '%s'), '2:03:46')
+        self.assertEqual(activity.get_value_f('calories', "%0.0f"), '1462')
+        self.assertEqual(activity.get_value_f('pace', "%s"), '2:40')
+        self.assertEqual(activity.get_value_f('maxpace', "%s"), '1:20')
+        self.assertEqual(activity.get_value_f('upositive', "%0.2f"), '553.06')
+        self.assertEqual(activity.get_value_f('unegative', "%0.2f"), '564.08')
 
     def test_activity_get_value_f_us(self):
+        activity = self.service.get_activity(1)
         self.uc.set_us(True)
-        self.assertEqual(self.activity.get_value_f('distance', "%0.2f"), '28.69')
-        self.assertEqual(self.activity.get_value_f('average', "%0.2f"), '13.91')
-        self.assertEqual(self.activity.get_value_f('maxspeed', "%0.2f"), '27.76')
-        self.assertEqual(self.activity.get_value_f('time', '%s'), '2:03:46')
-        self.assertEqual(self.activity.get_value_f('calories', "%0.0f"), '1462')
-        self.assertEqual(self.activity.get_value_f('pace', "%s"), '4:17')
-        self.assertEqual(self.activity.get_value_f('maxpace', "%s"), '2:09')
-        self.assertEqual(self.activity.get_value_f('upositive', "%0.2f"), '1814.50')
-        self.assertEqual(self.activity.get_value_f('unegative', "%0.2f"), '1850.66')
+        self.assertEqual(activity.get_value_f('distance', "%0.2f"), '28.69')
+        self.assertEqual(activity.get_value_f('average', "%0.2f"), '13.91')
+        self.assertEqual(activity.get_value_f('maxspeed', "%0.2f"), '27.76')
+        self.assertEqual(activity.get_value_f('time', '%s'), '2:03:46')
+        self.assertEqual(activity.get_value_f('calories', "%0.0f"), '1462')
+        self.assertEqual(activity.get_value_f('pace', "%s"), '4:17')
+        self.assertEqual(activity.get_value_f('maxpace', "%s"), '2:09')
+        self.assertEqual(activity.get_value_f('upositive', "%0.2f"), '1814.50')
+        self.assertEqual(activity.get_value_f('unegative', "%0.2f"), '1850.66')
 
     def test_activity_service_null(self):
+        warnings.filterwarnings('ignore', category=DeprecationWarning)
         none_activity = self.service.get_activity(None)
+        warnings.resetwarnings
         self.assertIsNone(none_activity.id)
 
     def test_activity_remove(self):
-        self.service.remove_activity_from_db(self.activity)
+        activity = self.service.get_activity(1)
+        self.service.remove_activity_from_db(activity)
         try:
             self.service.get_activity(1)
         except NoResultFound:
@@ -169,13 +219,36 @@ class ActivityTest(unittest.TestCase):
             self.fail()
 
     def test_activities_for_day(self):
-        activity = list(self.service.get_activities_for_day(datetime.date(2016, 7, 24)))[0]
-        self.assertEqual(self.activity, activity)
+        # calling get_activity() prior to validate that is has no bearing on subsquent get_*() calls
+        activity = self.service.get_activity(1)
+        activities_for_day = self.service.get_activities_for_day(datetime.date(2016, 7, 24))
+
+
+        activity1 = list(activities_for_day)[0]
+        self.assertEqual(activity, activity1)
+
+        self.assertEqual(activity1.distance, 46.18)
+        self.assertEqual(activity1.duration, 7426)
 
     def test_activities_period(self):
-        activity = list(self.service.get_activities_period(DateRange.for_week_containing(datetime.date(2016, 7, 24))))[0]
-        self.assertEqual(self.activity, activity)
+        # calling get_activity() prior to validate that is has no bearing on subsquent get_*() calls
+        activity = self.service.get_activity(1)
+        activities_period = self.service.get_activities_period(DateRange.for_week_containing(datetime.date(2016, 7, 24)))
+
+        activity1 = list(activities_period)[0]
+        self.assertEqual(activity, activity1)
+
+        self.assertEqual(activity1.distance, 46.18)
+        self.assertEqual(activity1.duration, 7426)
 
     def test_all_activities(self):
-        activity = list(self.service.get_all_activities())[0]
-        self.assertEqual(self.activity, activity)
+        # calling get_activity() prior to validate that is has no bearing on subsquent get_*() calls
+        activity = self.service.get_activity(1)
+        all_activities = self.service.get_all_activities()
+
+
+        activity1 = list(all_activities)[0]
+        self.assertEqual(activity, activity1)
+
+        self.assertEqual(activity1.distance, 46.18)
+        self.assertEqual(activity1.duration, 7426)

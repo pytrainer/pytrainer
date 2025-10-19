@@ -29,7 +29,7 @@ class ListSearch(object):
         self.past = 0
         self.duration = 0
         self.distance = 0        
-        self.listSport = sport_service.get_all_sports()
+        self.sport_service = sport_service
         
         self.listPast = [[_('All Time'), -99999], [_('Last 4 Weeks'), -31],
                          [_('Last 6 Months'), -183], [_('Last 12 Months'), -366]]
@@ -70,7 +70,8 @@ class ListSearch(object):
         if self.title:
             _andlist.append(Activity.title.like('%' + self.title + '%'))
         if self.sport:
-            _andlist.append(Activity.sport == self.listSport[self.sport-1])
+            listSport = self.sport_service.get_all_sports()
+            _andlist.append(Activity.sport == listSport[self.sport-1])
         if self.listPast[self.past][1]:
             _delta = datetime.timedelta(days=self.listPast[self.past][1])
             _date = datetime.datetime.today() + _delta
@@ -115,8 +116,8 @@ class ListSearch(object):
         liststore_lsa.clear() #Delete all items
         #Re-add "All Sports"
         liststore_lsa.append([firstEntry])
-        #Re-add all sports in listSport
-        for sport in self.listSport:
+        #Re-add all sports
+        for sport in self.sport_service.get_all_sports():
             liststore_lsa.append([sport.name])
         self.parent.lsa_sport.set_active(0)
         #Add handler manually, so above changes do not trigger recursive loop
