@@ -16,7 +16,6 @@ setup(
 	data_files=[
 		('share/pytrainer/glade/',glob("glade/*.ui")),
 		('share/pytrainer/glade/',glob("glade/*.png")),
-		('share/pytrainer/glade/',glob("glade/*.jpg")),
 		('share/pytrainer/schemas/',glob("schemas/*.xsd")),
 		('share/pytrainer/imports/',glob("imports/*.py")),
 		('share/pytrainer/imports/',glob("imports/*.xsl")),
