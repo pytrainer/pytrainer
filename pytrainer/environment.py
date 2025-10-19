@@ -64,6 +64,10 @@ class Environment(Singleton):
         return os.path.join(self.conf_dir, "extensions")
 
     @property
+    def icons_dir(self):
+        return os.path.join(self.data_path, "icons")
+
+    @property
     def plugin_dir(self):
         return os.path.join(self.conf_dir, "plugins")
 
