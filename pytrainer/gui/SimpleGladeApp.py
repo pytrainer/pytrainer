@@ -18,7 +18,6 @@
 # USA
 
 import os
-import sys
 from gi.repository import Gtk
 from pytrainer.environment import Environment
 

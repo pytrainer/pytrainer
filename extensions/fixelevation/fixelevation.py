@@ -1,5 +1,6 @@
 import os
 import logging
+import requests
 from gi.repository import Gtk
 from lxml import etree
 from pytrainer.lib.srtmlayer import SrtmLayer
@@ -73,13 +74,12 @@ class fixelevation:
                 
             if not ele_fixed:
                 # Try Google maps elevation API
-                import cjson, urllib2, math
-                steps = len(trackpoints) / 300
+                steps = int(len(trackpoints) / 300)
 
                 path = ''
                 lat_prev, long_prev = 0, 0
                 t = 0
-                for t in xrange(0,len(trackpoints),steps):
+                for t in range(0, len(trackpoints), steps):
                     lat = float(trackpoints[t].attrib['lat'])
                     lon = float(trackpoints[t].attrib['lon'])
                     encoded_lat, lat_prev = encode_coord(lat, lat_prev)
@@ -90,13 +90,15 @@ class fixelevation:
                 url += path
  
                 try:
-                    google_ele = cjson.decode(urllib2.urlopen(url).read())
+                    response = requests.get(url)
+                    response.raise_for_status()
+                    google_ele = response.json()
                     if google_ele['status'] == "OK":
                         t_idx = 0
                         ele_points = len(google_ele['results'])
-                        for ele_new in xrange(0,ele_points):
+                        for ele_new in range(0, ele_points):
                             addExt(trackpoints[t_idx], google_ele['results'][ele_new]['elevation'])
-                            for intermediate in xrange(ele_new+1, ele_new+steps):
+                            for intermediate in range(ele_new + 1, ele_new + steps):
                                 if intermediate<len(trackpoints):
                                     if ele_new==ele_points-1:
                                         calculated = google_ele['results'][ele_new]['elevation']
@@ -108,7 +110,10 @@ class fixelevation:
                                     addExt(trackpoints[t_idx], calculated)
                             t_idx += 1
                         ele_fixed = True
-                except urllib2.HTTPError:
+                    else:
+                        logging.error("Failed to obtain elevation data: %s", google_ele["error_message"] or str(google_ele))
+                except (requests.exceptions.HTTPError, requests.exceptions.JSONDecodeError) as e:
+                    logging.error("Failed to obtain elevation data: %s", e)
                     pass
 
             if ele_fixed:

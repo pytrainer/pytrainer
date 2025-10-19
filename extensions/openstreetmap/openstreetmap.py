@@ -1,14 +1,11 @@
 import os, stat
-import sys
 import logging
 from gi.repository import Gtk
 
 import string
 from lxml import etree
 
-import httplib, httplib2
-import urllib2
-import mimetools, mimetypes
+import requests
 from json import dumps, loads       #   for deserializing JSON data form javascript
 
 from pytrainer.extensions.mapviewer import MapViewer
@@ -29,7 +26,7 @@ class openstreetmap:
     def run(self, id, activity=None):  #TODO Convert to use activity...
         logging.debug(">>")
         try:
-            uri = "http://api.openstreetmap.org/api/0.6/gpx/create" #URI for uploading traces to OSM
+            uri = "https://api.openstreetmap.org/api/0.6/gpx" #URI for uploading traces to OSM
             if 'username' not in self.options or self.options['username'] == "" or 'password' not in self.options or self.options['password'] == "":
                 logging.error("Must have username and password configured")
                 raise Exception("Must have username and password configured")
@@ -62,20 +59,7 @@ class openstreetmap:
                 f.close()                   #Close standard gpxfile
                 gpx_file = self.make_gpx_private(gpx_file)
                 f = open(gpx_file, 'r')     #Open anonymous gpxfile in readonly mode
-            fields = (("description",self.description), ("tags",self.tags), ("visibility",self.visibility))
-            logging.debug("Added fields: %s" % str(fields))
-            #Multipart encode the request
-            boundary, body = self.multipart_encode(fields=fields, files=(("file", f),))
-            content_type = 'multipart/form-data; boundary=%s' % boundary
-            #Finished with the file so close it
-            f.close()
-            #Add the http headers to the request
-            h = httplib2.Http()
-            headers = {
-                'Content-Type': content_type
-            }
             #Add basic authentication credentials to the request
-            h.add_credentials(username, password)
             #Show user something is happening
             msg = _("Posting GPX trace to Openstreetmap\n\nPlease wait this could take several minutes")
             md = Gtk.MessageDialog(self.pytrainer_main.windowmain.window1, Gtk.DialogFlags.DESTROY_WITH_PARENT, Gtk.MessageType.INFO, Gtk.ButtonsType.NONE, msg)
@@ -86,13 +70,24 @@ class openstreetmap:
                 Gtk.main_iteration()    # before completion of this entire action
             logging.debug("before request posting")
             #POST request to OSM
-            res, content = h.request(uri, 'POST', body=body, headers=headers)
+            res = requests.post(
+                uri,
+                data={
+                    "description": self.description,
+                    "tags": self.tags,
+                    "visibility": self.visibility,
+                },
+                auth=(username, password),
+                files={"file": f},
+            )
+            #Finished with the file so close it
+            f.close()
             logging.debug("after request posting")
-            logging.debug("Got response status: %s, reason: %s, content: %s" % (res.status, res.reason, content))
-            if res.reason == 'OK':
-                res_msg = "Successfully posted to OSM.\nYou should get an email with the outcome of the upload soon\n\nTrace id is %s" % content
+            logging.debug("Got response status: %s, reason: %s, content: %s" % (res.status_code, res.reason, res.text))
+            if res.ok:
+                res_msg = "Successfully posted to OSM.\nYou should get an email with the outcome of the upload soon\n\nTrace id is %s" % res.text
             else:
-                res_msg = "Some error occured\nGot a status %s, reason %s\nContent was: %s" % (res.status, res.reason, content)
+                res_msg = "Some error occured\nGot a status %s, reason %s\nContent was: %s" % (res.status_code, res.reason, res.text)
             #Close 'Please wait' dialog
             md.destroy()
             #Show the user the result
@@ -245,33 +240,7 @@ class openstreetmap:
             md.destroy()
         finally:
             self.privAreaWindow.destroy()
-                                
-    def multipart_encode(self, fields, files, boundary = None, buffer = None):
-        '''
-            Multipart encode data for posting
-             from examples at from http://odin.himinbi.org/MultipartPostHandler.py & http://bitworking.org/projects/httplib2/doc/html/libhttplib2.html
-        '''
-        if boundary is None:
-            boundary = mimetools.choose_boundary()
-        if buffer is None:
-            buffer = ''
-        for (key, value) in fields:
-            buffer += '--%s\r\n' % boundary
-            buffer += 'Content-Disposition: form-data; name="%s"' % key
-            buffer += '\r\n\r\n' + value + '\r\n'
-        for (key, fd) in files:
-            file_size = os.fstat(fd.fileno())[stat.ST_SIZE]
-            filename = os.path.basename(fd.name)
-            contenttype = mimetypes.guess_type(filename)[0] or 'application/octet-stream'
-            buffer += '--%s\r\n' % boundary
-            buffer += 'Content-Disposition: form-data; name="%s"; filename="%s"\r\n' % (key, filename)
-            buffer += 'Content-Type: %s\r\n' % contenttype
-            # buffer += 'Content-Length: %s\r\n' % file_size
-            fd.seek(0)
-            buffer += '\r\n' + fd.read() + '\r\n'
-        buffer += '--%s--\r\n\r\n' % boundary
-        return boundary, buffer
-        
+
     def make_gpx_private(self, gpx_file=None):
         '''
         wipes out private data from gpx files

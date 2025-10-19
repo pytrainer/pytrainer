@@ -1,10 +1,9 @@
-import json
-import urllib
-import urllib2
+import requests
 from gi.repository import Gtk
 import logging
 import webbrowser
 from subprocess import Popen, PIPE
+from typing import Dict
 
 LOGIN_URL = "https://www.strava.com/api/v2/authentication/login"
 UPLOAD_URL = "http://www.strava.com/api/v2/upload"
@@ -18,7 +17,11 @@ class ProgressDialog():
         self.progress = None
         self.text = text
     def __enter__(self):
-        self.progress = Popen(["zenity", "--text", "Strava Upload", "--percentage=0", "--auto-close=True", "--pulsate=True", "--progress", "--no-cancel"], stdin=PIPE)
+        self.progress = Popen(
+            ["zenity", "--text", "Strava Upload", "--percentage=0", "--auto-close=True", "--pulsate=True", "--progress", "--no-cancel"],
+            stdin=PIPE,
+            encoding="utf-8",
+        )
         self.progress.stdin.write('# %s\n' % self.text)
         return self
 
@@ -47,12 +50,11 @@ class StravaUpload:
     def __exit__(self, type, value, traceback):
         pass
 
-    def get_web_data(self, url, values, text):
+    def get_web_data(self, url: str, values: Dict[str, str], text: str) -> dict:
         with ProgressDialog(text) as p:
-            data = urllib.urlencode(values)
-            req = urllib2.Request(url, data)
-            response = urllib2.urlopen(req)
-            return json.loads(response.read())
+            response = requests.post(url, values)
+            response.raise_for_status()
+            return response.json()
 
     def login_token(self):
         token = None
