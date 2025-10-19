@@ -1525,7 +1525,7 @@
                                 <child type="tab">
                                   <object class="GtkImage" id="image24">
                                     <property name="visible">True</property>
-                                    <property name="stock">gtk-info</property>
+                                    <property name="icon-name">lightbulb-symbolic</property>
                                   </object>
                                   <packing>
                                     <property name="tab_fill">False</property>
@@ -2424,7 +2424,7 @@
                                 <child type="tab">
                                   <object class="GtkImage" id="image25">
                                     <property name="visible">True</property>
-                                    <property name="pixbuf">graph.png</property>
+                                    <property name="icon-name">line-chart-symbolic</property>
                                   </object>
                                   <packing>
                                     <property name="position">1</property>
@@ -2546,7 +2546,7 @@
                                 <child type="tab">
                                   <object class="GtkImage" id="image26">
                                     <property name="visible">True</property>
-                                    <property name="pixbuf">map.png</property>
+                                    <property name="icon-name">map-symbolic</property>
                                   </object>
                                   <packing>
                                     <property name="position">2</property>
@@ -3147,7 +3147,7 @@
                                 <child type="tab">
                                   <object class="GtkImage" id="image28">
                                     <property name="visible">True</property>
-                                    <property name="pixbuf">heartrate.png</property>
+                                    <property name="icon-name">heart-filled-symbolic</property>
                                   </object>
                                   <packing>
                                     <property name="position">3</property>
@@ -3458,7 +3458,7 @@
                                 <child type="tab">
                                   <object class="GtkImage" id="image28pre">
                                     <property name="visible">True</property>
-                                    <property name="pixbuf">glasses.png</property>
+                                    <property name="icon-name">brain-symbolic</property>
                                   </object>
                                   <packing>
                                     <property name="position">4</property>
