@@ -15,8 +15,7 @@ def install_extension(extension_name):
 setup(
 	data_files=[
 		('share/pytrainer/glade/',glob("glade/*.ui")),
-		('share/pytrainer/glade/',glob("glade/*.png")),
-		('share/pytrainer/glade/',glob("glade/*.jpg")),
+		('share/pytrainer/icons/',glob("data/icons/*.svg")),
 		('share/pytrainer/schemas/',glob("schemas/*.xsd")),
 		('share/pytrainer/imports/',glob("imports/*.py")),
 		('share/pytrainer/imports/',glob("imports/*.xsl")),

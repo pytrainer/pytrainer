@@ -27,6 +27,7 @@ from gi.repository import GdkPixbuf
 
 import dateutil.parser
 
+from .dateentry import DateEntry
 from .SimpleGladeApp import SimpleBuilderApp
 from .popupmenu import PopupMenu
 from .aboutdialog import About
@@ -44,7 +45,6 @@ from pytrainer.totalgraph import TotalGraph
 from pytrainer.heartrategraph import HeartRateGraph
 
 from pytrainer.gui.drawGraph import DrawGraph
-from pytrainer.gui.windowcalendar import WindowCalendar
 from pytrainer.lib.listview import ListSearch
 from pytrainer.lib import uc
 from pytrainer.core.activity import Activity
@@ -2057,8 +2057,8 @@ class Main(SimpleBuilderApp):
             logging.debug('Edit existing athlete entry: %s', data)
             title = _('Edit Athlete Entry')
         dialog = Gtk.Dialog(title=title, parent=self.pytrainer_main.windowmain.window1, flags= Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                     buttons=(Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
-                      Gtk.STOCK_SAVE, Gtk.ResponseType.ACCEPT))
+                     buttons=(_("_Cancel"), Gtk.ResponseType.REJECT,
+                      _("_Save"), Gtk.ResponseType.ACCEPT))
         dialog.set_modal(False)
         #Get Content area of dialog
         vbox = dialog.get_content_area()
@@ -2069,18 +2069,11 @@ class Main(SimpleBuilderApp):
         #Add date
         label = Gtk.Label(label=_("<b>Date</b>"))
         label.set_use_markup(True)
-        entry = Gtk.Entry()
+        entry = DateEntry()
         entry.set_text(data['date'])
         self.entryList.append(entry)
-        #Date calander widget
-        cal = Gtk.Image()
-        cal.set_from_stock(Gtk.STOCK_INDEX, Gtk.IconSize.BUTTON)
-        calbut = Gtk.Button()
-        calbut.add(cal)
-        calbut.connect("clicked", self.on_athletecalendar_clicked)
         table.attach(label,0,1,0,1)
         table.attach(entry,1,2,0,1)
-        #table.attach(calbut,2,3,0,1) #TODO
 
         #Add weight
         label = Gtk.Label(label=_("<b>Weight</b>"))
@@ -2178,16 +2171,6 @@ class Main(SimpleBuilderApp):
             logging.debug('Updating id_athletestat:%s with values: date %s, weight %s, bodyfat %s, restinghr %s, maxhr %s', id_athletestat, date, weight, bodyfat, restinghr, maxhr)
             self.parent.athlete.update_athlete_stats(id_athletestat, date, weight, bodyfat, restinghr, maxhr)
         self.parent.refreshAthleteView()
-
-    def on_athletecalendar_clicked(self,widget):
-        logging.debug(">>")
-        calendardialog = WindowCalendar(self.data_path,self)
-        calendardialog.run()
-        logging.debug("<<")
-
-    def setDate(self,date):
-        logging.debug(date)
-        #self.entryAthleteDate.set_text(date)
 
     ######## waypoints events ##########
     def on_savewaypoint_clicked(self,widget):

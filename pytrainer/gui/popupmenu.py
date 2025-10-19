@@ -24,21 +24,18 @@ class PopupMenu(Gtk.Menu):
     def __init__(self, data_path = None, parent = None):
         super(PopupMenu, self).__init__()
         self.windowmain = parent
-        edit_record = Gtk.ImageMenuItem(
-            image=Gtk.Image.new_from_stock(Gtk.STOCK_EDIT, Gtk.IconSize.MENU),
+        edit_record = Gtk.MenuItem(
             label=_("Edit Record"),
         )
         edit_record.connect("activate", self.on_editrecord_activate)
         self.attach(edit_record, 0, 1, 0, 1)
-        show_graph = Gtk.ImageMenuItem(
-            image=Gtk.Image.new_from_stock(Gtk.STOCK_FIND, Gtk.IconSize.MENU),
+        show_graph = Gtk.MenuItem(
             label=_("Show graph in classic view"),
         )
         show_graph.connect("activate", self.on_showclassic_activate)
         self.attach(show_graph, 0, 1, 1, 2)
         self.attach(Gtk.SeparatorMenuItem(), 0, 1, 2, 3)
-        remove_record = Gtk.ImageMenuItem(
-            image=Gtk.Image.new_from_stock(Gtk.STOCK_DELETE, Gtk.IconSize.MENU),
+        remove_record = Gtk.MenuItem(
             label=_("Delete"),
         )
         remove_record.connect("activate", self.on_remove_activate)

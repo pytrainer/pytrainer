@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<interface>
+  <template class="DateEntry" parent="GtkEntry">
+    <property name="secondary-icon-name">month-symbolic</property>
+    <signal handler="on_calendar_clicked" name="icon-press"/>
+  </template>
+</interface>

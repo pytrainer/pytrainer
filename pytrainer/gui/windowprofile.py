@@ -18,7 +18,7 @@
 
 from __future__ import division
 from .SimpleGladeApp import SimpleBuilderApp
-from .windowcalendar import WindowCalendar
+from .dateentry import DateEntry
 from pytrainer.__main__ import set_logging_level
 from pytrainer.core.equipment import EquipmentService
 from pytrainer.gui.equipment import EquipmentUi
@@ -169,13 +169,6 @@ class WindowProfile(SimpleBuilderApp):
         self.parent.setProfile(list_options)
         self.parent.saveProfile()
         logging.debug("<<")
-    
-    def on_calendar_clicked(self,widget):
-        calendardialog = WindowCalendar(self.data_path,self)
-        calendardialog.run()
-
-    def setDate(self,date):
-        self.prf_age.set_text(date)
 
     def on_switch_page(self,widget,pointer,frame):
         #print widget, pointer, frame

@@ -533,40 +533,9 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkHBox" id="hbox50">
+                          <object class="DateEntry" id="prf_age">
+                            <property name="width_request">108</property>
                             <property name="visible">True</property>
-                            <child>
-                              <object class="GtkEntry" id="prf_age">
-                                <property name="width_request">108</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="invisible_char">&#x25CF;</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="button46">
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <signal handler="on_calendar_clicked" name="clicked"/>
-                                <child>
-                                  <object class="GtkImage" id="image31">
-                                    <property name="visible">True</property>
-                                    <property name="stock">gtk-index</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
                           </object>
                           <packing>
                             <property name="left_attach">3</property>
@@ -683,11 +652,11 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button5">
-                                    <property name="label">gtk-delete</property>
+                                    <property name="label" translatable="yes">_Delete</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_stock">True</property>
+                                    <property name="use-underline">1</property>
                                     <signal handler="on_delsport_clicked" name="clicked"/>
                                   </object>
                                   <packing>
@@ -698,11 +667,11 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button23">
-                                    <property name="label">gtk-edit</property>
+                                    <property name="label" translatable="yes">_Edit</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_stock">True</property>
+                                    <property name="use-underline">1</property>
                                     <signal handler="on_editsport_clicked" name="clicked"/>
                                   </object>
                                   <packing>
@@ -713,11 +682,11 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button6">
-                                    <property name="label">gtk-add</property>
+                                    <property name="label" translatable="yes">_Add</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_stock">True</property>
+                                    <property name="use-underline">1</property>
                                     <signal handler="on_addsport_clicked" name="clicked"/>
                                   </object>
                                   <packing>
@@ -922,11 +891,11 @@
                                     </child>
                                     <child>
                                       <object class="GtkButton" id="button-color-new">
-                                        <property name="label">gtk-edit</property>
+                                        <property name="label" translatable="yes">_Edit</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
-                                        <property name="use_stock">True</property>
+                                        <property name="use-underline">1</property>
                                         <signal handler="on_editcolor_clicked" name="clicked"/>
                                       </object>
                                       <packing>
@@ -972,11 +941,11 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button17">
-                                    <property name="label">gtk-cancel</property>
+                                    <property name="label" translatable="yes">_Cancel</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_stock">True</property>
+                                    <property name="use-underline">1</property>
                                     <signal handler="on_sportcancel_clicked" name="clicked"/>
                                   </object>
                                   <packing>
@@ -987,11 +956,11 @@
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button18">
-                                    <property name="label">gtk-ok</property>
+                                    <property name="label" translatable="yes">_OK</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_stock">True</property>
+                                    <property name="use-underline">1</property>
                                     <signal handler="on_newsport_accept_clicked" name="clicked"/>
                                   </object>
                                   <packing>
@@ -1090,11 +1059,11 @@ Continue?</property>
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button19">
-                                    <property name="label">gtk-cancel</property>
+                                    <property name="label" translatable="yes">_Cancel</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_stock">True</property>
+                                    <property name="use-underline">1</property>
                                     <signal handler="on_sportcancel_clicked" name="clicked"/>
                                   </object>
                                   <packing>
@@ -1105,11 +1074,11 @@ Continue?</property>
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button20">
-                                    <property name="label">gtk-ok</property>
+                                    <property name="label" translatable="yes">_OK</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_stock">True</property>
+                                    <property name="use-underline">1</property>
                                     <signal handler="on_deletesport_clicked" name="clicked"/>
                                   </object>
                                   <packing>
@@ -1337,11 +1306,11 @@ Continue?</property>
                                     </child>
                                     <child>
                                       <object class="GtkButton" id="button-color-edit">
-                                        <property name="label">gtk-edit</property>
+                                        <property name="label" translatable="yes">_Edit</property>
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
                                         <property name="receives_default">False</property>
-                                        <property name="use_stock">True</property>
+                                        <property name="use-underline">1</property>
                                         <signal handler="on_editcolor_clicked" name="clicked"/>
                                       </object>
                                       <packing>
@@ -1378,11 +1347,11 @@ Continue?</property>
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button21">
-                                    <property name="label">gtk-cancel</property>
+                                    <property name="label" translatable="yes">_Cancel</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_stock">True</property>
+                                    <property name="use-underline">1</property>
                                     <signal handler="on_sportcancel_clicked" name="clicked"/>
                                   </object>
                                   <packing>
@@ -1393,11 +1362,11 @@ Continue?</property>
                                 </child>
                                 <child>
                                   <object class="GtkButton" id="button22">
-                                    <property name="label">gtk-ok</property>
+                                    <property name="label" translatable="yes">_OK</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_stock">True</property>
+                                    <property name="use-underline">1</property>
                                     <signal handler="on_editsport_accept_clicked" name="clicked"/>
                                   </object>
                                   <packing>
@@ -1992,11 +1961,11 @@ Continue?</property>
             </child>
             <child>
               <object class="GtkButton" id="button4">
-                <property name="label">gtk-cancel</property>
+                <property name="label" translatable="yes">_Cancel</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">1</property>
                 <signal handler="on_cancel_clicked" name="clicked"/>
               </object>
               <packing>
@@ -2008,11 +1977,11 @@ Continue?</property>
             </child>
             <child>
               <object class="GtkButton" id="button3">
-                <property name="label">gtk-ok</property>
+                <property name="label" translatable="yes">_OK</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
-                <property name="use_stock">True</property>
+                <property name="use-underline">1</property>
                 <signal handler="on_accept_clicked" name="clicked"/>
               </object>
               <packing>

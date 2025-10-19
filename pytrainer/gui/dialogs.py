@@ -35,7 +35,7 @@ class guiFlush():
         dialog.destroy()
 
 def open_file_chooser_dialog(title="Choose a file", multiple=False):
-    dialog = Gtk.FileChooserDialog(title, None, Gtk.FileChooserAction.OPEN,(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
+    dialog = Gtk.FileChooserDialog(title, None, Gtk.FileChooserAction.OPEN,(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Open"), Gtk.ResponseType.OK))
     dialog.set_default_response(Gtk.ResponseType.OK)
     dialog.set_select_multiple(multiple)
     response = dialog.run()
@@ -47,8 +47,8 @@ def open_file_chooser_dialog(title="Choose a file", multiple=False):
 
 def save_file_chooser_dialog(title="Choose a file", pattern="*.csv"):
     dialog = Gtk.FileChooserDialog(title, None, Gtk.FileChooserAction.SAVE,
-                                       (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
-                                            Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+                                       (_("_Cancel"), Gtk.ResponseType.CANCEL,
+                                            _("_Save"), Gtk.ResponseType.OK))
     dialog.set_default_response(Gtk.ResponseType.OK)
     dialog.set_current_name(pattern)
     response = dialog.run()
@@ -76,8 +76,8 @@ def warning_dialog(text="", title="Warning", cancel=False):
 
 def calendar_dialog(title="Calendar", date=None):
     dialog = Gtk.Dialog(title=title, flags=Gtk.DialogFlags.MODAL)
-    dialog.add_buttons(Gtk.STOCK_OK, Gtk.ResponseType.OK,
-                       Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
+    dialog.add_buttons(_("_OK"), Gtk.ResponseType.OK,
+                       _("_Cancel"), Gtk.ResponseType.CANCEL)
     calendar = Gtk.Calendar()
     if date:
         try:
