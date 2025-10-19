@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-#Copyright (C) Fiz Vazquez vud1@sindominio.net
+#Copyright (C) Arto Jantunen <viiru@iki.fi>
 
 #This program is free software; you can redistribute it and/or
 #modify it under the terms of the GNU General Public License
@@ -16,16 +16,21 @@
 #along with this program; if not, write to the Free Software
 #Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 
-import warnings
+from gi.repository import Gtk
+from pytrainer.environment import Environment
 from pytrainer.gui.dialogs import calendar_dialog
 
-class WindowCalendar(object):
-    def __init__(self, data_path = None, parent = None, date = None):
-        warnings.warn("Deprecated WindowCalendar class called", DeprecationWarning, stacklevel=2)
-        self.parent = parent
-        self.date = date
+env = Environment()
 
-    def run(self):
-        date = calendar_dialog(date=self.date)
+@Gtk.Template(filename=env.glade_dir + "/date-entry.ui")
+class DateEntry(Gtk.Entry):
+    __gtype_name__ = "DateEntry"
+
+    def __init__(self):
+        super(DateEntry, self).__init__()
+
+    @Gtk.Template.Callback()
+    def on_calendar_clicked(self, widget, icon_pos, event):
+        date = calendar_dialog(date=self.get_text())
         if date:
-            self.parent.setDate(date)
+            self.set_text(date)

@@ -22,8 +22,8 @@ import logging
 import traceback
 from gi.repository import Gtk, GObject
 from pytrainer.gui.dialogs import warning_dialog
+from .dateentry import DateEntry
 from .SimpleGladeApp import SimpleBuilderApp
-from .windowcalendar import WindowCalendar
 
 from pytrainer.lib.date import getLocalTZ, time2second
 import dateutil.parser
@@ -71,7 +71,7 @@ class WindowRecord(SimpleBuilderApp):
         if windowTitle is not None:
             self.newrecord.set_title(windowTitle)
         if date != None:
-            self.setDate(date)
+            self.rcd_date.set_text(date)
         if title != None:
             self.rcd_title.set_text(title)
         if distance != None:
@@ -332,13 +332,6 @@ class WindowRecord(SimpleBuilderApp):
         self.newrecord.hide()
         #self.newrecord = None
         self.quit()
-
-    def on_calendar_clicked(self,widget):
-        calendardialog = WindowCalendar(self.data_path,self, date=self.rcd_date.get_text())
-        calendardialog.run()
-
-    def setDate(self,date):
-        self.rcd_date.set_text(date)
 
     def setTime(self,timeInSeconds):
         time_in_hour = int(timeInSeconds)/3600.0
