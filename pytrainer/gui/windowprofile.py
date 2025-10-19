@@ -378,7 +378,7 @@ class WindowProfile(SimpleBuilderApp):
             sport = self._sport_service.get_sport_by_name(sport_desc)
             colorseldlg = Gtk.ColorSelectionDialog("test")
             colorseldlg.get_color_selection().set_has_palette(True)
-            colorseldlg.get_color_selection().set_current_color(ColorConverter().convert_to_gdk_color(sport.color))
+            colorseldlg.get_color_selection().set_current_rgba(ColorConverter().convert_to_gdk_rgba(sport.color))
             colorseldlg.run()
             gdk_color = colorseldlg.get_color_selection().get_current_color()
             self.stored_color = ColorConverter().convert_to_color(gdk_color)

@@ -32,15 +32,16 @@ class ColorConverterTest(unittest.TestCase):
         from pytrainer.gui.color import ColorConverter
         self._converter = ColorConverter()
 
-    def test_convert_to_gdk_color_should_create_gdk_color_with_equivalent_rgb_values(self):
+    def test_convert_to_gdk_rgba_should_create_gdk_color_with_equivalent_rgb_values(self):
         from pytrainer.util.color import Color
         color = Color(0xaaff33)
-        gdk_color = self._converter.convert_to_gdk_color(color)
-        self.assertEqual(0x3333, gdk_color.blue)
-        self.assertEqual(0xffff, gdk_color.green)
-        self.assertEqual(0xaaaa, gdk_color.red)
+        gdk_color = self._converter.convert_to_gdk_rgba(color)
+        self.assertEqual(0x33 / 0xff, gdk_color.blue)
+        self.assertEqual(0xff / 0xff, gdk_color.green)
+        self.assertEqual(0xaa / 0xff, gdk_color.red)
 
     def test_convert_to_color_should_create_color_with_equivalent_rgb_values(self):
-        gdk_col = Gdk.color_parse("#aaff33")
+        gdk_col = Gdk.RGBA()
+        gdk_col.parse("#aaff33")
         color = self._converter.convert_to_color(gdk_col)
         self.assertEqual(0xaaff33, color.rgb_val)
