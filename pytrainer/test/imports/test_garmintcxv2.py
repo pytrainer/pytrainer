@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 __author__ = "David García Granda – dgranda@gmail.com"
 __copyright__ = "Copyright © 2013 David García Granda"
-__license__ = "GPL v2 or later"
+__license__ = "GPL-2.0-or-later"
 
 import unittest
 from unittest.mock import Mock
